@@ -94,6 +94,7 @@ import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
+import org.navalplanner.web.planner.order.PlanningStateCreator.IActionsOnRetrieval;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.planner.reassign.IReassignCommand;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -327,6 +328,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             List<ICommand<TaskElement>> additional) {
         long time = System.currentTimeMillis();
         this.planner = planner;
+        planningState = createPlanningStateFor(order);
         currentScenario = scenarioManager.getCurrent();
         PlannerConfiguration<TaskElement> configuration = createConfiguration(order);
         PROFILING_LOG.info("load data and create configuration took: "
@@ -1090,7 +1092,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private PlannerConfiguration<TaskElement> createConfiguration(Order order) {
         taskElementAdapter.useScenario(currentScenario);
-        planningState = createPlanningStateFor(order);
         taskElementAdapter.setInitDate(asLocalDate(order.getInitDate()));
         taskElementAdapter.setDeadline(asLocalDate(order.getDeadline()));
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
@@ -1113,7 +1114,14 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private PlanningState createPlanningStateFor(Order order) {
         return planningStateCreator.retrieveOrCreate(planner.getDesktop(),
-                order);
+                order, new IActionsOnRetrieval() {
+
+                    @Override
+                    public void onRetrieval(PlanningState planningState) {
+                        planningState.reattach();
+                        planningState.reassociateResourcesWithSession();
+                    }
+                });
     }
 
     public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3"; // Soft

@@ -1,0 +1,208 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a new Work Report Model
+ * 2 - Create a Work Report Model with duplicate type (it should be a failure)
+ * 3 - Create a Work Report Model with empty type (it should be a failure)
+ * 4 - Create a Work Report Model with duplicate name (it should be a failure)
+ * 5 - Edit a Work Report Model
+ * 6 - Check Diferent Fields
+ *   6.1 - Check code
+ *     6.1.1 - Change configuration
+ *     6.1.2 - Try to create a new Work Report Model without Code (it should be a failure)
+ *     6.1.3 - Change configuration like before
+ *   6.2 - Check Complementary Text Fields
+ *   6.3 - Check Label Type Fields
+ *     6.3.1 - Create a label
+ *     6.3.2 - Check Fields
+ *     6.3.3 - Delete the label
+ * 7 - Delete Work Report Model
+ *
+*/
+_include("../common_functions.sah");
+
+function workReportModelCreate($name){
+    commonCreate("Work Report Models");
+    workReportModelForm($name);
+   commonSaveValidation("Work Report Type", $name);
+    _log("Create a new Work Report Model", "custom1");
+}
+
+function workReportModelCreateDuplicateName($name){
+    commonCreate("Work Report Models");
+    workReportModelForm($name);
+    workReportModelNotValid();
+    _log("Do not allow create a duplicate Work Report Model", "custom1");
+}
+
+function workReportModelCreateEmpty(){
+    commonCreate("Work Report Models");
+    workReportModelForm("");
+    _assertExists(_div("the name must be not null or not empty"));
+    _assert(_isVisible(_div("the name must be not null or not empty")));
+    _log("Do not allow create Work Report Model without name", "custom1");
+}
+
+function workReportModelForm($name){
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _setSelected(_select(0, _near(_span("Task:"))),"heading");
+    _click(_cell("Add New Complementary Field"));
+    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _click(_cell("Save"));
+}
+
+/* test to check a that naval plan give us a error */
+function workReportModelNotValid(){
+    _assertExists(_div("There exists other workReportType with the same name."));
+    _assert(_isVisible(_div("There exists other workReportType with the same name.")));
+}
+
+function workReportModelEdit($oldName, $newName, $cell){
+    commonEdit($oldName, $cell);
+    workReportModelEditForm($newName);
+    commonSaveValidation("Work Report Type", $newName);
+    _log("Edit a Work Report Model", "custom1");
+}
+
+function workReportModelEditForm($name){
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _click(_cell("Save & Continue"));
+}
+
+function workReportModelCheckCode($name){
+    commonConfigurationChangeCheckboxMainPreferences("Work report types");
+    workReportModelCreateWithoutCode($name);
+    commonConfigurationChangeCheckboxMainPreferences("Work report types");
+    _log("Check code label", "custom1");
+}
+
+function workReportModelCheckValues($name, $name2){
+    workReportModelCheckCode($name);
+    workReportModelCheckComplementaryTextFields($name);
+    workReportModelCheckLabelTypeFields($name2);
+    _log("Check diferent labels", "custom1");
+}
+
+function workReportModelCreateWithoutCode($type){
+    commonCreate("Work Report Models");
+    workReportModelForm($type);
+    workReportModelEmptyCodeValidation();
+}
+
+function workReportModelEmptyCodeValidation(){
+    _assertExists(_div("the code must be not null or not empty"));
+    _assert(_isVisible(_div("the code must be not null or not empty")));
+}
+
+function workReportModelCheckComplementaryTextFields($name){
+    commonCreate("Work Report Models");
+   _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _click(_cell("Add New Complementary Field"));
+    _click(_cell("Save"));
+    workReportModelCheckComplementaryTextFieldsValidationName();
+    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
+    _click(_cell("Save"));
+    workReportModelCheckComplementaryTextFieldsValidationLength();
+    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _click(_cell("Save"));
+}
+
+function workReportModelCheckComplementaryTextFieldsValidationName(){
+    _assertExists(_div("The field name must be unique, not null and not empty"));
+    _assert(_isVisible(_div("The field name must be unique, not null and not empty")));
+}
+
+function workReportModelCheckComplementaryTextFieldsValidationLength(){
+    _assertExists(_div("The length must be greater than 0, and not null."));
+    _assert(_isVisible(_div("The length must be greater than 0, and not null.")))
+}
+
+function workReportModelCheckLabelTypeFields($name){
+    labelCreate("labelforModel","New");
+    commonCreate("Work Report Models");
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _click(_cell("Add New Label Type Field"));
+    _click(_cell("Save"));
+    workReportModelCheckLabelTypeFieldsValidationName();
+    _click(_italic(0, _near(_div("Label Type fields"))));
+    _click(_cell("labelforModel"));
+    _click(_cell("Save"));
+    workReportModelCheckLabelTypeFieldsValidationLabel();
+    commonDelete("Labels", "labelforModel", 2);
+    commonDeleteValidation("Label Type", "labelforModel");
+}
+
+function workReportModelCheckLabelTypeFieldsValidationName(){
+    _assertExists(_div("The label type must unique and not null."));
+    _assert(_isVisible(_div("The label type must unique and not null.")));
+}
+
+function workReportModelCheckLabelTypeFieldsValidationLabel() {
+    _assertExists(_div("The label must not null."));
+    _assert(_isVisible(_div("The label must not null.")));
+}
+
+/*
+ * Label functions
+ */
+
+function labelCreate($type, $name){
+    commonCreate("Labels");
+    labelForm($type, $name);
+    commonSaveValidation("Label Type", $type);
+    _log("Create a new label", "custom1");
+}
+
+function labelForm($name, $labelName){
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _setValue(_textbox(0, _near(_span("New label"))), $labelName);
+    _click(_cell("Add"));
+    _click(_cell("Save"));
+}
+
+/* test values */
+var $workReportModelName = "new";
+var $workReportModelName2 = "new2";
+var $workReportModelNewName = "newest";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+workReportModelCreate($workReportModelName);
+workReportModelCreateDuplicateName($workReportModelName);
+workReportModelCreateEmpty();
+
+workReportModelEdit($workReportModelName, $workReportModelNewName, 1);
+workReportModelCheckCode($workReportModelName);
+workReportModelCheckValues($workReportModelName, $workReportModelName2);
+
+commonDelete("Work Report Models", $workReportModelNewName, 1);
+commonDeleteValidation("Work Report Type", $workReportModelNewName);
+commonDelete("Work Report Models", $workReportModelName, 1);
+commonDeleteValidation("Work Report Type", $workReportModelName);
+_log("Delete the Work Report Model", "custom1");
+
+commonLogout();

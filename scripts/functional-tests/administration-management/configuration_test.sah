@@ -1,0 +1,230 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Change Login checkbox
+ * 2 - Change Checkboxes of Generate code for all the elements
+ * 3 - Change perspectives of all elements
+ * 4 - Check login form
+ * 5 - Check perspective is visible
+ * 6 - Check that the code is not auto generated in all the elements
+ * 7 - Change configuration like default configuration
+ * 8 - Change default Calendar
+ *   8.1 - Create a new calendar
+ *   8.2 - Change the configuration
+ *   8.3 - Check Calendar in Workers
+ *   8.4 - Check Calendar in Projects
+ *   8.5 - Change the calendar configuration like default configuration
+ *   8.6 - Delete calendar
+ *
+*/
+
+_include("../common_functions.sah");
+
+/*
+ * Functions for config checkboxes element
+ */
+
+function configChangeInCheckboxes($list) {
+    _click(_link("NavalPlan Configuration"));
+    configPressCheckboxes($list);
+    _click(_cell("Save"));
+    configSaveValidation();
+    _log("All checkboxes changed", "custom1");
+}
+
+function configCheckChangesInCheckboxes($list){
+    configCheckLogin();
+    configCheckScenario();
+    configCheckMonteCarlo();
+    configCheckTypes($list);
+}
+
+function configCheckLogin(){
+    commonLogout();
+    if (_condition(_textbox(0, _near(_cell("User"))).value == "") &&
+    _condition(_textbox(0, _near(_cell("Password"))).value == "")){
+    _log("Log form is empty", "custom1");
+    }
+    else{
+    _log("Log form is not empty", "error");
+    }
+    commonLogin("admin", "admin");
+}
+
+function configCheckMonteCarlo(){
+    commonCreateProject("projectForCheckMontecarlo");
+    _click(_cell("OK"));
+    _assertExists(_cell("MonteCarlo Method"));
+    _assert(_isVisible(_cell("MonteCarlo Method")));
+    _log("Monte Carlo is showed", "custom1");
+    _click(_link("NavalPlan Configuration"));
+    _click(_checkbox(0, _near(_label("Enable scenarios module"))));
+    _click(_cell("Save"));
+    commonDeleteProject("projectForCheckMontecarlo");
+}
+
+function configCheckScenario(){
+    _click(_link("Projects List"));
+    _assertExists(_span("scenario:"));
+    _assert(_isVisible(_span("scenario:")));
+    _log("Scenario is showed", "custom1");
+    _click(_link("NavalPlan Configuration"));
+    _click(_checkbox(0, _near(_label("Enable scenarios module"))));
+    _click(_cell("Save"));
+}
+
+function configCheckTypes($list){
+    var $code;
+    for (var $i = 0; $i < $list.length; $i++){
+        commonCreate($list[$i]);
+        try{
+        _set($code, _textbox(0, _near(_span("Code"))).value);
+        }
+        catch(e){
+        _set($code, _textbox(0, _near(_span("Code:"))).value);
+        }
+    if ($code == ""){
+        _log($list[$i]+" code is empty", "custom1");
+    }
+    else{
+        _log($list[$i]+" is not empty ERROR", "error");
+    }
+    }
+    configCheckMaterial();
+    configCheckWorkReport();
+}
+function configCheckMaterial(){
+    var $code;
+    var $label;
+    _click(_link("Materials"));
+    _click(_span("z-dottree-ico z-dottree-firstspacer"));
+    _click(_cell("z-button-cm", _near(_span("List of materials for category: Imported materials without category"))));
+    _set($label, _textbox(0, _near(_span("List of materials for category: Imported materials without category"))).id);
+    _set($code, _textbox(0, _in(_cell(_parentTable(_textbox($label)),1,0))).value);
+    if ($code == ""){
+    _log("Material code is empty", "custom1");
+    }
+    else{
+    _log("Material is not empty ERROR", "error");
+    }
+}
+
+function configCheckWorkReport(){
+    _click(_link("NavalPlan Configuration"));
+    _click(_checkbox(0, _near(_label("Work report types"))));
+    _click(_cell("Save"));
+    commonWorkReportModelCreate("modelForConfiguration", "line")
+    configCheckWorkReportCreate();
+    commonWorkReportModelDelete("modelForConfiguration");
+    _click(_link("NavalPlan Configuration"));
+    _click(_checkbox(0, _near(_label("Work report types"))));
+    _click(_cell("Save"));
+}
+
+function configCheckWorkReportCreate(){
+    var $code;
+    _click(_cell("New work report"));
+    _click(_cell("Add new row"));
+    _set($code, _textbox(0, _near(_span("Code:"))).value);
+    if ($code == ""){
+    _log("Work report code is empty", "custom1");
+    }
+    else{
+    _log("Work report is not empty ERROR", "error");
+    }
+}
+
+function configPressCheckboxes($list){
+    for (var $i = 0; $i < $list.length; $i++){
+    _click(_checkbox(0, _near(_label($list[$i]))));
+    }
+}
+
+function configSaveValidation(){
+    _assertExists(_span("Changes saved"));
+    _assert(_isVisible(_span("Changes saved")));
+}
+
+/*
+ * Functions for configuration Calendar
+ */
+
+function configChangeCalendar($name){
+    commonCalendarCreate($name);
+    configChangeCalendarOption($name);
+    configCheckCalendar($name);
+    configChangeCalendarOption("Default");
+    commonCalendarDelete($name);
+    _log("Calendar option checked", "custom1");
+}
+
+function configChangeCalendarOption($name){
+    _click(_link("NavalPlan Configuration"));
+    _click(_italic(0, _near(_span("Default calendar"))));
+    _click(_div($name));
+    _click(_cell("Save"));
+}
+
+function configCheckCalendar($name){
+    configCheckCalendarWorker($name);
+    configCheckCalendarProject($name);
+}
+
+function configCheckCalendarWorker($name){
+    commonCreate("Workers");
+    _click(_span("Calendar"));
+    if (_condition(_textbox(0, _near(_cell("Select parent calendar"))).value == $name)){
+    _log("The correct calendar is assigned", "custom1");
+    }
+    else{
+    _log("This is not the correct calendar", "error");
+    }
+}
+
+function configCheckCalendarProject($name){
+    _click(_link("Projects List"));
+    _click(_image("ico_add.png"));
+    if (_condition(_textbox(0, _near(_span("Calendar"))).value == $name)){
+    _log("The correct calendar is assigned", "custom1");
+    }
+    else{
+    _log("This is not the correct calendar", "error");
+    }
+}
+
+/* test values */
+var $listCheckoxes = ["Criterion", "Label", "Work report", "Resources", "Types of work hours",
+"Material categories", "Unit Measures", "Calendar", "Work report types",
+"Calendar exception types", "Cost category", "MonteCarlo method", "Enable scenarios module",
+"Enable/Disable"];
+var $listMenuOptions = ["Criteria", "Exception Days", "Labels", "Unit Measures", "Work Hours",
+"Work Report Models", "Cost Categories", "Calendars", "Workers", "Machines"];
+var $calendarName = "CalendarForConfig";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+configChangeInCheckboxes($listCheckoxes);
+configCheckChangesInCheckboxes($listMenuOptions);
+configChangeInCheckboxes($listCheckoxes);
+configChangeCalendar($calendarName);
+
+commonLogout();

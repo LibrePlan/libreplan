@@ -210,6 +210,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
             if (Messagebox.OK == status) {
                 workReportModel.remove(workReport);
+                messagesForUser.showMessage(Level.INFO,
+                        _("Work report removed successfully"));
                 loadComponentslist(listWindow);
                 Util.reloadBindings(listWindow);
             }

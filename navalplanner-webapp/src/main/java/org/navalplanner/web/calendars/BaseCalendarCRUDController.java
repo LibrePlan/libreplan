@@ -32,6 +32,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.BaseCRUDController.CRUDControllerState;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -127,6 +128,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void save() {
         try {
+            ConstraintChecker.isValid(editWindow);
             validateCalendarExceptionCodes();
             baseCalendarModel.generateCalendarCodes();
             baseCalendarModel.confirmSave();
@@ -141,6 +143,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void saveAndContinue() {
         try {
+            ConstraintChecker.isValid(editWindow);
             validateCalendarExceptionCodes();
             baseCalendarModel.generateCalendarCodes();
             baseCalendarModel.confirmSaveAndContinue();

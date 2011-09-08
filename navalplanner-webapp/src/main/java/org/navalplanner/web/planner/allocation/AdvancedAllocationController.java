@@ -45,9 +45,10 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
-import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
+import org.navalplanner.business.planner.entities.AssignmentFunction.AssignmentFunctionName;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ManualFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SigmoidFunction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -58,9 +59,9 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.streches.StrechesFunctionConfiguration;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -227,8 +228,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public static Restriction build(IRestrictionSource restrictionSource) {
             switch (restrictionSource.getCalculatedValue()) {
             case END_DATE:
-                return Restriction.fixedEffort(restrictionSource.getStart(),
-                        restrictionSource.getTotalEffort());
+                return Restriction.emptyRestriction();
             case NUMBER_OF_HOURS:
                 return Restriction.onlyAssignOnInterval(restrictionSource
                         .getStart(), restrictionSource.getEnd());
@@ -247,11 +247,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         private static Restriction onlyAssignOnInterval(LocalDate start,
                 LocalDate end){
             return new OnlyOnIntervalRestriction(start, end);
-        }
-
-        private static Restriction fixedEffort(LocalDate start,
-                EffortDuration effort) {
-            return new FixedEffortRestriction(start, effort);
         }
 
         abstract LocalDate limitStartDate(LocalDate startDate);
@@ -317,55 +312,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public void markInvalidEffort(Row groupingRow,
                 EffortDuration currentEffort) {
             throw new UnsupportedOperationException();
-        }
-    }
-
-    private static class FixedEffortRestriction extends Restriction {
-
-        private final EffortDuration effort;
-
-        private final LocalDate start;
-
-        private FixedEffortRestriction(LocalDate start, EffortDuration effort) {
-            this.start = start;
-            this.effort = effort;
-        }
-
-        @Override
-        boolean isDisabledEditionOn(DetailItem item) {
-            return false;
-        }
-
-        @Override
-        LocalDate limitEndDate(LocalDate endDate) {
-            return endDate;
-        }
-
-        @Override
-        LocalDate limitStartDate(LocalDate argStart) {
-            return start.compareTo(argStart) > 0 ? start : argStart;
-        }
-
-        @Override
-        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
-            return this.effort.compareTo(totalEffort) != 0;
-        }
-
-        @Override
-        public void showInvalidEffort(IMessagesForUser messages,
-                EffortDuration totalEffort) {
-            messages.showMessage(Level.WARNING, getMessage(totalEffort));
-        }
-
-        private String getMessage(EffortDuration totalEffort) {
-            return _("there must be {0} effort instead of {1}",
-                    effort.toFormattedString(), totalEffort.toFormattedString());
-        }
-
-        @Override
-        public void markInvalidEffort(Row groupingRow,
-                EffortDuration totalEffort) {
-            groupingRow.markErrorOnTotal(getMessage(totalEffort));
         }
     }
 
@@ -1192,20 +1138,28 @@ class Row {
         effortDurationBox.addEventListener(Events.ON_CHANGE,
                 new EventListener() {
 
-            @Override
+                    @Override
                     public void onEvent(Event event) {
                         EffortDuration value = effortDurationBox
                                 .getEffortDurationValue();
 
-                getAllocation().withPreviousAssociatedResources().onIntervalWithinTask(
-                        getAllocation().getStartDate(),
-                        getAllocation().getEndDate())
-                        .allocate(value);
-                fireCellChanged();
+                        ResourceAllocation<?> resourceAllocation = getAllocation();
+                        resourceAllocation
+                                .withPreviousAssociatedResources()
+                                .onIntervalWithinTask(
+                                        resourceAllocation.getStartDate(),
+                                        resourceAllocation.getEndDate())
+                                .allocate(value);
+                        AssignmentFunction assignmentFunction = resourceAllocation.getAssignmentFunction();
+                        if (assignmentFunction != null) {
+                            assignmentFunction.applyTo(resourceAllocation);
+                        }
+
+                        fireCellChanged();
                         reloadEffortsSameRowForDetailItems();
                         reloadAllEffort();
-            }
-        });
+                    }
+                });
     }
 
     private void reloadEffortsSameRowForDetailItems() {
@@ -1245,13 +1199,17 @@ class Row {
         }
     }
 
+    private AssignmentFunctionListbox assignmentFunctionsCombo = null;
+
+    private Button assignmentFunctionsConfigureButton = null;
+
     private void initializeAssigmentFunctionsCombo() {
         hboxAssigmentFunctionsCombo = new Hbox();
-        AssignmentFunctionListbox assignmentFunctionsCombo = new AssignmentFunctionListbox(
+        assignmentFunctionsCombo = new AssignmentFunctionListbox(
                 functions, getAllocation().getAssignmentFunction());
         hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsCombo);
-        hboxAssigmentFunctionsCombo
-                .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
+        assignmentFunctionsConfigureButton = getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo);
+        hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsConfigureButton);
     }
 
     /**
@@ -1273,7 +1231,7 @@ class Row {
                     selectItemAndSavePreviousValue(listitem);
                 }
             }
-            this.addEventListener(Events.ON_SELECT, onSelectListbox(this));
+            this.addEventListener(Events.ON_SELECT, onSelectListbox());
             this.setMold("select");
         }
 
@@ -1289,33 +1247,35 @@ class Row {
             return listitem;
         }
 
-        private EventListener onSelectListbox(
-                final AssignmentFunctionListbox listbox) {
+        private EventListener onSelectListbox() {
             return new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    IAssignmentFunctionConfiguration function = (IAssignmentFunctionConfiguration) listbox
-                            .getSelectedItem().getValue();
+                    IAssignmentFunctionConfiguration function = (IAssignmentFunctionConfiguration) getSelectedItem()
+                            .getValue();
 
                     // Cannot apply function if task contains consolidated day assignments
                     final ResourceAllocation<?> resourceAllocation = getAllocation();
-                    if (isSigmoid(function.getName())
+                    if (function.isSigmoid()
                             && !resourceAllocation
                                     .getConsolidatedAssignments().isEmpty()) {
                         showCannotApplySigmoidFunction();
-                        listbox.setSelectedItem(listbox.getPreviousListitem());
+                        setSelectedItem(getPreviousListitem());
                         return;
                     }
                     // User didn't accept
                     if (showConfirmChangeFunctionDialog() != Messagebox.YES) {
-                        listbox.setSelectedItem(listbox.getPreviousListitem());
+                        setSelectedItem(getPreviousListitem());
                         return;
                     }
-                    // Apply sigmoid function
+                    // Apply assignment function
                     if (function != null) {
-                        setPreviousListitem(listbox.getSelectedItem());
+                        setPreviousListitem(getSelectedItem());
                         function.applyOn(resourceAllocation);
+                        updateAssignmentFunctionsConfigureButton(
+                                assignmentFunctionsConfigureButton,
+                                function.isConfigurable());
                     }
                 }
             };
@@ -1327,10 +1287,6 @@ class Row {
 
         private void setPreviousListitem(Listitem previousListitem) {
             this.previousListitem = previousListitem;
-        }
-
-        private boolean isSigmoid(String value) {
-            return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString().equals(value);
         }
 
         private void showCannotApplySigmoidFunction() {
@@ -1351,23 +1307,30 @@ class Row {
                             Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
         }
 
+        private void setSelectedFunction(String functionName) {
+            List<Listitem> children = getChildren();
+            for (Listitem item : children) {
+                IAssignmentFunctionConfiguration function = (IAssignmentFunctionConfiguration) item
+                        .getValue();
+                if (function.getName().equals(functionName)) {
+                    setSelectedItem(item);
+                }
+            }
+        }
+
     }
 
     private IAssignmentFunctionConfiguration flat = new IAssignmentFunctionConfiguration() {
 
         @Override
         public void goToConfigure() {
-            try {
-                Messagebox.show(_("Flat allocation is not configurable"),
-                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            throw new UnsupportedOperationException(
+                    "Flat allocation is not configurable");
         }
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.FLAT.toString();
+            return AssignmentFunctionName.FLAT.toString();
         }
 
         @Override
@@ -1378,7 +1341,12 @@ class Row {
         @Override
         public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
-            resourceAllocation.setAssignmentFunction(null);
+            resourceAllocation.setAssignmentFunctionWithoutApply(null);
+            resourceAllocation
+                    .withPreviousAssociatedResources()
+                    .onIntervalWithinTask(resourceAllocation.getStartDate(),
+                            resourceAllocation.getEndDate())
+                    .allocate(allEffortInput.getEffortDurationValue());
             reloadEfforts();
         }
 
@@ -1386,6 +1354,51 @@ class Row {
             reloadEffortsSameRowForDetailItems();
             reloadAllEffort();
             fireCellChanged();
+        }
+
+        @Override
+        public boolean isSigmoid() {
+            return false;
+        }
+
+        @Override
+        public boolean isConfigurable() {
+            return false;
+        }
+
+    };
+
+    private IAssignmentFunctionConfiguration manualFunction = new IAssignmentFunctionConfiguration() {
+
+        @Override
+        public void goToConfigure() {
+            throw new UnsupportedOperationException(
+                    "Manual allocation is not configurable");
+        }
+
+        @Override
+        public String getName() {
+            return AssignmentFunctionName.MANUAL.toString();
+        }
+
+        @Override
+        public boolean isTargetedTo(AssignmentFunction function) {
+            return function instanceof ManualFunction;
+        }
+
+        @Override
+        public void applyOn(ResourceAllocation<?> resourceAllocation) {
+            resourceAllocation.setAssignmentFunctionAndApplyIfNotFlat(ManualFunction.create());
+        }
+
+        @Override
+        public boolean isSigmoid() {
+            return false;
+        }
+
+        @Override
+        public boolean isConfigurable() {
+            return false;
         }
 
     };
@@ -1429,7 +1442,7 @@ class Row {
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.STRETCHES.toString();
+            return AssignmentFunctionName.STRETCHES.toString();
         }
     };
 
@@ -1452,7 +1465,7 @@ class Row {
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.INTERPOLATION.toString();
+            return AssignmentFunctionName.INTERPOLATION.toString();
         }
     };
 
@@ -1460,17 +1473,13 @@ class Row {
 
         @Override
         public void goToConfigure() {
-            try {
-                Messagebox.show(_("Sigmoid function is not configurable"),
-                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            throw new UnsupportedOperationException(
+                    "Sigmoid function is not configurable");
         }
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString();
+            return AssignmentFunctionName.SIGMOID.toString();
         }
 
         @Override
@@ -1481,7 +1490,7 @@ class Row {
         @Override
         public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
-            resourceAllocation.setAssignmentFunction(SigmoidFunction.create());
+            resourceAllocation.setAssignmentFunctionAndApplyIfNotFlat(SigmoidFunction.create());
             reloadEfforts();
         }
 
@@ -1491,10 +1500,21 @@ class Row {
             fireCellChanged();
         }
 
+        @Override
+        public boolean isSigmoid() {
+            return true;
+        }
+
+        @Override
+        public boolean isConfigurable() {
+            return false;
+        }
+
     };
 
     private IAssignmentFunctionConfiguration[] functions = {
             flat,
+            manualFunction,
             defaultStrechesFunction,
             strechesWithInterpolation,
             sigmoidFunction
@@ -1504,12 +1524,7 @@ class Row {
 
     private Button getAssignmentFunctionsConfigureButton(
             final Listbox assignmentFunctionsListbox) {
-        final Button button = new Button("", "/common/img/ico_editar1.png");
-        button.setHoverImage("/common/img/ico_editar.png");
-        button.setSclass("icono");
-        button.setTooltiptext(_("Configure"));
-        button.addEventListener(Events.ON_CLICK, new EventListener() {
-
+        Button button = Util.createEditButton(new EventListener() {
             @Override
             public void onEvent(Event event) {
                 IAssignmentFunctionConfiguration configuration = (IAssignmentFunctionConfiguration) assignmentFunctionsListbox
@@ -1517,7 +1532,23 @@ class Row {
                 configuration.goToConfigure();
             }
         });
+
+        IAssignmentFunctionConfiguration configuration = (IAssignmentFunctionConfiguration) assignmentFunctionsListbox
+                .getSelectedItem().getValue();
+        updateAssignmentFunctionsConfigureButton(button,
+                configuration.isConfigurable());
         return button;
+    }
+
+    private void updateAssignmentFunctionsConfigureButton(Button button,
+            boolean configurable) {
+        if (configurable) {
+            button.setTooltiptext(_("Configure"));
+            button.setDisabled(false);
+        } else {
+            button.setTooltiptext(_("Not configurable"));
+            button.setDisabled(true);
+        }
     }
 
     Component getNameLabel() {
@@ -1554,7 +1585,7 @@ class Row {
             List<? extends ResourceAllocation<?>> allocations) {
         AssignmentFunction function = getAssignmentFunction(allocations);
         return (function != null) ? function.getName()
-                : ASSIGNMENT_FUNCTION_NAME.FLAT.toString();
+                : AssignmentFunctionName.FLAT.toString();
     }
 
     private AssignmentFunction getAssignmentFunction(
@@ -1608,6 +1639,7 @@ class Row {
                         .getStartDate().toLocalDate());
                 LocalDate endDate = restriction.limitEndDate(item.getEndDate()
                         .toLocalDate());
+                changeAssignmentFunctionToManual();
                 getAllocation().withPreviousAssociatedResources()
                                    .onIntervalWithinTask(startDate, endDate)
                                    .allocate(value);
@@ -1616,6 +1648,15 @@ class Row {
                 reloadAllEffort();
             }
         });
+    }
+
+    private void changeAssignmentFunctionToManual() {
+        assignmentFunctionsCombo
+                .setSelectedFunction(AssignmentFunctionName.MANUAL.toString());
+        ResourceAllocation<?> allocation = getAllocation();
+        if (!(allocation.getAssignmentFunction() instanceof ManualFunction)) {
+            allocation.setAssignmentFunctionAndApplyIfNotFlat(ManualFunction.create());
+        }
     }
 
     private void reloadEffortOnInterval(Component component, DetailItem item) {

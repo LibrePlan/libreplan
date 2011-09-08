@@ -1,0 +1,163 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a new Material
+ * 2 - Create a Material without any category selected
+ * 3 - Create a material with empty description (it should be a failure)
+ * 4 - Edit a Material
+ * 5 - Assign a mterial in a project
+ *   5.1 - Create a project
+ *   5.2 - Assign the material
+ *   5.3 - Try to delete the assigned material
+ *   5.4 _ Delete the calendar
+ * 6 - Delete Material
+ *
+*/
+_include("../common_functions.sah");
+
+function materialCreate($name) {
+    materialForm($name);
+    materialSaveValidation();
+    _log("Create a material", "custom1");
+}
+
+function materialCreateWithoutCategory(){
+    _click(_link("Materials"));
+    _click(_cell("z-button-cm[3]"));
+    materialWithoutCategoryValidation();
+}
+
+function materialCreateEmpty(){
+    materialForm("");
+    materialEmptyFieldValidation();
+    _log("Do not allow create empty materials", "custom1");
+}
+
+function materialForm($description) {
+    _click(_link("Materials"));
+    _click(_span("z-dottree-ico z-dottree-firstspacer"));
+    _click(_cell("z-button-cm[3]"));
+    _setValue(_textbox("z-textbox[2]"), $description);
+    _click(_cell("Save"));
+}
+
+/* test to check a that naval plan give us a error */
+function materialNotValid($material){
+    _assertExists(_div("There exists other Materials with the same name."));
+    _assert(_isVisible(_div("There exists other Materials with the same name.")));
+}
+
+function materialEdit($oldDescription, $newDescription, $cell) {
+    var $nrows;
+    var $table;
+    var $label;
+    _click(_link("Materials"));
+    _set($label, _textbox(0, _near(_span("List of materials for all categories (select one to filter)"))).id);
+    _set($nrows, _parentTable(_textbox($label)).rows.length);
+    for (var $i=1; $i<$nrows; $i++){
+    if (_condition(_textbox(0, _in(_cell(_parentTable(_textbox($label)),$i,1))).value == $oldDescription)){
+        var $idTextbox;
+        _set($idTextbox, _textbox(0, _in(_cell(_parentTable(_textbox($label)), $i, 1))).id);
+        _setValue(_textbox($idTextbox), $newDescription);
+        break;
+    }
+    }
+    _click(_cell("Save"));
+    _log("Edit a material", "custom1");
+}
+
+function materialAssignToProject($material, $project){
+    commonCreateProject($project);
+    commonEditProject($project);
+    _click(_span("Materials"));
+    _click(_cell("Add materials"));
+    _click(_div($material));
+    _click(_cell("Assign materials"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+    materialTryDeleteMaterial();
+    commonDeleteProject($project);
+    _log("Assign a material into a project", "custom1");
+}
+
+function materialTryDeleteMaterial(){
+    _click(_link("Materials"));
+    _assertExists(_image("ico_borrar_out.png"));
+    _assert(_isVisible(_image("ico_borrar_out.png")));
+    _log("Do not allow delete an assigned material", "custom1");
+}
+
+function materialDelete($materialNewName, $numer){
+    var $nrows;
+    var $table;
+    var $label;
+    _click(_link("Materials"));
+    _set($label,_textbox(0, _near(_span("List of materials for all categories (select one to filter)"))).id);
+    _set($nrows,_parentTable(_textbox($label)).rows.length);
+    for (var $i=1; $i<$nrows; $i++){
+    if (_condition(_textbox(0, _in(_cell(_parentTable(_textbox($label)),$i,1))).value == $materialNewName)){
+        var $idTextbox;
+        _set($idTextbox, _textbox(0, _in(_cell(_parentTable(_textbox($label)),$i,1))).id);
+        _click(_image("ico_borrar1.png", _in(_cell(6, _near(_textbox($idTextbox))))));
+        break;
+    }
+    }
+    _click(_cell("Save"));
+    _log("Delete the material", "custom1");
+}
+
+/*
+ * Validations
+ */
+
+function materialSaveValidation(){
+    _assertExists(_span("Materials saved"));
+    _assert(_isVisible(_span("Materials saved")));
+}
+
+function materialEmptyFieldValidation(){
+    _assertExists(_div("cannot be null or empty"));
+    _assert(_isVisible(_div("cannot be null or empty")));
+}
+
+function materialWithoutCategoryValidation(){
+    _assertExists(_div("Cannot insert material in general view. Please, select a category"));
+    _assert(_isVisible(_div("Cannot insert material in general view. Please, select a category")));
+}
+
+/* test values */
+var $materialDescription = "new";
+var $materialDescription2 = "new2";
+var $materialNewName = "newest";
+var $projectName = "ProjectForMaterials";
+var $category = "NewCategory";
+/* test actions */
+commonLogin("admin", "admin");
+
+materialCreate($materialDescription);
+materialCreateEmpty();
+materialCreateWithoutCategory();
+materialEdit($materialDescription, $materialDescription2, 6);
+materialAssignToProject($materialDescription2, $projectName);
+materialDelete($materialDescription2, 6);
+/* commonDeleteValidation("Materials", $materialNewName); PENDING OF A BUG */
+
+commonLogout();

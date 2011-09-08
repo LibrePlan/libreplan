@@ -51,7 +51,8 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReportLine extends IntegrationEntity implements Comparable {
+public class WorkReportLine extends IntegrationEntity implements Comparable,
+        IWorkReportsElements {
 
     public static WorkReportLine create(WorkReport workReport) {
         return create(new WorkReportLine(workReport));
@@ -132,6 +133,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         updateEffort();
     }
 
+    @Override
     @NotNull(message = "date not specified")
     public Date getDate() {
         return date;
@@ -144,6 +146,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return LocalDate.fromDateFields(getDate());
     }
 
+    @Override
     public void setDate(Date date) {
         this.date = date;
         if ((workReport != null) && (workReport.getWorkReportType() != null)) {
@@ -153,11 +156,13 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         }
     }
 
+    @Override
     @NotNull(message = "resource not specified")
     public Resource getResource() {
         return resource;
     }
 
+    @Override
     public void setResource(Resource resource) {
         this.resource = resource;
         if ((workReport != null) && (workReport.getWorkReportType() != null)) {
@@ -167,11 +172,13 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         }
     }
 
+    @Override
     @NotNull(message = "order element not specified")
     public OrderElement getOrderElement() {
         return orderElement;
     }
 
+    @Override
     public void setOrderElement(OrderElement orderElement) {
         this.orderElement = orderElement;
         if ((workReport != null) && (workReport.getWorkReportType() != null)) {
@@ -181,10 +188,12 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         }
     }
 
+    @Override
     public Set<Label> getLabels() {
         return labels;
     }
 
+    @Override
     public void setLabels(Set<Label> labels) {
         this.labels = labels;
     }
@@ -207,11 +216,13 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         updateEffort();
     }
 
+    @Override
     @Valid
     public Set<DescriptionValue> getDescriptionValues() {
         return descriptionValues;
     }
 
+    @Override
     public void setDescriptionValues(Set<DescriptionValue> descriptionValues) {
         this.descriptionValues = descriptionValues;
     }

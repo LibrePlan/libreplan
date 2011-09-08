@@ -40,7 +40,8 @@ import org.navalplanner.ws.common.api.LabelReferenceDTO;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @XmlRootElement(name = "work-report")
-public class WorkReportDTO extends IntegrationEntityDTO {
+public class WorkReportDTO extends IntegrationEntityDTO implements
+        IWorkReportDTOsElements {
 
     public final static String ENTITY_TYPE = "work-report";
 
@@ -89,6 +90,56 @@ public class WorkReportDTO extends IntegrationEntityDTO {
     @Override
     public String getEntityType() {
         return ENTITY_TYPE;
+    }
+
+    @Override
+    public XMLGregorianCalendar getDate() {
+        return date;
+    }
+
+    @Override
+    public void setDate(XMLGregorianCalendar calendar) {
+        this.date = calendar;
+    }
+
+    @Override
+    public String getResource() {
+        return resource;
+    }
+
+    @Override
+    public void setResource(String resource) {
+        this.resource = resource;
+    }
+
+    @Override
+    public String getOrderElement() {
+        return orderElement;
+    }
+
+    @Override
+    public void setOrderElement(String orderElement) {
+        this.orderElement = orderElement;
+    }
+
+    @Override
+    public Set<LabelReferenceDTO> getLabels() {
+        return labels;
+    }
+
+    @Override
+    public void setLabels(Set<LabelReferenceDTO> labels) {
+        this.labels = labels;
+    }
+
+    @Override
+    public Set<DescriptionValueDTO> getDescriptionValues() {
+        return descriptionValues;
+    }
+
+    @Override
+    public void setDescriptionValues(Set<DescriptionValueDTO> descriptionValues) {
+        this.descriptionValues = descriptionValues;
     }
 
 }

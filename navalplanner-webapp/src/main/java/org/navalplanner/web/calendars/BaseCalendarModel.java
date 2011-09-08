@@ -122,7 +122,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
                 .getConfiguration().getGenerateCodeForBaseCalendars()
                 : false;
 
-        this.baseCalendar = BaseCalendar.createBasicCalendar();
+        this.baseCalendar = BaseCalendar.createBasicCalendar("");
 
         if (codeGenerated) {
             setDefaultCode();

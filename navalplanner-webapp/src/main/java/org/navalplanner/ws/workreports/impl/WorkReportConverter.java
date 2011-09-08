@@ -48,16 +48,23 @@ import org.navalplanner.ws.common.api.LabelReferenceDTO;
 import org.navalplanner.ws.common.impl.DateConverter;
 import org.navalplanner.ws.common.impl.LabelReferenceConverter;
 import org.navalplanner.ws.workreports.api.DescriptionValueDTO;
+import org.navalplanner.ws.workreports.api.IBindingOrderElementStrategy;
+import org.navalplanner.ws.workreports.api.OneOrderElementPerWorkReportLine;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
 import org.navalplanner.ws.workreports.api.WorkReportLineDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Converter from/to work report related entities to/from DTOs.
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  */
 public final class WorkReportConverter {
+
+    private static IBindingOrderElementStrategy bindingStrategy = OneOrderElementPerWorkReportLine
+            .getInstance();
 
     public static WorkReport toEntity(WorkReportDTO workReportDTO)
             throws InstanceNotFoundException {
@@ -86,17 +93,8 @@ public final class WorkReportConverter {
             workReport.setDate(DateConverter.toDate(workReportDTO.date));
         }
 
-        if (workReportDTO.orderElement != null) {
-            try {
-                OrderElement orderElement = Registry.getOrderElementDAO()
-                    .findUniqueByCode(workReportDTO.orderElement);
-                workReport.setOrderElement(orderElement);
-            } catch (InstanceNotFoundException e) {
-                workReport.setOrderElement(null);
-                throw new ValidationException(
-                        _("There is no task with this code"));
-            }
-        }
+        bindingStrategy.assignOrderElementsToWorkReportLine(workReport,
+                bindingStrategy.getOrderElementsBound(workReportDTO));
 
         if (workReportDTO.resource != null) {
             try {
@@ -158,17 +156,8 @@ public final class WorkReportConverter {
                     .setDate(DateConverter.toDate(workReportLineDTO.date));
         }
 
-        if (workReportLineDTO.orderElement != null) {
-            try {
-                OrderElement orderElement = Registry.getOrderElementDAO()
-                    .findUniqueByCode(workReportLineDTO.orderElement);
-                workReportLine.setOrderElement(orderElement);
-            } catch (InstanceNotFoundException e) {
-                workReportLine.setOrderElement(null);
-                throw new ValidationException(
-                        _("There is no task with this code"));
-            }
-        }
+        bindingStrategy.assignOrderElementsToWorkReportLine(workReportLine,
+                bindingStrategy.getOrderElementsBound(workReportLineDTO));
 
         if (workReportLineDTO.resource != null) {
             try {
@@ -240,10 +229,8 @@ public final class WorkReportConverter {
             date = DateConverter.toXMLGregorianCalendar(workReport.getDate());
         }
 
-        String orderElementCode = null;
-        if (workReport.getOrderElement() != null) {
-            orderElementCode = workReport.getOrderElement().getCode();
-        }
+        String orderElementCode = bindingStrategy
+                .getOrderElementCodesBound(workReport);
 
         String resourceNif = null;
         if ((workReport.getResource() != null)) {
@@ -294,10 +281,7 @@ public final class WorkReportConverter {
             resource = ((Worker)line.getResource()).getNif();
         }
 
-        String orderElement = null;
-        if(line.getOrderElement() != null){
-            orderElement = line.getOrderElement().getCode();
-        }
+        String orderElement = bindingStrategy.getOrderElementCodesBound(line);
 
         String typeOfWorkHours = null;
         if(line.getTypeOfWorkHours() != null){

@@ -552,6 +552,9 @@ div.z-grid {
     padding: 0;
 }
 
+.listdetails .z-tree-header {
+    position:relative;
+}
 
 .z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
 .z-listbox .z-longbox,.z-listbox .z-doublebox {
@@ -923,6 +926,9 @@ span.z-dottree-line {
     width: 84px;
     height: 84px;
     margin: 0 0 4px 4px;
+}
+
+.perspective tr td, .perspective-active  tr td {
     font-weight: normal;
     font-size: 10px;
 }
@@ -972,8 +978,17 @@ span.z-dottree-line {
     background-color: #E6F2F9;
 }
 
+span.perspective, span.perspective-active {
+    margin: 0 2px;
+}
+
 .perspectives-label {
     display: none;
+}
+
+.taskdetailsContainer {
+    border-left:0;
+    border-top:0;
 }
 
 .z-button.perspective .z-button-cm,
@@ -1395,6 +1410,12 @@ display:none;
     overflow: hidden;
 }
 
+.color-sample {
+    height: 10px;
+    width: 20px;
+    border: solid 1px black;
+}
+
 /* Expand vertical boxes for non-ffox browsers */
 .z-vbox {
     width:100%;
@@ -1489,6 +1510,11 @@ display:none;
     color: #555555;
 }
 
+.advanced-assignment-area > .z-center-body {
+    overflow: visible !important;
+    overflow: visible !important;
+}
+
 input.z-spinner-text-disd,
 input.z-datebox-text-disd {
     color: #000000 !important;
@@ -1496,6 +1522,14 @@ input.z-datebox-text-disd {
 .z-calendar .z-calendar-calmon td.z-calendar-seld,
 .z-calendar .z-calendar-calday td.z-calendar-seld {
     padding: 0;
+}
+
+.z-calendar .z-outside {
+    color: #CCC;
+}
+
+.z-calendar-calday td.z-calendar-seld {
+    font-weight: bold;
 }
 
 .add-resources-or-criteria span {
@@ -1734,4 +1768,16 @@ select {
     width: 0;
     border-right: 1px solid #9ECAD8;
     border-left: 1px solid #d9f3ff;
+}
+
+.logo-area img {
+    margin-right:10px;
+}
+
+.logo-area {
+    width: 1px;
+}
+
+.z-borderlayout {
+    background-color: transparent;
 }

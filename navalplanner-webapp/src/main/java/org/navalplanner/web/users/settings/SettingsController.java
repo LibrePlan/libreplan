@@ -21,15 +21,18 @@ package org.navalplanner.web.users.settings;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.settings.entities.Language;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Constraint;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 
@@ -66,8 +69,21 @@ public class SettingsController extends GenericForwardComposer {
         settingsModel.initEditLoggedUser();
     }
 
-    public Language[] getLanguages() {
-        return Language.values();
+    public List<Language> getLanguages() {
+        List<Language> languages = Arrays.asList(Language.values());
+        Collections.sort(languages, new Comparator<Language>() {
+            @Override
+            public int compare(Language o1, Language o2) {
+                if (o1.equals(Language.BROWSER_LANGUAGE)) {
+                    return -1;
+                }
+                if (o2.equals(Language.BROWSER_LANGUAGE)) {
+                    return 1;
+                }
+                return _(o1.getDisplayName()).compareTo(_(o2.getDisplayName()));
+            }
+        });
+        return languages;
     }
 
     public boolean save() {
@@ -142,10 +158,6 @@ public class SettingsController extends GenericForwardComposer {
 
     public String getLoginName() {
         return settingsModel.getLoginName();
-    }
-
-    public void setLoginName(String loginName) {
-        settingsModel.setLoginName(loginName);
     }
 
     public void setEmail(String email) {

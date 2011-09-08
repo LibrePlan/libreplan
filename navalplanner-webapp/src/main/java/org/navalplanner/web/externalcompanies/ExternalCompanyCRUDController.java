@@ -31,6 +31,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.web.common.BaseCRUDController;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Column;
@@ -180,4 +181,18 @@ public class ExternalCompanyCRUDController extends
     protected void delete(ExternalCompany company) {
         externalCompanyModel.deleteCompany(company);
     }
+
+    @Override
+    protected boolean beforeDeleting(ExternalCompany company) {
+        if (externalCompanyModel.isAlreadyInUse(company)) {
+            messagesForUser.showMessage(
+                    Level.WARNING,
+                            _("{0} \"{1}\" can not be deleted because of it is being used",
+                                    getEntityType(),
+                            company.getHumanId()));
+            return false;
+        }
+        return true;
+    }
+
 }

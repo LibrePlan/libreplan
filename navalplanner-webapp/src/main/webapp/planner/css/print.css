@@ -22,6 +22,10 @@ body .footer {
     display: none !important;
 }
 
+body .footer-print {
+    display: inline !important;
+}
+
 /* ------ Remove scrolls  ------ */
 .leftpanelcontainer {
     overflow: hidden !important;
@@ -43,7 +47,7 @@ body .footer {
 /* ------ Reposition main-area  ------ */
 body .main-area {
     margin-left: 0;
-    margin-top: -32px;
+    margin-top: -31px;
 }
 
 /* ------ Hide possible Javascript execution exceptions  ------ */
@@ -51,19 +55,9 @@ body .main-area {
     display: none;
 }
 
-/* Hack for hiding breadcrumbs part in printed diagrams */
-a.ruta,
-.ruta tr td,
-.ruta tr td+td,
-.ruta tr td+td+td {
-    display:none;
+td.migas_linea {
+    padding-top:25px;
 }
-
-.ruta tr td+td+td+td+td+td {
-    font-size: 20px;
-    display: inline !important;
-}
-
 
 .border-container .taskgroup_start,
 .border-container .taskgroup_end {
@@ -80,6 +74,18 @@ a.ruta,
 
 .z-south-colpsd {
     display:none;
+}
+
+.z-center div, .taskpanel div {
+ overflow: hidden !important;
+}
+
+.logo-area {
+    height: 70px;
+}
+
+.listdetails input.task_title {
+    width: 100% !important;
 }
 
 /* ------ Calculated body width and height added via CutyPrint CSS generator ------ */

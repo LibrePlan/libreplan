@@ -52,7 +52,7 @@ public class SigmoidFunction extends AssignmentFunction {
 
     @Override
     public String getName() {
-        return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString();
+        return AssignmentFunctionName.SIGMOID.toString();
     }
 
     @Override
@@ -264,6 +264,11 @@ public class SigmoidFunction extends AssignmentFunction {
     private BigDecimal getDayIntervalConstant(int days) {
         return BigDecimal.valueOf(12).divide(BigDecimal.valueOf(days),
                 PRECISSION, ROUND_MODE);
+    }
+
+    @Override
+    public boolean isManual() {
+        return false;
     }
 
 }

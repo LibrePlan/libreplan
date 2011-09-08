@@ -267,7 +267,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                         globalView.goToCompanyScheduling();
                     }
                 }, "01-introducion.html"),
-                subItem(_("Projects"), new ICapture() {
+                subItem(_("Projects List"), new ICapture() {
                     @Override
                     public void capture() {
                         globalView.goToOrdersList();

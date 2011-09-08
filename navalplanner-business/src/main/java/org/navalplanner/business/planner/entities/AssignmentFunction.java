@@ -32,15 +32,15 @@ import org.navalplanner.business.common.BaseEntity;
  * @author Diego Pino García <dpino@igalia.com>
  *
  */
-public class AssignmentFunction extends BaseEntity {
-
-    public static AssignmentFunction create() {
-        return create(new AssignmentFunction());
-    }
+public abstract class AssignmentFunction extends BaseEntity {
 
     /**
      * This method goes over the {@link ResourceAllocation} list and apply the
      * assignment function if it is defined.
+     *
+     * As this is called at the end of {@link Task#doAllocation} and a flat
+     * allocation was already applied before. If assignment function was set to
+     * manual it is reseted to flat again.
      *
      * @param resourceAllocations
      *            List of {@link ResourceAllocation}
@@ -51,13 +51,14 @@ public class AssignmentFunction extends BaseEntity {
             AssignmentFunction assignmentFunction = resourceAllocation
                     .getAssignmentFunction();
             if (assignmentFunction != null) {
-                assignmentFunction.applyTo(resourceAllocation);
+                if (assignmentFunction.isManual()) {
+                    // reset to flat
+                    resourceAllocation.setAssignmentFunctionWithoutApply(null);
+                } else {
+                    assignmentFunction.applyTo(resourceAllocation);
+                }
             }
         }
-    }
-
-    public AssignmentFunction() {
-
     }
 
     /**
@@ -65,24 +66,22 @@ public class AssignmentFunction extends BaseEntity {
      * <i>This method is intended to be overridden by subclasses</i>
      * @param resourceAllocation
      */
-    public void applyTo(ResourceAllocation<?> resourceAllocation) {
-        // override at subclasses
-    }
+    public abstract void applyTo(ResourceAllocation<?> resourceAllocation);
 
-    public String getName() {
-        // override at subclasses
-        return null;
-    }
+    public abstract String getName();
 
-    public enum ASSIGNMENT_FUNCTION_NAME {
+    public abstract boolean isManual();
+
+    public enum AssignmentFunctionName {
         FLAT(_("Flat")),
+        MANUAL(_("Manual")),
         STRETCHES(_("Stretches")),
         INTERPOLATION(_("Interporlation")),
         SIGMOID(_("Sigmoid"));
 
         private String name;
 
-        private ASSIGNMENT_FUNCTION_NAME(String name) {
+        private AssignmentFunctionName(String name) {
             this.name = name;
         }
 

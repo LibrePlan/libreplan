@@ -153,7 +153,7 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     private DirectAdvanceAssignment createValidAdvanceAssignment(
             boolean reportGlobalAdvance) {
     DirectAdvanceAssignment advanceAssignment = DirectAdvanceAssignment
-                .create(reportGlobalAdvance, new BigDecimal(0));
+                .create(reportGlobalAdvance, BigDecimal.TEN);
         return advanceAssignment;
     }
 

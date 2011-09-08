@@ -34,7 +34,8 @@ public enum Language {
     BROWSER_LANGUAGE(_("Use browser language configuration"), null),
     GALICIAN_LANGUAGE(_("Galician"), new Locale("gl")),
     SPANISH_LANGUAGE(_("Spanish"), new Locale("es")),
-    ENGLISH_LANGUAGE(_("English"), Locale.ENGLISH);
+    ENGLISH_LANGUAGE(_("English"), Locale.ENGLISH),
+    RUSSIAN_LANGUAGE(_("Russian"), new Locale("ru"));
 
     private final String displayName;
 

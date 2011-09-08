@@ -42,6 +42,8 @@ import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalc
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ResourcesPerDayIsZero;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ThereAreNoValidPeriods;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ValidPeriodsDontHaveCapacity;
+import org.navalplanner.business.planner.entities.AssignmentFunction;
+import org.navalplanner.business.planner.entities.AssignmentFunction.AssignmentFunctionName;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -287,6 +289,8 @@ public abstract class AllocationRow {
 
     private Grid derivedAllocationsGrid;
 
+    private Label assignmentFunctionLabel = new Label();
+
     public AllocationRow(CalculatedValue calculatedValue) {
         this.currentCalculatedValue = calculatedValue;
         this.origin = null;
@@ -342,6 +346,17 @@ public abstract class AllocationRow {
         effortInput.setSclass("assigned-hours-input");
         effortInput.setConstraint(constraintForHoursInput());
         loadEffort();
+        updateAssignmentFunctionLabel();
+    }
+
+    private void updateAssignmentFunctionLabel() {
+        AssignmentFunction function = getAssignmentFunction();
+        if (function == null) {
+            assignmentFunctionLabel.setValue(_(AssignmentFunctionName.FLAT
+                    .toString()));
+        } else {
+            assignmentFunctionLabel.setValue(_(function.getName()));
+        }
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
@@ -464,6 +479,10 @@ public abstract class AllocationRow {
         effortInput.setValue(getEffort());
     }
 
+    public void loadAssignmentFunctionName() {
+        updateAssignmentFunctionLabel();
+    }
+
     protected EffortDuration getEffortFromInput() {
         return effortInput.getValue() != null ? effortInput
                 .getEffortDurationValue()
@@ -495,6 +514,20 @@ public abstract class AllocationRow {
         }
         intendedResourcesPerDayInput
                 .setConstraint(constraintForResourcesPerDayInput());
+    }
+
+    private AssignmentFunction getAssignmentFunction() {
+        if (temporal != null) {
+            return temporal.getAssignmentFunction();
+        }
+        if (origin != null) {
+            return origin.getAssignmentFunction();
+        }
+        return null;
+    }
+
+    public boolean isAssignmentFunctionNotFlat() {
+        return getAssignmentFunction() != null;
     }
 
     private Constraint constraintForHoursInput() {
@@ -744,6 +777,10 @@ public abstract class AllocationRow {
                         _("Resources per day are zero"));
             }
         });
+    }
+
+    public Label getAssignmentFunctionLabel() {
+        return assignmentFunctionLabel;
     }
 
 }

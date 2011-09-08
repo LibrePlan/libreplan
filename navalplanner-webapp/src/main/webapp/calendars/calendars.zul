@@ -20,7 +20,6 @@
 -->
 
 <?page title="${i18n:_('NavalPlan: Calendars')}"?>
-
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 

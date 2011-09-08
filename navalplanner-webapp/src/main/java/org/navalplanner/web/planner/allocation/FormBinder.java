@@ -540,6 +540,7 @@ public class FormBinder {
         loadValueForEffortInput();
         loadDerivedAllocations();
         loadSclassRowSatisfied();
+        loadAssignmentFunctionNames();
         workableDaysAndDatesBinder.afterApplicationReloadValues();
         Util.reloadBindings(allocationsGrid);
     }
@@ -560,6 +561,12 @@ public class FormBinder {
             }
         } catch (ClassCastException e) {
             throw new RuntimeException();
+        }
+    }
+
+    private void loadAssignmentFunctionNames() {
+        for (AllocationRow each : rows) {
+            each.loadAssignmentFunctionName();
         }
     }
 
@@ -904,6 +911,16 @@ public class FormBinder {
 
     public void setBehaviour(ResourceAllocationBehaviour behaviour) {
         this.behaviour = behaviour;
+    }
+
+    public boolean isAnyNotFlat() {
+        for (AllocationRow allocationRow : allocationRowsHandler
+                .getCurrentRows()) {
+            if (allocationRow.isAssignmentFunctionNotFlat()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

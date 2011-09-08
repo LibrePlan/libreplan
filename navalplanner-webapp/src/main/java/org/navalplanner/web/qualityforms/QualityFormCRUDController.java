@@ -27,15 +27,18 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormItem;
 import org.navalplanner.business.qualityforms.entities.QualityFormType;
+import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.users.ProfileCRUDController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -57,6 +60,8 @@ import org.zkoss.zul.impl.InputElement;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(QualityFormCRUDController.class);
 
     @Autowired
     private IQualityFormModel qualityFormModel;
@@ -463,6 +468,33 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                 .getFellowIfAny("qualityFormsList");
         if (qualityForms != null) {
             Util.reloadBindings(qualityForms);
+        }
+    }
+
+    @Override
+    protected boolean beforeDeleting(QualityForm qualityForm){
+        return !isReferencedByOtherEntities(qualityForm);
+    }
+
+    private boolean isReferencedByOtherEntities(QualityForm qualityForm) {
+        try {
+            qualityFormModel.checkHasTasks(qualityForm);
+            return false;
+        } catch (ValidationException e) {
+            showCannotDeleteQualityFormDialog(e.getInvalidValue().getMessage(),
+                    qualityForm);
+        }
+        return true;
+    }
+
+    private void showCannotDeleteQualityFormDialog(String message, QualityForm qualityForm) {
+        try {
+            Messagebox.show(_(message), _("Warning"), Messagebox.OK,
+                    Messagebox.EXCLAMATION);
+        } catch (InterruptedException e) {
+            LOG.error(
+                    _("Error on showing warning message removing qualityForm: ",
+                            qualityForm.getId()), e);
         }
     }
 }

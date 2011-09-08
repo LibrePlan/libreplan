@@ -21,7 +21,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Projects list')}">
     <grid id="listing" model="@{controller.orders}" mold="paging"
-        pageSize="10" fixedLayout="true"
+        pageSize="15" fixedLayout="true"
         rowRenderer= "@{controller.ordersRowRender}"
         onInitRender ="controller.sortOrders();" sclass="clickable-rows projects-list">
         <columns sizable="true">

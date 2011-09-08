@@ -183,13 +183,6 @@ public class SettingsModel implements ISettingsModel {
     }
 
     @Override
-	public void setLoginName(String loginName) {
-        if (user != null) {
-            user.setLoginName(loginName);
-        }
-    }
-
-    @Override
 	public void setEmail(String email) {
         if (user != null) {
             user.setEmail(email);

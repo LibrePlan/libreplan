@@ -1,0 +1,165 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a new Virtual Worker
+ * 2 - Create a Virtual Worker with duplicate type (it should be a failure)
+ * 3 - Create a Virtual Worker with empty type (it should be a failure)
+ * 4 - Create a Virtual Worker with duplicate name (it should be a failure)
+ * 5 - Edit a Virtual Worker
+ * 6 - Check other tabs
+ *   6.1 - Check assigned criteria tab
+ *     6.1.1 - Create a criterion
+ *     6.1.2 - Assign this criterion to the Virtual worker
+ *     6.1.3 - Try to delete the criterion
+ *   6.2 - Check assigned calendar tab
+ *     6.2.1 - Create a calendar
+ *     6.2.2 - Assign this calendar to the Virtual worker
+ *     6.2.3 - Try to delete the calendar
+ *   6.3 - Check assigned cost category tab
+ *     6.3.1 - Create a work hour
+ *     6.3.2 - Create a cost category
+ *     6.3.3 - Assign this cost category to the Virtual worker
+ *     6.3.4 - Try to delete the cost category
+ * 7 - Delete Virtual Worker
+ * 8 - Delete all required elements
+ *
+*/
+_include("../common_functions.sah");
+
+function virtualWorkerCreate($name) {
+    virtualWorkerGoToCreate();
+    virtualWorkerForm($name);
+    virtualWorkerAcctionValidation("saved");
+    _log("Create a new virtual worker", "custom1");
+}
+
+function virtualWorkerCreateDuplicateType($name) {
+    virtualWorkerGoToCreate();
+    virtualWorkerForm($name);
+    virtualWorkerNotValid($name);
+    _log("Create a duplicate virtual worker", "custom1");
+}
+
+function virtualWorkerCreateEmpty($name) {
+    virtualWorkerGoToCreate();
+    virtualWorkerForm("");
+    _log("Create a empty virtual worker", "custom1");
+}
+
+function virtualWorkerGoToCreate (){
+    _click(_link("Virtual Workers Groups"));
+    _click(_cell("Create Virtual Worker"));
+}
+
+function virtualWorkerForm($name) {
+    _setValue(_textbox(0, _near(_span("Group name"))), $name);
+    _click(_cell("Save"));
+}
+
+function virtualWorkerEdit($oldName, $newName, $cell) {
+    commonEdit($oldName, $cell);
+    virtualWorkerForm($newName);
+    virtualWorkerAcctionValidation("saved");
+    _log("Edit a virtual worker", "custom1");
+}
+
+function virtualWorkerCheckCode($name){
+    commonConfigurationChangeCheckboxMainPreferences("Resources");
+    virtualWorkerCreateWithoutCode($name);
+    commonConfigurationChangeCheckboxMainPreferences("Resources");
+    _log("Check code label", "custom1");
+}
+
+function virtualWorkerCreateWithoutCode($name){
+    virtualWorkerGoToCreate();
+    virtualWorkerForm($name);
+    commonEmptyCodeValidation();
+}
+
+function virtualWorkerCheckTabs(){
+    virtualWorkerCheckAssignedCriteria($workerNewName, 3, $criteriaName);
+    virtualWorkerCheckAssignedCalendar($workerNewName, 3, $calendarName);
+    virtualWorkerCheckAssignedCostCategory($workerNewName, 3, $costCategoryName);
+}
+
+function virtualWorkerCheckAssignedCriteria($workerName, $cell, $criterion){
+    commonCriteriaCreate($criteriaName);
+    commonResourceEditAssignedCriteriaForm("Virtual Workers Groups", $workerName, $cell, $criterion);
+    commonCriteriaTryDeleteAssigned($criteriaName);
+}
+
+function virtualWorkerCheckAssignedCalendar($workerName, $cell, $calendar){
+    commonCalendarCreate($calendar);
+    commonResourceEditAssignedCalendarForm("Virtual Workers Groups", $workerName, $cell, $calendar);
+    commonCalendarTryDeleteAssignedCalendar($calendar, 3);
+}
+
+function virtualWorkerCheckAssignedCostCategory($workerName, $cell, $cCategory){
+    commonWorkHourCreate("HourForWorker", "12");
+    commonCostCategoryCreate($cCategory, "HourForWorker");
+    commonResourceEditAssignedCostCategoryForm("Virtual Workers Groups", $workerName, $cell, $cCategory);
+    virtualWorkerAcctionValidation("saved");
+    _log("Assign the created cost category", "custom1");
+    commonCostCategoryTryDeleteAssignedCostCategory($cCategory, 3);
+}
+
+function virtualWorkerDeleteRequiredElements(){
+    commonCriteriaDelete($criteriaName);
+    commonCalendarDelete($calendarName);
+    commonCostCategoryDelete($costCategoryName);
+    commonWorkHourDelete("HourForWorker");
+    _log("All required elements deleted", "custom1");
+}
+
+/* Validations */
+function virtualWorkerNotValid($worker){
+    _assertExists(_span("checkConstraintUniqueVirtualGroupName: Virtual worker group name must be unique"));
+    _assert(_isVisible(_span("checkConstraintUniqueVirtualGroupName: Virtual worker group name must be unique")));
+}
+
+function virtualWorkerAcctionValidation($action){
+    _assertExists(_span("Worker "+$action));
+    _assert(_isVisible(_span("Worker "+$action)));
+}
+
+/* test values */
+var $workerName = "new";
+var $workerSurName = "newSon";
+var $workerID = "12345678";
+var $workerName2 = "new2";
+var $workerNewName = "newest";
+var $criteriaName = "CriteriaForWorkers";
+var $costCategoryName ="costCategoryForWorker"
+var $calendarName = "calendarForWorker"
+/* test actions */
+commonLogin("admin", "admin");
+
+virtualWorkerCreate($workerName, $workerSurName, $workerID);
+virtualWorkerCreateDuplicateType($workerName, $workerSurName, $workerID);
+virtualWorkerCreateEmpty($workerName, $workerSurName, $workerID);
+virtualWorkerEdit($workerName, $workerNewName, 3);
+virtualWorkerCheckTabs();
+virtualWorkerCheckCode($workerName, $workerSurName, $workerID)
+commonDelete("Virtual Workers Groups", $workerNewName, 3);
+virtualWorkerAcctionValidation("deleted");
+_log("Delete the virtual worker", "custom1");
+virtualWorkerDeleteRequiredElements();
+commonLogout();

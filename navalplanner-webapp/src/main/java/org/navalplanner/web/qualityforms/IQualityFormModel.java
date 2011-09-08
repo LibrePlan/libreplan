@@ -132,4 +132,6 @@ public interface IQualityFormModel {
      * @param qualityFormItem
      */
     Boolean isTotalPercentage(QualityFormItem item);
+
+    void checkHasTasks(QualityForm qualityForm) throws ValidationException;
 }

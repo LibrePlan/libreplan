@@ -110,7 +110,7 @@ public class OrdersTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Projects")));
+                breadcrumbs.appendChild(new Label(_("Projects List")));
             }
         };
     }

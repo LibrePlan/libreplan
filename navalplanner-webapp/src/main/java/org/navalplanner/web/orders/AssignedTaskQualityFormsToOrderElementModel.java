@@ -159,9 +159,14 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
             TaskQualityForm taskQualityForm) {
         AdvanceType advanceType = taskQualityForm.getQualityForm()
                 .getAdvanceType();
-        advanceTypeDAO.reattach(advanceType);
-        return taskQualityForm.getOrderElement()
-                .getDirectAdvanceAssignmentByType(advanceType);
+        if (advanceType == null) {
+            return null;
+        }
+        else {
+            advanceTypeDAO.reattach(advanceType);
+            return taskQualityForm.getOrderElement()
+                    .getDirectAdvanceAssignmentByType(advanceType);
+        }
     }
 
     @Override

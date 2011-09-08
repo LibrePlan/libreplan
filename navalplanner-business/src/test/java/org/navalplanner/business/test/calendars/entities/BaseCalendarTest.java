@@ -32,6 +32,7 @@ import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.business.workingday.IntraDayDate.PartialDay.wholeDay;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
@@ -82,7 +83,7 @@ public class BaseCalendarTest {
     public static BaseCalendar createBasicCalendar() {
         BaseCalendar calendar = BaseCalendar.create();
 
-        calendar.setName("Test");
+        calendar.setName("test-" + UUID.randomUUID());
 
         Capacity eightHours = withNormalDuration(hours(8));
         calendar.setCapacityAt(Days.MONDAY, eightHours);

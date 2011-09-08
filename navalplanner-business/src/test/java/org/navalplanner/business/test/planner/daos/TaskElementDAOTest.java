@@ -172,7 +172,7 @@ public class TaskElementDAOTest {
         Order order = Order.create();
         OrderVersion orderVersion = ResourceAllocationDAOTest
                 .setupVersionUsing(scenarioManager, order);
-        order.setName("bla");
+        order.setName("bla-" + UUID.randomUUID());
         order.setInitDate(new Date());
         order.setCode("code-" + UUID.randomUUID());
         order.useSchedulingDataFor(orderVersion);

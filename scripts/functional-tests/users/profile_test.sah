@@ -1,0 +1,113 @@
+/* Included tests
+ *
+ * 1 - Create a new Profile
+ * 2 - Create a Profile with duplicate type (It should be a failure)
+ * 3 - Create a Profile with empty type (It should be a failure)
+ * 4 - Create a Profile with duplicate name (It should be a failure)
+ * 5 - Edit a Profile
+ * 6 - Assign this profile
+ *   6.1 - Create bew Account with this profile
+ *   6.2 - Try to delete the profile
+ *   6.3 - Delete the Account
+ * 6 - Delete Profile
+ *
+*/
+
+_include("../common_functions.sah");
+
+function profileCreate($name) {
+    commonCreate("Profiles");
+    profileForm($name);
+    commonSaveValidation("Profile", $name);
+    _log("Create a new Profile", "custom1");
+}
+
+function profileCreateDuplicateType($name) {
+    commonCreate("Profiles");
+    profileForm($name);
+    profileNotValid($name);
+    _log("Do not allow create a Profile with duplicate Name", "custom1");
+}
+
+function profileCreateEmpty() {
+    commonCreate("Profiles");
+    profileForm("");
+    _assertExists(_div("cannot be null or empty"));
+    _assert(_isVisible(_div("cannot be null or empty")));
+    _log("Do not allow create a Profile with empty Name", "custom1");
+}
+
+function profileForm($name) {
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _click(_italic(0, _near(_div("Association with roles"))));
+    _click(_cell("Administration"));
+    _click(_cell("Save"));
+}
+
+/* test to check a that naval plan give us a error */
+function profileNotValid($profile){
+    _assertExists(_span("checkConstraintUniqueLoginName: profile name is already being used by another profile"));
+    _assert(_isVisible(_span("checkConstraintUniqueLoginName: profile name is already being used by another profile")));
+}
+
+function profileEdit($oldName, $newName, $cell) {
+    commonEdit($oldName, $cell);
+    profileEditForm($newName);
+    commonSaveValidation("Profile", $newName);
+    _log("Edit the profile changing the name", "custom1");
+}
+
+function profileEditForm($name) {
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _click(_cell("Save & Continue"));
+}
+
+function profileAssign($account, $password, $profile){
+    commonCreate("Accounts");
+    accountsForm($account, $password, $profile);
+    profileTryDelete($profile);
+    commonDelete("Accounts", $account, 4);
+    _log("Assign the profile to a account", "custom1");
+}
+
+function accountsForm($name, $password, $profile) {
+    _setValue(_textbox(0, _near(_span("Login name:"))), $name);
+    _setValue(_password(0, _near(_span("Password:"))), $password);
+    _setValue(_password(0, _near(_span("Password confirmation:"))), $password);
+    _click(_textbox(0, _near(_cell("Add role"))));
+    _click(_cell("Administration"));
+    _click(_cell("Add role"));
+    _click(_textbox(0, _near(_cell("Add profile"))));
+    _click(_cell($profile));
+    _click(_cell("Add profile"));
+    _click(_cell("Save"));
+}
+
+function profileTryDelete($name){
+    _click(_link("Profiles"));
+    _click(_image("ico_borrar1.png", _in(_cell(1, _near(_cell($name))))));
+    _assertExists(_span("Cannot delete profile. It is being used at this moment by some users."));
+    _assert(_isVisible(_span("Cannot delete profile. It is being used at this moment by some users.")));
+}
+
+/* test values */
+var $profileName = "new";
+var $profileName2 = "new2";
+var $profileNewName = "newest";
+var $accountName = "new";
+var $accountPassword = "1234";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+profileCreate($profileName);
+profileCreateDuplicateType($profileName);
+profileCreateEmpty();
+
+profileEdit($profileName, $profileNewName, 1);
+profileAssign($accountName, $accountPassword, $profileNewName);
+
+commonDelete("Profiles", $profileNewName, 1);
+commonDeleteValidation("Profile", $profileNewName);
+_log("Delete the profile", "custom1");
+commonLogout();

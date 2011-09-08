@@ -1,0 +1,98 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a new Cost Category
+ *   1.1 - Create a work hour data type
+ * 2 - Create a Cost Category with duplicate type (it should be a failure)
+ * 3 - Create a Cost Category with empty type (it should be a failure)
+ * 4 - Edit a Cost Category
+ * 5 - Delete Cost Category
+ *   5.1 - Delete the work hour data type
+ *
+*/
+_include("../common_functions.sah");
+
+function costCategoryAndWorkHourCreate($name, $hWorkType, $price) {
+    commonWorkHourCreate($hWorkType, $price);
+    commonCreate("Cost Categories");
+    commonCostCategoryForm($name, $hWorkType);
+    commonSaveValidation("Cost Category", $name);
+    _log("Create a new Cost Category", "custom1");
+}
+
+function costCategoryCreateDuplicateType($name, $hworkName) {
+    commonCreate("Cost Categories");
+    commonCostCategoryForm($name, $hworkName);
+    costCategoryNotValid();
+    _log("Do not allow create a cost category Duplicate", "custom1");
+}
+
+function costCategoryCreateEmpty($hworkName) {
+    commonCreate("Cost Categories");
+    commonCostCategoryForm("", $hworkName);
+    _assertExists(_div("name: name not specified"));
+    _assert(_isVisible(_div("name: name not specified")));
+    _log("Do not allow create an cost category without name", "custom1");
+}
+/*
+function costCategoryForm($name, $hworkName) {
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _click(_cell("Add new row"));
+    _setSelected(_select(0), $hworkName);
+    _click(_cell("Save"));
+}
+*/
+/* test to check a that naval plan give us a error */
+function costCategoryNotValid(){
+    _assertExists(_div("checkConstraintUniqueName: the cost category name has to be unique. It is already used"));
+    _assert(_isVisible(_div("checkConstraintUniqueName: the cost category name has to be unique. It is already used")));
+}
+
+function costCategoryEdit($oldName, $newName, $cell) {
+    commonEdit($oldName, $cell);
+    _setValue(_textbox(0, _near(_span("Name:"))), $newName);
+    _click(_cell("Save & Continue"));
+    commonSaveValidation("Cost Category", $newName);
+    _log("Edit a cost category", "custom1");
+}
+
+/* test values */
+var $costCategoryName = "new";
+var $costCategoryName2 = "new2";
+var $costCategoryNewName = "newest";
+var $hWorkName = "hours";
+var $hWorkPrice = "12";
+
+
+/* test actions */
+commonLogin("admin", "admin");
+
+costCategoryAndWorkHourCreate($costCategoryName, $hWorkName, $hWorkPrice);
+costCategoryCreateDuplicateType($costCategoryName);
+costCategoryCreateEmpty();
+
+costCategoryEdit($costCategoryName, $costCategoryNewName, 2);
+
+commonDelete("Cost Categories", $costCategoryNewName, 2);
+commonDeleteValidation("Cost Category", $costCategoryNewName);
+_log("Delete de cost category", "custom1");
+commonWorkHourDelete($hWorkName);
+commonLogout();

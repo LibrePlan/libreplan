@@ -97,4 +97,6 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
 
     public List<Order> loadOrdersAvoidingProxyFor(
             List<OrderElement> orderElement);
+
+    boolean existsByNameAnotherTransaction(String name);
 }

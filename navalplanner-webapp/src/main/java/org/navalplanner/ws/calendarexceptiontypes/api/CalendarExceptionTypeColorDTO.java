@@ -30,5 +30,5 @@ import org.navalplanner.business.calendars.entities.CalendarExceptionTypeColor;
  */
 @XmlEnum
 public enum CalendarExceptionTypeColorDTO {
-    DEFAULT, RED, GREEN, BLUE;
+    DEFAULT, RED, GREEN, BLUE, CYAN, MAGENTA, YELLOW, BLACK, ORANGE, PURPLE;
 }

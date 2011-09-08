@@ -83,7 +83,7 @@
                 </attribute>
             </calendar>
 
-            <grid width="160px" sclass="day-details">
+            <grid width="180px" sclass="day-details">
               <auxhead>
                 <auxheader colspan="2" label="${i18n:_('Day properties')}" />
               </auxhead>
@@ -94,7 +94,7 @@
               <rows>
                 <row>
                   <label value="${i18n:_('Day')}" />
-                  <datebox disabled="true"
+                  <datebox disabled="true" buttonVisible="false"
                     value="@{calendarController.editionController.selectedDay}" />
                 </row>
                 <row>

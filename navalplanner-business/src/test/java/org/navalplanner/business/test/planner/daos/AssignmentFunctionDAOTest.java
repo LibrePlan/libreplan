@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.planner.daos.IAssignmentFunctionDAO;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
+import org.navalplanner.business.planner.entities.ManualFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -57,7 +58,7 @@ public class AssignmentFunctionDAOTest {
     }
 
     private AssignmentFunction createValidAssignmentFunction() {
-        return AssignmentFunction.create();
+        return ManualFunction.create();
     }
 
     @Test

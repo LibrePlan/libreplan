@@ -497,6 +497,8 @@ public final class OrderElementConverter {
                             materialAssignmentDTO.materialCode);
         } catch (InstanceNotFoundException e) {
             material = Material.create(materialAssignmentDTO.materialCode);
+            material.setDescription("material-"
+                    + materialAssignmentDTO.materialCode);
 
             MaterialCategory defaultMaterialCategory = PredefinedMaterialCategories.IMPORTED_MATERIALS_WITHOUT_CATEGORY
                     .getMaterialCategory();

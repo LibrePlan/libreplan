@@ -159,17 +159,34 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public SchedulingState getSchedulingState() {
         if (schedulingState == null) {
-            schedulingState = SchedulingState.createSchedulingState(
-                    getSchedulingStateType(), getChildrenStates(),
-                    getCurrentSchedulingData().onTypeChangeListener());
+            ensureSchedulingStateInitializedFromTop();
+            initializeSchedulingState(); // maybe this order element was added
+                                         // later
         }
         return schedulingState;
+    }
+
+    private void ensureSchedulingStateInitializedFromTop() {
+        OrderElement current = this;
+        while (current.getParent() != null) {
+            current = current.getParent();
+        }
+        current.initializeSchedulingState();
+    }
+
+    private SchedulingState initializeSchedulingState() {
+        if (schedulingState != null) {
+            return schedulingState;
+        }
+        return schedulingState = SchedulingState.createSchedulingState(
+                getSchedulingStateType(), getChildrenStates(),
+                getCurrentSchedulingData().onTypeChangeListener());
     }
 
     private List<SchedulingState> getChildrenStates() {
         List<SchedulingState> result = new ArrayList<SchedulingState>();
         for (OrderElement each : getChildren()) {
-            result.add(each.getSchedulingState());
+            result.add(each.initializeSchedulingState());
         }
         return result;
     }

@@ -696,7 +696,7 @@ public class ManageOrderElementAdvancesModel implements
                 if (listAdvanceMeasurements.size() > 1) {
                     for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
                         BigDecimal value = advanceMeasurement.getValue();
-                        if ((selectedAdvances.size() > 1) && (value != null)) {
+                        if ((selectedAdvances.size() > 1) && (value != null) && (value.compareTo(BigDecimal.ZERO) > 0)) {
                             BigDecimal maxValue = directAdvanceAssignment
                                     .getMaxValue();
                             value = value.setScale(2).divide(maxValue,

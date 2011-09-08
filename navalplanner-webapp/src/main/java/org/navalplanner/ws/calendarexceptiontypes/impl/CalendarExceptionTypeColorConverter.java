@@ -44,24 +44,36 @@ public class CalendarExceptionTypeColorConverter {
                 CalendarExceptionTypeColorDTO.RED,
                 CalendarExceptionTypeColor.DEFAULT);
 
-        calendarExceptionTypeColorToDTO.put(CalendarExceptionTypeColor.DEFAULT,
+        addEquivalence(CalendarExceptionTypeColor.DEFAULT,
                 CalendarExceptionTypeColorDTO.DEFAULT);
-        calendarExceptionTypeColorFromDTO.put(
-                CalendarExceptionTypeColorDTO.DEFAULT,
-                CalendarExceptionTypeColor.DEFAULT);
 
-        calendarExceptionTypeColorToDTO.put(CalendarExceptionTypeColor.GREEN,
+        addEquivalence(CalendarExceptionTypeColor.GREEN,
                 CalendarExceptionTypeColorDTO.GREEN);
-        calendarExceptionTypeColorFromDTO.put(
-                CalendarExceptionTypeColorDTO.GREEN,
-                CalendarExceptionTypeColor.GREEN);
 
-        calendarExceptionTypeColorToDTO.put(CalendarExceptionTypeColor.BLUE,
+        addEquivalence(CalendarExceptionTypeColor.BLUE,
                 CalendarExceptionTypeColorDTO.BLUE);
-        calendarExceptionTypeColorFromDTO.put(
-                CalendarExceptionTypeColorDTO.BLUE,
-                CalendarExceptionTypeColor.BLUE);
 
+        addEquivalence(CalendarExceptionTypeColor.MAGENTA,
+                CalendarExceptionTypeColorDTO.MAGENTA);
+
+        addEquivalence(CalendarExceptionTypeColor.CYAN,
+                CalendarExceptionTypeColorDTO.CYAN);
+
+        addEquivalence(CalendarExceptionTypeColor.YELLOW,
+                CalendarExceptionTypeColorDTO.YELLOW);
+
+        addEquivalence(CalendarExceptionTypeColor.ORANGE,
+                CalendarExceptionTypeColorDTO.ORANGE);
+
+        addEquivalence(CalendarExceptionTypeColor.BLACK,
+                CalendarExceptionTypeColorDTO.BLACK);
+
+    }
+
+    private static void addEquivalence(CalendarExceptionTypeColor origin,
+            CalendarExceptionTypeColorDTO destination) {
+        calendarExceptionTypeColorToDTO.put(origin, destination);
+        calendarExceptionTypeColorFromDTO.put(destination, origin);
     }
 
     public final static CalendarExceptionTypeColorDTO toDTO(

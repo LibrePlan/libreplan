@@ -1,0 +1,198 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a work report without any work report model (it should be a failure)
+ * 2 - Create a Work report from a lineal work report model
+ *   2.1 - Create a lineal work report model
+ *   2.2 - Create a work report
+ * 3 - Create a Work report from a heading work report model
+ *   3.1 - Create a heading work report model
+ *   3.2 - Try to create a work report froma heading model without task (it should be a failure)
+ * 4 - Edit the work report including a line
+ *   4.1 - Create a machine
+ *   4.2 - Create a Work hour
+ *   4.3 - Create a project
+ *   4.4 - Complete the form and check the fields
+ * 4 - Delete all the work reports
+ * 5 - Delete all required elements
+ *
+ */
+
+_include("../common_functions.sah");
+
+function workReportCreateWithoutElements(){
+    _click(_link("Work Reports"));
+    _click(_cell("New work report"));
+    workReportNoElementsValidation();
+}
+
+function workReportCreateLineModel($modelName){
+    workReportModelLineCreate($modelName);
+    _click(_link("Work Reports"));
+    _click(_cell("New work report"));
+    _click(_cell("Save"));
+    workReportAcctionValidation("saved");
+    _log("Create a new work report from a model type line", "custom1");
+}
+
+function workReportModelLineCreate($name){
+    commonCreate("Work Report Models");
+    workReportModelLineForm($name);
+    commonSaveValidation("Work Report Type", $name);
+    _log("Create a new Work Report Model", "custom1");
+}
+
+function workReportModelLineForm($name){
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _click(_cell("Add New Complementary Field"));
+    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _click(_cell("Save"));
+}
+
+function workReportCreateHeadingModel($modelName){
+    workReportModelHeadingCreate($modelName);
+    _click(_link("Work Reports"));
+    _setSelected(_select(0, _near(_span("Select type :"))), $modelName);
+    _click(_cell("New work report"));
+    _click(_cell("Save"));
+    workReportHeadingCodeValidation();
+    _log("Do not allow create a new work report from a model type heading without task", "custom1");
+}
+
+function workReportModelHeadingCreate($name){
+    commonCreate("Work Report Models");
+    workReportModelHeadingForm($name);
+    commonSaveValidation("Work Report Type", $name);
+    _log("Create a new Work Report Model", "custom1");
+}
+
+function workReportModelHeadingForm($name){
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _setSelected(_select(0, _near(_span("Task:"))),"heading");
+    _click(_cell("Add New Complementary Field"));
+    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _click(_cell("Save"));
+}
+
+function workReportEdit($name){
+    workReportLinesCreateRequiredElements();
+    workReportEditForm($name);
+}
+
+function workReportEditForm($name){
+    _click(_link("Work Reports"));
+    commonEdit($name, 4);
+    _click(_cell("Add new row"));
+    _click(_cell("Save"));
+    workReportResourceValidation();
+    _setValue(_textbox(2, _near(_parentTable(_div("Date")))), $machineName);
+    _click(_cell("Save"));
+    workReportTaskValidation();
+    _click(_italic(0, _near(_textbox(3, _near(_parentTable(_div("Date")))))));
+    _click(_div($projectName+"[2]", _parentTable(_div("Project code[1]"))));
+    _click(_cell("Save"));
+    workReportHourValidation();
+    _setValue(_textbox("z-intbox z-intbox-text-invalid"), "8");
+    _click(_cell("Save"));
+}
+
+function workReportLinesCreateRequiredElements(){
+    commonCreateProject($projectName);
+    commonMachineCreate($machineName, $machineDescription);
+    commonWorkHourCreate($workhourName, $workhourPrice);
+}
+
+function workReportLinesDeleteRequiredElements(){
+    commonMachineDelete($machineName);
+    commonWorkHourDelete($workhourName);
+    commonDeleteProject($projectName);
+    commonWorkReportModelDelete($workReportModelName);
+    commonWorkReportModelDelete($workReportModelName2);
+}
+
+function workReportDelete($modelName){
+    commonDelete("Work Reports", $modelName, 4);
+    _log("Delete the work report", "custom1")
+}
+
+function DeleteRequiredElements(){
+    commonWorkReportModelDelete($modelName);
+}
+
+/*
+ * Validations
+ */
+
+function workReportAcctionValidation($action){
+    _assertExists(_span("Work report "+$action));
+    _assert(_isVisible(_span("Work report "+$action)));
+}
+
+function workReportNoElementsValidation(){
+    _assertExists(_div("please, select a work report type"));
+    _assert(_isVisible(_div("please, select a work report type")));
+}
+
+function workReportHeadingCodeValidation(){
+    _assertExists(_div("Task code cannot be null"));
+    _assert(_isVisible(_div("Task code cannot be null")));
+}
+
+function workReportResourceValidation(){
+    _assertExists(_div("The resource cannot be null"));
+    _assert(_isVisible(_div("The resource cannot be null")));
+}
+
+function workReportTaskValidation(){
+    _assertExists(_div("The task code cannot be null"));
+    _assert(_isVisible(_div("The task code cannot be null")));
+}
+
+function workReportHourValidation(){
+    _assertExists(_div("Hours cannot be null"));
+    _assert(_isVisible(_div("Hours cannot be null")));
+}
+
+/* test values */
+var $workReportModelName = "line";
+var $workReportModelName2 = "heading";
+var $workReportNewName = "newSon";
+var $workReportNewName2 = "newSon";
+var $workhourName = "hourForWorkReport";
+var $workhourPrice = 12;
+var $machineName = "machineForWorkReport";
+var $machineDescription = "forWorkReport";
+var $projectName = "projectForWorkReport";
+
+commonLogin("admin", "admin");
+
+workReportCreateWithoutElements();
+workReportCreateLineModel($workReportModelName);
+workReportCreateHeadingModel($workReportModelName2);
+workReportEdit($workReportModelName);
+workReportDelete($workReportModelName);
+workReportLinesDeleteRequiredElements();
+
+commonLogout();

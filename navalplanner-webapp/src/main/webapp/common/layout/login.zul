@@ -46,7 +46,7 @@
 </n:table>
 <n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
   <n:tr>
-    <n:td height="100" align="left" valign="middle"><n:img src="${contextPath}/common/img/${i18n:_('en')}/logo_login.png" alt="NavalPlan" /></n:td>
+    <n:td height="100" align="left" valign="middle"><n:img src="${contextPath}/common/img/logo_login.png" alt="NavalPlan" /></n:td>
   </n:tr>
 </n:table>
 <n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">

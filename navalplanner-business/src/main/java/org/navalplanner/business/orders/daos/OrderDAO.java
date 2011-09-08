@@ -401,4 +401,15 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         return result;
     }
 
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameAnotherTransaction(String name) {
+        try {
+            Order order = findByName(name);
+            return order.getName().equals(name);
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
 }

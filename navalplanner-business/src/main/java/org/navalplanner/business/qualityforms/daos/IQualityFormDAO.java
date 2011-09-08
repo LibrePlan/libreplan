@@ -26,6 +26,7 @@ import java.util.List;
 import org.hibernate.NonUniqueResultException;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormType;
 
@@ -52,4 +53,6 @@ public interface IQualityFormDAO extends IGenericDAO<QualityForm, Long> {
     boolean existsOtherWorkReportTypeByName(QualityForm qualityForm);
 
     boolean existsByNameAnotherTransaction(QualityForm qualityForm);
+
+    void checkHasTasks(QualityForm qualityForm) throws ValidationException;
 }

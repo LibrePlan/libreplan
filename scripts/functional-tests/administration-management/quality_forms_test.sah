@@ -1,0 +1,136 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a new Quality Form
+ * 2 - Create a Quality Form with duplicate name (it should be a failure)
+ * 3 - Create a Quality Form with empty type (it should be a failure)
+ * 4 - Create a Quality Form with duplicate items (it should be a failure)
+ * 5 - Edit the Quality Form
+ * 6 - Assign this Quality form to a project
+ *   6.1 - Create a project
+ *   6.2 - Assign the Quality form
+ *   6.3 - TRY TO DELETE IT(PENDING OF A BUG)
+ *   6.4 - Delete the project
+ * 6 - Delete the Quality Form
+ *
+*/
+
+_include("../common_functions.sah");
+
+function qualityFormCreate($name, $item) {
+    commonCreate("Quality Forms");
+    qualityForm($name, $item);
+    commonSaveValidation("Quality Form", $name);
+    _log("Create a new quality form", "custom1");
+}
+
+function qualityFormCreateDuplicateName($name, $item) {
+    commonCreate("Quality Forms");
+    qualityForm($name, $item);
+    qualityFormNotValid($name);
+    _log("Do not allow create a quality form with duplicate name", "custom1");
+}
+
+function qualityFormCreateEmpty($item) {
+    commonCreate("Quality Forms");
+    qualityForm("", $item);
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
+    _log("Do not allow create a quality form without name", "custom1");
+}
+
+function qualityFormCreateDuplicateItem($name, $item) {
+    commonCreate("Quality Forms");
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _click(_cell("New quality form item"));
+    _setValue(_textbox(0, _near(_div("Quality form items list"))), $item);
+    _setValue(_textbox("z-decimalbox", _in(_cell(2, _near(_span("1"))))),"10");
+    _click(_cell("New quality form item"));
+    _setValue(_textbox(0, _near(_div("Quality form items list"))), $item);
+    _click(_cell("Save"));
+    qualityFormNotValid($item);
+    _log("Do not allow create a quality form with duplicate items", "custom1");
+}
+
+function qualityForm($name, $item) {
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _click(_cell("New quality form item"));
+    _setValue(_textbox(0, _near(_div("Quality form items list"))), $item);
+    _setValue(_textbox("z-decimalbox", _in(_cell(2, _near(_span("1"))))),"10");
+    _click(_cell("Save"));
+}
+
+function qualityFormEdit($oldName, $newName, $cell) {
+    _click(_link("Quality Forms"));
+    commonEdit($oldName, $cell);
+    _setValue(_textbox(0, _near(_span("Name"))), $newName);
+    _click(_cell("Save & Continue"));
+    commonSaveValidation("Quality Form", $newName);
+    _log("Edit the quality form", "custom1");
+}
+
+function qualityFormAssign($qualityFormName, $project){
+    commonCreateProject($project);
+    qualityFormAssingProject($qualityFormName, $project);
+    commonDeleteProject($project);
+    _log("Assign quality form in a project", "custom1");
+}
+
+function qualityFormAssingProject($qualityFormName, $project){
+    _click(_link("Projects List"));
+    _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($project))))));
+    _click(_span("Task quality forms"));
+    _click(_italic(0, _near(_span("Assign quality form"))));
+    _click(_div("newest",_near(_span("Assign quality form"))))
+    _click(_cell("z-button-cm", _near(_span("Assign quality form"))))
+    _click(_image("ico_save.png"));
+}
+
+/*
+ * Validations
+ */
+
+function qualityFormNotValid($name){
+    _assertExists(_div($name+" already exists"));
+    _assert(_isVisible(_div($name+" already exists")));
+}
+
+/* test values */
+var $qualityFormName = "new";
+var $qualityFormName2 = "new2";
+var $qualityFormNewName = "newest";
+var $qualityFormitem = "item";
+var $projectName = "new Project";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+qualityFormCreate($qualityFormName, $qualityFormitem);
+qualityFormCreateDuplicateName($qualityFormName, $qualityFormitem);
+qualityFormCreateEmpty($qualityFormitem);
+qualityFormCreateDuplicateItem($qualityFormName2, $qualityFormitem);
+qualityFormEdit($qualityFormName, $qualityFormNewName, 2);
+qualityFormAssign($qualityFormNewName, $projectName);
+commonDelete("Quality Forms", $qualityFormNewName, 2);
+commonDeleteValidation("Quality Form", $qualityFormNewName);
+_log("Delete the quality form", "custom1");
+
+commonLogout();

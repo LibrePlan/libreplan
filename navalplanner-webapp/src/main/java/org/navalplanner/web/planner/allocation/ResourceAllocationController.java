@@ -635,6 +635,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     data.getRealResourcesPerDay());
             realResourcesPerDay.setStyle("float: right; padding-right: 1em;");
 
+            append(row, data.getAssignmentFunctionLabel());
+
             // On click delete button
             Button deleteButton = appendDeleteButton(row);
             formBinder.setDeleteButtonFor(data, deleteButton);
@@ -699,6 +701,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public boolean hasResourceAllocations() {
         return ((getResourceAllocations().size() > 1));
+    }
+
+    public boolean isAnyNotFlat() {
+        return formBinder != null && formBinder.isAnyNotFlat();
     }
 
 }

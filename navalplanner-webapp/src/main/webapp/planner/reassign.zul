@@ -27,21 +27,21 @@
     ]]>
     </zscript>
 
-    <window border="normal" title="${i18n:_('Reassigning')}"
-        apply="${controllerForReassigning}">
+    <window border="none" title="${i18n:_('Reassigning')}"
+        apply="${controllerForReassigning}" width="300px">
 
-        <groupbox mold="3d" style="margin-top: 5px" closable="false">
-            <caption label="${i18n:_('Reassigning type')}:" />
-            <hbox>
-                <radiogroup id="reassigningTypeSelector">
-                    <grid id="reassigningTypesGrid">
+        <groupbox closable="false">
+            <caption label="${i18n:_('Reassigning type')}" />
+            <vbox width="100%">
+                <radiogroup id="reassigningTypeSelector" width="100%">
+                    <grid id="reassigningTypesGrid" fixedLayout="true" width="100%">
                         <columns>
-                          <column />
+                            <column width="100%"/>
                         </columns>
                     </grid>
                 </radiogroup>
                 <datebox id="associatedDate" />
-            </hbox>
+            </vbox>
         </groupbox>
 
         <hbox>

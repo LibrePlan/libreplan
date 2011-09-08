@@ -38,8 +38,11 @@ import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -536,6 +539,25 @@ public class Order extends OrderLineGroup {
                 .getType();
 
         return getAdvanceAssignmentByType(advanceType);
+    }
+
+    @AssertTrue(message = "project name is already being used")
+    public boolean checkConstraintProjectUniqueName() {
+
+        IOrderDAO orderDAO = Registry.getOrderDAO();
+
+        if (isNewObject()) {
+            return !orderDAO.existsByNameAnotherTransaction(getName());
+        } else {
+            try {
+                Order o = orderDAO.findByNameAnotherTransaction(getName());
+                return o.getId().equals(getId());
+            } catch (InstanceNotFoundException e) {
+                return true;
+            }
+
+        }
+
     }
 
 }

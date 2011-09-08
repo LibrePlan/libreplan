@@ -1,0 +1,28 @@
+# Data Type tests
+data-types/progress_test.sah
+data-types/criteria_test.sah
+data-types/unit_measures_test.sah
+data-types/label_test.sah
+data-types/work_report_model.sah
+data-types/exception_days_test.sah
+data-types/work_hours_test.sah
+
+# User tests
+users/user_test.sah
+users/profile_test.sah
+
+# Administration and Management
+administration-management/configuration_test.sah
+administration-management/calendar_test.sah
+administration-management/material_test.sah
+administration-management/quality_forms_test.sah
+administration-management/cost_categories_test.sah
+
+# Resources
+
+resources/worker_test.sah
+resources/machines_test.sah
+resources/virtual_worker_test.sah
+resources/work_report_test.sah
+resources/companies_test.sah
+resources/subcontracting_test.sah

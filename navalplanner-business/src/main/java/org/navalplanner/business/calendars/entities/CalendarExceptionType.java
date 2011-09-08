@@ -150,8 +150,7 @@ public class CalendarExceptionType extends IntegrationEntity implements
         EnumMap<Granularity, Integer> values = duration.decompose();
         Integer hours = values.get(Granularity.HOURS);
         Integer minutes = values.get(Granularity.MINUTES);
-        Integer seconds = values.get(Granularity.SECONDS);
-        return hours + ":" + minutes + ":" + seconds ;
+        return hours + ":" + minutes;
     }
 
     public void setDuration(EffortDuration duration) {
