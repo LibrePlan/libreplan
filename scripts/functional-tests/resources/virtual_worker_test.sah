@@ -38,8 +38,17 @@
  *     6.3.2 - Create a cost category
  *     6.3.3 - Assign this cost category to the Virtual worker
  *     6.3.4 - Try to delete the cost category
- * 7 - Delete Virtual Worker
- * 8 - Delete all required elements
+ * 7 - Try create a Virtual worker without Code
+ *   7.1 - Change configuration
+ *   7.2 - create a Virtual worker without Code (it should be a failure)
+ * 8 - Assign the virtual worker in a project
+ *   8.1 - Create a project
+ *   8.2 - Create a task
+ *   8.3 - Assign the virtual worker in limiting resource form
+ *   8.4 - Try to delete the asigned Virtual worker
+ *   8.5 - Delete the Project
+ * 9 - Delete Virtual Worker
+ * 10 - Delete all required elements
  *
 */
 _include("../common_functions.sah");
@@ -129,6 +138,32 @@ function virtualWorkerDeleteRequiredElements(){
     _log("All required elements deleted", "custom1");
 }
 
+function virtualWorkerAssignProject($project, $worker){
+    commonCreateProject($project);
+    commonCreateTask($project, "taskForVirtual", "100");
+    virtualWorkerAssignProjectForm($worker);
+    virtualWorkerTryDeleteAssigned($worker);
+    commonDeleteProject($project);
+}
+
+function virtualWorkerAssignProjectForm($workerName){
+    _click(_cell("Project Scheduling"));
+    _doubleClick(_div("box standard-task yui-resize unassigned"));
+    _setValue(_textbox(0, _near(_span("Select criteria or resources"))), $workerName);
+    _removeFocus(_textbox(0, _near(_span("Select criteria or resources"))));
+    _click(_div($workerName));
+    _click(_cell($workerName));
+    _click(_cell("Add"));
+    _click(_cell("z-button-cm[40]"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+}
+
+function virtualWorkerTryDeleteAssigned($worker){
+    commonDelete ("Virtual Workers Groups", $worker, 3);
+    commonResourceTryDeleteAssignedValidation();
+}
+
 /* Validations */
 function virtualWorkerNotValid($worker){
     _assertExists(_span("checkConstraintUniqueVirtualGroupName: Virtual worker group name must be unique"));
@@ -149,6 +184,8 @@ var $workerNewName = "newest";
 var $criteriaName = "CriteriaForWorkers";
 var $costCategoryName ="costCategoryForWorker"
 var $calendarName = "calendarForWorker"
+var $projectName = "projectForVirtual";
+
 /* test actions */
 commonLogin("admin", "admin");
 
@@ -158,6 +195,7 @@ virtualWorkerCreateEmpty($workerName, $workerSurName, $workerID);
 virtualWorkerEdit($workerName, $workerNewName, 3);
 virtualWorkerCheckTabs();
 virtualWorkerCheckCode($workerName, $workerSurName, $workerID)
+virtualWorkerAssignProject($projectName, $workerNewName);
 commonDelete("Virtual Workers Groups", $workerNewName, 3);
 virtualWorkerAcctionValidation("deleted");
 _log("Delete the virtual worker", "custom1");
