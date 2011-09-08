@@ -162,7 +162,7 @@ public class ResourceAllocationDAOTest {
                         hoursGroups);
         TaskSourceSynchronization synchronization = TaskSource
                 .mustAdd(taskSource);
-        synchronization.apply(taskSourceDAO);
+        synchronization.apply(TaskSource.persistTaskSources(taskSourceDAO));
         Task task = (Task) taskSource.getTask();
         if (ResourceAllocationType.SPECIFIC_RESOURCE_ALLOCATION.equals(type)) {
             SpecificResourceAllocation specificResourceAllocation = SpecificResourceAllocation

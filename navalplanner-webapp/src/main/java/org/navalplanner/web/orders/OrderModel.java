@@ -60,6 +60,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.orders.entities.TaskSource.IOptionalPersistence;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
@@ -558,6 +559,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         calculateAndSetTotalHours();
         orderDAO.save(order);
         reattachCurrentTaskSources();
+
         if (newOrderVersionNeeded) {
             OrderVersion newVersion = OrderVersion
                     .createInitialVersion(currentScenario);
@@ -565,13 +567,15 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             order.writeSchedulingDataChangesTo(currentScenario, newVersion);
             createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
                     newVersion);
-            synchronizeWithSchedule(order, false);
+            synchronizeWithSchedule(order,
+                    TaskSource.persistButDontRemoveTaskSources(taskSourceDAO));
             order.writeSchedulingDataChanges();
         } else {
             OrderVersion orderVersion = order.getCurrentVersionInfo()
                     .getOrderVersion();
             orderVersion.savingThroughOwner();
-            synchronizeWithSchedule(order, true);
+            synchronizeWithSchedule(order,
+                    TaskSource.persistTaskSources(taskSourceDAO));
             order.writeSchedulingDataChanges();
         }
         saveDerivedScenarios();
@@ -697,11 +701,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     private void synchronizeWithSchedule(OrderElement orderElement,
-            boolean preexistent) {
+            IOptionalPersistence persistence) {
+
         List<TaskSourceSynchronization> synchronizationsNeeded = orderElement
                 .calculateSynchronizationsNeeded();
         for (TaskSourceSynchronization each : synchronizationsNeeded) {
-            each.apply(taskSourceDAO, preexistent);
+            each.apply(persistence);
         }
     }
 

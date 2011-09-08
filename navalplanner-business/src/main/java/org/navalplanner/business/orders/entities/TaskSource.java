@@ -66,14 +66,83 @@ public class TaskSource extends BaseEntity {
         return new TaskSourceMustBeRemoved(taskSource);
     }
 
-    public static abstract class TaskSourceSynchronization {
+    public interface IOptionalPersistence {
 
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO) {
-            return apply(taskSourceDAO, true);
+        public void save(TaskSource taskSource);
+
+        public void remove(TaskSource taskSource);
+    }
+
+    public static IOptionalPersistence persistTaskSources(
+            ITaskSourceDAO taskSourceDAO) {
+        return new RealPersistence(taskSourceDAO, true);
+    }
+
+    public static IOptionalPersistence persistButDontRemoveTaskSources(
+            ITaskSourceDAO taskSourceDAO) {
+        return new RealPersistence(taskSourceDAO, false);
+    }
+
+    public static IOptionalPersistence dontPersist() {
+        return new NoPersistence();
+    }
+
+    private static class RealPersistence implements IOptionalPersistence {
+
+        private final ITaskSourceDAO taskSourceDAO;
+
+        private final boolean removeTaskSources;
+
+        public RealPersistence(ITaskSourceDAO taskSourceDAO,
+                boolean removeTaskSources) {
+            Validate.notNull(taskSourceDAO);
+            this.taskSourceDAO = taskSourceDAO;
+            this.removeTaskSources = removeTaskSources;
         }
 
-        public abstract TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                boolean preexistent);
+        @Override
+        public void save(TaskSource taskSource) {
+            taskSourceDAO.saveWithoutValidating(taskSource);
+        }
+
+        @Override
+        public void remove(TaskSource taskSource) {
+            if (!removeTaskSources) {
+                return;
+            }
+            try {
+                taskSourceDAO.remove(taskSource.getId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            // Flushing is required in order to avoid violation of
+            // unique
+            // constraint. If flush is not done and there is a task
+            // source
+            // that must be removed and another is created for the same
+            // order element the unique constraint
+            // "tasksource_orderelement_key" would be violated by
+            // hibernate
+            taskSourceDAO.flush();
+        }
+
+    }
+
+    private static class NoPersistence implements IOptionalPersistence {
+
+        @Override
+        public void save(TaskSource taskSource) {
+        }
+
+        @Override
+        public void remove(TaskSource taskSource) {
+        }
+
+    }
+
+    public static abstract class TaskSourceSynchronization {
+
+        public abstract TaskElement apply(IOptionalPersistence persistence);
     }
 
     static class TaskSourceMustBeAdded extends TaskSourceSynchronization {
@@ -85,11 +154,10 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                boolean preexistent) {
+        public TaskElement apply(IOptionalPersistence persistence) {
             Task result = Task.createTask(taskSource);
             taskSource.setTask(result);
-            taskSourceDAO.saveWithoutValidating(taskSource);
+            persistence.save(taskSource);
             return result;
         }
     }
@@ -103,11 +171,10 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                boolean preeexistent) {
+        public TaskElement apply(IOptionalPersistence persistence) {
             updateTaskWithOrderElement(taskSource.getTask(), taskSource.getOrderElement());
             updatePositionRestrictions();
-            taskSourceDAO.saveWithoutValidating(taskSource);
+            persistence.save(taskSource);
             return taskSource.getTask();
         }
 
@@ -169,17 +236,15 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                boolean preexistent) {
-            List<TaskElement> children = getChildren(taskSourceDAO, preexistent);
-            return apply(taskSourceDAO, children, preexistent);
+        public TaskElement apply(IOptionalPersistence persistence) {
+            List<TaskElement> children = getChildren(persistence);
+            return apply(children, persistence);
         }
 
-        private List<TaskElement> getChildren(ITaskSourceDAO taskSourceDAO,
-                boolean preexistent) {
+        private List<TaskElement> getChildren(IOptionalPersistence persistence) {
             List<TaskElement> result = new ArrayList<TaskElement>();
             for (TaskSourceSynchronization each : synchronizations) {
-                TaskElement t = each.apply(taskSourceDAO, preexistent);
+                TaskElement t = each.apply(persistence);
                 if (t != null) {
                     // TaskSourceMustBeRemoved gives null
                     result.add(t);
@@ -188,8 +253,8 @@ public class TaskSource extends BaseEntity {
             return result;
         }
 
-        protected abstract TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children, boolean preexistent);
+        protected abstract TaskElement apply(List<TaskElement> children,
+                IOptionalPersistence persistence);
     }
 
     static class TaskGroupMustBeAdded extends TaskGroupSynchronization {
@@ -200,14 +265,14 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children, boolean preexistent) {
+        protected TaskElement apply(List<TaskElement> children,
+                IOptionalPersistence persistence) {
             TaskGroup result = TaskGroup.create(taskSource);
             for (TaskElement taskElement : children) {
                 result.addTaskElement(taskElement);
             }
             taskSource.setTask(result);
-            taskSourceDAO.saveWithoutValidating(taskSource);
+            persistence.save(taskSource);
             return result;
         }
 
@@ -222,12 +287,12 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                List<TaskElement> children, boolean preexistent) {
+        protected TaskElement apply(List<TaskElement> children,
+                IOptionalPersistence persistence) {
             TaskGroup taskGroup = (TaskGroup) taskSource.getTask();
             taskGroup.setTaskChildrenTo(children);
             updateTaskWithOrderElement(taskGroup, taskSource.getOrderElement());
-            taskSourceDAO.saveWithoutValidating(taskSource);
+            persistence.save(taskSource);
             return taskGroup;
         }
     }
@@ -241,26 +306,10 @@ public class TaskSource extends BaseEntity {
         }
 
         @Override
-        public TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                boolean preexistent) {
+        public TaskElement apply(IOptionalPersistence optionalPersistence) {
             taskSource.getTask().detachFromDependencies();
             taskSource.getTask().detachFromParent();
-            if (preexistent) {
-                try {
-                    taskSourceDAO.remove(taskSource.getId());
-                } catch (InstanceNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-                // Flushing is required in order to avoid violation of
-                // unique
-                // constraint. If flush is not done and there is a task
-                // source
-                // that must be removed and another is created for the same
-                // order element the unique constraint
-                // "tasksource_orderelement_key" would be violated by
-                // hibernate
-                taskSourceDAO.flush();
-            }
+            optionalPersistence.remove(taskSource);
             return null;
         }
 

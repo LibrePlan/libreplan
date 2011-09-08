@@ -50,6 +50,8 @@ import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.orders.entities.TaskSource.IOptionalPersistence;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -219,7 +221,8 @@ public class SubcontractServiceREST implements ISubcontractService {
         order.setCustomerReference(subcontractedTaskDataDTO.subcontractedCode);
         order.setWorkBudget(subcontractedTaskDataDTO.subcontractPrice);
 
-        synchronizeWithSchedule(order, true);
+        synchronizeWithSchedule(order,
+                TaskSource.persistTaskSources(taskSourceDAO));
         order.writeSchedulingDataChanges();
 
         order.validate();
@@ -227,11 +230,11 @@ public class SubcontractServiceREST implements ISubcontractService {
     }
 
     private void synchronizeWithSchedule(OrderElement orderElement,
-            boolean preexistent) {
+            IOptionalPersistence persistence) {
         List<TaskSourceSynchronization> synchronizationsNeeded = orderElement
                 .calculateSynchronizationsNeeded();
         for (TaskSourceSynchronization each : synchronizationsNeeded) {
-            each.apply(taskSourceDAO, preexistent);
+            each.apply(persistence);
         }
     }
 

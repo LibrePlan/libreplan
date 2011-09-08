@@ -59,6 +59,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.orders.entities.TaskSource.IOptionalPersistence;
 import org.navalplanner.business.orders.entities.TaskSource.TaskGroupSynchronization;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
@@ -157,7 +158,7 @@ public class TaskElementDAOTest {
         TaskSource taskSource = TaskSource.create(schedulingDataForVersion,
                 Arrays.asList(associatedHoursGroup));
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
-        mustAdd.apply(taskSourceDAO);
+        mustAdd.apply(TaskSource.persistTaskSources(taskSourceDAO));
         Task task = (Task) taskSource.getTask();
         return task;
     }
@@ -202,8 +203,8 @@ public class TaskElementDAOTest {
                 taskSource, Collections.<TaskSourceSynchronization> emptyList()) {
 
             @Override
-            protected TaskElement apply(ITaskSourceDAO taskSourceDAO,
-                    List<TaskElement> children, boolean preexistent) {
+            protected TaskElement apply(List<TaskElement> children,
+                    IOptionalPersistence persistence) {
                 TaskGroup result = TaskGroup.create(taskSource);
                 Date today = new Date();
                 result.setStartDate(today);
@@ -214,7 +215,7 @@ public class TaskElementDAOTest {
             }
 
         };
-        synchronization.apply(taskSourceDAO);
+        synchronization.apply(TaskSource.persistTaskSources(taskSourceDAO));
         return (TaskGroup) taskSource.getTask();
     }
 
