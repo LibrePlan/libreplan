@@ -508,6 +508,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
+        orderElement.dontPoseAsTransientObjectAnymore();
         dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
         dontPoseAsTransientObjectAnymore(orderElement.getSchedulingDatasForVersionFromBottomToTop());
 

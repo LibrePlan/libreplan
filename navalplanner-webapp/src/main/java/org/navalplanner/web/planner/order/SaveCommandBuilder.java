@@ -35,15 +35,15 @@ import java.util.SortedSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
@@ -164,9 +164,6 @@ public class SaveCommandBuilder {
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
     @Autowired
@@ -220,6 +217,7 @@ public class SaveCommandBuilder {
                         return null;
                     }
                 });
+                dontPoseAsTransientObjectAnymore(state.getOrder());
                 state.getScenarioInfo().afterCommit();
                 fireAfterSave();
                 notifyUserThatSavingIsDone();
@@ -245,7 +243,11 @@ public class SaveCommandBuilder {
             state.getScenarioInfo().saveVersioningInfo();
             saveTasksToSave();
             removeTasksToRemove();
-            saveAndDontPoseAsTransientOrderElements();
+            saveOrderElements();
+            loadDataAccessedWithNotPosedAsTransient(state.getOrder());
+            if (state.getRootTask() != null) {
+                loadDependenciesCollectionsForTaskRoot(state.getRootTask());
+            }
             subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
         }
 
@@ -272,9 +274,7 @@ public class SaveCommandBuilder {
                         && taskElement.getTaskSource().isNewObject()) {
                     saveTaskSources(taskElement);
                 }
-                // Recursive iteration to put all the tasks of the
-                // gantt as transiet
-                dontPoseAsTransient(taskElement);
+                updateLimitingQueueDependencies(taskElement);
             }
             saveRootTaskIfNecessary();
         }
@@ -301,7 +301,6 @@ public class SaveCommandBuilder {
 
         private void saveTaskSources(TaskElement taskElement) {
             taskSourceDAO.save(taskElement.getTaskSource());
-            taskElement.getTaskSource().dontPoseAsTransientObjectAnymore();
             if (taskElement.isLeaf()) {
                 return;
             }
@@ -426,41 +425,13 @@ public class SaveCommandBuilder {
                     });
         }
 
-        // newly added TaskElement such as milestones must be called
-        // dontPoseAsTransientObjectAnymore
-        private void dontPoseAsTransient(TaskElement taskElement) {
-            if (taskElement.isNewObject()) {
-                taskElement.dontPoseAsTransientObjectAnymore();
-            }
-            dontPoseAsTransient(taskElement.getDependenciesWithThisOrigin());
-            dontPoseAsTransient(taskElement
-                    .getDependenciesWithThisDestination());
-            Set<ResourceAllocation<?>> resourceAllocations = taskElement
-                    .getAllResourceAllocations();
-            dontPoseAsTransientAndChildrenObjects(resourceAllocations);
-            if (!taskElement.isLeaf()) {
-                for (TaskElement each : taskElement.getChildren()) {
-                    dontPoseAsTransient(each);
-                }
-            }
-            if (taskElement instanceof Task) {
-                updateLimitingQueueDependencies((Task) taskElement);
-                dontPoseAsTransient(((Task) taskElement).getConsolidation());
-            }
-        }
-
-        private void dontPoseAsTransient(
-                Collection<? extends Dependency> dependencies) {
-            for (Dependency each : dependencies) {
-                each.dontPoseAsTransientObjectAnymore();
-            }
-        }
-
-        private void updateLimitingQueueDependencies(Task t) {
-
+        private void updateLimitingQueueDependencies(TaskElement t) {
             for (Dependency each : t.getDependenciesWithThisOrigin()) {
                 addLimitingDependencyIfNeeded(each);
                 removeLimitingDependencyIfNeeded(each);
+            }
+            for (TaskElement each : t.getChildren()) {
+                updateLimitingQueueDependencies(each);
             }
         }
 
@@ -477,7 +448,6 @@ public class SaveCommandBuilder {
                                 toQueueDependencyType(d.getType()));
                 d.setQueueDependency(queueDependency);
                 limitingResourceQueueDependencyDAO.save(queueDependency);
-                queueDependency.dontPoseAsTransientObjectAnymore();
             }
         }
 
@@ -521,66 +491,39 @@ public class SaveCommandBuilder {
             }
         }
 
-        private void dontPoseAsTransient(OrderElement orderElement) {
-            OrderElement order = (OrderElement) orderDAO
-                    .loadOrderAvoidingProxyFor(orderElement);
-            order.dontPoseAsTransientObjectAnymore();
-            dontPoseAsTransientAdvances(order.getDirectAdvanceAssignments());
-            dontPoseAsTransientAdvances(order.getIndirectAdvanceAssignments());
-
-            for (OrderElement child : order.getAllChildren()) {
-                child.dontPoseAsTransientObjectAnymore();
-                dontPoseAsTransientAdvances(child.getDirectAdvanceAssignments());
-                dontPoseAsTransientAdvances(child
-                        .getIndirectAdvanceAssignments());
-            }
-        }
-
-        private void dontPoseAsTransientAdvances(
-                Set<? extends AdvanceAssignment> advances) {
-            for (AdvanceAssignment advance : advances) {
-                advance.dontPoseAsTransientObjectAnymore();
-                if (advance instanceof DirectAdvanceAssignment) {
-                    dontPoseAsTransientMeasure(((DirectAdvanceAssignment) advance)
-                            .getAdvanceMeasurements());
-                }
-            }
-        }
-
-        private void dontPoseAsTransientMeasure(
-                SortedSet<AdvanceMeasurement> list) {
-            for (AdvanceMeasurement measure : list) {
-                measure.dontPoseAsTransientObjectAnymore();
-            }
-        }
-
-        private void dontPoseAsTransient(Consolidation consolidation) {
-            if (consolidation != null) {
-                consolidation.dontPoseAsTransientObjectAnymore();
-                if (consolidation.isCalculated()) {
-                    dontPoseAsTransient(((CalculatedConsolidation) consolidation)
-                            .getCalculatedConsolidatedValues());
-                } else {
-                    dontPoseAsTransient(((NonCalculatedConsolidation) consolidation)
-                            .getNonCalculatedConsolidatedValues());
-                }
-            }
-        }
-
-        private void saveAndDontPoseAsTransientOrderElements() {
+        private void saveOrderElements() {
             for (TaskElement taskElement : state.getTasksToSave()) {
                 if (taskElement.getOrderElement() != null) {
                     orderElementDAO.save(taskElement.getOrderElement());
-                    dontPoseAsTransient(taskElement.getOrderElement());
                 }
             }
         }
 
-        private void dontPoseAsTransient(
-                SortedSet<? extends ConsolidatedValue> values) {
-            for (ConsolidatedValue value : values) {
-                value.dontPoseAsTransientObjectAnymore();
+        private void loadDataAccessedWithNotPosedAsTransient(
+                OrderElement orderElement) {
+            orderElement.getDirectAdvanceAssignments().size();
+            getAllMeasurements(orderElement.getDirectAdvanceAssignments());
+            orderElement.getIndirectAdvanceAssignments().size();
+            orderElement.getCriterionRequirements().size();
+            orderElement.getLabels().size();
+            orderElement.getTaskQualityForms().size();
+            orderElement.getAllMaterialAssignments().size();
+            for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+                dontPoseAsTransientObjectAnymore(hoursGroup
+                        .getCriterionRequirements());
             }
+
+            for (OrderElement each : orderElement.getChildren()) {
+                loadDataAccessedWithNotPosedAsTransient(each);
+            }
+        }
+
+        // avoid LazyInitializationException when forcing the don't pose as
+        // transient
+        private void loadDependenciesCollectionsForTaskRoot(
+                TaskElement taskElement) {
+            taskElement.getDependenciesWithThisOrigin().size();
+            taskElement.getDependenciesWithThisDestination().size();
         }
 
         private Date maxDate(Collection<? extends TaskElement> tasksToSave) {
@@ -653,6 +596,115 @@ public class SaveCommandBuilder {
                 throw new RuntimeException(e);
             }
         }
-    }
 
+
+        private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
+            orderElement.dontPoseAsTransientObjectAnymore();
+            dontPoseAsTransientObjectAnymore(orderElement
+                    .getTaskSourcesFromBottomToTop());
+            dontPoseAsTransientObjectAnymore(orderElement
+                    .getSchedulingDatasForVersionFromBottomToTop());
+
+            dontPoseAsTransientObjectAnymore(orderElement
+                    .getDirectAdvanceAssignments());
+            dontPoseAsTransientObjectAnymore(getAllMeasurements(orderElement
+                    .getDirectAdvanceAssignments()));
+
+            dontPoseAsTransientObjectAnymore(orderElement
+                    .getIndirectAdvanceAssignments());
+            dontPoseAsTransientObjectAnymore(orderElement
+                    .getCriterionRequirements());
+            dontPoseAsTransientObjectAnymore(orderElement.getLabels());
+            dontPoseAsTransientObjectAnymoreTasks(orderElement
+                    .getTaskElements());
+            dontPoseAsTransientObjectAnymore(orderElement.getHoursGroups());
+            dontPoseAsTransientObjectAnymore(orderElement.getTaskQualityForms());
+            dontPoseAsTransientObjectAnymore(orderElement
+                    .getAllMaterialAssignments());
+
+            for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+                dontPoseAsTransientObjectAnymore(hoursGroup
+                        .getCriterionRequirements());
+            }
+
+            for (OrderElement child : orderElement.getAllChildren()) {
+                child.dontPoseAsTransientObjectAnymore();
+                dontPoseAsTransientObjectAnymore(child);
+            }
+        }
+
+        private void dontPoseAsTransientObjectAnymore(
+                Collection<? extends BaseEntity> collection) {
+            for (BaseEntity entity : collection) {
+                entity.dontPoseAsTransientObjectAnymore();
+            }
+        }
+
+        private List<AdvanceMeasurement> getAllMeasurements(
+                Collection<? extends DirectAdvanceAssignment> assignments) {
+            List<AdvanceMeasurement> result = new ArrayList<AdvanceMeasurement>();
+            for (DirectAdvanceAssignment each : assignments) {
+                result.addAll(each.getAdvanceMeasurements());
+            }
+            return result;
+        }
+
+        private void dontPoseAsTransientObjectAnymoreTasks(
+                Collection<? extends TaskElement> taskElements) {
+            for (TaskElement each : taskElements) {
+                dontPoseAsTransient(each);
+            }
+        }
+
+        private void dontPoseAsTransient(TaskElement taskElement) {
+            if (taskElement.isNewObject()) {
+                taskElement.dontPoseAsTransientObjectAnymore();
+            }
+            dontPoseAsTransient(taskElement.getDependenciesWithThisOrigin());
+            dontPoseAsTransient(taskElement
+                    .getDependenciesWithThisDestination());
+            Set<ResourceAllocation<?>> resourceAllocations = taskElement
+                    .getAllResourceAllocations();
+            dontPoseAsTransientAndChildrenObjects(resourceAllocations);
+            if (!taskElement.isLeaf()) {
+                for (TaskElement each : taskElement.getChildren()) {
+                    dontPoseAsTransient(each);
+                }
+            }
+            if (taskElement instanceof Task) {
+                dontPoseAsTransient(((Task) taskElement).getConsolidation());
+            }
+        }
+
+        private void dontPoseAsTransient(Consolidation consolidation) {
+            if (consolidation != null) {
+                consolidation.dontPoseAsTransientObjectAnymore();
+                if (consolidation.isCalculated()) {
+                    dontPoseAsTransient(((CalculatedConsolidation) consolidation)
+                            .getCalculatedConsolidatedValues());
+                } else {
+                    dontPoseAsTransient(((NonCalculatedConsolidation) consolidation)
+                            .getNonCalculatedConsolidatedValues());
+                }
+            }
+        }
+
+        private void dontPoseAsTransient(
+                SortedSet<? extends ConsolidatedValue> values) {
+            for (ConsolidatedValue value : values) {
+                value.dontPoseAsTransientObjectAnymore();
+            }
+        }
+
+        private void dontPoseAsTransient(
+                Collection<? extends Dependency> dependencies) {
+            for (Dependency each : dependencies) {
+                each.dontPoseAsTransientObjectAnymore();
+                if (each.hasLimitedQueueDependencyAssociated()) {
+                    each.getQueueDependency()
+                            .dontPoseAsTransientObjectAnymore();
+                }
+            }
+        }
+    }
 }
