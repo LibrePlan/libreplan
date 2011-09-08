@@ -176,6 +176,11 @@ _assertExists(_div("The init date cannot be empty"));
 _assert(_isVisible(_div("The init date cannot be empty")));
 }
 
+function commonResourceTryDeleteAssignedValidation(){
+    _assertExists(_span("This worker cannot be deleted because it has assignments to projects or imputed hours"));
+    _assert(_isVisible(_span("This worker cannot be deleted because it has assignments to projects or imputed hours")));
+}
+
 /*
  * Common functions for Workers
  */
