@@ -36,6 +36,8 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.orders.entities.TaskSource.IOptionalPersistence;
+import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
@@ -541,7 +543,17 @@ public class PlanningStateCreator {
         void onRetrieval() {
             cachedConfiguration = null;
             cachedCommand = null;
+            synchronizeOrderTasks();
             rebuildTasksState(order);
+        }
+
+        void synchronizeOrderTasks() {
+            List<TaskSourceSynchronization> synchronizationsNeeded = order
+                    .calculateSynchronizationsNeeded();
+            IOptionalPersistence persistence = TaskSource.dontPersist();
+            for (TaskSourceSynchronization each : synchronizationsNeeded) {
+                each.apply(persistence);
+            }
         }
 
         private void rebuildTasksState(Order order) {
