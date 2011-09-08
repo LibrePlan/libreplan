@@ -38,8 +38,17 @@
  *     6.3.2 - Create a cost category
  *     6.3.3 - Assign this cost category to the worker
  *     6.3.4 - Try to delete the cost category
- * 7 - Delete Worker
- * 8 - Delete all required elements
+ * 7 - Try create a Worker without Code
+ *   7.1 - Change configuration
+ *   7.2 - create a Worker without Code (it should be a failure)
+ * 8 - Assign the Worker in a project
+ *   8.1 - Create a project
+ *   8.2 - Create a task
+ *   8.3 - Assign the Worker in limiting resource form
+ *   8.4 - Try to delete the asigned Worker
+ *   8.5 - Delete the Project
+ * 9 - Delete Worker
+ * 10 - Delete all required elements
  *
 */
 
@@ -138,6 +147,32 @@ function workerDeleteRequiredElements(){
     _log("All required elements deleted", "custom1");
 }
 
+function workerAssignProject($project, $worker, $workerSurName){
+    commonCreateProject($project);
+    commonCreateTask($project, "taskForWorker", "100");
+    workerAssignProjectForm($worker, $workerSurName);
+    workerTryDeleteAssigned($worker);
+    commonDeleteProject($project);
+}
+
+function workerAssignProjectForm($workerName, $workerSurName){
+    _click(_cell("Project Scheduling"));
+    _doubleClick(_div("box standard-task yui-resize unassigned"));
+    _setValue(_textbox(0, _near(_span("Select criteria or resources"))), $workerName);
+    _removeFocus(_textbox(0, _near(_span("Select criteria or resources"))));
+    _click(_div($workerSurName+", "+$workerName));
+    _click(_cell($workerSurName+", "+$workerName));
+    _click(_cell("Add"));
+    _click(_cell("z-button-cm[40]"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+}
+
+function workerTryDeleteAssigned($worker){
+    commonDelete ("Workers", $worker, 5);
+    commonResourceTryDeleteAssignedValidation();
+}
+
 /* Validations */
 function workerNotValid($worker){
     _assertExists(_span("checkConstraintUniqueFiscalCode: ID already used. It has to be be unique"));
@@ -161,8 +196,10 @@ var $workerID = "12345678";
 var $workerName2 = "new2";
 var $workerNewName = "newest";
 var $criteriaName = "CriteriaForWorkers";
-var $costCategoryName ="costCategoryForWorker"
-var $calendarName = "calendarForWorker"
+var $costCategoryName ="costCategoryForWorker";
+var $calendarName = "calendarForWorker";
+var $projectName = "ProjectForWorker";
+
 /* test actions */
 commonLogin("admin", "admin");
 
@@ -171,7 +208,8 @@ workerCreateDuplicateType($workerName, $workerSurName, $workerID);
 workerCreateEmpty($workerName, $workerSurName, $workerID);
 workerEdit($workerName, $workerNewName, 5);
 workerCheckTabs();
-workerCheckCode($workerName, $workerSurName, $workerID)
+workerCheckCode($workerName, $workerSurName, $workerID);
+workerAssignProject($projectName, $workerNewName, $workerSurName);
 commonDelete("Workers", $workerNewName, 5);
 workerAcctionValidation("deleted");
 _log("Delete the worker", "custom1");
