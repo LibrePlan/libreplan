@@ -22,7 +22,7 @@
  * 1 - Create a new Machine
  * 2 - Create a Machine with empty name (it should be a failure)
  * 3 - Edit a Machine
- * 4 - ASSIGN A CRITERIA TO A MACHINE (PENDING FOF A BUG)
+ * 4 - ASSIGN A CRITERIA TO A MACHINE (PENDING OF A BUG)
  *   5.1 - Create a criteria
  *   5.2 - Edit Assigned criteria tab
  *   5.3 - Try to delete a assigned criteria

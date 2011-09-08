@@ -24,7 +24,7 @@
  * 3 - Create a task
  * 4 - Create a subcontract and assign the company like subcontractor
  * 5 - Send the task
- * 6 - Assign a progres to a subcontracted task
+ * 6 - Assign a progress to a subcontracted task
  * 7 - Send the progress
  * 8 - Check that the progress was send
  * 9 - Delete all required elements

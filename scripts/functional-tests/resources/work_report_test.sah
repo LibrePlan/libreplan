@@ -25,14 +25,14 @@
  *   2.2 - Create a work report
  * 3 - Create a Work report from a heading work report model
  *   3.1 - Create a heading work report model
- *   3.2 - Try to create a work report froma heading model without task (it should be a failure)
+ *   3.2 - Try to create a work report from heading model without task (it should be a failure)
  * 4 - Edit the work report including a line
  *   4.1 - Create a machine
  *   4.2 - Create a Work hour
  *   4.3 - Create a project
  *   4.4 - Complete the form and check the fields
- * 4 - Delete all the work reports
- * 5 - Delete all required elements
+ * 5 - Delete all the work reports
+ * 6 - Delete all required elements
  *
  */
 
