@@ -22,7 +22,7 @@
 <vbox id="${arg.id}"
     apply="org.navalplanner.web.orders.DetailsOrderElementController" width="100%">
     <!-- Details data -->
-    <grid id="details" sizedByContent="true">
+    <grid id="details" sizedByContent="false">
         <columns >
             <column width="200px" />
             <column />

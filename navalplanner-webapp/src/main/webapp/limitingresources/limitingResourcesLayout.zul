@@ -109,7 +109,7 @@
         </center>
 
         <south height="170px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
-            <div>
+            <vbox width="100%">
                 <!-- Assign selected elements -->
                 <hbox style="padding-left: 10px; padding-top: 3px">
                     <button id="btnAssignSelectedItems"
@@ -119,7 +119,7 @@
 
                 <!-- List of unassigned queue elements -->
                 <newdatasortablegrid id="gridUnassignedLimitingResourceQueueElements"
-                        fixedLayout="true"
+                        sizedByContent="false"
                         style="margin: 10px" >
                     <columns sizable="true">
                         <newdatasortablecolumn width="40px" >
@@ -137,7 +137,7 @@
                         <newdatasortablecolumn label="${i18n:_('Operations')}" width="200px"/>
                     </columns>
                 </newdatasortablegrid>
-            </div>
+            </vbox>
         </south>
 
     </borderlayout>
