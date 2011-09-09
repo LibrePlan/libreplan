@@ -474,15 +474,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         public GanttDate getHoursAdvanceEndDate() {
             OrderElement orderElement = taskElement.getOrderElement();
 
-            Integer assignedHours = 0;
-            if (orderElement.getSumChargedHours() != null) {
-                assignedHours = orderElement.getSumChargedHours()
-                        .getTotalChargedHours();
+            EffortDuration assignedEffort = EffortDuration.zero();
+            if (orderElement.getSumChargedEffort() != null) {
+                assignedEffort = orderElement.getSumChargedEffort()
+                        .getTotalChargedEffort();
             }
 
             GanttDate result = null;
             if(!(taskElement instanceof TaskGroup)) {
-                result = calculateLimitDate(assignedHours);
+                result = calculateLimitDate(assignedEffort
+                        .toHoursAsDecimalWithScale(2));
             }
             if (result == null) {
                 Integer hours = taskElement.getSumOfHoursAllocated();
@@ -493,8 +494,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         return getBeginDate();
                     }
                 }
-                BigDecimal percentage = new BigDecimal(assignedHours)
-                        .setScale(2).divide(new BigDecimal(hours),
+                BigDecimal percentage = assignedEffort
+                        .toHoursAsDecimalWithScale(2).divide(
+                                new BigDecimal(hours),
                                 RoundingMode.DOWN);
                 result = calculateLimitDate(percentage);
 
@@ -510,9 +512,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return BigDecimal.ZERO;
             }
 
-            int totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
-                    .getSumChargedHours().getTotalChargedHours() : 0;
-            BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
+            EffortDuration totalChargedEffort = orderElement
+                    .getSumChargedEffort() != null ? orderElement
+                    .getSumChargedEffort().getTotalChargedEffort()
+                    : EffortDuration.zero();
+            BigDecimal assignedHours = totalChargedEffort
+                    .toHoursAsDecimalWithScale(2);
 
             BigDecimal estimatedHours = new BigDecimal(taskElement.getSumOfHoursAllocated())
                     .setScale(2);

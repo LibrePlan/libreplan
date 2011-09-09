@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.resources.daos;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -38,6 +39,7 @@ import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -199,10 +201,9 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     public List<HoursWorkedPerWorkerInAMonthDTO> getWorkingHoursPerWorker(
             Integer year, Integer month) {
 
-        String strQuery =
-            "SELECT wrlresource.id, SUM(wrl.numHours) "
-          + "FROM WorkReportLine wrl "
-          + "LEFT OUTER JOIN wrl.resource wrlresource ";
+        String strQuery = "SELECT wrlresource.id, SUM(wrl.effort) "
+                + "FROM WorkReportLine wrl "
+                + "LEFT OUTER JOIN wrl.resource wrlresource ";
 
         if (year != null) {
             strQuery += "WHERE YEAR(wrl.date) = :year ";
@@ -231,7 +232,8 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
         for (Object row: rows) {
             Object[] columns = (Object[]) row;
             Worker worker = (Worker) findExistingEntity((Long) columns[0]);
-            Long numHours = (Long) columns[1];
+            BigDecimal numHours = (EffortDuration.seconds(((Long) columns[1])
+                    .intValue())).toHoursAsDecimalWithScale(2);
 
             HoursWorkedPerWorkerInAMonthDTO dto = new HoursWorkedPerWorkerInAMonthDTO(
                     worker, numHours);

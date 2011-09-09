@@ -108,7 +108,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private Boolean dirtyLastAdvanceMeasurementForSpreading = true;
 
-    private SumChargedHours sumChargedHours = SumChargedHours.create();
+    private SumChargedEffort sumChargedEffort = SumChargedEffort.create();
 
     public OrderElementTemplate getTemplate() {
         return template;
@@ -1342,12 +1342,12 @@ public abstract class OrderElement extends IntegrationEntity implements
         dirtyLastAdvanceMeasurementForSpreading = true;
     }
 
-    public void setSumChargedHours(SumChargedHours sumChargedHours) {
-        this.sumChargedHours = sumChargedHours;
+    public void setSumChargedEffort(SumChargedEffort sumChargedHours) {
+        this.sumChargedEffort = sumChargedHours;
     }
 
-    public SumChargedHours getSumChargedHours() {
-        return sumChargedHours;
+    public SumChargedEffort getSumChargedEffort() {
+        return sumChargedEffort;
     }
 
     public void updateAdvancePercentageTaskElement() {

@@ -176,8 +176,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
                 }
 
                 each.setCostPerHour(pricePerHour);
-                each.setCost(each.getCostPerHour().multiply(
-                        new BigDecimal(each.getNumHours())));
+                each.setCost(each.getCostPerHour().multiply(each.getNumHours()));
                 filteredList.add(each);
             }
         }

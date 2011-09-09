@@ -41,7 +41,7 @@
                             <label
                                 value="@{workReportLine.resource.shortDescription}" />
                             <label value="@{workReportLine.typeOfWorkHours.name}" />
-                            <label value="@{workReportLine.sumHours}" />
+                            <label value="@{workReportLine.sumEffort.toFormattedString}" />
                         </row>
                     </rows>
                 </grid>
@@ -55,20 +55,20 @@
                             <label
                                 value="${i18n:_('Sum of direct imputed hours')}" />
                             <label
-                                value="@{assignedHoursToOrderElementController.totalAssignedDirectHours}" />
+                                value="@{assignedHoursToOrderElementController.totalAssignedDirectEffort}" />
                         </row>
                         <row>
                             <label
                                 value="${i18n:_('Sum of all task leafs imputed hours')}" />
                             <label id="totalIDC"
-                                value="@{assignedHoursToOrderElementController.hoursChildren}" />
+                                value="@{assignedHoursToOrderElementController.effortChildren}" />
                         </row>
                         <row
                             style="border-top:1px solid black; font-weight: bold;">
                             <label value="${i18n:_('Total hours')}"
                                 style="font-weight: bold" />
                             <label id="addtotal"
-                                value="@{assignedHoursToOrderElementController.totalAssignedHours}"
+                                value="@{assignedHoursToOrderElementController.totalAssignedEffort}"
                                 style="font-weight: bold" />
                         </row>
                     </rows>
@@ -102,13 +102,13 @@
                                         <label
                                             value="${i18n:_('Budget hours')}:" />
                                         <label
-                                            value="@{assignedHoursToOrderElementController.estimatedHours}" />
+                                            value="@{assignedHoursToOrderElementController.estimatedEffort}" />
                                     </row>
                                     <row>
                                         <label
                                             value="${i18n:_('Imputed hours')}:" />
                                         <label
-                                            value="@{assignedHoursToOrderElementController.totalAssignedHours}" />
+                                            value="@{assignedHoursToOrderElementController.totalAssignedEffort}" />
                                     </row>
                                 </rows>
                             </grid>

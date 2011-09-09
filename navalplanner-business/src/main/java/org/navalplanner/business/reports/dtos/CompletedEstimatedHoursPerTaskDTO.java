@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.reports.dtos;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -47,7 +48,7 @@ public class CompletedEstimatedHoursPerTaskDTO {
 
     private Integer partialPlannedHours;
 
-    private Integer realHours;
+    private BigDecimal realHours;
 
     private CompletedEstimatedHoursPerTaskDTO() {
         workReportLineDAO = Registry.getWorkReportLineDAO();
@@ -86,8 +87,8 @@ public class CompletedEstimatedHoursPerTaskDTO {
         return result;
     }
 
-    public Integer calculateRealHours(Task task, LocalDate date) {
-        Integer result = new Integer(0);
+    public BigDecimal calculateRealHours(Task task, LocalDate date) {
+        BigDecimal result = BigDecimal.ZERO;
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(task.getOrderElement());
@@ -98,7 +99,8 @@ public class CompletedEstimatedHoursPerTaskDTO {
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());
             if (date == null || workReportLineDate.compareTo(date) <= 0) {
-                result += workReportLine.getNumHours();
+                result = result.add(workReportLine.getEffort()
+                        .toHoursAsDecimalWithScale(2));
             }
         }
         return result;
@@ -128,11 +130,11 @@ public class CompletedEstimatedHoursPerTaskDTO {
         this.partialPlannedHours = partialPlannedHours;
     }
 
-    public Integer getRealHours() {
+    public BigDecimal getRealHours() {
         return realHours;
     }
 
-    public void setRealHours(Integer realHours) {
+    public void setRealHours(BigDecimal realHours) {
         this.realHours = realHours;
     }
 

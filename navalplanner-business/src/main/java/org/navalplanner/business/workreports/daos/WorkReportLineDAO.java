@@ -63,7 +63,7 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
     public List<WorkReportLineDTO> findByOrderElementGroupByResourceAndHourTypeAndDate(
             OrderElement orderElement) {
 
-        String strQuery = "SELECT new org.navalplanner.business.reports.dtos.WorkReportLineDTO(wrl.resource, wrl.typeOfWorkHours, wrl.date, SUM(wrl.numHours)) "
+        String strQuery = "SELECT new org.navalplanner.business.reports.dtos.WorkReportLineDTO(wrl.resource, wrl.typeOfWorkHours, wrl.date, SUM(wrl.effort)) "
                 + "FROM WorkReportLine wrl "
                 + "LEFT OUTER JOIN wrl.orderElement orderElement "
                 + "WHERE orderElement = :orderElement "

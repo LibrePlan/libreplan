@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.reports.dtos;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public class HoursWorkedPerResourceDTO {
 
     private LocalTime clockFinish;
 
-    private Integer numHours;
+    private BigDecimal effort;
 
     private String orderElementCode;
 
@@ -59,7 +60,7 @@ Resource resource,
         this.date = workReportLine.getDate();
         this.clockStart = workReportLine.getClockStart();
         this.clockFinish = workReportLine.getClockFinish();
-        this.numHours = workReportLine.getNumHours();
+        this.effort = workReportLine.getEffort().toHoursAsDecimalWithScale(2);
         this.orderElementCode = workReportLine.getOrderElement().getCode();
         this.orderElementName = workReportLine.getOrderElement().getName();
         this.descriptionValues = descriptionValuesAsString(workReportLine.getDescriptionValues());
@@ -82,12 +83,12 @@ Resource resource,
         return (result.length() > 0) ? result.substring(0, result.length() - 2) : result;
     }
 
-    public Integer getNumHours() {
-        return numHours;
+    public BigDecimal getEffort() {
+        return effort;
     }
 
-    public void setNumHours(Integer numHours) {
-        this.numHours = numHours;
+    public void setEffort(BigDecimal effort) {
+        this.effort = effort;
     }
 
     public LocalTime getClockStart() {

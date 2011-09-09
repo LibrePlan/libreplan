@@ -47,7 +47,7 @@ public class OrderCostsPerResourceDTO implements
 
     private LocalTime clockFinish;
 
-    private Integer numHours;
+    private BigDecimal numHours;
 
     private String orderElementName;
 
@@ -87,7 +87,7 @@ public class OrderCostsPerResourceDTO implements
         }
         this.clockStart = workReportLine.getClockStart();
         this.clockFinish = workReportLine.getClockFinish();
-        this.numHours = workReportLine.getNumHours();
+        this.numHours = workReportLine.getEffort().toHoursAsDecimalWithScale(2);
         this.descriptionValues = descriptionValuesAsString(workReportLine.getDescriptionValues());
         this.labels = labelsAsString(workReportLine.getLabels());
         this.hoursType = workReportLine.getTypeOfWorkHours().getName();
@@ -114,11 +114,11 @@ public class OrderCostsPerResourceDTO implements
         return (result.length() > 0) ? result.substring(0, result.length() - 2) : result;
     }
 
-    public Integer getNumHours() {
+    public BigDecimal getNumHours() {
         return numHours;
     }
 
-    public void setNumHours(Integer numHours) {
+    public void setNumHours(BigDecimal numHours) {
         this.numHours = numHours;
     }
 

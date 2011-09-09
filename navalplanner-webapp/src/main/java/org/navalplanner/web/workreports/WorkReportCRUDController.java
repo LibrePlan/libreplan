@@ -37,6 +37,7 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.HoursManagementEnum;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
@@ -50,6 +51,7 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
+import org.navalplanner.web.common.components.EffortDurationPicker;
 import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
@@ -72,7 +74,6 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -407,22 +408,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             return false;
         }
 
-        if (workReportLine.getNumHours() == null) {
-            // Locate TextboxOrder
-            Intbox txtHours = getIntboxHours(row);
-            if (txtHours != null) {
-                String message = _("Hours cannot be null");
-                showInvalidMessage(txtHours, message);
+        if (workReportLine.getEffort() == null) {
+            EffortDurationPicker effort = getEffortDurationPicker(row);
+            if (effort == null) {
+                String message = _("Effort cannot be null");
+                showInvalidMessage(effort, message);
             }
             return false;
         }
 
         if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
-            // Locate TextboxOrder
-            Intbox txtHours = getIntboxHours(row);
-            if (txtHours != null) {
-                String message = _("number of hours is not properly calculated based on clock");
-                showInvalidMessage(txtHours, message);
+            EffortDurationPicker effort = getEffortDurationPicker(row);
+            if (effort != null) {
+                String message = _("effort is not properly calculated based on clock");
+                showInvalidMessage(effort, message);
             }
             return false;
         }
@@ -513,14 +512,15 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Locates {@link Intbox} Hours in {@link Row}
+     * Locates {@link EffortDurationPicker} effort in {@link Row}
+     *
      * @param row
      * @return
      */
-    private Intbox getIntboxHours(Row row) {
+    private EffortDurationPicker getEffortDurationPicker(Row row) {
         try {
             int position = row.getChildren().size() - 4;
-            return (Intbox) row.getChildren().get(position);
+            return (EffortDurationPicker) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
         }
@@ -1041,7 +1041,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 Timebox timeFinish = (Timebox) getTimeboxFinish(row);
                 if (timeFinish != null) {
                     checkCannotBeHigher(timeStart, timeFinish);
-                    updateNumHours(row);
+                    updateEffort(row);
                 }
             }
         });
@@ -1049,12 +1049,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         row.appendChild(timeStart);
     }
 
-    private void updateNumHours(final Row row) {
+    private void updateEffort(final Row row) {
         WorkReportLine line = (WorkReportLine) row.getValue();
-        Intbox txtHours = getIntboxHours(row);
-        if (txtHours != null) {
-            txtHours.setValue(line.getNumHours());
-            txtHours.invalidate();
+        EffortDurationPicker effort = getEffortDurationPicker(row);
+        if (effort != null) {
+            effort.setValue(line.getEffort());
+            effort.invalidate();
         }
     }
 
@@ -1102,7 +1102,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 Timebox timeStart = (Timebox) getTimeboxStart(row);
                 if (timeStart != null) {
                     checkCannotBeHigher(timeStart, timeFinish);
-                    updateNumHours(row);
+                    updateEffort(row);
                 }
 
             }
@@ -1126,21 +1126,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Append a {@link Intbox} numHours to {@link Row}
+     * Append a {@link EffortDurationPicker} effort to {@link Row}
      *
      * @param row
      */
-    private void appendNumHours(Row row) {
-        Intbox intNumHours = new Intbox();
-        intNumHours.setWidth("50px");
+    private void appendEffortDuration(Row row) {
+        EffortDurationPicker effort = new EffortDurationPicker();
         WorkReportLine workReportLine = (WorkReportLine) row.getValue();
-        bindIntboxNumHours(intNumHours, workReportLine);
+        bindEffortDurationPicker(effort, workReportLine);
 
         if (getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
-            intNumHours.setReadonly(true);
+            effort.setDisabled(true);
         }
-        row.appendChild(intNumHours);
+        row.appendChild(effort);
     }
 
     /**
@@ -1264,24 +1263,28 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Binds Intbox numHours to a {@link WorkReportLine} numHours
-     * @param intNumHours
+     * Binds EffortDurationPicker efffort to a {@link WorkReportLine} numHours
+     *
+     * @param effort
      * @param workReportLine
      */
-    private void bindIntboxNumHours(final Intbox intNumHours,
+    private void bindEffortDurationPicker(final EffortDurationPicker effort,
             final WorkReportLine workReportLine) {
-        Util.bind(intNumHours, new Util.Getter<Integer>() {
+        effort.bind(new Util.Getter<EffortDuration>() {
 
             @Override
-            public Integer get() {
-                return workReportLine.getNumHours();
+            public EffortDuration get() {
+                if (workReportLine.getEffort() != null) {
+                    return workReportLine.getEffort();
+                }
+                return EffortDuration.zero();
             }
 
-        }, new Util.Setter<Integer>() {
+        }, new Util.Setter<EffortDuration>() {
 
             @Override
-            public void set(Integer value) {
-                workReportLine.setNumHours(value);
+            public void set(EffortDuration value) {
+                workReportLine.setEffort(value);
             }
         });
     }
@@ -1325,7 +1328,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 appendHourFinish(row);
             }
 
-            appendNumHours(row);
+            appendEffortDuration(row);
             appendHoursType(row);
             appendCode(row);
             appendDeleteButton(row);

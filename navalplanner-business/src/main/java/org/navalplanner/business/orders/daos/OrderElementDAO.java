@@ -46,6 +46,7 @@ import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
@@ -150,9 +151,12 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getHoursAdvancePercentage(OrderElement orderElement) {
-        final int totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
-                .getSumChargedHours().getTotalChargedHours() : 0;
-        BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
+        final EffortDuration totalChargedEffort = orderElement
+                .getSumChargedEffort() != null ? orderElement
+                .getSumChargedEffort().getTotalChargedEffort() : EffortDuration
+                .zero();
+        BigDecimal assignedHours = totalChargedEffort
+                .toHoursAsDecimalWithScale(2);
         BigDecimal estimatedHours = new BigDecimal(orderElement.getWorkHours())
                 .setScale(2);
 
@@ -431,46 +435,49 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return false;
     }
 
-    private void updateRelatedSumChargedHoursWithWorkReportLine(
+    private void updateRelatedSumChargedEffortWithWorkReportLine(
             final WorkReportLine workReportLine,
-            Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours)
+            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort)
             throws InstanceNotFoundException {
 
         OrderElement orderElement = find(workReportLine.getOrderElement().getId());
-        Integer hours = workReportLine.getNumHours();
-        Integer differenceOfHours;
+        EffortDuration effort = workReportLine.getEffort();
+        EffortDuration differenceOfEffort;
 
         if(workReportLine.isNewObject()) {
-            differenceOfHours = hours;
+            differenceOfEffort = effort;
         }
         else {
             //the line already exists, we have to get the old value for numHours
-            Integer oldNumHours = transactionService
-                    .runOnAnotherTransaction(new IOnTransaction<Integer>() {
+            EffortDuration oldEffort = transactionService
+                    .runOnAnotherTransaction(new IOnTransaction<EffortDuration>() {
 
                 @Override
-                public Integer execute() {
+                        public EffortDuration execute() {
                     try {
-                        return workReportLineDAO.find(workReportLine.getId()).getNumHours();
+                                return workReportLineDAO.find(
+                                        workReportLine.getId()).getEffort();
                     } catch (InstanceNotFoundException e) {
                         // this shouldn't happen, as workReportLine.isNewObject()
                         // returns false, indicating this object already exists
-                        return workReportLine.getNumHours();
+                                return workReportLine.getEffort();
                     }
                 }
             });
-            differenceOfHours = hours - oldNumHours;
+            differenceOfEffort = effort.minus(oldEffort);
         }
-        orderElement.getSumChargedHours().addDirectChargedHours(differenceOfHours);
+        orderElement.getSumChargedEffort().addDirectChargedEffort(
+                differenceOfEffort);
         save(orderElement);
-        updateIndirectChargedHoursRecursively(orderElement.getParent(),differenceOfHours,
-                relationOrderElementIdAndIndirectChargedHours);
+        updateIndirectChargedEffortRecursively(orderElement.getParent(),
+                differenceOfEffort,
+                relationOrderElementIdAndIndirectChargedEffort);
         workReportLineDAO.save(workReportLine);
     }
 
-    private void updateRelatedSumChargedHoursWithDeletedWorkReportLine(
+    private void updateRelatedSumChargedEffortWithDeletedWorkReportLine(
             final WorkReportLine workReportLine,
-            Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours)
+            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedHours)
             throws InstanceNotFoundException {
 
         if(workReportLine.isNewObject()) {
@@ -478,67 +485,70 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             return;
         }
         OrderElement orderElement = find(workReportLine.getOrderElement().getId());
-        Integer hours = workReportLine.getNumHours() * -1;
+        EffortDuration effort = workReportLine.getEffort();
 
-        orderElement.getSumChargedHours().addDirectChargedHours(hours);
+        orderElement.getSumChargedEffort().subtractDirectChargedEffort(effort);
         save(orderElement);
-        updateIndirectChargedHoursRecursively(orderElement.getParent(), hours,
+        updateIndirectChargedEffortRecursively(orderElement.getParent(),
+                effort,
                 relationOrderElementIdAndIndirectChargedHours);
     }
 
-    private void updateIndirectChargedHoursRecursively(
-            OrderElement orderElement, Integer numberOfHoursDelta,
-            Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours) {
+    private void updateIndirectChargedEffortRecursively(
+            OrderElement orderElement,
+            EffortDuration effortDelta,
+            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort) {
         if(orderElement != null) {
             Long id = orderElement.getId();
-            if(relationOrderElementIdAndIndirectChargedHours.containsKey(id)) {
-                Integer previous = relationOrderElementIdAndIndirectChargedHours.get(id);
-                relationOrderElementIdAndIndirectChargedHours.put(id, previous + numberOfHoursDelta);
+            if (relationOrderElementIdAndIndirectChargedEffort.containsKey(id)) {
+                EffortDuration previous = relationOrderElementIdAndIndirectChargedEffort
+                        .get(id);
+                relationOrderElementIdAndIndirectChargedEffort.put(id,
+                        previous.plus(effortDelta));
             }
             else {
-                relationOrderElementIdAndIndirectChargedHours.put(id, numberOfHoursDelta);
+                relationOrderElementIdAndIndirectChargedEffort.put(id,
+                        effortDelta);
             }
-            updateIndirectChargedHoursRecursively(orderElement.getParent(), numberOfHoursDelta,
-                    relationOrderElementIdAndIndirectChargedHours);
+            updateIndirectChargedEffortRecursively(orderElement.getParent(),
+                    effortDelta, relationOrderElementIdAndIndirectChargedEffort);
         }
     }
 
-    private void updateIndirectChargedHoursWithMap(
-            Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours)
+    private void updateIndirectChargedEffortWithMap(
+            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort)
             throws InstanceNotFoundException {
 
-        for(Long id : relationOrderElementIdAndIndirectChargedHours.keySet()) {
+        for (Long id : relationOrderElementIdAndIndirectChargedEffort.keySet()) {
             OrderElement orderElement = find(id);
-            orderElement.getSumChargedHours().addIndirectChargedHours(
-                    relationOrderElementIdAndIndirectChargedHours.get(id));
+            orderElement.getSumChargedEffort().addIndirectChargedEffort(
+                    relationOrderElementIdAndIndirectChargedEffort.get(id));
             save(orderElement);
         }
     }
 
     @Override
     @Transactional
-    public void updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
+    public void updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException {
-        Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours =
-                new Hashtable<Long, Integer>();
+        Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort = new Hashtable<Long, EffortDuration>();
         for(WorkReportLine line : workReportLineSet) {
-            updateRelatedSumChargedHoursWithDeletedWorkReportLine(line,
-                    relationOrderElementIdAndIndirectChargedHours);
+            updateRelatedSumChargedEffortWithDeletedWorkReportLine(line,
+                    relationOrderElementIdAndIndirectChargedEffort);
         }
-        updateIndirectChargedHoursWithMap(relationOrderElementIdAndIndirectChargedHours);
+        updateIndirectChargedEffortWithMap(relationOrderElementIdAndIndirectChargedEffort);
     }
 
     @Override
     @Transactional
-    public void updateRelatedSumChargedHoursWithWorkReportLineSet(
+    public void updateRelatedSumChargedEffortWithWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException {
-        Map<Long, Integer> relationOrderElementIdAndIndirectChargedHours =
-            new Hashtable<Long, Integer>();
+        Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort = new Hashtable<Long, EffortDuration>();
         for(WorkReportLine line : workReportLineSet) {
-            updateRelatedSumChargedHoursWithWorkReportLine(line,
-                    relationOrderElementIdAndIndirectChargedHours);
+            updateRelatedSumChargedEffortWithWorkReportLine(line,
+                    relationOrderElementIdAndIndirectChargedEffort);
         }
-        updateIndirectChargedHoursWithMap(relationOrderElementIdAndIndirectChargedHours);
+        updateIndirectChargedEffortWithMap(relationOrderElementIdAndIndirectChargedEffort);
     }
 
     @SuppressWarnings("unchecked")

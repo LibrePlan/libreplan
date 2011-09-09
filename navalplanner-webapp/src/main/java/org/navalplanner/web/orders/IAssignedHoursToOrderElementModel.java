@@ -25,16 +25,21 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.reports.dtos.WorkReportLineDTO;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IAssignedHoursToOrderElementModel{
     public List<WorkReportLineDTO> getWorkReportLines();
-    public int getAssignedDirectHours();
-    public int getTotalAssignedHours();
-    public int getAssignedDirectHoursChildren();
+
+    public EffortDuration getTotalAssignedEffort();
+
+    public EffortDuration getAssignedDirectEffortChildren();
     public void initOrderElement(OrderElement orderElement);
-    public int getEstimatedHours();
+
+    public EffortDuration getEstimatedEffort();
     public int getProgressWork();
+
+    public EffortDuration getAssignedDirectEffort();
 }

@@ -144,7 +144,8 @@ public class WorkReportServiceREST extends
                  */
                 entity.validate();
                 try {
-                    orderElementDAO.updateRelatedSumChargedHoursWithWorkReportLineSet(
+                    orderElementDAO
+                            .updateRelatedSumChargedEffortWithWorkReportLineSet(
                             entity.getWorkReportLines());
                 } catch (InstanceNotFoundException e) {
                     //should never happen, because the entity has been

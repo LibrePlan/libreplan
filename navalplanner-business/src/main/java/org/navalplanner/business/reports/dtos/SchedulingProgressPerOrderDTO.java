@@ -57,7 +57,7 @@ public class SchedulingProgressPerOrderDTO {
 
     private Integer partialPlannedHours;
 
-    private Integer realHours;
+    private BigDecimal realHours;
 
     private BigDecimal averageProgress;
 
@@ -106,7 +106,8 @@ public class SchedulingProgressPerOrderDTO {
         this.realHours = calculateRealHours(order, date);
 
         // Progress calculations
-        this.imputedProgress = (totalPlannedHours != 0) ? new Double(realHours
+        this.imputedProgress = (totalPlannedHours != 0) ? new Double(
+                realHours.doubleValue()
                 / totalPlannedHours.doubleValue()) : new Double(0);
         this.plannedProgress = (totalPlannedHours != 0) ? new Double(
                 partialPlannedHours / totalPlannedHours.doubleValue())
@@ -114,7 +115,7 @@ public class SchedulingProgressPerOrderDTO {
 
         // Differences calculations
         this.costDifference = calculateCostDifference(averageProgress,
-                new BigDecimal(totalPlannedHours), new BigDecimal(realHours));
+                new BigDecimal(totalPlannedHours), realHours);
         this.planningDifference = calculatePlanningDifference(averageProgress,
                 new BigDecimal(totalPlannedHours), new BigDecimal(
                         partialPlannedHours));
@@ -167,8 +168,8 @@ public class SchedulingProgressPerOrderDTO {
                 .roundToHours();
     }
 
-    public Integer calculateRealHours(Order order, LocalDate date) {
-        int result = 0;
+    public BigDecimal calculateRealHours(Order order, LocalDate date) {
+        BigDecimal result = BigDecimal.ZERO;
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(order);
@@ -176,7 +177,8 @@ public class SchedulingProgressPerOrderDTO {
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());
             if (date == null || workReportLineDate.compareTo(date) <= 0) {
-                result += workReportLine.getNumHours();
+                result = result.add(workReportLine.getEffort()
+                        .toHoursAsDecimalWithScale(2));
             }
         }
         return result;
@@ -194,7 +196,7 @@ public class SchedulingProgressPerOrderDTO {
         return partialPlannedHours;
     }
 
-    public Integer getRealHours() {
+    public BigDecimal getRealHours() {
         return realHours;
     }
 
