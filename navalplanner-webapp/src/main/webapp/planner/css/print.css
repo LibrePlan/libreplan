@@ -68,7 +68,8 @@ td.migas_linea {
     repeat-y: none;
 }
 
-.main-area .taskdetailsContainer {
+.main-area .taskdetailsContainer,
+.leftpanelgap .z-tree-body {
     overflow-x: hidden !important;
 }
 
@@ -76,7 +77,7 @@ td.migas_linea {
     display:none;
 }
 
-.z-center div, .taskpanel div {
+.z-center > div, .taskpanel > div {
  overflow: hidden !important;
 }
 
