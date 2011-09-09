@@ -296,4 +296,8 @@
             columnDataType="BIGINT" />
     </changeSet>
 
+    <changeSet id="drop-column-date-in-stretches-table" author="mrego">
+        <dropColumn tableName="stretches" columnName="date" />
+    </changeSet>
+
 </databaseChangeLog>

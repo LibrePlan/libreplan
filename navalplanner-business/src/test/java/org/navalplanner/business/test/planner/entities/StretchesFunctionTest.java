@@ -21,16 +21,22 @@
 
 package org.navalplanner.business.test.planner.entities;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.createNiceMock;
+import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
@@ -41,10 +47,26 @@ import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class StretchesFunctionTest {
+
+    private static final LocalDate START_DATE = new LocalDate();
+    private static final LocalDate END_DATE = START_DATE.plusDays(10);
+
     private StretchesFunction stretchesFunction;
+    private ResourceAllocation<?> resourceAllocation;
+
+    private ResourceAllocation<?> givenResourceAllocation() {
+        resourceAllocation = createNiceMock(ResourceAllocation.class);
+
+        expect(resourceAllocation.getStartDate()).andReturn(START_DATE).anyTimes();
+        expect(resourceAllocation.getEndDate()).andReturn(END_DATE).anyTimes();
+
+        replay(resourceAllocation);
+        return resourceAllocation;
+    }
 
     private StretchesFunction givenStretchesFunction() {
         stretchesFunction = StretchesFunction.create();
+        stretchesFunction.setResourceAllocation(givenResourceAllocation());
         return stretchesFunction;
     }
 
@@ -54,11 +76,9 @@ public class StretchesFunctionTest {
         return result;
     }
 
-    private Stretch givenStretchAsChild(LocalDate date,
-            BigDecimal lengthPercentage,
+    private Stretch givenStretchAsChild(BigDecimal lengthPercentage,
             BigDecimal amountWorkPercentage) {
         Stretch stretch = givenStretchAsChild();
-        stretch.setDate(date);
         stretch.setLengthPercentage(lengthPercentage);
         stretch.setAmountWorkPercentage(amountWorkPercentage);
         return stretch;
@@ -66,7 +86,9 @@ public class StretchesFunctionTest {
 
     private Stretch givenStretchAsChild(LocalDate date,
             BigDecimal amountWorkPercentage) {
-        return givenStretchAsChild(date, BigDecimal.ZERO, amountWorkPercentage);
+        return givenStretchAsChild(
+                Stretch.getLengthProportionByDate(resourceAllocation, date),
+                amountWorkPercentage);
     }
 
     @Test
@@ -85,48 +107,27 @@ public class StretchesFunctionTest {
     @Test
     public void stretchesFunctionCheckOneHundredPercent1() {
         givenStretchesFunction();
-        assertFalse(stretchesFunction.checkOneHundredPercent());
+        assertTrue(stretchesFunction.checkOneHundredPercent());
     }
 
     @Test
     public void stretchesFunctionCheckOneHundredPercent2() {
         givenStretchesFunction();
         givenStretchAsChild();
-        assertFalse(stretchesFunction.checkOneHundredPercent());
-    }
-
-    @Test
-    public void stretchesFunctionCheckOneHundredPercent3() {
-        givenStretchesFunction();
-        givenStretchAsChild(new LocalDate(), BigDecimal.ONE, BigDecimal.ZERO);
-        assertFalse(stretchesFunction.checkOneHundredPercent());
-    }
-
-    @Test
-    public void stretchesFunctionCheckOneHundredPercent4() {
-        givenStretchesFunction();
-        givenStretchAsChild(new LocalDate(), BigDecimal.ZERO, BigDecimal.ONE);
-        assertFalse(stretchesFunction.checkOneHundredPercent());
-    }
-
-    @Test
-    public void stretchesFunctionCheckOneHundredPercent5() {
-        givenStretchesFunction();
-        givenStretchAsChild(new LocalDate(), BigDecimal.ONE, BigDecimal.ONE);
         assertTrue(stretchesFunction.checkOneHundredPercent());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder1() {
         givenStretchesFunction();
-        assertFalse(stretchesFunction.checkStretchesOrder());
+        assertTrue(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
     public void stretchesFunctionCheckStretchesOrder2() {
         givenStretchesFunction();
         givenStretchAsChild();
-        assertTrue(stretchesFunction.checkStretchesOrder());
+        assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
@@ -141,7 +142,7 @@ public class StretchesFunctionTest {
     public void stretchesFunctionCheckStretchesOrder4() {
         givenStretchesFunction();
         givenStretchAsChild();
-        givenStretchAsChild(new LocalDate(), BigDecimal.ONE, BigDecimal.ONE);
+        givenStretchAsChild(BigDecimal.ONE, BigDecimal.ONE);
         assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
@@ -149,8 +150,7 @@ public class StretchesFunctionTest {
     public void stretchesFunctionCheckStretchesOrder5() {
         givenStretchesFunction();
         givenStretchAsChild();
-        givenStretchAsChild(new LocalDate().plusMonths(1), BigDecimal.ZERO,
-                BigDecimal.ZERO);
+        givenStretchAsChild(BigDecimal.ZERO, BigDecimal.ZERO);
         assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
@@ -158,8 +158,7 @@ public class StretchesFunctionTest {
     public void stretchesFunctionCheckStretchesOrder7() {
         givenStretchesFunction();
         givenStretchAsChild();
-        givenStretchAsChild(new LocalDate().minusMonths(1), BigDecimal.ONE,
-                BigDecimal.ONE);
+        givenStretchAsChild(BigDecimal.ONE, BigDecimal.ONE);
         assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
@@ -167,43 +166,63 @@ public class StretchesFunctionTest {
     public void stretchesFunctionCheckStretchesOrder6() {
         givenStretchesFunction();
         givenStretchAsChild();
-        givenStretchAsChild(new LocalDate().plusMonths(1), BigDecimal.ONE,
-                BigDecimal.ONE);
-        assertTrue(stretchesFunction.checkStretchesOrder());
+        givenStretchAsChild(BigDecimal.ONE, BigDecimal.ONE);
+        assertFalse(stretchesFunction.checkStretchesOrder());
+    }
+
+    @Test
+    public void stretchesFunctionCheckStretchesOrder8() {
+        givenStretchesFunction();
+        givenStretchAsChild(BigDecimal.ONE, BigDecimal.ONE);
+        assertFalse(stretchesFunction.checkStretchesOrder());
+    }
+
+    @Test
+    public void stretchesFunctionCheckStretchesOrder9() {
+        givenStretchesFunction();
+        givenStretchAsChild(BigDecimal.ZERO, BigDecimal.ZERO);
+        assertFalse(stretchesFunction.checkStretchesOrder());
     }
 
     @Test
     public void ifNoStrechesNoIntervalDefinedByStreches() {
         givenStretchesFunction();
-        assertTrue(stretchesFunction.getIntervalsDefinedByStreches().isEmpty());
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void theLastStrechMustHaveAllTheLoad() {
-        givenStretchesFunction();
-        givenStretchAsChild(new LocalDate().plusMonths(1), new BigDecimal(0.6));
-        stretchesFunction.getIntervalsDefinedByStreches();
+        assertThat(stretchesFunction.getIntervalsDefinedByStreches().size(),
+                equalTo(2));
     }
 
     @Test
-    public void oneStrechImpliesOneInterval() {
+    public void theLastStrechMustHaveAllTheLoad() {
         givenStretchesFunction();
-        givenStretchAsChild(new LocalDate().plusMonths(1), new BigDecimal(1));
+        givenStretchAsChild(new LocalDate().plusDays(1),
+                BigDecimal.valueOf(0.6));
+        List<Interval> intervals = stretchesFunction
+                .getIntervalsDefinedByStreches();
+        assertThat(intervals.size(), equalTo(3));
+        assertThat(intervals.get(intervals.size() - 1).getLoadProportion(),
+                equalTo(BigDecimal.valueOf(0.4).setScale(2)));
+    }
+
+    @Test
+    public void oneStrechImpliesThreeInterval() {
+        givenStretchesFunction();
+        givenStretchAsChild(new LocalDate().plusDays(1), new BigDecimal(1));
         assertThat(stretchesFunction.getIntervalsDefinedByStreches().size(),
-                equalTo(1));
+                equalTo(3));
     }
 
     @Test
     public void oneStrechImpliesOneIntervalUntilDateWithLoadSpecifiedByStrech() {
         givenStretchesFunction();
-        LocalDate strechDate = new LocalDate().plusMonths(1);
-        BigDecimal amountOfWorkProportion = new BigDecimal(0.5).setScale(2);
+        LocalDate strechDate = new LocalDate().plusDays(1);
+        BigDecimal amountOfWorkProportion = BigDecimal.valueOf(0.5).setScale(2);
         givenStretchAsChild(strechDate, amountOfWorkProportion);
-        givenStretchAsChild(new LocalDate().plusMonths(2), new BigDecimal(1.0));
+        givenStretchAsChild(new LocalDate().plusDays(2),
+                BigDecimal.valueOf(1.0));
         Interval firstInterval = stretchesFunction
-                .getIntervalsDefinedByStreches().get(0);
+                .getIntervalsDefinedByStreches().get(1);
         assertThat(firstInterval.getEnd(), equalTo(strechDate));
-        assertTrue(firstInterval.hasNoStart());
+        assertFalse(firstInterval.hasNoStart());
         assertThat(firstInterval.getLoadProportion(),
                 equalTo(amountOfWorkProportion));
     }
@@ -211,24 +230,24 @@ public class StretchesFunctionTest {
     @Test
     public void theLastIntervalHasStart() {
         givenStretchesFunction();
-        LocalDate strechDate = new LocalDate().plusMonths(1);
+        LocalDate strechDate = new LocalDate().plusDays(1);
         givenStretchAsChild(strechDate, new BigDecimal(0.5));
-        givenStretchAsChild(strechDate.plusDays(20), new BigDecimal(1));
+        givenStretchAsChild(strechDate.plusDays(2), new BigDecimal(1));
         Interval lastInterval = stretchesFunction
-                .getIntervalsDefinedByStreches().get(1);
+                .getIntervalsDefinedByStreches().get(2);
         assertThat(lastInterval.getStart(), equalTo(strechDate));
     }
 
     @Test
     public void aIntervalInTheMiddleHasStart() {
         givenStretchesFunction();
-        LocalDate start = new LocalDate().plusMonths(1);
+        LocalDate start = new LocalDate().plusDays(1);
         givenStretchAsChild(start, new BigDecimal(0.5));
-        LocalDate middleEnd = start.plusMonths(2);
+        LocalDate middleEnd = start.plusDays(2);
         givenStretchAsChild(middleEnd, new BigDecimal(0.6));
-        givenStretchAsChild(middleEnd.plusDays(10), new BigDecimal(1));
-        Interval middle = stretchesFunction.getIntervalsDefinedByStreches().get(
-                1);
+        givenStretchAsChild(middleEnd.plusDays(3), new BigDecimal(1));
+        Interval middle = stretchesFunction.getIntervalsDefinedByStreches()
+                .get(2);
         assertFalse(middle.hasNoStart());
         assertThat(middle.getStart(), equalTo(start));
         assertThat(middle.getEnd(), equalTo(middleEnd));
@@ -237,17 +256,17 @@ public class StretchesFunctionTest {
     @Test
     public void eachIntervalHasTheCorrespondingLoadForThatInterval() {
         givenStretchesFunction();
-        LocalDate start = new LocalDate().plusMonths(1);
+        LocalDate start = new LocalDate().plusDays(1);
         givenStretchAsChild(start, new BigDecimal(0.5));
-        LocalDate middleEnd = start.plusMonths(2);
+        LocalDate middleEnd = start.plusDays(2);
         givenStretchAsChild(middleEnd, new BigDecimal(0.8));
-        givenStretchAsChild(middleEnd.plusDays(10), new BigDecimal(1));
+        givenStretchAsChild(middleEnd.plusDays(3), new BigDecimal(1));
         Interval first = stretchesFunction.getIntervalsDefinedByStreches().get(
-                0);
+                1);
         Interval middle = stretchesFunction.getIntervalsDefinedByStreches()
-                .get(1);
-        Interval last = stretchesFunction.getIntervalsDefinedByStreches()
                 .get(2);
+        Interval last = stretchesFunction.getIntervalsDefinedByStreches()
+                .get(3);
         assertThat(first.getLoadProportion(), equalTo(new BigDecimal(0.5)
                 .setScale(2)));
         assertThat(middle.getLoadProportion(), equalTo(new BigDecimal(0.3)
@@ -284,6 +303,24 @@ public class StretchesFunctionTest {
         LocalDate end = new LocalDate().plusMonths(2);
         Interval interval = new Interval(new BigDecimal(0.3), start, end);
         assertThat(interval.getEnd(), equalTo(end));
+    }
+
+    @Test
+    public void checkCalculatedDateForStretches() {
+        givenStretchesFunction();
+        givenStretchAsChild(BigDecimal.valueOf(0.2), BigDecimal.valueOf(0.5));
+        givenStretchAsChild(BigDecimal.valueOf(0.5), BigDecimal.valueOf(0.8));
+
+        List<Interval> intervals = stretchesFunction
+                .getIntervalsDefinedByStreches();
+        assertNull(intervals.get(0).getStart());
+        assertThat(intervals.get(0).getEnd(), equalTo(START_DATE));
+        assertThat(intervals.get(1).getStart(), equalTo(START_DATE));
+        assertThat(intervals.get(1).getEnd(), equalTo(START_DATE.plusDays(2)));
+        assertThat(intervals.get(2).getStart(), equalTo(START_DATE.plusDays(2)));
+        assertThat(intervals.get(2).getEnd(), equalTo(START_DATE.plusDays(5)));
+        assertThat(intervals.get(3).getStart(), equalTo(START_DATE.plusDays(5)));
+        assertThat(intervals.get(3).getEnd(), equalTo(END_DATE));
     }
 
 }

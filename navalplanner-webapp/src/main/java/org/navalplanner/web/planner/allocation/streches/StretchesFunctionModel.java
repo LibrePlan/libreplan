@@ -24,9 +24,7 @@ package org.navalplanner.web.planner.allocation.streches;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -101,7 +99,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             this.taskEndDate = task.getEndDate();
 
             // Initialize stretchesFunction
-            stretchesFunction.setTaskEndDate(task.getEndAsLocalDate());
+            stretchesFunction.setResourceAllocation(resourceAllocation);
             this.originalStretchesFunction = stretchesFunction;
             this.stretchesFunction = stretchesFunction.copy();
             this.stretchesFunction.changeTypeTo(type);
@@ -150,10 +148,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
      * @return
      */
     private List<Stretch> allStretches() {
-        List<Stretch> result = new ArrayList<Stretch>();
-        result.add(firstStretch());
-        result.addAll(stretchesFunction.getStretchesPlusConsolidated());
-        return result;
+        return stretchesFunction.getStretchesPlusConsolidated();
     }
 
     @Override
@@ -163,18 +158,6 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         }
         return Collections.unmodifiableList(stretchesFunction
                 .getStretchesPlusConsolidated());
-    }
-
-    /**
-     * Defines an initial read-only stretch with 0% hours worked and 0% progress
-     *
-     * @return
-     */
-    private Stretch firstStretch() {
-        Stretch result = Stretch.create(task.getStartAsLocalDate(),
-                BigDecimal.ZERO, BigDecimal.ZERO);
-        result.readOnly(true);
-        return result;
     }
 
     @Override
@@ -214,10 +197,11 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         }
     }
 
-    public static boolean areValidForInterpolation(List<Stretch> stretches,
-            LocalDate start) {
+    public static boolean areValidForInterpolation(
+            ResourceAllocation<?> resourceAllocation, List<Stretch> stretches) {
         return atLeastTwoStreches(stretches)
-                && theFirstIntervalIsPosteriorToFirstDay(stretches, start);
+                && theFirstIntervalIsPosteriorToFirstDay(resourceAllocation,
+                        stretches);
     }
 
     private static boolean atLeastTwoStreches(List<Stretch> stretches) {
@@ -225,13 +209,14 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     private static boolean theFirstIntervalIsPosteriorToFirstDay(
-            List<Stretch> stretches, LocalDate start) {
-        List<Interval> intervals = StretchesFunction.intervalsFor(stretches);
+            ResourceAllocation<?> resourceAllocation, List<Stretch> stretches) {
+        List<Interval> intervals = StretchesFunction.intervalsFor(
+                resourceAllocation, stretches);
         if (intervals.isEmpty()) {
             return false;
         }
         Interval first = intervals.get(0);
-        return first.getEnd().compareTo(start) > 0;
+        return first.getEnd().compareTo(resourceAllocation.getStartDate()) > 0;
     }
 
     @Override
@@ -253,10 +238,11 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         Stretch consolidatedStretch = stretchesFunction
                 .getConsolidatedStretch();
         if (consolidatedStretch != null) {
-            startDate = consolidatedStretch.getDate().plusDays(1);
+            startDate = consolidatedStretch.getDateIn(resourceAllocation)
+                    .plusDays(1);
             amountWorkPercent = consolidatedStretch.getAmountWorkPercentage().add(BigDecimal.ONE.divide(BigDecimal.valueOf(100)));
         }
-        return Stretch.create(startDate, task, amountWorkPercent);
+        return Stretch.create(startDate, resourceAllocation, amountWorkPercent);
     }
 
     @Override
@@ -280,6 +266,12 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     @Override
+    public Date getStretchDate(Stretch stretch) {
+        return stretch.getDateIn(resourceAllocation).toDateTimeAtStartOfDay()
+                .toDate();
+    }
+
+    @Override
     public void setStretchDate(Stretch stretch, Date date)
             throws IllegalArgumentException {
         if (date.compareTo(task.getStartDate()) < 0) {
@@ -294,15 +286,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                             + sameFormatAsDefaultZK(taskEndDate)));
         }
 
-        stretch.setDate(new LocalDate(date));
-
-        if ((date.compareTo(taskEndDate) > 0)
-                || (stretch.getAmountWorkPercentage().compareTo(BigDecimal.ONE) == 0)) {
-            taskEndDate = date;
-            recalculateStretchesPercentages();
-        } else {
-            calculatePercentage(stretch);
-        }
+        stretch.setDateIn(resourceAllocation, new LocalDate(date));
     }
 
     private String sameFormatAsDefaultZK(Date date) {
@@ -312,40 +296,10 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         return formatter.format(date);
     }
 
-    private void recalculateStretchesPercentages() {
-        List<Stretch> stretches = stretchesFunction.getStretches();
-        if (!stretches.isEmpty()) {
-            for (Stretch stretch : stretches) {
-                calculatePercentage(stretch);
-            }
-        }
-    }
-
-    private void calculatePercentage(Stretch stretch) {
-        long stretchDate = stretch.getDate().toDateTimeAtStartOfDay().toDate()
-                .getTime();
-        long startDate = task.getStartDate().getTime();
-        long endDate = taskEndDate.getTime();
-
-        // (stretchDate - startDate) / (endDate - startDate)
-        BigDecimal lengthPercenage = (new BigDecimal(stretchDate - startDate)
-                .setScale(2)).divide(new BigDecimal(endDate - startDate),
-                RoundingMode.DOWN);
-        stretch.setLengthPercentage(lengthPercenage);
-    }
-
     @Override
     public void setStretchLengthPercentage(Stretch stretch,
             BigDecimal lengthPercentage) throws IllegalArgumentException {
         stretch.setLengthPercentage(lengthPercentage);
-
-        long startDate = task.getStartDate().getTime();
-        long endDate = taskEndDate.getTime();
-
-        // startDate + (percentage * (endDate - startDate))
-        long stretchDate = startDate + lengthPercentage.multiply(
-                new BigDecimal(endDate - startDate)).longValue();
-        stretch.setDate(new LocalDate(stretchDate));
     }
 
     @Override
@@ -362,6 +316,11 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             return null;
         }
         return task.getCalendar();
+    }
+
+    @Override
+    public ResourceAllocation<?> getResourceAllocation() {
+        return resourceAllocation;
     }
 
 }

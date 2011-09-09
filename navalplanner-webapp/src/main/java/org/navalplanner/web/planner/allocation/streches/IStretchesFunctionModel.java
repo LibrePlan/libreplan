@@ -67,6 +67,8 @@ public interface IStretchesFunctionModel {
 
     AssignmentFunction getStretchesFunction();
 
+    Date getStretchDate(Stretch stretch);
+
     void setStretchDate(Stretch stretch, Date date) throws IllegalArgumentException;
 
     void setStretchLengthPercentage(Stretch stretch, BigDecimal lengthPercentage)
@@ -77,6 +79,8 @@ public interface IStretchesFunctionModel {
     Integer getAllocationHours();
 
     BaseCalendar getTaskCalendar();
+
+    ResourceAllocation<?> getResourceAllocation();
 
     /*
      * Final conversation steps

@@ -312,8 +312,6 @@
                 <list-index column="stretch_position" />
 
                 <composite-element class="Stretch">
-                    <property name="date" not-null="true"
-                        type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
                     <property name="lengthPercentage" not-null="true" column="length_percentage" />
                     <property name="amountWorkPercentage" not-null="true" column="amount_work_percentage" />
                 </composite-element>

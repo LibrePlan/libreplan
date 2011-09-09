@@ -27,6 +27,7 @@ import java.util.List;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
@@ -60,7 +61,7 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
             return new SimpleXYModel();
         }
         return getAccumulatedHoursChartData(stretches,
-                stretchesFunctionModel.getTaskStartDate(), new BigDecimal(
+                stretchesFunctionModel.getResourceAllocation(), new BigDecimal(
                         stretchesFunctionModel.getAllocationHours()));
     }
 
@@ -73,17 +74,18 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
             return new SimpleXYModel();
         }
         return getDedicationChart(stretches,
-                stretchesFunctionModel.getTaskStartDate(),
-                new BigDecimal(stretchesFunctionModel.getAllocationHours()),
+                stretchesFunctionModel.getResourceAllocation(), new BigDecimal(
+                        stretchesFunctionModel.getAllocationHours()),
                 stretchesFunctionModel.getTaskCalendar());
     }
 
     protected abstract XYModel getDedicationChart(List<Stretch> stretches,
-            LocalDate startDate, BigDecimal totalHours,
+            ResourceAllocation<?> allocation, BigDecimal totalHours,
             BaseCalendar taskCalendar);
 
     protected abstract XYModel getAccumulatedHoursChartData(
-            List<Stretch> stretches, LocalDate startDate, BigDecimal taskHours);
+            List<Stretch> stretches, ResourceAllocation<?> allocation,
+            BigDecimal taskHours);
 
     private static class ForDefaultStreches extends GraphicForStreches {
 
@@ -94,19 +96,19 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
         @Override
         public XYModel getAccumulatedHoursChartData(List<Stretch> stretches,
-                LocalDate startDate, BigDecimal taskHours) {
+                ResourceAllocation<?> allocation, BigDecimal taskHours) {
             XYModel xymodel = new SimpleXYModel();
 
             String title = "percentage";
 
-            xymodel.addValue(title, startDate.toDateTimeAtStartOfDay()
-                    .getMillis(), 0);
+            xymodel.addValue(title, allocation.getStartDate()
+                    .toDateTimeAtStartOfDay().getMillis(), 0);
 
             for (Stretch stretch : stretches) {
                 BigDecimal amountWork = stretch.getAmountWorkPercentage()
                         .multiply(taskHours);
 
-                xymodel.addValue(title, stretch.getDate()
+                xymodel.addValue(title, stretch.getDateIn(allocation)
                         .toDateTimeAtStartOfDay().getMillis(), amountWork);
             }
 
@@ -114,12 +116,12 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
         }
 
         protected XYModel getDedicationChart(List<Stretch> stretches,
-                LocalDate startDate, BigDecimal taskHours,
+                ResourceAllocation<?> allocation, BigDecimal taskHours,
                 BaseCalendar calendar){
             XYModel xymodel = new SimpleXYModel();
             String title = "hours";
 
-            LocalDate previousDate = startDate;
+            LocalDate previousDate = allocation.getStartDate();
             BigDecimal previousPercentage = BigDecimal.ZERO;
             xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
                     .getMillis(), 0);
@@ -127,12 +129,12 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
             for (Stretch stretch : stretches) {
                 BigDecimal amountWork = stretch.getAmountWorkPercentage()
                         .subtract(previousPercentage).multiply(taskHours);
-                Integer days = Days
-                        .daysBetween(previousDate, stretch.getDate()).getDays();
+                Integer days = Days.daysBetween(previousDate,
+                        stretch.getDateIn(allocation)).getDays();
 
                 if (calendar != null) {
                     days -= calendar.getNonWorkableDays(previousDate,
-                            stretch.getDate()).size();
+                            stretch.getDateIn(allocation)).size();
                 }
 
                 BigDecimal hoursPerDay = BigDecimal.ZERO;
@@ -143,10 +145,10 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
                 xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
                         .getMillis() + 1, hoursPerDay);
-                xymodel.addValue(title, stretch.getDate()
+                xymodel.addValue(title, stretch.getDateIn(allocation)
                         .toDateTimeAtStartOfDay().getMillis(), hoursPerDay);
 
-                previousDate = stretch.getDate();
+                previousDate = stretch.getDateIn(allocation);
                 previousPercentage = stretch.getAmountWorkPercentage();
             }
 
@@ -162,51 +164,53 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
         @Override
         public boolean areChartsEnabled(IStretchesFunctionModel model) {
-            return canComputeChartFrom(model.getStretchesPlusConsolidated(),
-                    model.getTaskStartDate());
+            return canComputeChartFrom(model.getResourceAllocation(),
+                    model.getStretchesPlusConsolidated());
         }
 
         @Override
         protected XYModel getAccumulatedHoursChartData(List<Stretch> stretches,
-                LocalDate startDate, BigDecimal taskHours) {
-            if (!canComputeChartFrom(stretches, startDate)) {
+                ResourceAllocation<?> allocation, BigDecimal taskHours) {
+            if (!canComputeChartFrom(allocation, stretches)) {
                 return new SimpleXYModel();
             }
             int[] hoursForEachDayUsingSplines = hoursForEachDayInterpolatedUsingSplines(
-                    stretches, startDate, taskHours);
-            return createModelFrom(startDate,
+                    stretches, allocation, taskHours);
+            return createModelFrom(allocation.getStartDate(),
                     accumulatedFrom(hoursForEachDayUsingSplines));
         }
 
         @Override
         protected XYModel getDedicationChart(List<Stretch> stretches,
-                LocalDate startDate, BigDecimal totalHours,
+                ResourceAllocation<?> allocation, BigDecimal totalHours,
                 BaseCalendar taskCalendar) {
-            if (!canComputeChartFrom(stretches, startDate)) {
+            if (!canComputeChartFrom(allocation, stretches)) {
                 return new SimpleXYModel();
             }
             int[] dataForChart = hoursForEachDayInterpolatedUsingSplines(
-                    stretches, startDate, totalHours);
-            return createModelFrom(startDate, dataForChart);
+                    stretches, allocation, totalHours);
+            return createModelFrom(allocation.getStartDate(), dataForChart);
         }
 
-        private boolean canComputeChartFrom(List<Stretch> stretches,
-                LocalDate start) {
-            return StretchesFunctionModel.areValidForInterpolation(stretches,
-                    start);
+        private boolean canComputeChartFrom(ResourceAllocation<?> allocation,
+                List<Stretch> stretches) {
+            return StretchesFunctionModel.areValidForInterpolation(allocation,
+                    stretches);
         }
 
         private int[] hoursForEachDayInterpolatedUsingSplines(
-                List<Stretch> stretches, LocalDate startDate,
+                List<Stretch> stretches, ResourceAllocation<?> allocation,
                 BigDecimal taskHours) {
-            List<Interval> intervals = StretchesFunction
-                    .intervalsFor(stretches);
-            double[] dayPoints = Interval.getDayPointsFor(startDate, intervals);
+            List<Interval> intervals = StretchesFunction.intervalsFor(
+                    allocation, stretches);
+            double[] dayPoints = Interval.getDayPointsFor(
+                    allocation.getStartDate(), intervals);
             double[] hourPoints = Interval.getHoursPointsFor(taskHours
                     .intValue(), intervals);
             final Stretch lastStretch = stretches.get(stretches.size() - 1);
             return StretchesFunctionTypeEnum.hoursForEachDayUsingSplines(
-                    dayPoints, hourPoints, startDate, lastStretch.getDate());
+                    dayPoints, hourPoints, allocation.getStartDate(),
+                    lastStretch.getDateIn(allocation));
         }
 
         private int[] accumulatedFrom(int[] hoursForEachDayUsingSplines) {

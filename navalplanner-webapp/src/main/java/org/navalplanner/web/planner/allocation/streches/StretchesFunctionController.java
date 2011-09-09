@@ -293,7 +293,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
             Datebox datebox = Util.bind(tempDatebox, new Util.Getter<Date>() {
                 @Override
                 public Date get() {
-                    return stretch.getDate().toDateTimeAtStartOfDay().toDate();
+                    return stretchesFunctionModel.getStretchDate(stretch);
                 }
             }, new Util.Setter<Date>() {
                 @Override

@@ -206,8 +206,8 @@ public class StretchesFunction extends AssignmentFunction {
     // Transient. Calculated from resourceAllocation
     private Stretch consolidatedStretch;
 
-    // Transient. Used to calculate read-only last stretch
-    private LocalDate taskEndDate;
+    // Transient. Used to calculate stretches dates
+    private ResourceAllocation<?> resourceAllocation;
 
     public static StretchesFunction create() {
         return (StretchesFunction) create(new StretchesFunction());
@@ -220,14 +220,14 @@ public class StretchesFunction extends AssignmentFunction {
 
     }
 
-    public static List<Interval> intervalsFor(
+    public static List<Interval> intervalsFor(ResourceAllocation<?> allocation,
             Collection<? extends Stretch> streches) {
         ArrayList<Interval> result = new ArrayList<Interval>();
         LocalDate previous = null, stretchDate = null;
         BigDecimal sumOfProportions = BigDecimal.ZERO, loadedProportion = BigDecimal.ZERO;
 
         for (Stretch each : streches) {
-            stretchDate = each.getDate();
+            stretchDate = each.getDateIn(allocation);
             loadedProportion = each.getAmountWorkPercentage().subtract(
                     sumOfProportions);
             if (loadedProportion.signum() < 0) {
@@ -251,7 +251,7 @@ public class StretchesFunction extends AssignmentFunction {
         result.type = type;
         result.desiredType = desiredType;
         result.consolidatedStretch = consolidatedStretch;
-        result.taskEndDate = taskEndDate;
+        result.resourceAllocation = resourceAllocation;
         return result;
     }
 
@@ -264,20 +264,28 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     public List<Stretch> getStretchesDefinedByUser() {
-        return Collections.unmodifiableList(Stretch.sortByDate(stretches));
+        return Collections.unmodifiableList(Stretch
+                .sortByLengthPercentage(stretches));
     }
 
     @Valid
     public List<Stretch> getStretches() {
-        List<Stretch> result = new ArrayList<Stretch>(stretches);
-        if (taskEndDate != null) {
-            result.add(getLastStretch());
-        }
-        return Collections.unmodifiableList(Stretch.sortByDate(result));
+        List<Stretch> result = new ArrayList<Stretch>();
+        result.add(getFirstStretch());
+        result.addAll(stretches);
+        result.add(getLastStretch());
+        return Collections.unmodifiableList(Stretch
+                .sortByLengthPercentage(result));
     }
 
     private Stretch getLastStretch() {
-        Stretch result = Stretch.create(taskEndDate, BigDecimal.ONE, BigDecimal.ONE);
+        Stretch result = Stretch.create(BigDecimal.ONE, BigDecimal.ONE);
+        result.readOnly(true);
+        return result;
+    }
+
+    private Stretch getFirstStretch() {
+        Stretch result = Stretch.create(BigDecimal.ZERO, BigDecimal.ZERO);
         result.readOnly(true);
         return result;
     }
@@ -308,7 +316,8 @@ public class StretchesFunction extends AssignmentFunction {
 
     @AssertTrue(message = "At least one stretch is needed")
     public boolean checkNoEmpty() {
-        return !getStretchesPlusConsolidated().isEmpty();
+        // first 0%-0% and last 100%-100% stretches are added automatically
+        return getStretchesPlusConsolidated().size() > 2;
     }
 
     @AssertTrue(message = "Some stretch has lower or equal values than the "
@@ -323,9 +332,6 @@ public class StretchesFunction extends AssignmentFunction {
         Stretch previous = iterator.next();
         while (iterator.hasNext()) {
             Stretch current = iterator.next();
-            if (current.getDate().compareTo(previous.getDate()) <= 0) {
-                return false;
-            }
             if (current.getLengthPercentage().compareTo(
                     previous.getLengthPercentage()) <= 0) {
                 return false;
@@ -345,7 +351,8 @@ public class StretchesFunction extends AssignmentFunction {
         if (consolidatedStretch != null) {
             result.add(consolidatedStretch);
         }
-        return Collections.unmodifiableList(Stretch.sortByDate(result));
+        return Collections.unmodifiableList(Stretch
+                .sortByLengthPercentage(result));
     }
 
     @AssertTrue(message = "Last stretch should have one hundred percent for "
@@ -374,14 +381,9 @@ public class StretchesFunction extends AssignmentFunction {
         if (resourceAllocation.getFirstNonConsolidatedDate() == null) {
             return;
         }
-        updateStretchesDates(resourceAllocation);
-        taskEndDate = getTaskEndDate(resourceAllocation);
+        this.resourceAllocation = resourceAllocation;
         getDesiredType().applyTo(resourceAllocation, this);
         type = getDesiredType();
-    }
-
-    private LocalDate getTaskEndDate(ResourceAllocation<?> resourceAllocation) {
-        return resourceAllocation.getTask().getEndAsLocalDate();
     }
 
     @Override
@@ -399,7 +401,7 @@ public class StretchesFunction extends AssignmentFunction {
             return Collections.emptyList();
         }
         checkStretchesSumOneHundredPercent();
-        return intervalsFor(stretches);
+        return intervalsFor(resourceAllocation, stretches);
     }
 
     private List<Stretch> stretchesFor(StretchesFunctionTypeEnum type) {
@@ -428,8 +430,8 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     public boolean checkFirstIntervalIsPosteriorToDate(LocalDate date) {
-        List<Interval> intervals = StretchesFunction
-                .intervalsFor(getStretchesPlusConsolidated());
+        List<Interval> intervals = StretchesFunction.intervalsFor(
+                resourceAllocation, getStretchesPlusConsolidated());
         if (intervals.isEmpty()) {
             return false;
         }
@@ -449,31 +451,8 @@ public class StretchesFunction extends AssignmentFunction {
         return consolidatedStretch;
     }
 
-    public void setTaskEndDate(LocalDate taskEndDate) {
-        this.taskEndDate = taskEndDate;
-    }
-
-    /**
-     * {@link Stretch} is storing date in an attribute. When a task is moved
-     * these dates have to be updated.
-     *
-     * FIXME: Maybe in the future we could remove these dates as they could be
-     * calculated from task information.
-     */
-    private void updateStretchesDates(ResourceAllocation<?> resourceAllocation) {
-        Task task = resourceAllocation.getTask();
-
-        long startDate = task.getStartDate().getTime();
-        long endDate = task.getEndDate().getTime();
-
-        for (Stretch stretch : stretches) {
-            // startDate + (percentage * (endDate - startDate))
-            long stretchDate = startDate
-                    + stretch.getLengthPercentage()
-                            .multiply(new BigDecimal(endDate - startDate))
-                            .longValue();
-            stretch.setDate(new LocalDate(stretchDate));
-        }
+    public void setResourceAllocation(ResourceAllocation<?> resourceAllocation) {
+        this.resourceAllocation = resourceAllocation;
     }
 
     @Override

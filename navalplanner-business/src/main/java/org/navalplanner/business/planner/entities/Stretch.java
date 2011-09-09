@@ -39,28 +39,43 @@ import org.joda.time.LocalDate;
  */
 public class Stretch {
 
-    public static Stretch create(LocalDate date, BigDecimal datePercent, BigDecimal workPercent) {
-        return new Stretch(date, datePercent, workPercent);
+    public static Stretch create(BigDecimal datePercent, BigDecimal workPercent) {
+        return new Stretch(datePercent, workPercent);
+    }
+
+    public static LocalDate getDateByLengthProportion(
+            ResourceAllocation<?> allocation, BigDecimal lengthProportion) {
+        int allocationDuration = Days.daysBetween(allocation.getStartDate(),
+                allocation.getEndDate()).getDays();
+        int days = lengthProportion.multiply(
+                BigDecimal.valueOf(allocationDuration)).intValue();
+        return allocation.getStartDate().plusDays(days);
+    }
+
+    public static BigDecimal getLengthProportionByDate(
+            ResourceAllocation<?> allocation, LocalDate date) {
+        int allocationDuration = Days.daysBetween(allocation.getStartDate(),
+                allocation.getEndDate()).getDays();
+        int days = Days.daysBetween(allocation.getStartDate(), date).getDays();
+        return daysProportion(days, allocationDuration);
+    }
+
+    private static BigDecimal daysProportion(int daysPartial, int daysTotal) {
+        if (daysTotal == 0) {
+            return BigDecimal.ZERO;
+        }
+        return BigDecimal.valueOf(daysPartial).divide(
+                BigDecimal.valueOf(daysTotal), 2, BigDecimal.ROUND_HALF_EVEN);
     }
 
     /**
-     * Infers the datePercent based on duration of task and the date of the
-     * Stretch
-     *
-     * @param date
-     * @param task
-     * @param workPercent
-     * @return
+     * Infers the lengthPercent based on duration of resource allocation and the
+     * date of the Stretch
      */
-    public static Stretch create(LocalDate date, Task task,
-            BigDecimal workPercent) {
-        LocalDate start = task.getStartAsLocalDate();
-        LocalDate end = task.getEndAsLocalDate();
-
-        Days taskDuration = Days.daysBetween(start, end);
-        Days daysDuration = Days.daysBetween(start, date);
-        BigDecimal daysPercent = daysPercent(daysDuration, taskDuration);
-        return new Stretch(date, daysPercent, workPercent);
+    public static Stretch create(LocalDate date,
+            ResourceAllocation<?> allocation, BigDecimal workPercent) {
+        return new Stretch(getLengthProportionByDate(allocation, date),
+                workPercent);
     }
 
     protected static BigDecimal daysPercent(Days daysPartial, Days daysTotal) {
@@ -81,7 +96,6 @@ public class Stretch {
 
     public static Stretch copy(Stretch stretch) {
         Stretch result = new Stretch();
-        result.date = stretch.date;
         result.lengthPercentage = stretch.lengthPercentage;
         result.amountWorkPercentage = stretch.amountWorkPercentage;
         result.consolidated = stretch.consolidated;
@@ -93,19 +107,17 @@ public class Stretch {
         return ConsolidatedStretch.fromConsolidatedProgress(resourceAllocation);
     }
 
-    public static List<Stretch> sortByDate(
+    public static List<Stretch> sortByLengthPercentage(
             List<Stretch> stretches) {
         Collections.sort(stretches, new Comparator<Stretch>() {
             @Override
             public int compare(Stretch o1, Stretch o2) {
-                return o1.getDate().compareTo(o2.getDate());
+                return o1.getLengthPercentage().compareTo(
+                        o2.getLengthPercentage());
             }
         });
         return stretches;
     }
-
-    @NotNull
-    private LocalDate date = new LocalDate();
 
     @NotNull
     private BigDecimal lengthPercentage = BigDecimal.ZERO;
@@ -119,8 +131,7 @@ public class Stretch {
     // Transient value, a stretch is consolidated if it's a consolidated stretch
     private boolean consolidated = false;
 
-    private Stretch(LocalDate date, BigDecimal lengthPercent, BigDecimal progressPercent) {
-        this.date = date;
+    private Stretch(BigDecimal lengthPercent, BigDecimal progressPercent) {
         this.lengthPercentage = lengthPercent;
         this.amountWorkPercentage = progressPercent;
     }
@@ -129,12 +140,12 @@ public class Stretch {
 
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDateIn(ResourceAllocation<?> allocation, LocalDate date) {
+        setLengthPercentage(getLengthProportionByDate(allocation, date));
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getDateIn(ResourceAllocation<?> allocation) {
+        return getDateByLengthProportion(allocation, lengthPercentage);
     }
 
     /**
@@ -178,7 +189,8 @@ public class Stretch {
     }
 
     public String toString() {
-        return String.format("(%s, %s, %s, readOnly: %s) ", date, lengthPercentage, amountWorkPercentage, readOnly);
+        return String.format("(%s, %s, readOnly: %s) ", lengthPercentage,
+                amountWorkPercentage, readOnly);
     }
 
     public boolean isReadOnly() {
@@ -219,15 +231,8 @@ class ConsolidatedStretch {
         final Task task = resourceAllocation.getTask();
         final LocalDate consolidatedEnd = lastDay(consolidated);
 
-        return create(consolidatedEnd.plusDays(1), task.getAdvancePercentage(), task);
-    }
-
-    private static Stretch create(LocalDate date, BigDecimal advancePercentage,
-            Task task) {
-        Stretch result = Stretch.create(date, task, advancePercentage);
-        result.readOnly(true);
-        result.consolidated(true);
-        return result;
+        return Stretch.create(consolidatedEnd.plusDays(1), resourceAllocation,
+                task.getAdvancePercentage());
     }
 
     private ConsolidatedStretch() {
