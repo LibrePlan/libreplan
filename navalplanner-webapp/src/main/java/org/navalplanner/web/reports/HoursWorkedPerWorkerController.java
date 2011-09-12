@@ -24,6 +24,7 @@ package org.navalplanner.web.reports;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -116,11 +117,19 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     }
 
     private Date getStartingDate() {
-         return startingDate.getValue();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startingDate.getValue());
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DATE), 0, 0, 0);
+        return calendar.getTime();
     }
 
     private Date getEndingDate() {
-        return endingDate.getValue();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(endingDate.getValue());
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DATE), 23, 59, 59);
+        return calendar.getTime();
     }
 
     @Override
