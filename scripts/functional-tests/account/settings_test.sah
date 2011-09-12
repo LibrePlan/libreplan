@@ -1,0 +1,114 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * Create required elements
+ * Change settings to have all the charts espanded
+ * Check that the charts are expanded
+ * Change settings to have all the charts not expanded
+ * Check that the charts are not expanded
+ * Delete Required elements
+ *
+*/
+
+_include("../common_functions.sah");
+
+function settingsCreateRequiredElements(){
+    commonCreateProject($projectName);
+    commonCreateTask($projectName, $taskName, "100");
+}
+
+function settingsPressCheckboxes($list, $press){
+    _click(_link("Settings"));
+    if ($press == "yes"){
+	for (var $i = 0; $i < $list.length; $i++){
+	    if (_condition(_checkbox(0, _near(_label($list[$i]))).checked == false)){
+		_click(_checkbox(0, _near(_label($list[$i]))));
+	    }
+	}
+    }
+    else{
+	for (var $i = 0; $i < $list.length; $i++){
+	    if (_condition(_checkbox(0, _near(_label($list[$i]))).checked == true)){
+		_click(_checkbox(0, _near(_label($list[$i]))));
+	    }
+	}
+    }
+    _click(_cell("Save"));
+}
+
+function settingsCheckChartsExpanded($expanded){
+    _click(_link("Projects Planning"));
+    if ($expanded == "yes"){
+	settingCheckExists();
+    }
+    else{
+	settingCheckNotExists();
+    }
+    _doubleClick(_div("box standard-task unassigned"));
+    if ($expanded == "yes"){
+	settingCheckExists();
+    }
+    else{
+	settingCheckNotExists();
+    }
+    _click(_cell("Resources Load"));
+    if ($expanded == "yes"){
+	settingCheckExists();
+    }
+    else{
+	settingCheckNotExists();
+    }
+}
+
+function settingsDeleteRequiredElements(){
+    commonDeleteProject($projectName);
+}
+
+/*
+ * Validations
+ */
+
+function settingCheckExists(){
+    _assertExists(_div("Graphics"));
+    _assert(_isVisible(_div("Graphics")));
+}
+
+function settingCheckNotExists(){
+    _assertExists(_div("Graphics"));
+    _assertNotTrue(_isVisible(_div("Graphics")));
+}
+
+/* test values */
+var $projectName = "projectForSettings";
+var $taskName = "taskForSettings";
+var $checkBoxes = ["Company view", "Project view", "Resource load view"];
+
+/* test actions */
+commonLogin("admin", "admin");
+
+settingsCreateRequiredElements();
+settingsPressCheckboxes($checkBoxes, "yes");
+settingsCheckChartsExpanded("yes");
+settingsPressCheckboxes($checkBoxes, "no");
+settingsCheckChartsExpanded("no");
+settingsDeleteRequiredElements();
+
+commonLogout();
