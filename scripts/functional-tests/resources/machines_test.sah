@@ -22,7 +22,7 @@
  * 1 - Create a new Machine
  * 2 - Create a Machine with empty name (it should be a failure)
  * 3 - Edit a Machine
- * 4 - ASSIGN A CRITERIA TO A MACHINE (PENDING OF A BUG)
+ * 4 - Assign a criteria to a Machine
  *   5.1 - Create a criteria
  *   5.2 - Edit Assigned criteria tab
  *   5.3 - Try to delete a assigned criteria
@@ -34,8 +34,17 @@
  *   6.1 - Create a cost category
  *   6.2 - Edit cost category tab
  *   6.3 - Try to delete a assigned cost category
- * 7 - Delete Machine
- * 8 - Delete all required elements
+ * 7 - Try create a Machine without Code
+ *   7.1 - Change configuration
+ *   7.2 - Create a Machine without Code (it should be a failure)
+ * 8 - Assign the Machine in a project
+ *   8.1 - Create a project
+ *   8.2 - Create a task
+ *   8.3 - Assign the Machine in limiting resource form
+ *   8.4 - Try to delete the asigned Machine
+ *   8.5 - Delete the Project
+ * 9 - Delete Machine
+ * 10 - Delete all required elements
  *
 */
 _include("../common_functions.sah");
@@ -73,13 +82,13 @@ function machineCreateWithoutCode($type){
 }
 
 function machineCheckTabs(){
-    /* machineCheckAssignedCriteria($machineNewName, 4, $criteriaName); Bug 1167 */
+    machineCheckAssignedCriteria($machineNewName, 4, $criteriaName);
     machineCheckAssignedCalendar($machineNewName, 4, $calendarName);
     machineCheckAssignedCostCategory($machineNewName, 4, $costCategoryName);
 }
 
 function machineCheckAssignedCriteria($machineName, $cell, $criterion){
-    commonCriteriaCreate($criteriaName);
+    criteriaCreate($criteriaName);
     commonResourceEditAssignedCriteriaForm("Machines", $machineName, $cell, $criterion);
     commonCriteriaTryDeleteAssigned($criteriaName);
 }
@@ -102,8 +111,60 @@ function machineCheckAssignedCostCategory($machineName, $cell, $cCategory){
 function machineDeleteRequiredElements(){
     commonCalendarDelete($calendarName);
     commonCostCategoryDelete($costCategoryName);
+    commonCriteriaDelete($criteriaName);
     commonWorkHourDelete("HourForMachine");
     _log("All required elements deleted", "custom1");
+}
+
+function machineAssignProject($project, $machine){
+    commonCreateProject($project);
+    commonCreateTask($project, "taskForMachine", "100");
+    machineAssignProjectForm($machine);
+    machineTryDeleteAssigned($machine);
+    commonDeleteProject($project);
+}
+
+function machineAssignProjectForm($machine){
+    _click(_cell("Project Scheduling"));
+    _doubleClick(_div("box standard-task yui-resize unassigned"));
+    _setValue(_textbox(0, _near(_span("Select criteria or resources"))), $machine);
+    _removeFocus(_textbox(0, _near(_span("Select criteria or resources"))));
+    _click(_div($machine));
+    _click(_cell($machine));
+    _click(_cell("Add"));
+    _setValue(_textbox(0, _near(_span("Sum of all rows"))), "1");
+    _click(_cell("z-button-cm[40]"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+}
+
+function machineTryDeleteAssigned($machine){
+    _click(_link("Machines"));
+    _click(_image("ico_borrar1.png", _in(_cell(5, _near(_cell($machine))))));
+    machineTryDeleteAssignedValidation();
+}
+
+/*
+ * Special Criteria form
+ */
+
+function criteriaCreate($type){
+    commonCreate("Criteria");
+    criteriaForm($type);
+    commonSaveValidation("Criterion Type", $type);
+    _log("Create a new criterion", "custom1");
+}
+
+function criteriaForm($name){
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _click(_italic(0, _near(_span("Type"))));
+    _click(_cell("MACHINE", _near(_span("Type"))));
+    _click(_checkbox(0, _near(_div("Multiple values per resource"))));
+    _click(_checkbox(0, _near(_div("Hierarchy"))));
+    _click(_cell("OK"));
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name);
+    _click(_cell("Add"));
+    _click(_cell("Save"));
 }
 
 /*
@@ -125,6 +186,11 @@ _assertExists(_div("This field may not be empty or contain only spaces."));
 _assert(_isVisible(_div("This field may not be empty or contain only spaces.")));
 }
 
+function machineTryDeleteAssignedValidation(){
+    _assertExists(_span("This machine cannot be deleted because it has assignments to projects or imputed hours"));
+    _assert(_isVisible(_span("This machine cannot be deleted because it has assignments to projects or imputed hours")));
+}
+
 /* test values */
 var $machineName = "new";
 var $machineDescription = "something new";
@@ -132,6 +198,7 @@ var $machineNewName = "newest";
 var $criteriaName = "criteriaForMachine";
 var $calendarName = "calendarForMachine";
 var $costCategoryName = "costCategoryforMachines";
+var $projectName = "ProjectForMachine";
 
 /* test actions */
 commonLogin("admin", "admin");
@@ -141,6 +208,7 @@ machineCreateEmpty();
 machineEdit($machineName, $machineNewName, 4);
 machineCheckTabs();
 machineCheckCode($machineName);
+machineAssignProject($projectName, $machineNewName);
 commonMachineDelete($machineNewName);
 machineDeleteRequiredElements();
 
