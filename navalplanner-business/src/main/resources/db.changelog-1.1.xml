@@ -250,7 +250,8 @@
 
     <changeSet id="change-numhours-to-effort-in-work-report-lines" author="idiazt">
         <comment>Changing work_report_line numHours to effort</comment>
-        <renameColumn tableName="work_report_line" oldColumnName="num_hours" newColumnName="effort"/>
+        <renameColumn tableName="work_report_line" oldColumnName="num_hours"
+          newColumnName="effort" columnDataType="INTEGER" />
     </changeSet>
 
     <changeSet id="update-numhours-values-to-effort-values" author="idiazt">
@@ -267,10 +268,12 @@
             newTableName="sum_charged_effort" />
         <renameColumn tableName="sum_charged_effort"
             oldColumnName="direct_charged_hours"
-            newColumnName="direct_charged_effort" />
+            newColumnName="direct_charged_effort"
+            columnDataType="INTEGER" />
         <renameColumn tableName="sum_charged_effort"
             oldColumnName="indirect_charged_hours"
-            newColumnName="indirect_charged_effort" />
+            newColumnName="indirect_charged_effort"
+            columnDataType="INTEGER" />
     </changeSet>
 
     <changeSet id="update-effort-values-in-sum_charged_effort" author="mrego">
@@ -289,7 +292,8 @@
         <comment>Rename sum_charged_hours_id to sum_charged_effort_id in order_element</comment>
         <renameColumn tableName="order_element"
             oldColumnName="sum_charged_hours_id"
-            newColumnName="sum_charged_effort_id" />
+            newColumnName="sum_charged_effort_id"
+            columnDataType="BIGINT" />
     </changeSet>
 
 </databaseChangeLog>
