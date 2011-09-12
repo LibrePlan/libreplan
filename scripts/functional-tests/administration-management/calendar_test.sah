@@ -24,13 +24,17 @@
  * 3 - Create a Calendar with empty type (it should be a failure)
  * 4 - Create a derived calendar
  * 5 - Edit the Calendar
- * 6 - Assign the child calendar
+ * 6 - Assign the child calendar to a worker
  *   6.1 - Create a worker with the assigned calendar
  *   6.2 - Try to delete the assigned calendar (it should be a failure)
  *   6.3 - Delete the worker
- * 6 - Try to delete the parent calendar (it should be a failure)
- * 7 - Delete the child calendar
- * 8 - Delete the parent Calendar
+ * 7 - Assign the child calendar to a project
+ *   7.1 - Create a project with the assigned calendar
+ *   7.2 - Try to delete the assigned calendar (it should be a failure)
+ *   7.3 - Delete the project
+ * 8 - Try to delete the parent calendar (it should be a failure)
+ * 9 - Delete the child calendar
+ * 10 - Delete the parent Calendar
  *
 */
 
@@ -93,6 +97,14 @@ function calendarAssignWorker($name, $id, $calendar) {
     workerCreate($name, $id, $calendar);
     commonCalendarTryDeleteAssignedCalendar($calendar, 3);
     commonWorkerDelete($name);
+    _log("Assign a calendar to a Worker", "custom1");
+}
+
+function calendarAssignProject($projectName, $calendar){
+    commonCreateProject($projectName, $calendar);
+    calendarTryDeleteAssignedToProjectCalendar($calendar, 3);
+    commonDeleteProject($projectName);
+    _log("Assign Calendar to a project", "custom1");
 }
 
 /*
@@ -139,12 +151,21 @@ function calendarNotAllowDeleteWithChildValidation(){
     _assert(_isVisible(_span("Calendar cannot be removed because it still has children. Some other calendar is derived from this one.")));
 }
 
+function calendarTryDeleteAssignedToProjectCalendar($name, $cell) {
+    _click(_link("Calendars"));
+    _click(_image("ico_borrar1.png", _in(_cell($cell, _near(_cell($name))))));
+    _assertExists(_span("Cannot delete calendar. It is being used at this moment by some orders."));
+    _assert(_isVisible(_span("Cannot delete calendar. It is being used at this moment by some orders.")));
+    _log("Do not allow delete assigned calendar", "custom1");
+}
+
 /* test values */
 var $calendarName = "parent";
 var $calendarSonName = "Son calendar";
 var $calendarNewName = "newest";
 var $workerId = "36123456P";
 var $workerName = "worker1";
+var $projectName = "projectForCalendar";
 
 /* test actions */
 commonLogin("admin", "admin");
@@ -154,7 +175,8 @@ calendarCreateDuplicateType($calendarName);
 calendarCreateEmpty();
 calendarCreateChild($calendarName, $calendarSonName, 3);
 calendarEdit($calendarName, $calendarNewName, 3);
-calendarAssignWorker($workerName, $workerId, $calendarSonName)
+calendarAssignWorker($workerName, $workerId, $calendarSonName);
+calendarAssignProject($projectName, $calendarSonName);
 calendarTryDeleteParentWithSon($calendarNewName, 3);
 /* calendarCheckCode($calendarName); PENDING OF A BUG */
 commonCalendarDelete($calendarSonName);

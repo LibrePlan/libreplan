@@ -48,12 +48,17 @@ function commonDelete ($something, $name, $cell) {
 }
 
 /* Create new project */
-function commonCreateProject($name){
+function commonCreateProject($name, $calendar){
     _click(_link("Projects List"));
     _click(_image("ico_add.png"));
-    _setValue(_textbox(6), $name);
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    if ($calendar != null){
+	_click(_italic(0, _near(_span("Calendar"))));
+	_click(_cell($calendar));
+    }
     _click(_cell("Accept"));
     _click(_image("ico_save.png"));
+    _click(_cell("OK"));
 }
 
 function commonEditProject($name){

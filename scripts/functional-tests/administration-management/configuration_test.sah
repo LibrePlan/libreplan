@@ -71,7 +71,6 @@ function configCheckLogin(){
 
 function configCheckMonteCarlo(){
     commonCreateProject("projectForCheckMontecarlo");
-    _click(_cell("OK"));
     _assertExists(_cell("MonteCarlo Method"));
     _assert(_isVisible(_cell("MonteCarlo Method")));
     _log("Monte Carlo is showed", "custom1");
