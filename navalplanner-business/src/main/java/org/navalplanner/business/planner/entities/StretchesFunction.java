@@ -140,7 +140,7 @@ public class StretchesFunction extends AssignmentFunction {
                 endDate = endDate.plusDays(1);
             }
             resourceAllocation.withPreviousAssociatedResources()
-                    .onIntervalWithinTask(getStartFor(startInclusive), endDate)
+                    .onInterval(getStartFor(startInclusive), endDate)
                     .allocateHours(intervalHours);
         }
 

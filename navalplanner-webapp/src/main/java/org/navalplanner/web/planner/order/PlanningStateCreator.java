@@ -38,12 +38,14 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.IVisitor;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -200,7 +202,7 @@ public class PlanningStateCreator {
     }
 
     private static void forceLoadOfDataAssociatedTo(TaskElement each) {
-        forceLoadOfResourceAllocationsResources(each);
+        forceLoadOfResourceAllocationsResourcesAndAssignmentFunction(each);
         forceLoadOfCriterions(each);
         if (each.getCalendar() != null) {
             BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
@@ -210,9 +212,9 @@ public class PlanningStateCreator {
 
     /**
      * Forcing the load of all resources so the resources at planning state and
-     * at allocations are the same
+     * at allocations are the same. It loads the assignment function too
      */
-    private static void forceLoadOfResourceAllocationsResources(
+    private static void forceLoadOfResourceAllocationsResourcesAndAssignmentFunction(
             TaskElement taskElement) {
         Set<ResourceAllocation<?>> resourceAllocations = taskElement
                 .getAllResourceAllocations();
@@ -221,6 +223,14 @@ public class PlanningStateCreator {
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 eachDerived.getResources();
             }
+            forceLoadOfAssignmentFunction(each);
+        }
+    }
+
+    private static void forceLoadOfAssignmentFunction(ResourceAllocation<?> each) {
+        AssignmentFunction function = each.getAssignmentFunction();
+        if ((function != null) && (function instanceof StretchesFunction)) {
+            ((StretchesFunction) function).getStretches().size();
         }
     }
 
