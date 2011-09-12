@@ -19,10 +19,13 @@ administration-management/quality_forms_test.sah
 administration-management/cost_categories_test.sah
 
 # Resources
-
 resources/worker_test.sah
 resources/machines_test.sah
 resources/virtual_worker_test.sah
 resources/work_report_test.sah
 resources/companies_test.sah
 resources/subcontracting_test.sah
+
+# My Account
+account/password_test.sah
+account/settings_test.sah
