@@ -335,7 +335,7 @@ function commonProgressCreate($name) {
 function commonProgressForm($name) {
     _setValue(_textbox(0, _near(_div("Unit name"))), $name);
     _removeFocus(_textbox(0, _near(_div("Unit name"))));
-    _click(_cell("Save"));
+    _click(_cell("Save & Continue"));
 }
 
 function commonProgressAssigned($projectName, $progressNewName){
