@@ -31,7 +31,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
-public class HoursWorkedPerResourceDTO {
+public class HoursWorkedPerResourceDTO implements Comparable {
 
     private String workerName;
 
@@ -152,6 +152,12 @@ Resource resource,
 
     public void setLabels(String labels) {
         this.labels = labels;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.workerName
+                .compareTo(((HoursWorkedPerResourceDTO) o).workerName);
     }
 
 }

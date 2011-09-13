@@ -22,6 +22,7 @@
 package org.navalplanner.web.reports;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -84,11 +85,12 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
             List<Label> labels, List<Criterion> criterions, Date startingDate,
             Date endingDate) {
 
-        final List<HoursWorkedPerResourceDTO> workingHoursPerWorkerList = resourceDAO
+        List<HoursWorkedPerResourceDTO> workingHoursPerWorkerList = resourceDAO
                 .getWorkingHoursPerWorker(resources, labels,  criterions, startingDate,
                         endingDate);
 
         if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
+            Collections.sort(workingHoursPerWorkerList);
             setShowReportMessage(false);
             return new JRBeanCollectionDataSource(workingHoursPerWorkerList);
         } else {
