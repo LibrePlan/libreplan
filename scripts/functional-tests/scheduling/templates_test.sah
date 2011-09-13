@@ -1,0 +1,160 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1  - Create a Project
+ * 2  - Create a Project template
+ * 3  - Assign the template
+ * 4  - Check Assigned project template
+ * 5  - Create a task tree
+ * 6  - Create a Template about the current Task tree
+ * 7  - Assign the template
+ * 8  - Check Assigned task template
+ * 9  - Try to delete assigned templates
+ * 10 -  Delete all required elements
+ *
+*/
+
+_include("../common_functions.sah");
+
+function templateProjectCreateTemplate($projectName, $template){
+    _click(_link("Projects List"));
+    _click(_image("ico_derived1.png", _in(_cell(8,_near(_cell($projectName))))));
+    _setValue(_textbox(0, _near(_span("Name"))), $template);
+    _click(_cell("Save & Continue"));
+    templateSaveValidation();
+    _log("Create the project template", "custom1")
+}
+
+function templateProjectAssignTemplate($template){
+    _click(_link("Projects List"));
+    _click(_image("ico_copy.png"));
+    _click(_italic(0, _cell("z-caption-l")));
+    _click(_div($template));
+    _click(_cell("Create Order"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+    _log("Assign the project template", "custom1")
+}
+
+function templateTaskCreateTaskChild($name, $hours){
+    commonEditProject($projectName);
+    _click(_span("z-dottree-ico z-dottree-firstspacer"));
+    _setValue(_textbox(0, _near(_span("New task:"))), $name);
+    _setValue(_textbox("z-intbox", _near(_span("Hours:"))), $hours);
+    _click(_cell("Add"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+    _log("Create task tree", "custom1")
+}
+
+function templateTaskCreateTemplate(){
+    _click(_span("C"));
+    _click(_image("ico_derived1.png", _near(_span("Selected node:"))));
+    _click(_cell("OK"));
+    _click(_cell("Save & Continue"));
+    templateSaveValidation();
+    _log("Create the task template", "custom1")
+}
+
+function templateTaskAssignTemplate($projectName, $taskName){
+    commonEditProject($projectName);
+    _click(_cell("Add From Template"));
+    _click(_italic(0, _cell("z-caption-l")));
+    _click(_div("new container"));
+    _click(_cell("Create Task"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+    _log("Assign the task template", "custom1")
+}
+
+function templateTryDeleteAssigned($name){
+    _click(_link("Project Templates"));
+    _click(_image("ico_borrar1.png", _in(_cell(6, _near(_cell($name))))));
+    _click(_cell("OK"));
+    templateTaskTryDeleteValidation();
+    _log("Do not allow delete template", "custom1")
+}
+
+function templateDeleteAllRequiredElements(){
+    commonDeleteProject($projectName);
+    commonDeleteProject($projectTemplate);
+    templateDelete($projectTemplate);
+    templateDelete("new container");
+}
+
+function templateDelete($name){
+    commonDelete("Project Templates", $name, 6);
+    _log("Delete template", "custom1")
+}
+
+/*
+ * Validations
+ */
+
+
+function templateProjectCheckAssigned($projectTemplate){
+    _click(_link("Projects List"));
+    _assertExists(_span($projectTemplate));
+    _assert(_isVisible(_span($projectTemplate)));
+}
+
+function templateTaskCheckAssignedValidation($totalTaskhours){
+    _click(_link("Projects List"));
+    _assertExists(_div($totalTaskhours));
+    _assert(_isVisible(_div($totalTaskhours)));
+}
+
+function templateSaveValidation(){
+    _assertExists(_span("Template saved"));
+    _assert(_isVisible(_span("Template saved")));
+}
+
+function templateTaskTryDeleteValidation(){
+    _assertExists(_div("This template can not be removed because it has applications."));
+    _assert(_isVisible(_div("This template can not be removed because it has applications.")));
+}
+
+/* test values */
+
+var $projectName = "projectToForTasks";;
+var $taskName = "taskfortasks";
+var $taskSonName = "subTaskforTasks";
+var $taskHour =  "100";
+var $totalTaskhours = "400";
+var $projectTemplate = "ProjectTemplate";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+commonCreateProject($projectName);
+commonCreateTask($projectName, $taskName, $taskHour);
+templateProjectCreateTemplate($projectName, $projectTemplate);
+templateProjectAssignTemplate($projectTemplate);
+templateProjectCheckAssigned($projectTemplate);
+templateTaskCreateTaskChild($taskSonName, $taskHour);
+templateTaskCreateTemplate();
+templateTaskAssignTemplate($projectName, $taskName);
+templateTaskCheckAssignedValidation($totalTaskhours);
+templateTryDeleteAssigned($projectTemplate);
+templateTryDeleteAssigned("new container");
+templateDeleteAllRequiredElements();
+
+commonLogout();

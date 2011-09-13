@@ -29,3 +29,6 @@ resources/subcontracting_test.sah
 # My Account
 account/password_test.sah
 account/settings_test.sah
+
+# Scheduling
+scheduling/templates_test.sah
