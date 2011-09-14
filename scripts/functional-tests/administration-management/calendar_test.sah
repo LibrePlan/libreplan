@@ -94,7 +94,8 @@ function calendarCreateWithoutCode($name){
 }
 
 function calendarAssignWorker($name, $id, $calendar) {
-    workerCreate($name, $id, $calendar);
+    commonWorkerCreate($name, $name, $id);
+    commonResourceEditAssignedCalendarForm("Workers", $name, 5, $calendar);
     commonCalendarTryDeleteAssignedCalendar($calendar, 3);
     commonWorkerDelete($name);
     _log("Assign a calendar to a Worker", "custom1");
@@ -105,28 +106,6 @@ function calendarAssignProject($projectName, $calendar){
     calendarTryDeleteAssignedToProjectCalendar($calendar, 3);
     commonDeleteProject($projectName);
     _log("Assign Calendar to a project", "custom1");
-}
-
-/*
- * Worker functions
- * */
-
-function workerCreate($name, $id, $calendar) {
-    commonCreate("Workers");
-    workerForm($name, $id, $calendar);
-    _assertExists(_span("Worker saved"));
-    _assert(_isVisible(_span("Worker saved")));
-    _log("Create a new worker", "custom1");
-}
-
-function workerForm($name, $id, $calendar) {
-    _setValue(_textbox(0, _near(_span("First name"))), $name);
-    _setValue(_textbox(0, _near(_span("Last name"))), $name);
-    _setValue(_textbox(0, _near(_span("ID"))), $id);
-    _click(_span("Calendar"));
-    _click(_italic(0, _near(_span("Select parent calendar"))));
-    _click(_cell($calendar));
-    _click(_cell("Save"));
 }
 
 /*

@@ -54,16 +54,9 @@
 
 _include("../common_functions.sah");
 
-function workerCreate($name, $surName, $id) {
-    commonCreate("Workers");
-    workerForm($name, $surName, $id);
-    workerAcctionValidation("saved");
-    _log("Create a new worker", "custom1");
-}
-
 function workerCreateDuplicateType($name, $surName, $id) {
     commonCreate("Workers");
-    workerForm($name, $surName, $id);
+    commonWorkerForm($name, $surName, $id);
     workerNotValid($name);
     _log("Create a duplicate worker", "custom1");
 }
@@ -85,17 +78,10 @@ function workerEmptyForm($name, $surName, $id) {
     workerEmptyFields();
 }
 
-function workerForm($name, $surName, $id) {
-    _setValue(_textbox(0, _near(_span("First name"))), $name);
-    _setValue(_textbox(0, _near(_span("Last name"))), $surName);
-    _setValue(_textbox(0, _near(_span("ID"))), $id);
-    _click(_cell("Save"));
-}
-
 function workerEdit($oldName, $newName, $cell) {
     commonEdit($oldName, $cell);
-    workerForm($newName);
-    workerAcctionValidation("saved");
+    commonWorkerForm($newName);
+    commonWorkerAcctionValidation("saved");
     _log("Edit a worker", "custom1");
 }
 
@@ -108,7 +94,7 @@ function workerCheckCode($name, $surName, $ID){
 
 function workerCreateWithoutCode($name, $surName, $ID){
     commonCreate("Workers");
-    workerForm($name, $surName, $ID);
+    commonWorkerForm($name, $surName, $ID);
     commonEmptyCodeValidation();
 }
 
@@ -134,7 +120,7 @@ function workerCheckAssignedCostCategory($workerName, $cell, $cCategory){
     commonWorkHourCreate("HourForWorker", "12");
     commonCostCategoryCreate($cCategory, "HourForWorker");
     commonResourceEditAssignedCostCategoryForm("Workers", $workerName, $cell, $cCategory);
-    workerAcctionValidation("saved");
+    commonWorkerAcctionValidation("saved");
     _log("Assign the created cost category", "custom1");
     commonCostCategoryTryDeleteAssignedCostCategory($cCategory, 3);
 }
@@ -174,14 +160,10 @@ function workerTryDeleteAssigned($worker){
 }
 
 /* Validations */
+
 function workerNotValid($worker){
     _assertExists(_span("checkConstraintUniqueFiscalCode: ID already used. It has to be be unique"));
     _assert(_isVisible(_span("checkConstraintUniqueFiscalCode: ID already used. It has to be be unique")));
-}
-
-function workerAcctionValidation($action){
-    _assertExists(_span("Worker "+$action));
-    _assert(_isVisible(_span("Worker "+$action)));
 }
 
 function workerEmptyFields(){
@@ -203,15 +185,14 @@ var $projectName = "ProjectForWorker";
 /* test actions */
 commonLogin("admin", "admin");
 
-workerCreate($workerName, $workerSurName, $workerID);
+commonWorkerCreate($workerName, $workerSurName, $workerID);
 workerCreateDuplicateType($workerName, $workerSurName, $workerID);
 workerCreateEmpty($workerName, $workerSurName, $workerID);
 workerEdit($workerName, $workerNewName, 5);
 workerCheckTabs();
 workerCheckCode($workerName, $workerSurName, $workerID);
 workerAssignProject($projectName, $workerNewName, $workerSurName);
-commonDelete("Workers", $workerNewName, 5);
-workerAcctionValidation("deleted");
-_log("Delete the worker", "custom1");
+commonWorkerDelete($workerNewName);
 workerDeleteRequiredElements();
+
 commonLogout();

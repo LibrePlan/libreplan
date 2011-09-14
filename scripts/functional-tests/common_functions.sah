@@ -190,6 +190,20 @@ function commonResourceTryDeleteAssignedValidation(){
  * Common functions for Workers
  */
 
+function commonWorkerCreate($name, $surName, $id) {
+    commonCreate("Workers");
+    commonWorkerForm($name, $surName, $id);
+    commonWorkerAcctionValidation("saved");
+    _log("Create a new worker", "custom1");
+}
+
+function commonWorkerForm($name, $surName, $id) {
+    _setValue(_textbox(0, _near(_span("First name"))), $name);
+    _setValue(_textbox(0, _near(_span("Last name"))), $surName);
+    _setValue(_textbox(0, _near(_span("ID"))), $id);
+    _click(_cell("Save"));
+}
+
 function commonWorkerDelete($name){
 commonDelete("Workers", $name, 5);
 commonWorkerAcctionValidation("deleted");
