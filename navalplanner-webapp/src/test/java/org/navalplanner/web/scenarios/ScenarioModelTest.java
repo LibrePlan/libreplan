@@ -32,6 +32,7 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_T
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -126,7 +127,7 @@ public class ScenarioModelTest {
             SessionFactory sessionFactory) {
         Order order = Order.create();
         order.setCode(UUID.randomUUID().toString());
-        order.setName("order-name");
+        order.setName(randomize("order-name"));
         order.setInitDate(new Date());
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
@@ -138,13 +139,17 @@ public class ScenarioModelTest {
                 .createOrderLineWithUnfixedPercentage(1000);
         order.add(orderLine);
         orderLine.setCode(UUID.randomUUID().toString());
-        orderLine.setName("order-line-name");
+        orderLine.setName(randomize("order-line-name"));
         orderDAO.save(order);
         orderDAO.flush();
         sessionFactory.getCurrentSession().evict(order);
         order.dontPoseAsTransientObjectAnymore();
 
         return order;
+    }
+
+    private static String randomize(String name) {
+        return name + new Random().nextInt();
     }
 
     private Order givenStoredOrderInScenario(Scenario scenario) {
