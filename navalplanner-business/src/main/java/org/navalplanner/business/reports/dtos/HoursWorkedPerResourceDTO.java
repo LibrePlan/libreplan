@@ -21,7 +21,6 @@
 
 package org.navalplanner.business.reports.dtos;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
@@ -29,6 +28,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
@@ -42,7 +42,7 @@ public class HoursWorkedPerResourceDTO implements Comparable {
 
     private LocalTime clockFinish;
 
-    private BigDecimal effort;
+    private EffortDuration effort;
 
     private String orderElementCode;
 
@@ -52,15 +52,14 @@ public class HoursWorkedPerResourceDTO implements Comparable {
 
     private String labels;
 
-    public HoursWorkedPerResourceDTO(
-Resource resource,
+    public HoursWorkedPerResourceDTO(Resource resource,
             WorkReportLine workReportLine) {
 
         this.workerName = resource.getName();
         this.date = workReportLine.getDate();
         this.clockStart = workReportLine.getClockStart();
         this.clockFinish = workReportLine.getClockFinish();
-        this.effort = workReportLine.getEffort().toHoursAsDecimalWithScale(2);
+        this.effort = workReportLine.getEffort();
         this.orderElementCode = workReportLine.getOrderElement().getCode();
         this.orderElementName = workReportLine.getOrderElement().getName();
         this.descriptionValues = descriptionValuesAsString(workReportLine.getDescriptionValues());
@@ -83,11 +82,11 @@ Resource resource,
         return (result.length() > 0) ? result.substring(0, result.length() - 2) : result;
     }
 
-    public BigDecimal getEffort() {
+    public EffortDuration getEffort() {
         return effort;
     }
 
-    public void setEffort(BigDecimal effort) {
+    public void setEffort(EffortDuration effort) {
         this.effort = effort;
     }
 

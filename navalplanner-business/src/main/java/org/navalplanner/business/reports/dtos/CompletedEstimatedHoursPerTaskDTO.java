@@ -21,13 +21,13 @@
 
 package org.navalplanner.business.reports.dtos;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
@@ -48,7 +48,7 @@ public class CompletedEstimatedHoursPerTaskDTO {
 
     private Integer partialPlannedHours;
 
-    private BigDecimal realHours;
+    private EffortDuration realHours;
 
     private CompletedEstimatedHoursPerTaskDTO() {
         workReportLineDAO = Registry.getWorkReportLineDAO();
@@ -87,8 +87,8 @@ public class CompletedEstimatedHoursPerTaskDTO {
         return result;
     }
 
-    public BigDecimal calculateRealHours(Task task, LocalDate date) {
-        BigDecimal result = BigDecimal.ZERO;
+    public EffortDuration calculateRealHours(Task task, LocalDate date) {
+        EffortDuration result = EffortDuration.zero();
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(task.getOrderElement());
@@ -99,8 +99,7 @@ public class CompletedEstimatedHoursPerTaskDTO {
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());
             if (date == null || workReportLineDate.compareTo(date) <= 0) {
-                result = result.add(workReportLine.getEffort()
-                        .toHoursAsDecimalWithScale(2));
+                result = EffortDuration.sum(result, workReportLine.getEffort());
             }
         }
         return result;
@@ -130,11 +129,11 @@ public class CompletedEstimatedHoursPerTaskDTO {
         this.partialPlannedHours = partialPlannedHours;
     }
 
-    public BigDecimal getRealHours() {
+    public EffortDuration getRealHours() {
         return realHours;
     }
 
-    public void setRealHours(BigDecimal realHours) {
+    public void setRealHours(EffortDuration realHours) {
         this.realHours = realHours;
     }
 

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="hoursWorkedPerWorkerInAMonth" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="hoursWorkedPerWorkerInAMonth">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="hoursWorkedPerWorkerInAMonth" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="hoursWorkedPerWorkerInAMonth" scriptletClass="org.navalplanner.web.reports.HoursWorkedPerWorkerInAMonthScriptlet">
 	<reportFont name="FreeSans" isDefault="true" fontName="FreeSans" size="9"/>
 	<parameter name="showNote" class="java.lang.Boolean"/>
 	<parameter name="year" class="java.lang.String"/>
 	<parameter name="month" class="java.lang.String"/>
 	<parameter name="logo" class="java.lang.String"/>
 	<field name="workerName" class="java.lang.String"/>
-	<field name="numHours" class="java.math.BigDecimal"/>
-	<variable name="sumNumHours" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
-		<initialValueExpression><![CDATA[java.math.BigDecimal.ZERO]]></initialValueExpression>
+	<field name="numHours" class="org.navalplanner.business.workingday.EffortDuration"/>
+	<variable name="sumNumHours" class="java.lang.String" calculation="System">
+		<variableExpression><![CDATA[$P{REPORT_SCRIPTLET}.getNumHours()]]></variableExpression>
+		<initialValueExpression><![CDATA["0"]]></initialValueExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -123,7 +123,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement x="213" y="0" width="100" height="15"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{numHours}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORT_SCRIPTLET}.getNumHours()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="13" y="0" width="200" height="15"/>
@@ -138,7 +138,7 @@
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="213" y="10" width="100" height="15"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumNumHours}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$V{sumNumHours}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="224" y="4" width="80" height="1"/>

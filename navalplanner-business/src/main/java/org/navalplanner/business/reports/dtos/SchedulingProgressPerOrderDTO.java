@@ -35,6 +35,7 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
@@ -57,7 +58,7 @@ public class SchedulingProgressPerOrderDTO {
 
     private Integer partialPlannedHours;
 
-    private BigDecimal realHours;
+    private EffortDuration realHours;
 
     private BigDecimal averageProgress;
 
@@ -107,7 +108,8 @@ public class SchedulingProgressPerOrderDTO {
 
         // Progress calculations
         this.imputedProgress = (totalPlannedHours != 0) ? new Double(
-                realHours.doubleValue()
+realHours
+                .toHoursAsDecimalWithScale(2).doubleValue()
                 / totalPlannedHours.doubleValue()) : new Double(0);
         this.plannedProgress = (totalPlannedHours != 0) ? new Double(
                 partialPlannedHours / totalPlannedHours.doubleValue())
@@ -115,7 +117,8 @@ public class SchedulingProgressPerOrderDTO {
 
         // Differences calculations
         this.costDifference = calculateCostDifference(averageProgress,
-                new BigDecimal(totalPlannedHours), realHours);
+                new BigDecimal(totalPlannedHours),
+                realHours.toHoursAsDecimalWithScale(2));
         this.planningDifference = calculatePlanningDifference(averageProgress,
                 new BigDecimal(totalPlannedHours), new BigDecimal(
                         partialPlannedHours));
@@ -168,8 +171,8 @@ public class SchedulingProgressPerOrderDTO {
                 .roundToHours();
     }
 
-    public BigDecimal calculateRealHours(Order order, LocalDate date) {
-        BigDecimal result = BigDecimal.ZERO;
+    public EffortDuration calculateRealHours(Order order, LocalDate date) {
+        EffortDuration result = EffortDuration.zero();
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(order);
@@ -177,8 +180,7 @@ public class SchedulingProgressPerOrderDTO {
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());
             if (date == null || workReportLineDate.compareTo(date) <= 0) {
-                result = result.add(workReportLine.getEffort()
-                        .toHoursAsDecimalWithScale(2));
+                result = EffortDuration.sum(result, workReportLine.getEffort());
             }
         }
         return result;
@@ -196,7 +198,7 @@ public class SchedulingProgressPerOrderDTO {
         return partialPlannedHours;
     }
 
-    public BigDecimal getRealHours() {
+    public EffortDuration getRealHours() {
         return realHours;
     }
 

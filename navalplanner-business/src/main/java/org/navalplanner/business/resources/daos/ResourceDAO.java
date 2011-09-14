@@ -21,7 +21,6 @@
 
 package org.navalplanner.business.resources.daos;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -232,11 +231,11 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
         for (Object row: rows) {
             Object[] columns = (Object[]) row;
             Worker worker = (Worker) findExistingEntity((Long) columns[0]);
-            BigDecimal numHours = (EffortDuration.seconds(((Long) columns[1])
-                    .intValue())).toHoursAsDecimalWithScale(2);
+            EffortDuration effort = EffortDuration.seconds(((Long) columns[1])
+                    .intValue());
 
             HoursWorkedPerWorkerInAMonthDTO dto = new HoursWorkedPerWorkerInAMonthDTO(
-                    worker, numHours);
+                    worker, effort);
             result.add(dto);
         }
         return result;
