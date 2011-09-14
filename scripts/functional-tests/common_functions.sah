@@ -408,6 +408,34 @@ function commonCriteriaTryDeleteAssigned($criteriaName){
 }
 
 /*
+ * Common functions for Labels
+ */
+
+function commonLabelCreate($type, $name){
+    commonCreate("Labels");
+    commonLabelForm($type, $name);
+    commonSaveValidation("Label Type", $type);
+    _log("Create a new label", "custom1");
+}
+
+function commonLabelForm($name, $list){
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    if ($list != null){
+	for (var $i = 0; $i < $list.length; $i++){
+	    _setValue(_textbox(0, _near(_span("New label"))), $list[$i]);
+	    _click(_cell("Add"));
+	}
+    }
+    _click(_cell("Save"));
+}
+
+function commonLabelDelete($name){
+    commonDelete("Labels", $name, 2);
+    commonDeleteValidation("Label Type", $name);
+    _log("Label Deleted", "custom1");
+}
+
+/*
  * Common functions for Work Report Model
  */
 
