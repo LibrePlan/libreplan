@@ -51,7 +51,6 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
-import org.navalplanner.web.common.components.EffortDurationPicker;
 import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
@@ -409,16 +408,21 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
 
         if (workReportLine.getEffort() == null) {
-            EffortDurationPicker effort = getEffortDurationPicker(row);
+            Textbox effort = getEffort(row);
             if (effort == null) {
                 String message = _("Effort cannot be null");
+                showInvalidMessage(effort, message);
+            }
+            if (EffortDuration.parseFromFormattedString(effort.getValue())
+                    .compareTo(EffortDuration.zero()) <= 0) {
+                String message = _("Effort must be greater than zero");
                 showInvalidMessage(effort, message);
             }
             return false;
         }
 
         if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
-            EffortDurationPicker effort = getEffortDurationPicker(row);
+            Textbox effort = getEffort(row);
             if (effort != null) {
                 String message = _("effort is not properly calculated based on clock");
                 showInvalidMessage(effort, message);
@@ -512,15 +516,15 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Locates {@link EffortDurationPicker} effort in {@link Row}
+     * Locates {@link Textbox} effort in {@link Row}
      *
      * @param row
      * @return
      */
-    private EffortDurationPicker getEffortDurationPicker(Row row) {
+    private Textbox getEffort(Row row) {
         try {
             int position = row.getChildren().size() - 4;
-            return (EffortDurationPicker) row.getChildren().get(position);
+            return (Textbox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
         }
@@ -1051,9 +1055,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void updateEffort(final Row row) {
         WorkReportLine line = (WorkReportLine) row.getValue();
-        EffortDurationPicker effort = getEffortDurationPicker(row);
+        Textbox effort = getEffort(row);
         if (effort != null) {
-            effort.setValue(line.getEffort());
+            effort.setValue(line.getEffort().toFormattedString());
             effort.invalidate();
         }
     }
@@ -1126,14 +1130,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Append a {@link EffortDurationPicker} effort to {@link Row}
+     * Append a {@link Textbox} effort to {@link Row}
      *
      * @param row
      */
     private void appendEffortDuration(Row row) {
-        EffortDurationPicker effort = new EffortDurationPicker();
         WorkReportLine workReportLine = (WorkReportLine) row.getValue();
-        bindEffortDurationPicker(effort, workReportLine);
+        Textbox effort = new Textbox();
+        bindEffort(effort, workReportLine);
 
         if (getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
@@ -1263,31 +1267,32 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Binds EffortDurationPicker efffort to a {@link WorkReportLine} numHours
+     * Binds Textbox effort to a {@link WorkReportLine} numHours
      *
      * @param effort
      * @param workReportLine
      */
-    private void bindEffortDurationPicker(final EffortDurationPicker effort,
-            final WorkReportLine workReportLine) {
-        effort.bind(new Util.Getter<EffortDuration>() {
+    private void bindEffort(final Textbox box,
+         final WorkReportLine workReportLine) {
+        Util.bind(box, new Util.Getter<String>() {
 
             @Override
-            public EffortDuration get() {
-                if (workReportLine.getEffort() != null) {
-                    return workReportLine.getEffort();
-                }
-                return EffortDuration.zero();
+            public String get() {
+                if (workReportLine.getEffort() != null)
+                    return workReportLine.getEffort().toFormattedString();
+                else
+                    return EffortDuration.zero().toFormattedString();
             }
 
-        }, new Util.Setter<EffortDuration>() {
+        }, new Util.Setter<String>() {
 
             @Override
-            public void set(EffortDuration value) {
-                workReportLine.setEffort(value);
+            public void set(String value) {
+                workReportLine.setEffort(EffortDuration
+                        .parseFromFormattedString(value));
             }
         });
-    }
+     }
 
     public WorkReportListRenderer getRenderer() {
         return workReportListRenderer;

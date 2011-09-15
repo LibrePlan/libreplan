@@ -443,6 +443,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         OrderElement orderElement = find(workReportLine.getOrderElement().getId());
         EffortDuration effort = workReportLine.getEffort();
         EffortDuration differenceOfEffort;
+        boolean mustBeAdded = true;
 
         if(workReportLine.isNewObject()) {
             differenceOfEffort = effort;
@@ -464,10 +465,21 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
                     }
                 }
             });
-            differenceOfEffort = effort.minus(oldEffort);
+            BigDecimal differenceEffortNumeric = effort
+                    .toHoursAsDecimalWithScale(2).subtract(
+                            oldEffort.toHoursAsDecimalWithScale(2));
+            mustBeAdded = differenceEffortNumeric.compareTo(BigDecimal.ZERO) >= 0;
+            if (mustBeAdded)
+                differenceOfEffort = effort.minus(oldEffort);
+            else
+                differenceOfEffort = oldEffort.minus(effort);
         }
-        orderElement.getSumChargedEffort().addDirectChargedEffort(
+        if (mustBeAdded)
+            orderElement.getSumChargedEffort().addDirectChargedEffort(
                 differenceOfEffort);
+        else
+            orderElement.getSumChargedEffort().subtractDirectChargedEffort(
+                    differenceOfEffort);
         save(orderElement);
         updateIndirectChargedEffortRecursively(orderElement.getParent(),
                 differenceOfEffort,
