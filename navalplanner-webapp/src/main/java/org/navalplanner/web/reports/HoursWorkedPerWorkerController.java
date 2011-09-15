@@ -33,6 +33,7 @@ import java.util.Set;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.reports.dtos.LabelFilterType;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -52,6 +53,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Radio;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -81,6 +83,10 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
 
+    private Radio filterByWorkReports;
+
+    private Radio filterByOrderElements;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -101,8 +107,17 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     protected JRDataSource getDataSource() {
         return hoursWorkedPerWorkerModel.getHoursWorkedPerWorkerReport(
                 getSelectedResources(), getSelectedLabels(),
+                getSelectedFilterLabels(),
                 getSelectedCriterions(),
                 getStartingDate(), getEndingDate());
+    }
+
+    private LabelFilterType getSelectedFilterLabels() {
+        if (filterByWorkReports.isChecked())
+            return LabelFilterType.WORK_REPORT;
+        if (filterByOrderElements.isChecked())
+            return LabelFilterType.ORDER_ELEMENT;
+        return LabelFilterType.BOTH;
     }
 
     private List<Resource> getSelectedResources() {

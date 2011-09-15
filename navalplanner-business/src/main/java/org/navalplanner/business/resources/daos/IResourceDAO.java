@@ -29,6 +29,7 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
+import org.navalplanner.business.reports.dtos.LabelFilterType;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
@@ -115,7 +116,8 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      */
     List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
             List<Resource> resources, List<Label> labels,
-            List<Criterion> criterions, Date startingDate,
+            LabelFilterType labelFilterType, List<Criterion> criterions,
+            Date startingDate,
             Date endingDate);
 
     /**

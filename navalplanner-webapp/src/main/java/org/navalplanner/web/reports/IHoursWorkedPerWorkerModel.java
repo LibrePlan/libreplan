@@ -28,6 +28,7 @@ import java.util.Set;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.reports.dtos.LabelFilterType;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -39,7 +40,8 @@ import org.navalplanner.business.resources.entities.Resource;
 public interface IHoursWorkedPerWorkerModel {
 
     JRDataSource getHoursWorkedPerWorkerReport(List<Resource> resources,
-            List<Label> labels, List<Criterion> criterions,
+            List<Label> labels, LabelFilterType labelFilterType,
+            List<Criterion> criterions,
             Date startingDate, Date endingDate);
 
     void init();

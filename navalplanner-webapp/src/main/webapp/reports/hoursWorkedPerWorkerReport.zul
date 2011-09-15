@@ -110,6 +110,14 @@
                             onClick="controller.onSelectLabel()"
                             style="margin-top: -4px" />
                     </hbox>
+                    <hbox>
+                        <radiogroup>
+                            <label value="${i18n:_('Apply filter to: ') }"/>
+                            <radio id="filterByWorkReports" label="${i18n:_('Work reports')}" />
+                            <radio id="filterByOrderElements" label="${i18n:_('Order elements')}" />
+                            <radio id="filterByBoth" label="${i18n:_('Both')}" checked="true" />
+                        </radiogroup>
+                    </hbox>
                 <separator spacing="10px"/>
                 <listbox id="lbLabels"
                         width="700px"
