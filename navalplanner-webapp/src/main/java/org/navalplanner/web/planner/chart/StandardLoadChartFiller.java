@@ -67,7 +67,7 @@ public abstract class StandardLoadChartFiller extends LoadChartFiller {
 
     private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
             ILoadChartData data) {
-        return data.getAvailability();
+        return groupAsNeededByZoom(data.getAvailability());
     }
 
 }
