@@ -36,6 +36,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
+import org.navalplanner.business.reports.dtos.LabelFilterType;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -91,12 +92,13 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
 
     @Transactional(readOnly = true)
     public JRDataSource getHoursWorkedPerWorkerReport(List<Resource> resources,
-            List<Label> labels, List<Criterion> criterions, Date startingDate,
+            List<Label> labels, LabelFilterType labelFilterType,
+            List<Criterion> criterions, Date startingDate,
             Date endingDate) {
 
-        List<HoursWorkedPerResourceDTO> workingHoursPerWorkerList = resourceDAO
-                .getWorkingHoursPerWorker(resources, labels,  criterions, startingDate,
-                        endingDate);
+        final List<HoursWorkedPerResourceDTO> workingHoursPerWorkerList = resourceDAO
+                .getWorkingHoursPerWorker(resources, labels, labelFilterType,
+                        criterions, startingDate, endingDate);
 
         if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
             Collections.sort(workingHoursPerWorkerList);

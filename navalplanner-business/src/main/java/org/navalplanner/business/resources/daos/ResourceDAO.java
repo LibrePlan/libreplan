@@ -32,6 +32,7 @@ import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
+import org.navalplanner.business.reports.dtos.LabelFilterType;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Machine;
@@ -133,7 +134,8 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     @Transactional(readOnly = true)
     public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
             List<Resource> resources, List<Label> labels,
-            List<Criterion> criterions, Date startingDate,
+            LabelFilterType labelFilterType, List<Criterion> criterions,
+            Date startingDate,
             Date endingDate) {
 
         String strQuery = "SELECT new org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO(resource, wrl) "
@@ -159,8 +161,18 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
 
         // Set labels
         if (labels != null && !labels.isEmpty()) {
-            strQuery += " AND ( EXISTS (FROM wrl.orderElement.labels as etq WHERE etq IN (:labels)) "
-                    + "OR EXISTS (FROM wrl.workReport.orderElement.labels as etqwr WHERE etqwr IN (:labels))) ";
+            if (labelFilterType.equals(LabelFilterType.ORDER_ELEMENT)) {
+                strQuery += " AND ( EXISTS (FROM wrl.orderElement.labels as etq WHERE etq IN (:labels)) "
+                        + "OR EXISTS (FROM wrl.workReport.orderElement.labels as etqwr WHERE etqwr IN (:labels)) ) ";
+            } else if (labelFilterType.equals(LabelFilterType.WORK_REPORT)) {
+                strQuery += " AND ( EXISTS (FROM wrl.labels as etq WHERE etq IN (:labels)) "
+                        + "OR EXISTS (FROM wrl.workReport.labels as etqwr WHERE etqwr IN (:labels)) ) ";
+            } else {
+                strQuery += " AND ( EXISTS (FROM wrl.labels as etq WHERE etq IN (:labels)) "
+                        + "OR EXISTS (FROM wrl.workReport.labels as etqwr WHERE etqwr IN (:labels)) ) "
+                        + "AND ( EXISTS (FROM wrl.orderElement.labels as etq WHERE etq IN (:labels)) "
+                        + "OR EXISTS (FROM wrl.workReport.orderElement.labels as etqwr WHERE etqwr IN (:labels)) ) ";
+            }
         }
 
         // Set Criterions

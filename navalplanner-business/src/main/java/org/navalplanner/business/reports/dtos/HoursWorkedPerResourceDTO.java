@@ -63,7 +63,12 @@ public class HoursWorkedPerResourceDTO implements Comparable {
         this.orderElementCode = workReportLine.getOrderElement().getCode();
         this.orderElementName = workReportLine.getOrderElement().getName();
         this.descriptionValues = descriptionValuesAsString(workReportLine.getDescriptionValues());
-        this.labels = labelsAsString(workReportLine.getLabels());
+
+        Set<Label> labels = workReportLine.getLabels();
+        if (workReportLine.getOrderElement() != null) {
+            labels.addAll(workReportLine.getOrderElement().getLabels());
+        }
+        this.labels = labelsAsString(labels);
     }
 
     private String labelsAsString(Set<Label> labels) {
