@@ -224,7 +224,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
 
         private List<DayAssignment> getAssignmentsShown() {
-            List<DayAssignment> result = new ArrayList<DayAssignment>();
+            Set<DayAssignment> result = new HashSet<DayAssignment>();
             Map<T, List<ResourceAllocation<?>>> foundAllocations = getFoundAllocations();
             for (Entry<T, List<ResourceAllocation<?>>> each : foundAllocations
                     .entrySet()) {
@@ -232,7 +232,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     result.addAll(eachAllocation.getAssignments());
                 }
             }
-            return result;
+            return new ArrayList<DayAssignment>(result);
         }
 
         abstract List<LoadTimeLine> buildTimeLines();
