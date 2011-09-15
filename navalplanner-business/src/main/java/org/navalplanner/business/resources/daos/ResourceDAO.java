@@ -202,14 +202,14 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
 
         // Set labels
         if (labels != null && !labels.isEmpty()) {
-            strQuery += " AND ( EXISTS (FROM wrl.labels as etq WHERE etq IN (:labels)) "
-                    + "OR EXISTS (FROM wrl.workReport.labels as etqwr WHERE etqwr IN (:labels))) ";
+            strQuery += " AND ( EXISTS (FROM wrl.orderElement.labels as etq WHERE etq IN (:labels)) "
+                    + "OR EXISTS (FROM wrl.workReport.orderElement.labels as etqwr WHERE etqwr IN (:labels))) ";
         }
 
         // Set Criterions
         if (criterions != null && !criterions.isEmpty()) {
-            strQuery += "AND EXISTS (FROM resource.criterionSatisfactions as satisfaction "
-                    + " WHERE satisfaction.criterion IN (:criterions))";
+            strQuery += " AND EXISTS (FROM resource.criterionSatisfactions as satisfaction "
+                    + " WHERE satisfaction.criterion IN (:criterions)) ";
         }
 
         // Order by
