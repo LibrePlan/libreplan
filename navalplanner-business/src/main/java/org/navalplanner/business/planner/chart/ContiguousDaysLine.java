@@ -20,6 +20,7 @@ package org.navalplanner.business.planner.chart;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -251,6 +252,34 @@ public class ContiguousDaysLine<T> implements Iterable<ONDay<T>> {
         if (isNotValid()) {
             throw new IllegalStateException("this line is invalid");
         }
+    }
+
+    public ContiguousDaysLine<T> subInterval(LocalDate startInclusive,
+            LocalDate endExclusive) {
+        if (isNotValid() || startInclusive.compareTo(endExclusive) >= 0
+                || startInclusive.compareTo(getEndExclusive()) >= 0
+                || endExclusive.compareTo(getStart()) <= 0) {
+            return invalid();
+        }
+        LocalDate newStart = max(this.startInclusive, startInclusive);
+        Days days = Days.daysBetween(newStart,
+                min(getEndExclusive(), endExclusive));
+        ContiguousDaysLine<T> result = new ContiguousDaysLine<T>(newStart,
+                days.getDays());
+        for (ONDay<T> each : result) {
+            result.set(each.getDay(), this.get(each.getDay()));
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    LocalDate min(LocalDate... dates) {
+        return Collections.min(Arrays.asList(dates));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static LocalDate max(LocalDate... dates) {
+        return Collections.max(Arrays.asList(dates));
     }
 
     public LocalDate getEndExclusive() {

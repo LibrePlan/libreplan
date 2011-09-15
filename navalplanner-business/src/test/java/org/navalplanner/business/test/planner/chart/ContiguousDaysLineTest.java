@@ -5,6 +5,9 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -125,6 +128,76 @@ public class ContiguousDaysLineTest {
         assertThat("the original line remains the same", line,
                 allValuesEqualTo("foo"));
         assertThat(another, allValuesEqualTo("foofoo"));
+    }
+
+    @Test
+    public void aSubIntervalOfAnInvalidLineIsInvalid() {
+        ContiguousDaysLine<Object> invalid = ContiguousDaysLine.invalid();
+        assertTrue(invalid.subInterval(someDate, someDate.plusDays(2))
+                .isNotValid());
+    }
+
+    @Test
+    public void ifTheRangeIsOutsideInvalidIsReturned() {
+        ContiguousDaysLine<String> line = ContiguousDaysLine.create(someDate,
+                someDate.plusDays(2), String.class);
+        line.setValueForAll("foo");
+        assertTrue(line.subInterval(someDate.minusDays(2),
+                someDate.minusDays(1)).isNotValid());
+    }
+
+    @Test
+    public void ifTheRangeIsCompletelyInsideThatPartIsReturned() {
+        ContiguousDaysLine<String> line = ContiguousDaysLine.create(someDate,
+                someDate.plusDays(4), String.class);
+        line.setValueForAll("foo");
+        ContiguousDaysLine<String> newLine = line.subInterval(
+                someDate.plusDays(1), someDate.plusDays(3));
+        assertThat(newLine.getStart(), equalTo(someDate.plusDays(1)));
+        assertThat(newLine.getEndExclusive(), equalTo(someDate.plusDays(3)));
+    }
+
+    @Test
+    public void ifTheRangeIsPartOutsideAndPartInsideTheIntersectionIsReturned() {
+        ContiguousDaysLine<String> line = ContiguousDaysLine.create(someDate,
+                someDate.plusDays(4), String.class);
+        line.setValueForAll("foo");
+        ContiguousDaysLine<String> newLine = line.subInterval(
+                someDate.minusDays(1), someDate.plusDays(7));
+        assertThat(newLine.getStart(), equalTo(someDate));
+        assertThat(newLine, hasSameValuesAs(line));
+        assertThat(newLine.getEndExclusive(), equalTo(someDate.plusDays(4)));
+    }
+
+
+    private Matcher<ContiguousDaysLine<?>> hasSameValuesAs(
+            final ContiguousDaysLine<?> line) {
+        return new BaseMatcher<ContiguousDaysLine<?>>() {
+
+            @Override
+            public boolean matches(Object object) {
+                if (object instanceof ContiguousDaysLine) {
+                    ContiguousDaysLine<?> another = (ContiguousDaysLine<?>) object;
+                    for (ONDay<?> each : line) {
+                        if (!ObjectUtils.equals(each.getValue(),
+                                another.get(each.getDay()))) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                List<Object> values = new ArrayList<Object>();
+                for (ONDay<?> each : line) {
+                    values.add(each.getValue());
+                }
+                description.appendText("the line has values: " + values);
+            }
+        };
     }
 
     private IValueTransformer<String, String> doubleTransformer() {
