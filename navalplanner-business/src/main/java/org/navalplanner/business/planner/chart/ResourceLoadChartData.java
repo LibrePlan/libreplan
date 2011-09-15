@@ -62,10 +62,18 @@ public class ResourceLoadChartData implements ILoadChartData {
     private SortedMap<LocalDate, EffortDuration> availability;
 
     public ResourceLoadChartData(List<DayAssignment> dayAssignments, List<Resource> resources) {
+        this(dayAssignments, resources, null, null);
+    }
+
+    public ResourceLoadChartData(List<DayAssignment> dayAssignments,
+            List<Resource> resources, LocalDate startInclusive,
+            LocalDate endExclusive) {
 
         ContiguousDaysLine<List<DayAssignment>> assignments = ContiguousDaysLine
                 .byDay(dayAssignments);
-
+        if (startInclusive != null && endExclusive != null) {
+            assignments = assignments.subInterval(startInclusive, endExclusive);
+        }
         ContiguousDaysLine<EffortDuration> load = assignments
                 .transform(extractLoad());
 

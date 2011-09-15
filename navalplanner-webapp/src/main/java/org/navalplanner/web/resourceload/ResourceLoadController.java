@@ -900,10 +900,8 @@ public class ResourceLoadController implements Composer {
             List<DayAssignment> assignments = generatedData
                     .getDayAssignmentsConsidered();
             List<Resource> resources = generatedData.getResourcesConsidered();
-            ResourceLoadChartData data = new ResourceLoadChartData(assignments,
-                    resources);
-            return data.on(getStart(generatedData.getFilterStart(), interval),
-                    getEnd(generatedData.getFilterEnd(), interval));
+            return new ResourceLoadChartData(assignments,
+                    resources, interval.getStart(), interval.getFinish());
         }
 
     }
