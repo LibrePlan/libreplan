@@ -22,6 +22,7 @@
 package org.navalplanner.web.reports;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -88,6 +89,8 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
     private void loadAllOrders() {
         allOrders = orderDAO.getOrdersByScenario(scenarioManager
                 .getCurrent());
+
+        Collections.sort(allOrders);
 
         for (Order each : allOrders) {
             each.useSchedulingDataFor(scenarioManager.getCurrent());

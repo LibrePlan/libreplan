@@ -58,7 +58,7 @@ import org.navalplanner.business.util.deepcopy.DeepCopy;
  * It represents an {@link Order} with its related information. <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Order extends OrderLineGroup {
+public class Order extends OrderLineGroup implements Comparable {
 
     public static Order create() {
         Order order = new Order();
@@ -558,6 +558,11 @@ public class Order extends OrderLineGroup {
 
         }
 
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.getName().compareToIgnoreCase(((Order) o).getName());
     }
 
 }
