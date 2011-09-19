@@ -1,0 +1,138 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a Criterion
+ * 2 - Create a Calendar
+ * 3 - Create a Worker
+ * 4 - Assign elements to a worker
+ *   4.1 - Assign Criterion
+ *   4.2 - Assign Calendar (Incorrect dates)
+ * 5 - Create a project
+ * 6 - Create a Task
+ * 7 - Try to assign the worker with the incorrect calendar
+ * 8 - Assign elements to a worker
+ *   8.1 - Assign Criterion (Incorrect dates)
+ *   8.2 - Assign Calendar
+ * 9 - Delete all required elements
+ *
+ */
+
+_include("../common_functions.sah");
+
+function planningIncludeEndDates($worker, $dates, $dates2){
+    _click(_link("Workers"));
+    commonEdit($worker, 5);
+    planningIncludeCriterionEndDate($dates);
+    planningIncludeCalendarEndDate($dates2);
+}
+
+function planningIncludeCriterionEndDate($dates){
+    _click(_span("Assigned criteria"));
+    _setValue(_textbox("z-datebox-inp", _near(_div("Starting date"))), $dates[0]);
+    _setValue(_textbox(3, _near(_div("Starting date"))), $dates[1]);
+    _click(_cell("Save & Continue"));
+    commonWorkerAcctionValidation("saved");
+    _log("Include criterion dates", "custom1");
+}
+
+function planningIncludeCalendarEndDate($dates){
+    _click(_span("Calendar"));
+    _click(_span("Activation periods"));
+    _setValue(_textbox(0, _near(_div("Expiry date"))), $dates[0]);
+    _setValue(_textbox(2, _near(_div("Expiry date"))), $dates[1]);
+    _click(_cell("Save"));
+    commonWorkerAcctionValidation("saved");
+    _log("Include calendar dates", "custom1");
+}
+
+function planningAssignWorker($workerName){
+    _click(_cell("Project Scheduling"));
+    _doubleClick(_div("box standard-task yui-resize unassigned"));
+    _setValue(_textbox(0, _near(_span("Select criteria or resources"))), $workerName);
+    _removeFocus(_textbox(0, _near(_span("Select criteria or resources"))));
+    _click(_div($workerName+", "+$workerName));
+    _click(_cell($workerName+", "+$workerName));
+    _click(_cell("Add"));
+    _click(_cell("z-button-cm[40]"));
+    planningCheckIncorrectWorkerValidation()
+    _log("try to assign calendar", "custom1");
+}
+
+function planningAssignCriterion($criterion){
+    _click(_cell("Project Scheduling"));
+    _doubleClick(_div("box standard-task yui-resize unassigned"));
+    _setValue(_textbox(0, _near(_span("Select criteria or resources"))), $criterion);
+    _removeFocus(_textbox(0, _near(_span("Select criteria or resources"))));
+    _click(_div($criterion+" ( "+$criterion+" )[1]"));
+    _click(_cell($criterion+" ( "+$criterion+" )[1]"));
+    _click(_cell("Add"));
+    _click(_cell("z-button-cm[40]"));
+    planningCheckIncorrectCriterionValidation()
+    _log("Try to assign criterion", "custom1");
+}
+
+function planningCheckIncorrectWorkerValidation(){
+    _assertExists(_div("The resource's calendar has no available days starting from the start of the task."));
+    _assert(_isVisible(_div("The resource's calendar has no available days starting from the start of the task.")));
+}
+
+function planningCheckIncorrectCriterionValidation(){
+    _assertExists(_div("There are no days available due to not satisfying the criteria. Another possibility is that the resources don't have days available due to their calendars."));
+    _assert(_isVisible(_div("There are no days available due to not satisfying the criteria. Another possibility is that the resources don't have days available due to their calendars.")));
+}
+
+function deleteRequiredElements(){
+    commonDeleteProject($projectName);
+    commonWorkerDelete($workerName);
+    commonCriteriaDelete($criterion);
+    commonCalendarDelete($calendar);
+}
+
+/* test values */
+
+var $criterion = "Formation";
+var $calendar = "calendarForPlanning";
+var $workerName = "workerForPlanning";
+var $criteriaType2List = ["Spain", "USA"];
+var $dates = ["Jul 1, 2011", "Sep 10, 2011"]
+var $dates2 = ["Jul 1, 2011", ""]
+var $projectName = "ProjectForPlannig";
+var $taskName = "taskForPlanning";
+
+/* test actions */
+
+commonLogin("admin", "admin");
+
+commonCriteriaCreate($criterion);
+commonCalendarCreate($calendar);
+commonWorkerCreate($workerName, $workerName, $workerName);
+commonResourceEditAssignedCriteriaForm("Workers", $workerName, 5, $criterion);
+commonResourceEditAssignedCalendarForm("Workers", $workerName, 5, $calendar);
+planningIncludeEndDates($workerName, $dates2, $dates);
+commonCreateProject($projectName);
+commonCreateTask($projectName, $taskName, "100");
+planningAssignWorker($workerName);
+planningIncludeEndDates($workerName, $dates, $dates2);
+commonEditProject($projectName);
+planningAssignCriterion($criterion);
+deleteRequiredElements();
+
+commonLogout();
