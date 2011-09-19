@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
@@ -174,8 +173,8 @@ public class SchedulingProgressPerOrderController extends NavalplannerReportCont
     public String getSelectedOrderNames() {
         List<String> orderNames = new ArrayList<String>();
 
-        final Set<Listitem> listItems = lbOrders.getSelectedItems();
-        for (Listitem each: listItems) {
+        final List<Listitem> listItems = lbOrders.getItems();
+        for (Listitem each : listItems) {
             final Order order = (Order) each.getValue();
             orderNames.add(order.getName());
         }
