@@ -51,25 +51,11 @@
                     <vbox>
                         <label value="${i18n:_('Year')}" />
                         <listbox id="lbYears" rows="1" mold="select">
-                            <listitem label="2010" value="2010" selected="true" />
-                            <listitem label="2011" value="2011" />
                         </listbox>
                     </vbox>
                     <vbox>
                         <label value="${i18n:_('Month')}" />
                         <listbox id="lbMonths" rows="1" mold="select">
-                            <listitem label="${i18n:_('January')}" value="1" selected="true" />
-                            <listitem label="${i18n:_('February')}" value="2" />
-                            <listitem label="${i18n:_('March')}" value="3" />
-                            <listitem label="${i18n:_('April')}" value="4" />
-                            <listitem label="${i18n:_('May')}" value="5" />
-                            <listitem label="${i18n:_('June')}" value="6" />
-                            <listitem label="${i18n:_('July')}" value="7" />
-                            <listitem label="${i18n:_('August')}" value="8" />
-                            <listitem label="${i18n:_('September')}" value="9" />
-                            <listitem label="${i18n:_('October')}" value="10" />
-                            <listitem label="${i18n:_('November')}" value="11" />
-                            <listitem label="${i18n:_('December')}" value="12" />
                         </listbox>
                     </vbox>
                 </hbox>

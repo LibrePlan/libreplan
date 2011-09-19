@@ -29,6 +29,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -44,6 +45,9 @@ public class HoursWorkedPerWorkerInAMonthModel implements IHoursWorkedPerWorkerI
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private IWorkReportDAO workReportDAO;
 
     private boolean showReportMessage = false;
 
@@ -68,6 +72,18 @@ public class HoursWorkedPerWorkerInAMonthModel implements IHoursWorkedPerWorkerI
     @Transactional(readOnly = true)
     public void init() {
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getBeginDisplayYears() {
+        return workReportDAO.getFirstReportYear();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int getEndDisplayYears() {
+        return workReportDAO.getLastReportYear();
     }
 
    public void setShowReportMessage(boolean showReportMessage) {
