@@ -1,0 +1,103 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a Label
+ * 2 - Create a Project
+ * 3 - Create two tasks
+ * 4 - Assign the label to the first of the tasks
+ * 5 - Check that the label is showed when label button is pressed
+ * 6 - Filter the showed task by the the assigned label
+ * 7 - Check that just the task with the assigned label lis showed
+ * 8 - Delete required elements
+ *
+ */
+
+_include("../common_functions.sah");
+
+function planningAssignLabel(){
+    _doubleClick(_span("z-dottree-ico z-dottree-firstspacer"));
+    _click(_span("Labels"));
+    _click(_italic(0, _span("Assign Label[1]")));
+    _click(_div("High"));
+    _click(_cell("z-button-cm", _near(_span("Assign Label[1]"))));
+    _click(_cell("Back"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+    _log("Assig the label in a task", "custom1");
+}
+
+function planningCheckLabel(){
+    _click(_cell("Project Scheduling"));
+    _click(_image("ico_labels.png"));
+    planningCheckAssignedValidation();
+    _log("Check if the labels are showed", "custom1");
+}
+
+function planningCheckLabelFilter($label, $labelName){
+    _click(_italic(0, _near(_span("with"))));
+    _click(_div($labelName+" ( "+$label+" )"));
+    _click(_cell("Filter"));
+    planningCheckLabelFilterValidation();
+    _log("Check if the labels are filtered", "custom1");
+}
+
+function deleteRequiredElements(){
+    commonDeleteProject($projectName);
+    commonLabelDelete($label);
+    _log("Delete required elements", "custom1");
+}
+
+/*
+ * Validations
+ */
+
+function planningCheckAssignedValidation(){
+    _assertExists(_div("High"));
+    _assert(_isVisible(_div("High")));
+}
+
+function planningCheckLabelFilterValidation(){
+    _assertNotTrue(_isVisible(_span("z-tree-ico z-tree-firstspacer[1]")));
+}
+
+/* test values */
+
+var $label = "Experience";
+var $labelList = ["High", "Low"];
+var $projectName = "ProjectForPlannigLabels";
+var $taskName = "taskForPlanningLabels";
+var $taskName2 = "taskForPlanningLabels2";
+
+/* test actions */
+
+commonLogin("admin", "admin");
+
+commonLabelCreate($label, $labelList);
+commonCreateProject($projectName);
+commonCreateTask($projectName, $taskName, "12");
+commonCreateTask($projectName, $taskName2, "24");
+commonEditProject($projectName);
+planningAssignLabel();
+planningCheckLabel();
+planningCheckLabelFilter($label, $labelList[0]);
+deleteRequiredElements();
+
+commonLogout();
