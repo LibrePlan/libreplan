@@ -40,4 +40,8 @@ public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
 
     List<WorkReport> allWorkReportsWithAssociatedOrdersUnproxied();
 
+    int getFirstReportYear();
+
+    int getLastReportYear();
+
 }

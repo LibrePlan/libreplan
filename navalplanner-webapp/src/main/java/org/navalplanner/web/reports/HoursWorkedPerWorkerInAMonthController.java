@@ -23,6 +23,7 @@ package org.navalplanner.web.reports;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Calendar;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -56,6 +57,45 @@ public class HoursWorkedPerWorkerInAMonthController extends NavalplannerReportCo
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         hoursWorkedPerWorkerInAMonthModel.init();
+        initYears();
+        initMonths();
+    }
+
+    private void initMonths() {
+        for (int i = 0; i < MONTHS.length; i++) {
+            Listitem month = new Listitem();
+            month.setLabel(MONTHS[i]);
+            month.setValue("" + (i + 1));
+            if (Calendar.getInstance().get(Calendar.MONTH) == i)
+                month.setSelected(true);
+            else
+                month.setSelected(false);
+            lbMonths.appendChild(month);
+        }
+    }
+
+    private void initYears() {
+        int beginYear = hoursWorkedPerWorkerInAMonthModel
+                .getBeginDisplayYears();
+        int endYear = hoursWorkedPerWorkerInAMonthModel.getEndDisplayYears();
+        if (beginYear != 0 && endYear != 0) {
+            for (int i = beginYear; i <= endYear; i++) {
+                Listitem year = new Listitem();
+                year.setLabel("" + i);
+                year.setValue("" + i);
+                if (Calendar.getInstance().get(Calendar.YEAR) == i)
+                    year.setSelected(true);
+                else
+                    year.setSelected(false);
+                lbYears.appendChild(year);
+            }
+        } else {
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Listitem itemYear = new Listitem();
+            itemYear.setLabel("" + year);
+            itemYear.setValue("" + year);
+            lbYears.appendChild(itemYear);
+        }
     }
 
     @Override

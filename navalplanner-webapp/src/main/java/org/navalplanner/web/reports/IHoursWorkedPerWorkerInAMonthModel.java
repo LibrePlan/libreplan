@@ -36,4 +36,8 @@ public interface IHoursWorkedPerWorkerInAMonthModel {
 
     boolean isShowReportMessage();
 
+    public abstract int getEndDisplayYears();
+
+    public abstract int getBeginDisplayYears();
+
 }

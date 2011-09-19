@@ -22,6 +22,8 @@
 package org.navalplanner.business.workreports.daos;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,6 +103,30 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     @SuppressWarnings("unchecked")
     private List<OrderElement> elementsFrom(Query orderElementsQuery) {
         return orderElementsQuery.list();
+    }
+
+    @Override
+    public int getFirstReportYear() {
+        final String query = "select min(w.date) from WorkReportLine w";
+        Date minDate = (Date) getSession().createQuery(query).uniqueResult();
+        if (minDate != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(minDate);
+            return calendar.get(Calendar.YEAR);
+        }
+        return 0;
+    }
+
+    @Override
+    public int getLastReportYear() {
+        final String query = "select max(w.date) from WorkReportLine w";
+        Date maxDate = (Date) getSession().createQuery(query).uniqueResult();
+        if (maxDate != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(maxDate);
+            return calendar.get(Calendar.YEAR);
+        }
+        return 0;
     }
 
 }
