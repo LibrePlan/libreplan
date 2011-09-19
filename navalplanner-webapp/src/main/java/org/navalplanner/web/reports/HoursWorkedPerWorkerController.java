@@ -116,6 +116,9 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     }
 
     private Date getStartingDate() {
+        if (startingDate.getValue() == null) {
+            return null;
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startingDate.getValue());
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
@@ -124,6 +127,9 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     }
 
     private Date getEndingDate() {
+        if (endingDate.getValue() == null) {
+            return null;
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(endingDate.getValue());
         calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
