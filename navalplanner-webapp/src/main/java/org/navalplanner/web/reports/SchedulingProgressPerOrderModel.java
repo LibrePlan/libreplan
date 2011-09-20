@@ -104,7 +104,14 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
         for(OrderElement each: orderElements) {
             each.getCode();
             initializeDirectAdvanceAssignments(each.getDirectAdvanceAssignments());
+            initializeHoursGroups(each.getHoursGroups());
             initializeTasks(each.getTaskElements());
+        }
+    }
+
+    private void initializeHoursGroups(List<HoursGroup> hoursGroups) {
+        for (HoursGroup each : hoursGroups) {
+            each.getWorkingHours();
         }
     }
 
