@@ -134,7 +134,7 @@
                 <dataSource.url>jdbc:mysql://localhost/naval${navalplanner.mode}</dataSource.url>
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
-                <hibernate.dialect>org.hibernate.dialect.MySQLInnoDBDialect</hibernate.dialect>
+                <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
                 <databasetable.prefix></databasetable.prefix>
             </properties>
         </profile>
