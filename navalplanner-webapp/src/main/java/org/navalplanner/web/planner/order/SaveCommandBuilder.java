@@ -42,7 +42,6 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
@@ -161,9 +160,6 @@ public class SaveCommandBuilder {
     private ITaskSourceDAO taskSourceDAO;
 
     @Autowired
-    private IOrderElementDAO orderElementDAO;
-
-    @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
     @Autowired
@@ -240,10 +236,9 @@ public class SaveCommandBuilder {
         }
 
         private void doTheSaving() {
-            state.getScenarioInfo().saveVersioningInfo();
+            state.synchronizeTrees();
             saveTasksToSave();
             removeTasksToRemove();
-            saveOrderElements();
             loadDataAccessedWithNotPosedAsTransient(state.getOrder());
             if (state.getRootTask() != null) {
                 loadDependenciesCollectionsForTaskRoot(state.getRootTask());
@@ -487,14 +482,6 @@ public class SaveCommandBuilder {
                     e.printStackTrace();
                     throw new RuntimeException("Trying to delete instance "
                             + " does not exist");
-                }
-            }
-        }
-
-        private void saveOrderElements() {
-            for (TaskElement taskElement : state.getTasksToSave()) {
-                if (taskElement.getOrderElement() != null) {
-                    orderElementDAO.save(taskElement.getOrderElement());
                 }
             }
         }

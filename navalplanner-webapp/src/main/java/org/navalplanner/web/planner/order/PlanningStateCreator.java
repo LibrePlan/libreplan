@@ -31,8 +31,11 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -59,7 +62,6 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
-import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -127,10 +129,10 @@ public class PlanningStateCreator {
     private ITaskElementDAO taskDAO;
 
     @Autowired
-    private IOrderVersionDAO orderVersionDAO;
+    private IOrderDAO orderDAO;
 
     @Autowired
-    private IOrderDAO orderDAO;
+    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private IScenarioDAO scenarioDAO;
@@ -143,6 +145,14 @@ public class PlanningStateCreator {
 
     @Autowired
     private SaveCommandBuilder saveCommandBuilder;
+
+    void synchronizeWithSchedule(Order order, IOptionalPersistence persistence) {
+        List<TaskSourceSynchronization> synchronizationsNeeded = order
+                .calculateSynchronizationsNeeded();
+        for (TaskSourceSynchronization each : synchronizationsNeeded) {
+            each.apply(persistence);
+        }
+    }
 
     public interface IActionsOnRetrieval {
 
@@ -268,13 +278,11 @@ public class PlanningStateCreator {
     private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
         Scenario currentScenario = scenarioManager.getCurrent();
         if (orderReloaded.isUsingTheOwnerScenario()) {
-            return new UsingOwnerScenario(currentScenario, currentScenario.getOrderVersion(orderReloaded));
+            return new UsingOwnerScenario(currentScenario, orderReloaded);
         }
         final List<DayAssignment> previousAssignments = orderReloaded
                 .getDayAssignments();
 
-        OrderVersion previousVersion = currentScenario
-                .getOrderVersion(orderReloaded);
         OrderVersion newVersion = OrderVersion
                 .createInitialVersion(currentScenario);
 
@@ -283,8 +291,8 @@ public class PlanningStateCreator {
                 orderReloaded.getAssociatedTaskElement());
 
         return new UsingNotOwnerScenario(new AvoidStaleAssignments(
-                previousAssignments), orderReloaded, previousVersion,
-                currentScenario, newVersion);
+                previousAssignments), orderReloaded, currentScenario,
+                newVersion);
     }
 
     private static void switchAllocationsToScenario(Scenario scenario,
@@ -376,35 +384,39 @@ public class PlanningStateCreator {
         public void afterCommit();
     }
 
-    private static class EmptySchedulingScenarioInfo implements IScenarioInfo {
+    private class ChangeScenarioInfoOnSave implements IScenarioInfo {
 
-        private final Scenario currentScenario;
+        private IScenarioInfo current;
+        private final Order order;
 
-        public EmptySchedulingScenarioInfo(Scenario currentScenario) {
-            this.currentScenario = currentScenario;
+        public ChangeScenarioInfoOnSave(IScenarioInfo initial, Order order) {
+            Validate.notNull(initial);
+            Validate.notNull(order);
+            this.current = initial;
+            this.order = order;
         }
 
-        @Override
-        public void afterCommit() {
-        }
-
-        @Override
-        public Scenario getCurrentScenario() {
-            return currentScenario;
-        }
-
-        @Override
-        public boolean isUsingTheOwnerScenario() {
-            return true;
-        }
-
-        @Override
-        public void saveVersioningInfo() throws IllegalStateException {
-        }
-
-        @Override
         public IAssignmentsOnResourceCalculator getAssignmentsCalculator() {
-            return new Resource.AllResourceAssignments();
+            return current.getAssignmentsCalculator();
+        }
+
+        public Scenario getCurrentScenario() {
+            return current.getCurrentScenario();
+        }
+
+        public boolean isUsingTheOwnerScenario() {
+            return current.isUsingTheOwnerScenario();
+        }
+
+        public void saveVersioningInfo() throws IllegalStateException {
+            current.saveVersioningInfo();
+        }
+
+        public void afterCommit() {
+            if (current instanceof ChangeScenarioInfoOnSave) {
+                current = new UsingOwnerScenario(current.getCurrentScenario(),
+                        order, current.getAssignmentsCalculator());
+            }
         }
 
     }
@@ -412,14 +424,19 @@ public class PlanningStateCreator {
     private class UsingOwnerScenario implements IScenarioInfo {
 
         private final Scenario currentScenario;
-        private final OrderVersion currentVersionForScenario;
+        private final Order order;
+        private final IAssignmentsOnResourceCalculator calculator;
 
-        public UsingOwnerScenario(Scenario currentScenario,
-                OrderVersion currentVersionForScenario) {
+        public UsingOwnerScenario(Scenario currentScenario, Order order) {
+            this(currentScenario, order, new Resource.AllResourceAssignments());
+        }
+
+        public UsingOwnerScenario(Scenario currentScenario, Order order, IAssignmentsOnResourceCalculator calculator) {
             Validate.notNull(currentScenario);
-            Validate.notNull(currentVersionForScenario);
+            Validate.notNull(order);
             this.currentScenario = currentScenario;
-            this.currentVersionForScenario = currentVersionForScenario;
+            this.order = order;
+            this.calculator = calculator;
         }
 
         @Override
@@ -428,9 +445,13 @@ public class PlanningStateCreator {
         }
 
         @Override
-        public void saveVersioningInfo() throws IllegalStateException {
-            currentVersionForScenario.savingThroughOwner();
-            orderVersionDAO.save(currentVersionForScenario);
+        public void saveVersioningInfo() {
+            OrderVersion orderVersion = order.getCurrentVersionInfo()
+                    .getOrderVersion();
+            orderVersion.savingThroughOwner();
+            synchronizeWithSchedule(order,
+                    TaskSource.persistTaskSources(taskSourceDAO));
+            order.writeSchedulingDataChanges();
         }
 
         @Override
@@ -445,32 +466,27 @@ public class PlanningStateCreator {
 
         @Override
         public IAssignmentsOnResourceCalculator getAssignmentsCalculator() {
-            return new Resource.AllResourceAssignments();
+            return calculator;
         }
     }
 
     private class UsingNotOwnerScenario implements IScenarioInfo {
 
-        private final OrderVersion previousVersion;
         private final Scenario currentScenario;
         private final OrderVersion newVersion;
         private final Order order;
-        private boolean versionSaved = false;
 
         private final IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator;
 
         public UsingNotOwnerScenario(
                 IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator,
-                Order order,
-                OrderVersion previousVersion, Scenario currentScenario,
+                Order order, Scenario currentScenario,
                 OrderVersion newVersion) {
             Validate.notNull(assigmentsOnResourceCalculator);
             Validate.notNull(order);
-            Validate.notNull(previousVersion);
             Validate.notNull(currentScenario);
             Validate.notNull(newVersion);
             this.assigmentsOnResourceCalculator = assigmentsOnResourceCalculator;
-            this.previousVersion = previousVersion;
             this.currentScenario = currentScenario;
             this.newVersion = newVersion;
             this.order = order;
@@ -478,26 +494,40 @@ public class PlanningStateCreator {
 
         @Override
         public boolean isUsingTheOwnerScenario() {
-            return versionSaved;
+            return false;
         }
 
         @Override
         public void saveVersioningInfo() throws IllegalStateException {
-            if (versionSaved) {
-                return;
+            reattachAllTaskSources();
+            createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
+                    newVersion);
+            synchronizeWithSchedule(order,
+                    TaskSource.persistButDontRemoveTaskSources(taskSourceDAO));
+            order.writeSchedulingDataChanges();
+        }
+
+        private void createAndSaveNewOrderVersion(Scenario currentScenario,
+                OrderVersion newOrderVersion) {
+            OrderVersion previousOrderVersion = currentScenario
+                    .getOrderVersion(order);
+            currentScenario.setOrderVersion(order, newOrderVersion);
+            scenarioDAO.updateDerivedScenariosWithNewVersion(
+                    previousOrderVersion, order, currentScenario,
+                    newOrderVersion);
+        }
+
+        private void reattachAllTaskSources() {
+            // avoid LazyInitializationException for when doing
+            // removePredecessorsDayAssignmentsFor
+            for (TaskSource each : order
+                    .getAllScenariosTaskSourcesFromBottomToTop()) {
+                taskSourceDAO.reattach(each);
             }
-            orderDAO.save(order);
-            TaskSource taskSource = order.getTaskSource();
-            taskSourceDAO.save(taskSource);
-            taskSource.dontPoseAsTransientObjectAnymore();
-            taskSource.getTask().dontPoseAsTransientObjectAnymore();
-            scenarioDAO.updateDerivedScenariosWithNewVersion(previousVersion,
-                    order, currentScenario, newVersion);
         }
 
         @Override
         public void afterCommit() {
-            versionSaved = true;
         }
 
         @Override
@@ -533,8 +563,8 @@ public class PlanningStateCreator {
             Validate.notNull(order);
             this.order = order;
             rebuildTasksState(order);
-            this.scenarioInfo = isEmpty() ? new EmptySchedulingScenarioInfo(
-                    currentScenario) : buildScenarioInfo(order);
+            this.scenarioInfo = new ChangeScenarioInfoOnSave(
+                    buildScenarioInfo(order), order);
             this.resources = OrderPlanningModel
                     .loadRequiredDataFor(new HashSet<Resource>(initialResources));
             associateWithScenario(this.resources);
@@ -543,17 +573,12 @@ public class PlanningStateCreator {
         void onRetrieval() {
             cachedConfiguration = null;
             cachedCommand = null;
-            synchronizeOrderTasks();
+            synchronizeScheduling();
             rebuildTasksState(order);
         }
 
-        void synchronizeOrderTasks() {
-            List<TaskSourceSynchronization> synchronizationsNeeded = order
-                    .calculateSynchronizationsNeeded();
-            IOptionalPersistence persistence = TaskSource.dontPersist();
-            for (TaskSourceSynchronization each : synchronizationsNeeded) {
-                each.apply(persistence);
-            }
+        void synchronizeScheduling() {
+            synchronizeWithSchedule(order, TaskSource.dontPersist());
         }
 
         private void rebuildTasksState(Order order) {
@@ -760,6 +785,52 @@ public class PlanningStateCreator {
             orderDAO.reattach(order);
             if (getRootTask() != null) {
                 taskDAO.reattach(getRootTask());
+            }
+        }
+
+        public void synchronizeTrees() {
+            orderDAO.save(order);
+            scenarioInfo.saveVersioningInfo();
+            reattachCurrentTaskSources();
+            saveDerivedScenarios();
+            deleteOrderElementWithoutParent();
+        }
+
+        private void reattachCurrentTaskSources() {
+            for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
+                taskSourceDAO.reattach(each);
+            }
+        }
+
+        private void saveDerivedScenarios() {
+            List<Scenario> derivedScenarios = scenarioDAO
+                    .getDerivedScenarios(getCurrentScenario());
+            for (Scenario scenario : derivedScenarios) {
+                scenario.addOrder(order, order.getCurrentOrderVersion());
+            }
+        }
+
+        private void deleteOrderElementWithoutParent()
+                throws ValidationException {
+            List<OrderElement> listToBeRemoved = orderElementDAO
+                    .findWithoutParent();
+            for (OrderElement orderElement : listToBeRemoved) {
+                if (!(orderElement instanceof Order)) {
+                    tryToRemove(orderElement);
+                }
+            }
+        }
+
+        private void tryToRemove(OrderElement orderElement) {
+            // checking no work reports for that orderElement
+            if (orderElementDAO
+                    .isAlreadyInUseThisOrAnyOfItsChildren(orderElement)) {
+                return;
+            }
+            try {
+                orderElementDAO.remove(orderElement.getId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
             }
         }
 
