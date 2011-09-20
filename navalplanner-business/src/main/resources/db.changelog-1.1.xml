@@ -288,12 +288,21 @@
         </sql>
     </changeSet>
 
+    <changeSet id="drop-foreign-key-sum_charged_hours_id-in-order_element" author="dmel">
+        <dropForeignKeyConstraint baseTableName="order_element"
+            constraintName="fk92271f0b7ec17fa6" />
+    </changeSet>
+
     <changeSet id="rename-sum_charged_hours_id-to-sum_charged_effort_id" author="mrego">
         <comment>Rename sum_charged_hours_id to sum_charged_effort_id in order_element</comment>
         <renameColumn tableName="order_element"
             oldColumnName="sum_charged_hours_id"
             newColumnName="sum_charged_effort_id"
             columnDataType="BIGINT" />
+    </changeSet>
+
+    <changeSet id="add-foreign-key-sum_charged_effort_id-in-order_element" author="dmel">
+        <addForeignKeyConstraint baseColumnNames="sum_charged_effort_id" baseTableName="order_element" constraintName="sum_charged_effort_id_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sum_charged_effort" referencesUniqueColumn="false"/>
     </changeSet>
 
     <changeSet id="drop-column-date-in-stretches-table" author="mrego">
