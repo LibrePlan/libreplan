@@ -66,7 +66,7 @@ public class ConcurrentModificationHandling {
                         ConcurrentModificationController.showException(
                                 optimisticLockingFailureException, goToPage);
                     }
-                    throw e;
+                    throw cause;
                 }
             }
         };
