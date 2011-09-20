@@ -30,26 +30,13 @@
 
 <window title="${i18n:_('MonteCarlo')}"
         apply="${monteCarloGraphController}"
-        mode="modal"
-        border="false"
-        closable="true" >
+        closable="true" width="850px">
 
-    <n:center>
-        <label style="font-family: Tahoma; font-weight: bold; font-size: 18px" value="${i18n:_('MonteCarlo chart')}" />
-    </n:center>
+    <vbox width="100%" pack="center" align="center">
+        <label style="font-family: Tahoma; font-weight: bold; font-size: 18px;padding:5px;" value="${i18n:_('MonteCarlo chart')}" />
+    </vbox>
 
-    <separator spacing="10px" orient="horizontal" />
-
-    <hbox>
-        <grid>
-            <columns>
-                <column width="150px"/>
-                <column hflex="2"/>
-                <column width="150px" />
-                <column hflex="2"/>
-                <column width="150px"/>
-                <column hflex="1"/>
-            </columns>
+        <grid sizedByContent="false">
             <rows>
                 <row>
                     <label value="${i18n:_('Start date')}" />
@@ -63,7 +50,6 @@
                 </row>
             </rows>
         </grid>
-    </hbox>
 
     <hbox>
         <vbox id="charts">
