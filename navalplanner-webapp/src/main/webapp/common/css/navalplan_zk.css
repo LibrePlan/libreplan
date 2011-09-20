@@ -1431,7 +1431,7 @@ display:none;
 
 .progress-types.z-combobox {
     position: relative;
-    left: -3px;
+    left: -9px;
 }
 
 .progress-types {
@@ -1448,6 +1448,10 @@ display:none;
     border-width: 0;
     outline: none;
     text-indent: -200px;
+}
+
+.progress-types.z-combobox input {
+    display: none;
 }
 
 .show-advances img  {
