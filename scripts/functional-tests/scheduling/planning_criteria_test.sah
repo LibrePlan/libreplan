@@ -31,7 +31,9 @@
  * 8 - Assign elements to a worker
  *   8.1 - Assign Criterion (Incorrect dates)
  *   8.2 - Assign Calendar
- * 9 - Delete all required elements
+ * 9 - Allocate criterion into the first task
+ * 10 - Check Project planning filter
+ * 11 - Delete all required elements
  *
  */
 
@@ -89,6 +91,23 @@ function planningAssignCriterion($criterion){
     _log("Try to assign criterion", "custom1");
 }
 
+function planningAssignCriterionInWBS($projectName, $criterion){
+    commonEditProject($projectName);
+    _doubleClick(_span("z-dottree-ico z-dottree-firstspacer"));
+    _click(_span("Criterion Requirement[1]"));
+    _click(_cell("z-button-cm", _near(_div("Assigned criterion requirements[1]"))));
+    _click(_italic(0, _near(_div("Criterion name[1]"))));
+    _click(_div($criterion));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+}
+
+function planningCheckAssignedCriterion($criterion){
+    _click(_cell("Project Scheduling"));
+    _click(_image("ico_resources.png"));
+    commonProjectPlanningFilter($criterion, $criterion)
+}
+
 function planningCheckIncorrectWorkerValidation(){
     _assertExists(_div("The resource's calendar has no available days starting from the start of the task."));
     _assert(_isVisible(_div("The resource's calendar has no available days starting from the start of the task.")));
@@ -116,6 +135,7 @@ var $dates = ["Jul 1, 2011", "Sep 10, 2011"]
 var $dates2 = ["Jul 1, 2011", ""]
 var $projectName = "ProjectForPlannig";
 var $taskName = "taskForPlanning";
+var $taskName2 = "taskForPlanning2";
 
 /* test actions */
 
@@ -128,11 +148,14 @@ commonResourceEditAssignedCriteriaForm("Workers", $workerName, 5, $criterion);
 commonResourceEditAssignedCalendarForm("Workers", $workerName, 5, $calendar);
 planningIncludeEndDates($workerName, $dates2, $dates);
 commonCreateProject($projectName);
-commonCreateTask($projectName, $taskName, "100");
+commonCreateTask($projectName, $taskName, "10");
+commonCreateTask($projectName, $taskName2, "12");
 planningAssignWorker($workerName);
 planningIncludeEndDates($workerName, $dates, $dates2);
 commonEditProject($projectName);
 planningAssignCriterion($criterion);
+planningAssignCriterionInWBS($projectName, $criterion);
+planningCheckAssignedCriterion($criterion);
 deleteRequiredElements();
 
 commonLogout();

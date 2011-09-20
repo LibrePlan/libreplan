@@ -95,6 +95,15 @@ function commonConfigurationChangeCheckboxMainPreferences($element){
     commonSaveConfigurationValidation();
 }
 
+/* Use the filter of Project Planning */
+function commonProjectPlanningFilter($label, $labelName){
+    _click(_italic(0, _near(_span("with"))));
+    _click(_div($labelName+" ( "+$label+" )"));
+    _click(_cell("Filter"));
+    commonProjectPlanningFilterValidation();
+    _log("Check if the labels are filtered", "custom1");
+}
+
 /*
  * Common functions for Validations
  */
@@ -107,6 +116,10 @@ function commonSaveConfigurationValidation(){
 function commonEmptyCodeValidation(){
     _assertExists(_div("cannot be null or empty"));
     _assert(_isVisible(_div("cannot be null or empty")));
+}
+
+function commonProjectPlanningFilterValidation(){
+    _assertNotTrue(_isVisible(_span("z-tree-ico z-tree-firstspacer[1]")));
 }
 
 /* test to check a correct save */

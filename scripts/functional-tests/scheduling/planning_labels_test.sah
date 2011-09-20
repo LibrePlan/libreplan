@@ -51,7 +51,7 @@ function planningCheckLabel(){
     _log("Check if the labels are showed", "custom1");
 }
 
-function planningCheckLabelFilter($label, $labelName){
+function commonProjectPlanningFilter($label, $labelName){
     _click(_italic(0, _near(_span("with"))));
     _click(_div($labelName+" ( "+$label+" )"));
     _click(_cell("Filter"));
@@ -97,7 +97,7 @@ commonCreateTask($projectName, $taskName2, "24");
 commonEditProject($projectName);
 planningAssignLabel();
 planningCheckLabel();
-planningCheckLabelFilter($label, $labelList[0]);
+commonProjectPlanningFilter($label, $labelList[0]);
 deleteRequiredElements();
 
 commonLogout();
