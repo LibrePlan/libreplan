@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -89,6 +88,7 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
+import org.navalplanner.web.planner.order.PlanningStateCreator;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -108,6 +108,9 @@ import org.zkoss.zul.Messagebox;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/planner/index.zul;orders_list")
 public class OrderModel extends IntegrationEntityModel implements IOrderModel {
+
+    @Autowired
+    private PlanningStateCreator planningStateCreator;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
@@ -412,7 +415,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void prepareForCreate() throws ConcurrentModificationException {
+    public void prepareForCreate() {
         loadNeededDataForConversation();
         this.order = Order.create();
         initializeOrder();

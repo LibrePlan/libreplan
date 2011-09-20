@@ -1062,12 +1062,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
-        try {
-            prepareForCreate();
-            getCreationPopup().showWindow(this, null);
-        } catch (ConcurrentModificationException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-        }
+        prepareForCreate();
+        getCreationPopup().showWindow(this, null);
     }
 
     public void prepareForCreate() {
