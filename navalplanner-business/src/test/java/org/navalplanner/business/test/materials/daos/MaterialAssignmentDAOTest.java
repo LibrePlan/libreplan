@@ -28,8 +28,12 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.materials.daos.IMaterialAssignmentDAO;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
@@ -67,6 +71,12 @@ public class MaterialAssignmentDAOTest {
     @Autowired
     IMaterialAssignmentDAO materialAssignmentDAO;
 
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Resource
+    private IDataBootstrap unitTypeBootstrap;
+
     private Material createValidMaterial() {
         MaterialCategory materialCategory = MaterialCategory.create(UUID.randomUUID().toString());
         materialCategoryDAO.save(materialCategory);
@@ -84,6 +94,12 @@ public class MaterialAssignmentDAOTest {
         MaterialAssignment assignment =
             MaterialAssignment.create(createValidMaterial());
         return assignment;
+    }
+
+    @Before
+    public void loadRequiredaData() {
+        configurationBootstrap.loadRequiredData();
+        unitTypeBootstrap.loadRequiredData();
     }
 
     @Test
