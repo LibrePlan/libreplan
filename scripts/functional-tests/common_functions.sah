@@ -394,11 +394,11 @@ function commonProgressDelete($name){
  * Common functions for Criteria
  */
 
-function commonCriteriaCreate($type){
+function commonCriteriaCreate($type, $list){
     commonCreate("Criteria");
-    commonCriteriaForm($type);
+    commonCriteriaForm($type, $list);
     commonSaveValidation("Criterion Type", $type);
-    _log("Create a new criterion", "custom1");
+    _log("Create criterion" + $type, "custom1");
 }
 
 function commonCriteriaEdit($oldName, $newName, $cell){
@@ -410,13 +410,15 @@ function commonCriteriaEdit($oldName, $newName, $cell){
     _log("Edit a criterion", "custom1");
 }
 
-function commonCriteriaForm($name){
+function commonCriteriaForm($name, $list){
     _setValue(_textbox(0, _near(_span("Name"))), $name);
     _click(_checkbox(0, _near(_div("Multiple values per resource"))));
     _click(_checkbox(0, _near(_div("Hierarchy"))));
     _click(_cell("OK"));
-    _setValue(_textbox(0, _near(_span("New criterion"))), $name);
-    _click(_cell("Add"));
+    for (var $i = 0; $i < $list.length; $i++){
+	_setValue(_textbox(0, _near(_span("New criterion"))), $list[$i]);
+	_click(_cell("Add"));
+    }
     _click(_cell("Save"));
 }
 

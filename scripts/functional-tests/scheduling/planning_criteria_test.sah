@@ -141,7 +141,7 @@ var $taskName2 = "taskForPlanning2";
 
 commonLogin("admin", "admin");
 
-commonCriteriaCreate($criterion);
+commonCriteriaCreate($criterion, [$criterion]);
 commonCalendarCreate($calendar);
 commonWorkerCreate($workerName, $workerName, $workerName);
 commonResourceEditAssignedCriteriaForm("Workers", $workerName, 5, $criterion);

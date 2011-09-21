@@ -110,7 +110,7 @@ function virtualWorkerCheckTabs(){
 }
 
 function virtualWorkerCheckAssignedCriteria($workerName, $cell, $criterion){
-    commonCriteriaCreate($criteriaName);
+    commonCriteriaCreate($criteriaName, [$criteriaName]);
     commonResourceEditAssignedCriteriaForm("Virtual Workers Groups", $workerName, $cell, $criterion);
     commonCriteriaTryDeleteAssigned($criteriaName);
 }
