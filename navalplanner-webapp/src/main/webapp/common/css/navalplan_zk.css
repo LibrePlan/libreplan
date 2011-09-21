@@ -1709,3 +1709,7 @@ input.z-datebox-text-disd {
 .earned-value-chart .legend-container {
     width: 226px;
 }
+
+.template-tree-tabpanel {
+    overflow-x: auto;
+}
