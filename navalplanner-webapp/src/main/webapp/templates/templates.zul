@@ -100,7 +100,7 @@
                             </rows>
                         </grid>
                     </tabpanel>
-                    <tabpanel>
+                    <tabpanel sclass="template-tree-tabpanel">
                         <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
                     </tabpanel>
                     <tabpanel>

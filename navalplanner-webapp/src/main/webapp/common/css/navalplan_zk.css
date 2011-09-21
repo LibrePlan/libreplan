@@ -1781,3 +1781,7 @@ select {
 .z-borderlayout {
     background-color: transparent;
 }
+
+.template-tree-tabpanel {
+    overflow-x: auto;
+}
