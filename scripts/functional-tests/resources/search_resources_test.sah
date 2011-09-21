@@ -1,0 +1,132 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a criteria
+ * 2 - Create workers
+ *   2.1 - Create three workers
+ *   2.2 - Assign different criterion to each one
+ *   2.3 - Filter the elements
+ *   2.4 - Check if the elements are correctly filtered
+ * 2 - Create Virtual workers
+ *   2.1 - Create three virtual workers
+ *   2.2 - Assign different criterion to each one
+ *   2.3 - Filter the elements
+ *   2.4 - Check if the elements are correctly filtered
+ * 3 - Delete all the workers
+ * 4 - Delete all the virtual workers
+ * 5 - Edit the criterion to be able to use it for machines
+ * 6 - Create Machines
+ *   6.1 - Create three machines
+ *   6.2 - Assign different criterion to each one
+ *   6.3 - Filter the elements
+ *   6.4 - Check if the elements are correctly filtered
+ * 7 - Delete all the machines
+ * 8 - Delete criterion
+ *
+*/
+
+_include("../common_functions.sah");
+
+function searchResourceCheckFilter($list){
+    _assertNotTrue(_isVisible(_span($list[0][0])));
+    _assertNotTrue(_isVisible(_span($list[1][0])));
+    _assert(_isVisible(_span($list[2][0])));
+}
+
+function searchResourcesDeleteWorkerElements($list, $resource){
+    if ($resource == "Worker"){
+    for (var $i = 0; $i < $list.length; $i++){
+        commonWorkerDelete($list[$i][0]);
+    }
+    }
+    else if ($resource == "Machine"){
+    for (var $i = 0; $i < $list.length; $i++){
+        commonMachineDelete($list[$i][0]);
+    }
+    }
+    else{
+    for (var $i = 0; $i < $list.length; $i++){
+        commonVirtualWorkerDelete($list[$i][0]);
+    }
+    }
+}
+
+function searchResourcesFiltresEditCriterio($criterion){
+    _click(_link("Criteria"));
+    _click(_image("ico_editar1.png", _in(_cell(4,_near(_cell($criterion))))));
+    _click(_italic(0, _near(_span("Type"))));
+    _click(_cell("MACHINE", _near(_span("Type"))));
+    _click(_cell("Save"));
+}
+
+/*
+ * Workers Exercise
+ */
+
+var $criteriaType1 = "Formation";
+var $criteriaType1List = ["Project Manager", "Analist", "Developer"];
+var $workerList = new Array();
+    $workerList[0] = ["Raúl", "González Álvarez", "11111111A", "Developer"];
+    $workerList[1] = ["Ana", "Pérez López","22222222B", "Analist"];
+    $workerList[2] = ["Felipe", "Romero Gómez", "33333333C", "Project Manager"];
+var $virtualWorkerList = new Array();
+    $virtualWorkerList[0] = ["virtualWorker1", "Developer"];
+    $virtualWorkerList[1] = ["virtualWorker2", "Analist"];
+    $virtualWorkerList[2] = ["virtualWorker3", "Project Manager"]
+var $machineList = new Array();
+    $machineList[0] = ["Raúl", "something", "Developer"];
+    $machineList[1] = ["Ana", "something", "Analist"];
+    $machineList[2] = ["Felipe", "something", "Project Manager"];
+/* test actions */
+
+commonLogin("admin", "admin");
+
+commonCriteriaCreate($criteriaType1, $criteriaType1List);
+for (var $i = 0; $i < $workerList.length; $i++){
+    commonWorkerCreate($workerList[$i][0], $workerList[$i][1], $workerList[$i][2]);
+    commonResourceEditAssignedCriteriaForm("Workers", $workerList[$i][0], 5, $workerList[$i][3]);
+    _log("Create a worker", "custom1");
+}
+commonResourceFilter("Workers", $criteriaType1, $criteriaType1List[0]);
+searchResourceCheckFilter($workerList);
+
+for (var $i = 0; $i < $virtualWorkerList.length; $i++){
+    commonVirtualWorkerCreate($virtualWorkerList[$i][0], $virtualWorkerList[$i][1]);
+    commonResourceEditAssignedCriteriaForm("Virtual Workers Groups", $virtualWorkerList[$i][0], 3, $virtualWorkerList[$i][1]);
+    _log("Create a virtual worker", "custom1");
+}
+commonResourceFilter("Virtual Workers Groups",$criteriaType1, $criteriaType1List[0]);
+searchResourceCheckFilter($virtualWorkerList);
+
+searchResourcesDeleteWorkerElements($workerList, "Worker");
+searchResourcesDeleteWorkerElements($virtualWorkerList, "Virtual");
+searchResourcesFiltresEditCriterio($criteriaType1);
+for (var $i = 0; $i < $machineList.length; $i++){
+    commonMachineCreate($machineList[$i][0], $machineList[$i][1]);
+    commonResourceEditAssignedCriteriaForm("Machines", $machineList[$i][0], 4, $machineList[$i][2]);
+    _log("Create a machine", "custom1");
+}
+commonResourceFilter("Machines", $criteriaType1, $criteriaType1List[0]);
+searchResourceCheckFilter($machineList);
+searchResourcesDeleteWorkerElements($machineList, "Machine");
+commonCriteriaDelete($criteriaType1);
+
+commonLogout();
