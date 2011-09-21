@@ -463,7 +463,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     @AssertTrue(message = "template name is already being used")
-    public boolean checkConstraintUniqueTemplateName() {
+    public boolean checkConstraintUniqueRootTemplateName() {
         if (getParent() != null) {
             return true;
         }
@@ -472,11 +472,11 @@ public abstract class OrderElementTemplate extends BaseEntity implements
                 .getOrderElementTemplateDAO();
         if (isNewObject()) {
             return !orderElementTemplateDAO
-                    .existsByNameAnotherTransaction(this);
+                    .existsRootByNameAnotherTransaction(this);
         } else {
             try {
                 OrderElementTemplate template = orderElementTemplateDAO
-                        .findUniqueByName(getName());
+                        .findUniqueRootByName(getName());
                 return template.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
