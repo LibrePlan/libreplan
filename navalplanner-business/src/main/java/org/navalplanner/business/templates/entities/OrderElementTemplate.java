@@ -462,9 +462,12 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return getParent() == null;
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "template name is already being used")
     public boolean checkConstraintUniqueTemplateName() {
+        if (getParent() != null) {
+            return true;
+        }
+
         IOrderElementTemplateDAO orderElementTemplateDAO = Registry
                 .getOrderElementTemplateDAO();
         if (isNewObject()) {
