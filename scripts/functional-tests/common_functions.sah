@@ -184,6 +184,15 @@ function commmonResourceEmptyFields(){
     _assert(_isVisible(_div("This field may not be empty or contain only spaces.")));
 }
 
+function commonResourceFilter($resource, $criterion, $name){
+    _click(_link($resource));
+    _click(_italic(0, _near(_span("Filter by"))));
+    _click(_div($name+" ( "+$criterion+" )"));
+    _click(_cell("Filter"));
+    commonProjectPlanningFilterValidation();
+    _log("Create a criteria filter", "custom1");
+}
+
 function commonResourceEmptyCategoryName(){
     _assertExists(_div("A category must be selected"));
     _assert(_isVisible(_div("A category must be selected")));
@@ -249,6 +258,39 @@ function commonMachineDelete($name){
     commonDelete("Machines", $name, 4);
     commonDeleteValidation("Machine", $name);
     _log("Delete the machine", "custom1");
+}
+
+/*
+ * Common functions for Virtual Workers
+ */
+
+
+function commonVirtualWorkerCreate($name) {
+    commonVirtualWorkerGoToCreate();
+    commonVirtualWorkerForm($name);
+    commonVirtualWorkerAcctionValidation("saved");
+    _log("Create a new virtual worker", "custom1");
+}
+
+function commonVirtualWorkerGoToCreate (){
+    _click(_link("Virtual Workers Groups"));
+    _click(_cell("Create Virtual Worker"));
+}
+
+function commonVirtualWorkerForm($name) {
+    _setValue(_textbox(0, _near(_span("Group name"))), $name);
+    _click(_cell("Save"));
+}
+
+function commonVirtualWorkerDelete($name){
+    commonDelete("Virtual Workers Groups", $name, 3);
+    commonVirtualWorkerAcctionValidation("deleted");
+    _log("Delete the virtual worker", "custom1");
+}
+
+function commonVirtualWorkerAcctionValidation($action){
+    _assertExists(_span("Worker "+$action));
+    _assert(_isVisible(_span("Worker "+$action)));
 }
 
 /*

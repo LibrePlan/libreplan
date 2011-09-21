@@ -53,40 +53,23 @@
 */
 _include("../common_functions.sah");
 
-function virtualWorkerCreate($name) {
-    virtualWorkerGoToCreate();
-    virtualWorkerForm($name);
-    virtualWorkerAcctionValidation("saved");
-    _log("Create a new virtual worker", "custom1");
-}
-
 function virtualWorkerCreateDuplicateType($name) {
-    virtualWorkerGoToCreate();
-    virtualWorkerForm($name);
+    commonVirtualWorkerGoToCreate();
+    commonVirtualWorkerForm($name);
     virtualWorkerNotValid($name);
     _log("Create a duplicate virtual worker", "custom1");
 }
 
 function virtualWorkerCreateEmpty($name) {
-    virtualWorkerGoToCreate();
-    virtualWorkerForm("");
+    commonVirtualWorkerGoToCreate();
+    commonVirtualWorkerForm("");
     _log("Create a empty virtual worker", "custom1");
-}
-
-function virtualWorkerGoToCreate (){
-    _click(_link("Virtual Workers Groups"));
-    _click(_cell("Create Virtual Worker"));
-}
-
-function virtualWorkerForm($name) {
-    _setValue(_textbox(0, _near(_span("Group name"))), $name);
-    _click(_cell("Save"));
 }
 
 function virtualWorkerEdit($oldName, $newName, $cell) {
     commonEdit($oldName, $cell);
-    virtualWorkerForm($newName);
-    virtualWorkerAcctionValidation("saved");
+    commonVirtualWorkerForm($newName);
+    commonVirtualWorkerAcctionValidation("saved");
     _log("Edit a virtual worker", "custom1");
 }
 
@@ -98,8 +81,8 @@ function virtualWorkerCheckCode($name){
 }
 
 function virtualWorkerCreateWithoutCode($name){
-    virtualWorkerGoToCreate();
-    virtualWorkerForm($name);
+    commonVirtualWorkerGoToCreate();
+    commonVirtualWorkerForm($name);
     commonEmptyCodeValidation();
 }
 
@@ -125,7 +108,7 @@ function virtualWorkerCheckAssignedCostCategory($workerName, $cell, $cCategory){
     commonWorkHourCreate("HourForWorker", "12");
     commonCostCategoryCreate($cCategory, "HourForWorker");
     commonResourceEditAssignedCostCategoryForm("Virtual Workers Groups", $workerName, $cell, $cCategory);
-    virtualWorkerAcctionValidation("saved");
+    commonVirtualWorkerAcctionValidation("saved");
     _log("Assign the created cost category", "custom1");
     commonCostCategoryTryDeleteAssignedCostCategory($cCategory, 3);
 }
@@ -170,11 +153,6 @@ function virtualWorkerNotValid($worker){
     _assert(_isVisible(_span("checkConstraintUniqueVirtualGroupName: Virtual worker group name must be unique")));
 }
 
-function virtualWorkerAcctionValidation($action){
-    _assertExists(_span("Worker "+$action));
-    _assert(_isVisible(_span("Worker "+$action)));
-}
-
 /* test values */
 var $workerName = "new";
 var $workerSurName = "newSon";
@@ -189,15 +167,13 @@ var $projectName = "projectForVirtual";
 /* test actions */
 commonLogin("admin", "admin");
 
-virtualWorkerCreate($workerName, $workerSurName, $workerID);
+commonVirtualWorkerCreate($workerName, $workerSurName, $workerID);
 virtualWorkerCreateDuplicateType($workerName, $workerSurName, $workerID);
 virtualWorkerCreateEmpty($workerName, $workerSurName, $workerID);
 virtualWorkerEdit($workerName, $workerNewName, 3);
 virtualWorkerCheckTabs();
 virtualWorkerCheckCode($workerName, $workerSurName, $workerID)
 virtualWorkerAssignProject($projectName, $workerNewName);
-commonDelete("Virtual Workers Groups", $workerNewName, 3);
-virtualWorkerAcctionValidation("deleted");
-_log("Delete the virtual worker", "custom1");
+commonVirtualWorkerDelete($workerNewName);
 virtualWorkerDeleteRequiredElements();
 commonLogout();
