@@ -152,7 +152,6 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     @Override
     public void removeSelectedLabel(Label label) {
         this.selectedLabels.remove(label);
-        hasChangeLabels = true;
     }
 
     @Override
