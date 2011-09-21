@@ -123,6 +123,12 @@
         </mold>
     </component>
 
+    <component>
+        <component-name>QueueTask</component-name>
+        <component-class>org.navalplanner.web.limitingresources.QueueTask</component-class>
+        <widget-class>limitingresources.QueueTask</widget-class>
+    </component>
+
     <!-- Depencencies displayed in limiting resources window -->
     <component>
         <component-name>limitingdependencylist</component-name>

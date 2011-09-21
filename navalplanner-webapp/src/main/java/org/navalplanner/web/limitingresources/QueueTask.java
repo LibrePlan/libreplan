@@ -51,19 +51,6 @@ public class QueueTask extends Div {
         this.start = element.getStartDate();
         this.end = element.getEndDate();
         this.element = element;
-        setAction("onmouseover: zkLimitingResourcesList.showRelatedElementsForQueueElement('"
-                + getUuid()
-                + "');onmouseout: zkLimitingResourcesList.hideRelatedElementsForQueueElement('"
-                + getUuid() + "')");
-        final String taskUid = this.getUuid();
-        this.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                Clients
-                        .evalJavaScript("zkLimitingDependencies.toggleDependenciesForQueueElement('"
-                                + taskUid + "')");
-            }
-        });
     }
 
     public LocalDate getStart() {
