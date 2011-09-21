@@ -36,16 +36,16 @@ public interface IOrderElementTemplateDAO extends
 
     List<OrderElementTemplate> getRootTemplates();
 
-    OrderElementTemplate findUniqueByName(
+    OrderElementTemplate findUniqueRootByName(
             OrderElementTemplate orderElementTemplate)
             throws InstanceNotFoundException;
 
-    OrderElementTemplate findUniqueByName(String name)
-    throws InstanceNotFoundException, NonUniqueResultException;
+    OrderElementTemplate findUniqueRootByName(String name)
+            throws InstanceNotFoundException, NonUniqueResultException;
 
-    boolean existsOtherOrderElementTemplateByName(
+    boolean existsOtherRootOrderElementTemplateByName(
             OrderElementTemplate orderElementTemplate);
 
-    boolean existsByNameAnotherTransaction(
+    boolean existsRootByNameAnotherTransaction(
             OrderElementTemplate orderElementTemplate);
 }

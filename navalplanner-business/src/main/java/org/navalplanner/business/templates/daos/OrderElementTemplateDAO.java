@@ -55,15 +55,15 @@ public class OrderElementTemplateDAO extends
     }
 
     @Override
-    public OrderElementTemplate findUniqueByName(
+    public OrderElementTemplate findUniqueRootByName(
             OrderElementTemplate orderElementTemplate)
             throws InstanceNotFoundException {
         Validate.notNull(orderElementTemplate);
-        return findUniqueByName(orderElementTemplate.getName());
+        return findUniqueRootByName(orderElementTemplate.getName());
     }
 
     @Override
-    public OrderElementTemplate findUniqueByName(String name)
+    public OrderElementTemplate findUniqueRootByName(String name)
             throws InstanceNotFoundException, NonUniqueResultException {
 
         // Prepare query
@@ -84,10 +84,10 @@ public class OrderElementTemplateDAO extends
     }
 
     @Override
-    public boolean existsOtherOrderElementTemplateByName(
+    public boolean existsOtherRootOrderElementTemplateByName(
             OrderElementTemplate orderElementTemplate) {
         try {
-            OrderElementTemplate t = findUniqueByName(orderElementTemplate);
+            OrderElementTemplate t = findUniqueRootByName(orderElementTemplate);
             return (t != null && t != orderElementTemplate);
         } catch (InstanceNotFoundException e) {
             return false;
@@ -96,9 +96,9 @@ public class OrderElementTemplateDAO extends
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public boolean existsByNameAnotherTransaction(
+    public boolean existsRootByNameAnotherTransaction(
             OrderElementTemplate orderElementTemplate) {
-        return existsOtherOrderElementTemplateByName(orderElementTemplate);
+        return existsOtherRootOrderElementTemplateByName(orderElementTemplate);
     }
 
 }
