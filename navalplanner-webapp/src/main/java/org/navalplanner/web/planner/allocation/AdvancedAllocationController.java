@@ -870,7 +870,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     public void populateVerticalListbox() {
         if (rowsCached != null) {
-            verticalPage = 0;
             verticalPaginationIndexes = new ArrayList<Integer>();
             advancedAllocationVerticalPagination.getChildren().clear();
             for(int i=0; i<rowsCached.size(); i=
