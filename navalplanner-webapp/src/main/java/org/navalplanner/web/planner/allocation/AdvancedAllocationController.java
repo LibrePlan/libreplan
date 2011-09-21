@@ -1274,6 +1274,7 @@ class Row {
             }
             this.addEventListener(Events.ON_SELECT, onSelectListbox(this));
             this.setMold("select");
+            this.setStyle("font-size: 10px");
         }
 
         private void selectItemAndSavePreviousValue(Listitem listitem) {
