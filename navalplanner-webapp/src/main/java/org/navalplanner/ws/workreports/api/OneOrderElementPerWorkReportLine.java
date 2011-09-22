@@ -73,7 +73,10 @@ public class OneOrderElementPerWorkReportLine implements
     @Override
     public String getOrderElementCodesBound(
             IWorkReportsElements workReportEntity) {
-        return workReportEntity.getOrderElement().getCode();
+        if (workReportEntity.getOrderElement() != null)
+            return workReportEntity.getOrderElement().getCode();
+        else
+            return "";
     }
 
     @Override

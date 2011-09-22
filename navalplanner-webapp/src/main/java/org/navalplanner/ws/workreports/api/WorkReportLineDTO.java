@@ -67,7 +67,7 @@ public class WorkReportLineDTO extends IntegrationEntityDTO implements
     public XMLGregorianCalendar clockFinish;
 
     @XmlAttribute(name = "hours")
-    public Integer numHours;
+    public String numHours;
 
     @XmlElementWrapper(name = "label-list")
     @XmlElement(name = "label")
@@ -84,7 +84,7 @@ public class WorkReportLineDTO extends IntegrationEntityDTO implements
             String resource,
  String orderElement, String typeOfWorkHours,
             XMLGregorianCalendar clockStart, XMLGregorianCalendar clockFinish,
-            Integer numHours, Set<LabelReferenceDTO> labels,
+            String numHours, Set<LabelReferenceDTO> labels,
             Set<DescriptionValueDTO> descriptionValues) {
         super(code);
         this.date = date;

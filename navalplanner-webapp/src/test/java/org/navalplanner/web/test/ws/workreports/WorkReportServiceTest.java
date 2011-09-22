@@ -313,7 +313,7 @@ public class WorkReportServiceTest {
         workReportLineDTO.date = DateConverter
                 .toXMLGregorianCalendar(new Date());
         workReportLineDTO.typeOfWorkHours = typeOfWorkHoursCode;
-        workReportLineDTO.numHours = 8;
+        workReportLineDTO.numHours = "8:15";
 
         return workReportLineDTO;
     }

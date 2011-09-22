@@ -40,6 +40,7 @@ import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
@@ -136,7 +137,8 @@ public final class WorkReportConverter {
 
         // Mandatory fields
         workReportLine.setCode(workReportLineDTO.code);
-        workReportLine.setNumHours(workReportLineDTO.numHours);
+        workReportLine.setEffort(EffortDuration
+                .parseFromFormattedString(workReportLineDTO.numHours));
 
         if (workReportLineDTO.typeOfWorkHours != null) {
             try {
@@ -299,9 +301,9 @@ public final class WorkReportConverter {
                     .getClockFinish());
         }
 
-        Integer numHours = null;
-        if(line.getNumHours() != null){
-            numHours = line.getNumHours();
+        String numHours = null;
+        if (line.getEffort() != null) {
+            numHours = line.getEffort().toFormattedString();
         }
 
         Set<LabelReferenceDTO> labelDTOs = LabelReferenceConverter.toDTO(line
@@ -536,7 +538,8 @@ public final class WorkReportConverter {
         }
 
         if (workReportLineDTO.numHours != null) {
-            workReportLine.setNumHours(workReportLineDTO.numHours);
+            workReportLine.setEffort(EffortDuration
+                    .parseFromFormattedString(workReportLineDTO.numHours));
         }
 
     }
