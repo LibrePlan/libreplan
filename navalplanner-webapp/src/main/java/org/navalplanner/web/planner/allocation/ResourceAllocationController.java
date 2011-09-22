@@ -68,7 +68,6 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
@@ -77,7 +76,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
-import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 
 /**
@@ -430,18 +428,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             result.setChecked(isSameCalculationTypeRadio(result,
                     calculationTypeRadio));
             return result;
-        }
-
-        public Hbox createHbox(Decimalbox decimalbox,
-                CalculationTypeRadio calculationTypeRadio) {
-            Vbox vbox;
-            Hbox hbox = new Hbox();
-            hbox.setSpacing("65px");
-            Radio radio = createRadio(calculationTypeRadio);
-
-            hbox.appendChild(radio);
-            hbox.appendChild(decimalbox);
-            return hbox;
         }
 
         public boolean isSameCalculationTypeRadio(Radio radio,
