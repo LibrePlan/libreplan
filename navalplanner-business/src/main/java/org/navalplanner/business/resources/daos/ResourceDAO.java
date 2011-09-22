@@ -242,12 +242,12 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
 
         for (Object row: rows) {
             Object[] columns = (Object[]) row;
-            Worker worker = (Worker) findExistingEntity((Long) columns[0]);
+            Resource resource = (Resource) findExistingEntity((Long) columns[0]);
             EffortDuration effort = EffortDuration.seconds(((Long) columns[1])
                     .intValue());
 
             HoursWorkedPerWorkerInAMonthDTO dto = new HoursWorkedPerWorkerInAMonthDTO(
-                    worker, effort);
+                    resource, effort);
             result.add(dto);
         }
         return result;

@@ -21,19 +21,20 @@
 
 package org.navalplanner.business.reports.dtos;
 
-import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.resources.entities.Resource;
+
 
 
 public class HoursWorkedPerWorkerInAMonthDTO {
 
-    private String workerName;
+    private String resourceName;
 
     private EffortDuration numHours;
 
-    public HoursWorkedPerWorkerInAMonthDTO(Worker worker,
+    public HoursWorkedPerWorkerInAMonthDTO(Resource resource,
             EffortDuration numHours) {
-        this.workerName = worker.getName();
+        this.resourceName = resource.getName();
         this.numHours = numHours;
     }
 
@@ -45,16 +46,16 @@ public class HoursWorkedPerWorkerInAMonthDTO {
         this.numHours = numHours;
     }
 
-    public String getWorkerName() {
-        return workerName;
+    public String getResourceName() {
+        return resourceName;
     }
 
-    public void setWorkerName(String workerName) {
-        this.workerName = workerName;
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
     }
 
     public String toString() {
-        return getWorkerName() + "; " + getNumHours();
+        return getResourceName() + "; " + getNumHours();
     }
 
 }
