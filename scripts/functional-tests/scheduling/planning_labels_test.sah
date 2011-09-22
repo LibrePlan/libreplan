@@ -32,11 +32,11 @@
 
 _include("../common_functions.sah");
 
-function planningAssignLabel(){
+function planningAssignLabel($label){
     _doubleClick(_span("z-dottree-ico z-dottree-firstspacer"));
     _click(_span("Labels"));
     _click(_italic(0, _span("Assign Label[1]")));
-    _click(_div("High"));
+    _click(_div($label));
     _click(_cell("z-button-cm", _near(_span("Assign Label[1]"))));
     _click(_cell("Back"));
     _click(_image("ico_save.png"));
@@ -44,24 +44,16 @@ function planningAssignLabel(){
     _log("Assig the label in a task", "custom1");
 }
 
-function planningCheckLabel(){
+function planningCheckLabel($label){
     _click(_cell("Project Scheduling"));
     _click(_image("ico_labels.png"));
-    planningCheckAssignedValidation();
+    planningCheckAssignedValidation($label);
     _log("Check if the labels are showed", "custom1");
-}
-
-function commonProjectPlanningFilter($label, $labelName){
-    _click(_italic(0, _near(_span("with"))));
-    _click(_div($labelName+" ( "+$label+" )"));
-    _click(_cell("Filter"));
-    planningCheckLabelFilterValidation();
-    _log("Check if the labels are filtered", "custom1");
 }
 
 function deleteRequiredElements(){
     commonDeleteProject($projectName);
-    commonLabelDelete($label);
+    commonLabelDelete($labelName);
     _log("Delete required elements", "custom1");
 }
 
@@ -69,18 +61,14 @@ function deleteRequiredElements(){
  * Validations
  */
 
-function planningCheckAssignedValidation(){
-    _assertExists(_div("High"));
-    _assert(_isVisible(_div("High")));
-}
-
-function planningCheckLabelFilterValidation(){
-    _assertNotTrue(_isVisible(_span("z-tree-ico z-tree-firstspacer[1]")));
+function planningCheckAssignedValidation($label){
+    _assertExists(_div($label));
+    _assert(_isVisible(_div($label)));
 }
 
 /* test values */
 
-var $label = "Experience";
+var $labelName = "Experience";
 var $labelList = ["High", "Low"];
 var $projectName = "ProjectForPlannigLabels";
 var $taskName = "taskForPlanningLabels";
@@ -90,14 +78,14 @@ var $taskName2 = "taskForPlanningLabels2";
 
 commonLogin("admin", "admin");
 
-commonLabelCreate($label, $labelList);
+commonLabelCreate($labelName, $labelList);
 commonCreateProject($projectName);
 commonCreateTask($projectName, $taskName, "12");
 commonCreateTask($projectName, $taskName2, "24");
 commonEditProject($projectName);
-planningAssignLabel();
-planningCheckLabel();
-commonProjectPlanningFilter($label, $labelList[0]);
+planningAssignLabel($labelList[0]);
+planningCheckLabel($labelList[0]);
+commonProjectPlanningFilter($labelName, $labelList[0]);
 deleteRequiredElements();
 
 commonLogout();
