@@ -24,6 +24,8 @@ package org.navalplanner.ws.workreports.api;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -40,6 +42,7 @@ import org.navalplanner.ws.common.api.LabelReferenceDTO;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @XmlRootElement(name = "work-report")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class WorkReportDTO extends IntegrationEntityDTO implements
         IWorkReportDTOsElements {
 
