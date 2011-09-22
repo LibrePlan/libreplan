@@ -114,7 +114,7 @@ function workReportEditForm($name){
     _click(_div($projectName+"[2]", _parentTable(_div("Project code[1]"))));
     _click(_cell("Save"));
     workReportHourValidation();
-    _setValue(_textbox("z-intbox z-intbox-text-invalid"), "8");
+    _setValue(_textbox("z-textbox z-textbox-text-invalid"), "8");
     _click(_cell("Save"));
 }
 
@@ -130,11 +130,6 @@ function workReportLinesDeleteRequiredElements(){
     commonDeleteProject($projectName);
     commonWorkReportModelDelete($workReportModelName);
     commonWorkReportModelDelete($workReportModelName2);
-}
-
-function workReportDelete($modelName){
-    commonDelete("Work Reports", $modelName, 4);
-    _log("Delete the work report", "custom1")
 }
 
 function DeleteRequiredElements(){
@@ -171,8 +166,8 @@ function workReportTaskValidation(){
 }
 
 function workReportHourValidation(){
-    _assertExists(_div("Hours cannot be null"));
-    _assert(_isVisible(_div("Hours cannot be null")));
+    _assertExists(_div("Effort must be greater than zero"));
+    _assert(_isVisible(_div("Effort must be greater than zero")));
 }
 
 /* test values */
@@ -192,7 +187,7 @@ workReportCreateWithoutElements();
 workReportCreateLineModel($workReportModelName);
 workReportCreateHeadingModel($workReportModelName2);
 workReportEdit($workReportModelName);
-workReportDelete($workReportModelName);
+commonWorkReportDelete($workReportModelName);
 workReportLinesDeleteRequiredElements();
 
 commonLogout();

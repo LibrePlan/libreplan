@@ -294,6 +294,21 @@ function commonVirtualWorkerAcctionValidation($action){
 }
 
 /*
+ * Common functions for Work report
+ */
+
+function commonWorkReportDelete ($name){
+    commonDelete("Work Reports", $name, 4);
+    commonWorkReportDeleteValidation();
+    _log("Delete the work report", "custom1");
+}
+
+function commonWorkReportDeleteValidation (){
+    _assertExists(_span("Work report removed successfully"));
+    _assert(_isVisible(_span("Work report removed successfully")));
+}
+
+/*
  * Common functions for Companies
  */
 

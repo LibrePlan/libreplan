@@ -85,9 +85,7 @@ function workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescr
     workHourTryDelete($hWorkNewName, "work report line");
     reportModelTryDelete($ModelName);
     commonTryDeleteProject("new project");
-    commonDelete("Work Reports", $ModelName, 4);
-    // Pending of a bug 1131
-    // workReportDeleteValidation();
+    commonWorkReportDelete($ModelName);
     commonDeleteProject("new project");
     commonMachineDelete($materialName);
     commonWorkReportModelDelete($ModelName);
@@ -145,7 +143,7 @@ function workReportForm($machine, $project, $workHour) {
     _setValue(_textbox(2, _near(_parentTable(_div("Date")))),$machine);
     _click(_italic(0, _near(_textbox(3, _near(_parentTable(_div("Date")))))));
     _click(_div($project+"[2]", _parentTable(_div("Project code[1]"))));
-    _setValue(_textbox("z-intbox"),"8");
+    _setValue(_textbox("z-textbox[1]"),"8");
     _setSelected(_select(2), $workHour);
     _click(_cell("Save"));
     _assertExists(_div("Work report saved"));
