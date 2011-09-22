@@ -32,3 +32,5 @@ account/settings_test.sah
 
 # Scheduling
 scheduling/templates_test.sah
+scheduling/planning_criteria_test.sah
+scheduling/planning_labels_test.sah

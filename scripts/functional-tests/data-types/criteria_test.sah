@@ -35,16 +35,16 @@
 */
 _include("../common_functions.sah");
 
-function criteriaCreateDuplicateType($type){
+function criteriaCreateDuplicateType($type, $names){
     commonCreate("Criteria");
-    commonCriteriaForm($type);
+    commonCriteriaForm($type, $names);
     criteriaNotValid();
     _log("Do not allow create a criterion Duplicate type", "custom1");
 }
 
-function criteriaCreateEmpty(){
+function criteriaCreateEmpty($type, $names){
     commonCreate("Criteria");
-    commonCriteriaForm("");
+    commonCriteriaForm($type, $names);
     _assertExists(_div("name: criterion type name not specified"));
     _assert(_isVisible(_div("name: criterion type name not specified")));
     _log("Do not allow create a criterion with empty type", "custom1");
@@ -114,9 +114,9 @@ function criteriaCheckCode($criteriaType){
     _log("Check code label", "custom1");
 }
 
-function criteriaCreateWithoutCode($type){
+function criteriaCreateWithoutCode($type, $typeList){
     commonCreate("Criteria");
-    commonCriteriaForm($type);
+    commonCriteriaForm($type, [$typeList]);
     commonEmptyCodeValidation();
 }
 
@@ -132,14 +132,14 @@ var $criteriaName2 = "criterion2";
 /* test actions */
 commonLogin("admin","admin");
 
-commonCriteriaCreate($criteriaType);
-criteriaCreateDuplicateType($criteriaType);
-criteriaCreateEmpty();
+commonCriteriaCreate($criteriaType, [$criteriaType]);
+criteriaCreateDuplicateType($criteriaType, [$criteriaType]);
+criteriaCreateEmpty("", [$criteriaType]);
 criteriaCreateDuplicateName($criteriaType2, $criteriaName);
 criteriaCreateWithHierarchy($criteriaType2, $criteriaName, $criteriaName2);
 criteriaCreateWithoutHierarchy($criteriaType3, $criteriaName, $criteriaName2);
 criteriaEdit($criteriaType, $criteriaNewType, 4);
-criteriaCheckCode($criteriaType);
+criteriaCheckCode($criteriaType, [$criteriaType]);
 commonCriteriaDelete($criteriaNewType);
 commonCriteriaDelete($criteriaType2);
 commonCriteriaDelete($criteriaType3);
