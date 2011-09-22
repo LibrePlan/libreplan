@@ -63,7 +63,8 @@
 
                     <hbox align="bottom" sclass="add-resources-or-criteria">
                         <newAllocationSelectorCombo id="newAllocationSelectorCombo" behaviour="NON_LIMITING"/>
-                        <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
+                        <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)"
+                            disabled="@{allocationController.anyManual}" />
                         <button id="advancedSearchButton" label="${i18n:_('Advanced search')}" onClick="allocationController.goToAdvancedSearch()" />
                         <checkbox id="extendedViewCheckbox" label="${i18n:_('Extended view')}"
                             onCheck="allocationController.onCheckExtendedView()"/>

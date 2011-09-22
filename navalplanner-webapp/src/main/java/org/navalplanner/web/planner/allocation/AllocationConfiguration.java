@@ -65,8 +65,6 @@ public class AllocationConfiguration extends HtmlMacroComponent {
         lbTaskStart = (Label) getFellowIfAny("lbTaskStart");
         lbTaskEnd = (Label) getFellowIfAny("lbTaskEnd");
         taskWorkableDays = (Intbox) getFellowIfAny("taskWorkableDays");
-        initializeCalculationTypeSelector();
-        initializeCalculationTypesGrid();
     }
 
     private void initializeCalculationTypeSelector() {
@@ -101,16 +99,15 @@ public class AllocationConfiguration extends HtmlMacroComponent {
 
             @Override
             public Component cellFor(Integer column, CalculationTypeRadio data) {
-                return data.createRadio(getCalculationTypeRadio());
+                if (formBinder == null) {
+                    return data.createRadio(null);
+                }
+                Radio radio = data.createRadio(CalculationTypeRadio
+                        .from(formBinder.getCalculatedValue()));
+                radio.setDisabled(formBinder.isAnyManual());
+                return radio;
             }
         };
-    }
-
-    private CalculationTypeRadio getCalculationTypeRadio() {
-        if (formBinder != null) {
-            return CalculationTypeRadio.from(formBinder.getCalculatedValue());
-        }
-        return null;
     }
 
     public Intbox getTaskWorkableDays() {
@@ -129,8 +126,10 @@ public class AllocationConfiguration extends HtmlMacroComponent {
         return calculationTypeSelector;
     }
 
-    public void setFormBinder(FormBinder formBinder) {
+    public void initialize(FormBinder formBinder) {
         this.formBinder = formBinder;
+        initializeCalculationTypeSelector();
+        initializeCalculationTypesGrid();
     }
 
     private CalculatedValue getCalculatedValue(String enumName) {

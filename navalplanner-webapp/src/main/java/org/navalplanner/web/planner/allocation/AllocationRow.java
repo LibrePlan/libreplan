@@ -504,11 +504,13 @@ public abstract class AllocationRow {
         this.currentCalculatedValue = calculatedValue;
         effortInput
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
-                        || recommendedAllocation);
+                        || recommendedAllocation
+                        || isAssignmentFunctionManual());
         effortInput.setConstraint(constraintForHoursInput());
         intendedResourcesPerDayInput
                 .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY
-                        || recommendedAllocation);
+                        || recommendedAllocation
+                        || isAssignmentFunctionManual());
         if (intendedResourcesPerDayInput.isDisabled()) {
             clearRealResourcesPerDay();
         }
@@ -528,6 +530,11 @@ public abstract class AllocationRow {
 
     public boolean isAssignmentFunctionNotFlat() {
         return getAssignmentFunction() != null;
+    }
+
+    public boolean isAssignmentFunctionManual() {
+        AssignmentFunction assignmentFunction = getAssignmentFunction();
+        return (assignmentFunction != null) && assignmentFunction.isManual();
     }
 
     private Constraint constraintForHoursInput() {

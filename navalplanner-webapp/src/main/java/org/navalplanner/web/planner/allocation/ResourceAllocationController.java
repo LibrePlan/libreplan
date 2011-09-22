@@ -256,7 +256,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     private void initializeAllocationConfigurationComponent() {
-        allocationConfiguration.setFormBinder(formBinder);
+        allocationConfiguration.initialize(formBinder);
     }
 
     public enum HoursRendererColumn {
@@ -625,6 +625,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             // On click delete button
             Button deleteButton = appendDeleteButton(row);
+            deleteButton.setDisabled(isAnyManual());
             formBinder.setDeleteButtonFor(data, deleteButton);
             deleteButton.addEventListener("onClick", new EventListener() {
 
@@ -691,6 +692,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public boolean isAnyNotFlat() {
         return formBinder != null && formBinder.isAnyNotFlat();
+    }
+
+    public boolean isAnyManual() {
+        return formBinder != null && formBinder.isAnyManual();
     }
 
 }

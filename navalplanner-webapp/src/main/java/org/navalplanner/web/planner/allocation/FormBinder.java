@@ -215,7 +215,8 @@ public class FormBinder {
         CalculatedValue c = allocationRowsHandler.getCalculatedValue();
         boolean disabled = rows.isEmpty()
                 || (CalculatedValue.NUMBER_OF_HOURS == c)
-                || (c == CalculatedValue.RESOURCES_PER_DAY && !recommendedAllocation);
+                || (c == CalculatedValue.RESOURCES_PER_DAY && !recommendedAllocation)
+                || isAnyManual();
         this.effortInput.setDisabled(disabled);
     }
 
@@ -242,7 +243,8 @@ public class FormBinder {
         workableDaysAndDatesBinder.applyDisabledRules();
         allResourcesPerDayVisibilityRule();
         applyDisabledRulesOnRows();
-        this.btnRecommendedAllocation.setDisabled(recommendedAllocation);
+        this.btnRecommendedAllocation.setDisabled(recommendedAllocation
+                || isAnyManual());
     }
 
     private void applyDisabledRulesOnRows() {
@@ -355,7 +357,8 @@ public class FormBinder {
 
         void applyDisabledRules() {
             this.taskWorkableDays.setDisabled(allocationRowsHandler
-                    .getCalculatedValue() == CalculatedValue.END_DATE);
+                    .getCalculatedValue() == CalculatedValue.END_DATE
+                    || isAnyManual());
         }
 
         private void initializeDateAndDurationFieldsFromTaskOriginalValues() {
@@ -459,7 +462,7 @@ public class FormBinder {
         CalculatedValue c = allocationRowsHandler.getCalculatedValue();
         this.allResourcesPerDay.setDisabled(rows.isEmpty()
                 || c == CalculatedValue.RESOURCES_PER_DAY
-                || !recommendedAllocation);
+                || !recommendedAllocation || isAnyManual());
         this.allResourcesPerDay
                 .setConstraint(constraintForAllResourcesPerDay());
     }
@@ -701,7 +704,7 @@ public class FormBinder {
 
     public void setRecommendedAllocation(Button recommendedAllocation) {
         this.btnRecommendedAllocation = recommendedAllocation;
-        this.btnRecommendedAllocation.setDisabled(false);
+        this.btnRecommendedAllocation.setDisabled(isAnyManual());
         Util.ensureUniqueListener(recommendedAllocation, Events.ON_CLICK,
                 new EventListener() {
                     @Override
@@ -917,6 +920,16 @@ public class FormBinder {
         for (AllocationRow allocationRow : allocationRowsHandler
                 .getCurrentRows()) {
             if (allocationRow.isAssignmentFunctionNotFlat()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isAnyManual() {
+        for (AllocationRow allocationRow : allocationRowsHandler
+                .getCurrentRows()) {
+            if (allocationRow.isAssignmentFunctionManual()) {
                 return true;
             }
         }
