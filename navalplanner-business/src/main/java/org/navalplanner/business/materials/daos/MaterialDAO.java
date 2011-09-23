@@ -91,7 +91,7 @@ public class MaterialDAO extends IntegrationEntityDAO<Material> implements
         Criteria criteria = this.getSession().createCriteria(Material.class);
 
         text = "%" + text + "%";
-        criteria.add(Restrictions.or(Restrictions.ilike("code", text), Restrictions.eq("description", text)));
+        criteria.add(Restrictions.or(Restrictions.ilike("code", text), Restrictions.ilike("description", text)));
         criteria.add(Restrictions.eq("disabled", false));
         if (categories != null && !categories.isEmpty()) {
             criteria.add(Restrictions.in("category", categories));
