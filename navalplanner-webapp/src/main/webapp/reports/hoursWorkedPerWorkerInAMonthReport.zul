@@ -34,7 +34,7 @@
 
     <window self="@{define(content)}"
         apply="org.navalplanner.web.reports.HoursWorkedPerWorkerInAMonthController"
-        title="${i18n:_('Hours Worked Per Resource In A Month')}"
+        title="${i18n:_('Total Worked Hours By Resource In A Month')}"
         border="normal" >
 
         <!-- Select workers -->
