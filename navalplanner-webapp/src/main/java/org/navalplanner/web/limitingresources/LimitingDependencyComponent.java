@@ -21,9 +21,12 @@
 
 package org.navalplanner.web.limitingresources;
 
+import java.io.IOException;
+
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.zk.au.out.AuInvoke;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -89,6 +92,13 @@ public class LimitingDependencyComponent extends XulElement {
 
     public DependencyType getDependencyType() {
         return type;
+    }
+
+    protected void renderProperties(ContentRenderer renderer) throws IOException{
+        super.renderProperties(renderer);
+
+        render(renderer, "_idTaskOrig", getIdTaskOrig());
+        render(renderer, "_idTaskEnd", getIdTaskEnd());
     }
 
 }
