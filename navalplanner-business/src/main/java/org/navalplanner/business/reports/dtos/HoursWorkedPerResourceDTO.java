@@ -52,6 +52,8 @@ public class HoursWorkedPerResourceDTO implements Comparable {
 
     private String labels;
 
+    private HoursWorkedPerResourceDTO self;
+
     public HoursWorkedPerResourceDTO(Resource resource,
             WorkReportLine workReportLine) {
 
@@ -69,6 +71,7 @@ public class HoursWorkedPerResourceDTO implements Comparable {
             labels.addAll(workReportLine.getOrderElement().getLabels());
         }
         this.labels = labelsAsString(labels);
+        this.self = this;
     }
 
     private String labelsAsString(Set<Label> labels) {
@@ -163,6 +166,21 @@ public class HoursWorkedPerResourceDTO implements Comparable {
     public int compareTo(Object o) {
         return this.workerName
                 .compareTo(((HoursWorkedPerResourceDTO) o).workerName);
+    }
+
+    /**
+     * @return the self
+     */
+    public HoursWorkedPerResourceDTO getSelf() {
+        return self;
+    }
+
+    /**
+     * @param self
+     *            the self to set
+     */
+    public void setSelf(HoursWorkedPerResourceDTO self) {
+        this.self = self;
     }
 
 }

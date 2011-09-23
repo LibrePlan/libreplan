@@ -24,6 +24,7 @@ import java.util.Set;
 import net.sf.jasperreports.engine.JRAbstractScriptlet;
 import net.sf.jasperreports.engine.JRScriptletException;
 
+import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.workingday.EffortDuration;
 
 /**
@@ -36,7 +37,7 @@ import org.navalplanner.business.workingday.EffortDuration;
  */
 public class HoursWorkedPerWorkerScriptlet extends JRAbstractScriptlet {
 
-    private Set<EffortDuration> efforts = new HashSet<EffortDuration>();
+    private Set<HoursWorkedPerResourceDTO> dtos = new HashSet<HoursWorkedPerResourceDTO>();
 
     public String getEffort() throws JRScriptletException {
         EffortDuration effort = (EffortDuration) this.getFieldValue("effort");
@@ -56,7 +57,9 @@ public class HoursWorkedPerWorkerScriptlet extends JRAbstractScriptlet {
         // We use the set because elements could be processed twice depending on
         // the report
         EffortDuration current = (EffortDuration) this.getFieldValue("effort");
-        if (!efforts.contains(current)) {
+        HoursWorkedPerResourceDTO dto = (HoursWorkedPerResourceDTO) this
+                .getFieldValue("self");
+        if (!dtos.contains(dto)) {
             // The effort of the worker is the sum of all efforts.
             EffortDuration effortWorker = EffortDuration.sum(current,
                     EffortDuration.parseFromFormattedString((String) this
@@ -68,7 +71,7 @@ public class HoursWorkedPerWorkerScriptlet extends JRAbstractScriptlet {
                     .parseFromFormattedString((String) this
                             .getVariableValue("sumHoursPerDay")));
             this.setVariableValue("sumHoursPerDay", effort.toFormattedString());
-            efforts.add(current);
+            dtos.add(dto);
         }
     }
 

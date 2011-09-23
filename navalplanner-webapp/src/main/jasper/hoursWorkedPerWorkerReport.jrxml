@@ -11,6 +11,7 @@
 	<field name="date" class="java.util.Date"/>
 	<field name="clockStart" class="java.util.Date"/>
 	<field name="clockFinish" class="java.util.Date"/>
+	<field name="self" class="org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO"/>
 	<field name="effort" class="org.navalplanner.business.workingday.EffortDuration"/>
 	<field name="orderElementCode" class="java.lang.String"/>
 	<field name="orderElementName" class="java.lang.String"/>
