@@ -5,10 +5,12 @@ limitingresources.QueueTask = zk.$extends(zul.wgt.Div,{
         this.$supers('bind_', arguments);
         this.domListen_(this.$n(), 'onmouseover', 'showRelatedElementsForQueueElement');
         this.domListen_(this.$n(), 'onmouseout', 'hideRelatedElementsForQueueElement');
+        this.domListen_(this.$n(), 'onclick', 'toggleDependenciesForQueueElement');
     },
     unbind_ : function(evt) {
         this.domUnlisten_(this.$n(), 'onmouseover', 'showRelatedElementsForQueueElement');
         this.domUnlisten_(this.$n(), 'onmouseout', 'hideRelatedElementsForQueueElement');
+        this.domUnlisten_(this.$n(), 'onclick', 'toggleDependenciesForQueueElement');
         this.$supers('unbind_', arguments);
     },
     showRelatedElementsForQueueElement: function(evt) {
@@ -18,6 +20,14 @@ limitingresources.QueueTask = zk.$extends(zul.wgt.Div,{
     hideRelatedElementsForQueueElement: function (evt) {
         this.hideDependenciesForQueueElement(this.$n().id);
         this.setVisibleDeadlineForQueueElement(this.$n().id, "none");
+    },
+    toggleDependenciesForQueueElement: function (evt) {
+        var task = this.$n().id;
+        jq('.dependency').each(function () {
+            if ( (jq(this).attr("idTaskOrig") ==  task) || (jq(this).attr("idTaskEnd") ==  task) ) {
+                jq(this).toggleClass("toggled");
+            }
+        });
     },
     showDependenciesForQueueElement: function (task) {
         jq('.dependency').each(function () {
