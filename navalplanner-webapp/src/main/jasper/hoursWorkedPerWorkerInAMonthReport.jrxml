@@ -6,6 +6,7 @@
 	<parameter name="month" class="java.lang.String"/>
 	<parameter name="logo" class="java.lang.String"/>
 	<field name="resourceName" class="java.lang.String"/>
+	<field name="self" class="org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO"/>
 	<field name="numHours" class="org.navalplanner.business.workingday.EffortDuration"/>
 	<variable name="sumNumHours" class="java.lang.String" calculation="System">
 		<variableExpression><![CDATA[$P{REPORT_SCRIPTLET}.getSumNumHours()]]></variableExpression>

@@ -18,9 +18,13 @@
  */
 package org.navalplanner.web.reports;
 
-import net.sf.jasperreports.engine.JRDefaultScriptlet;
+import java.util.HashSet;
+import java.util.Set;
+
+import net.sf.jasperreports.engine.JRAbstractScriptlet;
 import net.sf.jasperreports.engine.JRScriptletException;
 
+import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
 import org.navalplanner.business.workingday.EffortDuration;
 
 /**
@@ -30,16 +34,76 @@ import org.navalplanner.business.workingday.EffortDuration;
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  *
  */
-public class HoursWorkedPerWorkerInAMonthScriptlet extends JRDefaultScriptlet {
+public class HoursWorkedPerWorkerInAMonthScriptlet extends JRAbstractScriptlet {
 
-    /**
-     * Method used in hoursWorkedPerWorkerInAMonthReport.jrxml
-     *
-     * @return
-     * @throws JRScriptletException
-     */
+    private Set<HoursWorkedPerWorkerInAMonthDTO> dtos = new HashSet<HoursWorkedPerWorkerInAMonthDTO>();
+
+    public String getSumNumHours() throws JRScriptletException {
+        return (String) this.getVariableValue("sumNumHours");
+    }
+
     public String getNumHours() throws JRScriptletException {
-        EffortDuration effort = (EffortDuration) this.getFieldValue("numHours");
-        return effort.toFormattedString();
+        return ((EffortDuration) this.getFieldValue("numHours"))
+                .toFormattedString();
+    }
+
+    @Override
+    public void afterColumnInit() throws JRScriptletException {
+
+    }
+
+    @Override
+    public void afterDetailEval() throws JRScriptletException {
+        EffortDuration current = (EffortDuration) this
+                .getFieldValue("numHours");
+        HoursWorkedPerWorkerInAMonthDTO dto = (HoursWorkedPerWorkerInAMonthDTO) this
+                .getFieldValue("self");
+        if (!dtos.contains(dto)) {
+            EffortDuration effort = EffortDuration.sum(EffortDuration
+                    .parseFromFormattedString((String) this
+                            .getVariableValue("sumNumHours")), current);
+            this.setVariableValue("sumNumHours", effort.toFormattedString());
+            dtos.add(dto);
+        }
+    }
+
+    @Override
+    public void afterGroupInit(String arg0) throws JRScriptletException {
+
+    }
+
+    @Override
+    public void afterPageInit() throws JRScriptletException {
+
+    }
+
+    @Override
+    public void afterReportInit() throws JRScriptletException {
+
+    }
+
+    @Override
+    public void beforeColumnInit() throws JRScriptletException {
+
+    }
+
+    @Override
+    public void beforeDetailEval() throws JRScriptletException {
+
+    }
+
+    @Override
+    public void beforeGroupInit(String arg0) throws JRScriptletException {
+
+    }
+
+    @Override
+    public void beforePageInit() throws JRScriptletException {
+
+    }
+
+    @Override
+    public void beforeReportInit() throws JRScriptletException {
+
     }
 }
