@@ -8,7 +8,7 @@
 	<field name="resourceName" class="java.lang.String"/>
 	<field name="numHours" class="org.navalplanner.business.workingday.EffortDuration"/>
 	<variable name="sumNumHours" class="java.lang.String" calculation="System">
-		<variableExpression><![CDATA[$P{REPORT_SCRIPTLET}.getNumHours()]]></variableExpression>
+		<variableExpression><![CDATA[$P{REPORT_SCRIPTLET}.getSumNumHours()]]></variableExpression>
 		<initialValueExpression><![CDATA["0"]]></initialValueExpression>
 	</variable>
 	<background>
