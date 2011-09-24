@@ -141,6 +141,7 @@
                 <param name="property">rootTask</param>
             </generator>
         </id>
+        <version name="version" access="property" type="long" />
         <one-to-one name="rootTask" class="TaskGroup" constrained="true"
             cascade="all" lazy="false" />
         <property name="progressAllByNumHours" column="progress_all_by_num_hours" scale="6" />

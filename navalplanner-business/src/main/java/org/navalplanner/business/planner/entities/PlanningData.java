@@ -42,7 +42,7 @@ public class PlanningData extends BaseEntity {
     private static Log LOG = LogFactory.getLog(PlanningData.class);
 
     public static PlanningData create(TaskGroup rootTask) {
-        return new PlanningData(rootTask);
+        return create(new PlanningData(rootTask));
     }
 
     private TaskGroup rootTask;

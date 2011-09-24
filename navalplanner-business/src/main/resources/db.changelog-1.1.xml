@@ -309,4 +309,12 @@
         <dropColumn tableName="stretches" columnName="date" />
     </changeSet>
 
+    <changeSet id="add-version-to-planning-data" author="ogonzalez">
+        <addColumn tableName="planning_data">
+           <column name="version" type="BIGINT" defaultValue="0">
+            <constraints nullable="false"/>
+           </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
