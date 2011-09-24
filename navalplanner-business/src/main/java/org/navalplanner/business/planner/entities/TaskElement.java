@@ -679,7 +679,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public String toString() {
-        return getName();
+        return super.toString() + " :: " + getName();
     }
 
 }
