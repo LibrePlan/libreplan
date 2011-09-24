@@ -31,6 +31,8 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.labels.entities.Label;
@@ -62,6 +64,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -118,6 +121,12 @@ public class PlanningStateCreator {
 
     @Autowired
     private IScenarioManager scenarioManager;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -201,9 +210,30 @@ public class PlanningStateCreator {
     }
 
     private Order reload(Order order) {
+        ensureOrderVersionsAreNotProxies();
         Order result = orderDAO.findExistingEntity(order.getId());
-        result.useSchedulingDataFor(scenarioManager.getCurrent());
+        Scenario current = scenarioManager.getCurrent();
+        result.useSchedulingDataFor(current);
         return result;
+    }
+
+    private void ensureOrderVersionsAreNotProxies() {
+        List<Long> orderVersionIds = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<List<Long>>() {
+
+                    @Override
+                    public List<Long> execute() {
+                        List<Long> result = new ArrayList<Long>();
+                        Scenario scenario = scenarioManager.getCurrent();
+                        for (OrderVersion each : scenario.getOrders().values()) {
+                            result.add(each.getId());
+                        }
+                        return result;
+                    }
+                });
+        for (Long each : orderVersionIds) {
+            orderVersionDAO.findExistingEntity(each);
+        }
     }
 
     private PlanningState createPlanning(Order orderReloaded) {
