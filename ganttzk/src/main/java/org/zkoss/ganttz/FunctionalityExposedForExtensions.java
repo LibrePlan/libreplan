@@ -306,6 +306,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         diagramGraph.remove(task);
         task.removed();
         planner.removeTask(task);
+        adapter.doRemovalOf(mapper.findAssociatedDomainObject(task));
         mapper.remove(domainObject);
         return position;
     }

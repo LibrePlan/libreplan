@@ -35,11 +35,13 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.easymock.EasyMock;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -71,12 +73,15 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.web.planner.order.PlanningStateCreator;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.zk.ui.Desktop;
 
 /**
  * Tests for {@link OrderModel}. <br />
@@ -107,9 +112,6 @@ public class OrderModelTest {
 
     @Resource
     private IDataBootstrap scenariosBootstrap;
-
-    @Autowired
-    private IScenarioManager scenarioManager;
 
     @Before
     public void loadRequiredaData() {
@@ -152,7 +154,26 @@ public class OrderModelTest {
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
+    @Autowired
+    private PlanningStateCreator planningStateCreator;
+
     private Criterion criterion;
+
+    private Desktop mockDesktop() {
+        return EasyMock.createNiceMock(Desktop.class);
+    }
+
+    private PlanningState createPlanningStateFor(final Order newOrder) {
+        return adHocTransaction
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<PlanningState>() {
+
+                    @Override
+                    public PlanningState execute() {
+                        return planningStateCreator.createOn(mockDesktop(),
+                                newOrder);
+                    }
+                });
+    }
 
     private Order createValidOrder() {
         Order order = Order.create();
@@ -161,10 +182,9 @@ public class OrderModelTest {
         order.setName("name");
         order.setResponsible("responsible");
         order.setCode("code-" + UUID.randomUUID());
-        order.setCalendar(configurationDAO.getConfiguration()
+        order.setCalendar(configurationDAO
+                .getConfigurationWithReadOnlyTransaction()
                 .getDefaultCalendar());
-        setupVersionUsing(scenarioManager, order);
-        order.useSchedulingDataFor(scenarioManager.getCurrent());
         return order;
     }
 
@@ -187,7 +207,7 @@ public class OrderModelTest {
     public void testCreation() throws ValidationException {
         Order order = createValidOrder();
         order.setCustomer(createValidExternalCompany());
-        orderModel.setOrder(order);
+        orderModel.setPlanningState(createPlanningStateFor(order));
         orderModel.save();
         assertTrue(orderDAO.exists(order.getId()));
     }
@@ -197,7 +217,7 @@ public class OrderModelTest {
                 .runOnAnotherReadOnlyTransaction(new IOnTransaction<Void>() {
                     @Override
                     public Void execute() {
-                        orderModel.prepareForCreate();
+                        orderModel.prepareForCreate(mockDesktop());
                         return null;
                     }
                 });
@@ -249,7 +269,7 @@ public class OrderModelTest {
         List<Order> list = orderModel.getOrders();
         Order order = createValidOrder();
         order.setCustomer(createValidExternalCompany());
-        orderModel.setOrder(order);
+        orderModel.setPlanningState(createPlanningStateFor(order));
         orderModel.save();
         assertThat(orderModel.getOrders().size(), equalTo(list.size() + 1));
     }
@@ -257,7 +277,7 @@ public class OrderModelTest {
     @Test
     public void testRemove() {
         Order order = createValidOrder();
-        orderModel.setOrder(order);
+        orderModel.setPlanningState(createPlanningStateFor(order));
         orderModel.save();
         assertTrue(orderDAO.exists(order.getId()));
         orderModel.remove(order);
@@ -269,14 +289,14 @@ public class OrderModelTest {
             throws ValidationException {
         Order order = createValidOrder();
         order.setDeadline(year(0));
-        orderModel.setOrder(order);
+        orderModel.setPlanningState(createPlanningStateFor(order));
         orderModel.save();
     }
 
     @Test
     public void testFind() throws InstanceNotFoundException {
         Order order = createValidOrder();
-        orderModel.setOrder(order);
+        orderModel.setPlanningState(createPlanningStateFor(order));
         orderModel.save();
         assertThat(orderDAO.find(order.getId()), notNullValue());
     }
@@ -285,12 +305,8 @@ public class OrderModelTest {
     @NotTransactional
     public void testOrderPreserved() throws ValidationException,
             InstanceNotFoundException {
-        final Order order = adHocTransaction.runOnReadOnlyTransaction(new IOnTransaction<Order>() {
-            @Override
-            public Order execute() {
-                return createValidOrder();
-            }
-        });
+        final Order order = createValidOrder();
+        orderModel.setPlanningState(createPlanningStateFor(order));
         final OrderElement[] containers = new OrderLineGroup[10];
         for (int i = 0; i < containers.length; i++) {
             containers[i] = adHocTransaction
@@ -319,7 +335,6 @@ public class OrderModelTest {
             orderLineGroup.add(leaf);
         }
 
-        orderModel.setOrder(order);
         orderModel.save();
         adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
@@ -376,13 +391,8 @@ public class OrderModelTest {
     @Test
     @NotTransactional
     public void testAddingOrderElement() {
-        final Order order = adHocTransaction
-                .runOnReadOnlyTransaction(new IOnTransaction<Order>() {
-                    @Override
-                    public Order execute() {
-                        return createValidOrder();
-                    }
-                });
+        final Order order = createValidOrder();
+        orderModel.setPlanningState(createPlanningStateFor(order));
         OrderLineGroup container = adHocTransaction
                 .runOnTransaction(new IOnTransaction<OrderLineGroup>() {
                     @Override
@@ -401,7 +411,6 @@ public class OrderModelTest {
         hoursGroup.setCode("hoursGroupName");
         hoursGroup.setWorkingHours(3);
         leaf.addHoursGroup(hoursGroup);
-        orderModel.setOrder(order);
         orderModel.save();
         adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
@@ -432,13 +441,8 @@ public class OrderModelTest {
     @NotTransactional
     public void testManyToManyHoursGroupCriterionMapping() {
         givenCriterion();
-        final Order order = adHocTransaction
-                .runOnReadOnlyTransaction(new IOnTransaction<Order>() {
-                    @Override
-                    public Order execute() {
-                        return createValidOrder();
-                    }
-                });
+        final Order order = createValidOrder();
+        orderModel.setPlanningState(createPlanningStateFor(order));
 
         OrderLine orderLine = OrderLine.create();
         orderLine.setName("Order element");
@@ -461,7 +465,6 @@ public class OrderModelTest {
         hoursGroup.addCriterionRequirement(criterionRequirement);
         //hoursGroup2.addCriterionRequirement(criterionRequirement);
 
-        orderModel.setOrder(order);
         orderModel.save();
         adHocTransaction.runOnTransaction(new IOnTransaction<Void>() {
 
@@ -523,14 +526,18 @@ public class OrderModelTest {
     @Test(expected = ValidationException.class)
     public void testAtLeastOneHoursGroup() {
         Order order = createValidOrder();
+        orderModel.setPlanningState(createPlanningStateFor(order));
 
         OrderLine orderLine = OrderLine.create();
-        orderLine.setName("foo");
-        orderLine.setCode("000000000");
+        orderLine.setName(randomize("foo" + new Random().nextInt()));
+        orderLine.setCode(randomize("000000000"));
         order.add(orderLine);
 
-        orderModel.setOrder(order);
         orderModel.save();
+    }
+
+    private static String randomize(String original) {
+        return original + new Random().nextInt();
     }
 
 }

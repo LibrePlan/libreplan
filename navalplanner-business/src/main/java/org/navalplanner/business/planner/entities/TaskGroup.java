@@ -270,6 +270,12 @@ public class TaskGroup extends TaskElement {
         planningData.update(criticalPathJustTasks);
     }
 
+    public void dontPoseAsTransientPlanningData() {
+        if (planningData != null) {
+            planningData.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
     /**
      * For a root task, retrieves the progress selected by the progressType
      * If there's not progressType, return taskElement.advancePercentage

@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.workreports.daos;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -80,6 +81,9 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
     @Override
     public List<WorkReportLine> findByOrderElementAndChildren(
             OrderElement orderElement) {
+        if (orderElement.isNewObject()) {
+            return new ArrayList<WorkReportLine>();
+        }
         return findByOrderElementAndChildren(orderElement, false);
     }
 

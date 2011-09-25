@@ -973,7 +973,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private IAddMilestoneCommand buildMilestoneCommand() {
-        addMilestoneCommand.setState(planningState);
         return addMilestoneCommand;
     }
 

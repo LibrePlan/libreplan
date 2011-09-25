@@ -1133,5 +1133,14 @@ public class TaskElementAdapter {
                     type);
         }
 
+        @Override
+        public void doRemovalOf(TaskElement taskElement) {
+            taskElement.detach();
+            TaskGroup parent = taskElement.getParent();
+            if (parent != null) {
+                parent.remove(taskElement);
+            }
+        }
+
     }
 }

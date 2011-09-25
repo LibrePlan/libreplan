@@ -72,6 +72,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -181,7 +182,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void showCreateFormFromTemplate(OrderTemplate template) {
         showOrderElementFilter();
         showCreateButtons(false);
-        orderModel.prepareCreationFrom(template);
+        orderModel.prepareCreationFrom(template, getDesktop());
         prepareEditWindow();
         showEditWindow(_("Create project from Template"));
     }
@@ -948,7 +949,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         }
 
-        orderModel.initEdit(order);
+        orderModel.initEdit(order, getDesktop());
         if (editWindow != null) {
             resetTabControllers();
             setupOrderElementTreeController();
@@ -958,6 +959,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         prepareEditWindow();
         showEditWindow(_("Edit project"));
+    }
+
+    private Desktop getDesktop() {
+        return listWindow.getDesktop();
     }
 
     private void resetTabControllers() {
@@ -1062,12 +1067,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
-        prepareForCreate();
+        prepareForCreate(getDesktop());
         getCreationPopup().showWindow(this, null);
     }
 
-    public void prepareForCreate() {
-        orderModel.prepareForCreate();
+    public void prepareForCreate(Desktop desktop) {
+        orderModel.prepareForCreate(desktop);
     }
 
     private void editNewCreatedOrder() {

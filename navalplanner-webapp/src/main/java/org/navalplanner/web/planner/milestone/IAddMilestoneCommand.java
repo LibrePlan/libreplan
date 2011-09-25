@@ -22,7 +22,6 @@
 package org.navalplanner.web.planner.milestone;
 
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
@@ -31,5 +30,4 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface IAddMilestoneCommand extends ICommandOnTask<TaskElement> {
 
-    public void setState(PlanningState planningState);
 }

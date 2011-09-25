@@ -27,6 +27,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.Hibernate;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -107,7 +108,9 @@ public class GenericDAOHibernate<E extends BaseEntity,
    }
 
     public void reattachUnmodifiedEntity(E entity) {
-
+        if (Hibernate.isInitialized(entity) && entity.isNewObject()) {
+            return;
+        }
         getSession().lock(entity, LockMode.NONE);
 
     }

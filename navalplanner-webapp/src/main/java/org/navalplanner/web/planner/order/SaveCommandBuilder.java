@@ -40,10 +40,17 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.daos.IEntitySequenceDAO;
+import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
@@ -66,6 +73,8 @@ import org.navalplanner.business.planner.entities.consolidations.NonCalculatedCo
 import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDependencyDAO;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
@@ -81,6 +90,7 @@ import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -104,10 +114,9 @@ public class SaveCommandBuilder {
             PlannerConfiguration<TaskElement> plannerConfiguration) {
         SaveCommand result = new SaveCommand(planningState,
                 plannerConfiguration);
-
         return ConcurrentModificationHandling.addHandling(
-                "/planner/index.zul;company_scheduling",
-                ISaveCommand.class, result);
+                "/planner/index.zul;company_scheduling", ISaveCommand.class,
+                result);
     }
     
     public static void dontPoseAsTransientAndChildrenObjects(
@@ -154,7 +163,19 @@ public class SaveCommandBuilder {
     private IConsolidationDAO consolidationDAO;
 
     @Autowired
+    private IEntitySequenceDAO entitySequenceDAO;
+
+    @Autowired
     private ITaskElementDAO taskElementDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IScenarioDAO scenarioDAO;
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
@@ -204,11 +225,32 @@ public class SaveCommandBuilder {
 
         @Override
         public void doAction(IContext<TaskElement> context) {
+            save(null, new IAfterSaveActions() {
+
+                @Override
+                public void doActions() {
+                    notifyUserThatSavingIsDone();
+                }
+            });
+        }
+
+        @Override
+        public void save(IBeforeSaveActions beforeSaveActions) {
+            save(beforeSaveActions, null);
+        }
+
+        @Override
+        public void save(final IBeforeSaveActions beforeSaveActions,
+                IAfterSaveActions afterSaveActions)
+                throws ValidationException {
             if (state.getScenarioInfo().isUsingTheOwnerScenario()
                     || userAcceptsCreateANewOrderVersion()) {
                 transactionService.runOnTransaction(new IOnTransaction<Void>() {
                     @Override
                     public Void execute() {
+                        if (beforeSaveActions != null) {
+                            beforeSaveActions.doActions();
+                        }
                         doTheSaving();
                         return null;
                     }
@@ -216,7 +258,9 @@ public class SaveCommandBuilder {
                 dontPoseAsTransientObjectAnymore(state.getOrder());
                 state.getScenarioInfo().afterCommit();
                 fireAfterSave();
-                notifyUserThatSavingIsDone();
+                if (afterSaveActions != null) {
+                    afterSaveActions.doActions();
+                }
             }
         }
 
@@ -227,6 +271,10 @@ public class SaveCommandBuilder {
         }
 
         private void notifyUserThatSavingIsDone() {
+            if (Executions.getCurrent() == null) {
+                // test environment
+                return;
+            }
             try {
                 Messagebox.show(_("Scheduling saved"), _("Information"),
                         Messagebox.OK, Messagebox.INFORMATION);
@@ -236,14 +284,127 @@ public class SaveCommandBuilder {
         }
 
         private void doTheSaving() {
+            Order order = state.getOrder();
+            if (order.isCodeAutogenerated()) {
+                generateOrderElementCodes(order);
+            }
+            calculateAndSetTotalHours(order);
+            checkConstraintOrderUniqueCode(order);
+            checkConstraintHoursGroupUniqueCode(order);
             state.synchronizeTrees();
-            saveTasksToSave();
+            TaskGroup rootTask = state.getRootTask();
+            if (rootTask != null) {
+                // This reattachment is needed to ensure that the root task in
+                // the state is the one associated to the transaction's session.
+                // Otherwise if some order element has been removed, when doing
+                // the deletes on cascade a new root task is fetched causing a
+                // NonUniqueObjectException later
+                taskElementDAO.reattach(rootTask);
+            }
+            orderDAO.save(order);
+            saveDerivedScenarios(order);
+            deleteOrderElementWithoutParent(order);
+
+            updateTasksRelatedData();
             removeTasksToRemove();
             loadDataAccessedWithNotPosedAsTransient(state.getOrder());
             if (state.getRootTask() != null) {
                 loadDependenciesCollectionsForTaskRoot(state.getRootTask());
             }
             subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
+        }
+
+        private void generateOrderElementCodes(Order order) {
+            order.generateOrderElementCodes(entitySequenceDAO
+                    .getNumberOfDigitsCode(EntityNameEnum.ORDER));
+        }
+
+        private void calculateAndSetTotalHours(Order order) {
+            int result = 0;
+            for (OrderElement orderElement : order.getChildren()) {
+                result = result + orderElement.getWorkHours();
+            }
+            order.setTotalHours(result);
+        }
+
+        private void checkConstraintOrderUniqueCode(OrderElement order) {
+            OrderElement repeatedOrder;
+
+            // Check no code is repeated in this order
+            if (order instanceof OrderLineGroup) {
+                repeatedOrder = ((OrderLineGroup) order)
+                        .findRepeatedOrderCode();
+                if (repeatedOrder != null) {
+                    throw new ValidationException(_(
+                            "Repeated Project code {0} in Project {1}",
+                            repeatedOrder.getCode(), repeatedOrder.getName()));
+                }
+            }
+
+            // Check no code is repeated within the DB
+            repeatedOrder = Registry.getOrderElementDAO()
+                    .findRepeatedOrderCodeInDB(order);
+            if (repeatedOrder != null) {
+                throw new ValidationException(_(
+                        "Repeated Project code {0} in Project {1}",
+                        repeatedOrder.getCode(), repeatedOrder.getName()));
+            }
+        }
+
+        private void checkConstraintHoursGroupUniqueCode(Order order) {
+            HoursGroup repeatedHoursGroup;
+
+            if (order instanceof OrderLineGroup) {
+                repeatedHoursGroup = ((OrderLineGroup) order)
+                        .findRepeatedHoursGroupCode();
+                if (repeatedHoursGroup != null) {
+                    throw new ValidationException(_(
+                            "Repeated Hours Group code {0} in Project {1}",
+                            repeatedHoursGroup.getCode(), repeatedHoursGroup
+                                    .getParentOrderLine().getName()));
+                }
+            }
+
+            repeatedHoursGroup = Registry.getHoursGroupDAO()
+                    .findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
+            if (repeatedHoursGroup != null) {
+                throw new ValidationException(_(
+                        "Repeated Hours Group code {0} in Project {1}",
+                        repeatedHoursGroup.getCode(), repeatedHoursGroup
+                                .getParentOrderLine().getName()));
+            }
+        }
+
+        private void saveDerivedScenarios(Order order) {
+            List<Scenario> derivedScenarios = scenarioDAO
+                    .getDerivedScenarios(state.getCurrentScenario());
+            for (Scenario scenario : derivedScenarios) {
+                scenario.addOrder(order, order.getCurrentOrderVersion());
+            }
+        }
+
+        private void deleteOrderElementWithoutParent(Order order)
+                throws ValidationException {
+            List<OrderElement> listToBeRemoved = orderElementDAO
+                    .findWithoutParent();
+            for (OrderElement orderElement : listToBeRemoved) {
+                if (!(orderElement instanceof Order)) {
+                    tryToRemove(orderElement);
+                }
+            }
+        }
+
+        private void tryToRemove(OrderElement orderElement) {
+            // checking no work reports for that orderElement
+            if (orderElementDAO
+                    .isAlreadyInUseThisOrAnyOfItsChildren(orderElement)) {
+                return;
+            }
+            try {
+                orderElementDAO.remove(orderElement.getId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         private void removeTasksToRemove() {
@@ -260,35 +421,35 @@ public class SaveCommandBuilder {
             }
         }
 
-        private void saveTasksToSave() {
-            for (TaskElement taskElement : state.getTasksToSave()) {
+        private void updateTasksRelatedData() {
+            TaskGroup rootTask = state.getRootTask();
+            if (rootTask == null) {
+                return;
+            }
+            for (TaskElement taskElement : rootTask.getChildren()) {
                 removeEmptyConsolidation(taskElement);
                 updateLimitingResourceQueueElementDates(taskElement);
-                taskElementDAO.save(taskElement);
                 if (taskElement.getTaskSource() != null
                         && taskElement.getTaskSource().isNewObject()) {
                     saveTaskSources(taskElement);
                 }
                 updateLimitingQueueDependencies(taskElement);
             }
-            saveRootTaskIfNecessary();
+            saveRootTask();
         }
 
-        private void saveRootTaskIfNecessary() {
-            if (!state.getTasksToSave().isEmpty()) {
-                TaskGroup rootTask = state.getRootTask();
-
-                updateRootTaskPosition(rootTask);
-                taskElementDAO.save(rootTask);
-            }
+        private void saveRootTask() {
+            TaskGroup rootTask = state.getRootTask();
+            updateRootTaskPosition(rootTask);
+            taskElementDAO.save(rootTask);
         }
 
         private void updateRootTaskPosition(TaskGroup rootTask) {
-            final Date min = minDate(state.getTasksToSave());
+            final Date min = minDate(rootTask.getChildren());
             if (min != null) {
                 rootTask.setStartDate(min);
             }
-            final Date max = maxDate(state.getTasksToSave());
+            final Date max = maxDate(rootTask.getChildren());
             if (max != null) {
                 rootTask.setEndDate(max);
             }
@@ -660,6 +821,9 @@ public class SaveCommandBuilder {
             }
             if (taskElement instanceof Task) {
                 dontPoseAsTransient(((Task) taskElement).getConsolidation());
+            }
+            if (taskElement instanceof TaskGroup) {
+                ((TaskGroup) taskElement).dontPoseAsTransientPlanningData();
             }
         }
 

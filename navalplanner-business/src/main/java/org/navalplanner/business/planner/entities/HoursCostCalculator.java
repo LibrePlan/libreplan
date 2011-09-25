@@ -135,7 +135,6 @@ public class HoursCostCalculator implements ICostCalculator {
         }
 
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-
         List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(task.getOrderElement());
 

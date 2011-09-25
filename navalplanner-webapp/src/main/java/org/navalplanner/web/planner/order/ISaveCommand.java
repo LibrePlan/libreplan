@@ -21,6 +21,7 @@
 
 package org.navalplanner.web.planner.order;
 
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.zkoss.ganttz.extensions.ICommand;
 
@@ -40,5 +41,17 @@ public interface ISaveCommand extends ICommand<TaskElement> {
 
     public String getImage();
 
+    public interface IBeforeSaveActions {
+        public void doActions();
+    }
+
+    public interface IAfterSaveActions {
+        public void doActions();
+    }
+
+    void save(IBeforeSaveActions beforeSaveActions);
+
+    void save(IBeforeSaveActions beforeSaveActions,
+            IAfterSaveActions afterSaveActions) throws ValidationException;
 
 }

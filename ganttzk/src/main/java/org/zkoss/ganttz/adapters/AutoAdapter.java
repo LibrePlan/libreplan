@@ -67,4 +67,9 @@ public class AutoAdapter implements
         //do nothing
     }
 
+    @Override
+    public void doRemovalOf(ITaskFundamentalProperties object) {
+        // do nothing
+    }
+
 }

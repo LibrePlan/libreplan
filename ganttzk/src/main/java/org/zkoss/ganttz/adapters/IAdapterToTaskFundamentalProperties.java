@@ -37,6 +37,8 @@ public interface IAdapterToTaskFundamentalProperties<T> {
 
     public List<DomainDependency<T>> getIncomingDependencies(T object);
 
+    public void doRemovalOf(T object);
+
     public boolean canAddDependency(DomainDependency<T> dependency);
 
     public void addDependency(DomainDependency<T> dependency);

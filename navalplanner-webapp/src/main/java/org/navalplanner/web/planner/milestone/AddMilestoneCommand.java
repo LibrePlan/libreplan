@@ -27,7 +27,6 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
-import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -44,15 +43,8 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AddMilestoneCommand implements IAddMilestoneCommand {
 
-    private PlanningState planningState;
-
     @Autowired
     private ITaskElementDAO taskElementDAO;
-
-    @Override
-    public void setState(PlanningState planningState) {
-        this.planningState = planningState;
-    }
 
     @Override
     @Transactional(readOnly = true)
@@ -68,8 +60,6 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
         TaskGroup parent = task.getParent();
         parent.addTaskElement(insertAt, milestone);
         context.add(taskPosition.sameLevelAt(insertAt), milestone);
-
-        planningState.added(milestone.getParent());
     }
 
     @Override

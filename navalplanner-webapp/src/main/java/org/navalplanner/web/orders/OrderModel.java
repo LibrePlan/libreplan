@@ -38,11 +38,7 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.common.IAdHocTransactionService;
-import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.IntegrationEntity;
-import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
@@ -58,12 +54,6 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
-import org.navalplanner.business.orders.entities.TaskSource;
-import org.navalplanner.business.orders.entities.TaskSource.IOptionalPersistence;
-import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.daos.ITaskSourceDAO;
-import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
@@ -88,7 +78,10 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
+import org.navalplanner.web.planner.order.ISaveCommand.IBeforeSaveActions;
 import org.navalplanner.web.planner.order.PlanningStateCreator;
+import org.navalplanner.web.planner.order.PlanningStateCreator.IActionsOnRetrieval;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -96,7 +89,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.IPredicate;
-import org.zkoss.zul.Messagebox;
+import org.zkoss.zk.ui.Desktop;
 
 /**
  * Model for UI operations related to {@link Order}. <br />
@@ -108,9 +101,6 @@ import org.zkoss.zul.Messagebox;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/planner/index.zul;orders_list")
 public class OrderModel extends IntegrationEntityModel implements IOrderModel {
-
-    @Autowired
-    private PlanningStateCreator planningStateCreator;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
@@ -125,7 +115,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Autowired
     private IOrderDAO orderDAO;
 
-    private Order order;
+    @Autowired
+    private PlanningStateCreator planningStateCreator;
+
+    private PlanningState planningState;
 
     private OrderElementTreeModel orderElementTreeModel;
 
@@ -148,12 +141,6 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     private IOrderElementTemplateDAO templateDAO;
 
     @Autowired
-    private ITaskSourceDAO taskSourceDAO;
-
-    @Autowired
-    private ITaskElementDAO taskElementDAO;
-
-    @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
 
     @Autowired
@@ -174,9 +161,6 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     private IScenarioManager scenarioManager;
 
     @Autowired
-    private IAdHocTransactionService transactionService;
-
-    @Autowired
     private IOrderVersionDAO orderVersionDAO;
 
     @Override
@@ -195,12 +179,6 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     private QualityFormsOnConversation qualityFormsOnConversation;
-
-    private Scenario currentScenario;
-
-    private List<Scenario> derivedScenarios = new ArrayList<Scenario>();
-
-    private boolean isEditing = false;
 
     private QualityFormsOnConversation getQualityFormsOnConversation() {
         if (qualityFormsOnConversation == null) {
@@ -278,41 +256,27 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initEdit(Order order) {
-        Validate.notNull(order);
-        isEditing = true;
+    public void initEdit(Order orderToEdit, Desktop desktop) {
+        Validate.notNull(orderToEdit);
         loadNeededDataForConversation();
-        this.order = getFromDB(order);
-        this.orderElementTreeModel = new OrderElementTreeModel(this.order);
-        forceLoadAdvanceAssignmentsAndMeasurements(this.order);
-        forceLoadCriterionRequirements(this.order);
+        this.planningState = planningStateCreator.retrieveOrCreate(desktop,
+                orderToEdit, new IActionsOnRetrieval() {
+
+                    @Override
+                    public void onRetrieval(PlanningState planningState) {
+                        planningState.reattach();
+                    }
+                });
+        Order order = this.planningState.getOrder();
+        this.orderElementTreeModel = new OrderElementTreeModel(order);
+        forceLoadAdvanceAssignmentsAndMeasurements(order);
+        forceLoadCriterionRequirements(order);
         forceLoadCalendar(this.getCalendar());
-        forceLoadCustomer(this.order.getCustomer());
-        forceLoadLabels(this.order);
-        forceLoadMaterialAssignments(this.order);
-        forceLoadTaskQualityForms(this.order);
-        currentScenario = scenarioManager.getCurrent();
-        this.order.useSchedulingDataFor(currentScenario);
-        loadTasks(this.order);
+        forceLoadCustomer(order.getCustomer());
+        forceLoadLabels(order);
+        forceLoadMaterialAssignments(order);
+        forceLoadTaskQualityForms(order);
         initOldCodes();
-    }
-
-    private void loadTasks(Order order) {
-        TaskSource taskSource = order.getTaskSource();
-        if (taskSource == null) {
-            return;
-        }
-        loadTask(taskSource.getTask());
-    }
-
-    private void loadTask(TaskElement task) {
-        task.getDependenciesWithThisDestination().size();
-        task.getDependenciesWithThisOrigin().size();
-        if (!task.isLeaf()) {
-            for (TaskElement each : task.getChildren()) {
-                loadTask(each);
-            }
-        }
     }
 
     private void forceLoadLabels(OrderElement orderElement) {
@@ -405,54 +369,37 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         }
     }
 
-    private Order getFromDB(Order order) {
-        try {
-            return orderDAO.find(order.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @Override
     @Transactional(readOnly = true)
-    public void prepareForCreate() {
+    public void prepareForCreate(Desktop desktop) {
         loadNeededDataForConversation();
-        this.order = Order.create();
+        this.planningState = planningStateCreator.createOn(desktop,
+                Order.create());
         initializeOrder();
         initializeCalendar();
-        currentScenario = scenarioManager.getCurrent();
-        addOrderToCurrentScenario(this.order);
-        this.order.useSchedulingDataFor(currentScenario);
-    }
-
-    private OrderVersion addOrderToCurrentScenario(Order order) {
-        OrderVersion orderVersion = currentScenario.addOrder(order);
-        order.setVersionForScenario(currentScenario, orderVersion);
-        derivedScenarios = scenarioDAO.getDerivedScenarios(currentScenario);
-        for (Scenario scenario : derivedScenarios) {
-            scenario.addOrder(order, orderVersion);
-        }
-        return orderVersion;
     }
 
     private void initializeOrder() {
-        this.orderElementTreeModel = new OrderElementTreeModel(this.order);
-        this.order.setInitDate(new Date());
+        Order order = planningState.getOrder();
+        this.orderElementTreeModel = new OrderElementTreeModel(
+                order);
+        order.setInitDate(new Date());
         setDefaultCode();
-        this.order.setCodeAutogenerated(true);
+        order.setCodeAutogenerated(true);
     }
 
     private void initializeCalendar() {
-        this.order.setCalendar(getDefaultCalendar());
+        this.planningState.getOrder().setCalendar(getDefaultCalendar());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void prepareCreationFrom(OrderTemplate template) {
+    public void prepareCreationFrom(OrderTemplate template, Desktop desktop) {
         loadNeededDataForConversation();
-        this.order = createOrderFrom((OrderTemplate) templateDAO
+        Order order = createOrderFrom((OrderTemplate) templateDAO
                 .findExistingEntity(template.getId()));
-        forceLoadAdvanceAssignmentsAndMeasurements(this.order);
+        planningStateCreator.createOn(desktop, order);
+        forceLoadAdvanceAssignmentsAndMeasurements(planningState.getOrder());
         initializeOrder();
     }
 
@@ -489,249 +436,22 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Override
     public void save() throws ValidationException {
-        final boolean newOrderVersionNeeded = isEditing
-                && order.hasSchedulingDataBeingModified()
-                && !order.isUsingTheOwnerScenario();
-        if (!newOrderVersionNeeded || userAcceptsCreateANewOrderVersion()) {
-            transactionService.runOnTransaction(new IOnTransaction<Void>() {
-                @Override
-                public Void execute() {
-                    saveOnTransaction(newOrderVersionNeeded);
-                    return null;
-                }
-            });
-            dontPoseAsTransientObjectAnymore(order);
-        }
-    }
+        this.planningState.getSaveCommand().save(new IBeforeSaveActions() {
 
-    private void dontPoseAsTransientObjectAnymore(Collection<? extends BaseEntity> collection) {
-        for(BaseEntity entity : collection) {
-            entity.dontPoseAsTransientObjectAnymore();
-        }
-    }
-
-    private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
-        orderElement.dontPoseAsTransientObjectAnymore();
-        dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
-        dontPoseAsTransientObjectAnymore(orderElement.getSchedulingDatasForVersionFromBottomToTop());
-
-        dontPoseAsTransientObjectAnymore(orderElement.getDirectAdvanceAssignments());
-        dontPoseAsTransientObjectAnymore(getAllMeasurements(orderElement.getDirectAdvanceAssignments()));
-
-        dontPoseAsTransientObjectAnymore(orderElement
-                .getIndirectAdvanceAssignments());
-        dontPoseAsTransientObjectAnymore(orderElement
-                .getCriterionRequirements());
-        dontPoseAsTransientObjectAnymore(orderElement.getLabels());
-        dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
-        dontPoseAsTransientObjectAnymore(orderElement.getHoursGroups());
-        dontPoseAsTransientObjectAnymore(orderElement.getTaskQualityForms());
-        dontPoseAsTransientObjectAnymore(orderElement
-                .getAllMaterialAssignments());
-
-        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-            dontPoseAsTransientObjectAnymore(hoursGroup
-                    .getCriterionRequirements());
-        }
-
-        for(OrderElement child : orderElement.getAllChildren()) {
-            child.dontPoseAsTransientObjectAnymore();
-            dontPoseAsTransientObjectAnymore(child);
-        }
-    }
-
-    private List<AdvanceMeasurement> getAllMeasurements(
-            Collection<? extends DirectAdvanceAssignment> assignments) {
-        List<AdvanceMeasurement> result = new ArrayList<AdvanceMeasurement>();
-        for (DirectAdvanceAssignment each : assignments) {
-            result.addAll(each.getAdvanceMeasurements());
-        }
-        return result;
-    }
-
-    private void saveOnTransaction(boolean newOrderVersionNeeded) {
-        checkConstraintOrderUniqueCode(order);
-        checkConstraintHoursGroupUniqueCode(order);
-
-        reattachCalendar();
-        reattachCriterions();
-        reattachTasksForTasksSources();
-
-        if (order.isCodeAutogenerated()) {
-            generateOrderElementCodes();
-        }
-        calculateAndSetTotalHours();
-        orderDAO.save(order);
-        reattachCurrentTaskSources();
-
-        if (newOrderVersionNeeded) {
-            OrderVersion newVersion = OrderVersion
-                    .createInitialVersion(currentScenario);
-            reattachAllTaskSources();
-            order.writeSchedulingDataChangesTo(currentScenario, newVersion);
-            createAndSaveNewOrderVersion(scenarioManager.getCurrent(),
-                    newVersion);
-            synchronizeWithSchedule(order,
-                    TaskSource.persistButDontRemoveTaskSources(taskSourceDAO));
-            order.writeSchedulingDataChanges();
-        } else {
-            OrderVersion orderVersion = order.getCurrentVersionInfo()
-                    .getOrderVersion();
-            orderVersion.savingThroughOwner();
-            synchronizeWithSchedule(order,
-                    TaskSource.persistTaskSources(taskSourceDAO));
-            order.writeSchedulingDataChanges();
-        }
-        saveDerivedScenarios();
-        deleteOrderElementWithoutParent();
-    }
-
-    private static void checkConstraintOrderUniqueCode(OrderElement order) {
-        OrderElement repeatedOrder;
-
-        // Check no code is repeated in this order
-        if (order instanceof OrderLineGroup) {
-            repeatedOrder = ((OrderLineGroup) order).findRepeatedOrderCode();
-            if (repeatedOrder != null) {
-                throw new ValidationException(_(
-                        "Repeated Project code {0} in Project {1}",
-                        repeatedOrder.getCode(), repeatedOrder.getName()));
+            @Override
+            public void doActions() {
+                reattachCalendar();
+                reattachCriterions();
             }
-        }
-
-        // Check no code is repeated within the DB
-        repeatedOrder = Registry.getOrderElementDAO()
-                .findRepeatedOrderCodeInDB(order);
-        if (repeatedOrder != null) {
-            throw new ValidationException(_(
-                    "Repeated Project code {0} in Project {1}",
-                    repeatedOrder.getCode(), repeatedOrder.getName()));
-        }
+        });
     }
-
-    private static void checkConstraintHoursGroupUniqueCode(Order order) {
-        HoursGroup repeatedHoursGroup;
-
-        if (order instanceof OrderLineGroup) {
-            repeatedHoursGroup = ((OrderLineGroup) order)
-                    .findRepeatedHoursGroupCode();
-            if (repeatedHoursGroup != null) {
-                throw new ValidationException(_(
-                        "Repeated Hours Group code {0} in Project {1}",
-                        repeatedHoursGroup.getCode(), repeatedHoursGroup
-                                .getParentOrderLine().getName()));
-            }
-        }
-
-        repeatedHoursGroup = Registry.getHoursGroupDAO()
-                .findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
-        if (repeatedHoursGroup != null) {
-            throw new ValidationException(_(
-                    "Repeated Hours Group code {0} in Project {1}",
-                    repeatedHoursGroup.getCode(), repeatedHoursGroup
-                            .getParentOrderLine().getName()));
-        }
-    }
-
-    private void createAndSaveNewOrderVersion(Scenario currentScenario,
-            OrderVersion newOrderVersion) {
-        OrderVersion previousOrderVersion = currentScenario
-                .getOrderVersion(order);
-        currentScenario.setOrderVersion(order, newOrderVersion);
-        scenarioDAO.updateDerivedScenariosWithNewVersion(previousOrderVersion,
-                order, currentScenario, newOrderVersion);
-    }
-
-    private boolean userAcceptsCreateANewOrderVersion() {
-        try {
-            int status = Messagebox
-                    .show(
-                            _("Confirm creating a new project version for this scenario and derived. Are you sure?"),
-                            _("New project version"), Messagebox.OK
-                                    | Messagebox.CANCEL, Messagebox.QUESTION);
-            return (Messagebox.OK == status);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void saveDerivedScenarios() {
-        if (derivedScenarios != null) {
-            for (Scenario scenario : derivedScenarios) {
-                scenarioDAO.save(scenario);
-            }
-        }
-    }
-
-    private void calculateAndSetTotalHours() {
-        Integer result = 0;
-        for (OrderElement orderElement : order.getChildren()) {
-            result = result + orderElement.getWorkHours();
-        }
-        order.setTotalHours(result);
-    }
-
-    private void generateOrderElementCodes() {
-        order.generateOrderElementCodes(getNumberOfDigitsCode());
-    }
-
-    private void reattachCurrentTaskSources() {
-        for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
-            taskSourceDAO.reattach(each);
-        }
-    }
-
+    
     private void reattachCalendar() {
-        if (order.getCalendar() == null) {
+        if (planningState.getOrder().getCalendar() == null) {
             return;
         }
-        BaseCalendar calendar = order.getCalendar();
+        BaseCalendar calendar = planningState.getOrder().getCalendar();
         baseCalendarDAO.reattachUnmodifiedEntity(calendar);
-    }
-
-    private void reattachAllTaskSources() {
-        // avoid LazyInitializationException for when doing
-        // removePredecessorsDayAssignmentsFor
-        for (TaskSource each : order
-                .getAllScenariosTaskSourcesFromBottomToTop()) {
-            taskSourceDAO.reattach(each);
-        }
-    }
-
-    private void reattachTasksForTasksSources() {
-        for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
-            each.reattachTask(taskElementDAO);
-        }
-    }
-
-    private void synchronizeWithSchedule(OrderElement orderElement,
-            IOptionalPersistence persistence) {
-
-        List<TaskSourceSynchronization> synchronizationsNeeded = orderElement
-                .calculateSynchronizationsNeeded();
-        for (TaskSourceSynchronization each : synchronizationsNeeded) {
-            each.apply(persistence);
-        }
-    }
-
-    private void deleteOrderElementWithoutParent() throws ValidationException {
-        List<OrderElement> listToBeRemoved = orderElementDAO
-                .findWithoutParent();
-        for (OrderElement orderElement : listToBeRemoved) {
-            if (!(orderElement instanceof Order)) {
-                try {
-                    // checking no work reports for that orderElement
-                    if (!orderElementDAO
-                            .isAlreadyInUseThisOrAnyOfItsChildren(orderElement)) {
-                        orderElementDAO.remove(orderElement.getId());
-                    }
-                } catch (InstanceNotFoundException e) {
-                    throw new ValidationException(_(""
-                            + "It not could remove the task "
-                            + orderElement.getName()));
-                }
-            }
-        }
     }
 
     private void reattachCriterions() {
@@ -744,7 +464,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Override
     public OrderLineGroup getOrder() {
-        return order;
+        return planningState.getOrder();
     }
 
     @Override
@@ -817,7 +537,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             IPredicate predicate) {
         // Iterate through orderElements from order
         List<OrderElement> orderElements = new ArrayList<OrderElement>();
-        for (OrderElement orderElement : order.getAllOrderElements()) {
+        for (OrderElement orderElement : planningState.getOrder()
+                .getAllOrderElements()) {
             if (!orderElement.isNewObject()) {
                 reattachOrderElement(orderElement);
             }
@@ -828,7 +549,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             }
         }
         // Return list of filtered elements
-        return new OrderElementTreeModel(order, orderElements);
+        return new OrderElementTreeModel(planningState.getOrder(),
+                orderElements);
     }
 
     private void reattachLabels() {
@@ -853,8 +575,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     @Override
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setPlanningState(PlanningState planningState) {
+        this.planningState = planningState;
     }
 
     @Override
@@ -882,25 +604,25 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Override
     public BaseCalendar getCalendar() {
-        if (order == null) {
+        if (planningState == null) {
             return null;
         }
-        return order.getCalendar();
+        return planningState.getOrder().getCalendar();
     }
 
     @Override
     public void setCalendar(BaseCalendar calendar) {
-        if (order != null) {
-            order.setCalendar(calendar);
+        if (planningState != null) {
+            planningState.getOrder().setCalendar(calendar);
         }
     }
 
     @Override
     public boolean isCodeAutogenerated() {
-        if (order == null) {
+        if (planningState == null) {
             return false;
         }
-        return order.isCodeAutogenerated();
+        return planningState.getOrder().isCodeAutogenerated();
     }
 
     @Override
@@ -1079,15 +801,15 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     public Set<IntegrationEntity> getChildren() {
         Set<IntegrationEntity> children = new HashSet<IntegrationEntity>();
-        if (order != null) {
-            children.addAll(order.getOrderElements());
+        if (planningState != null) {
+            children.addAll(planningState.getOrder().getOrderElements());
         }
         return children;
     }
 
     @Override
     public IntegrationEntity getCurrentEntity() {
-        return this.order;
+        return this.planningState.getOrder();
     }
 
 }

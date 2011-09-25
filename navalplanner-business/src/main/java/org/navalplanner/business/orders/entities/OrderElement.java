@@ -393,15 +393,23 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private void removeTaskSource(List<TaskSourceSynchronization> result) {
         removeChildrenTaskSource(result);
-        if (getTaskSource() != null) {
+        if (getOnDBTaskSource() != null) {
             result.add(taskSourceRemoval());
         }
     }
 
+    private TaskSource getOnDBTaskSource() {
+        OrderVersion version = getCurrentSchedulingData()
+                .getOriginOrderVersion();
+        SchedulingDataForVersion schedulingDataForVersion = schedulingDatasForVersion
+                .get(version);
+        return schedulingDataForVersion.getTaskSource();
+    }
+
     private TaskSourceSynchronization taskSourceRemoval() {
-        Validate.notNull(getTaskSource());
+        Validate.notNull(getOnDBTaskSource());
         TaskSourceSynchronization result = TaskSource
-                .mustRemove(getTaskSource());
+                .mustRemove(getOnDBTaskSource());
         getCurrentSchedulingData().taskSourceRemovalRequested();
         return result;
     }
