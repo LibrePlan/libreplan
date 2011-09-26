@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.tabs;
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -76,6 +77,13 @@ public class CreatedOnDemandTab implements ITab {
         }
         component.setParent(parent);
         afterShowAction();
+    }
+
+    protected final Desktop getDesktop() {
+        if (component == null) {
+            return null;
+        }
+        return component.getDesktop();
     }
 
     protected void afterShowAction() {
