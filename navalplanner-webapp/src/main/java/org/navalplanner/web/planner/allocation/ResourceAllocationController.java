@@ -118,7 +118,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Label allConsolidatedResourcesPerDay;
 
     private Button applyButton;
-    private Button advancedAllocationButton;
 
     private NewAllocationSelector newAllocationSelector;
 
@@ -311,7 +310,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             allocationSelector.addChoosen();
         } finally {
             tbResourceAllocation.setSelected(true);
-            advancedAllocationButton.setVisible(true);
             applyButton.setVisible(true);
             allocationSelector.clearAll();
             Util.reloadBindings(allocationsGrid);
@@ -319,7 +317,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void goToAdvancedSearch() {
-        advancedAllocationButton.setVisible(false);
         applyButton.setVisible(false);
         workerSearchTab.setSelected(true);
     }
@@ -360,7 +357,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
      */
     public void onCloseSelectWorkers() {
         tbResourceAllocation.setSelected(true);
-        advancedAllocationButton.setVisible(true);
         applyButton.setVisible(true);
         newAllocationSelector.clearAll();
     }

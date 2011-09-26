@@ -119,7 +119,5 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Apply tab changes')}" id="applyButton" sclass="global-action" />
-        <button label="${i18n:_('Go to advanced Allocation')}" id="advancedAllocationButton"
-            onClick="editController.goToAdvancedAllocation();" sclass="global-action" />
     </hbox>
 </tabpanel>
