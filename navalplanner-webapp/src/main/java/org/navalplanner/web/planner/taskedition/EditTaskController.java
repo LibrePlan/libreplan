@@ -42,7 +42,6 @@ import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdv
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
 import org.navalplanner.web.planner.allocation.AllocationResult;
-import org.navalplanner.web.planner.allocation.FormBinder;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.limiting.allocation.LimitingResourceAllocationController;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
@@ -360,21 +359,24 @@ public class EditTaskController extends GenericForwardComposer {
         return (isTask(task) && !task.isSubcontracted());
     }
 
-    public void goToAdvancedAllocation() {
-        FormBinder formBinder = resourceAllocationController.getFormBinder();
+    public void showAdvancedAllocation(Task task,
+            IContextWithPlannerTask<TaskElement> context,
+            PlanningState planningState) {
+        this.taskElement = task;
+        this.context = context;
+        this.planningState = planningState;
 
-        AllocationResult allocationResult = formBinder.getLastAllocation();
-        if (allocationResult.getAggregate().isEmpty()) {
-            formBinder.doApply();
-            allocationResult = formBinder.getLastAllocation();
-        }
+        AllocationResult allocationResult = AllocationResult.createCurrent(
+                planningState.getCurrentScenario(), task);
+
         if (allocationResult.getAggregate().isEmpty()) {
             getMessagesForUser().showMessage(Level.WARNING,
                     _("Some allocations needed"));
             return;
         }
-        getSwitcher().goToAdvancedAllocation(
-                allocationResult, createResultReceiver(allocationResult));
+
+        getSwitcher().goToAdvancedAllocation(allocationResult,
+                createResultReceiver(allocationResult));
         window.setVisible(false);
     }
 
@@ -432,12 +434,14 @@ public class EditTaskController extends GenericForwardComposer {
 
         @Override
         public void cancel() {
-            showEditFormResourceAllocation(context, taskElement, planningState);
+            // Do nothing
         }
 
         @Override
         public void accepted(AggregateOfResourceAllocations aggregate) {
-            resourceAllocationController.accept(allocation);
+            allocation.applyTo(planningState.getCurrentScenario(),
+                    (Task) taskElement);
+            askForReloads();
         }
 
         @Override

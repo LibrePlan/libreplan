@@ -78,6 +78,7 @@ import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.advances.IAdvanceAssignmentPlanningCommand;
+import org.navalplanner.web.planner.allocation.IAdvancedAllocationCommand;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
@@ -225,6 +226,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private IResourceAllocationCommand resourceAllocationCommand;
 
     @Autowired
+    private IAdvancedAllocationCommand advancedAllocationCommand;
+
+    @Autowired
     private IAddMilestoneCommand addMilestoneCommand;
 
     @Autowired
@@ -335,6 +339,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
         configuration.addCommandOnTask(resourceAllocationCommand);
+        configuration
+                .addCommandOnTask(buildAdvancedAllocationCommand(editTaskController));
         configuration
                 .addCommandOnTask(buildSubcontractCommand(editTaskController));
         configuration
@@ -980,6 +986,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             EditTaskController editTaskController) {
         resourceAllocationCommand.initialize(editTaskController, planningState);
         return resourceAllocationCommand;
+    }
+
+    private IAdvancedAllocationCommand buildAdvancedAllocationCommand(
+            EditTaskController editTaskController) {
+        advancedAllocationCommand.initialize(editTaskController, planningState);
+        return advancedAllocationCommand;
     }
 
     private ICommand<TaskElement> buildReassigningCommand() {
