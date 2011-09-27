@@ -21,6 +21,7 @@
 
 package org.navalplanner.web.common.components.finders;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -41,7 +42,9 @@ public class ResourceFinder extends Finder implements IFinder {
 
     @Transactional(readOnly = true)
     public List<Resource> getAll() {
-        return resourceDAO.getResources();
+        List<Resource> resources = resourceDAO.getResources();
+        Collections.sort(resources);
+        return resources;
     }
 
     @Override

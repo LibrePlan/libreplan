@@ -51,7 +51,8 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public class Criterion extends IntegrationEntity implements ICriterion {
+public class Criterion extends IntegrationEntity implements ICriterion,
+        Comparable<Criterion> {
 
     public static Criterion createUnvalidated(String code, String name,
         CriterionType type, Criterion parent, Boolean active) {
@@ -463,6 +464,11 @@ public class Criterion extends IntegrationEntity implements ICriterion {
     @Override
     public String toString() {
         return String.format("%s :: %s", type, name);
+    }
+
+    @Override
+    public int compareTo(Criterion o) {
+        return toString().compareToIgnoreCase(o.toString());
     }
 
 }

@@ -157,6 +157,7 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
         for (Label label : allLabels) {
             label.getType().getName();
         }
+        Collections.sort(allLabels);
         return allLabels;
     }
 
@@ -183,6 +184,7 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
 
     @Override
     public List<Criterion> getCriterions() {
+        Collections.sort(allCriterions);
         return this.allCriterions;
     }
 

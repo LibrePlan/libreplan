@@ -73,7 +73,7 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 public abstract class Resource extends IntegrationEntity implements
-        IHumanIdentifiable {
+        IHumanIdentifiable, Comparable<Resource> {
 
     public static class AllResourceAssignments implements IAssignmentsOnResourceCalculator {
 
@@ -1184,6 +1184,12 @@ public abstract class Resource extends IntegrationEntity implements
     public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
         limitingResourceQueue.setResource(this);
         this.limitingResourceQueue = limitingResourceQueue;
+    }
+
+    @Override
+    public int compareTo(Resource resource) {
+        return this.getShortDescription().compareToIgnoreCase(
+                resource.getShortDescription());
     }
 
 }
