@@ -398,7 +398,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         loadNeededDataForConversation();
         Order order = createOrderFrom((OrderTemplate) templateDAO
                 .findExistingEntity(template.getId()));
-        planningStateCreator.createOn(desktop, order);
+        planningState = planningStateCreator.createOn(desktop, order);
         forceLoadAdvanceAssignmentsAndMeasurements(planningState.getOrder());
         initializeOrder();
     }

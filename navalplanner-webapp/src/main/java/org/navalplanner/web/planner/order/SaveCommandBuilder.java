@@ -748,6 +748,7 @@ public class SaveCommandBuilder {
 
         private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
             orderElement.dontPoseAsTransientObjectAnymore();
+            dontPoseAsTransientObjectAnymore(orderElement.getOrderVersions());
             dontPoseAsTransientObjectAnymore(orderElement
                     .getTaskSourcesFromBottomToTop());
             dontPoseAsTransientObjectAnymore(orderElement

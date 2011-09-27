@@ -169,6 +169,9 @@ public class PlanningStateCreator {
     }
 
     void setupScenario(Order order) {
+        if (!order.hasNoVersions()) {
+            return;
+        }
         Scenario currentScenario = scenarioManager.getCurrent();
         OrderVersion orderVersion = currentScenario.addOrder(order);
         order.setVersionForScenario(currentScenario, orderVersion);
@@ -428,8 +431,8 @@ public class PlanningStateCreator {
 
         public void saveVersioningInfo() throws IllegalStateException {
             current.saveVersioningInfo();
-        }
 
+        }
         public void afterCommit() {
             if (current instanceof ChangeScenarioInfoOnSave) {
                 current = new UsingOwnerScenario(current.getCurrentScenario(),
@@ -466,10 +469,22 @@ public class PlanningStateCreator {
         public void saveVersioningInfo() {
             OrderVersion orderVersion = order.getCurrentVersionInfo()
                     .getOrderVersion();
+            if (order.isNewObject()) {
+                scenarioDAO.updateDerivedScenariosWithNewVersion(null, order,
+                        currentScenario, orderVersion);
+            }
             orderVersion.savingThroughOwner();
-            synchronizeWithSchedule(order,
-                    TaskSource.persistTaskSources(taskSourceDAO));
+            synchronizeWithSchedule(order, getPersistence());
             order.writeSchedulingDataChanges();
+        }
+
+        IOptionalPersistence getPersistence() {
+            if (order.isNewObject()) {
+                return TaskSource
+                        .persistButDontRemoveTaskSources(taskSourceDAO);
+            } else {
+                return TaskSource.persistTaskSources(taskSourceDAO);
+            }
         }
 
         @Override
