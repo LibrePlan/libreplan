@@ -99,6 +99,7 @@ public class LimitingDependencyComponent extends XulElement {
 
         render(renderer, "_idTaskOrig", getIdTaskOrig());
         render(renderer, "_idTaskEnd", getIdTaskEnd());
+        render(renderer, "_dependencyType", getDependencyType());
     }
 
 }
