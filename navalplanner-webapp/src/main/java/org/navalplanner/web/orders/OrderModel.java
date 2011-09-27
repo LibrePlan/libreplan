@@ -75,6 +75,7 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
@@ -582,7 +583,11 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public List<BaseCalendar> getBaseCalendars() {
-        return baseCalendarDAO.getBaseCalendars();
+        List<BaseCalendar> result = baseCalendarDAO.getBaseCalendars();
+        for (BaseCalendar each : result) {
+            BaseCalendarModel.forceLoadBaseCalendar(each);
+        }
+        return result;
     }
 
     @Override

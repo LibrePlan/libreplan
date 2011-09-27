@@ -48,6 +48,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -73,6 +75,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.order.PlanningStateCreator;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,6 +158,9 @@ public class OrderModelTest {
     private IExternalCompanyDAO externalCompanyDAO;
 
     @Autowired
+    private IBaseCalendarDAO calendarDAO;
+
+    @Autowired
     private PlanningStateCreator planningStateCreator;
 
     private Criterion criterion;
@@ -182,9 +188,19 @@ public class OrderModelTest {
         order.setName("name");
         order.setResponsible("responsible");
         order.setCode("code-" + UUID.randomUUID());
-        order.setCalendar(configurationDAO
-                .getConfigurationWithReadOnlyTransaction()
-                .getDefaultCalendar());
+        BaseCalendar calendar = adHocTransaction
+                .runOnReadOnlyTransaction(new IOnTransaction<BaseCalendar>() {
+
+                    @Override
+                    public BaseCalendar execute() {
+                        BaseCalendar result = configurationDAO
+                                .getConfigurationWithReadOnlyTransaction()
+                                .getDefaultCalendar();
+                        BaseCalendarModel.forceLoadBaseCalendar(result);
+                        return result;
+                    }
+                });
+        order.setCalendar(calendar);
         return order;
     }
 

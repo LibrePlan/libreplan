@@ -217,6 +217,11 @@ public class PlanningStateCreator {
             forceLoadOfDepedenciesCollections(rootTask);
         }
 
+        if (orderReloaded.getCalendar() != null) {
+            BaseCalendarModel
+                    .forceLoadBaseCalendar(orderReloaded.getCalendar());
+        }
+
         PlanningState result = new PlanningState(orderReloaded, allResources,
                 currentScenario);
 
