@@ -924,7 +924,7 @@ span.z-dottree-line {
 /* ---- Perspectives ------ */
 .perspective, .perspective-active {
     width: 84px;
-    height: 84px;
+    height: 94px;
     margin: 0 0 4px 4px;
 }
 
