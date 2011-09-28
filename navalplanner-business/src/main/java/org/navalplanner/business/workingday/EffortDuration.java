@@ -282,7 +282,12 @@ public class EffortDuration implements Comparable<EffortDuration> {
      *         {@link EffortDuration} and the other duration
      */
     public EffortDuration plus(EffortDuration other) {
-        return new EffortDuration(seconds + other.seconds);
+        if (other != null){
+            return new EffortDuration(seconds + other.seconds);
+        }
+        else{
+            return new EffortDuration(seconds);
+        }
     }
 
     public boolean isZero() {
