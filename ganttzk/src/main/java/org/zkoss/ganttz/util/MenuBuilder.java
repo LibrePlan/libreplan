@@ -86,7 +86,28 @@ public class MenuBuilder<T extends XulElement> {
 
     private MenuBuilder(Page page, Collection<? extends T> elements) {
         this.elements = new ArrayList<T>(elements);
-        this.root = page.getLastRoot();
+        this.root = findVisibleOn(getRoots(page));
+    }
+
+    private static List<Component> getRoots(Page page) {
+        List<Component> result = new ArrayList<Component>();
+        Component current = page.getFirstRoot();
+        while (current != null) {
+            result.add(current);
+            current = current.getNextSibling();
+        }
+        return result;
+    }
+
+    private static Component findVisibleOn(
+            Collection<? extends Component> candidates) {
+        for (Component each : candidates) {
+            if (each.isVisible()) {
+                return each;
+            }
+        }
+        throw new RuntimeException(
+                "not found visible component on which to attach the menu");
     }
 
     public MenuBuilder<T> item(String name, String icon,
