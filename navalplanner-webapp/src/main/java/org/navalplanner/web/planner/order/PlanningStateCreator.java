@@ -31,12 +31,15 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
+import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -57,6 +60,8 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
+import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -240,6 +245,7 @@ public class PlanningStateCreator {
         Scenario currentScenario = scenarioManager.getCurrent();
         final List<Resource> allResources = resourceDAO.list(Resource.class);
         criterionDAO.list(Criterion.class);
+        forceLoadOfOrderAssociatedData(orderReloaded);
         TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
         if (rootTask != null) {
             forceLoadOf(rootTask);
@@ -258,6 +264,33 @@ public class PlanningStateCreator {
         forceLoadOfWorkingHours(result.getInitial());
         forceLoadOfLabels(result.getInitial());
         return result;
+    }
+
+    private void forceLoadOfOrderAssociatedData(Order order) {
+        List<OrderElement> all = new ArrayList<OrderElement>();
+        all.add(order);
+        all.addAll(order.getAllChildren());
+        for (OrderElement each : all) {
+            for (DirectAdvanceAssignment direct : each.getDirectAdvanceAssignments()) {
+                direct.getAdvanceMeasurements().size();
+                direct.getAdvanceType().getHumanId();
+            }
+            for (IndirectAdvanceAssignment indirect : each
+                    .getIndirectAdvanceAssignments()) {
+                Set<CalculatedConsolidation> consolidation = indirect
+                        .getCalculatedConsolidation();
+                for (CalculatedConsolidation c : consolidation) {
+                    c.getCalculatedConsolidatedValues().size();
+                }
+            }
+            for (HoursGroup hours : each.getHoursGroups()) {
+                for (CriterionRequirement requirement : hours
+                        .getCriterionRequirements()) {
+                    requirement.ensureDataLoaded();
+                }
+                hours.getValidCriterions().size();
+            }
+        }
     }
 
     private void forceLoadDayAssignments(Set<Resource> resources) {

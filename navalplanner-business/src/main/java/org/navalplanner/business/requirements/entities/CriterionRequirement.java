@@ -31,7 +31,7 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class CriterionRequirement extends BaseEntity{
+public abstract class CriterionRequirement extends BaseEntity {
 
     private Criterion criterion;
 
@@ -101,4 +101,14 @@ public class CriterionRequirement extends BaseEntity{
     public void setOrderElementTemplate(OrderElementTemplate orderElementTemplate) {
         this.orderElementTemplate = orderElementTemplate;
     }
+
+    public void ensureDataLoaded() {
+        if (criterion != null) {
+            criterion.getName();
+        }
+        ensureSpecificDataLoaded();
+    }
+
+    protected abstract void ensureSpecificDataLoaded();
+
 }

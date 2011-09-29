@@ -92,4 +92,8 @@ public class IndirectCriterionRequirement extends CriterionRequirement{
     public void setValid(Boolean valid) {
         this.valid = BooleanUtils.toBoolean(valid);
     }
+
+    @Override
+    protected void ensureSpecificDataLoaded() {
+    }
 }

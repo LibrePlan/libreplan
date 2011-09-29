@@ -35,7 +35,7 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class DirectCriterionRequirement extends CriterionRequirement{
+public class DirectCriterionRequirement extends CriterionRequirement {
 
     private DirectCriterionRequirement origin;
 
@@ -136,6 +136,16 @@ public class DirectCriterionRequirement extends CriterionRequirement{
 
     public void setOrigin(DirectCriterionRequirement origin) {
         this.origin = origin;
+    }
+
+    @Override
+    protected void ensureSpecificDataLoaded() {
+        if (origin != null) {
+            origin.ensureDataLoaded();
+        }
+        for (IndirectCriterionRequirement each : children) {
+            each.ensureDataLoaded();
+        }
     }
 
 }
