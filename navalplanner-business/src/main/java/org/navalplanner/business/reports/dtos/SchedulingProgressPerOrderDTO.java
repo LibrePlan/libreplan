@@ -120,6 +120,17 @@ public class SchedulingProgressPerOrderDTO {
                 averageProgress, imputedProgress);
         this.ratioPlanningDifference = calculateRatioPlanningDifference(
                 averageProgress, plannedProgress);
+
+        if (this.averageProgress.intValue() > 1) {
+             this.averageProgress = new BigDecimal(1);
+        }
+        if (this.imputedProgress > 1) {
+            this.imputedProgress = new Double(1);
+        }
+        if (this.plannedProgress > 1) {
+            this.plannedProgress = new Double(1);
+        }
+
     }
 
     private BigDecimal getFilterAdvanceTypePercentage(Order order,
