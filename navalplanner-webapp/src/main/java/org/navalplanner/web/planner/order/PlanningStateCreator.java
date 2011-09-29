@@ -304,6 +304,8 @@ public class PlanningStateCreator {
     private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
         Scenario currentScenario = scenarioManager.getCurrent();
         if (orderReloaded.isUsingTheOwnerScenario()) {
+            switchAllocationsToScenario(currentScenario,
+                    orderReloaded.getAssociatedTaskElement());
             return new UsingOwnerScenario(currentScenario, orderReloaded);
         }
         final List<DayAssignment> previousAssignments = orderReloaded
@@ -323,6 +325,9 @@ public class PlanningStateCreator {
 
     private static void switchAllocationsToScenario(Scenario scenario,
             TaskElement task) {
+        if (task == null) {
+            return;
+        }
         for (ResourceAllocation<?> each : task.getAllResourceAllocations()) {
             each.switchToScenario(scenario);
         }

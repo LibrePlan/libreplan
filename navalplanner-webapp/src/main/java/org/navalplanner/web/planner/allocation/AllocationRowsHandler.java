@@ -404,6 +404,9 @@ public class AllocationRowsHandler {
         for (AllocationRow each : currentRows) {
             result.addAll(each.getAssociatedResources());
         }
+        for (ResourceAllocation<?> each : requestedToRemove) {
+            result.addAll(each.getAssociatedResources());
+        }
         return result;
     }
 
