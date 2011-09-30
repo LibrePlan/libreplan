@@ -121,8 +121,8 @@ public class SchedulingProgressPerOrderDTO {
         this.ratioPlanningDifference = calculateRatioPlanningDifference(
                 averageProgress, plannedProgress);
 
-        if (this.averageProgress.intValue() > 1) {
-             this.averageProgress = new BigDecimal(1);
+        if (this.averageProgress.compareTo(BigDecimal.ONE) > 0) {
+            this.averageProgress = BigDecimal.ONE;
         }
         if (this.imputedProgress > 1) {
             this.imputedProgress = new Double(1);
