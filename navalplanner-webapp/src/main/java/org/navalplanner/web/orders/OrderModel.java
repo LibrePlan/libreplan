@@ -604,7 +604,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     private void forceLoadCalendar(BaseCalendar calendar) {
-        calendar.getName();
+        BaseCalendarModel.forceLoadBaseCalendar(calendar);
     }
 
     @Override
