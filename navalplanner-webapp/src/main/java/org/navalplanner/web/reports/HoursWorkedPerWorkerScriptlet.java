@@ -57,6 +57,9 @@ public class HoursWorkedPerWorkerScriptlet extends JRAbstractScriptlet {
         // We use the set because elements could be processed twice depending on
         // the report
         EffortDuration current = (EffortDuration) this.getFieldValue("effort");
+        if (current == null) {
+            current = EffortDuration.zero();
+        }
         HoursWorkedPerResourceDTO dto = (HoursWorkedPerResourceDTO) this
                 .getFieldValue("self");
         if (!dtos.contains(dto)) {
