@@ -58,13 +58,11 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.ArrayGroupsModel;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Group;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -75,6 +73,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
@@ -115,8 +114,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Checkbox scenariosVisible;
 
-    private Map<EntityNameEnum, Boolean> mapOpenedGroups = new HashMap<EntityNameEnum, Boolean>();
-
     private Component ldapRoles;
 
     private UserRole roles;
@@ -141,7 +138,6 @@ public class ConfigurationController extends GenericForwardComposer {
                 });
         initializeProgressTypeList();
         messages = new MessagesForUser(messagesContainer);
-        initOpenedGroup();
         reloadEntitySequences();
         if (moreScenariosThanMasterCreated()) {
             scenariosVisible.setChecked(true);
@@ -185,20 +181,6 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setProgressType(progressType);
     }
 
-    private void initOpenedGroup() {
-        for (final EntityNameEnum entityName : EntityNameEnum.values()) {
-            this.mapOpenedGroups.put(entityName, false);
-        }
-    }
-
-    private boolean isOpenedGroup(EntityNameEnum entityName) {
-        return mapOpenedGroups.get(entityName);
-    }
-
-    public void onOpenGroup(EntityNameEnum entityName, boolean open) {
-        mapOpenedGroups.put(entityName, open);
-    }
-
     public List<BaseCalendar> getCalendars() {
         return configurationModel.getCalendars();
     }
@@ -219,7 +201,6 @@ public class ConfigurationController extends GenericForwardComposer {
                 configurationModel.init();
                 messages.showMessage(Level.INFO, _("Changes saved"));
                 reloadWindow();
-                initOpenedGroup();
                 reloadEntitySequences();
             } catch (ValidationException e) {
                 messages.showInvalidValues(e);
@@ -236,7 +217,6 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.cancel();
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
-        initOpenedGroup();
         reloadEntitySequences();
     }
 
@@ -274,10 +254,10 @@ public class ConfigurationController extends GenericForwardComposer {
     private boolean checkValidEntitySequenceRows() {
         Rows rows = entitySequencesGrid.getRows();
         for (Row row : (List<Row>) rows.getChildren()) {
-            if (!(row instanceof Group)) {
+
                 EntitySequence seq = (EntitySequence) row.getValue();
                 if (seq != null) {
-                    Textbox prefixBox = (Textbox) row.getChildren().get(1);
+                Textbox prefixBox = (Textbox) row.getChildren().get(2);
                     if (!seq.isAlreadyInUse()) {
                         String errorMessage = this.validPrefix(seq,
                                 prefixBox.getValue());
@@ -287,7 +267,7 @@ public class ConfigurationController extends GenericForwardComposer {
                         }
                     }
 
-                    Intbox digitsBox = (Intbox) row.getChildren().get(2);
+                Intbox digitsBox = (Intbox) row.getChildren().get(3);
                     try {
                         if (!seq.isAlreadyInUse()) {
                             seq.setNumberOfDigits(digitsBox.getValue());
@@ -299,7 +279,7 @@ public class ConfigurationController extends GenericForwardComposer {
                                 EntitySequence.MAX_NUMBER_OF_DIGITS));
                     }
                 }
-            }
+
         }
         return true;
     }
@@ -309,7 +289,8 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     private void reloadEntitySequences() {
-        entitySequencesGrid.setModel(getEntitySequenceModel());
+        entitySequencesGrid.setModel(new SimpleListModel(
+                getAllEntitySequences().toArray()));
         entitySequencesGrid.invalidate();
     }
 
@@ -451,7 +432,6 @@ public class ConfigurationController extends GenericForwardComposer {
         } catch (IllegalArgumentException e) {
             messages.showMessage(Level.ERROR, e.getMessage());
         }
-        onOpenGroup(entitySequence.getEntityName(), true);
         reloadEntitySequences();
     }
 
@@ -495,34 +475,22 @@ public class ConfigurationController extends GenericForwardComposer {
             EntitySequence entitySequence = (EntitySequence) data;
             final EntityNameEnum entityName = entitySequence.getEntityName();
 
-            if (row instanceof Group) {
-                final Group group = ((Group) row);
-                if (!isOpenedGroup(entityName)) {
-                    group.setOpen(false);
-                }
-                group.setValue(entityName);
-                group.appendChild(new Label(_(entityName.getSequenceLiteral())));
-                group.addEventListener(Events.ON_OPEN, new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        onOpenGroup(entityName, group.isOpen());
-                    }
-                });
+            row.setValue(entityName);
+            row.appendChild(new Label(_(entityName.getSequenceLiteral())));
 
-            } else {
+            row.setValue(entitySequence);
+            appendActiveRadiobox(row, entitySequence);
+            appendPrefixTextbox(row, entitySequence);
+            appendNumberOfDigitsInbox(row, entitySequence);
+            appendLastValueInbox(row, entitySequence);
+            appendOperations(row, entitySequence);
 
-                row.setValue(entitySequence);
-                appendActiveRadiobox(row, entitySequence);
-                appendPrefixTextbox(row, entitySequence);
-                appendNumberOfDigitsInbox(row, entitySequence);
-                appendLastValueInbox(row, entitySequence);
-                appendOperations(row, entitySequence);
-
-                if (entitySequence.isAlreadyInUse()) {
-                    row.setTooltiptext(_("The code sequence is already in use and it can not be updated."));
-                }
+            if (entitySequence.isAlreadyInUse()) {
+                row.setTooltiptext(_("The code sequence is already in use and it can not be updated."));
             }
+
         }
+    }
 
         private void appendActiveRadiobox(final Row row,
                 final EntitySequence entitySequence) {
@@ -656,7 +624,6 @@ public class ConfigurationController extends GenericForwardComposer {
             row.appendChild(removeButton);
         }
 
-    }
 
     public Constraint checkConstraintFormatPrefix() {
         return new Constraint() {
@@ -714,7 +681,6 @@ public class ConfigurationController extends GenericForwardComposer {
     public void addEntitySequence(EntityNameEnum entityName, String prefix,
             Integer digits) {
         configurationModel.addEntitySequence(entityName, prefix, digits);
-        onOpenGroup(entityName, true);
         reloadEntitySequences();
     }
 
@@ -744,11 +710,6 @@ public class ConfigurationController extends GenericForwardComposer {
         public int compare(EntitySequence seq1, EntitySequence seq2) {
             return seq1.getEntityName().compareTo(seq2.getEntityName());
         }
-    }
-
-    public ArrayGroupsModel getEntitySequenceModel() {
-        return new ArrayGroupsModel(getAllEntitySequences().toArray(),
-                new EntitySequenceComparator());
     }
 
     public EntitySequenceGroupRenderer getEntitySequenceGroupRenderer() {

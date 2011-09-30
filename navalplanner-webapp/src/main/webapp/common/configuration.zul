@@ -213,9 +213,11 @@
                                 <separator bar="false" height="4px"
                                     orient="vertical" />
                                 <grid id="entitySequencesGrid"
-                                    fixedLayout="true" height="400px"
+                                    sizedByContent="false" height="400px"
                                     rowRenderer="@{configurationController.entitySequenceGroupRenderer}">
-                                    <columns sizable="true">
+                                    <columns>
+                                        <column
+                                            label="${i18n:_('Entity type')}" />
                                         <column
                                             label="${i18n:_('Active')}" />
                                         <column
