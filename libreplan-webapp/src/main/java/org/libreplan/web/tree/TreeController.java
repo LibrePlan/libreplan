@@ -72,6 +72,14 @@ import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.impl.api.InputElement;
 
+/**
+ * Tree controller for project WBS structures
+ *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
+ */
 public abstract class TreeController<T extends ITreeNode<T>> extends
         GenericForwardComposer {
 
@@ -647,7 +655,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
             Treerow result = createOrRetrieveFor(item);
             // Attach treecells to treerow
-            result.setDraggable("true");
             result.setDroppable("true");
             result.getChildren().clear();
             return result;
@@ -680,7 +687,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 public void onEvent(org.zkoss.zk.ui.event.Event event) {
                     DropEvent dropEvent = (DropEvent) event;
                     move((Component) dropEvent.getTarget(),
-                            (Component) dropEvent.getDragged());
+                            (Component) dropEvent.getDragged().getParent());
                 }
             });
         }
@@ -719,6 +726,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                         }
                     });
             schedulingStateToggler.afterCompose();
+            cell.setDraggable("true");
         }
 
         protected abstract SchedulingState getSchedulingStateFrom(
