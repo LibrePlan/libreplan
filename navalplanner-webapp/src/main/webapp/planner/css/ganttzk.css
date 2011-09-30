@@ -235,14 +235,17 @@
 }
 
 #ganttpanel .end,
-#ganttpanel .start {
+#ganttpanel .start,
+#listlimitingdependencies .mid {
      height: 1px;
      padding: 4px 0 2px 1px;
      margin-left: 4px;
      background-position: 0px 2px;
 }
 
-#ganttpanel .mid {
+#ganttpanel .mid,
+#listlimitingdependencies .start,
+#listlimitingdependencies .end {
     width: 1px;
     margin-top: 3px;
     margin-bottom: 2px;
@@ -260,19 +263,6 @@
 #listlimitingdependencies .end,#listlimitingdependencies .start,
 #listlimitingdependencies .mid, #listlimitingdependencies .arrow {
     cursor: default;
-}
-
-#listlimitingdependencies .end,
-#listlimitingdependencies .start {
-     width: 1px;
-}
-#listlimitingdependencies .mid {
-    height: 1px;
-}
-
-#listlimitingdependencies .arrow {
-    background-image: none;
-    padding:0px;
 }
 
 div.box.limiting-assigned {
@@ -1289,13 +1279,15 @@ div.z-grid-header .second_level_ tr {
 }
 
 
-.start, .end {
+#ganttpanel .start, #ganttpanel .end,
+#listlimitingdependencies .mid {
     background-image:
         url("../../zkau/web/ganttz/img/solid-black-hor.png");
         background-repeat:repeat-x;
 }
 
-.mid {
+#ganttpanel .mid,
+#listlimitingdependencies .start, #listlimitingdependencies .end {
     background-image:
         url("../../zkau/web/ganttz/img/solid-black-ver.png");
         background-repeat:repeat-y;
@@ -1343,4 +1335,17 @@ div.z-grid-header .second_level_ tr {
 }
 .point-north {
     background-position: -48px 0;
+}
+
+#listlimitingdependencies .point-north {
+    background-position: -53px 0;
+}
+
+#listlimitingdependencies .point-south {
+    background-position: -17px 0;
+    margin-top: 2px;
+}
+
+.taskspanelgap #listlimitingdependencies {
+    top: -2px;
 }

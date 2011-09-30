@@ -85,20 +85,17 @@ limitingresources.LimitingDependencyComponent = zk.$extends(ganttz.DependencyCom
         // --------- Arrow -----------
         var deparrow = this._findImageElement('arrow');
         var deparrowstyle = {};
-        var deparrowsrc;
         deparrowstyle.left = ( xend - this.$class.HALF_ARROW_PADDING ) + "px";
         if (yend > yorig) {
-            deparrowsrc = this.getImagesDir()+"arrow2.png";
+            deparrow.removeClass("point-north");
+            deparrow.addClass("point-south");
             deparrowstyle.top = ( yend - this.$class.ARROW_PADDING ) + "px";
-        } else if (yend == yorig) {
-            deparrowsrc = this.getImagesDir()+"arrow4.png";
-            deparrowstyle.top = yorig + "px";
-        } else if (yend < yorig) {
-            deparrowsrc = this.getImagesDir()+"arrow4.png";
+        } else {
+            deparrow.removeClass("point-south");
+            deparrow.addClass("point-north");
             deparrowstyle.top = yend + "px";
         }
         deparrow.css(deparrowstyle);
-        deparrow.attr('src',deparrowsrc);
     },
     findPos_ : function(element){
         var pos1 = jq('#listlimitingdependencies').offset();
