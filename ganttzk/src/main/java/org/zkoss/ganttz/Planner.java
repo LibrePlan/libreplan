@@ -595,6 +595,12 @@ public class Planner extends HtmlMacroComponent  {
         }
     }
 
+    public void forcedShowAdvances() {
+        if (!isShowingAdvances) {
+            showAdvances();
+        }
+    }
+
     public void showAdvances() {
         Button showAdvancesButton = (Button) getFellow("showAdvances");
         if (disabilityConfiguration.isAdvancesEnabled()) {

@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -93,6 +94,7 @@ public class CompanyPlanningController implements Composer {
     }
 
     private Combobox cbProgressTypes;
+    private Button btnShowAdvances;
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
@@ -138,19 +140,14 @@ public class CompanyPlanningController implements Composer {
         if (cbProgressTypes == null) {
             cbProgressTypes = (Combobox) planner.getFellow("cbProgressTypes");
         }
+        if (btnShowAdvances == null) {
+            btnShowAdvances = (Button) planner.getFellow("showAdvances");
+        }
 
         cbProgressTypes.setModel(new ListModelList(ProgressType.getAll()));
         cbProgressTypes.setItemRenderer(new ProgressTypeRenderer());
 
         // FIXME: Select default configuration option
-        cbProgressTypes.invalidate();
-
-        Comboitem item = findListitemValue(cbProgressTypes,
-                getProgressTypeFromConfiguration());
-
-        if (item != null) {
-            cbProgressTypes.setSelectedItem(item);
-        }
 
         // Update completion of tasks on selecting new progress type
         cbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
@@ -158,6 +155,7 @@ public class CompanyPlanningController implements Composer {
             @Override
             public void onEvent(Event event) {
                 planner.updateCompletion(getSelectedProgressType().toString());
+                planner.forcedShowAdvances();
             }
 
             private ProgressType getSelectedProgressType() {
@@ -167,6 +165,13 @@ public class CompanyPlanningController implements Composer {
         });
 
         cbProgressTypes.setVisible(true);
+
+        Comboitem item = findListitemValue(cbProgressTypes,
+                getProgressTypeFromConfiguration());
+
+        if (item != null) {
+            cbProgressTypes.setSelectedItem(item);
+        }
 
     }
 

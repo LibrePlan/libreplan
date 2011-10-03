@@ -282,7 +282,7 @@ public class TaskGroup extends TaskElement {
      *
      */
     public BigDecimal getAdvancePercentage(ProgressType progressType) {
-        if (isTaskRoot(this)) {
+        if (isTaskRoot(this) && (progressType != null)) {
             switch (progressType) {
             case ALL_NUMHOURS:
                 return getProgressAllByNumHours();
