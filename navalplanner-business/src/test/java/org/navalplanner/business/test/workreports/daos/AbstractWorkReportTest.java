@@ -39,6 +39,7 @@ import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
@@ -83,7 +84,7 @@ public abstract class AbstractWorkReportTest {
         WorkReportLine workReportLine = WorkReportLine.create(workReport);
         workReport.addWorkReportLine(workReportLine);
         workReportLine.setDate(new Date());
-        workReportLine.setNumHours(100);
+        workReportLine.setEffort(EffortDuration.hours(100));
         workReportLine.setResource(createValidWorker());
         workReportLine.setOrderElement(createValidOrderElement());
         workReportLine.setTypeOfWorkHours(createValidTypeOfWorkHours());

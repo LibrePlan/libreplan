@@ -55,6 +55,7 @@ import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.HoursManagementEnum;
@@ -472,7 +473,7 @@ public class WorkReportServiceTest {
                             Set<WorkReportLine> workReportLines = workReport
                                     .getWorkReportLines();
                             for (WorkReportLine line : workReportLines) {
-                                line.getNumHours();
+                                line.getEffort().getHours();
                             }
                         }
                         return list;
@@ -485,7 +486,9 @@ public class WorkReportServiceTest {
                 .getWorkReportLines();
         assertThat(workReportLines.size(), equalTo(1));
 
-        assertThat(workReportLines.iterator().next().getNumHours(), equalTo(8));
+        assertThat(workReportLines.iterator().next().getEffort(),
+                equalTo(EffortDuration.sum(EffortDuration.hours(8),
+                        EffortDuration.minutes(15))));
 
     }
 
@@ -606,7 +609,7 @@ public class WorkReportServiceTest {
                             Set<WorkReportLine> workReportLines = workReport
                                     .getWorkReportLines();
                             for (WorkReportLine line : workReportLines) {
-                                line.getNumHours();
+                                line.getEffort().getHours();
                             }
                         }
                         return list;
@@ -618,7 +621,7 @@ public class WorkReportServiceTest {
                 .getWorkReportLines();
         assertThat(workReportLines.size(), equalTo(1));
 
-        assertThat(workReportLines.iterator().next().getNumHours(),
+        assertThat(workReportLines.iterator().next().getEffort().getHours(),
                 equalTo(hours));
     }
 
@@ -651,7 +654,7 @@ public class WorkReportServiceTest {
                             Set<WorkReportLine> workReportLines = workReport
                                     .getWorkReportLines();
                             for (WorkReportLine line : workReportLines) {
-                                line.getNumHours();
+                                line.getEffort().getHours();
                             }
                         }
                         return list;
@@ -663,7 +666,9 @@ public class WorkReportServiceTest {
                 .getWorkReportLines();
         assertThat(workReportLines.size(), equalTo(1));
 
-        assertThat(workReportLines.iterator().next().getNumHours(), equalTo(8));
+        assertThat(workReportLines.iterator().next().getEffort(),
+                equalTo(EffortDuration.sum(EffortDuration.hours(8),
+                        EffortDuration.minutes(15))));
 
         workReportDTO.workReportLines.add(createWorkReportLineDTO());
         WorkReportListDTO workReportListDTO2 = new WorkReportListDTO(Arrays

@@ -117,33 +117,14 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @Override
     @Transactional(readOnly = true)
-    public int getAssignedHours(OrderElement orderElement) {
-        int addAsignedHoursChildren = 0;
-        if (orderElement != null) {
-            if (!orderElement.getChildren().isEmpty()) {
-                List<OrderElement> children = orderElement.getChildren();
-                Iterator<OrderElement> iterador = children.iterator();
-                while (iterador.hasNext()) {
-                    OrderElement w = iterador.next();
-                    addAsignedHoursChildren = addAsignedHoursChildren
-                            + getAssignedHours(w);
-                }
-            }
-            return (getAssignedDirectHours(orderElement) + addAsignedHoursChildren);
-        }
-        return 0;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public int getAssignedDirectHours(OrderElement orderElement) {
+    public EffortDuration getAssignedDirectEffort(OrderElement orderElement) {
         List<WorkReportLine> listWRL = this.workReportLineDAO
                 .findByOrderElement(orderElement);
-        int asignedDirectHours = 0;
+        EffortDuration asignedDirectHours = EffortDuration.zero();
         Iterator<WorkReportLine> iterator = listWRL.iterator();
         while (iterator.hasNext()) {
-            asignedDirectHours = asignedDirectHours
-                    + iterator.next().getNumHours();
+            asignedDirectHours = asignedDirectHours.plus(iterator.next()
+                    .getEffort());
         }
         return asignedDirectHours;
     }
@@ -307,9 +288,10 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return average(new BigDecimal(list.size()), sum);
     }
 
-    public BigDecimal calculateAverageWorkedHours(final List<OrderElement> list) {
-        BigDecimal sum = sumWorkedHours(list);
-        return average(new BigDecimal(list.size()), sum);
+    public EffortDuration calculateAverageWorkedHours(
+            final List<OrderElement> list) {
+        EffortDuration sum = sumWorkedHours(list);
+        return EffortDuration.average(sum, list.size());
     }
 
     private BigDecimal average(BigDecimal divisor, BigDecimal sum) {
@@ -329,10 +311,10 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return sum;
     }
 
-    private BigDecimal sumWorkedHours(final List<OrderElement> list) {
-        BigDecimal sum = new BigDecimal(0);
+    private EffortDuration sumWorkedHours(final List<OrderElement> list) {
+        EffortDuration sum = EffortDuration.zero();
         for (OrderElement orderElement : list) {
-            sum = sum.add(new BigDecimal(getAssignedDirectHours(orderElement)));
+            sum = sum.plus(getAssignedDirectEffort(orderElement));
         }
         return sum;
     }
@@ -379,27 +361,27 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return min;
     }
 
-    public BigDecimal calculateMaxWorkedHours(final List<OrderElement> list) {
-        BigDecimal max = new BigDecimal(0);
+    @Override
+    public EffortDuration calculateMaxWorkedHours(final List<OrderElement> list) {
+        EffortDuration max = EffortDuration.zero();
         if (!list.isEmpty()) {
-            max = new BigDecimal(getAssignedDirectHours(list.get(0)));
+            max = getAssignedDirectEffort(list.get(0));
             for (OrderElement orderElement : list) {
-                BigDecimal value = new BigDecimal(
-                        getAssignedDirectHours(orderElement));
-                max = getMax(max, value);
+                EffortDuration value = getAssignedDirectEffort(orderElement);
+                max = EffortDuration.max(max, value);
             }
         }
         return max;
     }
 
-    public BigDecimal calculateMinWorkedHours(final List<OrderElement> list) {
-        BigDecimal min = new BigDecimal(0);
+    @Override
+    public EffortDuration calculateMinWorkedHours(final List<OrderElement> list) {
+        EffortDuration min = EffortDuration.zero();
         if (!list.isEmpty()) {
-            min = new BigDecimal(getAssignedDirectHours(list.get(0)));
+            min = getAssignedDirectEffort(list.get(0));
             for (OrderElement orderElement : list) {
-                BigDecimal value = new BigDecimal(
-                        getAssignedDirectHours(orderElement));
-                min = getMin(min, value);
+                EffortDuration value = getAssignedDirectEffort(orderElement);
+                min = EffortDuration.min(min, value);
             }
         }
         return min;

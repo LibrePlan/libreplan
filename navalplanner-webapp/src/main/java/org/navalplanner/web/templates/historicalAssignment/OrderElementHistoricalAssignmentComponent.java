@@ -39,6 +39,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.templates.IOrderTemplatesModel;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,9 +123,9 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
     }
 
     private String getWorkedHours(OrderElement orderElement){
-        Integer asignedDirectHours = orderElementDAO
-                .getAssignedDirectHours(orderElement);
-        return asignedDirectHours.toString();
+        EffortDuration asignedDirectHours = orderElementDAO
+                .getAssignedDirectEffort(orderElement);
+        return asignedDirectHours.toFormattedString();
     }
 
     public void view(final OrderElementHistoricAssignmentDTO dto) {

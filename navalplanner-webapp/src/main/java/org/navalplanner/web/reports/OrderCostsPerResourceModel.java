@@ -50,6 +50,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -189,7 +190,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
         w.setDefaultPrice(new BigDecimal(0));
 
         WorkReportLine wrl = new WorkReportLine();
-        wrl.setNumHours(0);
+        wrl.setEffort(EffortDuration.zero());
         wrl.setTypeOfWorkHours(w);
         wrl.setResource(worker);
         wrl.setOrderElement(leaf);

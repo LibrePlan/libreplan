@@ -351,6 +351,10 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return Collections.max(Arrays.asList(durations));
     }
 
+    public static EffortDuration average(EffortDuration total, int items) {
+        return EffortDuration.seconds(total.seconds / items);
+    }
+
     private static int roundHalfUpToHours(
             EnumMap<Granularity, Integer> components) {
         int seconds = components.get(Granularity.SECONDS);

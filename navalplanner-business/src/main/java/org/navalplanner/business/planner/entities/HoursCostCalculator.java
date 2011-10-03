@@ -144,7 +144,8 @@ public class HoursCostCalculator implements ICostCalculator {
 
         for (WorkReportLine workReportLine : workReportLines) {
             LocalDate day = new LocalDate(workReportLine.getDate());
-            BigDecimal cost = new BigDecimal(workReportLine.getNumHours());
+            BigDecimal cost = workReportLine.getEffort()
+                    .toHoursAsDecimalWithScale(2);
 
             if (!result.containsKey(day)) {
                 result.put(day, BigDecimal.ZERO);

@@ -226,7 +226,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
     }
 
     private void forceLoadPrincipalDataWorkReportLines(WorkReportLine line) {
-        line.getNumHours();
+        line.getEffort().getHours();
         line.getResource().getShortDescription();
         line.getTypeOfWorkHours().getName();
         initalizeOrderElement(line.getOrderElement());

@@ -33,6 +33,7 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.templates.IOrderTemplatesModel;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -99,15 +100,16 @@ public class OrderElementHistoricalStatisticsComponent extends
                             averageEstimatedHours = calculateAverageEstimatedHours()
                                     .setScale(2).toString();
                             averageWorkedHours = calculateAverageWorkedHours()
-                                    .setScale(2).toString();
+                                    .toHoursAsDecimalWithScale(2).toString();
                             maxEstimatedHours = calculateMaxEstimatedHours()
                                     .setScale(2).toString();
                             maxWorkedHours = calculateMaxWorkedHours()
+                                    .toHoursAsDecimalWithScale(2)
                                     .setScale(2).toString();
                             minEstimatedHours = calculateMinEstimatedHours()
                                     .setScale(2).toString();
                             minWorkedHours = calculateMinWorkedHours()
-                                    .setScale(2).toString();
+                                    .toHoursAsDecimalWithScale(2).toString();
                             return null;
                         }
                     });
@@ -162,7 +164,7 @@ public class OrderElementHistoricalStatisticsComponent extends
         return orderElementDAO.calculateAverageEstimatedHours(orderElements);
     }
 
-    public BigDecimal calculateAverageWorkedHours() {
+    public EffortDuration calculateAverageWorkedHours() {
         final List<OrderElement> list = getFinishedApplications();
         return orderElementDAO.calculateAverageWorkedHours(list);
     }
@@ -175,12 +177,12 @@ public class OrderElementHistoricalStatisticsComponent extends
         return orderElementDAO.calculateMinEstimatedHours(orderElements);
     }
 
-    public BigDecimal calculateMaxWorkedHours() {
+    public EffortDuration calculateMaxWorkedHours() {
         final List<OrderElement> list = getFinishedApplications();
         return orderElementDAO.calculateMaxWorkedHours(list);
     }
 
-    public BigDecimal calculateMinWorkedHours() {
+    public EffortDuration calculateMinWorkedHours() {
         final List<OrderElement> list = getFinishedApplications();
         return orderElementDAO.calculateMinWorkedHours(list);
     }

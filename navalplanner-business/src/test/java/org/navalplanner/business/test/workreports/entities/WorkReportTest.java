@@ -33,6 +33,7 @@ import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.HoursManagementEnum;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -206,8 +207,8 @@ public class WorkReportTest {
 
         workReport.addWorkReportLine(workReportLine);
 
-        workReportLine.setNumHours(10);
-        assertNull(workReportLine.getNumHours());
+        workReportLine.setEffort(EffortDuration.hours(10));
+        assertNull(workReportLine.getEffort());
 
         LocalTime start = new LocalTime(8, 0);
         LocalTime end = start.plusHours(8);
@@ -215,11 +216,11 @@ public class WorkReportTest {
         workReportLine.setClockStart(start);
         workReportLine.setClockFinish(end);
 
-        assertThat(workReportLine.getNumHours(), equalTo(8));
+        assertThat(workReportLine.getEffort(), equalTo(EffortDuration.hours(8)));
 
-        workReportLine.setNumHours(10);
+        workReportLine.setEffort(EffortDuration.hours(10));
 
-        assertThat(workReportLine.getNumHours(), equalTo(8));
+        assertThat(workReportLine.getEffort(), equalTo(EffortDuration.hours(8)));
     }
 
     @Test
@@ -234,14 +235,14 @@ public class WorkReportTest {
         WorkReportLine workReportLine = givenBasicWorkReportLine(workReport);
         workReport.addWorkReportLine(workReportLine);
 
-        workReportLine.setNumHours(10);
+        workReportLine.setEffort(EffortDuration.hours(10));
         LocalTime start = new LocalTime(8, 0);
         LocalTime end = start.plusHours(8);
 
         workReportLine.setClockStart(start);
         workReportLine.setClockFinish(end);
 
-        assertThat(workReportLine.getNumHours(), equalTo(8));
+        assertThat(workReportLine.getEffort(), equalTo(EffortDuration.hours(8)));
     }
 
 }

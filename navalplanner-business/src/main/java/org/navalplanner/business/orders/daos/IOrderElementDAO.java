@@ -29,6 +29,7 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
 /**
@@ -59,31 +60,19 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
             String code) throws InstanceNotFoundException;
 
     /**
-     * Returns the number of assigned hours for an {@link OrderElement}.
+     * Returns the number of directly assigned effort for an
+     * {@link OrderElement}. It means that the hours assigned to its children
+     * aren't included.
      *
-     * It is recommended to use {@link OrderElement}.getSumChargedHours().
-     * getTotalChargedHours() instead, because getAssignedHours calculates
-     * that number iterating on the element's children.
-     *
-     * @param orderElement
-     *            must be attached
-     * @return The number of hours
-     */
-    int getAssignedHours(OrderElement orderElement);
-
-    /**
-     * Returns the number of directly assigned hours for an {@link OrderElement}.
-     * It means that the hours assigned to its children aren't included.
-     *
-     * It is recommended to use {@link OrderElement}.getSumChargedHours().
-     * getDirectChargedHours() instead, because getAssignedHours calculates
+     * It is recommended to use {@link OrderElement}.getSumChargedEffort().
+     * getDirectChargedEffort() instead, because getAssignedHours calculates
      * that number iterating on the element's WorkReporLines.
      *
      * @param orderElement
      *            must be attached
-     * @return The direct number of hours
+     * @return The direct effort
      */
-    int getAssignedDirectHours(OrderElement orderElement);
+    EffortDuration getAssignedDirectEffort(OrderElement orderElement);
 
     /**
      * Returns the advance percentage in hours for an {@link OrderElement}
@@ -109,15 +98,15 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
 
     BigDecimal calculateAverageEstimatedHours(final List<OrderElement> list);
 
-    BigDecimal calculateAverageWorkedHours(final List<OrderElement> list);
+    EffortDuration calculateAverageWorkedHours(final List<OrderElement> list);
 
     BigDecimal calculateMaxEstimatedHours(final List<OrderElement> list);
 
     BigDecimal calculateMinEstimatedHours(final List<OrderElement> list);
 
-    BigDecimal calculateMaxWorkedHours(final List<OrderElement> list);
+    EffortDuration calculateMaxWorkedHours(final List<OrderElement> list);
 
-    BigDecimal calculateMinWorkedHours(final List<OrderElement> list);
+    EffortDuration calculateMinWorkedHours(final List<OrderElement> list);
 
     boolean isAlreadyInUseThisOrAnyOfItsChildren(OrderElement orderElement);
 

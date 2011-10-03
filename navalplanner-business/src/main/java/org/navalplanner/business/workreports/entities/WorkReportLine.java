@@ -552,24 +552,4 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
                 : false;
     }
 
-    /**
-     * TODO remove this method in order to use
-     * {@link WorkReportLine#getEffort()}
-     * 
-     * @deprecated Use {@link WorkReportLine#getEffort()} instead
-     */
-    public Integer getNumHours() {
-        return (getEffort() == null) ? null : getEffort().getHours();
-    }
-
-    /**
-     * TODO remove this method in order to use
-     * {@link WorkReportLine#setEffort()}
-     * 
-     * @deprecated Use {@link WorkReportLine#setEffort()} instead
-     */
-    public void setNumHours(Integer hours) {
-        setEffort(EffortDuration.hours(hours));
-    }
-
 }

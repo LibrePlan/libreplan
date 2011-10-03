@@ -36,6 +36,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
@@ -79,7 +80,7 @@ public class WorkingArrangementsPerOrderDTO {
 
     private Integer partialPlannedHours;
 
-    private Integer realHours;
+    private EffortDuration realHours;
 
     private BigDecimal averageProgress;
 
@@ -132,15 +133,17 @@ public class WorkingArrangementsPerOrderDTO {
 
         // Progress calculations
         this.averageProgress = averageProgress;
-        this.imputedProgress = (totalPlannedHours != 0) ? new Double(realHours
-                / totalPlannedHours.doubleValue()) : new Double(0);
+        this.imputedProgress = (totalPlannedHours != 0) ? realHours
+                .divideBy(totalPlannedHours).toHoursAsDecimalWithScale(2)
+                .doubleValue() : new Double(0);
         this.plannedProgress = (totalPlannedHours != 0) ? new Double(
                 partialPlannedHours / totalPlannedHours.doubleValue())
                 : new Double(0);
 
         // Differences calculations
         this.costDifference = calculateCostDifference(averageProgress,
-                new BigDecimal(totalPlannedHours), new BigDecimal(realHours));
+                new BigDecimal(totalPlannedHours),
+                realHours.toHoursAsDecimalWithScale(2));
         this.planningDifference = calculatePlanningDifference(averageProgress,
                 new BigDecimal(totalPlannedHours), new BigDecimal(
                         partialPlannedHours));
@@ -187,17 +190,17 @@ public class WorkingArrangementsPerOrderDTO {
                 .roundToHours();
     }
 
-    public Integer calculateRealHours(List<Task> tasks, LocalDate date) {
-        int result = 0;
+    public EffortDuration calculateRealHours(List<Task> tasks, LocalDate date) {
+        EffortDuration result = EffortDuration.zero();
 
         for (Task each: tasks) {
-            result += calculateRealHours(each, date);
+            result.plus(calculateRealHours(each, date));
         }
         return result;
     }
 
-    public Integer calculateRealHours(Task task, LocalDate date) {
-        int result = 0;
+    public EffortDuration calculateRealHours(Task task, LocalDate date) {
+        EffortDuration result = EffortDuration.zero();
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(task.getOrderElement());
@@ -205,7 +208,7 @@ public class WorkingArrangementsPerOrderDTO {
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());
             if (date == null || workReportLineDate.compareTo(date) <= 0) {
-                result += workReportLine.getNumHours();
+                result.plus(workReportLine.getEffort());
             }
         }
         return result;
@@ -223,7 +226,7 @@ public class WorkingArrangementsPerOrderDTO {
         return partialPlannedHours;
     }
 
-    public Integer getRealHours() {
+    public EffortDuration getRealHours() {
         return realHours;
     }
 
