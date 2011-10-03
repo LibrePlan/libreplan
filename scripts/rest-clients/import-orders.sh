@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh orderelements $*
+./import.sh orderelements $*

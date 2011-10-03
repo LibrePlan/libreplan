@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh criteriontypes $*
+./import.sh criteriontypes $*

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh costcategories $*
+./import.sh costcategories $*

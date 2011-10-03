@@ -1,5 +1,3 @@
 #!/bin/sh
 
-. ./rest-common-env.sh
-
-. ./export.sh resources $*
+./export.sh resources $*

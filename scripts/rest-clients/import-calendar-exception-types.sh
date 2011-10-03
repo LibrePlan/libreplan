@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh calendarexceptiontypes $*
+./import.sh calendarexceptiontypes $*

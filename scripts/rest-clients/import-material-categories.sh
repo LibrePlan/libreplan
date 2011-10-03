@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh materialcategories $*
+./import.sh materialcategories $*

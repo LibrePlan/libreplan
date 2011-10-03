@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./export.sh calendarexceptiontypes $*
+./export.sh calendarexceptiontypes $*

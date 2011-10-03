@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh workreports $*
+./import.sh workreports $*

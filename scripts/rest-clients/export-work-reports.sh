@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./export.sh workreports $*
+./export.sh workreports $*

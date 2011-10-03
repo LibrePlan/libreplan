@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh labels $*
+./import.sh labels $*

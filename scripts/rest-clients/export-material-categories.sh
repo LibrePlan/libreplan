@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./export.sh materialcategories $*
+./export.sh materialcategories $*

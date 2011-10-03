@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh resources $*
+./import.sh resources $*

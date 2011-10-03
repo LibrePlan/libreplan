@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./import.sh typeofworkhours $*
+./import.sh typeofworkhours $*

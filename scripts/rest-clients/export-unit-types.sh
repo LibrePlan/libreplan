@@ -1,3 +1,3 @@
 #!/bin/sh
 
-. ./export.sh unittypes $*
+./export.sh unittypes $*
