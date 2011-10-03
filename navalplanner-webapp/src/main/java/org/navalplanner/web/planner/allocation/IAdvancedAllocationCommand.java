@@ -21,7 +21,7 @@ package org.navalplanner.web.planner.allocation;
 
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
+import org.navalplanner.web.planner.taskedition.AdvancedAllocationTaskController;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
 /**
@@ -31,7 +31,8 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface IAdvancedAllocationCommand extends ICommandOnTask<TaskElement> {
 
-    void initialize(EditTaskController editTaskController,
+    void initialize(
+            AdvancedAllocationTaskController advancedAllocationTaskController,
             PlanningState state);
 
 }

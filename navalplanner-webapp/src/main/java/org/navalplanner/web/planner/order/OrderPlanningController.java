@@ -43,6 +43,7 @@ import org.navalplanner.web.orders.OrderElementPredicate;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
+import org.navalplanner.web.planner.taskedition.AdvancedAllocationTaskController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -94,6 +95,9 @@ public class OrderPlanningController implements Composer {
 
     @Autowired
     private EditTaskController editTaskController;
+
+    @Autowired
+    private AdvancedAllocationTaskController advancedAllocationTaskController;
 
     @Autowired
     private AdvanceConsolidationController advanceConsolidationController;
@@ -201,7 +205,8 @@ public class OrderPlanningController implements Composer {
         if (order != null) {
             long time = System.currentTimeMillis();
             model.setConfigurationToPlanner(planner, order, viewSwitcher,
-                    editTaskController, advanceAssignmentPlanningController,
+                    editTaskController, advancedAllocationTaskController,
+                    advanceAssignmentPlanningController,
                     advanceConsolidationController,
                     calendarAllocationController, additional);
             PROFILING_LOG.info("setConfigurationToPlanner took: "
@@ -213,6 +218,10 @@ public class OrderPlanningController implements Composer {
 
     public EditTaskController getEditTaskController() {
         return editTaskController;
+    }
+
+    public AdvancedAllocationTaskController getAdvancedAllocationTaskController() {
+        return advancedAllocationTaskController;
     }
 
     public OrderCRUDController getOrderCRUDController() {

@@ -24,7 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
-import org.navalplanner.web.planner.taskedition.EditTaskController;
+import org.navalplanner.web.planner.taskedition.AdvancedAllocationTaskController;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -39,7 +39,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AdvancedAllocationCommand implements IAdvancedAllocationCommand {
 
-    private EditTaskController editTaskController;
+    private AdvancedAllocationTaskController advancedAllocationTaskController;
     private PlanningState planningState;
 
     @Override
@@ -56,7 +56,8 @@ public class AdvancedAllocationCommand implements IAdvancedAllocationCommand {
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement) {
         if (isApplicableTo(taskElement)) {
-            editTaskController.showAdvancedAllocation((Task) taskElement,
+            advancedAllocationTaskController.showAdvancedAllocation(
+                    (Task) taskElement,
                     context, planningState);
         }
     }
@@ -67,9 +68,10 @@ public class AdvancedAllocationCommand implements IAdvancedAllocationCommand {
     }
 
     @Override
-    public void initialize(EditTaskController editTaskController,
+    public void initialize(
+            AdvancedAllocationTaskController advancedAllocationTaskController,
             PlanningState state) {
-        this.editTaskController = editTaskController;
+        this.advancedAllocationTaskController = advancedAllocationTaskController;
         this.planningState = state;
     }
 

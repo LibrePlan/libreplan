@@ -23,25 +23,14 @@ package org.navalplanner.web.planner.taskedition;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
-import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
-import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
-import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
-import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.limiting.allocation.LimitingResourceAllocationController;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
@@ -104,8 +93,6 @@ public class EditTaskController extends GenericForwardComposer {
     private IContextWithPlannerTask<TaskElement> context;
 
     private PlanningState planningState;
-
-    private ViewSwitcher switcher;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -357,97 +344,6 @@ public class EditTaskController extends GenericForwardComposer {
 
     private boolean isNotSubcontractedAndIsTask(TaskElement task) {
         return (isTask(task) && !task.isSubcontracted());
-    }
-
-    public void showAdvancedAllocation(Task task,
-            IContextWithPlannerTask<TaskElement> context,
-            PlanningState planningState) {
-        this.taskElement = task;
-        this.context = context;
-        this.planningState = planningState;
-
-        AllocationResult allocationResult = AllocationResult.createCurrent(
-                planningState.getCurrentScenario(), task);
-
-        if (allocationResult.getAggregate().isEmpty()) {
-            getMessagesForUser().showMessage(Level.WARNING,
-                    _("Some allocations needed"));
-            return;
-        }
-
-        getSwitcher().goToAdvancedAllocation(allocationResult,
-                createResultReceiver(allocationResult));
-        window.setVisible(false);
-    }
-
-    public ViewSwitcher getSwitcher() {
-        return switcher;
-    }
-
-    public void setSwitcher(ViewSwitcher switcher) {
-        this.switcher = switcher;
-    }
-
-    private IAdvanceAllocationResultReceiver createResultReceiver(
-            final AllocationResult allocation) {
-        return new AdvanceAllocationResultReceiver(allocation);
-    }
-
-    private final class AdvanceAllocationResultReceiver implements
-            IAdvanceAllocationResultReceiver {
-
-        private final AllocationResult allocation;
-        private final IRestrictionSource restrictionSource;
-
-        private AdvanceAllocationResultReceiver(AllocationResult allocation) {
-            Validate.isTrue(!allocation.getAggregate().isEmpty());
-            this.allocation = allocation;
-            final EffortDuration totalEffort = allocation.getAggregate()
-                    .getTotalEffort();
-            final IntraDayDate start = allocation.getIntraDayStart();
-            final IntraDayDate end = allocation.getIntraDayEnd();
-            final CalculatedValue calculatedValue = allocation
-                    .getCalculatedValue();
-            restrictionSource = new IRestrictionSource() {
-
-                @Override
-                public EffortDuration getTotalEffort() {
-                    return totalEffort;
-                }
-
-                @Override
-                public LocalDate getStart() {
-                    return start.getDate();
-                }
-
-                @Override
-                public LocalDate getEnd() {
-                    return end.asExclusiveEnd();
-                }
-
-                @Override
-                public CalculatedValue getCalculatedValue() {
-                    return calculatedValue;
-                }
-            };
-        }
-
-        @Override
-        public void cancel() {
-            // Do nothing
-        }
-
-        @Override
-        public void accepted(AggregateOfResourceAllocations aggregate) {
-            allocation.applyTo(planningState.getCurrentScenario(),
-                    (Task) taskElement);
-            askForReloads();
-        }
-
-        @Override
-        public Restriction createRestriction() {
-            return Restriction.build(restrictionSource);
-        }
     }
 
     public boolean isTask() {

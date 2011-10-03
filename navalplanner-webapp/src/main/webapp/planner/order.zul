@@ -36,7 +36,7 @@
         switcher = planningController.viewSwitcher;
 
         editController = planningController.editTaskController;
-        editController.switcher = switcher;
+        planningController.advancedAllocationTaskController.switcher = switcher;
         calendarController = planningController.calendarAllocationController;
         advanceController = planningController.advanceConsolidationController;
         advanceAssignmentController = planningController.advanceAssignmentPlanningController;

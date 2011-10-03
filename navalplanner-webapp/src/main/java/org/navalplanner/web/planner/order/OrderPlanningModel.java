@@ -95,6 +95,7 @@ import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.order.PlanningStateCreator.IActionsOnRetrieval;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.planner.reassign.IReassignCommand;
+import org.navalplanner.web.planner.taskedition.AdvancedAllocationTaskController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
 import org.navalplanner.web.print.CutyPrint;
@@ -292,6 +293,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     public void setConfigurationToPlanner(final Planner planner, Order order,
             ViewSwitcher switcher,
             EditTaskController editTaskController,
+            AdvancedAllocationTaskController advancedAllocationTaskController,
             AdvanceAssignmentPlanningController advanceAssignmentPlanningController,
             AdvanceConsolidationController advanceConsolidationController,
             CalendarAllocationController calendarAllocationController,
@@ -340,7 +342,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
         configuration.addCommandOnTask(resourceAllocationCommand);
         configuration
-                .addCommandOnTask(buildAdvancedAllocationCommand(editTaskController));
+                .addCommandOnTask(buildAdvancedAllocationCommand(advancedAllocationTaskController));
         configuration
                 .addCommandOnTask(buildSubcontractCommand(editTaskController));
         configuration
@@ -989,8 +991,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private IAdvancedAllocationCommand buildAdvancedAllocationCommand(
-            EditTaskController editTaskController) {
-        advancedAllocationCommand.initialize(editTaskController, planningState);
+            AdvancedAllocationTaskController advancedAllocationTaskController) {
+        advancedAllocationCommand.initialize(advancedAllocationTaskController,
+                planningState);
         return advancedAllocationCommand;
     }
 
