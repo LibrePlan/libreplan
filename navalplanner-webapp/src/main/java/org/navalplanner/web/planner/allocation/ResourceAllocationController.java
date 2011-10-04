@@ -617,7 +617,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     data.getRealResourcesPerDay());
             realResourcesPerDay.setStyle("float: right; padding-right: 1em;");
 
-            append(row, data.getAssignmentFunctionLabel());
+            append(row, data.getAssignmentFunctionListbox());
 
             // On click delete button
             Button deleteButton = appendDeleteButton(row);

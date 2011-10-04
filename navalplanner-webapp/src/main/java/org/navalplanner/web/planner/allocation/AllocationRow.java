@@ -74,6 +74,8 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.SimpleListModel;
 
@@ -289,7 +291,7 @@ public abstract class AllocationRow {
 
     private Grid derivedAllocationsGrid;
 
-    private Label assignmentFunctionLabel = new Label();
+    private Listbox assignmentFunctionListbox;
 
     public AllocationRow(CalculatedValue calculatedValue) {
         this.currentCalculatedValue = calculatedValue;
@@ -346,17 +348,25 @@ public abstract class AllocationRow {
         effortInput.setSclass("assigned-hours-input");
         effortInput.setConstraint(constraintForHoursInput());
         loadEffort();
-        updateAssignmentFunctionLabel();
+
+        assignmentFunctionListbox = new Listbox();
+        assignmentFunctionListbox.setMold("select");
+
+        updateAssignmentFunctionListbox();
     }
 
-    private void updateAssignmentFunctionLabel() {
+    private void updateAssignmentFunctionListbox() {
         AssignmentFunction function = getAssignmentFunction();
+        Listitem listitemFunctionName;
         if (function == null) {
-            assignmentFunctionLabel.setValue(_(AssignmentFunctionName.FLAT
-                    .toString()));
+            listitemFunctionName = new Listitem(
+                    _(AssignmentFunctionName.FLAT.toString()));
         } else {
-            assignmentFunctionLabel.setValue(_(function.getName()));
+            listitemFunctionName = new Listitem(_(function.getName()));
         }
+        assignmentFunctionListbox.getChildren().clear();
+        assignmentFunctionListbox.appendChild(listitemFunctionName);
+        assignmentFunctionListbox.setSelectedItem(listitemFunctionName);
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
@@ -480,7 +490,7 @@ public abstract class AllocationRow {
     }
 
     public void loadAssignmentFunctionName() {
-        updateAssignmentFunctionLabel();
+        updateAssignmentFunctionListbox();
     }
 
     protected EffortDuration getEffortFromInput() {
@@ -782,8 +792,8 @@ public abstract class AllocationRow {
         });
     }
 
-    public Label getAssignmentFunctionLabel() {
-        return assignmentFunctionLabel;
+    public Listbox getAssignmentFunctionListbox() {
+        return assignmentFunctionListbox;
     }
 
 }
