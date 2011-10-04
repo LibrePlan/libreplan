@@ -356,17 +356,23 @@ public abstract class AllocationRow {
     }
 
     private void updateAssignmentFunctionListbox() {
+        initializeAndAppendFlatFunction(assignmentFunctionListbox);
+
         AssignmentFunction function = getAssignmentFunction();
-        Listitem listitemFunctionName;
-        if (function == null) {
-            listitemFunctionName = new Listitem(
-                    _(AssignmentFunctionName.FLAT.toString()));
-        } else {
-            listitemFunctionName = new Listitem(_(function.getName()));
+        if (function != null) {
+            Listitem listitem = new Listitem(_(function.getName()));
+            assignmentFunctionListbox.appendChild(listitem);
+            assignmentFunctionListbox.setSelectedItem(listitem);
         }
+    }
+
+    private void initializeAndAppendFlatFunction(
+            Listbox assignmentFunctionListbox2) {
+        Listitem listitem = new Listitem(
+                _(AssignmentFunctionName.FLAT.toString()));
         assignmentFunctionListbox.getChildren().clear();
-        assignmentFunctionListbox.appendChild(listitemFunctionName);
-        assignmentFunctionListbox.setSelectedItem(listitemFunctionName);
+        assignmentFunctionListbox.appendChild(listitem);
+        assignmentFunctionListbox.setSelectedItem(listitem);
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
