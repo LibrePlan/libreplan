@@ -60,6 +60,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -70,6 +71,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
@@ -617,7 +619,15 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     data.getRealResourcesPerDay());
             realResourcesPerDay.setStyle("float: right; padding-right: 1em;");
 
-            append(row, data.getAssignmentFunctionListbox());
+            Listbox assignmentFunctionListbox = data.getAssignmentFunctionListbox();
+            append(row, assignmentFunctionListbox);
+            assignmentFunctionListbox.addEventListener(Events.ON_SELECT,
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event arg0) throws Exception {
+                            data.resetAssignmentFunction();
+                        }
+                    });
 
             // On click delete button
             Button deleteButton = appendDeleteButton(row);

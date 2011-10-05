@@ -361,6 +361,7 @@ public abstract class AllocationRow {
         AssignmentFunction function = getAssignmentFunction();
         if (function != null) {
             Listitem listitem = new Listitem(_(function.getName()));
+            listitem.setDisabled(true);
             assignmentFunctionListbox.appendChild(listitem);
             assignmentFunctionListbox.setSelectedItem(listitem);
         }
@@ -800,6 +801,12 @@ public abstract class AllocationRow {
 
     public Listbox getAssignmentFunctionListbox() {
         return assignmentFunctionListbox;
+    }
+
+    public void resetAssignmentFunction() {
+        if (temporal == null) {
+            setTemporal(origin);
+        }
     }
 
 }
