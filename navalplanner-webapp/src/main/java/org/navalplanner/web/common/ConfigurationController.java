@@ -489,6 +489,11 @@ public class ConfigurationController extends GenericForwardComposer {
                 row.setTooltiptext(_("The code sequence is already in use and it can not be updated."));
             }
 
+            if ((row.getPreviousSibling() != null)
+                    && !((EntitySequence) ((Row) row.getPreviousSibling())
+                            .getValue()).getEntityName().equals(entityName)) {
+                row.setClass("separator");
+            }
         }
     }
 

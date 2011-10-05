@@ -213,7 +213,7 @@
                                 <separator bar="false" height="4px"
                                     orient="vertical" />
                                 <grid id="entitySequencesGrid"
-                                    sizedByContent="false" height="400px"
+                                    sizedByContent="false" height="400px" sclass="entity-sequences-grid"
                                     rowRenderer="@{configurationController.entitySequenceGroupRenderer}">
                                     <columns>
                                         <column

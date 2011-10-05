@@ -1789,3 +1789,29 @@ select {
 .template-tree-tabpanel {
     overflow-x: auto;
 }
+
+select {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size:11px;
+}
+
+.scheduling-graphics {
+       width: auto !important;
+}
+
+.scheduling-graphics .z-tabs-ver-space {
+    width: 0;
+    border: 0;
+}
+
+.entity-sequences-grid tr.z-row td.z-row-inner {
+    border-bottom: 0;
+    border-top: 0;
+    padding-bottom: 8px;
+    padding-top: 4px;
+}
+
+.entity-sequences-grid tr.separator td.z-row-inner {
+    border-top: 1px solid #AAAAAA;
+}
