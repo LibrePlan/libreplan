@@ -164,14 +164,13 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
         @Override
         public boolean areChartsEnabled(IStretchesFunctionModel model) {
-            return canComputeChartFrom(model.getResourceAllocation(),
-                    model.getStretchesPlusConsolidated());
+            return canComputeChartFrom(model.getStretchesPlusConsolidated());
         }
 
         @Override
         protected XYModel getAccumulatedHoursChartData(List<Stretch> stretches,
                 ResourceAllocation<?> allocation, BigDecimal taskHours) {
-            if (!canComputeChartFrom(allocation, stretches)) {
+            if (!canComputeChartFrom(stretches)) {
                 return new SimpleXYModel();
             }
             int[] hoursForEachDayUsingSplines = hoursForEachDayInterpolatedUsingSplines(
@@ -184,7 +183,7 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
         protected XYModel getDedicationChart(List<Stretch> stretches,
                 ResourceAllocation<?> allocation, BigDecimal totalHours,
                 BaseCalendar taskCalendar) {
-            if (!canComputeChartFrom(allocation, stretches)) {
+            if (!canComputeChartFrom(stretches)) {
                 return new SimpleXYModel();
             }
             int[] dataForChart = hoursForEachDayInterpolatedUsingSplines(
@@ -192,10 +191,8 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
             return createModelFrom(allocation.getStartDate(), dataForChart);
         }
 
-        private boolean canComputeChartFrom(ResourceAllocation<?> allocation,
-                List<Stretch> stretches) {
-            return StretchesFunctionModel.areValidForInterpolation(allocation,
-                    stretches);
+        private boolean canComputeChartFrom(List<Stretch> stretches) {
+            return StretchesFunctionModel.areValidForInterpolation(stretches);
         }
 
         private int[] hoursForEachDayInterpolatedUsingSplines(

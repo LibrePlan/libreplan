@@ -82,9 +82,8 @@ public class StretchesFunction extends AssignmentFunction {
 
         public static double[] getHoursPointsFor(int totalHours,
                 List<Interval> intervalsDefinedByStreches) {
-            double[] result = new double[intervalsDefinedByStreches.size() + 1];
-            int i = 1;
-            result[0] = 0;
+            double[] result = new double[intervalsDefinedByStreches.size()];
+            int i = 0;
             int accumulated = 0;
             for (Interval each : intervalsDefinedByStreches) {
                 accumulated += each.getHoursFor(totalHours);
@@ -95,9 +94,8 @@ public class StretchesFunction extends AssignmentFunction {
 
         public static double[] getDayPointsFor(LocalDate start,
                 List<Interval> intervalsDefinedByStreches) {
-            double[] result = new double[intervalsDefinedByStreches.size() + 1];
-            result[0] = 0;
-            int i = 1;
+            double[] result = new double[intervalsDefinedByStreches.size()];
+            int i = 0;
             for (Interval each : intervalsDefinedByStreches) {
                 result[i++] = Days.daysBetween(start, each.getEnd()).getDays();
             }
@@ -427,16 +425,6 @@ public class StretchesFunction extends AssignmentFunction {
 
     public boolean checkHasAtLeastTwoStretches() {
         return getStretchesPlusConsolidated().size() >= 2;
-    }
-
-    public boolean checkFirstIntervalIsPosteriorToDate(LocalDate date) {
-        List<Interval> intervals = StretchesFunction.intervalsFor(
-                resourceAllocation, getStretchesPlusConsolidated());
-        if (intervals.isEmpty()) {
-            return false;
-        }
-        Interval first = intervals.get(0);
-        return first.getEnd().compareTo(date) > 0;
     }
 
     public boolean isInterpolated() {

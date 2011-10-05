@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -39,7 +40,6 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
 import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.business.planner.entities.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,10 +182,6 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                     throw new ValidationException(
                             _("There must be at least 2 stretches for doing interpolation"));
                 }
-                if (!stretchesFunction.checkFirstIntervalIsPosteriorToDate(getTaskStartDate())) {
-                    throw new ValidationException(
-                            _("The first stretch must be after the first day for doing interpolation"));
-                }
             }
             if (originalStretchesFunction != null) {
                 originalStretchesFunction
@@ -197,26 +193,36 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         }
     }
 
-    public static boolean areValidForInterpolation(
-            ResourceAllocation<?> resourceAllocation, List<Stretch> stretches) {
-        return atLeastTwoStreches(stretches)
-                && theFirstIntervalIsPosteriorToFirstDay(resourceAllocation,
-                        stretches);
+    public static boolean areValidForInterpolation(List<Stretch> stretches) {
+        return atLeastThreeStreches(stretches)
+                && areStretchesSortedAndWithIncrements(stretches);
     }
 
-    private static boolean atLeastTwoStreches(List<Stretch> stretches) {
-        return stretches.size() >= 2;
+    private static boolean atLeastThreeStreches(List<Stretch> stretches) {
+        return stretches.size() >= 3;
     }
 
-    private static boolean theFirstIntervalIsPosteriorToFirstDay(
-            ResourceAllocation<?> resourceAllocation, List<Stretch> stretches) {
-        List<Interval> intervals = StretchesFunction.intervalsFor(
-                resourceAllocation, stretches);
-        if (intervals.isEmpty()) {
+    private static boolean areStretchesSortedAndWithIncrements(
+            List<Stretch> stretches) {
+        if (stretches.isEmpty()) {
             return false;
         }
-        Interval first = intervals.get(0);
-        return first.getEnd().compareTo(resourceAllocation.getStartDate()) > 0;
+
+        Iterator<Stretch> iterator = stretches.iterator();
+        Stretch previous = iterator.next();
+        while (iterator.hasNext()) {
+            Stretch current = iterator.next();
+            if (current.getLengthPercentage().compareTo(
+                    previous.getLengthPercentage()) <= 0) {
+                return false;
+            }
+            if (current.getAmountWorkPercentage().compareTo(
+                    previous.getAmountWorkPercentage()) <= 0) {
+                return false;
+            }
+            previous = current;
+        }
+        return true;
     }
 
     @Override
