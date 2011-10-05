@@ -351,6 +351,7 @@ public abstract class AllocationRow {
 
         assignmentFunctionListbox = new Listbox();
         assignmentFunctionListbox.setMold("select");
+        assignmentFunctionListbox.setStyle("font-size: 10px");
 
         updateAssignmentFunctionListbox();
     }

@@ -95,7 +95,7 @@
                             <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
                             <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
                             <column label="${i18n:_('Non Consolidated')}" align="center" width="120px"/>
-                            <column label="" align="center" width="70px"
+                            <column label="" align="center" width="95px"
                                 visible="@{allocationController.anyNotFlat}" />
                             <column label="" align="center" width="40px"/>
                         </columns>
