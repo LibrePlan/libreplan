@@ -108,7 +108,7 @@
             </borderlayout>
         </center>
 
-        <south height="170px" collapsible="true" title="Tasks input buffer" sclass="limiting-resources-buffer">
+        <south height="170px" collapsible="true" title="${i18n:_('Tasks input buffer')}" sclass="limiting-resources-buffer">
             <vbox width="100%">
                 <!-- Assign selected elements -->
                 <hbox style="padding-left: 10px; padding-top: 3px">
