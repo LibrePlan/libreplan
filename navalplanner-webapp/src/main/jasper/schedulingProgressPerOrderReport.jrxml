@@ -600,9 +600,6 @@
 			</textField>
 		</band>
 	</pageFooter>
-	<lastPageFooter>
-		<band height="18"/>
-	</lastPageFooter>
 	<summary>
 		<band splitType="Stretch"/>
 	</summary>
