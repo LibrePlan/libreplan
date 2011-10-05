@@ -85,8 +85,8 @@ public enum StretchesFunctionTypeEnum {
             // must be distributed.
             int[] assignedHours = getAssignedHours(allocation, startInclusive, newEndDate);
             int[] remindingHours = distributeRemainder(allocation, startInclusive, totalHours, assignedHours);
-            int[] hoursToAllocate = sum(assignedHours, remindingHours);
-            allocateDaysFrom(allocation, asEffortDuration(hoursToAllocate), startInclusive);
+            allocateDaysFrom(allocation, asEffortDuration(remindingHours),
+                    startInclusive);
 
             assignedHours = getAssignedHours(allocation, startInclusive, newEndDate);
             Validate.isTrue(sum(assignedHours) == totalHours);
@@ -120,14 +120,6 @@ public enum StretchesFunctionTypeEnum {
                 result.add(EffortDuration.hours(hours));
             }
             return result;
-        }
-
-        private int[] sum(int[] assignedHours, int[] remindingHours) {
-            Validate.isTrue(assignedHours.length == remindingHours.length);
-            for (int i = 0; i < assignedHours.length; i++) {
-                assignedHours[i] += remindingHours[i];
-            }
-            return assignedHours;
         }
 
         private int[] distributeRemainder(ResourceAllocation<?> allocation,
