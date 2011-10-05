@@ -500,17 +500,13 @@ public abstract class AllocationRow {
     }
 
     public void applyDisabledRules(CalculatedValue calculatedValue,
-            boolean recommendedAllocation) {
+            boolean recommendedAllocation, boolean isAnyManual) {
         this.currentCalculatedValue = calculatedValue;
         effortInput
-                .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
-                        || recommendedAllocation
-                        || isAssignmentFunctionManual());
+                .setDisabled(calculatedValue !=CalculatedValue.RESOURCES_PER_DAY                        || recommendedAllocation || isAnyManual);
         effortInput.setConstraint(constraintForHoursInput());
         intendedResourcesPerDayInput
-                .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY
-                        || recommendedAllocation
-                        || isAssignmentFunctionManual());
+                .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY                        || recommendedAllocation || isAnyManual);
         if (intendedResourcesPerDayInput.isDisabled()) {
             clearRealResourcesPerDay();
         }

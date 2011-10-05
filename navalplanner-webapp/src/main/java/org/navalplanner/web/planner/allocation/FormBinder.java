@@ -249,7 +249,8 @@ public class FormBinder {
 
     private void applyDisabledRulesOnRows() {
         for (AllocationRow each : rows) {
-            each.applyDisabledRules(getCalculatedValue(), recommendedAllocation);
+            each.applyDisabledRules(getCalculatedValue(),
+                    recommendedAllocation, isAnyManual());
         }
     }
 
