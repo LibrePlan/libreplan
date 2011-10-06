@@ -352,8 +352,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     public static EffortDuration average(EffortDuration total, int items) {
-        return EffortDuration.seconds((items != 0) ? (total.seconds / items)
-                : total.seconds);
+        return EffortDuration.seconds(total.seconds / items);
     }
 
     private static int roundHalfUpToHours(
