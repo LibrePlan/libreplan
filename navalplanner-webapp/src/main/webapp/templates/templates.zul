@@ -97,6 +97,11 @@
                                     <intbox
                                         value="@{templatesForOrdersController.template.deadlineAsDaysFromBeginning}" constraint="no negative"/>
                                 </row>
+                                <row>
+                                    <label value="${i18n:_('Description')}" />
+                                    <textbox width="500px"
+                                        value="@{templatesForOrdersController.template.description}" />
+                                </row>
                             </rows>
                         </grid>
                     </tabpanel>
