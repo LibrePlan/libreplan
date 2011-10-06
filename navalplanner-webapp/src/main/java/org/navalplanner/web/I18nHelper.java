@@ -70,6 +70,7 @@ public class I18nHelper {
         if (execution != null) {
             Charsets.setPreferredLocale((HttpSession) execution.getSession()
                     .getNativeSession(), getUserLocale());
+            Locales.setThreadLocal(getUserLocale());
         }
     }
 
