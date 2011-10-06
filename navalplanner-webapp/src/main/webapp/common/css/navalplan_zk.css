@@ -1328,7 +1328,8 @@ tr.z-tree-row-seld .z-row-cnt {
     margin-left: 10px;
 }
 
-.projects-list .date {
+.projects-list .date,
+.projects-list .operations {
     width:100px;
 }
 

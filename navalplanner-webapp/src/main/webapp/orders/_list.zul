@@ -21,19 +21,19 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Projects list')}">
     <grid id="listing" model="@{controller.orders}" mold="paging"
-        pageSize="15" fixedLayout="true"
+        pageSize="15" span="0" sizedByContent="false"
         rowRenderer= "@{controller.ordersRowRender}"
         onInitRender ="controller.sortOrders();" sclass="clickable-rows projects-list">
         <columns sizable="true">
             <column label="${i18n:_('Name')}" sort="auto(lower(name))" sclass="name"/>
-            <column label="${i18n:_('Code')}" sort="auto(lower(code))" align="center" width="130px"/>
-            <column id="columnDateStart" label="${i18n:_('Starting date')}" align="center" sort="auto(initDate,deadline)" sortDirection="ascending" sclass="date"/>
-            <column label="${i18n:_('Deadline')}" sort="auto(deadline,initDate)" align="center" sclass="date"/>
-            <column label="${i18n:_('Customer')}" sort="auto(customerReference)" width="150px"/>
-            <column label="${i18n:_('Total Budget')}" sort="auto(totalBudget)" align="right" width="100px"/>
-            <column label="${i18n:_('Hours')}" sort="auto(totalHours)" align="right" width="80px"/>
-            <column label="${i18n:_('State')}" sort="auto(totalBudget)" align="center" width="90px"/>
-            <column label="${i18n:_('Operations')}" width="100px"/>
+            <column label="${i18n:_('Code')}" sort="auto(lower(code))" align="center" hflex="min"/>
+            <column id="columnDateStart" label="${i18n:_('Starting date')}" align="center" sort="auto(initDate,deadline)" sortDirection="ascending" sclass="date" hflex="min"/>
+            <column label="${i18n:_('Deadline')}" sort="auto(deadline,initDate)" align="center" sclass="date" hflex="min"/>
+            <column label="${i18n:_('Customer')}" sort="auto(customerReference)" hflex="min"/>
+            <column label="${i18n:_('Total Budget')}" sort="auto(totalBudget)" align="right" hflex="min"/>
+            <column label="${i18n:_('Hours')}" sort="auto(totalHours)" align="right" hflex="min"/>
+            <column label="${i18n:_('State')}" sort="auto(totalBudget)" align="center" hflex="min"/>
+            <column label="${i18n:_('Operations')}" sclass="operations" hflex="min"/>
         </columns>
     </grid>
 
