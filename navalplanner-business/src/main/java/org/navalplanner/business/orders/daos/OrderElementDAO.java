@@ -291,7 +291,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     public EffortDuration calculateAverageWorkedHours(
             final List<OrderElement> list) {
         EffortDuration sum = sumWorkedHours(list);
-        return EffortDuration.average(sum, list.size());
+        return (list.size() == 0) ? EffortDuration.zero() : EffortDuration
+                .average(sum, list.size());
     }
 
     private BigDecimal average(BigDecimal divisor, BigDecimal sum) {
