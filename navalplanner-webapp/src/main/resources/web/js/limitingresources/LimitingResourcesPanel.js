@@ -17,10 +17,17 @@ limitingresources.LimitingResourcesPanel = zk.$extends(zk.Macro,{
 
         this._initializeProperties();
         this.domListen_(this._rightpanellayout,'onScroll', '_listenToScroll');
+        this.domListen_(jq('.resourcesloadlayout .toolbar-box select')[0], 'onChange', '_zoomLevelChanged');
     },
     unbind_ : function(){
         this.domUnlisten_(this._rightpanellayout,'onScroll', '_listenToScroll');
+        this.domUnlisten_(jq('.resourcesloadlayout .toolbar-box select')[0], 'onChange', '_zoomLevelChanged');
         this.$supers('unbind_', arguments);
+    },
+    _zoomLevelChanged : function(event){
+        var zoomindex = event.domTarget.selectedIndex;
+        var scrollLeft = parseFloat(jq('.timetrackergap').css('left').replace(/px/, ""));
+        zAu.send(new zk.Event(this, 'onZoomLevelChange', {zoomindex : zoomindex, scrollLeft : scrollLeft}));
     },
     _initializeProperties : function(){
         this._rightpanellayout = jq('.rightpanellayout div:first');

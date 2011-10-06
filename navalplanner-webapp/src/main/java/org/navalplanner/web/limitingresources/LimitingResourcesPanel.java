@@ -45,9 +45,13 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.MutableTreeModel;
+import org.zkoss.zk.au.AuRequest;
+import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.au.out.AuInvoke;
+import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -151,6 +155,40 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel);
+
+        setAuService(new AuService(){
+            public boolean service(AuRequest request, boolean everError){
+                String command = request.getCommand();
+                int zoomindex;
+                int scrollLeft;
+
+                if (command.equals("onZoomLevelChange")){
+                    zoomindex=  (Integer) retrieveData(request, "zoomindex");
+                    scrollLeft = (Integer) retrieveData(request, "scrollLeft");
+
+                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels"))
+                            .getModel().getElementAt(zoomindex),
+                            scrollLeft);
+                    return true;
+                }
+                return false;
+            }
+
+            private Object retrieveData(AuRequest request, String key){
+                Object value = request.getData().get(key);
+                if ( value == null)
+                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
+                            new Object[] { key, this });
+
+                return value;
+            }
+        });
+    }
+
+    public void setZoomLevel(ZoomLevel zoomLevel, int scrollLeft) {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
+        getTimeTrackerComponent().setZoomLevel(zoomLevel, scrollLeft);
     }
 
     public void appendQueueElementToQueue(LimitingResourceQueueElement element) {
