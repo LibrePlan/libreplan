@@ -253,11 +253,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (isInPage() && !(task instanceof Milestone)) {
-                        try {
-                            updateCompletionAdvance();
-                        } catch (Exception e) {
-                            LOG.error("failure at updating completion", e);
-                        }
+                        updateCompletionAdvance();
                     }
                 }
             };
@@ -271,11 +267,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
                     if (isInPage() && !(task instanceof Milestone)) {
-                        try {
-                            updateCompletionReportedHours();
-                        } catch (Exception e) {
-                            LOG.error("failure at updating completion", e);
-                        }
+                        updateCompletionReportedHours();
                     }
                 }
             };
@@ -486,12 +478,8 @@ public class TaskComponent extends Div implements AfterCompose {
         if (task instanceof Milestone) {
             return;
         }
-        try {
-            updateCompletionReportedHours();
-            updateCompletionAdvance();
-        } catch (Exception e) {
-            LOG.error("failure at updating completion", e);
-        }
+        updateCompletionReportedHours();
+        updateCompletionAdvance();
     }
 
     private void updateCompletionReportedHours() {
