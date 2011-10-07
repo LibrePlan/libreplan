@@ -510,7 +510,7 @@ public class TaskElementAdapter {
                 GanttDate result = null;
                 if (!(taskElement instanceof TaskGroup)) {
                     result = calculateLimitDate(assignedEffort
-                            .toHoursAsDecimalWithScale(2));
+                            .toHoursAsDecimalWithScale(2).intValue());
                 }
                 if (result == null) {
                     Integer hours = taskElement.getSumOfHoursAllocated();
