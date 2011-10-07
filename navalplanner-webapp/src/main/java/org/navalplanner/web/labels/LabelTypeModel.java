@@ -24,6 +24,7 @@ package org.navalplanner.web.labels;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -217,6 +218,7 @@ public class LabelTypeModel extends IntegrationEntityModel implements
         List<Label> labels = new ArrayList<Label>();
         if (labelType != null) {
             labels.addAll(initializeLabels(labelType.getLabels()));
+            Collections.sort(labels);
         }
         return labels;
     }
