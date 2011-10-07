@@ -524,7 +524,7 @@ public class TaskElementAdapter {
                     }
                     BigDecimal percentage = assignedEffort
                             .toHoursAsDecimalWithScale(2).divide(
-                                    new BigDecimal(hours));
+                                    new BigDecimal(hours), RoundingMode.DOWN);
                     result = calculateLimitDateByPercentage(percentage);
 
                 }
