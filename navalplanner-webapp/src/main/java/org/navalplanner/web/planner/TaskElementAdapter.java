@@ -509,9 +509,10 @@ public class TaskElementAdapter {
 
                 GanttDate result = null;
                 if (!(taskElement instanceof TaskGroup)) {
-                    result = calculateLimitDate(assignedEffort
+                    result = calculateLimitDateByHours(assignedEffort
                             .toHoursAsDecimalWithScale(2).intValue());
                 }
+
                 if (result == null) {
                     Integer hours = taskElement.getSumOfHoursAllocated();
 
@@ -524,7 +525,7 @@ public class TaskElementAdapter {
                     BigDecimal percentage = assignedEffort
                             .toHoursAsDecimalWithScale(2).divide(
                                     new BigDecimal(hours));
-                    result = calculateLimitDate(percentage);
+                    result = calculateLimitDateByPercentage(percentage);
 
                 }
 
@@ -612,20 +613,20 @@ public class TaskElementAdapter {
                 }
 
                 if (taskElement instanceof TaskGroup) {
-                    return calculateLimitDate(advancePercentage);
+                    return calculateLimitDateByPercentage(advancePercentage);
                 }
 
                 // Calculate date according to advanceHours or advancePercentage
                 final Integer advanceHours = advancePercentage.multiply(
                         new BigDecimal(hours)).intValue();
-                GanttDate result = calculateLimitDate(advanceHours);
+                GanttDate result = calculateLimitDateByHours(advanceHours);
                 if (result == null) {
-                    result = calculateLimitDate(advancePercentage);
+                    result = calculateLimitDateByPercentage(advancePercentage);
                 }
                 return result;
             }
 
-            private GanttDate calculateLimitDate(BigDecimal advancePercentage) {
+            private GanttDate calculateLimitDateByPercentage(BigDecimal advancePercentage) {
                 BaseCalendar calendar = taskElement.getCalendar();
                 if (advancePercentage.compareTo(BigDecimal.ZERO) == 0
                         || calendar == null) {
@@ -678,7 +679,7 @@ public class TaskElementAdapter {
                 return toGantt(end);
             }
 
-            private GanttDate calculateLimitDate(Integer hours) {
+            private GanttDate calculateLimitDateByHours(Integer hours) {
                 if (hours == null || hours == 0) {
                     return null;
                 }
