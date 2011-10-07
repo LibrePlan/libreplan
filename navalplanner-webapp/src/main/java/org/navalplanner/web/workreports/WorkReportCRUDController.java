@@ -1000,11 +1000,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         });
     }
 
-    private void appendHourStart(final Row row) {
-        final Timebox timeStart = new Timebox();
-        timeStart.setWidth("50px");
-        timeStart.setButtonVisible(true);
+    private void appendHoursStartAndFinish(final Row row) {
         final WorkReportLine line = (WorkReportLine) row.getValue();
+
+        final Timebox timeStart = getNewTimebox();
+        final Timebox timeFinish = getNewTimebox();
+
+        row.appendChild(timeStart);
+        row.appendChild(timeFinish);
 
         Util.bind(timeStart, new Util.Getter<Date>() {
 
@@ -1021,58 +1024,19 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             @Override
             public void set(Date value) {
                 if (line != null) {
-                    line.setClockStart(value);
-                }
-            }
-        });
-
-        timeStart.addEventListener(Events.ON_CHANGING, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                // force the binding
-                Timebox timeFinish = (Timebox) getTimeboxFinish(row);
-                if (timeFinish != null) {
-                    timeFinish.setFocus(true);
-                    timeFinish.select();
-                    timeStart.select();
-                }
-            }
-        });
-
-        timeStart.addEventListener(Events.ON_CHANGE, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                Timebox timeFinish = (Timebox) getTimeboxFinish(row);
-                if (timeFinish != null) {
                     checkCannotBeHigher(timeStart, timeFinish);
+                    setClock(line, timeStart, timeFinish);
                     updateEffort(row);
                 }
             }
+
         });
-
-        row.appendChild(timeStart);
-    }
-
-    private void updateEffort(final Row row) {
-        WorkReportLine line = (WorkReportLine) row.getValue();
-        Textbox effort = getEffort(row);
-        if (effort != null) {
-            effort.setValue(line.getEffort().toFormattedString());
-            effort.invalidate();
-        }
-    }
-
-    private void appendHourFinish(final Row row) {
-        final Timebox timeFinish = new Timebox();
-        timeFinish.setWidth("50px");
-        timeFinish.setButtonVisible(true);
-        final WorkReportLine line = (WorkReportLine) row.getValue();
 
         Util.bind(timeFinish, new Util.Getter<Date>() {
 
             @Override
             public Date get() {
-                if ((line != null) && (line.getClockFinish() != null)) {
+                if ((line != null) && (line.getClockStart() != null)) {
                     return line.getClockFinish().toDateTimeToday().toDate();
                 }
                 return null;
@@ -1083,36 +1047,35 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             @Override
             public void set(Date value) {
                 if (line != null) {
-                    line.setClockFinish(value);
-                }
-            }
-        });
-
-        timeFinish.addEventListener(Events.ON_CHANGING, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                Timebox timeStart = (Timebox) getTimeboxStart(row);
-                if (timeStart != null) {
-                    timeStart.setFocus(true);
-                    timeStart.select();
-                    timeFinish.select();
-                }
-            }
-        });
-
-        timeFinish.addEventListener(Events.ON_CHANGE, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                Timebox timeStart = (Timebox) getTimeboxStart(row);
-                if (timeStart != null) {
                     checkCannotBeHigher(timeStart, timeFinish);
+                    setClock(line, timeStart, timeFinish);
                     updateEffort(row);
                 }
-
             }
         });
+    }
 
-        row.appendChild(timeFinish);
+    protected void setClock(WorkReportLine line, Timebox timeStart,
+            Timebox timeFinish) {
+        line.setClockStart(timeStart.getValue());
+        line.setClockFinish(timeFinish.getValue());
+    }
+
+    private Timebox getNewTimebox() {
+        final Timebox timeStart = new Timebox();
+        timeStart.setWidth("60px");
+        timeStart.setFormat("short");
+        timeStart.setButtonVisible(true);
+        return timeStart;
+    }
+
+    private void updateEffort(final Row row) {
+        WorkReportLine line = (WorkReportLine) row.getValue();
+        Textbox effort = getEffort(row);
+        if (effort != null && line.getEffort() != null) {
+            effort.setValue(line.getEffort().toFormattedString());
+            effort.invalidate();
+        }
     }
 
     public void checkCannotBeHigher(Timebox starting, Timebox ending) {
@@ -1122,8 +1085,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         final Date startingDate = (Date) starting.getValue();
         final Date endingDate = (Date) ending.getValue();
 
-        if (endingDate != null && startingDate != null
-                && startingDate.compareTo(endingDate) > 0) {
+        if (endingDate == null || startingDate == null
+                || startingDate.compareTo(endingDate) > 0) {
             throw new WrongValueException(starting,
                     _("Cannot be higher than finish hour"));
         }
@@ -1329,8 +1292,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
             if (!getWorkReport().getWorkReportType().getHoursManagement()
                     .equals(HoursManagementEnum.NUMBER_OF_HOURS)) {
-                appendHourStart(row);
-                appendHourFinish(row);
+                appendHoursStartAndFinish(row);
             }
 
             appendEffortDuration(row);
