@@ -50,7 +50,7 @@ import org.zkoss.zul.Messagebox;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AdvancedAllocationTaskController extends GenericForwardComposer {
 
-    private Task taskElement;
+    private Task task;
 
     private IContextWithPlannerTask<TaskElement> context;
 
@@ -61,7 +61,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
     public void showAdvancedAllocation(Task task,
             IContextWithPlannerTask<TaskElement> context,
             PlanningState planningState) {
-        this.taskElement = task;
+        this.task = task;
         this.context = context;
         this.planningState = planningState;
 
@@ -142,8 +142,7 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
 
         @Override
         public void accepted(AggregateOfResourceAllocations aggregate) {
-            allocation.applyTo(planningState.getCurrentScenario(),
-                    (Task) taskElement);
+            allocation.applyTo(planningState.getCurrentScenario(), task);
             askForReloads();
         }
 
