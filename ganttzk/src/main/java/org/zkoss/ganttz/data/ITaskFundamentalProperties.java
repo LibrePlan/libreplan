@@ -105,4 +105,6 @@ public interface ITaskFundamentalProperties {
 
     String updateTooltipText(String progressType);
 
+    boolean isManualAnyAllocation();
+
 }

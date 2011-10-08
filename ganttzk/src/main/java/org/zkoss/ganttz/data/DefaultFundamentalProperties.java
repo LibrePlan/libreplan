@@ -262,4 +262,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return "";
     }
 
+    @Override
+    public boolean isManualAnyAllocation() {
+        return false;
+    }
+
 }

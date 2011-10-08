@@ -454,4 +454,9 @@ public abstract class Task implements ITaskFundamentalProperties {
         return LocalDate.fromDateFields(getBeginDate().toDayRoundedDate());
     }
 
+    @Override
+    public boolean isManualAnyAllocation() {
+        return fundamentalProperties.isManualAnyAllocation();
+    }
+
 }

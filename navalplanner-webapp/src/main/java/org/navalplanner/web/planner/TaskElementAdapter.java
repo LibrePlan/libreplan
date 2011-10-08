@@ -1051,6 +1051,12 @@ public class TaskElementAdapter {
                         || taskElement.hasConsolidations();
             }
 
+            @Override
+            public boolean isManualAnyAllocation() {
+                return taskElement.isTask()
+                        && ((Task) taskElement).isManualAnyAllocation();
+            }
+
         }
 
         @Override

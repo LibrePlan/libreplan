@@ -883,7 +883,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     @Override
     public boolean canBeExplicitlyResized() {
-        return canBeResized() && !isSubcontracted();
+        return canBeResized() && !isSubcontracted() && !isManualAnyAllocation();
     }
 
     @Override
