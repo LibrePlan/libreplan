@@ -136,6 +136,9 @@ public class AdvancedAllocationTabCreator {
             Validate
                     .isTrue(allocationResult.getAggregate() == modifiedAllocations);
             allocationResult.applyTo(planningState.getCurrentScenario(), task);
+            if (task.isManualAnyAllocation()) {
+                Task.convertOnStartInFixedDate(task);
+            }
             updateParentsPositions(task);
         }
 

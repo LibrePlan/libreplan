@@ -1021,4 +1021,22 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return !calendar.getCapacityOn(PartialDay.wholeDay(day)).isZero();
     }
 
+    public static void convertOnStartInFixedDate(Task task) {
+        TaskPositionConstraint taskConstraint = task.getPositionConstraint();
+        if (taskConstraint.isValid(PositionConstraintType.START_IN_FIXED_DATE,
+                task.getIntraDayStartDate())) {
+            taskConstraint.update(PositionConstraintType.START_IN_FIXED_DATE,
+                    task.getIntraDayStartDate());
+        }
+    }
+
+    public boolean isManualAnyAllocation() {
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            if (each.isManualAssignmentFunction()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

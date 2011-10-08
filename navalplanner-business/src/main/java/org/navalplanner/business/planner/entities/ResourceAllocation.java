@@ -2179,4 +2179,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 : null;
     }
 
+    public boolean isManualAssignmentFunction() {
+        if (assignmentFunction != null) {
+            return assignmentFunction.isManual();
+        }
+        return false;
+    }
+
 }
