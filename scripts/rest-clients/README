@@ -89,6 +89,10 @@ permissions for web services of NavalPlan. Default credentials are:
   * User: ``wswriter``
   * Password: ``wswriter``
 
+.. NOTE::
+
+  NavalPlan web services use `HTTP Basic Authentication`_
+
 
 Common parameters
 -----------------
@@ -168,3 +172,6 @@ errors trying to insert the data in the system.
 Example::
 
   $ ./import-resources.sh resources-sample.xml
+
+
+.. _`HTTP Basic Authentication`: http://www.w3.org/Protocols/HTTP/1.0/spec.html#BasicAA
