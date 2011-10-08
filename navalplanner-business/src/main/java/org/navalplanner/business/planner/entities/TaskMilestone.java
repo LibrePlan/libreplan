@@ -176,4 +176,9 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
         return startConstraint;
     }
 
+    @Override
+    public boolean isTask() {
+        return false;
+    }
+
 }

@@ -1039,4 +1039,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return false;
     }
 
+    @Override
+    public boolean isTask() {
+        return true;
+    }
+
 }

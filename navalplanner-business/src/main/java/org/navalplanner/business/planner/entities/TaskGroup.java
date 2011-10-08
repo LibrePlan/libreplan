@@ -299,4 +299,9 @@ public class TaskGroup extends TaskElement {
         return taskGroup.getParent() == null;
     }
 
+    @Override
+    public boolean isTask() {
+        return false;
+    }
+
 }

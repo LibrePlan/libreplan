@@ -682,4 +682,6 @@ public abstract class TaskElement extends BaseEntity {
         return super.toString() + " :: " + getName();
     }
 
+    public abstract boolean isTask();
+
 }
