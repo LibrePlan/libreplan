@@ -35,7 +35,7 @@
         <vbox id="messagesContainer"></vbox>
 
         <window id="listWindow" title="${i18n:_('Work Reports List')}">
-                <div align="right">
+                <vbox align="right">
                 <hbox id="hboxFilter" align="center">
                   <!-- Filter by type, start date and finish date -->
                   <label value="${i18n:_('Filter work report by :')}"/>
@@ -53,7 +53,7 @@
                   <button label="${i18n:_('Filter')}" style="margin-top: -4px"
                         onClick="controller.onApplyFilter(event)"/>
                 </hbox>
-                </div>
+                </vbox>
                 <separator bar="false" spacing="20px" orient="horizontal"/>
                 <grid id="listing"  mold="paging" pageSize="10"
                 model="@{controller.workReportDTOs}" sclass="clickable-rows"
@@ -115,21 +115,20 @@
                     <tabpanel>
                         <vbox width="100%">
 
-                    <panel title="${i18n:_('General data')}" border="normal"
-                            style="overflow:auto">
-                        <panelchildren>
-                            <grid fixedLayout="false">
+                        <groupbox closable="false">
+                            <caption label="${i18n:_('General data')}" />
+                            <grid fixedLayout="false" width="100%" span="1">
                                 <columns>
                                     <column width="200px" />
                                     <column />
                                 </columns>
                                 <rows>
                                     <row>
-                                        <label value="${i18n:_('Type')}:" />
+                                        <label value="${i18n:_('Type')}" />
                                         <label value="@{controller.workReport.workReportType.name}" />
                                     </row>
                                     <row>
-                                        <label value="${i18n:_('Code')}:" />
+                                        <label value="${i18n:_('Code')}" />
                                         <hbox>
                                             <textbox width="350px" value="@{controller.workReport.code}"
                                                 constraint="no empty:${i18n:_('cannot be null or empty')}"
@@ -141,34 +140,32 @@
                                     </row>
                                 </rows>
                             </grid>
-                        </panelchildren>
-                    </panel>
+                        </groupbox>
 
-                    <panel title="${i18n:_('Heading Fields')}" border="normal"
-                            style="overflow:auto">
-                        <panelchildren>
-                        <grid id="HeadingRequirementsFields" mold="paging" pageSize="4" fixedLayout="true">
+                        <groupbox closable="false">
+                        <caption label="${i18n:_('Heading Fields')}" />
+                        <grid id="HeadingRequirementsFields" mold="paging" pageSize="4" fixedLayout="true" style="border-bottom:0">
                             <columns>
                               <column width="200px"/>
                               <column />
                             </columns>
                             <rows>
                                 <row visible = "@{controller.workReport.workReportType.dateIsSharedByLines}">
-                                        <label value="${i18n:_('Date')}:" />
+                                        <label value="${i18n:_('Date')}" />
                                         <datebox id="date" value="@{controller.workReport.date}" />
                                 </row>
                                 <row visible = "@{controller.workReport.workReportType.resourceIsSharedInLines}">
-                                        <label value="${i18n:_('Resource')}:" />
+                                        <label value="${i18n:_('Resource')}" />
                                         <autocomplete id="autocompleteResource" buttonVisible="true"
                                             value = "@{controller.workReport.resource}"
                                             onChange ="controller.changeResource(self.selectedItem);"
-                                            finder="ResourceFinder"
+                                            finder="ResourceFinder" width="300px"
                                             selectedItem="@{controller.workReport.resource}"/>
                                 </row>
                                 <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
-                                    <label value="${i18n:_('Task Code')}:" />
+                                    <label value="${i18n:_('Task Code')}" />
                                     <bandboxSearch id="bandboxSelectOrderElementInHead"
-                                        finder="OrderElementBandboxFinder"
+                                        finder="OrderElementBandboxFinder" widthBandbox="300px"
                                         model="@{controller.orderElements}"
                                         selectedElement="@{controller.workReport.orderElement}"/>
                                 </row>
@@ -176,7 +173,7 @@
                         </grid>
 
                         <grid id="headingFieldsAndLabels" mold="paging" pageSize="4"
-                            fixedLayout="true"
+                            fixedLayout="true" style="border-top:0;"
                             model="@{controller.fieldsAndLabelsHeading}"
                             rowRenderer= "@{controller.orderedFieldsAndLabelsRowRenderer}">
                             <columns>
@@ -184,15 +181,13 @@
                               <column />
                             </columns>
                         </grid>
-                        </panelchildren>
-                        </panel>
+                        </groupbox>
 
                         <separator bar="false" spacing="80px" orient="vertical"/>
 
                             <!-- Work report lines -->
-                            <panel title="${i18n:_('Work report lines')}"
-                                border="normal">
-                                <panelchildren>
+                            <groupbox closable="false">
+                            <caption label="${i18n:_('Work report lines')}" />
                                     <hbox>
                                         <button label="${i18n:_('Add new row')}"
                                             onClick="controller.addWorkReportLine()" />
@@ -200,8 +195,7 @@
 
                                    <newdatasortablegrid id="listWorkReportLines" fixedLayout="true"
                                         rowRenderer="@{controller.renderer}" sclass="listWorkReportLines"/>
-                                </panelchildren>
-                            </panel>
+                                </groupbox>
                         </vbox>
                     </tabpanel>
                 </tabpanels>
