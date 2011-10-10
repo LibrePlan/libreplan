@@ -1,4 +1,4 @@
-<package name="limitingresources" language="xul/html">
+<package name="limitingresources" language="xul/html" depends="ganttz">
     <widget name="QueueListComponent"/>
     <widget name="QueueComponent"/>
     <widget name="QueueTask"/>
