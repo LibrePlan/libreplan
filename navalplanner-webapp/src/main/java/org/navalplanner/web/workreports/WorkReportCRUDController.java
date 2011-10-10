@@ -770,6 +770,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 NewDataSortableColumn columnCode = new NewDataSortableColumn();
                 columnCode.setLabel(_("Task Code"));
                 columnCode.setSclass("order-code-column");
+                columnCode.setHflex("min");
                 columns.appendChild(columnCode);
             }
 
@@ -889,7 +890,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private void appendResourceInLines(final Row row) {
         final Autocomplete autocomplete = new Autocomplete();
-        autocomplete.setWidth("100px");
+        autocomplete.setWidth("200px");
         autocomplete.setAutodrop(true);
         autocomplete.applyProperties();
         autocomplete.setFinder("ResourceFinder");
@@ -937,6 +938,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 "OrderElementBandboxFinder", getOrderElements());
 
         bandboxSearch.setSelectedElement(workReportLine.getOrderElement());
+        bandboxSearch.setSclass("bandbox-workreport-task");
         bandboxSearch.setListboxWidth("750px");
 
         bandboxSearch.setListboxEventListener(Events.ON_SELECT,

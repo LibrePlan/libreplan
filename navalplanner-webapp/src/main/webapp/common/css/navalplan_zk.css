@@ -1816,3 +1816,7 @@ select {
 .entity-sequences-grid tr.separator td.z-row-inner {
     border-top: 1px solid #AAAAAA;
 }
+
+.bandbox-workreport-task input {
+    width: 250px;
+}
