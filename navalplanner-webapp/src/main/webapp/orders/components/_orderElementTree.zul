@@ -19,16 +19,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <zk>
-<zscript><![CDATA[
+    <zscript><![CDATA[
     treeComponent = self;
 ]]>
-</zscript>
+    </zscript>
 
-<vbox width="100%">
-    <vbox>
-        <hbox pack="center" style="margin-bottom:4px;" width="100%">
-        <hbox pack="center">
-            <templateFinderPopup id="templateFinderPopupAtTree" acceptButtonLabel="${i18n:_('Create Task')}" caption="${i18n:_('Choosing Template')}" />
+    <div width="100%" style="margin:4px;" align="pack">
+        <hbox pack="center" align="center" style="padding-bottom:4px;float:left">
+            <templateFinderPopup id="templateFinderPopupAtTree"
+                acceptButtonLabel="${i18n:_('Create Task')}" caption="${i18n:_('Choosing Template')}" />
             <label value="${i18n:_('New task:')}" />
             <textbox value="" id="newOrderElementName" width="150px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
@@ -37,54 +36,52 @@
                 onOK="treeController.addElement(self.parent);"
                 constraint="no negative" disabled="true" />
             <button id="btnNew" label="${treeComponent.addElementLabel}"
-                onClick="treeController.addElement(self.parent);" disabled="true" />
+                onClick="treeController.addElement(self.parent);"
+                disabled="true" />
             <button id="btnNewFromTemplate" label="${i18n:_('Add From Template')}"
                 onClick="treeController.createFromTemplate();" disabled="true"
-                visible="${treeComponent.createFromTemplateEnabled}"/>
-        </hbox><hbox style="float:right" pack="center">
+                visible="${treeComponent.createFromTemplateEnabled}" />
+        </hbox>
+        <hbox pack="center" align="center" sclass="selected-node"
+            style="float:right;padding-right:6px;">
             <label value="${i18n:_('Selected node:')}" />
-            <button id="editOrderElementButton" sclass="icono" image="/common/img/ico_editar1.png"
-                tooltiptext="${i18n:_('Edit selected task')}"
+            <button id="editOrderElementButton" sclass="icono"
+                image="/common/img/ico_editar1.png" tooltiptext="${i18n:_('Edit selected task')}"
                 onClick="treeController.editSelectedElement();" />
-            <button id="createTemplateButton" sclass="icono" image="/common/img/ico_derived1.png"
-                hoverImage="/common/img/ico_derived.png"
+            <button id="createTemplateButton" sclass="icono"
+                image="/common/img/ico_derived1.png" hoverImage="/common/img/ico_derived.png"
                 tooltiptext="${i18n:_('Create template from selected task')}"
                 onClick="treeController.createTemplateFromSelectedElement();"
-                if="${arg.showCreateTemplateButton}"/>
-            <button id="downButton" sclass="icono" image="/common/img/ico_bajar1.png"
-                hoverImage="/common/img/ico_bajar.png"
+                if="${arg.showCreateTemplateButton}" />
+            <button id="downButton" sclass="icono"
+                image="/common/img/ico_bajar1.png" hoverImage="/common/img/ico_bajar.png"
                 tooltiptext="${i18n:_('Move selected task down')}"
                 onClick="treeController.moveSelectedElementDown();" />
-            <button id="upButton" sclass="icono" image="/common/img/ico_subir1.png"
-                hoverImage="/common/img/ico_subir.png"
+            <button id="upButton" sclass="icono"
+                image="/common/img/ico_subir1.png" hoverImage="/common/img/ico_subir.png"
                 tooltiptext="${i18n:_('Move selected task up')}"
                 onClick="treeController.moveSelectedElementUp();" />
-            <button id="leftButton" sclass="icono" image="/common/img/ico_izq1.png"
-                hoverImage="/common/img/ico_izq.png"
+            <button id="leftButton" sclass="icono"
+                image="/common/img/ico_izq1.png" hoverImage="/common/img/ico_izq.png"
                 tooltiptext="${i18n:_('Unindent selected task')}"
                 onClick="treeController.unindentSelectedElement();" />
-            <button id="rightButton" sclass="icono" image="/common/img/ico_derecha1.png"
-                hoverImage="/common/img/ico_derecha.png"
-                tooltiptext="${i18n:_('Indent selected task')}"
-                onClick="treeController.indentSelectedElement();" />
-            <button id="deleteOrderElementButton" sclass="icono" image="/common/img/ico_borrar1.png"
-                hoverImage="/common/img/ico_borrar.png"
-                tooltiptext="${i18n:_('Delete selected task')}"
-                onClick="treeController.deleteSelectedElement();" />
-        </hbox></hbox>
-    </vbox>
+            <button id="rightButton" sclass="icono"
+                image="/common/img/ico_derecha1.png" hoverImage="/common/img/ico_derecha.png"
+                tooltiptext="${i18n:_('Indent selected task')}" onClick="treeController.indentSelectedElement();" />
+            <button id="deleteOrderElementButton" sclass="icono"
+                image="/common/img/ico_borrar1.png" hoverImage="/common/img/ico_borrar.png"
+                tooltiptext="${i18n:_('Delete selected task')}" onClick="treeController.deleteSelectedElement();" />
+        </hbox>
+    </div>
+
     <vbox width="100%">
         <tree id="tree" height="440px" multiple="false" droppable="true"
-            onDrop="treeController.move(self, event.dragged)"
-            onSelect="treeController.updateControlButtons(event)"
-            mold="paging" pageSize="25"
-            sclass="orderTree"
-            zclass="z-dottree">
+            onDrop="treeController.move(self, event.dragged)" onSelect="treeController.updateControlButtons(event)"
+            mold="paging" pageSize="25" sclass="orderTree" zclass="z-dottree">
             <treecols sizable="true">
-                <treecol label="${each.label}" class="${each.cssClass}" tooltiptext="${each.tooltip}"
-                    forEach="${treeComponent.columns}"/>
+                <treecol label="${each.label}" class="${each.cssClass}"
+                    tooltiptext="${each.tooltip}" forEach="${treeComponent.columns}" />
             </treecols>
         </tree>
     </vbox>
-</vbox>
 </zk>
