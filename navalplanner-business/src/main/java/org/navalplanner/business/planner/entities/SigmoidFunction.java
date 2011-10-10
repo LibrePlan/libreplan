@@ -39,8 +39,9 @@ public class SigmoidFunction extends AssignmentFunction {
 
     private static final int ROUND_MODE = BigDecimal.ROUND_HALF_EVEN;
 
-    // Fragmentation of hours (0.25, 0.50, 0.75, 1). 1 indicates no fragmentation
-    private static final BigDecimal HOUR_FRAGMENTATION = BigDecimal.valueOf(1);
+    // Fragmentation of hours (0.25, 0.50, 0.75, 1)
+    private static final BigDecimal HOUR_FRAGMENTATION = BigDecimal
+            .valueOf(0.25);
 
     public static SigmoidFunction create() {
         return create(new SigmoidFunction());
@@ -86,9 +87,11 @@ public class SigmoidFunction extends AssignmentFunction {
 
         // Starting from startDate do allocation, one slot of hours per day in resource
         LocalDate day = new LocalDate(start);
-        int hours = 0, i = 0;
+        EffortDuration hours = EffortDuration.zero();
+        int i = 0;
         while (i < hoursToAllocatePerDay.length) {
-            hours = hoursToAllocatePerDay[i].intValue();
+            hours = EffortDuration
+                    .fromHoursAsBigDecimal(hoursToAllocatePerDay[i]);
             capacity = calendar.getCapacityOn(PartialDay.wholeDay(day));
             if (!EffortDuration.zero().equals(capacity)) {
                 allocate(resourceAllocation, day, hours);
@@ -134,8 +137,9 @@ public class SigmoidFunction extends AssignmentFunction {
             }
             if (i + 1 <= length) {
                 BigDecimal next = hoursToAllocatePerDay[i + 1];
-                hoursToAllocatePerDay[i + 1] = next.subtract(BigDecimal.ONE);
-                hoursToAllocatePerDay[i] = hours.add(BigDecimal.ONE);
+                hoursToAllocatePerDay[i + 1] = next
+                        .subtract(HOUR_FRAGMENTATION);
+                hoursToAllocatePerDay[i] = hours.add(HOUR_FRAGMENTATION);
             }
         }
     }
@@ -167,10 +171,10 @@ public class SigmoidFunction extends AssignmentFunction {
      }
 
     private void allocate(ResourceAllocation<?> resourceAllocation,
-            LocalDate day, int hours) {
+            LocalDate day, EffortDuration hours) {
         final LocalDate nextDay = day.plusDays(1);
         resourceAllocation.withPreviousAssociatedResources()
-                .onInterval(day, nextDay).allocateHours(hours);
+                .onInterval(day, nextDay).allocate(hours);
     }
 
     private BigDecimal[] roundValues(BigDecimal[] allocatedHoursPerDay,

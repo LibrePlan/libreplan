@@ -160,6 +160,12 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return elapsing(amount, Granularity.SECONDS);
     }
 
+    public static EffortDuration fromHoursAsBigDecimal(BigDecimal hours) {
+        BigDecimal secondsPerHour = new BigDecimal(3600);
+        return elapsing(hours.multiply(secondsPerHour).intValue(),
+                Granularity.SECONDS);
+    }
+
     private final int seconds;
 
     private EffortDuration(int seconds) {
