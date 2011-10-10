@@ -358,7 +358,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
                 appendEarnedValueChartAndLegend(earnedValueTabpanel, chartEarnedValueTimeplot, earnedValueChartFiller);
                 appendTab(chartComponent, earnedValueTabpanel);
-                setupChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner);
+                Chart chart = setupChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner);
+                setEventListenerConfigurationCheckboxes(chart);
 
                 Writer out = new StringWriter();
                 try {
