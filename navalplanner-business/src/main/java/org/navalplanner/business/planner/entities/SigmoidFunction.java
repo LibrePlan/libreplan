@@ -164,12 +164,6 @@ public class SigmoidFunction extends AssignmentFunction {
         hoursToAllocatePerDay[length - 1] = lastDay.add(remindingHours);
     }
 
-    private void showSamplePointValues(BigDecimal[] samplePointValues) {
-        for (int i = 0; i < samplePointValues.length; i++) {
-            System.out.println(String.format("%d: %f", i, samplePointValues[i]));
-        }
-     }
-
     private void allocate(ResourceAllocation<?> resourceAllocation,
             LocalDate day, EffortDuration hours) {
         final LocalDate nextDay = day.plusDays(1);
