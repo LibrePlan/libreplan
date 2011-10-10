@@ -77,7 +77,7 @@
 
     </window>
 
-    <!-- Progress consolitation -->
+    <!-- Progress consolidation -->
     <window id="advanceWindow"
             apply="${advanceController}"
             title="${i18n:_('Progress consolidation')}"
@@ -88,29 +88,27 @@
 
         <vbox>
 
-            <panel title="${i18n:_('Progress Consolidation')}" border="normal"
-                    style="overflow:auto" visible="@{advanceController.isVisibleMessages}">
-                <panelchildren>
-                    <label value="@{advanceController.infoMessages}" />
-                </panelchildren>
-            </panel>
+            <groupbox closable="false" style="overflow:auto" visible="@{advanceController.isVisibleMessages}">
+                <caption label="${i18n:_('Check consolidated progresses')}" />
+                <label value="@{advanceController.infoMessages}" />
+            </groupbox>
 
-            <panel title="${i18n:_('Progress Consolidation')}" border="normal"
-                    style="overflow:auto" visible="@{advanceController.isVisibleAdvances}">
-                <panelchildren>
-                    <vbox>
+
+            <groupbox closable="false" style="overflow:auto" visible="@{advanceController.isVisibleAdvances}">
+                <caption label="${i18n:_('Check consolidated progresses')}" />
+                <vbox>
                     <label value="@{advanceController.infoAdvance}"/>
                     <grid id="advancesGrid"
                             model="@{advanceController.advances}"
                             mold="paging"
                             pageSize="10"
-                            fixedLayout="true"
-                            sclass="@{advanceController.readOnlySclass}">
+                            sclass="@{advanceController.readOnlySclass}"
+                            span="true">
                         <columns>
-                            <column label="${i18n:_('Value')}" width="150px" align="center" visible="@{advanceController.unitType}"/>
-                            <column label="${i18n:_('Percentage')}" width="150px" align="center"/>
-                            <column label="${i18n:_('Date')}" width="150px" align="center"/>
-                            <column label="${i18n:_('Consolidated')}" width="150px" align="center"/>
+                            <column label="${i18n:_('Value')}" align="center" visible="@{advanceController.unitType}"/>
+                            <column label="${i18n:_('Percentage')}" align="center"/>
+                            <column label="${i18n:_('Date')}" align="center"/>
+                            <column label="${i18n:_('Consolidated')}" align="center"/>
                         </columns>
                         <rows>
                             <row self="@{each='advanceConsolidationDTO'}" value="@{advanceConsolidationDTO}">
@@ -125,8 +123,8 @@
                         </rows>
                     </grid>
                     </vbox>
-                </panelchildren>
-            </panel>
+            </groupbox>
+
 
             <!-- Control buttons -->
             <hbox>

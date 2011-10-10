@@ -29,64 +29,65 @@
         <tabpanels>
             <tabpanel>
                 <vbox>
+
                     <!-- User details  -->
-                    <panel title="${i18n:_('General user data')}" border="normal">
-                    <panelchildren>
-                    <grid fixedLayout="false">
+                    <groupbox closable="false">
+                    <caption label="${i18n:_('General user data')}" />
+                    <grid fixedLayout="false" span="true">
                         <columns>
                             <column width="200px" />
                             <column />
                         </columns>
                         <rows>
                             <row>
-                                <label value="${i18n:_('Login name')}:" />
+                                <label value="${i18n:_('Login name')}" />
                                 <textbox id="loginName"
                                     value="@{controller.user.loginName}" width="300px"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"
                                     onBlur="controller.updateWindowTitle()"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('First name')}:" />
+                                <label value="${i18n:_('First name')}" />
                                 <textbox id="firstName"
                                     value="@{controller.user.firstName}" width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Last name')}:" />
+                                <label value="${i18n:_('Last name')}" />
                                 <textbox id="lastName"
                                     value="@{controller.user.lastName}" width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Password')}:" />
+                                <label value="${i18n:_('Password')}" />
                                 <textbox id="password" type="password"
                                     onChange="controller.setPassword(self.value);" width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Password confirmation')}:" />
+                                <label value="${i18n:_('Password confirmation')}" />
                                 <textbox id="passwordConfirmation" type="password"
                                     constraint="@{controller.validatePasswordConfirmation}"
                                     width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Disabled')}:" />
+                                <label value="${i18n:_('Disabled')}" />
                                 <checkbox id="disabled"
                                     checked="@{controller.user.disabled}" width="300px" />
                             </row>
                             <row>
-                                <label value="${i18n:_('E-mail')}:" />
+                                <label value="${i18n:_('E-mail')}" />
                                 <textbox id="email"
                                     value="@{controller.user.email}" width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Navalplan user')}:" />
+                                <label value="${i18n:_('Navalplan user')}" />
                                 <checkbox id="navalplanUser" checked="@{controller.user.navalplanUser}" />
                             </row>
                         </rows>
                     </grid>
-                    </panelchildren>
-                    </panel>
+                    </groupbox>
+
                     <!-- Associated UserRoles -->
-                    <panel title="${i18n:_('Association with roles')}" border="normal">
-                    <panelchildren>
+                    <groupbox closable="false">
+                    <caption label="${i18n:_('Association with roles')}" />
                     <hbox align="center">
                         <combobox id="userRolesCombo" autodrop="true" />
                         <button label="${i18n:_('Add role')}"
@@ -110,11 +111,11 @@
                             </row>
                         </rows>
                     </grid>
-                    </panelchildren>
-                    </panel>
+                    </groupbox>
+
                     <!-- Associated Profiles -->
-                    <panel title="${i18n:_('Association with profiles')}" border="normal">
-                    <panelchildren>
+                    <groupbox closable="false">
+                    <caption label="${i18n:_('Association with profiles')}" />
                     <hbox align="center">
                         <autocomplete id="profileAutocomplete"
                             autodrop="true" constraint=""
@@ -140,8 +141,7 @@
                             </row>
                         </rows>
                     </grid>
-                    </panelchildren>
-                    </panel>
+                    </groupbox>
                 </vbox>
             </tabpanel>
         </tabpanels>
