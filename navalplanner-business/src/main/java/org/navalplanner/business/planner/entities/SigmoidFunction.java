@@ -39,7 +39,7 @@ public class SigmoidFunction extends AssignmentFunction {
 
     private static final int ROUND_MODE = BigDecimal.ROUND_HALF_EVEN;
 
-    // Fragmentation of hours (0.25, 0.50, 0.75, 1)
+    // Fragmentation of hours (0.25, 0.50, 0.75, 1). 1 indicates no fragmentation
     private static final BigDecimal HOUR_FRAGMENTATION = BigDecimal
             .valueOf(0.25);
 
@@ -72,7 +72,7 @@ public class SigmoidFunction extends AssignmentFunction {
         BaseCalendar calendar = resourceAllocation.getTask().getCalendar();
         int daysDuration = daysWithAllocatedHours(resourceAllocation).size();
 
-        // Calculate hours per day and round values (take only integer part)
+        // Calculate hours per day and round values
         BigDecimal[] hoursToAllocatePerDay = generateHoursToAllocateFor(daysDuration, totalHours);
         hoursToAllocatePerDay = roundValues(hoursToAllocatePerDay, HOUR_FRAGMENTATION);
 
