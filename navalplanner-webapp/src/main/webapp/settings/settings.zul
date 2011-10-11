@@ -49,24 +49,24 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Login')}:" />
+                                    <label value="${i18n:_('Login')}" />
                                     <textbox id="loginName"
                                         value="@{settingsController.loginName}"
                                         disabled="true"
                                         width="300px" />
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('First name')}:" />
+                                    <label value="${i18n:_('First name')}" />
                                     <textbox id="firstName"
                                         value="@{settingsController.firstName}" width="300px"/>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Last name')}:" />
+                                    <label value="${i18n:_('Last name')}" />
                                     <textbox id="lastName"
                                         value="@{settingsController.lastName}" width="300px"/>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('E-mail')}:" />
+                                    <label value="${i18n:_('E-mail')}" />
                                     <textbox id="email"
                                         value="@{settingsController.email}" width="300px"/>
                                 </row>
@@ -83,7 +83,7 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Select language:')}" />
+                                    <label value="${i18n:_('Select language')}" />
 
                                     <listbox id="applicationLanguage"
                                             model="@{settingsController.languages}"
