@@ -729,6 +729,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 }
             }
         }
+        if(result == null && !potentiallyValidQueues.isEmpty()) {
+            result = potentiallyValidQueues.get(0);
+        }
         return result;
     }
 
