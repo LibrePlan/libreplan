@@ -39,7 +39,7 @@ import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.OrderCRUDController;
-import org.navalplanner.web.orders.TaskElementPredicate;
+import org.navalplanner.web.planner.TaskElementPredicate;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;

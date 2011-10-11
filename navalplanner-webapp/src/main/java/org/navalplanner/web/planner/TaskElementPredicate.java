@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.orders;
+package org.navalplanner.web.planner;
 
 import java.util.Date;
 import java.util.List;
