@@ -59,14 +59,14 @@
             </hbox>
 
             <!-- Assignment Type -->
-            <hbox width="100%">
-                <grid fixedLayout="true">
+            <vbox width="100%">
+                <grid fixedLayout="true" span="1" width="100%">
                     <columns>
                         <column width="200px" />
                         <column  />
                     </columns>
-                    <rows width="100%">
-                        <row width="100%">
+                    <rows>
+                        <row>
                             <hbox width="100%">
                                 <label value="${i18n:_('Assignment Type')}" />
                                 <image src="/common/img/axuda.gif" tooltip="allocation-type-popup"
@@ -74,13 +74,13 @@
                             </hbox>
                             <radiogroup id="allocationTypeSelector" orient="vertical" />
                         </row>
-                        <row width="100%">
+                        <row>
                             <label value="${i18n:_('Current selection')}" />
                             <label id="allocationSelectedItems" value="${i18n:_('[generic all workers]')}" />
                         </row>
                     </rows>
                 </grid>
-            </hbox>
+            </vbox>
 
         </groupbox>
 
