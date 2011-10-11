@@ -68,8 +68,12 @@ public class I18nHelper {
     private static void setPreferredLocale() {
         Execution execution = Executions.getCurrent();
         if (execution != null) {
+            Locale userLocale = getUserLocale();
             Charsets.setPreferredLocale((HttpSession) execution.getSession()
-                    .getNativeSession(), getUserLocale());
+                    .getNativeSession(), userLocale);
+            if (userLocale != null) {
+                Locales.setThreadLocal(userLocale);
+            }
         }
     }
 
