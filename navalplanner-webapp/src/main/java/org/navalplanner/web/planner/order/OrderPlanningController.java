@@ -39,7 +39,7 @@ import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.OrderCRUDController;
-import org.navalplanner.web.orders.OrderElementPredicate;
+import org.navalplanner.web.orders.TaskElementPredicate;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
@@ -195,6 +195,7 @@ public class OrderPlanningController implements Composer {
                 .getFellow("labelsWithoutInheritance");
         bdFiltersOrderElement = (BandboxMultipleSearch) filterComponent
                 .getFellow("bdFiltersOrderElement");
+        bdFiltersOrderElement.setFinder("taskElementsMultipleFiltersFinder");
         filterNameOrderElement = (Textbox) filterComponent
                 .getFellow("filterNameOrderElement");
         filterComponent.setVisible(true);
@@ -240,7 +241,7 @@ public class OrderPlanningController implements Composer {
         filterByPredicate(createPredicate());
     }
 
-    private OrderElementPredicate createPredicate() {
+    private TaskElementPredicate createPredicate() {
         List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement
                 .getSelectedElements();
         Date startDate = filterStartDateOrderElement.getValue();
@@ -253,7 +254,7 @@ public class OrderPlanningController implements Composer {
             return null;
         }
 
-        return new OrderElementPredicate(listFilters, startDate, finishDate,
+        return new TaskElementPredicate(listFilters, startDate, finishDate,
                 name, ignoreLabelsInheritance);
     }
 
@@ -265,11 +266,12 @@ public class OrderPlanningController implements Composer {
         this.labelsWithoutInheritance = labelsWithoutInheritance;
     }
 
-    private void filterByPredicate(final OrderElementPredicate predicate) {
+    private void filterByPredicate(final TaskElementPredicate predicate) {
         LongOperationFeedback.execute(orderElementFilter, new ILongOperation() {
 
             @Override
             public void doAction() {
+                // FIXME remove or change
                 model.forceLoadLabelsAndCriterionRequirements();
 
                 final IContext<?> context = planner.getContext();
@@ -284,8 +286,7 @@ public class OrderPlanningController implements Composer {
                                 .getMapper()
                                 .findAssociatedDomainObject(task);
                         return taskElement.isMilestone()
-                                || predicate.accepts(taskElement
-                                .getOrderElement());
+                                || predicate.accepts(taskElement);
                     }
 
                 };

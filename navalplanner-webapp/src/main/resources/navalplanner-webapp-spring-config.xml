@@ -31,6 +31,8 @@
 
     <bean id="orderElementsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrderElementsMultipleFiltersFinder" scope="singleton"/>
 
+    <bean id="taskElementsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.TaskElementsMultipleFiltersFinder" scope="singleton" />
+
     <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton" />
 
     <bean id="limitingResourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.LimitingResourceAllocationMultipleFiltersFinder" scope="singleton"/>
