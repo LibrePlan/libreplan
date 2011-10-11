@@ -29,7 +29,7 @@ public enum TaskGroupFilterEnum implements IFilterEnum {
 
     Criterion(_("Criterion")), Label(_("Label")), ExternalCompany(_("Customer")), State(
             _("State")), Code(_("Code")), CustomerReference(
-            _("Customer Reference"));
+            _("Customer Reference")), Resource(_("Resource"));
     /**
      * Forces to mark the string as needing translation
      */

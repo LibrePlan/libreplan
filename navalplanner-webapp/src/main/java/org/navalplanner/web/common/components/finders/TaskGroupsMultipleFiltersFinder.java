@@ -33,6 +33,7 @@ import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -59,6 +60,7 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
         fillWithFirstTenFiltersState();
         fillWihtFirstTenFiltersCodes();
         fillWihtFirstTenFiltersCustomerReferences();
+        fillWithFirstTenFiltersResources();
         addNoneFilter();
         return getListMatching();
     }
@@ -152,6 +154,7 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
                 searchInLabelTypes(filter);
                 searchInExternalCompanies(filter);
                 searchInOrderStatus(filter);
+                searchInResources(filter);
             }
         }
 
@@ -332,6 +335,45 @@ public class TaskGroupsMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().add(
                 new FilterPair(TaskGroupFilterEnum.CustomerReference,
                 reference, reference));
+    }
+
+    private List<FilterPair> fillWithFirstTenFiltersResources() {
+        Map<Class<?>, List<Resource>> mapResources = databaseSnapshots
+                .snapshotMapResources();
+        Iterator<Class<?>> iteratorClass = mapResources.keySet().iterator();
+        while (iteratorClass.hasNext() && getListMatching().size() < 10) {
+            Class<?> className = iteratorClass.next();
+            for (int i = 0; getListMatching().size() < 10
+                    && i < mapResources.get(className).size(); i++) {
+                Resource resource = mapResources.get(className).get(i);
+                addResource(className, resource);
+            }
+        }
+        return getListMatching();
+    }
+
+    private void searchInResources(String filter) {
+        Map<Class<?>, List<Resource>> mapResources = databaseSnapshots
+                .snapshotMapResources();
+        for (Class<?> className : mapResources.keySet()) {
+            for (Resource resource : mapResources.get(className)) {
+                String name = StringUtils.deleteWhitespace(resource.getName()
+                        .toLowerCase());
+                if (name.contains(filter)) {
+                    addResource(className, resource);
+                    if ((filter.length() < 3) && (getListMatching().size() > 9)) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void addResource(Class className, Resource resource) {
+        String pattern = resource.getName();
+        getListMatching().add(
+                new FilterPair(TaskGroupFilterEnum.Resource, className
+                        .getSimpleName(), pattern, resource));
     }
 
 }
