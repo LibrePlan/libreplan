@@ -31,6 +31,7 @@ import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -54,6 +55,7 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().clear();
         fillWithFirstTenFiltersLabels();
         fillWithFirstTenFiltersCriterions();
+        fillWithFirstTenFiltersResources();
         addNoneFilter();
         return getListMatching();
     }
@@ -90,7 +92,6 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         }
         return getListMatching();
     }
-
     private SortedMap<CriterionType, List<Criterion>> getMapCriterions() {
         return databaseSnapshots.snapshotCriterionsMap();
     }
@@ -102,6 +103,7 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
             filter = StringUtils.deleteWhitespace(filter.toLowerCase());
             searchInCriterionTypes(filter);
             searchInLabelTypes(filter);
+            searchInResources(filter);
         }
 
         addNoneFilter();
@@ -199,4 +201,42 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
                 new FilterPair(TaskElementFilterEnum.Label, pattern, label));
     }
 
+    private List<FilterPair> fillWithFirstTenFiltersResources() {
+        Map<Class<?>, List<Resource>> mapResources = databaseSnapshots
+                .snapshotMapResources();
+        Iterator<Class<?>> iteratorClass = mapResources.keySet().iterator();
+        while (iteratorClass.hasNext() && getListMatching().size() < 10) {
+            Class<?> className = iteratorClass.next();
+            for (int i = 0; getListMatching().size() < 10
+                    && i < mapResources.get(className).size(); i++) {
+                Resource resource = mapResources.get(className).get(i);
+                addResource(className, resource);
+            }
+        }
+        return getListMatching();
+    }
+
+    private void searchInResources(String filter) {
+        Map<Class<?>, List<Resource>> mapResources = databaseSnapshots
+                .snapshotMapResources();
+        for (Class<?> className : mapResources.keySet()) {
+            for (Resource resource : mapResources.get(className)) {
+                String name = StringUtils.deleteWhitespace(resource.getName()
+                        .toLowerCase());
+                if (name.contains(filter)) {
+                    addResource(className, resource);
+                    if ((filter.length() < 3) && (getListMatching().size() > 9)) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void addResource(Class className, Resource resource) {
+        String pattern = resource.getName();
+        getListMatching().add(
+                new FilterPair(TaskElementFilterEnum.Resource, className
+                        .getSimpleName(), pattern, resource));
+    }
 }

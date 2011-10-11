@@ -31,7 +31,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
  */
 public enum TaskElementFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Label(_("Label"));
+    Criterion(_("Criterion")), Label(_("Label")), Resource(_("Resource"));
 
     /**
      * Forces to mark the string as needing translation

@@ -27,8 +27,10 @@ import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.TaskElementFilterEnum;
 import org.zkoss.ganttz.IPredicate;
@@ -101,6 +103,8 @@ public class TaskElementPredicate implements IPredicate {
         switch ((TaskElementFilterEnum) filter.getType()) {
         case Criterion:
             return acceptCriterion(filter, taskElement);
+        case Resource:
+            return acceptResource(filter, taskElement);
         case Label:
             return acceptLabel(filter, taskElement);
         }
@@ -133,6 +137,35 @@ public class TaskElementPredicate implements IPredicate {
                 if (criterion.getId().equals(filterCriterion.getId())) {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    private boolean acceptResource(FilterPair filter, TaskElement taskElement) {
+        Resource filterResource = (Resource) filter.getValue();
+        return existResourceInTaskElementResourceAllocations(filterResource,
+                taskElement);
+    }
+
+    private boolean existResourceInTaskElementResourceAllocations(
+            Resource filterResource, TaskElement taskElement) {
+        for (ResourceAllocation<?> each : taskElement
+                .getAllResourceAllocations()) {
+            if (acceptsResourceInResourceAllocation(filterResource, each)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean acceptsResourceInResourceAllocation(
+            Resource filterResource, ResourceAllocation<?> resourceAllocation) {
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            Resource resource = ((SpecificResourceAllocation) resourceAllocation)
+                    .getResource();
+            if (resource.getId().equals(filterResource.getId())) {
+                return true;
             }
         }
         return false;
