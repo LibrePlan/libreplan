@@ -34,7 +34,7 @@ import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
-import org.navalplanner.web.planner.CompanyPredicate;
+import org.navalplanner.web.planner.TaskGroupPredicate;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -58,7 +58,6 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.ListModelList;
-import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -131,6 +130,7 @@ public class CompanyPlanningController implements Composer {
                 .getFellow("filterFinishDate");
         bdFilters = (BandboxMultipleSearch) filterComponent
                 .getFellow("bdFilters");
+        bdFilters.setFinder("taskGroupsMultipleFiltersFinder");
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
@@ -276,7 +276,7 @@ public class CompanyPlanningController implements Composer {
         if (listFilters.isEmpty() && startDate == null && finishDate == null) {
             return null;
         }
-        return new CompanyPredicate(listFilters, startDate, finishDate,
+        return new TaskGroupPredicate(listFilters, startDate, finishDate,
                 includeOrderElements);
     }
 

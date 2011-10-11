@@ -756,7 +756,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
             if (associatedTaskElement != null
                     && STATUS_VISUALIZED.contains(order.getState())
-                    && (predicate == null || predicate.accepts(order))) {
+                    && (predicate == null || predicate
+                            .accepts(associatedTaskElement))) {
                 associatedTaskElement.setSimplifiedAssignedStatusCalculationEnabled(true);
                 result.add(associatedTaskElement);
                 ordersToShow.add(order);

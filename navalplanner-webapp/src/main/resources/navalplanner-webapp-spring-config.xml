@@ -29,6 +29,8 @@
 
     <bean id="ordersMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrdersMultipleFiltersFinder" scope="singleton" />
 
+    <bean id="taskGroupsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.TaskGroupsMultipleFiltersFinder" scope="singleton" />
+
     <bean id="orderElementsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrderElementsMultipleFiltersFinder" scope="singleton"/>
 
     <bean id="taskElementsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.TaskElementsMultipleFiltersFinder" scope="singleton" />
