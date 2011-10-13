@@ -22,8 +22,10 @@
 package org.zkoss.ganttz.data.resourceload;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.ComparatorUtils;
@@ -142,16 +144,27 @@ public class LoadTimeLine {
     }
 
     public static Interval getIntervalFrom(List<LoadTimeLine> timeLines) {
-        Validate.notEmpty(timeLines);
         GanttDate start = null;
         GanttDate end = null;
         for (LoadTimeLine loadTimeLine : timeLines) {
-            Validate.notNull(loadTimeLine.getStart());
-            start = min(start, loadTimeLine.getStart());
-            Validate.notNull(loadTimeLine.getEnd());
-            end = max(end, loadTimeLine.getEnd());
+            if(!loadTimeLine.isEmpty()) {
+                Validate.notNull(loadTimeLine.getStart());
+                start = min(start, loadTimeLine.getStart());
+                Validate.notNull(loadTimeLine.getEnd());
+                end = max(end, loadTimeLine.getEnd());
+            }
+        }
+        if (timeLines.isEmpty() || start == null || end == null) {
+            return new Interval(new Date(), plusFiveYears(new Date()));
         }
         return new Interval(start.toLocalDate(), end.asExclusiveEnd());
+    }
+
+    private static Date plusFiveYears(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.YEAR, 5);
+        return calendar.getTime();
     }
 
     private static GanttDate max(GanttDate one, GanttDate other) {

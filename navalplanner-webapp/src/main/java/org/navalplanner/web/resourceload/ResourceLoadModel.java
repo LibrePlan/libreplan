@@ -722,9 +722,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             for (Entry<Resource, List<ResourceAllocation<?>>> each : map
                     .entrySet()) {
                 LoadTimeLine l = buildGroupFor(each.getKey(), each.getValue());
-                if (!l.isEmpty()) {
-                    result.add(l);
-                }
+                result.add(l);
             }
             return result;
         }

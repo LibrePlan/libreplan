@@ -1,7 +1,5 @@
 package org.navalplanner.web.resourceload;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -82,17 +80,7 @@ public class ResourceLoadDisplayData {
     }
 
     private static Interval getViewIntervalFrom(List<LoadTimeLine> timeLines) {
-        if (timeLines.isEmpty()) {
-            return new Interval(new Date(), plusFiveYears(new Date()));
-        }
         return LoadTimeLine.getIntervalFrom(timeLines);
-    }
-
-    private static Date plusFiveYears(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.YEAR, 5);
-        return calendar.getTime();
     }
 
     public List<LoadTimeLine> getLoadTimeLines() {
