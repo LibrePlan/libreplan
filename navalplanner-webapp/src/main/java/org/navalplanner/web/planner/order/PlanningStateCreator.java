@@ -33,6 +33,7 @@ import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
@@ -312,8 +313,16 @@ public class PlanningStateCreator {
     private void forceLoadOfDataAssociatedTo(TaskElement each) {
         forceLoadOfResourceAllocationsResourcesAndAssignmentFunction(each);
         forceLoadOfCriterions(each);
-        if (each.getCalendar() != null) {
-            BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
+
+        BaseCalendar calendar = each.getOwnCalendar();
+        if (calendar == null) {
+            if (each.getOrderElement() != null) {
+                calendar = orderDAO.loadOrderAvoidingProxyFor(
+                        each.getOrderElement()).getCalendar();
+            }
+        }
+        if (calendar != null) {
+            BaseCalendarModel.forceLoadBaseCalendar(calendar);
         }
         each.hasConsolidations();
     }
