@@ -43,22 +43,4 @@ public class LenientDecimalBox extends Decimalbox {
         super(value);
     }
 
-    @Override
-    protected Object coerceFromString(String value) throws WrongValueException {
-        return super
-                .coerceFromString(interpretCommasAndPointsAsDecimalSeparator(value));
-    }
-
-    private String interpretCommasAndPointsAsDecimalSeparator(String value) {
-        if (value == null) {
-            return null;
-        }
-        final DecimalFormatSymbols symbols = new DecimalFormatSymbols(
-                Locales.getCurrent());
-
-        char decimalSeparator = symbols.getDecimalSeparator();
-        return value.replace('.', decimalSeparator).replace(',',
-                decimalSeparator);
-    }
-
 }
