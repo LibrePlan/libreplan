@@ -108,13 +108,7 @@ public abstract class Resource extends IntegrationEntity implements
 
             @Override
             public int compare(Resource o1, Resource o2) {
-                if (o1.getName() == null) {
-                    return 1;
-                }
-                if (o2.getName() == null) {
-                    return -1;
-                }
-                return o1.getName().compareTo(o2.getName());
+                return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
             }
         });
         return resources;
