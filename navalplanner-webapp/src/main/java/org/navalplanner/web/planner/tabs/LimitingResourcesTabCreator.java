@@ -30,7 +30,6 @@ import java.util.Map;
 import org.navalplanner.web.limitingresources.LimitingResourcesController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
-import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Image;
@@ -46,7 +45,6 @@ public class LimitingResourcesTabCreator {
 
     public static ITab create(Mode mode,
             LimitingResourcesController LimitingResourcesController,
-            IToolbarCommand upCommand,
             LimitingResourcesController LimitingResourcesControllerGlobal,
             Component breadcrumbs) {
         return new LimitingResourcesTabCreator(mode,

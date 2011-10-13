@@ -223,8 +223,8 @@ public class MultipleTabsPlannerController implements Composer,
                 }, breadcrumbs);
 
         limitingResourcesTab = LimitingResourcesTabCreator.create(mode,
-                limitingResourcesController, upCommand(),
-                limitingResourcesControllerGlobal, breadcrumbs);
+                limitingResourcesController, limitingResourcesControllerGlobal,
+                breadcrumbs);
 
         ordersTab = OrdersTabCreator.create(mode, orderCRUDController,
                 breadcrumbs, new IOrderPlanningGate() {
