@@ -22,14 +22,13 @@
 package org.zkoss.ganttz.data.resourceload;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.util.Interval;
 
@@ -155,16 +154,10 @@ public class LoadTimeLine {
             }
         }
         if (timeLines.isEmpty() || start == null || end == null) {
-            return new Interval(new Date(), plusFiveYears(new Date()));
+            LocalDate localDateNow = new LocalDate();
+            return new Interval(localDateNow, localDateNow.plusYears(5));
         }
         return new Interval(start.toLocalDate(), end.asExclusiveEnd());
-    }
-
-    private static Date plusFiveYears(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.YEAR, 5);
-        return calendar.getTime();
     }
 
     private static GanttDate max(GanttDate one, GanttDate other) {
