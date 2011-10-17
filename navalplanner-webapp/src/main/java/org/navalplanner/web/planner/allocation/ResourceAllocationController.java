@@ -211,10 +211,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             initializeAllocationConfigurationComponent();
             formBinder.setAdvancedSearchButton(advancedSearchButton);
 
-            CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
-                    .from(formBinder.getCalculatedValue());
-            calculationTypeRadio.doTheSelectionOn(getCalculationTypeSelector());
-
             tbResourceAllocation.setSelected(true);
 
             newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
@@ -433,16 +429,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 return name().equals(calculationTypeRadio.name());
             }
             return false;
-        }
-
-        public void doTheSelectionOn(final Radiogroup radiogroup) {
-                for (int i = 0; i < radiogroup.getItemCount(); i++) {
-                    Radio radio = radiogroup.getItemAtIndex(i);
-                    if (name().equals(radio.getValue())) {
-                        radiogroup.setSelectedIndex(i);
-                        break;
-                    }
-                }
         }
 
         private final CalculatedValue calculatedValue;
