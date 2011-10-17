@@ -42,15 +42,12 @@ ganttz.resourceload.ResourceLoadList = zk.$extends(zk.Widget,{
          * using DOM selectors
          * */
         jq('#watermark').height(jq(this.$n()).innerHeight());
-        jq('#timetracker').width(jq(this.$n()).innerWidth());
 
         /*this.$n() is <div class="resourceloadlist" ...>*/
-        jq(this.$n()).width(jq('.second_level_ :first'));
+        jq(this.$n()).width(jq('#timetracker .z-vbox').innerWidth());
     },
     adjustResourceLoadRows : function(){
-        jq('.row_resourceload').each(jq.proxy(function(index, element){
-            jq(element).width( jq(this.$n()).innerWidth() );
-        }, this));
+        jq(this.$n()).width(jq('#timetracker .z-vbox').innerWidth());
     },
     _listenToScroll : function(){
         var scrolledPannelScrollLeft = jq('.rightpanellayout div:first').scrollLeft();
@@ -60,6 +57,8 @@ ganttz.resourceload.ResourceLoadList = zk.$extends(zk.Widget,{
         jq('.timetrackergap').css("left", "-" + scrolledPannelScrollLeft + "px");
         jq('.leftpanelgap .z-tree-body').css("top", "-" + scrolledPannelScrollTop + "px");
         jq('.resourcesloadgraph div').scrollLeft(scrolledPannelScrollLeft + "px");
+
+        this.adjustResourceLoadRows();
     }
 },{ //Class stuff
     WATERMARK_MIN_HEIGHT : 450,
