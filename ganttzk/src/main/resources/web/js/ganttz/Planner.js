@@ -10,6 +10,7 @@ ganttz.Planner = zk.$extends(zk.Macro,{
         this.adjustScrollableDimensions();
         //Zoomlevel selector
         this.domListen_(jq('.plannerlayout .toolbar-box select'), 'onChange', '_zoomLevelChanged');
+        this.domListen_(jq(window), 'onResize', 'adjustWatermark');
     },
     unbind_ : function(){
         this.$supers('unbind_', arguments);
