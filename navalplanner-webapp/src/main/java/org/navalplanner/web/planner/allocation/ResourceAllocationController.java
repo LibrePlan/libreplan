@@ -423,12 +423,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
             Radio result = new Radio();
             result.setLabel(getName());
             result.setValue(toString());
-            result.setChecked(isSameCalculationTypeRadio(result,
-                    calculationTypeRadio));
+            result.setChecked(isSameCalculationTypeRadio(calculationTypeRadio));
             return result;
         }
 
-        public boolean isSameCalculationTypeRadio(Radio radio,
+        public boolean isSameCalculationTypeRadio(
                 CalculationTypeRadio calculationTypeRadio) {
             if (calculationTypeRadio != null) {
                 return name().equals(calculationTypeRadio.name());
@@ -532,13 +531,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     public List<CalculationTypeRadio> getCalculationTypes() {
         return Arrays.asList(CalculationTypeRadio.values());
     }
-
-//    public void setCalculationTypeSelected(String enumName) {
-//        CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
-//                .valueOf(enumName);
-//        formBinder
-//                .setCalculatedValue(calculationTypeRadio.getCalculatedValue());
-//    }
 
     public List<? extends Object> getResourceAllocations() {
         return formBinder != null ? plusAggregatingRow(formBinder
