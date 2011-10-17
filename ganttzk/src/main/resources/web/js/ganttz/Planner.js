@@ -33,17 +33,20 @@ ganttz.Planner = zk.$extends(zk.Macro,{
                 jq('.second_level_ :first').innerWidth());
 
         DOMTimetracker.width(DOMScrollContainer.innerWidth());
-        DOMTimetracker.height(
-                Math.max(
-                         jq(window).height() - this.$class.UNSCROLLABLE_AREA,
-                         jq('#scroll_container').height() + this.$class.BOTTOM_WATERMARK_PADDING
-                    ));
-
+        this.adjustWatermark();
         // Inner divs need recalculation to adjust to new scroll displacement lenght
         ganttz.GanttPanel.getInstance().reScrollY(jq('#listdetails_container').height());
 
         // Inner divs need recalculation to adjust to new scroll displacement lenght
         ganttz.GanttPanel.getInstance().reScrollX(DOMWatermark.outerWidth());
+    },
+    adjustWatermark : function() {
+    jq('#timetracker').height(
+            Math.max(
+                     jq(window).height() - this.$class.UNSCROLLABLE_AREA,
+                     jq('#scroll_container').height() + this.$class.BOTTOM_WATERMARK_PADDING,
+                     this.$class.MIN_WATERMARK_HEIGHT
+                ));
     },
     _zoomLevelChanged : function(event){
         var zoomindex = event.domTarget.selectedIndex;
@@ -52,7 +55,8 @@ ganttz.Planner = zk.$extends(zk.Macro,{
     }
 },{
     TASKDETAILS_WIDTH : 300,        // Taskdetails column fixed width (300)
-    UNSCROLLABLE_AREA : 170,       // Design-relative reservated height for taskdetails (300,260)
+    UNSCROLLABLE_AREA : 170,        // Design-relative reservated height for taskdetails (300,260)
+    MIN_WATERMARK_HEIGHT: 440,      // Minimum vertical area for watermark
     SCROLLBAR_WIDTH : 15,           // Scrollbars default width
     BOTTOM_WATERMARK_PADDING : 40,  // Space left behind last task
     getInstance : function(){
