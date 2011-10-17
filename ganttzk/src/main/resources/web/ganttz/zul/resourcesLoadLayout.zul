@@ -58,8 +58,7 @@ resourcesLoadPanel = self;
         <center border="0">
             <borderlayout sclass="resourcesload">
                 <west size="250px" flex="true" collapsible="true"
-                    splittable="true" autoscroll="true">
-
+                    splittable="true" autoscroll="false">
                     <borderlayout >
                         <north border="0" height="35px" flex="true" collapsible="true">
                             <vbox pack="top" align="center">
