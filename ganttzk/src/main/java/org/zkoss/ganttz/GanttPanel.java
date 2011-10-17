@@ -196,7 +196,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
     }
 
     public void adjustZoomColumnsHeight() {
-      response("adjust_height", new AuInvoke(this, "adjust_height"));
+        response("adjust_dimensions", new AuInvoke(this, "adjust_dimensions"));
     }
 
     public LocalDate getPreviousStart() {

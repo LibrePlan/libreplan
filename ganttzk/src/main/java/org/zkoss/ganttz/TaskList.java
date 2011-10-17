@@ -61,8 +61,6 @@ import org.zkoss.zul.impl.XulElement;
  */
 public class TaskList extends XulElement implements AfterCompose {
 
-    private static final int HEIGHT_PER_ROW = 20; /* 30 */
-
     private transient IZoomLevelChangedListener zoomLevelChangedListener;
 
     private List<Task> currentTotalTasks;
@@ -142,7 +140,6 @@ public class TaskList extends XulElement implements AfterCompose {
         addListenerForTaskComponentEditForm(taskComponent);
         taskComponent.afterCompose();
         if (relocate) {
-            setHeight(getHeight());// forcing smart update
             getGanttPanel().adjustZoomColumnsHeight();
             getGanttPanel().getDependencyList().redrawDependencies();
         }
@@ -187,11 +184,6 @@ public class TaskList extends XulElement implements AfterCompose {
 
     private void addContextMenu(final TaskComponent taskComponent) {
         taskComponent.setContext(getContextMenuFor(taskComponent));
-    }
-
-    @Override
-    public String getHeight() {
-        return getTasksNumber() * HEIGHT_PER_ROW + "px";
     }
 
     private TimeTrackerComponent getTimeTrackerComponent() {

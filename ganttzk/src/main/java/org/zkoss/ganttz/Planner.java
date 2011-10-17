@@ -791,6 +791,7 @@ public class Planner extends HtmlMacroComponent  {
             setTaskListPredicate(predicate);
         }
         isFlattenTree = !isFlattenTree;
+        Clients.evalJavaScript("ganttz.Planner.getInstance().adjustScrollableDimensions()");
     }
 
     public FilterAndParentExpandedPredicates getPredicate() {

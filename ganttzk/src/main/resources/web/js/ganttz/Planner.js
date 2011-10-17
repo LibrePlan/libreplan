@@ -35,19 +35,9 @@ ganttz.Planner = zk.$extends(zk.Macro,{
         DOMTimetracker.width(DOMScrollContainer.innerWidth());
         DOMTimetracker.height(
                 Math.max(
-                        jq(window).height() -
-                        this.$class.TIMETRACKER_OFFSET_TOP +
-                        26),
-                        (
-                        jq('#listdetails_container').height() +
-                        12));
-
-        DOMScrollContainer.height(
-                jq(window).height() -
-                this.$class.TIMETRACKER_OFFSET_TOP -
-                this.$class.FOOTER_HEIGHT +
-                this.$class.SCROLLBAR_WIDTH * 2);
-
+                         jq(window).height() - this.$class.UNSCROLLABLE_AREA,
+                         jq('#scroll_container').height() + this.$class.BOTTOM_WATERMARK_PADDING
+                    ));
 
         // Inner divs need recalculation to adjust to new scroll displacement lenght
         ganttz.GanttPanel.getInstance().reScrollY(jq('#listdetails_container').height());
@@ -61,11 +51,10 @@ ganttz.Planner = zk.$extends(zk.Macro,{
         zAu.send(new zk.Event(this, 'onZoomLevelChange', {zoomindex : zoomindex, scrollLeft : scrollLeft}));
     }
 },{
-    FOOTER_HEIGHT : 40, // Design-relative footer height
-    TIMETRACKER_OFFSET_TOP : 120,   // Design-relative height above timetracker
-    TASKDETAILS_WIDTH : 300, // Taskdetails column fixed width (300)
-    TASKDETAILS_HEIGHT : 180, // 260 // Design-relative reservated height for taskdetails (300,260)
-    SCROLLBAR_WIDTH : 15, // Scrollbars default width
+    TASKDETAILS_WIDTH : 300,        // Taskdetails column fixed width (300)
+    UNSCROLLABLE_AREA : 170,       // Design-relative reservated height for taskdetails (300,260)
+    SCROLLBAR_WIDTH : 15,           // Scrollbars default width
+    BOTTOM_WATERMARK_PADDING : 40,  // Space left behind last task
     getInstance : function(){
         return this._instance;
     },

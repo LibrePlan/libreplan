@@ -33,8 +33,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
             jq(element).css("left", "-" + this._rightpannellayout.scrollLeft() + "px")
             }, this));
     },
-    adjust_height : function(){
-        jq(this.$n()).height(jq('#scroll_container').height());
+    adjust_dimensions : function(){
         ganttz.Planner.getInstance().adjustScrollableDimensions();
     },
     _calcXY : function(event){
