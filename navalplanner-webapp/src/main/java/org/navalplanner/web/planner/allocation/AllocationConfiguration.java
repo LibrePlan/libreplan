@@ -24,9 +24,6 @@ import java.util.Arrays;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.CalculationTypeRadio;
-import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
-import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -37,6 +34,8 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 /**
  *
@@ -90,22 +89,26 @@ public class AllocationConfiguration extends HtmlMacroComponent {
         calculationTypesGrid = (Grid) getFellowIfAny("calculationTypesGrid");
         calculationTypesGrid.setModel(new ListModelList(Arrays
                 .asList(CalculationTypeRadio.values())));
-        calculationTypesGrid.setRowRenderer(OnColumnsRowRenderer.create(
-                calculationTypesRenderer(), Arrays.asList(0)));
+        calculationTypesGrid.setRowRenderer(getCalculationTypesRenderer());
     }
 
-    private ICellForDetailItemRenderer<Integer, CalculationTypeRadio> calculationTypesRenderer() {
-        return new ICellForDetailItemRenderer<Integer, CalculationTypeRadio>() {
+    private RowRenderer getCalculationTypesRenderer() {
+        return new RowRenderer() {
 
             @Override
-            public Component cellFor(Integer column, CalculationTypeRadio data) {
-                if (formBinder == null) {
-                    return data.createRadio(null);
+            public void render(Row row, Object data) throws Exception {
+                CalculationTypeRadio type = (CalculationTypeRadio) data;
+
+                Radio radio = type.createRadio();
+                row.appendChild(radio);
+
+                if (formBinder != null) {
+                    if (type == CalculationTypeRadio.from(formBinder
+                            .getCalculatedValue())) {
+                        radio.setChecked(true);
+                    }
+                    radio.setDisabled(formBinder.isAnyManual());
                 }
-                Radio radio = data.createRadio(CalculationTypeRadio
-                        .from(formBinder.getCalculatedValue()));
-                radio.setDisabled(formBinder.isAnyManual());
-                return radio;
             }
         };
     }

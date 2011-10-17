@@ -415,20 +415,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
         public abstract Component input(
                 ResourceAllocationController resourceAllocationController);
 
-        public Radio createRadio(CalculationTypeRadio calculationTypeRadio) {
+        public Radio createRadio() {
             Radio result = new Radio();
             result.setLabel(getName());
             result.setValue(toString());
-            result.setChecked(isSameCalculationTypeRadio(calculationTypeRadio));
             return result;
-        }
-
-        public boolean isSameCalculationTypeRadio(
-                CalculationTypeRadio calculationTypeRadio) {
-            if (calculationTypeRadio != null) {
-                return name().equals(calculationTypeRadio.name());
-            }
-            return false;
         }
 
         private final CalculatedValue calculatedValue;
