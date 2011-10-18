@@ -310,6 +310,11 @@ public class Planner extends HtmlMacroComponent  {
             return;
         }
 
+        if (isShowingLabels)
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().showAllTaskLabels()");
+        if (isShowingResources)
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().showResourceTooltips()");
+
         this.diagramGraph = GanttDiagramGraph.create(
                 configuration.isScheduleBackwards(),
                 configuration.getStartConstraints(),
