@@ -1128,8 +1128,8 @@ tr.z-treerow-seld {
     overflow:hidden;
  }
 
-.resourcesload .timetrackergap .z-grid-header{
-    heigth: 15px;
+.resourcesload .timetracker-secondlevel {
+    height: 2000px;
 }
 
 .scheduling-graphics .z-tabs-ver {

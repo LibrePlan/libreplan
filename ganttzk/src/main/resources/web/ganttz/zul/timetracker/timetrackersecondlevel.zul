@@ -20,7 +20,7 @@
 -->
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-    <n:div class="z-grid-header">
+    <n:div class="z-grid-header timetracker-secondlevel">
         <n:table style="width: ${top.horizontalSize-2}px;" class="second_level_">
 
             <n:tr class="z-columns">
