@@ -266,7 +266,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachTaskSource();
         loadCriterionsOfGenericAllocations();
         reattachHoursGroup(this.task.getHoursGroup());
-        reattachCriterions(this.task.getHoursGroup().getValidCriterions());
         loadResources(this.task.getSatisfiedResourceAllocations());
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(
@@ -307,13 +306,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void reattachHoursGroup(HoursGroup hoursGroup) {
         hoursGroupDAO.reattachUnmodifiedEntity(hoursGroup);
         hoursGroup.getPercentage();
-        reattachCriterions(hoursGroup.getValidCriterions());
-    }
-
-    private void reattachCriterions(Set<Criterion> criterions) {
-        for (Criterion criterion : criterions) {
-            reattachCriterion(criterion);
-        }
     }
 
     private void loadResources(Set<ResourceAllocation<?>> resourceAllocations) {
