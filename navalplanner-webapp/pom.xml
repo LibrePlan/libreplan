@@ -253,6 +253,11 @@
           <groupId>com.igalia.java.zk.components</groupId>
           <artifactId>jfreechartengine</artifactId>
         </dependency>
+        <!-- GPL detailrow Component for ZK -->
+        <dependency>
+          <groupId>com.igalia.java.zk.components</groupId>
+          <artifactId>customdetailrowcomponent</artifactId>
+        </dependency>
         <!-- Gettext commons -->
         <dependency>
             <groupId>org.xnap.commons</groupId>

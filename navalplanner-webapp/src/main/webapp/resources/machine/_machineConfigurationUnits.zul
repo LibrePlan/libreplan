@@ -39,7 +39,7 @@
         <rows>
             <!-- To iterate on workersConfiguration Units -->
             <row self="@{each='configurationUnit'}" value="@{configurationUnit}">
-                <detail>
+                <detailrow>
                     <!-- Assigned resources -->
                     <panel title="${i18n:_('Worker assignments')}" border="normal">
                         <panelchildren style="padding:10px;">
@@ -124,7 +124,7 @@
                         </panelchildren>
                     </panel>
 
-                </detail>
+                </detailrow>
                 <textbox value="@{configurationUnit.name}"
                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
                 <textbox value="@{configurationUnit.alpha}"
