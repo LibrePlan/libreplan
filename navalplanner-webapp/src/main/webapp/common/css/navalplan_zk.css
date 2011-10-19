@@ -1609,6 +1609,15 @@ input.z-datebox-text-disd {
     background-color: transparent;
 }
 
+.global-commands .z-button {
+    padding-bottom:0;
+    padding-top: 1px;
+}
+
+.global-commands {
+    margin-bottom: 10px;
+}
+
 .z-button .z-button-cm {
     background-image: none;
 }

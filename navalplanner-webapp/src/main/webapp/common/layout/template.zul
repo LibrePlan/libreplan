@@ -114,7 +114,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
     <west class="perspectives-column" width="90px">
         <vbox>
-            <vbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box" height="31px" style="margin-bottom:10px"/>
+            <hbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box global-commands" height="30px" width="100%" />
             <vbox id="registeredItemsInsertionPoint" width="90px"/>
         </vbox>
     </west>

@@ -480,40 +480,17 @@ public class Planner extends HtmlMacroComponent  {
 
     @SuppressWarnings("unchecked")
     private void insertGlobalCommands() {
-        Component toolbar = getToolbar();
-        Component firstSeparator = getFirstSeparatorFromToolbar();
-        toolbar.getChildren().removeAll(getBefore(toolbar, firstSeparator));
+        Component toolbar = getCommandsInsertionPoint();
+        toolbar.getChildren().removeAll(toolbar.getChildren());
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
-            toolbar.insertBefore(c.toButton(), firstSeparator);
+            toolbar.appendChild(c.toButton());
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private List<Component> getBefore(Component parent, Component child) {
-        List<Component> children = parent.getChildren();
-        List<Component> result = new ArrayList<Component>();
-        for (Component object : children) {
-            if (object == child) {
-                break;
-            }
-            result.add(object);
-        }
-        return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Component getFirstSeparatorFromToolbar() {
-        Component toolbar = getToolbar();
-        List<Component> children = toolbar.getChildren();
-        List<Separator> separators = ComponentsFinder
-                .findComponentsOfType(
-                Separator.class, children);
-        return separators.get(0);
-    }
-
-    private Component getToolbar() {
-        Component toolbar = getFellow("toolbar");
-        return toolbar;
+    private Component getCommandsInsertionPoint() {
+        Component insertionPoint = getPage().getFellow(
+                "perspectiveButtonsInsertionPoint");
+        return insertionPoint;
     }
 
     void removeTask(Task task) {

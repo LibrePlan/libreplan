@@ -253,6 +253,46 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("checkIncludeOrderElements");
 
         checkCreationPermissions();
+        setupGlobalButtons();
+
+    }
+
+    private void setupGlobalButtons() {
+
+        Hbox perspectiveButtonsInsertionPoint = (Hbox) page
+                .getFellow("perspectiveButtonsInsertionPoint");
+
+        List<Component> children = perspectiveButtonsInsertionPoint
+                .getChildren();
+        perspectiveButtonsInsertionPoint.getChildren().removeAll(children);
+
+        createOrderButton.setParent(perspectiveButtonsInsertionPoint);
+        createOrderButton.addEventListener(Events.ON_CLICK,
+                new EventListener() {
+            @Override
+                    public void onEvent(Event event) throws Exception {
+                goToCreateForm();
+                    }
+                });
+
+        createOrderFromTemplateButton
+                .setParent(perspectiveButtonsInsertionPoint);
+        createOrderFromTemplateButton.addEventListener(Events.ON_CLICK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        createOrderFromTemplate();
+            }
+        });
+
+        saveOrderAndContinueButton.setParent(perspectiveButtonsInsertionPoint);
+        saveOrderAndContinueButton.addEventListener(Events.ON_CLICK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        saveAndContinue();
+                    }
+                });
     }
 
     private void initEditOrderElementWindow() {
