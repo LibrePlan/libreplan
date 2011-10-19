@@ -276,7 +276,7 @@ public class SaveCommandBuilder {
                 return;
             }
             try {
-                Messagebox.show(_("Scheduling saved"), _("Information"),
+                Messagebox.show(_("Project saved"), _("Information"),
                         Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
