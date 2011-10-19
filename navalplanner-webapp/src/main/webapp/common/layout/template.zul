@@ -113,9 +113,11 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     <borderlayout width="auto" height="100%">
     <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
     <west class="perspectives-column" width="90px">
-        <vbox id="registeredItemsInsertionPoint" width="90px"/>
+        <vbox>
+            <vbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box" height="31px" style="margin-bottom:10px"/>
+            <vbox id="registeredItemsInsertionPoint" width="90px"/>
+        </vbox>
     </west>
-
     <center self="@{insert(content)}" class="main-area" autoscroll="true" />
 
     </borderlayout>
