@@ -37,6 +37,9 @@ planner = self;
         <button onClick="planner.invalidate()"
             image="/common/img/ico_refresh.png"
             tooltiptext="${ganttzk_i18n:_('Refresh')}" visible="false" />
+
+        <hbox id="plannerButtonsInsertionPoint" />
+
         <button id="btnPrint" onClick="planner.print()"
             image="/common/img/ico_print.png"
             tooltiptext="${ganttzk_i18n:_('Print')}" />

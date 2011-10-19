@@ -480,16 +480,31 @@ public class Planner extends HtmlMacroComponent  {
 
     @SuppressWarnings("unchecked")
     private void insertGlobalCommands() {
-        Component toolbar = getCommandsInsertionPoint();
-        toolbar.getChildren().removeAll(toolbar.getChildren());
+        Component commontoolbar = getCommonCommandsInsertionPoint();
+        Component plannerToolbar = getSpecificCommandsInsertionPoint();
+        commontoolbar.getChildren().removeAll(commontoolbar.getChildren());
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
-            toolbar.appendChild(c.toButton());
+            // Comparison through icon as name is internationalized
+            if (c.getCommand().getImage()
+                    .equals("/common/img/ico_reassign.png")) {
+                if (plannerToolbar.getChildren().isEmpty()) {
+                    plannerToolbar.appendChild(c.toButton());
+                }
+            } else {
+                commontoolbar.appendChild(c.toButton());
+            }
         }
+
     }
 
-    private Component getCommandsInsertionPoint() {
+    private Component getCommonCommandsInsertionPoint() {
         Component insertionPoint = getPage().getFellow(
                 "perspectiveButtonsInsertionPoint");
+        return insertionPoint;
+    }
+
+    private Component getSpecificCommandsInsertionPoint() {
+        Component insertionPoint = getFellow("plannerButtonsInsertionPoint");
         return insertionPoint;
     }
 

@@ -20,7 +20,6 @@
 -->
 
 <hbox align="center" sclass="filtering-area">
-    <space bar="true" />
     <label value="${i18n:_('Task')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
     <textbox id="filterNameOrderElement" width="100px"
