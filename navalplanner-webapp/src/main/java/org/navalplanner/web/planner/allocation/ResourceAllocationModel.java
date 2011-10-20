@@ -32,24 +32,16 @@ import org.navalplanner.business.common.Flagged;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.ProportionalDistributor;
-import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
-import org.navalplanner.business.orders.entities.TaskSource;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
@@ -75,24 +67,12 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
-    private ITaskElementDAO taskElementDAO;
-
-    @Autowired
     private IResourceDAO resourceDAO;
 
     @Autowired
     private IResourcesSearcher searchModel;
 
-    @Autowired
-    private IHoursGroupDAO hoursGroupDAO;
-
-    @Autowired
-    private ITaskSourceDAO taskSourceDAO;
-
     private Task task;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
 
     private PlanningState planningState;
 
@@ -261,10 +241,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         this.currentStartDate = task.getStartDate();
         this.planningState = planningState;
         planningState.reassociateResourcesWithSession();
-        taskElementDAO.reattach(this.task);
-        reattachTaskSource();
-        loadCriterionsOfGenericAllocations();
-        loadResources(this.task.getSatisfiedResourceAllocations());
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(
                 task.getNonLimitingResourceAllocations(), searchModel);
@@ -290,23 +266,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         };
     }
 
-    private void loadCriterionsOfGenericAllocations() {
-        Set<ResourceAllocation<?>> resourceAllocations = this.task
-                .getSatisfiedResourceAllocations();
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            if (resourceAllocation instanceof GenericResourceAllocation) {
-                GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-                generic.getCriterions().size();
-            }
-        }
-    }
-
-    private void loadResources(Set<ResourceAllocation<?>> resourceAllocations) {
-        for (ResourceAllocation<?> each : resourceAllocations) {
-            each.getAssociatedResources();
-        }
-    }
-
     private void loadMachine(Machine eachMachine) {
         for (MachineWorkersConfigurationUnit eachUnit : eachMachine
                 .getConfigurationUnits()) {
@@ -326,24 +285,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void reattachTaskSource() {
-        TaskSource taskSource = task.getTaskSource();
-        taskSourceDAO.reattach(taskSource);
-    }
-
-    private void reattachCriterion(Criterion criterion) {
-        criterionDAO.reattachUnmodifiedEntity(criterion);
-        criterion.getName();
-        reattachCriterionType(criterion.getType());
-    }
-
-    private void reattachCriterionType(CriterionType criterionType) {
-        criterionType.getName();
-    }
-
     private void reattachResource(Resource resource) {
         resourceDAO.reattach(resource);
-        reattachCriterionSatisfactions(resource.getCriterionSatisfactions());
         for (DayAssignment dayAssignment : resource.getAssignments()) {
             Hibernate.initialize(dayAssignment);
         }
@@ -352,18 +295,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void reattachCriterionSatisfactions(
-            Set<CriterionSatisfaction> criterionSatisfactions) {
-        for (CriterionSatisfaction criterionSatisfaction : criterionSatisfactions) {
-            criterionSatisfaction.getStartDate();
-            reattachCriterion(criterionSatisfaction.getCriterion());
-        }
-    }
-
     @Override
     @Transactional(readOnly = true)
     public List<AggregatedHoursGroup> getHoursAggregatedByCriterions() {
-        reattachTaskSource();
         List<AggregatedHoursGroup> result = task.getTaskSource()
                 .getAggregatedByCriterions();
         ensuringAccesedPropertiesAreLoaded(result);
