@@ -209,6 +209,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Button createOrderButton;
     private Button createOrderFromTemplateButton;
     private Button saveOrderAndContinueButton;
+    private Button cancelEditionButton;
 
     private Datebox filterStartDate;
 
@@ -293,6 +294,34 @@ public class OrderCRUDController extends GenericForwardComposer {
                         saveAndContinue();
                     }
                 });
+
+        cancelEditionButton.setParent(perspectiveButtonsInsertionPoint);
+        cancelEditionButton.addEventListener(Events.ON_CLICK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        try {
+                            Messagebox
+                                    .show(_("Unsaved changes will be lost. Are you sure?"),
+                                            _("Confirm exit dialog"),
+                                            Messagebox.OK | Messagebox.CANCEL,
+                                            Messagebox.QUESTION,
+                                            new org.zkoss.zk.ui.event.EventListener() {
+                                                public void onEvent(Event evt)
+                                                        throws InterruptedException {
+                                                    if (evt.getName().equals(
+                                                            "onOK")) {
+                                                        Executions
+                                                                .sendRedirect("/planner/index.zul;company_scheduling");
+                                                    }
+                                                }
+                                            });
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
     }
 
     private void initEditOrderElementWindow() {
@@ -1445,6 +1474,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         createOrderButton.setVisible(showCreate);
         createOrderFromTemplateButton.setVisible(showCreate);
         saveOrderAndContinueButton.setVisible(!showCreate);
+        cancelEditionButton.setVisible(!showCreate);
     }
 
     public void highLight(final OrderElement orderElement) {

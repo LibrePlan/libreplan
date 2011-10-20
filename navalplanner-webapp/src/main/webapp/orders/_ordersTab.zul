@@ -40,6 +40,9 @@
             <button id="saveOrderAndContinueButton"  image="/common/img/ico_save.png" sclass="planner-icon"
                 tooltiptext="${i18n:_('Save Project')}" />
 
+            <button id="cancelEditionButton"  image="/common/img/ico_back.png" sclass="planner-icon"
+                tooltiptext="${i18n:_('Cancel edition')}" />
+
             <hbox id="orderFilter" visible="false"/>
             <vbox id="orderElementFilter" />
        </hbox>

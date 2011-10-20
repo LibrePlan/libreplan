@@ -115,6 +115,7 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
+import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
@@ -135,6 +136,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -327,6 +329,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         setupEditingCapabilities(configuration, writingAllowed);
 
         configuration.addGlobalCommand(buildReassigningCommand());
+        configuration.addGlobalCommand(buildCancelEditionCommand());
 
         NullSeparatorCommandOnTask<TaskElement> separator = new NullSeparatorCommandOnTask<TaskElement>();
 
@@ -1000,6 +1003,45 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private ICommand<TaskElement> buildReassigningCommand() {
         reassignCommand.setState(planningState);
         return reassignCommand;
+    }
+
+    private ICommand<TaskElement> buildCancelEditionCommand() {
+        return new ICommand<TaskElement>() {
+
+            @Override
+            public String getName() {
+                return _("Cancel");
+            }
+
+            @Override
+            public void doAction(IContext<TaskElement> context) {
+
+                try {
+                    Messagebox
+                            .show("Are you sure to want to leave? Unsaved changes will be lost.",
+                                    "Confirm exit dialog", Messagebox.OK
+                                            | Messagebox.CANCEL,
+                                    Messagebox.QUESTION,
+                            new org.zkoss.zk.ui.event.EventListener() {
+                                public void onEvent(Event evt)
+                                        throws InterruptedException {
+                                    if (evt.getName().equals("onOK")) {
+                                        Executions
+                                                .sendRedirect("/planner/index.zul;company_scheduling");
+                                    }
+                                }
+                            });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public String getImage() {
+                return "/common/img/ico_back.png";
+            }
+
+        };
     }
 
     private Chart setupChart(Order orderReloaded,
