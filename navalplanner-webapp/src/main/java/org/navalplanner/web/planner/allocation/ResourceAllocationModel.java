@@ -34,7 +34,6 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
-import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
@@ -265,7 +264,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         taskElementDAO.reattach(this.task);
         reattachTaskSource();
         loadCriterionsOfGenericAllocations();
-        reattachHoursGroup(this.task.getHoursGroup());
         loadResources(this.task.getSatisfiedResourceAllocations());
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
         List<AllocationRow> initialRows = AllocationRow.toRows(
@@ -303,11 +301,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         }
     }
 
-    private void reattachHoursGroup(HoursGroup hoursGroup) {
-        hoursGroupDAO.reattachUnmodifiedEntity(hoursGroup);
-        hoursGroup.getPercentage();
-    }
-
     private void loadResources(Set<ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.getAssociatedResources();
@@ -336,10 +329,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void reattachTaskSource() {
         TaskSource taskSource = task.getTaskSource();
         taskSourceDAO.reattach(taskSource);
-        Set<HoursGroup> hoursGroups = taskSource.getHoursGroups();
-        for (HoursGroup hoursGroup : hoursGroups) {
-            reattachHoursGroup(hoursGroup);
-        }
     }
 
     private void reattachCriterion(Criterion criterion) {
