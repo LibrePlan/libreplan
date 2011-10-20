@@ -188,7 +188,6 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
 
     public static void forceLoadBaseCalendar(BaseCalendar baseCalendar) {
         for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
-            calendarData.getHoursPerDay().size();
             if (calendarData.getParent() != null) {
                 forceLoadBaseCalendar(calendarData.getParent());
             }
