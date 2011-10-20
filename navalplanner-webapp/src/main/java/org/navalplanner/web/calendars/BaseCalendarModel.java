@@ -193,7 +193,6 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
             }
         }
         loadingExceptionsWithTheirTypes(baseCalendar);
-        baseCalendar.getCalendarAvailabilities().size();
     }
 
     private static void loadingExceptionsWithTheirTypes(
