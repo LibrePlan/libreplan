@@ -198,7 +198,7 @@ public class MultipleTabsPlannerController implements Composer,
                 breadcrumbs, parameters, this));
 
         resourceLoadTab = ResourcesLoadTabCreator.create(mode,
-                resourceLoadController, upCommand(),
+                resourceLoadController,
                 resourceLoadControllerGlobal, new IOrderPlanningGate() {
 
                     @Override
@@ -369,26 +369,6 @@ public class MultipleTabsPlannerController implements Composer,
 
     private TabsRegistry getTabsRegistry() {
         return tabsSwitcher.getTabsRegistry();
-    }
-
-    private IToolbarCommand upCommand() {
-        return new IToolbarCommand() {
-
-            @Override
-            public void doAction() {
-                mode.up();
-            }
-
-            @Override
-            public String getLabel() {
-                return _("Up to company view");
-            }
-
-            @Override
-            public String getImage() {
-                return "/common/img/ico_up.png";
-            }
-        };
     }
 
     @Override

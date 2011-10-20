@@ -48,12 +48,11 @@ public class ResourcesLoadTabCreator {
 
     public static ITab create(Mode mode,
             ResourceLoadController resourceLoadController,
-            IToolbarCommand upCommand,
             ResourceLoadController resourceLoadControllerGlobal,
             IOrderPlanningGate orderPlanningGate,
             Component breadcrumbs) {
         return new ResourcesLoadTabCreator(mode, resourceLoadController,
-                upCommand, resourceLoadControllerGlobal, orderPlanningGate,
+                resourceLoadControllerGlobal, orderPlanningGate,
                 breadcrumbs)
                 .build();
     }
@@ -63,18 +62,15 @@ public class ResourcesLoadTabCreator {
 
     private final ResourceLoadController resourceLoadControllerGlobal;
 
-    private final IToolbarCommand upCommand;
     private final Component breadcrumbs;
 
     private ResourcesLoadTabCreator(Mode mode,
             ResourceLoadController resourceLoadController,
-            IToolbarCommand upCommand,
             ResourceLoadController resourceLoadControllerGlobal,
             IOrderPlanningGate orderPlanningGate,
             Component breadcrumbs) {
         this.mode = mode;
         this.resourceLoadController = resourceLoadController;
-        this.upCommand = upCommand;
         this.resourceLoadControllerGlobal = resourceLoadControllerGlobal;
         this.orderPlanningGate = orderPlanningGate;
         this.breadcrumbs = breadcrumbs;
@@ -94,7 +90,6 @@ public class ResourcesLoadTabCreator {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
                 Map<String, Object> arguments = new HashMap<String, Object>();
-                resourceLoadController.add(upCommand);
                 arguments.put("resourceLoadController", resourceLoadController);
                 return Executions.createComponents(
                         "/resourceload/_resourceloadfororder.zul", parent,

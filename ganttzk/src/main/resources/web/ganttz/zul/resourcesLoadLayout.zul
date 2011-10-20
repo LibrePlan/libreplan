@@ -30,8 +30,8 @@ resourcesLoadPanel = self;
 
     <borderlayout sclass="resourcesloadlayout" width="auto" height="100%">
        <north height="30px" border="0" sclass="toolbar-box">
-       <hbox align="center" id="toolbar">
-        <separator/>
+       <hbox align="center" id="toolbar" >
+        <separator height="30px"/>
         <label>${ganttzk_i18n:_('Zoom')}:</label>
         <listbox id="listZoomLevels" mold="select" rows="1"
             model="${resourcesLoadPanel.zoomLevels}"
