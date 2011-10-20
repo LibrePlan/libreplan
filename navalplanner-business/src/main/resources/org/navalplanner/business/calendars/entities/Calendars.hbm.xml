@@ -37,7 +37,7 @@
         </list>
 
         <!-- Not indexed -->
-        <list name="calendarAvailabilities" access="field" cascade="all-delete-orphan" lazy="true">
+        <list name="calendarAvailabilities" access="field" cascade="all-delete-orphan" lazy="false">
             <key column="base_calendar_id" />
             <index column="position_in_calendar" />
             <one-to-many class="CalendarAvailability" />
