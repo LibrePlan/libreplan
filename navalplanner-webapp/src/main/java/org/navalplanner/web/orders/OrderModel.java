@@ -43,7 +43,6 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -436,15 +435,25 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     @Override
-    public void save() throws ValidationException {
-        this.planningState.getSaveCommand().save(new IBeforeSaveActions() {
+    public void save() {
+        save(false);
+    }
+
+    @Override
+    public void save(boolean showSaveMessage) {
+        IBeforeSaveActions beforeSaveActions = new IBeforeSaveActions() {
 
             @Override
             public void doActions() {
                 reattachCalendar();
                 reattachCriterions();
             }
-        });
+        };
+        if (showSaveMessage) {
+            this.planningState.getSaveCommand().save(beforeSaveActions);
+        } else {
+            this.planningState.getSaveCommand().save(beforeSaveActions, null);
+        }
     }
     
     private void reattachCalendar() {

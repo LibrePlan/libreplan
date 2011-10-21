@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
@@ -89,7 +88,9 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     void remove(Order order);
 
-    void save() throws ValidationException;
+    void save();
+
+    void save(boolean showSaveMessage);
 
     void setPlanningState(PlanningState planningState);
 

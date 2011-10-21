@@ -34,6 +34,7 @@ import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -236,32 +237,58 @@ public class SaveCommandBuilder {
 
         @Override
         public void save(IBeforeSaveActions beforeSaveActions) {
-            save(beforeSaveActions, null);
+            save(beforeSaveActions, new IAfterSaveActions() {
+
+                @Override
+                public void doActions() {
+                    notifyUserThatSavingIsDone();
+                }
+            });
         }
 
         @Override
         public void save(final IBeforeSaveActions beforeSaveActions,
-                IAfterSaveActions afterSaveActions)
-                throws ValidationException {
-            if (state.getScenarioInfo().isUsingTheOwnerScenario()
-                    || userAcceptsCreateANewOrderVersion()) {
-                transactionService.runOnTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        if (beforeSaveActions != null) {
-                            beforeSaveActions.doActions();
+                IAfterSaveActions afterSaveActions) {
+            try {
+                if (state.getScenarioInfo().isUsingTheOwnerScenario()
+                        || userAcceptsCreateANewOrderVersion()) {
+                    transactionService
+                            .runOnTransaction(new IOnTransaction<Void>() {
+                                @Override
+                                public Void execute() {
+                                    if (beforeSaveActions != null) {
+                                        beforeSaveActions.doActions();
+                                    }
+                                    doTheSaving();
+                                    return null;
                         }
-                        doTheSaving();
-                        return null;
+                            });
+                    dontPoseAsTransientObjectAnymore(state.getOrder());
+                    state.getScenarioInfo().afterCommit();
+                    fireAfterSave();
+                    if (afterSaveActions != null) {
+                        afterSaveActions.doActions();
                     }
-                });
-                dontPoseAsTransientObjectAnymore(state.getOrder());
-                state.getScenarioInfo().afterCommit();
-                fireAfterSave();
-                if (afterSaveActions != null) {
-                    afterSaveActions.doActions();
+                }
+            } catch (ValidationException validationException) {
+                if (Executions.getCurrent() == null) {
+                    throw validationException;
+                }
+
+                try {
+                    String message = validationException.getMessage();
+                    for (InvalidValue invalidValue : validationException.getInvalidValues()) {
+                        message += "\n" + invalidValue.getPropertyName() + ": "
+                                + invalidValue.getMessage();
+                    }
+                    Messagebox.show(
+                            _("Error saving the project\n{0}", message),
+                            _("Error"), Messagebox.OK, Messagebox.ERROR);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
+
         }
 
         private void fireAfterSave() {

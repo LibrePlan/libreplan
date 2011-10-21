@@ -706,31 +706,30 @@ public class OrderCRUDController extends GenericForwardComposer {
         final boolean isNewObject = order.isNewObject();
         setCurrentTab();
         Tab previousTab = getCurrentTab();
-        final boolean couldSave = save(showSaveMessage);
+        save(showSaveMessage);
 
-        if (couldSave) {
+        if (orderModel.userCanRead(order,
+                SecurityUtils.getSessionUserLoginName())) {
+            refreshOrderWindow();
 
-            if (orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-                refreshOrderWindow();
+            // come back to the current tab after initialize all tabs.
+            resetSelectedTab();
+            selectTab(previousTab.getId());
+            Events.sendEvent(new SelectEvent(Events.ON_SELECT, previousTab,
+                    null));
 
-                // come back to the current tab after initialize all tabs.
-                resetSelectedTab();
-                selectTab(previousTab.getId());
-                Events.sendEvent(new SelectEvent(Events.ON_SELECT, previousTab,
-                        null));
-
-                if (isNewObject) {
-                    this.planningControllerEntryPoints.goToOrderDetails(order);
-                }
+            if (isNewObject) {
+                this.planningControllerEntryPoints.goToOrderDetails(order);
             }
-            else {
-                try {
-                    Messagebox.show(_("You don't have read access to this project"),
-                            _("Information"), Messagebox.OK, Messagebox.INFORMATION);
-                    goToList();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+        } else {
+            try {
+                Messagebox
+                        .show(_("You don't have read access to this project"),
+                                _("Information"), Messagebox.OK,
+                                Messagebox.INFORMATION);
+                goToList();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -758,38 +757,30 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    public void saveAndExit() {
-        setCurrentTab();
-        final boolean couldSave = save();
-        if (couldSave) {
-            goToList();
-        }
+    private void save() {
+        save(true);
     }
 
-    private boolean save() {
-        return save(true);
-    }
-
-    private boolean save(boolean showSaveMessage) {
+    private void save(boolean showSaveMessage) {
         if (manageOrderElementAdvancesController != null) {
             selectTab("tabAdvances");
             if (!manageOrderElementAdvancesController.save()) {
                 setCurrentTab();
-                return false;
+                return;
             }
         }
         if (assignedCriterionRequirementController != null) {
             selectTab("tabRequirements");
             if (!assignedCriterionRequirementController.close()) {
                 setCurrentTab();
-                return false;
+                return;
             }
         }
         if (assignedTaskQualityFormController != null) {
             selectTab("tabTaskQualityForm");
             if (!assignedTaskQualityFormController.confirm()) {
                 setCurrentTab();
-                return false;
+                return;
             }
         }
 
@@ -800,23 +791,12 @@ public class OrderCRUDController extends GenericForwardComposer {
             selectTab(getCurrentTab().getId());
         }
 
+        orderModel.save(showSaveMessage);
         try {
-            orderModel.save();
             saveOrderAuthorizations();
-            if (showSaveMessage) {
-                try {
-                    Messagebox.show(_("Project saved"), _("Information"),
-                            Messagebox.OK, Messagebox.INFORMATION);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            return true;
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e, new LabelCreatorForInvalidValues());
         }
-        setCurrentTab();
-        return false;
     }
 
     Tab tabGeneralData;
