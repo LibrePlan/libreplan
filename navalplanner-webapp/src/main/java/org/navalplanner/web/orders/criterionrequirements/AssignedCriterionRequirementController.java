@@ -59,7 +59,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
@@ -74,6 +73,8 @@ import org.zkoss.zul.Panel;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
+
+import com.igalia.java.zk.components.customdetailrowcomponent.Detail;
 
 /**
  * Controller for showing OrderElement assigned labels

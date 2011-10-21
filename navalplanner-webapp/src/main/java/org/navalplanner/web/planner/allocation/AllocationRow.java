@@ -71,13 +71,14 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
-import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.SimpleListModel;
+
+import com.igalia.java.zk.components.customdetailrowcomponent.Detail;
 
 /**
  * The information that must be introduced to create a
