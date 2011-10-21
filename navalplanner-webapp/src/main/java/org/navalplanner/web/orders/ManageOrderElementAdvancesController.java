@@ -1269,15 +1269,6 @@ public class ManageOrderElementAdvancesController extends
         messagesForUser.showMessage(Level.ERROR, message);
     }
 
-    public void createPercentageAdvances(IOrderElementModel orderElementModel)
-            throws DuplicateAdvanceAssignmentForOrderElementException,
-            DuplicateValueTrueReportGlobalAdvanceException {
-        setOrderElementModel(orderElementModel);
-        manageOrderElementAdvancesModel.initEdit(getOrderElement());
-        manageOrderElementAdvancesModel
-                .createPercentageAdvances(getOrderElement());
-    }
-
     private String validateValueAdvanceMeasurement(
             AdvanceMeasurement measurement) {
         if (manageOrderElementAdvancesModel.greatThanMaxValue(measurement)) {

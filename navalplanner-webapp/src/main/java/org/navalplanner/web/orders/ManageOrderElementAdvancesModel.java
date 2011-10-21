@@ -179,49 +179,6 @@ public class ManageOrderElementAdvancesModel implements
         }
     }
 
-    public void createPercentageAdvances(OrderElement orderElement)
-            throws DuplicateAdvanceAssignmentForOrderElementException,
-            DuplicateValueTrueReportGlobalAdvanceException {
-
-        if (orderElement != null) {
-            DirectAdvanceAssignment advancePercentage = orderElement
-                    .getAdvanceAssignmentByType(PredefinedAdvancedTypes.PERCENTAGE
-                            .getType());
-
-            boolean existDirectPercentageAdvance = ((advancePercentage != null) && (!advancePercentage
-                    .isFake()));
-
-            if ((orderElement.isSchedulingPoint())
-                    && (orderElement.getReportGlobalAdvanceAssignment() == null)
-                    && (!existDirectPercentageAdvance)) {
-                createPercentageAdvance(orderElement);
-
-            } else if (!existDirectPercentageAdvance) {
-
-                for (OrderElement child : orderElement.getChildren()) {
-                    createPercentageAdvances(child);
-                }
-            }
-        }
-    }
-
-    private void createPercentageAdvance(OrderElement orderElement)
-            throws DuplicateAdvanceAssignmentForOrderElementException,
-            DuplicateValueTrueReportGlobalAdvanceException {
-        DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
-        newAdvance.setOrderElement(orderElement);
-
-        for (AdvanceType type : this.listAdvanceTypes) {
-            if (type.getUnitName().equals(
-                    PredefinedAdvancedTypes.PERCENTAGE.getTypeName())) {
-                newAdvance.setAdvanceType(type);
-                newAdvance.setMaxValue(getMaxValue(type));
-            }
-        }
-        newAdvance.setReportGlobalAdvance(true);
-        orderElement.addAdvanceAssignment(newAdvance);
-    }
-
     @Override
     @Transactional(readOnly = true)
     public void initEdit(OrderElement orderElement) {

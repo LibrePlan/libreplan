@@ -35,8 +35,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
-import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
-import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -784,8 +782,6 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         }
 
-        createPercentageAdvances();
-
         // come back to the default tab.
         if (getCurrentTab() != null) {
             selectTab(getCurrentTab().getId());
@@ -800,36 +796,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     Tab tabGeneralData;
-
-    private void createPercentageAdvances() {
-
-        try {
-            if (manageOrderElementAdvancesController == null) {
-                Component orderElementAdvances = editWindow
-                        .getFellowIfAny("orderElementAdvances");
-                manageOrderElementAdvancesController = (ManageOrderElementAdvancesController) orderElementAdvances
-                        .getVariable("manageOrderElementAdvancesController",
-                                true);
-            }
-            manageOrderElementAdvancesController
-                    .createPercentageAdvances(getOrderElementModel());
-        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-            messagesForUser
-                    .showMessage(
-                            Level.ERROR,
-                            _("cannot include a progress of the same progress type twice"));
-        } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
-            messagesForUser
-                    .showMessage(
-                            Level.ERROR,
-                            _("spread values are not valid, at least one value should be true"));
-        } catch (Exception e) {
-            messagesForUser
-                    .showMessage(
-                            Level.ERROR,
-                            _("incorrect initialization of the progress assignment controller."));
-        }
-    }
 
     private void selectDefaultTab() {
         selectTab(DEFAULT_TAB);
