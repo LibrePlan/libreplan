@@ -147,8 +147,8 @@
 
     <repositories>
         <repository>
-            <id>ZK EE Evaluation</id>
-            <url>http://mavensync.zkoss.org/zk/ee-eval</url>
+            <id>ZK CE</id>
+            <url>http://mavensync.zkoss.org/zk/ce</url>
         </repository>
         <!-- Getttext commons -->
         <repository>
@@ -592,11 +592,6 @@
                         <artifactId>jruby</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.zkoss.zk</groupId>
-                <artifactId>zkex</artifactId>
-                <version>5.0.9</version>
             </dependency>
             <!-- JGraphT -->
             <dependency>

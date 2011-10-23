@@ -120,10 +120,6 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkex</artifactId>
-        </dependency>
         <!-- JGraphT  -->
         <dependency>
             <groupId>org.jgrapht</groupId>

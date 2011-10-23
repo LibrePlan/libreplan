@@ -355,10 +355,6 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zk</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.zkoss.zk</groupId>
-            <artifactId>zkex</artifactId>
-        </dependency>
         <!-- NavalPlan ZK Components  -->
         <dependency>
             <groupId>org.navalplanner</groupId>
@@ -412,6 +408,11 @@
         <dependency>
             <groupId>org.zkoss.zkforge</groupId>
             <artifactId>timeplotz</artifactId>
+        </dependency>
+        <!-- JGraphT  -->
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-jdk1.5</artifactId>
         </dependency>
    </dependencies>
 </project>
