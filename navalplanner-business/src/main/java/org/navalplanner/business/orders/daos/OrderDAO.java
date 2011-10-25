@@ -365,7 +365,11 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
                     public List<OrderElement> execute() {
                         List<OrderElement> result = new ArrayList<OrderElement>();
                         for (OrderElement each : orderElements) {
-                            result.add(orderFrom(each));
+                            if (each.isNewObject()) {
+                                result.add(each.getOrder());
+                            } else {
+                                result.add(orderFrom(each));
+                            }
                         }
                         return result;
                     }
