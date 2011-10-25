@@ -826,4 +826,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         return this.planningState.getOrder();
     }
 
+    @Override
+    public PlanningState getPlanningState() {
+        return planningState;
+    }
+
 }

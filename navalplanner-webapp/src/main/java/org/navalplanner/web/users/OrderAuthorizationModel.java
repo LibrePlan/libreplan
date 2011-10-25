@@ -21,17 +21,11 @@
 
 package org.navalplanner.web.users;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
@@ -39,6 +33,7 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -64,13 +59,9 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
     private List<OrderAuthorization> orderAuthorizationRemovalList;
 
     @Autowired
-    private IOrderAuthorizationDAO dao;
-
-    @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
     private IUserDAO userDAO;
+
+    private PlanningState planningState;
 
     @Override
     public List<OrderAuthorizationType> addProfileOrderAuthorization(
@@ -88,6 +79,7 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
                     createProfileOrderAuthorization(order, profile);
                 orderAuthorization.setAuthorizationType(type);
                 profileOrderAuthorizationList.add(orderAuthorization);
+                planningState.addOrderAuthorization(orderAuthorization);
             }
         }
         return duplicated.isEmpty()? null : duplicated;
@@ -109,6 +101,7 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
                     createUserOrderAuthorization(order, user);
                 orderAuthorization.setAuthorizationType(type);
                 userOrderAuthorizationList.add(orderAuthorization);
+                planningState.addOrderAuthorization(orderAuthorization);
             }
         }
         return duplicated.isEmpty()? null : duplicated;
@@ -117,29 +110,7 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
     @Override
     @Transactional
     public void confirmSave() {
-        try {
-            if(order.isNewObject()) {
-                //if it was new, we reload the order from the DAO
-                Order newOrder = orderDAO.find(order.getId());
-                replaceOrder(newOrder);
-            }
-        }catch (InstanceNotFoundException e) {
-            InvalidValue invalidValue = new InvalidValue(_("Project does not exist"),
-                    OrderAuthorization.class, "order", order, null);
-            throw new ValidationException(invalidValue);
-        }
-        for(OrderAuthorization authorization : profileOrderAuthorizationList) {
-            dao.save(authorization);
-        }
-        for(OrderAuthorization authorization : userOrderAuthorizationList) {
-            dao.save(authorization);
-        }
-        for(OrderAuthorization authorization : orderAuthorizationRemovalList) {
-            try {
-                dao.remove(authorization.getId());
-            }
-            catch(InstanceNotFoundException e) {}
-        }
+        // Do nothing
     }
 
     @Override
@@ -154,8 +125,9 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initCreate(Order order) {
-        this.order = order;
+    public void initCreate(PlanningState planningState) {
+        this.planningState = planningState;
+        this.order = planningState.getOrder();
         initializeLists();
         //add write authorization for current user
         try {
@@ -164,6 +136,7 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
                 createUserOrderAuthorization(order, user);
             orderAuthorization.setAuthorizationType(OrderAuthorizationType.WRITE_AUTHORIZATION);
             userOrderAuthorizationList.add(orderAuthorization);
+            planningState.addOrderAuthorization(orderAuthorization);
         }
         catch(InstanceNotFoundException e) {
             //this case shouldn't happen, because it would mean that there isn't a logged user
@@ -172,12 +145,13 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initEdit(Order order) {
-        this.order = order;
+    public void initEdit(PlanningState planningState) {
+        this.planningState = planningState;
+        this.order = planningState.getOrder();
         initializeLists();
         //Retrieve the OrderAuthorizations associated with this order
-        for(OrderAuthorization authorization : dao.listByOrder(order)) {
-            forceLoadEntities(authorization);
+        for (OrderAuthorization authorization : planningState
+                .getOrderAuthorizations()) {
             if(authorization instanceof UserOrderAuthorization) {
                 userOrderAuthorizationList.add(
                         (UserOrderAuthorization) authorization);
@@ -198,16 +172,6 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
             new ArrayList<OrderAuthorization>();
     }
 
-    private void forceLoadEntities(OrderAuthorization authorization) {
-        authorization.getOrder().getName();
-        if(authorization instanceof UserOrderAuthorization) {
-            ((UserOrderAuthorization)authorization).getUser().getLoginName();
-        }
-        if(authorization instanceof ProfileOrderAuthorization) {
-            ((ProfileOrderAuthorization)authorization).getProfile().getProfileName();
-        }
-    }
-
     @Override
     public void removeOrderAuthorization(OrderAuthorization orderAuthorization) {
         if(orderAuthorization instanceof UserOrderAuthorization) {
@@ -221,6 +185,7 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
         if(!orderAuthorization.isNewObject()) {
             orderAuthorizationRemovalList.add(orderAuthorization);
         }
+        planningState.removeOrderAuthorization(orderAuthorization);
     }
 
     private ProfileOrderAuthorization createProfileOrderAuthorization(
@@ -239,18 +204,6 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
         orderAuthorization.setOrder(order);
         orderAuthorization.setUser(user);
         return orderAuthorization;
-    }
-
-    private void replaceOrder(Order newOrder) {
-        for(OrderAuthorization authorization : profileOrderAuthorizationList) {
-            authorization.setOrder(newOrder);
-            dao.save(authorization);
-        }
-        for(OrderAuthorization authorization : userOrderAuthorizationList) {
-            authorization.setOrder(newOrder);
-            dao.save(authorization);
-        }
-        this.order = newOrder;
     }
 
     private List<UserOrderAuthorization> listAuthorizationsByUser(User user) {

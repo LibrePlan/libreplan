@@ -26,7 +26,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.Profile;
@@ -36,6 +35,7 @@ import org.navalplanner.business.users.entities.UserOrderAuthorization;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -66,13 +66,13 @@ public class OrderAuthorizationController extends GenericForwardComposer{
         this.window = comp;
     }
 
-    public void initCreate(Order order) {
-        orderAuthorizationModel.initCreate(order);
+    public void initCreate(PlanningState planningState) {
+        orderAuthorizationModel.initCreate(planningState);
         Util.reloadBindings(window);
     }
 
-    public void initEdit(Order order) {
-        orderAuthorizationModel.initEdit(order);
+    public void initEdit(PlanningState planningState) {
+        orderAuthorizationModel.initEdit(planningState);
         Util.reloadBindings(window);
     }
 

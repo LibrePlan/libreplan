@@ -80,6 +80,8 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
+import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
@@ -193,6 +195,9 @@ public class SaveCommandBuilder {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     private class SaveCommand implements ISaveCommand {
 
@@ -344,6 +349,23 @@ public class SaveCommandBuilder {
                 loadDependenciesCollectionsForTaskRoot(state.getRootTask());
             }
             subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
+
+            saveOrderAuthorizations();
+        }
+
+        private void saveOrderAuthorizations() {
+            for (OrderAuthorization each : state
+                    .getOrderAuthorizationsAddition()) {
+                orderAuthorizationDAO.save(each);
+            }
+            for (OrderAuthorization each : state
+                    .getOrderAuthorizationsRemoval()) {
+                try {
+                    orderAuthorizationDAO.remove(each.getId());
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         private void createAdvancePercentagesIfRequired(Order order) {

@@ -666,9 +666,11 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellowIfAny("orderElementAuthorizations");
         final Order order = (Order) orderModel.getOrder();
         if (order.isNewObject()) {
-            orderAuthorizationController.initCreate(order);
+            orderAuthorizationController.initCreate(orderModel
+                    .getPlanningState());
         } else {
-            orderAuthorizationController.initEdit(order);
+            orderAuthorizationController
+                    .initEdit(orderModel.getPlanningState());
         }
         Util.createBindingsFor(orderElementAuthorizations);
         Util.reloadBindings(orderElementAuthorizations);

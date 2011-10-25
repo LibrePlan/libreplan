@@ -23,13 +23,13 @@ package org.navalplanner.web.users;
 
 import java.util.List;
 
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 
 /**
  * Model for UI operations related to {@link OrderAuthorization}
@@ -38,9 +38,9 @@ import org.navalplanner.business.users.entities.UserOrderAuthorization;
  */
 public interface IOrderAuthorizationModel {
 
-    void initCreate(Order order);
+    void initCreate(PlanningState planningState);
 
-    void initEdit(Order order);
+    void initEdit(PlanningState planningState);
 
     void confirmSave();
 

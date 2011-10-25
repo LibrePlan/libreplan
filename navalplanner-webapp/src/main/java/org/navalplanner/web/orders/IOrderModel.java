@@ -126,4 +126,6 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     void useSchedulingDataForCurrentScenario(Order order);
 
+    PlanningState getPlanningState();
+
 }

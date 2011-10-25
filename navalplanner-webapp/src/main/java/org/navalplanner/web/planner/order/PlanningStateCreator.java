@@ -74,6 +74,10 @@ import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
+import org.navalplanner.business.users.entities.OrderAuthorization;
+import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
+import org.navalplanner.business.users.entities.UserOrderAuthorization;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.TaskElementAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,6 +164,9 @@ public class PlanningStateCreator {
 
     @Autowired
     private SaveCommandBuilder saveCommandBuilder;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     void synchronizeWithSchedule(Order order, IOptionalPersistence persistence) {
         List<TaskSourceSynchronization> synchronizationsNeeded = order
@@ -668,6 +675,10 @@ public class PlanningStateCreator {
 
         private final IScenarioInfo scenarioInfo;
 
+        private List<OrderAuthorization> orderAuthorizations;
+        private List<OrderAuthorization> orderAuthorizationsAddition = new ArrayList<OrderAuthorization>();
+        private List<OrderAuthorization> orderAuthorizationsRemoval = new ArrayList<OrderAuthorization>();
+
         public PlanningState(Order order,
                 Collection<? extends Resource> initialResources,
                 Scenario currentScenario) {
@@ -679,6 +690,23 @@ public class PlanningStateCreator {
             this.resources = OrderPlanningModel
                     .loadRequiredDataFor(new HashSet<Resource>(initialResources));
             associateWithScenario(this.resources);
+            this.orderAuthorizations = loadOrderAuthorizations();
+        }
+
+        private List<OrderAuthorization> loadOrderAuthorizations() {
+            List<OrderAuthorization> orderAuthorizations = orderAuthorizationDAO
+                    .listByOrder(order);
+            for (OrderAuthorization each : orderAuthorizations) {
+                if (each instanceof UserOrderAuthorization) {
+                    ((UserOrderAuthorization) each).getUser().getLoginName();
+                }
+                if (each instanceof ProfileOrderAuthorization) {
+                    ((ProfileOrderAuthorization) each).getProfile()
+                            .getProfileName();
+                }
+
+            }
+            return orderAuthorizations;
         }
 
         void onRetrieval() {
@@ -991,6 +1019,31 @@ public class PlanningStateCreator {
             return result;
         }
 
+        public List<OrderAuthorization> getOrderAuthorizations() {
+            return Collections.unmodifiableList(orderAuthorizations);
+        }
+
+        public List<OrderAuthorization> getOrderAuthorizationsAddition() {
+            return Collections.unmodifiableList(orderAuthorizationsAddition);
+        }
+
+        public List<OrderAuthorization> getOrderAuthorizationsRemoval() {
+            return Collections.unmodifiableList(orderAuthorizationsRemoval);
+        }
+
+        public void addOrderAuthorization(OrderAuthorization orderAuthorization) {
+            orderAuthorizations.add(orderAuthorization);
+            orderAuthorizationsAddition.add(orderAuthorization);
+        }
+
+        public void removeOrderAuthorization(
+                OrderAuthorization orderAuthorization) {
+            orderAuthorizations.remove(orderAuthorization);
+            orderAuthorizationsAddition.remove(orderAuthorization);
+            if (!orderAuthorization.isNewObject()) {
+                orderAuthorizationsRemoval.add(orderAuthorization);
+            }
+        }
     }
 
     public interface IAllocationCriteria {
