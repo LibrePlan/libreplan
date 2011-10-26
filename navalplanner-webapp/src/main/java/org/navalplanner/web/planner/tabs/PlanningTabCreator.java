@@ -113,10 +113,9 @@ public class PlanningTabCreator {
                 commands.add(scheduleCommand);
                 ICommandOnTask<TaskElement> orderDetailsCommand = buildOrderDetailsCommand();
                 commands.add(orderDetailsCommand);
-                ICommandOnTask<TaskElement> resourcesLoadCommand = buildResourcesLoadCommand();
-                commands.add(resourcesLoadCommand);
-                ICommandOnTask<TaskElement> advancedAllocationCommand = buildAdvancedAllocationCommand();
-                commands.add(advancedAllocationCommand);
+
+                // TODO: Revert removal of ResourcesLoad and AdvancedAllocation
+                // context entries when save and cancel commands are refactored
 
                 companyPlanningController.setAdditional(commands);
                 companyPlanningController.setTabsController(tabsController);
@@ -184,68 +183,6 @@ public class PlanningTabCreator {
                     @Override
                     public String getIcon() {
                         return "/common/img/ico_menu_order-details.png";
-                    }
-
-                    @Override
-                    public boolean isApplicableTo(TaskElement task) {
-                        return true;
-                    }
-                };
-            }
-
-            private ICommandOnTask<TaskElement> buildResourcesLoadCommand() {
-                return new ICommandOnTask<TaskElement>() {
-
-                    @Override
-                    public void doAction(
-                            IContextWithPlannerTask<TaskElement> context,
-                            TaskElement task) {
-                        OrderElement orderElement = task.getOrderElement();
-                        if (orderElement instanceof Order) {
-                            Order order = (Order) orderElement;
-                            tabsController.goToResourcesLoad(order);
-                        }
-                    }
-
-                    @Override
-                    public String getName() {
-                        return _("Resources Load");
-                    }
-
-                    @Override
-                    public String getIcon() {
-                        return "/common/img/ico_menu_order-load.png";
-                    }
-
-                    @Override
-                    public boolean isApplicableTo(TaskElement task) {
-                        return true;
-                    }
-                };
-            }
-
-            private ICommandOnTask<TaskElement> buildAdvancedAllocationCommand() {
-                return new ICommandOnTask<TaskElement>() {
-
-                    @Override
-                    public void doAction(
-                            IContextWithPlannerTask<TaskElement> context,
-                            TaskElement task) {
-                        OrderElement orderElement = task.getOrderElement();
-                        if (orderElement instanceof Order) {
-                            Order order = (Order) orderElement;
-                            tabsController.goToAdvancedAllocation(order);
-                        }
-                    }
-
-                    @Override
-                    public String getName() {
-                        return _("Advanced Allocation");
-                    }
-
-                    @Override
-                    public String getIcon() {
-                        return "/common/img/ico_menu_advanced-assignment.png";
                     }
 
                     @Override
