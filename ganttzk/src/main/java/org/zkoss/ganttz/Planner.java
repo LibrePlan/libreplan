@@ -528,8 +528,7 @@ public class Planner extends HtmlMacroComponent  {
 
             @Override
             public void onEvent(Event event) {
-                Clients.evalJavaScript("zkTaskContainer.legendResize();");
-
+                Clients.evalJavaScript("ganttz.TaskList.getInstance().legendResize();");
             }
 
         });
