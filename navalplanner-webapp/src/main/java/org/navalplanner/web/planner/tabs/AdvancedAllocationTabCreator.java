@@ -100,7 +100,6 @@ public class AdvancedAllocationTabCreator {
                 @Override
                 public LocalDate getStart() {
                     if (aggregate.isEmpty()) {
-                        // FIXME Review Bug #906
                         LOG.info("the aggregate for task " + task.getName()
                                 + " is empty");
                         return task.getStartAsLocalDate();
@@ -111,7 +110,6 @@ public class AdvancedAllocationTabCreator {
                 @Override
                 public LocalDate getEnd() {
                     if (aggregate.isEmpty()) {
-                        // FIXME Review Bug #906
                         LOG.info("the aggregate for task " + task.getName()
                                 + " is empty");
                         return task.getEndAsLocalDate();
