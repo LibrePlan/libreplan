@@ -146,19 +146,16 @@
     -->
 
     <repositories>
-        <repository>
-            <id>ZK CE</id>
-            <url>http://mavensync.zkoss.org/zk/ce</url>
-        </repository>
         <!-- Getttext commons -->
         <repository>
             <id>gettext-commons-site</id>
             <url>http://gettext-commons.googlecode.com/svn/maven-repository</url>
         </repository>
-    <repository>
-         <id>thirdparty</id>
-         <url>http://nexus.libreplan.org/content/repositories/thirdparty</url>
-     </repository>
+        <!-- LibrePlan repository -->
+        <repository>
+            <id>thirdparty</id>
+            <url>http://nexus.libreplan.org/content/repositories/thirdparty</url>
+        </repository>
     </repositories>
 
      <pluginRepositories>
