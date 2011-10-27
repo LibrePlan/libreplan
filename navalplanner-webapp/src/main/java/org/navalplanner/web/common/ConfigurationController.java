@@ -28,10 +28,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -117,8 +115,6 @@ public class ConfigurationController extends GenericForwardComposer {
     private Component ldapRoles;
 
     private UserRole roles;
-
-    private Grid configurationRoles;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
