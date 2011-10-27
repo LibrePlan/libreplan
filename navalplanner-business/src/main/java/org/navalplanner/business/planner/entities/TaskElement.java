@@ -239,6 +239,9 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+        if (taskSource != null && taskSource.getOrderElement() != null) {
+            taskSource.getOrderElement().setName(name);
+        }
     }
 
     public String getNotes() {
