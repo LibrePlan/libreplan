@@ -44,15 +44,15 @@
                             <label value="@{historicalStatistics.finishApplications}"/>
                          </row>
                          <row>
-                            <label value="${i18n:_('Average of the estimated hours')}"/>
+                            <label value="${i18n:_('Average of estimated hours')}"/>
                             <label value="@{historicalStatistics.averageEstimatedHours}"/>
                          </row>
                          <row>
-                            <label value="${i18n:_('Average of the worked hours')}"/>
+                            <label value="${i18n:_('Average of worked hours in finished applications')}"/>
                             <label value="@{historicalStatistics.averageWorkedHours}"/>
                          </row>
                          <row>
-                            <label value="${i18n:_('Maximum/minimum of the estimated hours')}"/>
+                            <label value="${i18n:_('Maximum/minimum of estimated hours')}"/>
                             <hbox>
                                 <label value="@{historicalStatistics.maxEstimatedHours}"/>
                                 <label value=" / "/>
@@ -60,7 +60,7 @@
                             </hbox>
                          </row>
                          <row>
-                            <label value="${i18n:_('Maximum/minimum of the worked hours')}"/>
+                            <label value="${i18n:_('Maximum/minimum of worked hours in finished applications')}"/>
                             <hbox>
                                 <label value="@{historicalStatistics.maxWorkedHours}"/>
                                 <label value=" / "/>
