@@ -96,10 +96,10 @@ Debian/Ubuntu
 * Add a new Tomcat 6 policy file ``/etc/tomcat6/policy.d/51navalplan.policy``
   with the following content::
 
-    grant codeBase "file:/var/lib/tomcat6/webapps/navalplanner-webapp/-" {
+    grant codeBase "file:/var/lib/tomcat6/webapps/navalplan/-" {
        permission java.security.AllPermission;
     };
-    grant codeBase "file:/var/lib/tomcat6/webapps/navalplanner-webapp.war" {
+    grant codeBase "file:/var/lib/tomcat6/webapps/navalplan.war" {
        permission java.security.AllPermission;
     };
 
@@ -109,7 +109,7 @@ Debian/Ubuntu
     grant codeBase "file:${catalina.home}/bin/tomcat-juli.jar" {
       ...
       // begin:navalplan
-      permission java.io.FilePermission "${catalina.base}${file.separator}webapps${file.separator}navalplanner-webapp${file.separator}WEB-INF${file.separator}classes${file.separator}logging.properties", "read";
+      permission java.io.FilePermission "${catalina.base}${file.separator}webapps${file.separator}navalplan${file.separator}WEB-INF${file.separator}classes${file.separator}logging.properties", "read";
       // end:navalplan
       ...
     };
