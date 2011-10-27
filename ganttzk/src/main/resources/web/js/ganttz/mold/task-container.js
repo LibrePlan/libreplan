@@ -6,6 +6,11 @@ function(out){
             'class="taskgroup"',
             '>');
 
+        out.push('<div class="border-container">',
+            '<div class="taskgroup_start"></div>',
+            '<div class="taskgroup_end"></div>',
+        '</div>');
+
         out.push('<div class="task-labels">',
                     this.getLabelsText(),
                 '</div>');
@@ -19,11 +24,6 @@ function(out){
         out.push('<div class="taskcontainer_completion">',
                     '<div class="completion"></div>',
                     '<div class="completion2"></div>',
-                '</div>');
-
-        out.push('<div class="border-container">',
-                    '<div class="taskgroup_start"></div>',
-                    '<div class="taskgroup_end"></div>',
                 '</div>');
 
         out.push('<div id="tasktooltip', this.uuid, '"',

@@ -342,10 +342,13 @@ div.box.limiting-unassigned {
     padding-right:2px;
     heigth: 12px !important;
     position: relative;
-    top: -8px;
     left:10;
     display: block;
     clear: both;
+}
+
+.border-container + .task-labels {
+    top: -5px;
 }
 
 .milestone_end {
