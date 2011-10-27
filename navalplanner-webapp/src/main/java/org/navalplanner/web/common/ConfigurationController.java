@@ -464,6 +464,7 @@ public class ConfigurationController extends GenericForwardComposer {
         public void render(Listitem item, Object data) {
             ProgressType progressType = (ProgressType) data;
             item.setLabel(_(progressType.getValue()));
+            item.setValue(progressType);
         }
 
     }
