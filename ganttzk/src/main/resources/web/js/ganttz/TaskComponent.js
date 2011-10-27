@@ -207,12 +207,6 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     resizeCompletion2Advance : function(width){
         jq('#' + this.uuid + ' > .completion2:first').css('width', width);
     },
-    showTaskLabel : function(){
-        jq('#'+ this.uuid + ' .task-labels').show();
-    },
-    hideTaskLabel : function(){
-        jq('#'+ this.uuid + ' .task-labels').hide();
-    },
     showResourceTooltip : function(){
         jq('#'+ this.uuid + ' .task-resources').show();
     },
