@@ -33,4 +33,26 @@
         column="company_user" />
 </class>
 
+<!-- CustomerComunication -->
+<class name="CustomerComunication" table="customer_comunication">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="deadline" access="field"/>
+    <property name="comunicationType" access="field" column="comunication_type">
+        <type name="org.hibernate.type.EnumType">
+            <param name="enumClass">
+                org.libreplan.business.externalcompanies.entities.ComunicationType
+            </param>
+        </type>
+    </property>
+    <property name="comunicationDate" access="field" column="comunication_date" />
+    <property name="reviewed" access="field" column="reviewed" />
+    <many-to-one name="order" class="org.libreplan.business.orders.entities.Order" column="order_id" />
+</class>
+
 </hibernate-mapping>
