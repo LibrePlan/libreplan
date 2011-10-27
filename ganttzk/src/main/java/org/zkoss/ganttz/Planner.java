@@ -766,11 +766,11 @@ public class Planner extends HtmlMacroComponent  {
         getDependencyList().redrawDependencies();
 
         if (isShowingLabels) {
-            Clients.evalJavaScript("zkTasklist.showAllTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().showAllTaskLabels();");
         }
 
         if (isShowingResources) {
-            Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().showResourceTooltips();");
         }
     }
 

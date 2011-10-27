@@ -139,7 +139,7 @@ public class TaskContainer extends Task {
     private void refreshTooltips() {
         // Could be optimized asking planner for tooltips display state to
         // create expanded elements with the proper state
-        Clients.evalJavaScript("zkTasklist.refreshTooltips();");
+        Clients.evalJavaScript("ganttz.TaskList.getInstance().refreshTooltips();");
     }
 
     @Override

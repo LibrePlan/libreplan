@@ -24,6 +24,14 @@ ganttz.TaskList = zk.$extends(zk.Widget, {
     legendResize : function() {
         var taskdetailsContainer = jq('.taskdetailsContainer')[0];
         jq('.legend-container').width(taskdetailsContainer.clientWidth-75);
+    },
+    refreshTooltips : function() {
+        if (jq('.show-resources').hasClass('clicked')) {
+            this.showResourceTooltips();
+        }
+        if (jq('.show-labels').hasClass('clicked')) {
+            this.showAllTaskLabels();
+        }
     }
 
 },{//Class stuff
