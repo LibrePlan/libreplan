@@ -317,4 +317,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="change-navalplan_user-to-libreplan_user-in-user_table" author="mrego">
+        <comment>Changing navalplan_user to libreplan_user in user_table</comment>
+        <renameColumn tableName="user_table" oldColumnName="navalplan_user"
+          newColumnName="libreplan_user" columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>

@@ -23,7 +23,7 @@
         <property name="password" not-null="true"/>
         <property name="email"/>
         <property name="disabled"/>
-        <property name="librePlanUser" column="navalplan_user" not-null="true"/>
+        <property name="librePlanUser" column="libreplan_user" not-null="true"/>
         <property name="applicationLanguage" column="application_language">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.libreplan.business.settings.entities.Language</param>
