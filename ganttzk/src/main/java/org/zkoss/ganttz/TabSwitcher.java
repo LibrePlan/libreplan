@@ -1,5 +1,5 @@
 /*
- * This file is part of NavalPlan
+ * This file is part of LibrePlan
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia

@@ -218,7 +218,7 @@ sub to_relative_path()
 {
     my($filename) = @_;
 
-    if ($filename =~ /(.*)\/(ganttzk|navalplanner-webapp|navalplanner-business)\/(.*)/) {
+    if ($filename =~ /(.*)\/(ganttzk|libreplan-webapp|libreplan-business)\/(.*)/) {
         return "./$2/$3";
     }
     return $filename;

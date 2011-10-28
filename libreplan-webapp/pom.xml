@@ -1,0 +1,418 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.libreplan</groupId>
+        <artifactId>libreplan</artifactId>
+        <version>1.1.3</version>
+    </parent>
+    <artifactId>libreplan-webapp</artifactId>
+    <packaging>war</packaging>
+    <name>LibrePlan Web Client Module</name>
+
+    <profiles>
+        <profile>
+            <id>reports</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- =========================================================== -->
+                    <!-- Jasper reports configuration -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>jasperreports-maven-plugin</artifactId>
+                        <version>1.0-beta-2</version>
+                        <configuration>
+                            <sourceDirectory>${project.build.sourceDirectory}/../jasper</sourceDirectory>
+                            <outputDirectory>${project.build.sourceDirectory}/../../../target/classes</outputDirectory>
+                            <xmlValidation>true</xmlValidation>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile-reports</goal>
+                                </goals>
+                                <phase>compile</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <!--
+                                note this must be repeated here to pick up correct xml
+                                validation
+                            -->
+                            <dependency>
+                                <groupId>jasperreports</groupId>
+                                <artifactId>jasperreports</artifactId>
+                                <version>3.7.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.1.2</version>
+                        <executions>
+                            <execution>
+                                <id>default</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>userguide</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                          <execution>
+                          <id>user-doc-generation</id>
+                          <goals>
+                           <goal>run</goal>
+                          </goals>
+                         <phase>process-resources</phase>
+                         <inherited>false</inherited>
+                         <configuration>
+                          <tasks>
+                            <echo>Executing make html</echo>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/gl/"/>
+                                <arg value="html"/>
+                            </exec>
+                            <copy todir="src/main/webapp/help/gl" failonerror="false">
+                                <fileset dir="../doc/src/user/gl/html"/>
+                            </copy>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/es/"/>
+                                <arg value="html"/>
+                            </exec>
+                            <copy todir="src/main/webapp/help/es" failonerror="false">
+                                <fileset dir="../doc/src/user/es/html"/>
+                            </copy>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/en/"/>
+                                <arg value="html"/>
+                            </exec>
+                            <copy todir="src/main/webapp/help/en" failonerror="false">
+                                <fileset dir="../doc/src/user/en/html"/>
+                            </copy>
+                            <copy todir="src/main/webapp/help/ru" failonerror="false">
+                                <fileset dir="../doc/src/user/en/html"/>
+                            </copy>
+                          </tasks>
+                         </configuration>
+                        </execution>
+                          <execution>
+                          <id>user-doc-clean</id>
+                          <goals>
+                           <goal>run</goal>
+                          </goals>
+                         <phase>clean</phase>
+                         <inherited>false</inherited>
+                         <configuration>
+                          <tasks>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/gl/"/>
+                                <arg value="clean"/>
+                            </exec>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/es/"/>
+                                <arg value="clean"/>
+                            </exec>
+                            <exec executable="make" failifexecutionfails="false">
+                                <arg value="-C"/>
+                                <arg value="../doc/src/user/en/"/>
+                                <arg value="clean"/>
+                            </exec>
+                            <delete dir="src/main/webapp/help" failonerror="false" />
+                          </tasks>
+                         </configuration>
+                        </execution>
+                       </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>libreplan-webapp</finalName>
+
+        <!--
+            Gettext Commons plugin
+               goals:
+                    merge: parses source code and generates keys.pot
+                    dist: generates binary Resoruce Bundle (Messages_XX.class)
+        -->
+        <plugins>
+            <plugin>
+                <groupId>org.xnap.commons</groupId>
+                <artifactId>maven-gettext-plugin</artifactId>
+                <configuration>
+                    <targetBundle>i18n.Messages</targetBundle>
+                    <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
+                    <keywords>-k_</keywords>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>dist</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+              <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+              <plugin>
+                  <groupId>org.eclipse.m2e</groupId>
+                  <artifactId>lifecycle-mapping</artifactId>
+                  <version>1.0.0</version>
+                  <configuration>
+                  <lifecycleMappingMetadata>
+                      <pluginExecutions>
+                        <pluginExecution>
+                          <pluginExecutionFilter>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-antrun-plugin</artifactId>
+                            <versionRange>[1.1,)</versionRange>
+                            <goals>
+                              <goal>run</goal>
+                            </goals>
+                          </pluginExecutionFilter>
+                          <action>
+                            <ignore/>
+                          </action>
+                        </pluginExecution>
+                        <pluginExecution>
+                          <pluginExecutionFilter>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>jasperreports-maven-plugin</artifactId>
+                            <versionRange>[1.0-beta-2,)</versionRange>
+                            <goals>
+                              <goal>compile-reports</goal>
+                            </goals>
+                          </pluginExecutionFilter>
+                          <action>
+                            <ignore/>
+                          </action>
+                        </pluginExecution>
+                        <pluginExecution>
+                          <pluginExecutionFilter>
+                            <groupId>org.xnap.commons</groupId>
+                            <artifactId>maven-gettext-plugin</artifactId>
+                            <versionRange>[1.2.0,)</versionRange>
+                            <goals>
+                              <goal>dist</goal>
+                            </goals>
+                          </pluginExecutionFilter>
+                          <action>
+                            <ignore></ignore>
+                          </action>
+                        </pluginExecution>
+                      </pluginExecutions>
+                    </lifecycleMappingMetadata>
+                </configuration>
+              </plugin>
+          </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencies>
+        <!-- Jasper Reports -->
+        <dependency>
+          <groupId>jasperreports</groupId>
+          <artifactId>jasperreports</artifactId>
+        </dependency>
+        <!-- GPL Jasperreport Component for ZK -->
+        <dependency>
+          <groupId>com.igalia.java.zk.components</groupId>
+          <artifactId>jasperreportcomponent</artifactId>
+        </dependency>
+        <!-- GPL Jasperreport Component for ZK -->
+        <dependency>
+          <groupId>com.igalia.java.zk.components</groupId>
+          <artifactId>jfreechartengine</artifactId>
+        </dependency>
+        <!-- GPL detailrow Component for ZK -->
+        <dependency>
+          <groupId>com.igalia.java.zk.components</groupId>
+          <artifactId>customdetailrowcomponent</artifactId>
+        </dependency>
+        <!-- Gettext commons -->
+        <dependency>
+            <groupId>org.xnap.commons</groupId>
+            <artifactId>gettext-commons</artifactId>
+        </dependency>
+        <!-- JDBC driver -->
+        <dependency>
+            <groupId>${jdbcDriver.groupId}</groupId>
+            <artifactId>${jdbcDriver.artifactId}</artifactId>
+        </dependency>
+        <!-- Hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate</artifactId>
+        </dependency>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <!--  Spring security -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-acl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core-tiger</artifactId>
+        </dependency>
+        <!-- Spring Dependency LDAP -->
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-core-tiger</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-odm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-ldif-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-ldif-batch</artifactId>
+        </dependency>
+        <!--  AspectJ (required by Spring Security) -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jcommon</artifactId>
+        </dependency>
+        <!-- Apache Commons Fileupload (required by ZK) -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+        <!-- ZK  -->
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zul</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkplus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zk</artifactId>
+        </dependency>
+        <!-- LibrePlan ZK Components  -->
+        <dependency>
+            <groupId>org.libreplan</groupId>
+            <artifactId>ganttzk</artifactId>
+        </dependency>
+        <!-- LibrePlan Business  -->
+        <dependency>
+            <groupId>org.libreplan</groupId>
+            <artifactId>libreplan-business</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+        <!-- JAX-RS API -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>jsr311-api</artifactId>
+        </dependency>
+        <!-- CXF -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+        </dependency>
+        <!-- ZK Timeplot -->
+        <dependency>
+            <groupId>org.zkoss.zkforge</groupId>
+            <artifactId>timelinez</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zkforge</groupId>
+            <artifactId>timeplotz</artifactId>
+        </dependency>
+        <!-- JGraphT  -->
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-jdk1.5</artifactId>
+        </dependency>
+   </dependencies>
+</project>

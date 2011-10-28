@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<type-work-hours-list xmlns="http://rest.ws.navalplanner.org">
+<type-work-hours-list xmlns="http://rest.ws.libreplan.org">
 <!-- Ok-->
   <type-work-hours enabled="true" defaultPrice="8.00" name="Hora Extra" code="t1" />
 

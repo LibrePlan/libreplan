@@ -1,0 +1,128 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<vbox id="${arg.id}"
+    apply="org.libreplan.web.orders.AssignedHoursToOrderElementController" width="100%">
+
+    <!-- Direct imputation -->
+    <vbox width="100%">
+        <panel title="${i18n:_('Imputed hours calculation')}">
+            <panelchildren>
+                <grid
+                    model="@{assignedHoursToOrderElementController.workReportLines}"
+                    mold="paging" pageSize="10" fixedLayout="true">
+                    <columns>
+                        <column label="${i18n:_('Date')}" width="120px" />
+                        <column label="${i18n:_('Resource')}" />
+                        <column label="${i18n:_('Hours type')}" />
+                        <column label="${i18n:_('Hours')}" width="100px" />
+                    </columns>
+                    <rows>
+                        <row self="@{each='workReportLine'}">
+                            <label
+                                value="@{workReportLine.date, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
+                            <label
+                                value="@{workReportLine.resource.shortDescription}" />
+                            <label value="@{workReportLine.typeOfWorkHours.name}" />
+                            <label value="@{workReportLine.sumEffort.toFormattedString}" />
+                        </row>
+                    </rows>
+                </grid>
+                <grid style="border:0px">
+                    <columns>
+                        <column />
+                        <column width="100px" />
+                    </columns>
+                    <rows>
+                        <row style="border-top:1px solid black">
+                            <label
+                                value="${i18n:_('Sum of direct imputed hours')}" />
+                            <label
+                                value="@{assignedHoursToOrderElementController.totalAssignedDirectEffort}" />
+                        </row>
+                        <row>
+                            <label
+                                value="${i18n:_('Sum of all task leafs imputed hours')}" />
+                            <label id="totalIDC"
+                                value="@{assignedHoursToOrderElementController.effortChildren}" />
+                        </row>
+                        <row
+                            style="border-top:1px solid black; font-weight: bold;">
+                            <label value="${i18n:_('Total hours')}"
+                                style="font-weight: bold" />
+                            <label id="addtotal"
+                                value="@{assignedHoursToOrderElementController.totalAssignedEffort}"
+                                style="font-weight: bold" />
+                        </row>
+                    </rows>
+                </grid>
+
+            </panelchildren>
+        </panel>
+    </vbox>
+
+    <separator spacing="5px" orient="horizontal" />
+
+    <!-- Hours consumed -->
+    <vbox width="100%">
+        <panel
+            title="${i18n:_('Percentage of estimated budget hours / hours consumed')}">
+            <panelchildren>
+                <grid fixedLayout="true">
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <grid fixedLayout="true">
+                                <columns>
+                                    <column width="200px" />
+                                    <column width="200px" />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label
+                                            value="${i18n:_('Budget hours')}:" />
+                                        <label
+                                            value="@{assignedHoursToOrderElementController.estimatedEffort}" />
+                                    </row>
+                                    <row>
+                                        <label
+                                            value="${i18n:_('Imputed hours')}:" />
+                                        <label
+                                            value="@{assignedHoursToOrderElementController.totalAssignedEffort}" />
+                                    </row>
+                                </rows>
+                            </grid>
+                            <hbox id="Percentage">
+                                <label
+                                    value="@{assignedHoursToOrderElementController.progressWork}" />
+                                <label value="${i18n:_('%')}" />
+                                <progressmeter id="hoursProgressBar" />
+                                <progressmeter id="exceedHoursProgressBar" />
+                            </hbox>
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+    </vbox>
+</vbox>

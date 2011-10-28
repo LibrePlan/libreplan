@@ -1,11 +1,11 @@
 #####################################################
-Ejercicios Curso Formativo para usuarios de NavalPlan
+Ejercicios Curso Formativo para usuarios de LibrePlan
 #####################################################
 
 .. image:: images/logo.png
    :align: left
 
-*NavalPlan* es una aplicación web para la planificación, monitorización y control de proyectos representados mediante *diagramas de Gantt*. Entre sus funcionalidades más importantes se destaca:
+*LibrePlan* es una aplicación web para la planificación, monitorización y control de proyectos representados mediante *diagramas de Gantt*. Entre sus funcionalidades más importantes se destaca:
 
   * Que es multiproyecto.
   * Asignación de recursos por grupos: grupos dinámicos basados en criterios.
@@ -13,7 +13,7 @@ Ejercicios Curso Formativo para usuarios de NavalPlan
   * Descomposición estructurada de trabajo para los proyectos.
   * Control de la sobrecarga de asignación de recursos.
   * Análise de costes basado en partes de trabajo.
-  * Integración con otras instancias de *NavalPlan* y software de terceros.
+  * Integración con otras instancias de *LibrePlan* y software de terceros.
 
 Este guía de formación tiene copyright de Igalia S.L. y se publica con una Licencia Creative Commons Recoñecemento-CompartirIgual 3.0 España.
 

@@ -8,7 +8,7 @@ Informes
 Informes
 ========
 
-"NavalPlan" está integrado con *JasperReports* para la gestión de informes lo cual permite implantar diversos informes que analiza datos existentes en la aplicación.
+"LibrePlan" está integrado con *JasperReports* para la gestión de informes lo cual permite implantar diversos informes que analiza datos existentes en la aplicación.
 
 Los informes definidos son:
 

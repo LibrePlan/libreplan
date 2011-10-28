@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<resource-list xmlns="http://rest.ws.navalplanner.org">
+<resource-list xmlns="http://rest.ws.libreplan.org">
 
     <!-- [It assumes existence of "TestLocationGroupCriterion" and
          "TestCostCategory"] OK. -->

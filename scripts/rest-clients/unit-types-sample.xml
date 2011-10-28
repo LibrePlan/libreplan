@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<unit-type-list xmlns="http://rest.ws.navalplanner.org">
+<unit-type-list xmlns="http://rest.ws.libreplan.org">
   <unit-type measure="units" code="000-001" />
   <unit-type measure="kg" code="000-002" />
   <unit-type measure="km" code="000-003" />

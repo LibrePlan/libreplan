@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.scenarios.entities"
+    default-access="field">
+
+    <!-- Scenario -->
+    <class name="Scenario" table="scenario">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="name" />
+        <property name="description" />
+        <property name="lastNotOwnedReassignationsTimeStamp"
+            type="org.joda.time.contrib.hibernate.PersistentDateTime"
+            column="last_not_owned_reassignations_time_stamp" />
+
+        <map name="orders" table="scenario_orders" lazy="false" cascade="save-update">
+            <key column="scenario_id" />
+            <map-key-many-to-many column="order_id"
+                class="org.libreplan.business.orders.entities.Order" />
+            <many-to-many column="order_version_id" class="OrderVersion"/>
+        </map>
+
+        <many-to-one name="predecessor" class="Scenario" />
+
+    </class>
+
+    <!-- OrderVersion -->
+    <class name="OrderVersion" table="order_version">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <property name="modificationByOwnerTimestamp"
+            type="org.joda.time.contrib.hibernate.PersistentDateTime"
+            column="modification_by_owner_timestamp" />
+        <many-to-one name="ownerScenario" class="Scenario" />
+    </class>
+
+</hibernate-mapping>

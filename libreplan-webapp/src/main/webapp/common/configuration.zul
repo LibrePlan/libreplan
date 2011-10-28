@@ -1,0 +1,387 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Configuration')}"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?page  id="List"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+
+    <window id="configurationWindow" self="@{define(content)}"
+        apply="org.libreplan.web.common.ConfigurationController"
+        title="${i18n:_('Configuration')}">
+
+        <vbox id="messagesContainer" />
+
+        <tabbox>
+            <tabs>
+                <tab label="${i18n:_('Main preferences')}" />
+                <tab label="${i18n:_('Entity sequences')}" />
+                <tab label="${i18n:_('LDAP configuration')}" />
+            </tabs>
+            <tabpanels>
+                <tabpanel id="panelConfiguration">
+                    <grid fixedLayout="true"
+                        id="configurationVariables">
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label
+                                    value="${i18n:_('Company code')}" />
+                                <textbox id="companyCode"
+                                    value="@{configurationController.companyCode}"
+                                    constraint="no empty:${i18n:_('Cannot be empty or null')}" />
+                            </row>
+                            <row>
+                                <label
+                                    value="${i18n:_('Default calendar')}" />
+                                <bandboxSearch
+                                    id="defaultCalendarBandboxSearch"
+                                    finder="BaseCalendarBandboxFinder"
+                                    model="@{configurationController.calendars}"
+                                    selectedElement="@{configurationController.defaultCalendar}" />
+                            </row>
+                            <row>
+                                <label
+                                    value="${i18n:_('Show progress')}" />
+                                <listbox id="lbTypeProgress"
+                                    model="@{configurationController.progressTypes}"
+                                    itemRenderer="@{configurationController.progressTypeRenderer}"
+                                    selectedItem="@{configurationController.selectedProgressType}"
+                                    mold="select" />
+                            </row>
+                            <row>
+                                <label
+                                    value="${i18n:_('Company logo URL')}" />
+                                <textbox id="companyLogoURL"
+                                    value="@{configurationController.companyLogoURL}"
+                                    width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Autocomplete login form')}" />
+                                <checkbox id="enableAutocompleteLogin"
+                                    label="${i18n:_('Enable/Disable')}"
+                                    disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
+                                    tooltiptext = "${i18n:_('Enable/Disable autocomplete property in login form, if the admin password is still in default')}"
+                                    checked="@{configurationController.autocompleteLogin}"
+                                    onCheck="configurationController.reloadGeneralConfiguration();" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Generate code for')}" />
+                                <grid>
+                                    <columns>
+                                        <column width="50%" />
+                                        <column />
+                                    </columns>
+                                    <rows>
+                                        <row>
+                                            <checkbox
+                                                label="${i18n:_('Criterion')}"
+                                                checked="@{configurationController.generateCodeForCriterion}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                            <checkbox
+                                                label="${i18n:_('Label')}"
+                                                checked="@{configurationController.generateCodeForLabel}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                        </row>
+                                        <row>
+                                            <checkbox
+                                                label="${i18n:_('Work report')}"
+                                                checked="@{configurationController.generateCodeForWorkReport}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                            <checkbox
+                                                label="${i18n:_('Resources')}"
+                                                checked="@{configurationController.generateCodeForResources}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                        </row>
+                                        <row>
+                                            <checkbox
+                                                label="${i18n:_('Types of work hours')}"
+                                                checked="@{configurationController.generateCodeForTypesOfWorkHours}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                            <checkbox
+                                                label="${i18n:_('Material categories')}"
+                                                checked="@{configurationController.generateCodeForMaterialCategories}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                        </row>
+                                        <row>
+                                            <checkbox
+                                                label="${i18n:_('Unit Measures')}"
+                                                checked="@{configurationController.generateCodeForUnitTypes}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                            <checkbox
+                                                label="${i18n:_('Calendar')}"
+                                                checked="@{configurationController.generateCodeForBaseCalendars}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                        </row>
+                                        <row>
+                                            <checkbox
+                                                label="${i18n:_('Work report types')}"
+                                                checked="@{configurationController.generateCodeForWorkReportType}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                            <checkbox
+                                                label="${i18n:_('Calendar exception types')}"
+                                                checked="@{configurationController.generateCodeForCalendarExceptionType}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                        </row>
+                                        <row>
+                                            <checkbox
+                                                label="${i18n:_('Cost category')}"
+                                                checked="@{configurationController.generateCodeForCostCategory}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
+                                        </row>
+                                    </rows>
+                                </grid>
+                            </row>
+                            <!-- Perspectives -->
+                            <row>
+                                <label
+                                    value="${i18n:_('Perspectives')}" />
+                                <grid>
+                                    <columns>
+                                        <column width="50%" />
+                                        <column />
+                                    </columns>
+                                    <rows>
+                                        <row>
+                                            <checkbox
+                                                label="${i18n:_('MonteCarlo method')}"
+                                                checked="@{configurationController.monteCarloMethodTabVisible}" />
+                                        </row>
+                                        <row>
+                                            <checkbox
+                                                id="scenariosVisible"
+                                                label="${i18n:_('Enable scenarios module')}"
+                                                checked="@{configurationController.scenariosVisible}" />
+                                        </row>
+                                    </rows>
+                                </grid>
+                            </row>
+                        </rows>
+                    </grid>
+                </tabpanel>
+                <tabpanel id="panelEntitySequences">
+                    <panel border="normal"
+                        title="Entity code sequences">
+                        <panelchildren id="panelEntitySequence">
+                            <vbox>
+                                <hbox pack="center">
+                                    <label value="${i18n:_('Select entity:')}" />
+                                    <combobox id="entityCombo"
+                                        model="@{configurationController.entityNames}">
+                                        <comboitem
+                                            self="@{each=entityName}"
+                                            label="@{entityName.description}"
+                                            value="@{entityName}" />
+                                    </combobox>
+
+                                    <label value="${i18n:_('Prefix:')}" />
+                                    <textbox id="prefixBox" />
+                                    <label
+                                        value="${i18n:_('Number of digits:')}" />
+                                    <intbox id="numDigitBox" value="5" />
+                                    <button label="${i18n:_('add')}"
+                                        onClick="configurationController.addNewEntitySequence()" />
+                                </hbox>
+                                <separator bar="false" height="4px"
+                                    orient="vertical" />
+                                <grid id="entitySequencesGrid"
+                                    sizedByContent="false" height="400px" sclass="entity-sequences-grid"
+                                    rowRenderer="@{configurationController.entitySequenceGroupRenderer}">
+                                    <columns>
+                                        <column
+                                            label="${i18n:_('Entity type')}" />
+                                        <column
+                                            label="${i18n:_('Active')}" />
+                                        <column
+                                            label="${i18n:_('Prefix')}" />
+                                        <column
+                                            label="${i18n:_('Number of digits')}" />
+                                        <column
+                                            label="${i18n:_('Last value')}" />
+                                        <column
+                                            label="${i18n:_('Operations')}" />
+                                    </columns>
+                                </grid>
+                            </vbox>
+                        </panelchildren>
+                    </panel>
+                </tabpanel>
+
+                <tabpanel id="panelLDAPConfiguration">
+
+                    <!-- Activation -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Activation')}" />
+                        <label value="${i18n:_('LDAP Authentication enabled')}" />
+                        <checkbox id="ldapAuthEnabled" checked="@{configurationController.ldapConfiguration.ldapAuthEnabled}" />
+                    </groupbox>
+
+                    <!-- Configuration -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Configuration')}" />
+                        <grid>
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Host:')}" />
+                                    <hbox>
+                                        <textbox id="ldapHost" value="@{configurationController.ldapConfiguration.ldapHost}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'ldap://localhost')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Port:')}" />
+                                    <hbox>
+                                        <textbox id="ldapPort" value="@{configurationController.ldapConfiguration.ldapPort}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', '389')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Base:')}" />
+                                    <hbox>
+                                        <textbox id="ldapBase" value="@{configurationController.ldapConfiguration.ldapBase}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'dc=example,dc=org')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('UserDn:')}" />
+                                    <hbox>
+                                        <textbox id="ldapUserDn" value="@{configurationController.ldapConfiguration.ldapUserDn}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'cn=admin,dc=example,dc=org')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Password:')}" />
+                                    <textbox id="ldapPassword" value="@{configurationController.ldapConfiguration.ldapPassword}" type="password"  width="300px"/>
+                                </row>
+                            </rows>
+                        </grid>
+                        <separator />
+                        <button label="${i18n:_('Test LDAP connection')}"
+                            onClick="configurationController.testLDAPConnection()" />
+                        <separator />
+                    </groupbox>
+
+                    <!-- Authentication -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Authentication')}" />
+                        <grid>
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('UserId:')}" />
+                                    <hbox>
+                                        <textbox id="ldapUserId" value="@{configurationController.ldapConfiguration.ldapUserId}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'uid')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Save passwords in database')}" />
+                                    <checkbox id="ldapSavePasswordsDB" checked="@{configurationController.ldapConfiguration.ldapSavePasswordsDB}" />
+                                </row>
+                                <row>
+                                </row>
+                            </rows>
+                        </grid>
+
+                    </groupbox>
+
+                    <!-- Authorization -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Authorization')}" />
+                        <grid>
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Import LDAP roles')}" />
+                                    <checkbox id="ldapSaveRolesDB" checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" onCheck="configurationController.showLdapRoles()"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Group path:')}" />
+                                    <hbox>
+                                        <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'ou=groups (If it is empty, a node strategy is used.)')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Role property:')}" />
+                                    <hbox>
+                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'member')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Role search query:')}" />
+                                    <hbox>
+                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
+                                    </hbox>
+                                </row>
+                            </rows>
+                        </grid>
+                        <separator />
+                        <separator />
+                        <vbox id="ldapRoles" visible="false">
+                            <grid id="configurationRoles"
+                                model="@{configurationController.roles}"
+                                rowRenderer="@{configurationController.allUserRolesRenderer}"
+                                mold="paging" pageSize="10" fixedLayout="true">
+                                <columns>
+                                    <column label="${i18n:_('LibrePlan Role')}" width="200px" />
+                                    <column label="${i18n:_('LDAP Roles (separated by ;)')}" />
+                                </columns>
+                            </grid>
+                        </vbox>
+                    </groupbox>
+                </tabpanel>
+            </tabpanels>
+        </tabbox>
+        <hbox>
+            <button label="${i18n:_('Save')}"
+                sclass="save-button global-action"
+                onClick="configurationController.save()" />
+            <button label="${i18n:_('Cancel')}"
+                sclass="cancel-button global-action"
+                onClick="configurationController.cancel()" />
+        </hbox>
+
+    </window>
+
+</zk>

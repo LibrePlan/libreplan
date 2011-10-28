@@ -6,7 +6,7 @@
      resources-sample-mini.xml first, and then
      resources-update-sample.xml). -->
 
-<resource-list xmlns="http://rest.ws.navalplanner.org">
+<resource-list xmlns="http://rest.ws.libreplan.org">
 
     <!-- OK (change name, machineA-s1's start date, and machineA-a2's start
          date). -->

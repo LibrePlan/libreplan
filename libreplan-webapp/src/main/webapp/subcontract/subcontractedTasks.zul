@@ -1,0 +1,61 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Subcontracted Tasks')}"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<zk>
+<div self="@{define(content)}">
+
+<window apply="${subcontractedTasksController}"
+    title="${i18n:_('Subcontracted Tasks List')}">
+
+    <vbox id="messagesContainer" />
+
+    <grid id="listing"
+        model="@{controller.subcontractedTasks}"
+        rowRenderer="@{controller.subcontractedTasksRenderer}"
+        mold="paging" pageSize="10" fixedLayout="true">
+        <columns>
+            <column label="${i18n:_('Subcontratation')}"
+                    tooltiptext="${i18n:_('Subcontratation date')}" sort="auto(subcontratationdate)" />
+            <column label="${i18n:_('Communication')}" sort="auto(communicationdate)"
+                tooltiptext="${i18n:_('Communication date')}" />
+            <column label="${i18n:_('Company')}" tooltiptext="${i18n:_('External company')}" sort="auto(externalcompany)" />
+            <column label="${i18n:_('Project code')}" tooltiptext="${i18n:_('Project code')}" />
+            <column label="${i18n:_('Subcontracted code')}" tooltiptext="${i18n:_('Subcontracted code')}" />
+            <column label="${i18n:_('Task name')}" tooltiptext="${i18n:_('Task name')}" />
+            <column label="${i18n:_('Description')}" tooltiptext="${i18n:_('Work description')}" />
+            <column label="${i18n:_('Budget')}" tooltiptext="${i18n:_('Budget')}" />
+            <column label="${i18n:_('State')}" tooltiptext="${i18n:_('State')}" />
+            <column label="${i18n:_('Operations')}" tooltiptext="${i18n:_('Operations')}" width="150px"/>
+        </columns>
+    </grid>
+
+</window>
+
+</div>
+</zk>

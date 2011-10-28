@@ -2,7 +2,7 @@ This package was debianized by Adrian Perez
 <aperez@igalia.com> on Wed, 24 Mar 2010 16:35:00 +0000.
 
 
-It was downloaded from https://sourceforge.net/projects/navalplan/
+It was downloaded from https://sourceforge.net/projects/libreplan/
 
 
 Upstream Author: See AUTHORS file for details.
@@ -13,7 +13,7 @@ Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 Copyright (C) 2010-2011 Igalia, S.L.
 
 
-NavalPlan is licensed under the GNU Affero General Public License v3:
+LibrePlan is licensed under the GNU Affero General Public License v3:
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU Affero General Public License as published by

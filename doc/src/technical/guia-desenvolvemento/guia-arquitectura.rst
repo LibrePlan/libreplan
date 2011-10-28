@@ -5,12 +5,12 @@ Guía de Arquitectura
 Arquitectura basada en capas
 ============================
 
-A aplicación Navalplan utiliza unha arquitectura de organización do código baseada en capas. Consiste en organizar o software nunha serie de divisións horizontais lóxicas. Estas divisións horizontais organízanse xerarquicamente de forman que descansa cada unha na capa que ten debaixo. Así ata a capa máis profunda. Nesta estruturación séguense os seguintes preceptos:
+A aplicación LibrePlan utiliza unha arquitectura de organización do código baseada en capas. Consiste en organizar o software nunha serie de divisións horizontais lóxicas. Estas divisións horizontais organízanse xerarquicamente de forman que descansa cada unha na capa que ten debaixo. Así ata a capa máis profunda. Nesta estruturación séguense os seguintes preceptos:
    - Cada capa ten un conxunto de responsabilidades que corresponden a un determinado nivel de abstracción.
    - Unha capa ofrece servizos a capa de nivel superior.
    - Unha capa usa os servizos ofertados pola capa de nivel inferior.
 
-As capas de que consta Navalplan son as seguintes:
+As capas de que consta LibrePlan son as seguintes:
    - Capa de presentación - interfaz web.
    - Capa de interfaz servizos web.
    - Capa de lóxica de negocio.
@@ -34,7 +34,7 @@ No patrón MVC distínguense 3 partes estruturais.
      operacións para actuar sobre eles. Na arquitectura está representado por clases que teñen xestionado o seu ciclo de vida a través
      do contedor de inxeción de dependencias que se usa *Spring framework*. Son clases conversacionais que rexistran o estado de
      interacción do usuario cunha determinada pantalla na que esté operando.
-   - **Controlador (Controller)**. O controlador é o compoñente software - materializado en Navalplan nunha clase de orientación a
+   - **Controlador (Controller)**. O controlador é o compoñente software - materializado en LibrePlan nunha clase de orientación a
      obxectos - que se encarga de atender as notificacións, peticións procedentes da vista e de solicitar ao modelo que realice as
      operacións pertinentes acordes coas ordes que o usuario emite ao programa a través da interfaz.
 
@@ -44,8 +44,8 @@ Capa de interfaz de servizos web
 --------------------------------
 
 A capa de servizos web é unha capa paralela a capa de interfaz web que ofrece servicios web REST para ofrecer funcionalidades de exportación/importación de datos dunha instalación da aplicación co exterior. Conténplanse dous tipos de comunicacións a través de servizos web:
-   - **Integración con outras aplicacións**. Quedarían englobados aquí os ERP que desexen interactuar con Navalplan.
-   - **Integración con outras instalacións de Navalplan**. Dúas instalacións de Navalplan en sendas empresas permiten interactuar
+   - **Integración con outras aplicacións**. Quedarían englobados aquí os ERP que desexen interactuar con LibrePlan.
+   - **Integración con outras instalacións de LibrePlan**. Dúas instalacións de LibrePlan en sendas empresas permiten interactuar
      para a subcontratación de pedidos e o reporte de avances dos mesmos.
 
 
@@ -84,7 +84,7 @@ Spring Framework
 
 Spring Framework principalmente é un framework que proporciona un contedor de inxección de depedencias que permite a implementación do patrón de deseño IoC [2]_.
 
-Resumidamente este principio de deseño permite desacoplar, é dicir, facer independentes, unhas parte dun programa de outras. Facendo independentes unhas partes de outras propicia que a arquitectura do programa permita cousas como cambiar unha determinada implementación por outra e que as cousas sigan a funcionar. Por exemplo, Navalplan permite a sustitución do ORM que implementa agora mesmo a persistencia, Hibernate, por outro ORM ou outra solución de almacenamento como usar directamente JDBC.
+Resumidamente este principio de deseño permite desacoplar, é dicir, facer independentes, unhas parte dun programa de outras. Facendo independentes unhas partes de outras propicia que a arquitectura do programa permita cousas como cambiar unha determinada implementación por outra e que as cousas sigan a funcionar. Por exemplo, LibrePlan permite a sustitución do ORM que implementa agora mesmo a persistencia, Hibernate, por outro ORM ou outra solución de almacenamento como usar directamente JDBC.
 
 A través do contedor de inxección de dependencias tamén se permite xestionar o ciclo de vida dos obxectos que se crean recorrendo ao contedor - *beans* de Spring -. Por exemplo, pódese configurar que un *bean* teña ámbito *Singleton* [3]_ ou ben que se devolva unha nova instancia da clase do *bean* cada vez que se solicita unha nova referencia ao contedor.
 
@@ -195,9 +195,9 @@ Relación das capas cos paquetes e módulos do proxecto
 
 Proxecto organizados en módulos: Definicion de modulo.
 
-   * Modulo navalplanner-business
+   * Modulo libreplan-business
      Concepto de servidor. Abarca as capas de loxica de negocio e persistencia.
-   * Modulo navalplanner-webapp.
+   * Modulo libreplan-webapp.
      Toda a interfaz e servicios conversacionais e servicios web.
    * Modulo ganttzk.
      Modulo para compoñentes ZK de

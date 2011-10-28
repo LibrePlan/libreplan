@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<order-list xmlns="http://rest.ws.navalplanner.org">
+<order-list xmlns="http://rest.ws.libreplan.org">
   <order calendar-name="Default"
   dependencies-constraints-have-priority="false"
   deadline="2010-03-25T00:00:00+01:00"

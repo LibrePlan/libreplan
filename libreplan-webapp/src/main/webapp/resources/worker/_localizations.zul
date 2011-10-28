@@ -1,0 +1,79 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<vbox id="localizationsContainer" style="padding: 10px">
+    <hbox>
+
+        <vbox>
+            <label class="subtitulo" value="${i18n:_('Assigned locations')}" />
+            <listbox id="activeSatisfactions" mold="paging"
+                model="@{controller.localizations.activeSatisfactions}"
+                height="200px" multiple="true" checkmark="true">
+                <listhead>
+                    <listheader label="${i18n:_('Group')}"
+                        sort="auto(criterion.name)"></listheader>
+                    <listheader label="${i18n:_('Starting date')}"
+                        sort="auto(startDate)" />
+                </listhead>
+                <listitem self="@{each='satisfaction'}" value="@{satisfaction}">
+                    <listcell label="@{satisfaction.criterion.name}"></listcell>
+                    <listcell label="@{satisfaction.startDate}"></listcell>
+                </listitem>
+            </listbox>
+        </vbox>
+        <vbox style="margin-top:80px">
+            <button id="unassignButton" label="&gt;&gt;"></button>
+            <button id="assignButton" label="&lt;&lt;"></button>
+        </vbox>
+
+        <vbox>
+            <label class="subtitulo" value="${i18n:_('Non-assigned locations')}" />
+            <listbox id="criterionsNotAssigned" mold="paging"
+                model="@{controller.localizations.criterionsNotAssigned}"
+                height="200px" multiple="true" checkmark="true">
+                <listhead>
+                    <listheader label="${i18n:_('Group')}"
+                        sort="auto(name)"></listheader>
+                </listhead>
+                <listitem self="@{each='criterion'}" value="@{criterion}">
+                    <listcell label="@{criterion.name}"></listcell>
+                </listitem>
+            </listbox>
+        </vbox>
+    </hbox>
+
+    <label class="subtitulo" value="${i18n:_('Log')}" />
+    <grid id="listing" model="@{controller.localizations.localizationsHistory}"
+        mold="paging" pageSize="10">
+        <columns>
+            <column label="${i18n:_('Group')}" sort="auto(criterion.name)" />
+            <column label="${i18n:_('Starting date')}" sort="auto(startDate)" />
+            <column label="${i18n:_('Ending date')}" sort="auto(endDate)" />
+        </columns>
+        <rows>
+            <row self="@{each='satisfaction'}">
+                <label value="@{satisfaction.criterion.name}" />
+                <label value="@{satisfaction.startDate}" />
+                <label value="@{satisfaction.endDate}" />
+            </row>
+        </rows>
+    </grid>
+</vbox>

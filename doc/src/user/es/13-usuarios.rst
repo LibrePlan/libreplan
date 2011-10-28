@@ -8,7 +8,7 @@ Usuarios
 Administración de usuarios
 ==========================
 
-El sistema de usuarios de "NavalPlan" permite gestionar perfiles, permisos y usuarios. Un usuario pertenece a un perfil de usuario y por otro lado los perfiles pueden tener una serie de roles predefinidos para el acceso a la aplicación. Los roles son los permisos definidos sobre "NavalPlan". Ejemplos de roles:
+El sistema de usuarios de "LibrePlan" permite gestionar perfiles, permisos y usuarios. Un usuario pertenece a un perfil de usuario y por otro lado los perfiles pueden tener una serie de roles predefinidos para el acceso a la aplicación. Los roles son los permisos definidos sobre "LibrePlan". Ejemplos de roles:
 
 * Administración: Rol que los usuarios administradores deben tener asignados para poder realizar operaciones de administración.
 * Lector de servicios web: Rol que los usuarios necesitan para poder consultar servicios web de la aplicación.

@@ -1,6 +1,6 @@
-# Russian translations for NavalPlan - GanttZK module.
+# Russian translations for LibrePlan - GanttZK module.
 # Copyright (C) 2011 Pavel Rudensky <prudensky@gmail.com>
-# This file is distributed under the same license as the NavalPlan package.
+# This file is distributed under the same license as the LibrePlan package.
 # Pavel Rudensky <prudensky@gmail.com>, 2011.
 #
 msgid ""

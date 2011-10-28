@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<base-calendar-list xmlns="http://rest.ws.navalplanner.org">
+<base-calendar-list xmlns="http://rest.ws.libreplan.org">
 <base-calendar name="Spanish Calendar" code="000-001">
     <calendar-exception-list>
       <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"

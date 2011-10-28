@@ -100,7 +100,7 @@ Ejercicio 3.- Medición de progreso del proyecto
 Ejercicio 4.- Simulación de duración del proyecto siguiendo el método de Montecarlo
 ===================================================================================
 
-   * Acceder la ventana de Configuración de NavalPlan y habilitar el método de
+   * Acceder la ventana de Configuración de LibrePlan y habilitar el método de
      Montecarlo.
 
    * Acceder al proyecto *Proyecto 1 - Programa de contabilidad*.
@@ -118,7 +118,7 @@ Ejercicio 5 .- Subcontratación de tareas
 ========================================
 
 Para poder subcontratar una tarea, antes es necesario contar con una empresa
-dada de alta con *NavalPlan* instalado. Crear dicha empresa:
+dada de alta con *LibrePlan* instalado. Crear dicha empresa:
 
    * Nombre: Empresa subcontratada
    * NIF: COMPANY_CODE
@@ -126,7 +126,7 @@ dada de alta con *NavalPlan* instalado. Crear dicha empresa:
    * Subcontratista: Sí.
    * Usuario: wswriter
    * Interactúa con aplicaciones: Sí.
-   * URI: http://localhost:8080/navalplanner-webapp/
+   * URI: http://localhost:8080/libreplan-webapp/
    * Login: wswriter
    * Contraseña: wswriter
 
@@ -282,7 +282,7 @@ El alumno tiene que crear un tipo de parte de trabajo con los siguientes datos:
      que tenga un tamaño de 20 caracteres.
 
 
-Ejercicio 13 .- Introducir los siguientes tipos de horas en NavalPlan
+Ejercicio 13 .- Introducir los siguientes tipos de horas en LibrePlan
 =====================================================================
 
    * **Tipo de hora:**

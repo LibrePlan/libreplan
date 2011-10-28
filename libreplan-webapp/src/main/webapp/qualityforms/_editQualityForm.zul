@@ -1,0 +1,150 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="${arg.id}" visible="false">
+    <caption id="caption" sclass="caption-title" />
+    <!--  Messages for user -->
+    <vbox id="messagesContainer"/>
+
+    <tabbox>
+        <tabs>
+           <tab label="${i18n:_('Quality form')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <!--  Name qualityForm -->
+                <vbox style="margin-bottom: 5px" width="100%">
+                    <grid fixedLayout="true">
+                        <columns>
+                            <column width="250px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Name')}" />
+                                <textbox id="qualityFormName"
+                                    width="500px" value="@{controller.qualityForm.name}"
+                                    constraint="@{controller.checkConstraintUniqueQualityFormName}"
+                                    onBlur="controller.updateWindowTitle()"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Description')}" />
+                                <textbox id="qualityFormDescription"
+                                    rows="3" width="500px"
+                                    value="@{controller.qualityForm.description}"/>
+                            </row>
+                            <row>
+                                <hbox>
+                                    <label value="${i18n:_('Quality form type')}" />
+                                    <image height="15px" src="/common/img/axuda.gif" tooltip="quality-forms-popup" />
+                                </hbox>
+                                <listbox id="listQualityFormTypes" mold="select" rows="1"
+                                    model="@{controller.qualityFormTypes}"
+                                    onSelect="controller.changeQualityFormType();"
+                                    selectedItem="@{controller.qualityForm.qualityFormType}"
+                                    itemRenderer="org.libreplan.web.common.EnumsListitemRenderer"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Report progress')}" />
+                                <checkbox id="checkBoxReportProgress" checked="@{controller.qualityForm.reportAdvance}"
+                                    onCheck="controller.validateReportProgress(self);" />
+                            </row>
+                        </rows>
+                    </grid>
+                </vbox>
+
+                <!-- Quality form items list -->
+                <panel title="${i18n:_('Quality form items list')}" border="normal">
+                    <panelchildren>
+                        <hbox pack="center">
+                            <button label="${i18n:_('New quality form item')}"
+                            onClick="controller.createQualityFormItem()" />
+                        </hbox>
+                        <grid id="gridQualityFormItems" height="200px"
+                            model="@{controller.qualityFormItems}" fixedLayout="true">
+                            <columns sizable="true">
+                                <column label="${i18n:_('Name')}"/>
+                                <column label="${i18n:_('Position')}" align="center" width="120px"
+                                    sort="auto(position)" sortDirection="ascending"/>
+                                <column visible="@{controller.byPercentage}" label="${i18n:_('Percentage')}" align="center" width="180px"/>
+                                <column label="${i18n:_('Operations')}" align="center" width="120px"/>
+                            </columns>
+                            <rows>
+                                <row self="@{each='qualityFormItem'}" value="@{qualityFormItem}">
+                                    <textbox value="@{qualityFormItem.name}" width="95%"
+                                        constraint="@{controller.checkConstraintQualityFormItemName}"/>
+                                    <label value="@{qualityFormItem.stringPosition}" width="50px"/>
+
+                                    <decimalbox scale = "2" width="100px"
+                                        visible="@{controller.byPercentage}"
+                                        value="@{qualityFormItem.percentage}"
+                                        constraint = "@{controller.checkConstraintQualityFormItemPercentage}"
+                                        onChange = "controller.onChangeQualityFormItemPercentage()"/>
+
+                                    <hbox>
+                                        <button visible="@{controller.byItems}"
+                                            sclass="icono" image="/common/img/ico_subir1.png"
+                                            hoverImage="/common/img/ico_subir.png"
+                                            tooltiptext="${i18n:_('Up')}"
+                                            onClick="controller.upQualityFormItem(self.parent.parent.value);">
+                                        </button>
+                                        <button visible="@{controller.byItems}"
+                                            sclass="icono" image="/common/img/ico_bajar1.png"
+                                            hoverImage="/common/img/ico_bajar.png"
+                                            tooltiptext="${i18n:_('Down')}"
+                                            onClick="controller.downQualityFormItem(self.parent.parent.value);">
+                                        </button>
+                                        <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                            hoverImage="/common/img/ico_borrar.png"
+                                            tooltiptext="${i18n:_('Delete')}"
+                                            onClick="controller.confirmDeleteQualityFormItem(self.parent.parent.value);">
+                                        </button>
+                                    </hbox>
+                                </row>
+                            </rows>
+                        </grid>
+                    </panelchildren>
+                </panel>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <!-- Control buttons -->
+    <hbox>
+        <button label="${i18n:_('Save')}"
+            onClick="controller.saveAndExit()"
+            sclass="save-button global-action"/>
+        <button label="${i18n:_('Save &amp; Continue')}"
+            onClick="controller.saveAndContinue()"
+            sclass="saveandcontinue-button global-action"/>
+        <button label="${i18n:_('Cancel')}"
+            onClick="controller.cancelForm()"
+            sclass="cancel-button global-action"/>
+    </hbox>
+
+    <zscript><![CDATA[
+        i18iframe = "/help/" + org.libreplan.web.I18nHelper._("en") + "/12-formularios-calidad.html#administracion-de-formularios-de-calidade";
+    ]]></zscript>
+    <popup id="quality-forms-popup" width="700px" onOpen='iframe.setSrc(i18iframe)'>
+        <iframe id="iframe" width="100%" />
+    </popup>
+
+</window>

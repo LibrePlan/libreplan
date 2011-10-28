@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.orders.entities" default-access="field">
+    <class name="OrderElement" table="order_element" abstract="true">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <component name="infoComponent" class="org.libreplan.business.orders.entities.InfoComponent">
+            <property name="name" access="field" />
+            <property name="description" access="field" />
+            <property name="code" access="field" unique="true" />
+        </component>
+        <property name="initDate" access="field" column="init_date" />
+        <property name="deadline" access="field" />
+        <property name="lastAdvanceMeausurementForSpreading" access="field"
+            column="last_advance_meausurement_for_spreading" />
+        <property name="dirtyLastAdvanceMeasurementForSpreading" access="field"
+            column="dirty_last_advance_measurement_for_spreading" />
+
+        <!-- Indexed the other side -->
+        <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
+            <key column="direct_order_element_id" />
+            <one-to-many class="org.libreplan.business.advance.entities.DirectAdvanceAssignment" />
+        </set>
+
+        <set name="labels" table="order_element_label" cascade="none">
+            <key column="order_element_id" not-null="true"/>
+            <many-to-many column="label_id" class="org.libreplan.business.labels.entities.Label"/>
+        </set>
+
+        <!-- Indexed the other side -->
+        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
+            <key column="order_element_id" not-null="false"></key>
+            <one-to-many class="org.libreplan.business.requirements.entities.CriterionRequirement"/>
+        </set>
+
+        <!-- Indexed the other side -->
+        <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
+            <key column="order_element_id" not-null="true" />
+            <one-to-many class="org.libreplan.business.materials.entities.MaterialAssignment" />
+        </set>
+
+        <!--  Indexed the other side -->
+        <set name="taskQualityForms" cascade="all-delete-orphan" inverse="true">
+            <key column="order_element_id" not-null="true" />
+            <one-to-many class="org.libreplan.business.qualityforms.entities.TaskQualityForm" />
+        </set>
+
+        <!-- Inverse navigation from OrderElement to OrderLineGroup -->
+        <!-- Indexed -->
+        <many-to-one name="parent"
+            access="field"
+            cascade="all"
+            class="org.libreplan.business.orders.entities.OrderLineGroup"
+            index="idx_order_element_on_parent"/>
+
+        <many-to-one name="template"
+            access="field"
+            cascade="none"
+            class="org.libreplan.business.templates.entities.OrderElementTemplate"
+            index="idx_order_element_on_template"/>
+
+        <property name="externalCode" access="field" column="external_code" />
+
+        <map name="schedulingDatasForVersion" table="scheduling_states_by_order_version"
+            cascade="all-delete-orphan">
+            <key column="order_element_id"></key>
+            <map-key-many-to-many column="order_version_id"
+                class="org.libreplan.business.scenarios.entities.OrderVersion" />
+            <many-to-many class="SchedulingDataForVersion"
+                column="scheduling_state_for_version_id" />
+        </map>
+
+       <many-to-one name="sumChargedEffort"
+           class="SumChargedEffort"
+           column="sum_charged_effort_id"
+           cascade="save-update, delete"
+           unique="true"
+           lazy="false" />
+
+        <joined-subclass name="OrderLineGroup"  table="order_line_group">
+            <key column="order_element_id"></key>
+
+            <!-- Indexed the other side -->
+            <list name="children" access="field" cascade="all">
+                <key column="parent" not-null="false"></key>
+                <index column="position_in_container"></index>
+                <one-to-many class="OrderElement" />
+            </list>
+
+            <!-- Indexed the other side -->
+            <set name="indirectAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
+                <key column="indirect_order_element_id" />
+                <one-to-many class="org.libreplan.business.advance.entities.IndirectAdvanceAssignment" />
+            </set>
+
+            <joined-subclass name="Order" table="order_table">
+                <key column="order_element_id"></key>
+
+                <property name="responsible" access="field" />
+                <property name="dependenciesConstraintsHavePriority"
+                    column="dependencies_constraints_have_priority" access="field" />
+                <property name="codeAutogenerated" column="code_autogenerated"
+                    access="field" />
+                <property name="lastOrderElementSequenceCode"
+                    column="last_order_element_sequence_code" access="field" />
+
+                <property name="workBudget" column="work_budget" access="field" />
+                <property name="materialsBudget" column="materials_budget" access="field" />
+                <property name="totalHours" column="total_hours" access="field" />
+                <property name="customerReference" column="customer_reference" access="field" />
+                <property name="externalCode" column="external_code" access="field" />
+
+                <property name="state" access="field" >
+                    <type name="org.hibernate.type.EnumType">
+                        <param name="enumClass">org.libreplan.business.orders.entities.OrderStatusEnum</param>
+                    </type>
+                </property>
+
+                <property name="schedulingMode" access="field" column="scheduling_mode">
+                    <type name="org.hibernate.type.EnumType">
+                        <param name="enumClass">org.libreplan.business.orders.entities.Order$SchedulingMode</param>
+                    </type>
+                </property>
+
+                <!-- Not indexed -->
+                <many-to-one name="customer" access="field" class="org.libreplan.business.externalcompanies.entities.ExternalCompany"/>
+
+                <!-- Not indexed -->
+                <many-to-one name="calendar" column="base_calendar_id" cascade="none"
+                    class="org.libreplan.business.calendars.entities.BaseCalendar"/>
+
+                <set name="orderAuthorizations" cascade="all-delete-orphan" inverse="true" >
+                    <key column="order_id" />
+                    <one-to-many class="org.libreplan.business.users.entities.OrderAuthorization" />
+                </set>
+
+                <map name="scenarios" table="scenario_orders" cascade="save-update">
+                    <key column="order_id" />
+                    <map-key-many-to-many column="scenario_id"
+                        class="org.libreplan.business.scenarios.entities.Scenario" />
+                    <many-to-many column="order_version_id"
+                        class="org.libreplan.business.scenarios.entities.OrderVersion"/>
+                </map>
+            </joined-subclass>
+
+        </joined-subclass>
+
+        <joined-subclass name="OrderLine"  table="order_line">
+            <key column="order_element_id"></key>
+
+            <!-- Indexed the other side -->
+            <set name="hoursGroups" access="field" cascade="all,delete-orphan" inverse="true">
+                <key column="parent_order_line" not-null="false"></key>
+                <one-to-many class="HoursGroup" />
+            </set>
+
+            <property name="lastHoursGroupSequenceCode"
+                column="last_hours_group_sequence_code" access="field" />
+        </joined-subclass>
+    </class>
+
+    <class name="HoursGroup" table="hours_group">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="code" access="field" not-null="true" unique="true" />
+
+        <property name="resourceType" access="field" column="resource_type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.resources.entities.ResourceEnum</param>
+                <param name="type">12</param>
+            </type>
+        </property>
+
+        <property name="workingHours" column="working_hours" access="field" not-null="true"/>
+        <property name="percentage" access="field" />
+        <property name="fixedPercentage" column="fixed_percentage" access="field" />
+
+        <!-- Indexed the other side -->
+        <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true">
+            <key column="hours_group_id" not-null="false"></key>
+            <one-to-many class="org.libreplan.business.requirements.entities.CriterionRequirement"/>
+        </set>
+
+        <!-- Indexed -->
+        <many-to-one name="parentOrderLine" column="parent_order_line"
+            class="org.libreplan.business.orders.entities.OrderLine"
+            index="idx_hours_group_on_parent_order_line"/>
+
+        <!-- Indexed -->
+        <many-to-one name="orderLineTemplate" column="order_line_template"
+            class="org.libreplan.business.templates.entities.OrderLineTemplate"
+            index="idx_hours_group_on_order_line_template"/>
+
+    </class>
+
+    <class name="SchedulingDataForVersion" table="scheduling_data_for_version">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <property name="schedulingStateType" access="field" column="scheduling_state_type">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.orders.entities.SchedulingState$Type</param>
+            </type>
+        </property>
+        <many-to-one name="orderElement" column="order_element_id"></many-to-one>
+        <one-to-one name="taskSource" class="TaskSource" cascade="delete" access="field" property-ref="schedulingData" />
+    </class>
+
+    <class name="TaskSource" table="task_source">
+        <id name="id" access="property" type="long">
+            <generator class="foreign">
+                <param name="property">task</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <many-to-one name="schedulingData" class="SchedulingDataForVersion"
+            cascade="none" unique="true" access="field" />
+        <one-to-one name="task" class="org.libreplan.business.planner.entities.TaskElement"
+            constrained="true" cascade="delete" access="field" lazy="false"/>
+
+        <set name="hoursGroups" table="task_source_hours_groups" cascade="none" inverse="false" access="field">
+            <key column="task_source_id"></key>
+            <many-to-many class="HoursGroup" column="hours_group_id"/>
+        </set>
+    </class>
+
+    <class name="SumChargedEffort" table="sum_charged_effort">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="directChargedEffort" access="field"
+            column="direct_charged_effort"
+            type="org.libreplan.business.workingday.hibernate.EffortDurationType" />
+        <property name="indirectChargedEffort" access="field"
+            column="indirect_charged_effort"
+            type="org.libreplan.business.workingday.hibernate.EffortDurationType" />
+    </class>
+
+</hibernate-mapping>

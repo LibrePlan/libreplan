@@ -1,0 +1,50 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<zk id="bandboxsearch" xmlns:n="http://www.zkoss.org/2005/zk/native" xmlns:c="http://www.zkoss.org/2005/zk/client">
+
+    <zscript>
+        <![CDATA[
+            top = self;
+        ]]>
+    </zscript>
+
+    <n:script language="javascript">
+
+    function closeBandbox(bandbox) {
+        zAu.send(new zk.Event(bandbox, "closeBandbox"));
+    }
+
+    </n:script>
+
+    <bandbox id="bandbox" autodrop="true">
+        <bandpopup>
+            <vbox height="50px">
+               <listbox id="listbox" width="200px" sclass="bandbox-search" height="150px"
+                      vflex="true" model="${arg.model}"
+                      c:onClick="closeBandbox(this.$f().bandbox.parent);">
+               <listhead id="listhead" />
+               </listbox>
+            </vbox>
+            </bandpopup>
+    </bandbox>
+
+</zk>

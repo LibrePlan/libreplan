@@ -1,13 +1,13 @@
 Update
 ======
 
-This is a guide about how to upgrade *NavalPlan* when a new version is released.
+This is a guide about how to upgrade *LibrePlan* when a new version is released.
 If you want to know how to install the application ``INSTALL`` file.
 
 .. contents::
 
 
-NavalPlan automatic update
+LibrePlan automatic update
 --------------------------
 
 Ubuntu PPAs
@@ -16,7 +16,7 @@ Ubuntu PPAs
 Instructions::
 
   $ sudo apt-get update
-  $ sudo apt-get install navalplan
+  $ sudo apt-get install libreplan
 
 
 Debian packages
@@ -26,18 +26,18 @@ Instructions:
 
 * Download the new package::
 
-    $ wget http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1-1_amd64.deb
 
 * Install package::
 
-    # dpkg -i navalplan_1.1.1-1_amd64.deb
+    # dpkg -i libreplan_1.1.1-1_amd64.deb
 
 * Install new dependencies if needed::
 
     # apt-get install -f
 
 
-NavalPlan manual update
+LibrePlan manual update
 -----------------------
 
 Debian/Ubuntu
@@ -48,32 +48,32 @@ Debian/Ubuntu
     # /etc/init.d/tomcat6 stop
 
 * Download database upgrade scripts from previous version. For example, if you
-  are upgrading from *NavalPlan 1.0.4* to *NavalPlan 1.1.1* you should download
+  are upgrading from *LibrePlan 1.0.4* to *LibrePlan 1.1.1* you should download
   ``upgrade_1.1.0.sql``::
 
-    $ wget http://downloads.sourceforge.net/project/navalplan/NavalPlan/upgrade_1.1.0.sql
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/upgrade_1.1.0.sql
 
 * Upgrade database::
 
-    $ psql -h localhost -U navalplan -W navalplan < upgrade_1.1.0.sql
+    $ psql -h localhost -U libreplan -W libreplan < upgrade_1.1.0.sql
 
 * Download ``.war`` file of new version from SourceForge.net::
 
-    $ wget -O navalplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1.war
 
 * Backup current deployed application::
 
-    # mv /var/lib/tomcat6/webapps/navalplan/ /tmp/
+    # mv /var/lib/tomcat6/webapps/libreplan/ /tmp/
 
 * Copy war to Tomcat 6 web applications directory::
 
-    # cp navalplan.war /var/lib/tomcat6/webapps/
+    # cp libreplan.war /var/lib/tomcat6/webapps/
 
 * Start Tomcat 6::
 
     # /etc/init.d/tomcat6 start
 
-* Go to http://localhost:8080/navalplan/
+* Go to http://localhost:8080/libreplan/
 
 
 openSUSE
@@ -84,29 +84,29 @@ openSUSE
     # /etc/init.d/tomcat6 stop
 
 * Download database upgrade scripts from previous version. For example, if you
-  are upgrading from *NavalPlan 1.0.4* to *NavalPlan 1.1.1* you should download
+  are upgrading from *LibrePlan 1.0.4* to *LibrePlan 1.1.1* you should download
   ``upgrade_1.1.0.sql``::
 
-    $ wget http://downloads.sourceforge.net/project/navalplan/NavalPlan/upgrade_1.1.0.sql
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/upgrade_1.1.0.sql
 
 * Upgrade database::
 
-    $ psql -h localhost -U navalplan -W navalplan < upgrade_1.1.0.sql
+    $ psql -h localhost -U libreplan -W libreplan < upgrade_1.1.0.sql
 
 * Download ``.war`` file of new version from SourceForge.net::
 
-    $ wget -O navalplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1.war
 
 * Backup current deployed application::
 
-    # mv /srv/tomcat6/webapps/navalplan/ /tmp/
+    # mv /srv/tomcat6/webapps/libreplan/ /tmp/
 
 * Copy war to Tomcat 6 web applications directory::
 
-    # cp navalplan.war /srv/tomcat6/webapps/
+    # cp libreplan.war /srv/tomcat6/webapps/
 
 * Start Tomcat 6::
 
     # /etc/init.d/tomcat6 start
 
-* Go to http://localhost:8080/navalplan/
+* Go to http://localhost:8080/libreplan/

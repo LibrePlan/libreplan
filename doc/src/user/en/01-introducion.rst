@@ -3,10 +3,10 @@ Introduction
 
 .. contents::
 
-The purpose of this document is to describe the features of NavalPlan and provide user information on how to configure and use the application.
+The purpose of this document is to describe the features of LibrePlan and provide user information on how to configure and use the application.
 
-NavalPlan is an opensource web application for project planning. Its main goal is to provide a complete solution for company project management.
-For any specific information you may need about this software, please contact the development team at http://www.navalplan.org/en/contact
+LibrePlan is an opensource web application for project planning. Its main goal is to provide a complete solution for company project management.
+For any specific information you may need about this software, please contact the development team at http://www.libreplan.org/en/contact
 
 
 .. figure:: images/company_view.png
@@ -52,19 +52,19 @@ The program has the following views for an order:
 * Editing order view. View where the user can change the details of the order. See the *Orders* section for more information.
 * Advanced resource allocation view. View where the user can allocate resources including advanced options: choosing hours per day or the allocated functions to be carried out. See the *Resource allocation* section for more information.
 
-What makes NavalPlan useful?
+What makes LibrePlan useful?
 ============================
 
-NavalPlan is an application that has been developed as a general purpose planning tool. It is based on a series of concepts discovered by analysing problems in industrial project planning that were not fully covered by any existing planning tool. Also the motivations for the development of NavalPlan were based on providing a free software alternative, and completely web, for existing privative plannig tools.
+LibrePlan is an application that has been developed as a general purpose planning tool. It is based on a series of concepts discovered by analysing problems in industrial project planning that were not fully covered by any existing planning tool. Also the motivations for the development of LibrePlan were based on providing a free software alternative, and completely web, for existing privative plannig tools.
 
 The essential concepts used for the program are as follows:
 
-* Company and multi-project overview: NavalPlan is a program that has been developed specifically to provide information about projects that are being carried out in a company to users, therefore it is a multi-project program. It was decided that the program's focus would not be individual to each project. However, it is also possible to have several specific views, individual projects among them.
+* Company and multi-project overview: LibrePlan is a program that has been developed specifically to provide information about projects that are being carried out in a company to users, therefore it is a multi-project program. It was decided that the program's focus would not be individual to each project. However, it is also possible to have several specific views, individual projects among them.
 * View management: The company overview or multi-project view comes with the views on the information that is stored. For example, the company overview enables users to view orders and compare their status, view the company's general resource load and process orders. Users can also view the planning, the resource load, the advanced resource allocation view and the editing order view on the project view.
 * Criteria: Criteria are a system entity that enables resources (both humans and machines) and tasks to be classified. Resources must fulfil criteria and tasks require criteria to be fulfilled. These are one of the program's most important aspects, as criteria are the basis of generic allocation in the program and resolve one of the most important problems for the sector: the long time taken in human resources and the difficulty in having long-term company load estimations.
 * Resources: There are two different kinds: humans and machines. Human resources are workers in a company that are used to plan, monitor and control the company's load. On the other hand, machines, dependent on the people that manage them, are resources that act in a similar way to human resources.
-* Resource allocation: One of the key points of the program is having the possibility of two kinds of designation: specific and generic. Generic allocation is based on criteria that are required to carry out a task and must be fulfilled by resources that are capable of performing them. In order to understand generic allocation, the following case must be understood: John Smith is a welder. Generally, John Smith is allocated to the planned task, but "NavalPlan" offers the possibility of choosing a resource in general among welders in the company, not worrying if John Smith is the person who has been allocated the task.
-* Company load control: The program offers the possibility of controlling the company's resource load easily. The control is carried out in the mid and long term as current projects and future projects can be managed by the program. "NavalPlan" has graphics that indicate the use of resources.
+* Resource allocation: One of the key points of the program is having the possibility of two kinds of designation: specific and generic. Generic allocation is based on criteria that are required to carry out a task and must be fulfilled by resources that are capable of performing them. In order to understand generic allocation, the following case must be understood: John Smith is a welder. Generally, John Smith is allocated to the planned task, but "LibrePlan" offers the possibility of choosing a resource in general among welders in the company, not worrying if John Smith is the person who has been allocated the task.
+* Company load control: The program offers the possibility of controlling the company's resource load easily. The control is carried out in the mid and long term as current projects and future projects can be managed by the program. "LibrePlan" has graphics that indicate the use of resources.
 * Labels: These are elements that are used to label project tasks. With these labels, the user of the program can group tasks together according to concept, which can then be checked at a later date as a group or after being filtered.
 * Filters: As the system naturally has elements that label or characterise tasks and resources, criteria filters or labels can be used. This is very useful to check categorised information or to get specific reports based on criteria or labels.
 * Calendars: Calendars determine the available productive hours for different resources. The user may create general calendars for the company or input characteristics for more specific calendars, meaning that calendars for resources and tasks can be made.

@@ -1,0 +1,97 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Scheduling')}"?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+<zscript><![CDATA[
+    stretchesFunctionController = arg.get("stretchesFunctionController");
+]]>
+</zscript>
+
+<window title="${i18n:_('Stretches function configuration')}"
+    apply="${stretchesFunctionController}" closable="true">
+
+<hbox>
+    <vbox>
+
+    <groupbox closable="false">
+    <caption label="@{stretchesFunctionController.title}" />
+
+        <button label="${i18n:_('Add stretch')}" onClick="stretchesFunctionController.addStretch()" />
+
+        <listbox id="stretchesList"
+            model="@{stretchesFunctionController.stretches}"
+            itemRenderer="@{stretchesFunctionController.stretchesRenderer}"
+            style="margin-bottom: 5px" fixedLayout="true" rows="15"
+            width="500px" >
+            <listhead>
+                <listheader label="${i18n:_('Date')}" tooltiptext="${i18n:_('Measurement date')}" />
+                <listheader label="${i18n:_('Length')}" tooltiptext="${i18n:_('Length percentage')}" />
+                <listheader label="${i18n:_('Amount work')}" tooltiptext="${i18n:_('Amount work percentage')}" />
+                <listheader label="${i18n:_('Op.')}" tooltiptext="${i18n:_('Operations')}" width="50px"/>
+            </listhead>
+        </listbox>
+
+    </groupbox>
+    </vbox>
+
+    <vbox id="charts">
+        <div visible="@{stretchesFunctionController.chartsDisabled}" height="30px" style="padding:15px;">
+            <label visible="@{stretchesFunctionController.chartsDisabled}" class="message_WARNING">${i18n:_('Cannot calculate charts for current data')}</label>
+        </div>
+        <zscript>
+            import java.awt.Font;
+            String fontname = "Verdana";
+            Font tfont = new Font(fontname, Font.BOLD, 14); //for title
+            Font lbfont = new Font(fontname, Font.PLAIN, 12); //for label
+        </zscript>
+        <chart id="dedicationChart" title="${i18n:_('Dedication chart')}"
+            titleFont="${tfont}"
+            type="time_series" threeD="false"
+            model="@{stretchesFunctionController.getDedicationChartData}"
+            yAxis= "${i18n:_('Hours')}" paneColor="#FFFFFF"
+            xAxisFont="${lbfont}" xAxisTickFont="${lbfont}"
+            yAxisFont="${lbfont}" yAxisTickFont="${lbfont}"
+            showLegend="false"/>
+        <chart id="accumulatedHoursChart"
+            title="${i18n:_('Accumulated hours chart')}"
+            titleFont="${tfont}"
+            type="time_series" threeD="false"
+            model="@{stretchesFunctionController.getAccumulatedHoursChartData}"
+            yAxis= "${i18n:_('Hours')}" paneColor="#FFFFFF"
+            xAxisFont="${lbfont}" xAxisTickFont="${lbfont}"
+            yAxisFont="${lbfont}" yAxisTickFont="${lbfont}"
+            showLegend="false" />
+    </vbox>
+</hbox>
+
+<hbox>
+    <button label="${i18n:_('Accept')}"
+        onClick="stretchesFunctionController.confirm()" sclass="save-button global-action"/>
+    <button label="${i18n:_('Cancel')}"
+        onClick="stretchesFunctionController.cancel()" sclass="cancel-button global-action"/>
+</hbox>
+
+</window>
+
+</zk>

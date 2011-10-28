@@ -1,5 +1,5 @@
 /*
- * This file is part of NavalPlan
+ * This file is part of LibrePlan
  *
  * Copyright (C) 2011 Igalia, S.L.
  *

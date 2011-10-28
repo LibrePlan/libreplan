@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <!--  Data source. SingleConnectionDataSource is a fast data source (it only
+          mantains one connection which is never closed) for testing the
+          bussiness layer. It cannot be used from more than one thread in
+          parallel.
+    -->
+    <bean id="dataSource"
+        class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+        p:driverClassName="${jdbcDriver.className}" p:url="${testDataSource.url}"
+        p:username="${testDataSource.user}" p:password="${testDataSource.password}" />
+
+
+    <!-- Hibernate Session Factory. -->
+    <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+        p:dataSource-ref="dataSource"
+        p:configLocation="classpath:/libreplan-webapp-hibernate-test.cfg.xml">
+
+        <!--
+            FIXME: ideally this chunk of XML should be only in
+            src/main/resources/libreplan-business-spring-config.xml.
+        -->
+        <property name="mappingResources">
+            <list>
+                <value>
+                    org/libreplan/business/advance/entities/Advance.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/resources/entities/Resources.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/orders/entities/Orders.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/templates/entities/Templates.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/planner/entities/Tasks.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/workreports/entities/WorkReports.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/planner/entities/ResourceAllocations.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/calendars/entities/Calendars.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/labels/entities/Labels.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/requirements/entities/Requirements.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/common/entities/Configuration.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/materials/entities/Materials.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/users/entities/Users.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/costcategories/entities/CostCategories.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/qualityforms/entities/QualityForms.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/common/entities/EntitySequence.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/externalcompanies/entities/ExternalCompanies.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/planner/entities/AdvanceConsolidations.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/scenarios/entities/Scenarios.hbm.xml
+                </value>
+            </list>
+        </property>
+
+    </bean>
+
+</beans>

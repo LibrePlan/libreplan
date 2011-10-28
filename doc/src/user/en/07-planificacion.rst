@@ -8,7 +8,7 @@ Task planning
 Task planning
 =============
 
-Planning in "NavalPlan" is a process that has been described throughout all of the chapters of the user guide, the chapters on orders and the assigning of resources being particularly important in this respect. This chapter describes basic planning procedures after the order and the Gantt charts have been configured properly.
+Planning in "LibrePlan" is a process that has been described throughout all of the chapters of the user guide, the chapters on orders and the assigning of resources being particularly important in this respect. This chapter describes basic planning procedures after the order and the Gantt charts have been configured properly.
 
 .. figure:: images/planning-view.png
    :scale: 35

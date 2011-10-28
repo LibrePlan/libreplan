@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<material-category-list xmlns="http://rest.ws.navalplanner.org">
+<material-category-list xmlns="http://rest.ws.libreplan.org">
   <material-category code="10" name="Screws" >
      <material-list>
        <material code="SCREW12" description="Screws Serie-12" price="123.12" unit-type="10" disabled="false"/>

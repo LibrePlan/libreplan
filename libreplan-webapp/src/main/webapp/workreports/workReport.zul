@@ -1,0 +1,216 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?page title="${i18n:_('LibrePlan: Work Reports')}" id="work_report_admin"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/workreports/css/workreports.css"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+
+<zk>
+    <window self="@{define(content)}"
+        apply="org.libreplan.web.workreports.WorkReportCRUDController">
+        <vbox id="messagesContainer"></vbox>
+
+        <window id="listWindow" title="${i18n:_('Work Reports List')}">
+                <vbox align="right">
+                <hbox id="hboxFilter" align="center">
+                  <!-- Filter by type, start date and finish date -->
+                  <label value="${i18n:_('Filter work report by :')}"/>
+                  <label value="${i18n:_('Type')}"/>
+                  <listbox id="listType" mold="select" rows="1"
+                    model="@{controller.filterWorkReportTypes}" width="150px">
+                        <listitem self="@{each='workReportType'}" value="@{workReportType}">
+                          <listcell label="@{workReportType.name}" />
+                       </listitem>
+                  </listbox>
+                  <label value="${i18n:_('from')}"/>
+                  <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
+                  <label value="${i18n:_('to')}"/>
+                  <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
+                  <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+                        onClick="controller.onApplyFilter(event)"/>
+                </hbox>
+                </vbox>
+                <separator bar="false" spacing="20px" orient="horizontal"/>
+                <grid id="listing"  mold="paging" pageSize="10"
+                model="@{controller.workReportDTOs}" sclass="clickable-rows"
+                onInitRender ="controller.sortWorkReports();">
+                <columns sizable="true">
+                    <column id="columnDateStart" label="${i18n:_('Date Start')}" sort="auto(dateStart, dateFinish)" sortDirection="ascending"/>
+                    <column id="columnDateFinish" label="${i18n:_('Date Finish')}" sort="auto(dateFinish, dateStart)" sortDirection="ascending"/>
+                    <column label="${i18n:_('Type')}" sort="auto(type)"/>
+                    <column label="${i18n:_('Code')}" />
+                    <column label="${i18n:_('Actions')}" />
+                </columns>
+                <rows>
+                    <row self="@{each='workReportDTO'}" value="@{workReportDTO}" onClick="controller.goToEditForm(self.value);">
+                        <label value="@{workReportDTO.dateStart, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
+                        <label value="@{workReportDTO.dateFinish, converter='org.libreplan.web.common.typeconverters.DateConverter'}"/>
+                        <label value="@{workReportDTO.type}" />
+                        <label value="@{workReportDTO.code}" />
+
+                        <hbox>
+                            <button sclass="icono" image="/common/img/ico_editar1.png"
+                                hoverImage="/common/img/ico_editar.png"
+                                tooltiptext="${i18n:_('Edit')}"
+                                onClick="controller.goToEditForm(self.parent.parent.value);">
+                            </button>
+
+                            <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                hoverImage="/common/img/ico_borrar.png"
+                                tooltiptext="${i18n:_('Delete')}"
+                                onClick="controller.showConfirmDelete(self.parent.parent.value);">
+                            </button>
+                        </hbox>
+                    </row>
+                </rows>
+            </grid>
+            <separator bar="false" spacing="20px" orient="horizontal"/>
+            <div align="left">
+                <hbox align="center">
+                  <!-- Create new Work Report  -->
+                  <label value="${i18n:_('Select type :')}"/>
+                  <listbox id="listTypeToAssign" mold="select" rows="1"
+                    model="@{controller.workReportTypes}" width="150px"
+                    selectedItem="@{controller.firstType}">
+                        <listitem self="@{each='workReportType'}" value="@{workReportType}">
+                          <listcell label="@{workReportType.name}" />
+                       </listitem>
+                  </listbox>
+                  <button label="${i18n:_('New work report')}" style="margin-top: -4px"
+                        onClick="controller.onCreateNewWorkReport()"/>
+                </hbox>
+                </div>
+        </window>
+
+        <window id="createWindow">
+            <tabbox>
+                <tabs>
+                    <tab label="${i18n:_('Report data')}"></tab>
+                </tabs>
+                <tabpanels>
+                    <tabpanel>
+                        <vbox width="100%">
+
+                        <groupbox closable="false">
+                            <caption label="${i18n:_('General data')}" />
+                            <grid fixedLayout="false" width="100%" span="1">
+                                <columns>
+                                    <column width="200px" />
+                                    <column />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="${i18n:_('Type')}" />
+                                        <label value="@{controller.workReport.workReportType.name}" />
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('Code')}" />
+                                        <hbox>
+                                            <textbox width="350px" value="@{controller.workReport.code}"
+                                                constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                                disabled="@{controller.workReport.codeAutogenerated}" />
+                                            <checkbox id="generateCode" label="${i18n:_('Generate code')}"
+                                                onCheck="controller.onCheckGenerateCode(event)"
+                                                checked="@{controller.workReport.codeAutogenerated}" />
+                                        </hbox>
+                                    </row>
+                                </rows>
+                            </grid>
+                        </groupbox>
+
+                        <groupbox closable="false">
+                        <caption label="${i18n:_('Heading Fields')}" />
+                        <grid id="HeadingRequirementsFields" mold="paging" pageSize="4" fixedLayout="true" style="border-bottom:0">
+                            <columns>
+                              <column width="200px"/>
+                              <column />
+                            </columns>
+                            <rows>
+                                <row visible = "@{controller.workReport.workReportType.dateIsSharedByLines}">
+                                        <label value="${i18n:_('Date')}" />
+                                        <datebox id="date" value="@{controller.workReport.date}" />
+                                </row>
+                                <row visible = "@{controller.workReport.workReportType.resourceIsSharedInLines}">
+                                        <label value="${i18n:_('Resource')}" />
+                                        <autocomplete id="autocompleteResource" buttonVisible="true"
+                                            value = "@{controller.workReport.resource}"
+                                            onChange ="controller.changeResource(self.selectedItem);"
+                                            finder="ResourceFinder" width="300px"
+                                            selectedItem="@{controller.workReport.resource}"/>
+                                </row>
+                                <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
+                                    <label value="${i18n:_('Task Code')}" />
+                                    <bandboxSearch id="bandboxSelectOrderElementInHead"
+                                        finder="OrderElementBandboxFinder" widthBandbox="300px"
+                                        model="@{controller.orderElements}"
+                                        selectedElement="@{controller.workReport.orderElement}"/>
+                                </row>
+                            </rows>
+                        </grid>
+
+                        <grid id="headingFieldsAndLabels" mold="paging" pageSize="4"
+                            fixedLayout="true" style="border-top:0;"
+                            model="@{controller.fieldsAndLabelsHeading}"
+                            rowRenderer= "@{controller.orderedFieldsAndLabelsRowRenderer}">
+                            <columns>
+                              <column width="200px"/>
+                              <column />
+                            </columns>
+                        </grid>
+                        </groupbox>
+
+                        <separator bar="false" spacing="80px" orient="vertical"/>
+
+                            <!-- Work report lines -->
+                            <groupbox closable="false">
+                            <caption label="${i18n:_('Work report lines')}" />
+                                    <hbox>
+                                        <button label="${i18n:_('Add new row')}"
+                                            onClick="controller.addWorkReportLine()" />
+                                    </hbox>
+
+                                   <newdatasortablegrid id="listWorkReportLines" fixedLayout="true"
+                                        rowRenderer="@{controller.renderer}" sclass="listWorkReportLines"/>
+                                </groupbox>
+                        </vbox>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+
+            <button onClick="controller.saveAndExit();"
+                label="${i18n:_('Save')}" sclass="save-button global-action"/>
+            <button onClick="controller.saveAndContinue();"
+                label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
+            <button onClick="controller.newWorkReportWithSameType();"
+                label="${i18n:_('Save &amp; New work report')}" sclass="saveandcontinue-button global-action"/>
+            <button onClick="controller.cancel();"
+                label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
+
+        </window>
+
+    </window>
+</zk>

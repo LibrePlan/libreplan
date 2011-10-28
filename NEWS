@@ -12,7 +12,7 @@ labels were loaded and the persistence to disk failed.
 
 Other minor fixes included in this version:
 * Task Scheduling Status In Project report has been reviewed and fixed.
-* Now NavalPlan does not depend on server language for translations of strings
+* Now LibrePlan does not depend on server language for translations of strings
   in the business module.
 * Resource load chart is fixed for tasks finishing in the middle of a day.
 * Solved issue on Gantt saving due to transient resource allocations.
@@ -185,7 +185,7 @@ Changes
 Version 1.1.0 (19 May 2011)
 ---------------------------
 
-New major version of NavalPlan. Apart from a lot of bugfixing the main features
+New major version of LibrePlan. Apart from a lot of bugfixing the main features
 included in this version are:
 
 * Fixed problem with WebKit based browsers.
@@ -217,7 +217,7 @@ included in this version are:
 
 * Hierarchical criteria enforced.
 
-  Criteria in NavalPlan are like dynamic roles that resources can satisfy and
+  Criteria in LibrePlan are like dynamic roles that resources can satisfy and
   can be hierarchical. This means that one general criterion can include other
   more specific criteria inside. For instance, it is possible to configure the
   general criterion Engineer with two children like Electric Engineer and
@@ -230,7 +230,7 @@ included in this version are:
 
   Generic allocation is the assignment based on criteria. You specify the set
   of criteria which must be satisfied by the workers who are able to do the
-  task and, after this, NavalPlan looks for them and selects the ones less
+  task and, after this, LibrePlan looks for them and selects the ones less
   loaded to be planned.
 
   The algorithm which selects the workers to be assigned to a task when
@@ -268,7 +268,7 @@ included in this version are:
   * admin/admin. This user is the user with administration privileges.
   * user/user. This is a common user without administration privileges.
   * wswriter/wswriter. This user has write permissions to use then web
-    services operations which require modify or insert data in NavalPlan.
+    services operations which require modify or insert data in LibrePlan.
   * wsreader/wsreader. This user has read permissions to the use web services
     operations which only require read permissions.
 
@@ -309,7 +309,7 @@ Notes
 
 If you are upgrading from any 1.0.x verion, you will need to manually execute on
 your database the SQL sentences from file:
-``/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.1.0``
+``/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.1.0``
 
 To get database access information review ``/etc/tomcat6/context.xml`` file.
 
@@ -816,7 +816,7 @@ Changes
 * [Bug #898] Add column criterion type (worker or machine) in criterion types
   list.
 * [Bug #924] Call method useSchedulingDataFor for each order.
-* NavalPlan exercises for formation course in Spanish in reStructuredText.
+* LibrePlan exercises for formation course in Spanish in reStructuredText.
 * [doc] Added more sections to use case development guide.
 * [Bug #884] Show progress measurements list in reverse order.
 * [Bug #884] Sort progress measurements list in reverse order.
@@ -837,7 +837,7 @@ Changes
 * [i18n] Updated translations.
 * [Bug #910] Change string 'Type resource assignation' to 'Resource allocation
   type'
-* NavalPlan formation manual in spanish in reStructuredText.
+* LibrePlan formation manual in spanish in reStructuredText.
 * [doc] Added information about interface in use case development guide.
 * [Bug #892] Rename labels in 'Overall progress'
 * [doc] Use case development guide.
@@ -883,7 +883,7 @@ Changes
   hoursWorkedPerWorkerReport.jrxml.
 * Training material update
 * [doc] Added info about model and extract database data to report guide.
-* [doc] First version of basic tutorial to create a new report on NavalPlan.
+* [doc] First version of basic tutorial to create a new report on LibrePlan.
 * Added comment in main pom.xml to mark the point where bundle folders for
   reports are specified.
 * Give more priority to the resources already picked
@@ -922,7 +922,7 @@ Changes
 * Apply validation annotation to the field
 * [Bug #871] The problem is due to receiving an empty list of tasks
 * [Bug #865] Fix bug
-* [Bug #870] NavalPlan appears in English if browser is configured with es-es
+* [Bug #870] LibrePlan appears in English if browser is configured with es-es
 * Fix bug create or edit resource should start on first tab
 * [Bug #864] S-curve changes the end date of a task
 * [Bug #868] It does not update the row of the order element correctly
@@ -1064,7 +1064,7 @@ Changes
 * Make canWork rely on Capacity data
 * Use Capacity in BaseCalendar
 * Make consufing method private
-* Updated NavalPlan license headers to 2011.
+* Updated LibrePlan license headers to 2011.
 * Refactored components allocation_search and allocation_search_component
 * Added Resource.getCaptionFor()
 * Replaced method IResourceSearchModel.byLimiting(boolean) with .byResourceType
@@ -1217,7 +1217,7 @@ Changes
 Version 1.0.5 (8 Apr 2011)
 --------------------------
 
-Last bugfixing version of NavalPlan for 1.0.x cycle, like in previous releases
+Last bugfixing version of LibrePlan for 1.0.x cycle, like in previous releases
 it includes all the fixes done in the stable branch since 1.0.4. Among them we
 would like to highlight:
 
@@ -1305,7 +1305,7 @@ Changes
 Version 1.0.4 (17 Mar 2011)
 ---------------------------
 
-A new bugfixing version of NavalPlan, including a lot of bugs fixed during this
+A new bugfixing version of LibrePlan, including a lot of bugs fixed during this
 month.
 
 * Resolved some stability problems appearing under certain circumstances.
@@ -1368,7 +1368,7 @@ Changes
 * [Bug #898] Add column criterion type (worker or machine) in criterion types
   list.
 * [Bug #924] Call method useSchedulingDataFor for each order.
-* NavalPlan exercises for formation course in Spanish in reStructuredText.
+* LibrePlan exercises for formation course in Spanish in reStructuredText.
 * [Bug #884] Show progress measurements list in reverse order.
 * [Bug #884] Sort progress measurements list in reverse order.
 * [Bug #854] fix the labels in workingProgressPerTask report
@@ -1388,7 +1388,7 @@ Changes
 * [i18n] Updated translations.
 * [Bug #910] Change string 'Type resource assignation' to 'Resource allocation
   type'
-* NavalPlan formation manual in spanish in reStructuredText.
+* LibrePlan formation manual in spanish in reStructuredText.
 * [Bug #892] Rename labels in 'Overall progress'
 * [Bug #903] Fix regression: creating a gap out of a LocalDate caused tasks may
   overlap due to loose of information about hour
@@ -1444,7 +1444,7 @@ Changes
 * [Bug #855] Fix bug
 * Apply validation annotation to the field
 * [Bug #871] The problem is due to receiving an empty list of tasks
-* [Bug #870] NavalPlan appears in English if browser is configured with es-es
+* [Bug #870] LibrePlan appears in English if browser is configured with es-es
 * Fix bug create or edit resource should start on first tab
 * [Bug #864] S-curve changes the end date of a task
 * [Bug #868] It does not update the row of the order element correctly
@@ -1568,7 +1568,7 @@ Notes
 
 If you are upgrading from any 1.0.x verion, you will need to manually execute on
 your database the SQL sentences from file:
-``/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.0.0``
+``/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.0.0``
 
 To get database access information review ``/etc/tomcat6/context.xml`` file.
 
@@ -1638,7 +1638,7 @@ Changes
 Version 1.0.0 (07 Jan 2011)
 ---------------------------
 
-This is the first stable release of *NavalPlan*, a free software web
+This is the first stable release of *LibrePlan*, a free software web
 application for project management.
 
 Main features
@@ -1653,7 +1653,7 @@ Main features
 * Overload resource allocation control.
 * Earned Value Management (EVM).
 * Cost analysis based on work reports.
-* Integration with other *NavalPlan* instances and third-parties.
+* Integration with other *LibrePlan* instances and third-parties.
 * Other functionalities: materials, quality forms, project templates, planning
   scenarios, multiple task progress measurement ...
 

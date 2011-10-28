@@ -1,0 +1,48 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('Print configuration')}"?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<zk>
+
+    <window border="normal" title="${i18n:_('Print configuration')}"
+        closable="true" id="printConfigurationWindow">
+        <groupbox>
+            <caption label="${i18n:_('Export options')}" />
+            <vbox>
+                <checkbox id="print_labels" label="${i18n:_('Show labels')}" checked="true" />
+                <checkbox id="print_resources"
+                    label="${i18n:_('Show resource assignments')}" checked="true"  />
+                <checkbox id="print_expanded"
+                    label="${i18n:_('Expand taskgroups')}" checked="true"  />
+                <checkbox id="print_shrinked"
+                    label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" visible="false"/>
+                <checkbox id="print_advances"
+                    label="${i18n:_('Show progress')}" checked="true"/>
+                <checkbox id="print_reported_hours"
+                    label="${i18n:_('Show all reported hours')}" checked="true"/>
+            </vbox>
+        </groupbox>
+        <button id="printButton" label="${i18n:_('Print')}" sclass="save-button global-action"></button>
+        <button id="cancelPrintButton" label="${i18n:_('Cancel')}" sclass="cancel-button global-action" onClick="printConfigurationWindow.detach()"/>
+    </window>
+
+</zk>

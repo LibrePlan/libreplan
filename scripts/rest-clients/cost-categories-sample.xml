@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<cost-category-list xmlns="http://rest.ws.navalplanner.org">
+<cost-category-list xmlns="http://rest.ws.libreplan.org">
   <cost-category enabled="true" name="Categoria A"
   code="18d6ef79-5b45-4928-bfd5-ec80a374699c">
     <hour-cost-list>

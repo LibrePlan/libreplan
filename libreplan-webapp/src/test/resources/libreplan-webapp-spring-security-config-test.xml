@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="passwordEncoder"
+        class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
+        <constructor-arg value="512" />
+    </bean>
+
+    <bean id="saltSource"
+        class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
+        p:userPropertyToUse="username" />
+    <!-- <bean id="dbUserDetailsService" class="org.libreplan.web.users.services.DBUserDetailsService"/> -->
+    <bean id="dbPasswordEncoderService"
+        class="org.libreplan.web.users.services.DBPasswordEncoderService"
+        p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" />
+
+    <bean id="usersBootstrapInDB"
+        class="org.libreplan.web.users.bootstrap.UsersBootstrapInDB"
+        p:dbPasswordEncoderService-ref="dbPasswordEncoderService" />
+
+    <!-- Beans used by the LibrePlan Web Application when users are registerd
+        in LDAP. At this moment users MUST be also in database with same username.
+        This will be changed in the near future. the url, base, userDN and password
+        properties must be set with the proper values -->
+    <bean id="contextSource"
+      class="org.springframework.ldap.core.support.LdapContextSource" p:url="ldap://localhost:389" p:base="dc=example,dc=org"
+      p:userDn="cn=admin,dc=example,dc=org" p:password="admin">
+    </bean>
+
+    <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate"
+        p:contextSource-ref="contextSource">
+    </bean>
+
+    <!-- This authentication provider will make possible all the login process
+        when an LDAP is used. Also will allow authenticate users in database. The
+        property strUserId must be set with the proper value. It represents the property
+        of the user in LDAP which will be used to check the username. -->
+    <bean id="authenticationProvider"
+        class="org.libreplan.web.users.services.LDAPCustomAuthenticationProvider"
+        p:userDetailsService-ref="ldapUserDetailsService"
+        p:ldapTemplate-ref="ldapTemplate">
+    </bean>
+
+    <!-- This bean is used to implement UserDetailsService with LDAP authentication
+        Provider. -->
+    <bean id="ldapUserDetailsService"
+        class="org.libreplan.web.users.services.LDAPUserDetailsService" />
+</beans>

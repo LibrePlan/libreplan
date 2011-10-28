@@ -39,7 +39,7 @@ Escrito por
 Financiación pública
 ========================
 
-Dentro del marco global de NavalPlan y la gestión de la planificación, se desarrolló un proyecto que pretende resolver 
+Dentro del marco global de LibrePlan y la gestión de la planificación, se desarrolló un proyecto que pretende resolver 
 una serie de problemas comunes de planificación. 
 Este proyecto fue cofinanciado por la Xunta de Galicia, el Ministerio de Industria, Turismo y Comercio, y la 
 Unión Europea, Fondo Europeo de Desarrollo Regional.

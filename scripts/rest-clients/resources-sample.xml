@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
 <!--
-    See org.navalplanner.web.test.ws.resources.api.ResourceServiceTest for a
+    See org.libreplan.web.test.ws.resources.api.ResourceServiceTest for a
     complete list of test cases.
  -->
 
-<resource-list xmlns="http://rest.ws.navalplanner.org">
+<resource-list xmlns="http://rest.ws.libreplan.org">
 
     <!--  *** Machines *** -->
 

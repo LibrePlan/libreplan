@@ -1,0 +1,74 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Scheduling')}"?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+<zscript><![CDATA[
+    monteCarloGraphController = arg.get("monteCarloGraphController");
+]]>
+</zscript>
+
+<window title="${i18n:_('MonteCarlo')}"
+        apply="${monteCarloGraphController}"
+        closable="true" width="850px">
+
+    <vbox width="100%" pack="center" align="center">
+        <label style="font-family: Tahoma; font-weight: bold; font-size: 18px;padding:5px;" value="${i18n:_('MonteCarlo chart')}" />
+    </vbox>
+
+        <grid sizedByContent="false">
+            <rows>
+                <row>
+                    <label value="${i18n:_('Start date')}" />
+                    <datebox id="dateboxStartDateProbability"
+                        onChange="monteCarloGraphController.showProbabilityDensity(self, dateboxEndDateProbability)" />
+                    <label value="${i18n:_('End date')}" />
+                    <datebox id="dateboxEndDateProbability"
+                        onChange="monteCarloGraphController.showProbabilityDensity(dateboxStartDateProbability, self)" />
+                    <label value="${i18n:_('Probability')}" />
+                    <decimalbox id="dbIntervalProbability" />
+                </row>
+            </rows>
+        </grid>
+
+    <hbox>
+        <vbox id="charts">
+            <chart id="monteCarloChart"
+                height="600px" width="800px"
+                type="bar"
+                period="day"
+                threeD="true"
+                xAxis= "${i18n:_('End date')}"
+                paneColor="#FFFFFF"
+                showLegend="false"/>
+        </vbox>
+    </hbox>
+
+    <hbox>
+        <button label="${i18n:_('Back')}"
+            onClick="monteCarloGraphController.cancel()" />
+    </hbox>
+
+</window>
+
+</zk>

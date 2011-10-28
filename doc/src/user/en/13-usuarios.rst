@@ -8,7 +8,7 @@ Users
 Managing users
 ==============
 
-"NavalPlan"'s system enables users to manage profiles, authorisations and users. Users belong to user profiles, which may have a series of predefined roles to access the program. Roles are defined authorisations in "NavalPlan". Examples of roles:
+"LibrePlan"'s system enables users to manage profiles, authorisations and users. Users belong to user profiles, which may have a series of predefined roles to access the program. Roles are defined authorisations in "LibrePlan". Examples of roles:
 
 * Administration: A role to which administrators must be assigned in order to be able to carry out administration operations.
 * Web service reader: A role that users need to be able to consult the program's web services.

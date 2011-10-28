@@ -1,0 +1,1354 @@
+/*
+ * ganttz.css Ganttz specific styles
+ *
+ * The purpose of this stylesheet is to declare custom classes and objects
+ * will be positioned inside scheduler components.
+ * It might contain references to ZK Style Guides [http://www.zkoss.org/doc/styleguide]
+ * if needed within the scheduler.
+ */
+
+/*
+    The next constants are used within the planner styling:
+
+    Ganntz.ListdetailsWidth = 280
+
+    zkTasklist.HEIGHT_PER_TASK = 10
+    zkTasklist.HEIGHT_PER_ROW = 15
+    zkTasklist.HEIGHT_TIME_TRACKER = 120
+
+    zkTasklist.SCROLLBAR_WIDTH = 15
+
+    zkTasklist.SCROLL_CONTAINER_INITIAL_HEIGHT = 500
+    zkTasklist.SCROLL_CONTAINER_INITIAL_WIDTH = 600
+
+    zkTasklist.GANTT_PANEL_LEFT = 300
+
+*/
+
+/* -------------- Listdetails -------------- */
+.listdetails {
+    margin-top: 0px;
+    font-size: 10px !important;
+}
+
+#listdetails_container .z-tree-header table {
+    position:relative;
+    z-index: 4;
+}
+
+.listdetails .z-tree-body {
+    margin-top: -18px;
+}
+
+.listdetails div.z-tree {
+    background: #FFFFFF;
+}
+ .listdetails img {
+    display: none;
+}
+
+#listdetails_container td {
+    border-bottom: dotted 1px #CCC;
+    border-right: dotted 1px #CCC;
+}
+
+#listdetails_container td {
+    padding: 0px;
+}
+
+.listdetails th.z-tree-col .z-tree-col-cnt {
+    font-size:11px;
+    font-weight:bold;
+}
+
+.listdetails input {
+    width: 100%;
+    font-size: 10px !important;
+    border-bottom: 0px;
+    border-right: 0px;
+    border-top: 0px;
+    border-left: 1px dotted #86A4BE;
+    height: 16px;
+    padding-left:2px;
+}
+
+.listdetails input.task_title {
+    width: auto;
+}
+
+.listdetails div.z-tree-cell-cnt {
+    width: 500px; !important;
+}
+
+/*.listdetails input {
+    width: 80%; !important;
+} */
+
+
+#listdetails_container .z-datebox-inp,
+#listdetails_container div.z-tree-col-cnt {
+    font-size: 9px !important;
+    border-bottom: 0px;
+    border-right: 0px;
+}
+
+.listdetails input {
+    /* min-width: 90px; */
+    height: 19px;
+}
+
+.listdetails .depth_1 input.task_title {
+    /*on change org.libreplan.web.print.CutyPrint.BASE_TASK_NAME_PIXEL must
+     be changed too */
+    width: 82%;
+}
+
+.listdetails .depth_2 input.task_title {
+    width: 78%;
+}
+
+.listdetails .depth_3 .task_title {
+    width: 74%;
+}
+
+.listdetails .depth_4 .task_title {
+    width: 70%;
+}
+
+.listdetails .depth_5 .task_title {
+    width: 66%;
+}
+
+.listdetails .depth_6 .task_title {
+    width: 62%;
+}
+
+.listdetails .depth_7 .task_title {
+    width: 58%;
+}
+
+.listdetails .depth_8 .task_title {
+    width: 54%;
+}
+
+
+.listdetails {
+    min-width:200px;
+}
+
+.listdetails div.z-tree-header th.z-tree-col {
+    overflow:visible;
+}
+
+.listdetails .taskdetail_grid {
+    height: 23px;
+}
+
+.resourceload-leftpanel-row {
+    height: 21px;
+}
+
+#listdetails_container .z-textbox-readonly,
+#listdetails_container .z-textbox-text-disd {
+    background-color: #f0f0f0;
+    color: #000000 !important;
+}
+
+
+.taskdetail_grid table {
+    height: 30px;
+    width: 285px; /* Ganntz.ListdetailsWidth */
+}
+
+.task_title {
+    vertical-align: bottom;
+    white-space: nowrap;
+    padding-left: 4px;
+}
+
+.taskdetail-company-view .z-tree-ico  {
+    display:none;
+
+}
+
+.order-startdate, .order-enddate  {
+    padding-left: 3px;
+}
+
+#listtasks {
+    position: relative;
+    width: 100%;
+    top: 0px;
+}
+
+/* Task box properties */
+.box {
+    border: 1px solid;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    z-index : 99 !important;
+}
+
+/* Task lane properties */
+.row {
+    height: 12px;
+    border-bottom: dotted 1px #CCCCCC;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* Task in critical path */
+.row .critical {
+    border: 3px solid #EE6666;
+    margin-top: -3px;
+}
+
+.standard-task {
+    background-color: #abcde1; /* NOT_ALLOCATED_TASK_BLUE */
+
+
+}
+
+.subcontracted-task {
+    background-color: #78908c;
+}
+
+/* -------------- Dependencies -------------- */
+#listdependencies, #listlimitingdependencies {
+    position: relative;
+    width: 400px;
+    float: left;
+    top: 0px;
+}
+
+.dependence {
+    position: absolute;
+}
+
+.end,.start,.mid,.arrow {
+    position: absolute;
+    /* padding: 4px; */
+    cursor: crosshair;
+    z-index:0;
+}
+
+#ganttpanel .end,
+#ganttpanel .start,
+#listlimitingdependencies .mid {
+     height: 1px;
+     padding: 4px 0 2px 1px;
+     margin-left: 4px;
+     background-position: 0px 2px;
+}
+
+#ganttpanel .mid,
+#listlimitingdependencies .start,
+#listlimitingdependencies .end {
+    width: 1px;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    padding-right: 4px;
+    padding-left: 0px;
+    background-position: 4px 0;
+}
+
+
+/* Hidden by default */
+#listlimitingdependencies .dependency {
+    display: none;
+}
+
+#listlimitingdependencies .end,#listlimitingdependencies .start,
+#listlimitingdependencies .mid, #listlimitingdependencies .arrow {
+    cursor: default;
+}
+
+div.box.limiting-assigned {
+    background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
+div.box.limiting-unassigned {
+    background-color: #c1d9d1; /* LIMITING_RESOURCES_GREEN */
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
+.toggled {
+    display: inline !important;
+    opacity: 0.2;
+}
+
+.completion {
+    width: 0%;
+    margin-top: 0px;
+    height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
+    background-color: #F21CFF;
+    border: 0px;
+    margin-top: -5px;
+}
+
+.completion2 {
+    width: 0%;
+    height: 6px;
+    background-color: #004469;
+    border: 0px;
+    margin-top: 4px;
+}
+
+.taskgroup_start,.taskgroup_end {
+    top: -12px; /* zkTasklist.HEIGHT_PER_TASK */
+}
+
+.row span {
+    display: none;
+    position: relative;
+    color: #BBBBBB;
+    white-space: nowrap;
+}
+
+/* -------------- TaskGroup -------------- */
+.taskgroup_start {
+    background-image: url("../../zkau/web/ganttz/img/group_left.png");
+    height: 10px;
+    width: 10px;
+    float: left;
+    clear: both;
+}
+
+.taskgroup_end {
+    background-image:
+        url("../../zkau/web/ganttz/img/group_right.png");
+    height: 10px;
+    width: 10px;
+    position:absolute;
+    right:0;
+    top:0;
+}
+
+.taskgroup,.row .expanded {
+    border-top: solid black 2px;
+    border-bottom: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    background-color: transparent !important;
+}
+
+.border-container {
+    overflow:hidden;
+    padding-right:2px;
+    heigth: 12px !important;
+    position: relative;
+    left:10;
+    display: block;
+    clear: both;
+}
+
+.border-container + .task-labels {
+    top: -5px;
+}
+
+.milestone_end {
+    background-image:
+        url("../../zkau/web/ganttz/img/milestone.png");
+    height: 15px;
+    width: 15px;
+    float: right;
+    position:relative;
+    left: 7px;
+    top: -12px;
+}
+
+.row .closed {
+    border-top: solid black 2px;
+}
+
+.zk #ganttpanel .z-button-cm {
+    border: 0px;
+}
+
+#ganttpanel {
+    height: 400px; /* 800 */
+    width: 100%
+}
+
+#ganttpanel table {
+    float: left;
+    padding: 0;
+    margin: 0;
+}
+
+#ganttpanel table td {
+    /* padding: 0; */
+}
+
+/* -------------- Timetracker -------------- */
+.timetracker_fake_row {
+    height: 80px;
+}
+
+/* Forces every zoom level the same table width */
+#timetracker table {
+    border-collapse: collapse;
+}
+
+#timetrackerheader table {
+    border-collapse: collapse;
+}
+
+#timetrackerheader table.second_level_{
+    table-layout : fixed;
+}
+
+#timetrackerheader .second_level_ td {
+    -moz-box-sizing: border-box;
+    border-right: solid 1px #9EB6CE;
+}
+
+#timetracker .second_level_ tr {
+    height: 14px;
+}
+
+/* Watermark alternate row color */
+#watermark .timetracker_column_even {
+    background-color: #EEEEEE !important;
+    height: 650px;
+}
+
+
+#watermark .week-level.timetracker_column_even {
+    background-color: #FFFFFF !important;
+}
+
+#watermark .week-level {
+    background-image: url("../../zkau/web/ganttz/img/not-workable-shade.png"), url("../../zkau/web/ganttz/img/not-workable-shade.png"), url("../../zkau/web/ganttz/img/not-workable-shade.png"),url("../../zkau/web/ganttz/img/not-workable-shade.png"),url("../../zkau/web/ganttz/img/not-workable-shade.png"),url("../../zkau/web/ganttz/img/not-workable-shade.png"),url("../../zkau/web/ganttz/img/not-workable-shade.png");
+    background-repeat: repeat-y, repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,repeat-y;
+    background-position: -8px 0, -8px 0, -8px 0, -8px 0, -8px 0, -8px 0, -8px 0;
+}
+
+.limitingresources #watermark .bankHoliday {
+    height: 650px;
+}
+
+#watermark .timetracker_column_today.timetracker_column_deadline,
+#watermark .timetracker_column_deadline.timetracker_column_today  {
+    background-image: url("../../zkau/web/ganttz/img/pixel.gif");
+}
+
+/* Background image for current day vertical line */
+#watermark .timetracker_column_today {
+    background-image: url("../img/watermark_today.png");
+    background-repeat: repeat-y;
+}
+
+#watermark .timetracker_column_deadline {
+    background-image:
+        url("../../zkau/web/ganttz/img/pixel.gif");
+    background-repeat: repeat-y;
+}
+
+#watermark .timetracker_column_today_deadline {
+    background-image:
+        url("../img/watermark_today.png"), url("../../zkau/web/ganttz/img/pixel.gif");
+    background-repeat: repeat-y, repeat-y;
+}
+
+
+#watermark .bankHoliday {
+    background-color: #FFEEEE !important;
+}
+
+#watermark .weekend {
+    background-color: #FFEEEE !important;
+}
+
+/* Reduce spacing and font-size for watermark legend */
+.z-columns,.z-column {
+    font-size: 8px !important;
+    text-align: center;
+    padding: 0 0 0 0 !important;
+}
+
+table {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+}
+
+#scroll_container {
+    margin-top: 0px;
+    float: left;
+    position: absolute;
+}
+
+#timetracker { /* border: solid 1px red; */
+    position: absolute;
+    float: left;
+    z-index: -20;
+}
+
+.resourcesload #timetracker {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: auto; width : 600px;
+    overflow-x: visible;
+    width: 600px;
+}
+
+tr.z-vbox-sep {
+    height: 0px;
+    padding: 0px;
+    margin: 0px;
+}
+
+#ganttpanel_scroller_x,#ganttpanel_scroller_y {
+    position: absolute;
+    float: left;
+    overflow: auto;
+    display:none;
+}
+
+#ganttpanel_scroller_x {
+    top: 600px; /* (dynamic) */
+    left: 285px; /* Ganntz.ListdetailsWidth + borders = 280 + 5 */
+    width: 635px;
+    height: 15px;
+}
+
+#ganttpanel_inner_scroller_x {
+    width: 9000px; /* Real canvas dimensions */
+    height: 15px; /* Scroll constant */
+}
+
+#ganttpanel_scroller_y {
+    top: 145px; /* Fixed top position */
+    left: 920px;
+    width: 15px;
+    height: 330px;
+}
+
+#ganttpanel_inner_scroller_y {
+    width: 15px; /* Scroll constant */
+    height: 1350px;
+    /* Modified when added or removed tasks, or zoom adjustments */
+}
+
+/* Hidden at the beginning to avoid the first scalation effect */
+#ganttpanel_scroller_x {
+    display: none;
+}
+
+#ganttpanel_scroller_y {
+    display: none;
+}
+
+.scheduling-graphics .z-tabpanels-ver, .scheduling-graphics .z-tabpanel-ver,
+.scheduling-graphics .z-tabpanel, .scheduling-graphics .z-tabbox-ver .z-tabpanels-ver {
+    padding:0px;
+}
+
+/*  ----------- Advanced resources assignment ------------ */
+.timetrackedTableWithLeftPane {
+    width: 1000px;
+}
+
+.leftPaneOfTimeTrackedTable {
+    margin-top: 45px;
+    width: 390px;
+    float: left;
+}
+
+#timetrackedtable {
+    float: right;
+    width: 600px;
+    /* overflow: auto; */
+}
+
+.advancedallocationlayout #timetrackedtable {
+    float: none;
+    width: auto;
+    overflow: visible;
+}
+
+/* ----------- ResourcesLoad ----------------- */
+.taskassignmentinterval {
+    float: left;
+    height: 10px;
+    position: absolute;
+    border-left: solid 1px white;
+    cursor: pointer;
+}
+
+.FULL_LOAD {
+    background-color: #fdbe13;
+}
+
+.SOME_LOAD {
+    background-color: #98d471;
+}
+
+.OVERLOAD {
+    background-color: #ff5a11;
+}
+
+.NO_LOAD {
+   border-left: 0;
+}
+
+.row_resourceload {
+    height: 10px;
+    border: 1px;
+    margin-bottom: 10px;
+    margin-top: 8px;
+    width: 100%;
+    border-bottom: 1px dotted #CCCCCC;
+}
+
+.resourceloadleftpane .z-treerow .z-label {
+    height:18px;
+    padding-bottom:0;
+    vertical-align:bottom;
+}
+
+.resourceload_name {
+    display: none;
+}
+
+.resourceloadleftpane {
+    border: 1px;
+    margin-top: 0px;
+    min-width: 125px;
+}
+
+.resourceloadleftpane .secondlevel {
+    display: inline;
+}
+
+.resourceloadleftpane .secondlevel .z-label,
+.resourceloadleftpane .z-tree-body {
+    white-space: nowrap;
+}
+
+.resourceloadleftpane .icono {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    border: 0px;
+}
+
+.resourceloadleftpane .icono img {
+    height: 17px;
+}
+
+/* -- Upper taskpannel is hidden --*/
+.taskspanelgap #timetracker {
+    border-top: 0px;
+    margin: 0px;
+}
+
+.resourcesload .taskspanelgap #timetracker table {
+    margin-top: -10px;
+}
+
+.resourcesload .taskspanelgap #timetracker th {
+    display: none;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+#ganttpanel #timetracker th {
+    display:none;
+}
+#ganttpanel #timetracker {
+    margin-top:-20px;
+}
+
+#timetrackerheader table {
+    border-collapse: collapse;
+}
+
+.resourceloadleftpane div.z-treecell-cnt {
+    paddding-top: 2px;
+    border-bottom: 1px dotted #CCCCCC;
+}
+
+.resourceloadleftpane div.z-tree-body td.z-tree-cell {
+    padding: 0px;
+}
+
+.resourceloadleftpanetitle {
+    height: 40px;
+}
+
+.resourceloadleftpane .z-tree-body {
+    z-index: -10;
+}
+
+.leftpanelgap .z-tree-body {
+    z-index: 2;
+}
+
+.leftpanelgap .z-tree-header {
+    z-index: 16;
+}
+
+.leftpanelgap .resourceloadleftpane {
+    background: none;
+    border: 0px;
+}
+
+.resourceloadlist {
+    margin-top: 13px;
+}
+
+.resourceload-resource div {
+    border: solid 1px;
+    cursor: default;
+}
+
+.resourceload-global-generic div {
+    border: solid 1px;
+    cursor: default;
+}
+
+.row_resourceload.resourceload-global-generic,
+.row_resourceload.resourceload-resource {
+    margin-bottom: 8px;
+    margin-top: 6px;
+    padding-bottom: 2px;
+}
+
+.resourceloadleftpane .z-tree-ico + .secondlevel span {
+    font-weight: bold;
+}
+
+.resourceloadleftpane .z-label {
+    font-size: 10px;
+}
+
+.resourceloadleftpane div.z-tree-body {
+    overflow: visible;
+}
+.resourceloadleftpane div.z-tree-body table {
+    table-layout:auto !important;
+}
+
+.resourceloadleftpane .icono .z-button-cm:active,
+.resourceloadleftpane .icono .z-button-cm:hover {
+    border: 0;
+    background-color: transparent;
+}
+
+/* ---------- Start Limiting resources --------------- */
+.limitingresourceslist .row_resourceload {
+    height: 25px;
+}
+
+.limitingresources .z-tree-ico {
+    display: none;
+}
+
+.limitingresources .z-treerow {
+    height: 35px;
+}
+
+.limitingresources td.z-treecell {
+    paddding-top: 2px;
+    border-bottom: 1px dotted #CCCCCC;
+}
+
+.limitingresourcesleftpane .secondlevel {
+    display: inline;
+}
+
+.limitingresourcesleftpane .secondlevel .z-label,
+.limitingresourcesleftpane .z-tree-body {
+    white-space: nowrap;
+}
+
+.limitingresourcesleftpane div.z-tree-body {
+    overflow: visible;
+}
+
+.limitingresourcesleftpane div.z-tree-body table {
+    table-layout:auto !important;
+}
+
+div.limitingresourcesleftpane  {
+    background-color: white;
+}
+
+.queue-element {
+    background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    border: solid 1px;
+    float:left;
+    height:10px;
+    position:absolute;
+}
+
+.queue-element.truncated-end {
+    -moz-border-radius: 12px 0 0 12px;
+    -webkit-border-radius: 12px 0 0 12px;
+}
+
+.queue-element.unmet-deadline {
+    background-color: #FF8888;
+}
+
+/* ---------- End Limiting resources ----------------- */
+
+
+.timetrackergap {
+    position: relative;
+    left : 0px;
+}
+
+.timetrackergap {
+    height: 32px;
+}
+
+.tree-datecolumn {
+    width: 100px;
+}
+
+.tree-text {
+    width: 100%;
+}
+
+.listdetails div.z-treecell-cnt {
+    padding: 0px;
+}
+
+div.z-tree {
+    overflow:visible;
+}
+
+.listdetails td {
+    border-bottom: 1px dotted #CCC !important;
+}
+
+.plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
+/*    height: 100%; */
+}
+
+.temp-class {
+height: 100%
+}
+
+.orderslayout {
+    height:550px;
+}
+
+.task_tooltip {
+    display:none;
+    font-size: 11px;
+    position: absolute;
+    top: 15px;
+    width: 270px;
+    margin-left: 5px;
+    background-color: #f7f7bf;
+    border: solid 1px #CCCCCC;
+    z-index: 100 !important;
+    -moz-box-shadow: 1px 1px 10px #666666;
+    -webkit-box-shadow: 1px 1px 10px #666666;
+}
+
+/* Avoid current box tooltip being overlapped */
+.box:hover {
+    z-index:100 !important;
+}
+
+.task-labels {
+    display: none;
+    float: left;
+    white-space: nowrap;
+    font-size: 9px;
+    position: relative;
+    top: 8px;
+    left: 10px;
+    z-index: 6;
+    background-color: rgb(255, 202, 135);
+    background-color: rgba(255, 202, 135, 0.9);
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    padding: 0 3px;
+}
+
+.box.expanded .task-resources {
+    display: none !important;
+}
+
+.task-labels span {
+    padding: 1px 4px;
+}
+
+.task-resources {
+    display: none;
+    float: right;
+    position: relative;
+    top: -2px;
+    left: 10px;
+    z-index: 6;
+}
+
+.task-resources-inner {
+    position: absolute;
+    left: 0px;
+    font-size: 9px;
+    white-space: nowrap;
+    color: #000000;
+    padding: 1px 3px;
+}
+
+.task-resources span {
+    padding: 1px 4px;
+}
+
+.advancedallocationlayout .name {
+    min-width:200px;
+}
+
+.advancedallocationlayout .second_level_ {
+    border-collapse: collapse;
+}
+
+.advancedallocationlayout .second_level_ th {
+    width:150px;
+}
+.advancedallocationlayout .taskspanelgap td.z-row-inner {
+    padding:0 !important;
+}
+.advancedallocationlayout .taskspanelgap td.z-row-inner input {
+    padding-top: 1px;
+    padding-bottom:1px;
+}
+
+.advancedallocationlayout .taskspanelgap .z-label {
+  margin-left:3px;
+}
+
+.advancedallocationlayout .taskspanelgap .level1 {
+  margin-left:8px;
+}
+
+
+.taskspanelgap table {
+    border-collapse: collapse;
+}
+
+.advancedallocationlayout .taskspanelgap input {
+    width: 100%;
+    heigth: 21px;
+}
+
+.advancedallocationlayout .taskspanelgap tr.z-grid-odd td.z-row-inner, tr.z-grid-odd,
+.advancedallocationlayout .taskspanelgap tr.z-row {
+    background: #f2f2f2;
+}
+
+.advancedallocationlayout .calculated-hours.z-label {
+    font-weight: bold;
+    color: #555555;
+    cursor: default;
+}
+.advancedallocationlayout .unmodifiable-hours.z-label {
+    color: #555555;
+}
+.advancedallocationlayout .consolidated-hours.z-label {
+    color: #75d9b0;
+}
+.advancedallocationlayout .z-row .z-intbox-disd {
+    color: 0 !important;
+}
+
+
+.advancedallocationlayout .taskspanelgap input {
+    widht: 100%;
+}
+
+.taskspanelgap input {
+    border: 0;
+    height: 19px;
+}
+
+.advancedassignmentdetails tr.z-row,
+.taskspanelgap tr.z-row {
+    height: 23px;
+}
+
+.advancedassignmentdetails td {
+    overflow:hidden;
+    white-space: nowrap;
+}
+
+.advancedassignmentdetails .level1 {
+  margin-left:12px;
+}
+
+.advancedassignmentdetails .level0 {
+  font-weight:bold;
+}
+
+.advancedallocationlayout .leftpanelgap .z-grid-header {
+    /* padding-bottom: 3px; */
+    border-bottom: solid 1px #DDDDDD;
+    background: #FFFFFF;
+}
+
+.advancedallocationlayout div.z-row-cnt {
+    padding: 0;
+}
+
+.advancedallocationlayout .leftpanelgap td.z-row-inner {
+    padding-top:0;
+    padding-bottom:0;
+}
+
+.advancedassignmentdetails .z-intbox {
+    width: 50px;
+}
+.advancedassignmentdetails .z-combobox-inp {
+    width: 60px;
+}
+
+.advancedallocationlayout .leftpanelgap .name {
+}
+
+.advancedassignmentdetails .hours {
+    width: 60px;
+}
+
+.advancedassignmentdetails .function {
+    width: 110px;
+}
+
+.advancedassignmentdetails .z-combobox {
+    margin-top: 2px;
+}
+.advancedassignmentdetails .z-intbox {
+    padding-left: 0px;
+}
+
+#tasksTree div.z-tree-header, #tasksTree div.z-tree-header tr, #tasksTree div.z-tree-footer {
+    overflow:visible;
+}
+
+#listdetails_container div.z-tree-body,
+#listdetails_container div.z-dottree-body,
+#listdetails_container div.z-filetree-body, #listdetails_container div.z-vfiletree-body {
+    overflow:visible;
+}
+
+.listdetails th {
+    display:visible;
+    margin-top:10px;
+}
+
+.listdetails {
+    position:relative;
+}
+
+#listdetails_container {
+    top:-18px;
+}
+
+.listdetails .z-tree-header {
+    margin-bottom:17px;
+}
+
+.listdetails .z-tree-header table {
+    /* display:none; */
+}
+
+.plannerlayout div.z-tree, .plannerlayout div.z-grid,
+.resourcesload div.z-tree, .resourcesload div.z-grid {
+    border: 0;
+}
+
+#timetrackerheader table {
+    height:16px;
+}
+
+#timetrackerheader .z-grid-body {
+    display:none;
+}
+
+.taskheaderscontainer, .leftpanelgap, .resourcesloadgraph div {
+    position:relative;
+}
+
+.advancedassignmentdetails .z-grid-header table {
+    height:30px;
+}
+
+/* Advanced assignment */
+.advancedallocationlayout #timeTracker .z-vbox table {
+    height:15px;
+}
+
+.advancedallocationlayout #timeTracker .z-vbox .z-grid-body {
+    display:none;
+}
+
+.advancedassignmentdetails .z-grid-body {
+    position:relative;
+    margin-top: 31px;
+    overflow:hidden;
+}
+
+.advancedassignmentdetails .z-grid-header {
+    z-index:2;
+    position:absolute;
+    overflow:hidden;
+}
+
+/* Workaround for extra column when configuring functions */
+.advancedassignmentdetails td + td + td + td {
+    display:none;
+}
+
+/*
+.advancedassignmentdetails .z-row, .advancedallocationlayout .taskspanelgap .z-row {
+    height: 20px;
+} */
+
+.advancedallocationlayout .taskspanelgap td.z-row-inner {
+    padding:1px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.deadline {
+    position:absolute;
+    /* border-right: solid 2px red; */
+    margin-top: -5px;
+    float:left;
+    left:-100px; /* Hide when it has't been set */
+    width:10px;
+    height:22px;
+    background-image: url("../../zkau/web/ganttz/img/deadline.png");
+}
+
+.consolidatedline {
+    position:absolute;
+    /* border-right: solid 2px red; */
+    margin-top: -5px;
+    float:left;
+    left:-100px; /* Hide when it has't been set */
+    width:10px;
+    height:22px;
+    background-image: url("../../zkau/web/ganttz/img/deadline_green.png");
+}
+
+
+
+.queue-element .deadline {
+    position: relative;
+    margin-top: -5px;
+    float: left;
+    left: -100px; /* Hide when it has't been set */
+    width: 10px;
+    height: 22px;
+    background-image: url("../../zkau/web/ganttz/img/deadline.png");
+    display: none;
+}
+
+.queue-element .deadline.order-deadline {
+    position:absolute;
+    margin-top: -5px;
+    background-repeat: repeat-y;
+    float:left;
+    width:10px;
+    height:22px;
+    background-image: url("../../zkau/web/ganttz/img/deadline.png");
+}
+
+body .perspectives-column {
+    display:inline;
+}
+
+#watermark .timetracker_column .today_deadline {
+    background-image:url(../img/watermark_today.png);
+    background-repeat: repeat-y;
+    height:100%;
+    position:absolute;
+    top:0;
+    z-index:3;
+    width: 100%;
+}
+
+.orderslayout .z-window-embedded-header {
+    display:none;
+}
+
+
+.timeTrackedTableWithLeftPane .z-grid-body table {
+    width: 1px !important;
+}
+
+#timeTracker .second_level_ {
+    border-left: solid 2px #9EB6CE;
+    border-right: solid 2px #9EB6CE;
+}
+
+.advanced-assignment-area .timeTrackedTableWithLeftPane div.z-grid {
+    overflow: visible;
+}
+
+.taskdetailsContainer {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.taskspanel {
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.row .assigned {
+    background-color: #3c90be; /* ALLOCATED_TASK_BLUE */
+}
+
+.row .partially-assigned {
+    background-color: #FF5A11; /* PARTIALLY_ALLOCATED_TASK_ORANGE */
+}
+
+/* ------------ Limiting resources  ------------ */
+.limiting-resources-buffer .z-south-body {
+    overflow-y:scroll;
+}
+
+.queue-progress-bar {
+    background-color: #407865;
+    height: 6px;
+    margin-top: 2px;
+    -moz-border-radius-bottomleft: 2px;
+    -moz-border-radius-topleft: 2px;
+    -webkit-bottom-left-radius: 2px;
+    -webkit-top-left-radius: 2px;
+}
+
+.limiting-assigned .completion2, .limiting-unassigned .completion2 {
+    background-color: #407865;
+}
+
+.queue-element.unmet-deadline .queue-progress-bar {
+    background-color: #c06666;
+}
+
+.subcontracted-task .completion2 {
+    background-color: #484e4d;
+}
+
+#watermark .timetracker_column {
+    height: 650px;
+}
+
+/* Workaround for zk 100% height just root components */
+.main-area {height: 100%;}
+.main-area .z-center-body > span {height: 100%; display: block;}
+.main-area .z-center-body > span > div > span { height: 100%; display: block;}
+.main-area .z-center-body > span > div { height: 100%;}
+.main-area .z-center-body > span > div > div  { height: 100%;}
+.main-area .z-center-body > span > div > div > span { height: 100%; display: block;}
+.main-area .z-center-body > span > div > div > div { height: 100%;}
+.main-area .z-center-body > span > div > div > div > span { height: 100%; display: block;}
+
+.main-area > span {height: 100%; display: block;}
+.main-area > span > div { height: 100%;}
+.main-area > span > div > span { height: 100%; display: block;}
+.main-area > span > div > div { height: 100%;}
+.main-area > span > div > div > span { height: 100%; display: block;}
+
+.main-area .advanced-assignment-area .z-center-body > span,
+.main-area .advanced-assignment-area .z-center-body > span > div > div {
+    height: auto;
+}
+
+.advanced-allocation-layout {
+    height: 100%;
+}
+
+div.z-grid-header .second_level_ tr {
+    overflow: visible;
+}
+
+
+#ganttpanel .start, #ganttpanel .end,
+#listlimitingdependencies .mid {
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-hor.png");
+        background-repeat:repeat-x;
+}
+
+#ganttpanel .mid,
+#listlimitingdependencies .start, #listlimitingdependencies .end {
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-ver.png");
+        background-repeat:repeat-y;
+}
+
+.arrow {
+    height: 10px;
+    width: 10px;
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-arrows.png");
+    background-repeat: no-repeat;
+    padding: 3px 4px 4px 4px;
+}
+
+
+.violated-dependency .start, .violated-dependency .end {
+    background-image: url("../../zkau/web/ganttz/img/solid-red-hor.png");
+}
+.violated-dependency .mid {
+    background-image: url("../../zkau/web/ganttz/img/solid-red-ver.png");
+}
+.violated-dependency .arrow {
+    background-image: url("../../zkau/web/ganttz/img/solid-red-arrows.png");
+}
+
+.resources-dependency .start, .resources-dependency .end {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-hor.png");
+}
+.resources-dependency .mid {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-ver.png");
+}
+.resources-dependency .arrow {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-arrows.png");
+}
+
+
+.point-east {
+    background-position: 0 2px;
+}
+.point-south {
+    background-position: -18px 0;
+}
+.point-west {
+    background-position: -35px 2px;
+}
+.point-north {
+    background-position: -48px 0;
+}
+
+#listlimitingdependencies .point-north {
+    background-position: -53px 0;
+}
+
+#listlimitingdependencies .point-south {
+    background-position: -17px 0;
+    margin-top: 2px;
+}
+
+.taskspanelgap #listlimitingdependencies {
+    top: -2px;
+}

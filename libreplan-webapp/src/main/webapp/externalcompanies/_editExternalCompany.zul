@@ -1,0 +1,108 @@
+<!--
+    This file is part of LibrePlan
+
+    Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+    Desenvolvemento Tecnolóxico de Galicia
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+
+<window id="${arg.top_id}">
+    <caption id="caption" sclass="caption-title" />
+
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Company data')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <vbox width="100%">
+                    <grid fixedLayout="true">
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Company name')}:" />
+                                <textbox id="name"
+                                    value="@{controller.company.name}" width="500px"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                    onBlur="controller.updateWindowTitle()"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Company ID')}:" />
+                                <textbox id="nif"
+                                    value="@{controller.company.nif}"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Client')}:" />
+                                <checkbox id="client"
+                                    checked="@{controller.company.client}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Subcontractor')}:" />
+                                <checkbox id="subcontractor"
+                                    checked="@{controller.company.subcontractor}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('User')}:" />
+                                <autocomplete id="user"
+                                    value="@{controller.company.companyUser}"
+                                    onChange ="controller.setCompanyUser(self.selectedItem);"
+                                    selectedItem="@{controller.company.companyUser}"
+                                    autodrop="true" finder="UserFinder" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Interacts with applications')}:" />
+                                <checkbox id="interactsWithApplication"
+                                    onCheck="controller.setInteractionFieldsActivation(self.checked);"
+                                    checked="@{controller.company.interactsWithApplications}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Application URI')}:" />
+                                <hbox>
+                                    <textbox id="appURI"
+                                        value="@{controller.company.appURI}" width="500px" />
+                                    <label value="${i18n:__('Example: {0}', 'http://localhost:8080/libreplan/')}" />
+                                </hbox>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Our company login')}:" />
+                                <textbox id="ourCompanyLogin"
+                                    value="@{controller.company.ourCompanyLogin}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Our company password')}:" />
+                                <textbox id="ourCompanyPassword"
+                                    value="@{controller.company.ourCompanyPassword}" />
+                            </row>
+                        </rows>
+                    </grid>
+                </vbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <button onClick="controller.saveAndExit();"
+        label="${i18n:_('Save')}" sclass="save-button global-action" />
+    <button onClick="controller.saveAndContinue();"
+        label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
+    <button onClick="controller.cancelForm();"
+        label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
+
+</window>

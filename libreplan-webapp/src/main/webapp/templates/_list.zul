@@ -1,0 +1,59 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<window id="${arg.top_id}" title="${i18n:_('Templates List')}">
+    <grid id="listing" model="@{templatesForOrdersController.templates}" mold="paging"
+        pageSize="10" fixedLayout="true" sclass="clickable-rows">
+        <columns>
+            <column label="${i18n:_('Type')}" sort="auto(type)" />
+            <column label="${i18n:_('Code')}" sort="auto(code)" />
+            <column label="${i18n:_('Name')}" sort="auto(name)" />
+            <column label="${i18n:_('Delay from beginning (days)')}"
+                sort="auto(startAsDaysFromBeginning)" />
+            <column label="${i18n:_('Days from Beginning to Deadline')}"
+                sort="auto(endAsDaysFromBeginning)" />
+            <column label="${i18n:_('Description')}"
+                sort="auto(description)" />
+            <column label="${i18n:_('Operations')}" />
+        </columns>
+        <rows>
+            <row self="@{each='template'}" value="@{template}" onClick="templatesForOrdersController.goToEditForm(self.value);">
+                <label value="@{template.type}" />
+                <label value="@{template.code}" />
+                <label value="@{template.name}" />
+                <label value="@{template.startAsDaysFromBeginning}" />
+                <label value="@{template.deadlineAsDaysFromBeginning}" />
+                <label value="@{template.description}" />
+                <hbox>
+                    <button sclass="icono"
+                        image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
+                        tooltiptext="${i18n:_('Edit')}"
+                        onClick="templatesForOrdersController.goToEditForm(self.parent.parent.value);">
+                    </button>
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="templatesForOrdersController.confirmDelete(self.parent.parent.value);"/>
+                </hbox>
+            </row>
+        </rows>
+    </grid>
+    </window>

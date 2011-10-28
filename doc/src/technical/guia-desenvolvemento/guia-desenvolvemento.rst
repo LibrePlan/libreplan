@@ -230,7 +230,7 @@ _`Figura 14`: WorkerModelImpl::confirm.
       <set name="criterionSatisfactions" inverse="true"
            cascade="all-delete-orphan">
            <key column="resourceId" not-null="true"/>
-           <one-to-many class="org.navalplanner...CriterionSatisfaction"/>
+           <one-to-many class="org.libreplan...CriterionSatisfaction"/>
       </set>
       ...
   </class>

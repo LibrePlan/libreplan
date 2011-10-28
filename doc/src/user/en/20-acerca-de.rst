@@ -43,7 +43,7 @@ Written by
 Public funding
 ================================
 
-Inside the global scope that NavalPlan is designed for regarding planning management, a project was developed to solve some common polanning problems. This project is partially financed by Xunta de Galicia, Ministerio de Industria, Turismo e Comercio, and by the European Union, Fondo Europeo de Desenvolvemento Rexional. 
+Inside the global scope that LibrePlan is designed for regarding planning management, a project was developed to solve some common polanning problems. This project is partially financed by Xunta de Galicia, Ministerio de Industria, Turismo e Comercio, and by the European Union, Fondo Europeo de Desenvolvemento Rexional. 
 
 .. figure:: images/logos.png
    :scale: 100

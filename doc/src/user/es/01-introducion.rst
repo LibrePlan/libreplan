@@ -3,16 +3,16 @@ Introducción
 
 .. contents::
 
-El propósito de este documento es describir las características de NavalPlan y
+El propósito de este documento es describir las características de LibrePlan y
 proporcionar información a los usuarios sobre cómo configurar y utilizar la
 aplicación.
 
-NavalPlan es una aplicación web de código abierto para la planificación de
+LibrePlan es una aplicación web de código abierto para la planificación de
 proyectos. Su objetivo principal es proporcionar una solución completa para la
 gestión de los proyectos de la empresa.
 Para cualquier información específica que necesites sobre este software, por
 favor ponte en contacto con el equipo de desarrollo en
-http://www.navalplan.org/es/contacto
+http://www.libreplan.org/es/contacto
 
 
 .. figure:: images/company_view.png
@@ -58,25 +58,25 @@ Sobre un pedido, la aplicación muestra las siguientes perspectivas:
 * Vista de edición de pedido. Vista en la que el usuario puede administrar los datos del pedido. Ver sección de *Pedidos* para más información.
 * Vista de asignación avanzada de recursos. Vista en la que el usuario puede asignar recursos de manera avanzada, seleccionando las horas por día o las funciones de asignación que desea aplicar. Ver sección de *Asignación de recursos* para más información.
 
-¿Por que es útil NavalPlan?
+¿Por que es útil LibrePlan?
 ===========================
 
-NavalPlan es una aplicación que se ha desarrollado como una herramienta de
+LibrePlan es una aplicación que se ha desarrollado como una herramienta de
 planificación de propósito general. Se basa en una serie de conceptos
 descubiertos mediante el análisis de problemas en la planificación de proyectos
 industriales que no estaban completamente cubiertos por ninguna herramienta de
 planificación existente. Otras de las motivaciones para el desarrollo de
-NavalPlan se basaban en proporcionar una alternativa de software libre, y
+LibrePlan se basaban en proporcionar una alternativa de software libre, y
 complétamente web, a las herramientas de planficación privativas existentes.
 
 Los conceptos esenciales que se utilizan para el programa son los siguientes:
 
-* Vista global de empresa y multiproyecto: NavalPlan es una aplicación orientada específicamente a dotar de información a los usuarios sobre proyectos que se llevan a cabo en una empresa, por lo que la base es multiproyecto. No se determinó que el enfoque del proyecto sea orientado individualmente a cada proyecto. Sin embargo, también é posible posible disponer de varias vistas específicas, entre ellas la de proyectos individuales.
+* Vista global de empresa y multiproyecto: LibrePlan es una aplicación orientada específicamente a dotar de información a los usuarios sobre proyectos que se llevan a cabo en una empresa, por lo que la base es multiproyecto. No se determinó que el enfoque del proyecto sea orientado individualmente a cada proyecto. Sin embargo, también é posible posible disponer de varias vistas específicas, entre ellas la de proyectos individuales.
 * Gestión de perspectivas: La vista global de empresa o vista multiproyecto se ve complementada con las perspectivas sobre la información que se almacena. Por ejemplo, la vista global de empresa permite visualizar los pedidos y contrastar el estado de los mismos, visualizar la carga general de recursos de la empresa y administrar los pedidos. Por otro lado, en la vista de proyecto, es posible visualizar la planificación, la carga de recursos, la vista de asignación de recursos avanzada y la edición del pedido relacionado.
 * Criterios: Los criterios son una entidad del sistema que permiten clasificar los recursos (tanto humanos como máquinas) y las tareas. Desde el punto de vista de los recursos, estos deben satisfacer criterios y, desde el punto de vista de las tareas, estas requiren criterios a ser satisfechos. Se corresponden con uno de los aspectos más importantes de la aplicación, ya que los criterios forman parte de la base de las asignaciones genéricas en la aplicación, resolviendo uno de los problemas más importantes para el sector, la alta temporalidad de los recursos humanos y la dificultad para tener estimaciones de carga de la empresa a largo plazo.
 * Recursos: Son de dos tipos diferentes: humanos y máquinas. Los recursos humanos son los trabajadores de la empresa que se utilizan para planificar, monitorizar y controlar la carga de la empresa. Y, por outro lado, las máquinas, dependientes de las persoas que las gestionan, son otros recursos que actúan de modo similar a los recursos humanos.
-* Asignación de recursos: Una de las claves es el hecho de ofrecer la posibilidade de dos tipos de asignación: asignación específica y asignación genérica. La genérica es una asignación basada en los criterios que se requieren para realizar una tarea, y que deben ser satisfechos por recursos que tienen la capacidad de realizarlas. Para entender la asignación genérica es necesario entender el siguiente caso: Jonh Smith es soldador, generalmente el propio Jonh Smith es asignado a la tarea planificada, pero "NavalPlan" ofrece la posibilidad de elegir un recurso en general entre los soldadores da empresa, sin preocuparse de si Jonh Smith es el asignado a la tarea.
-* Control de carga de la empresa: La aplicación da la posibilidad de tener un control sencillo de la carga de los recursos de la empresa. Este control se realiza a medio y largo plazo ya que se pueden controlar tanto los proyectos presentes como los potenciales proyectos a futuro. "NavalPlan" ofrece gráficos de uso de recursos.
+* Asignación de recursos: Una de las claves es el hecho de ofrecer la posibilidade de dos tipos de asignación: asignación específica y asignación genérica. La genérica es una asignación basada en los criterios que se requieren para realizar una tarea, y que deben ser satisfechos por recursos que tienen la capacidad de realizarlas. Para entender la asignación genérica es necesario entender el siguiente caso: Jonh Smith es soldador, generalmente el propio Jonh Smith es asignado a la tarea planificada, pero "LibrePlan" ofrece la posibilidad de elegir un recurso en general entre los soldadores da empresa, sin preocuparse de si Jonh Smith es el asignado a la tarea.
+* Control de carga de la empresa: La aplicación da la posibilidad de tener un control sencillo de la carga de los recursos de la empresa. Este control se realiza a medio y largo plazo ya que se pueden controlar tanto los proyectos presentes como los potenciales proyectos a futuro. "LibrePlan" ofrece gráficos de uso de recursos.
 * Etiquetas: Son elementos que se usan para lo etiquetado de las tareas de los proyectos. Con estas etiquetas el usuario de la aplicación puede realizar agrupaciones conceptuales de las tareas para posteriormente poder consultarlas de manera agrupada y filtrada.
 * Filtrados: Dado que el sistema dispone de manera natural de elementos que etiquetan o caracterízan tareas y recursos, es posible utilizar filtrado de criterios o etiquetas, lo cual dota de una gran potencia para poder consultar información categorizada o extraer informes específicos en base a criterios o etiquetas.
 * Calendarios: Los calendarios determinan las horas productivas disponibles de los diferentes recursos. El usuario puede crear calendarios generales de la empresa y derivar las características para calendarios más concretos, llegando hasta a nivel de calendario por recurso o tarea.

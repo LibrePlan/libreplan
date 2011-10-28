@@ -1,9 +1,9 @@
-# Galician translations for NavalPlan package
-# Traducciones al español para el paquete NavalPlan.
+# Galician translations for LibrePlan package
+# Traducciones al español para el paquete LibrePlan.
 # Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 #                         Desenvolvemento Tecnolóxico de Galicia
 # Copyright (C) 2010-2011 Igalia, S.L.
-# This file is distributed under the same license as the NavalPlan package.
+# This file is distributed under the same license as the LibrePlan package.
 # Igalia <dpino@igalia.com>, 2009.
 # Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2010.
 # Manuel Rego Casasnovas <mrego@igalia.com>, 2010, 2011.

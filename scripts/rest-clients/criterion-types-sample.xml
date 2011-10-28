@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<criterion-type-list xmlns="http://rest.ws.navalplanner.org">
+<criterion-type-list xmlns="http://rest.ws.libreplan.org">
 
     <!-- Several errors: see comments -->
     <criterion-type code="ct-1" name="ct-1" description="ct-1 desc"

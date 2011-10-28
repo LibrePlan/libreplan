@@ -1,0 +1,18 @@
+Lista de comandos para la instalación de pruebas de la aplicación libreplan sobre una ubuntu-karmic i386 recien instalada:
+
+sudo apt-get install postgresql postgresql-client dbconfig-common tomcat6  openjdk-6-jre-headless  openjdk-6-jre libpg-java
+sudo apt-get install libqt4-webkit libqt4-svg xvfb
+wget http://libreplan.org/downloads/cutycapt_20100108_i386.deb
+sudo dpkg -i cutycapt_20100108_i386.deb
+sudo ln -s /usr/share/java/postgresql-jdbc3-8.2.jar /usr/share/tomcat6/lib
+wget wget http://libreplan.org/downloads/libreplan_20100415_all.deb
+sudo dpkg -i libreplan_20100415_all.deb
+
+   Configurar base de datos:	Si
+   Usuario base de datos: escribir el nombre que interese, por ejemplo "libreplan"
+   Password base de datos: escribir una contraseña, por ejemplo "libreplan"
+
+sudo /etc/init.d/tomcat6 restart
+
+Poner en el Navegador Firefox la dirección: http://localhost:8080/libreplan-webapp/
+

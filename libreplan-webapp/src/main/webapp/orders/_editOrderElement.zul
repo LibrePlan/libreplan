@@ -1,0 +1,91 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?component name="orderElementDetails" inline="true" macroURI="_orderElementDetails.zul"?>
+<?component name="listOrderElementHours" inline="true" macroURI="_listOrderElementHours.zul"?>
+<?component name="listOrderElementAdvances" inline="true" macroURI="_listOrderElementAdvances.zul"?>
+<?component name="listOrderElementLabels" class="org.libreplan.web.orders.labels.LabelsAssignmentToOrderElementComponent" macroURI="components/_listOrderElementLabels.zul"?>
+<?component name="listOrderElementCriterionRequirements"
+    class="org.libreplan.web.orders.criterionrequirements.OrderElementCriterionRequirementComponent"
+    macroURI="_listOrderElementCriterionRequirements.zul"?>
+<?component name="listOrderElementMaterials"
+    class="org.libreplan.web.orders.materials.OrderElementMaterialAssignmentsComponent"
+    macroURI="/orders/components/_listOrderElementMaterials.zul"?>
+<?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
+
+<window id="${arg.top_id}"
+    title="@{i18n:_('Edit task')}"
+    width="950px"
+    left="50px"
+    top="50px"
+    visible="false"
+    closable="true"
+    onClose="orderElementController.close(event)" >
+
+    <tabbox height="620px" id="tabboxOrderElement">
+        <tabs>
+            <tab id="tabDetails" label="${i18n:_('Details')}" selected="true"
+                onSelect="orderElementController.clearAll();"/>
+            <tab id="tabAssignedHours" label="${i18n:_('Imputed hours')}"
+                onSelect="orderElementController.setupAssignedHoursToOrderElementController();"/>
+            <tab id="tabAdvances" label="${i18n:_('Progress')}"
+                onSelect="orderElementController.setupManageOrderElementAdvancesController();"/>
+            <tab id="tabLabels" label="${i18n:_('Labels')}"
+                onSelect="orderElementController.setupAssignedLabelsToOrderElementController();"/>
+            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
+                onSelect="orderElementController.setupAssignedCriterionRequirementToOrderElementController();"/>
+            <tab id="tabMaterials" label="${i18n:_('Materials')}"
+                onSelect="orderElementController.setupAssignedMaterialsToOrderElementController();"/>
+            <tab id="tabTaskQualityForm" label="${i18n:_('Task quality forms')}"
+                onSelect="orderElementController.setupAssignedTaskQualityFormsToOrderElementController();"/>
+        </tabs>
+
+        <tabpanels>
+            <tabpanel id="tabPanelDetails">
+                <orderElementDetails id="orderElementDetails" />
+            </tabpanel>
+            <tabpanel style="overflow:auto">
+                <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementAdvances id="orderElementAdvances" fulfill="tabAdvances.onSelect"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementLabels id="orderElementLabels" fulfill="tabLabels.onSelect"/>
+            </tabpanel>
+             <tabpanel style="overflow:auto">
+                <listOrderElementCriterionRequirements id="orderElementCriterionRequirements" fulfill="tabRequirements.onSelect"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementMaterials id="orderElementMaterials" fulfill="tabMaterials.onSelect"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementTaskQualityForms id="orderElementTaskQualityForms" fulfill="tabTaskQualityForm.onSelect"/>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <hbox>
+        <button label="${i18n:_('Back')}" onClick="orderElementController.back()"
+            sclass="back-button global-action"/>
+    </hbox>
+
+</window>

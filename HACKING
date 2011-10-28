@@ -1,9 +1,9 @@
 Hacking
 =======
 
-This is a guide about how to start hacking on *NavalPlan* project. If you want
-more information about *NavalPlan* development you should visit the wiki
-available at: http://wiki.navalplan.org/.
+This is a guide about how to start hacking on *LibrePlan* project. If you want
+more information about *LibrePlan* development you should visit the wiki
+available at: http://wiki.libreplan.org/.
 
 .. contents::
 
@@ -48,7 +48,7 @@ Compilation requirements
   Required for printing
 
 
-NavalPlan compilation
+LibrePlan compilation
 ---------------------
 
 Debian/Ubuntu
@@ -72,7 +72,7 @@ Debian/Ubuntu
 
 * Download source code::
 
-    $ git clone git://navalplan.git.sourceforge.net/gitroot/navalplan/navalplan
+    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
 
 * Compile project::
 
@@ -80,10 +80,10 @@ Debian/Ubuntu
 
 * Launch application::
 
-    $ cd navalplanner-webapp/
+    $ cd libreplan-webapp/
     $ mvn jetty:run
 
-* Go to http://localhost:8080/navalplanner-webapp/
+* Go to http://localhost:8080/libreplan-webapp/
 
 Fedora
 ~~~~~~
@@ -121,7 +121,7 @@ Fedora
 
 * Download source code::
 
-    $ git clone git://navalplan.git.sourceforge.net/gitroot/navalplan/navalplan
+    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
 
 * Compile project::
 
@@ -129,10 +129,10 @@ Fedora
 
 * Launch application::
 
-    $ cd navalplanner-webapp/
+    $ cd libreplan-webapp/
     $ mvn jetty:run
 
-* Go to http://localhost:8080/navalplanner-webapp/
+* Go to http://localhost:8080/libreplan-webapp/
 
 openSUSE
 ~~~~~~~~
@@ -181,7 +181,7 @@ openSUSE
 
 * Download source code::
 
-    $ git clone git://navalplan.git.sourceforge.net/gitroot/navalplan/navalplan
+    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
 
 * Compile project::
 
@@ -189,10 +189,10 @@ openSUSE
 
 * Launch application::
 
-    $ cd navalplanner-webapp/
+    $ cd libreplan-webapp/
     $ mvn jetty:run
 
-* Go to http://localhost:8080/navalplanner-webapp/
+* Go to http://localhost:8080/libreplan-webapp/
 
 
 CutyCapt compilation
@@ -269,7 +269,7 @@ openSUSE
 Compilation profiles
 --------------------
 
-There are different compilation profiles in *NavalPlan*. Check ``<profiles>``
+There are different compilation profiles in *LibrePlan*. Check ``<profiles>``
 section in root ``pom.xml`` to see the different profiles (there are also some
 profiles defined in ``pom.xml`` of business and webapp modules).
 
@@ -299,14 +299,14 @@ profiles defined in ``pom.xml`` of business and webapp modules).
 
 * *reports* - JasperReports (default)
 
-  If it is active *NavalPlan* reports are compiled.
+  If it is active *LibrePlan* reports are compiled.
 
   It is useful to disable this profile to save compilation time during
   development.
 
 * *userguide* - User documentation (default)
 
-  If it is active *NavalPlan* help is compiled and HTML files are generated.
+  If it is active *LibrePlan* help is compiled and HTML files are generated.
 
   User documentation is written in *reStructuredText* and it is generated
   automatically thanks to this profile.
@@ -344,7 +344,7 @@ command. For example:
 Tests
 -----
 
-*NavalPlan* has a lot of JUnit test that by default are passed when you compile
+*LibrePlan* has a lot of JUnit test that by default are passed when you compile
 the project with Maven. You can use ``-DskipTests`` to avoid tests are passed
 always. Anyway, you should check that tests are not broken before sending or
 pushing a patch.
@@ -372,5 +372,5 @@ For MySQL users here are specific instructions.
 
 * Launch application::
 
-    $ cd navalplanner-webapp/
+    $ cd libreplan-webapp/
     $ mvn -Pdev,mysql jetty:run

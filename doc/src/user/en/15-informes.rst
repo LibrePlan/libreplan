@@ -8,7 +8,7 @@
 Reports
 =======
 
-"NavalPlan" is integrated with *JasperReports* to manage reports, which allows users to enter various reports to analyse available data in the program.
+"LibrePlan" is integrated with *JasperReports* to manage reports, which allows users to enter various reports to analyse available data in the program.
 
 The defined reports are:
 

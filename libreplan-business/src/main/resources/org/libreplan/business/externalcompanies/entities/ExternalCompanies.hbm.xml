@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.externalcompanies.entities" default-access="field">
+
+<!-- ExternalCompany -->
+<class name="ExternalCompany" table="external_company">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="name" unique="true" />
+
+    <property name="nif" unique="true" />
+
+    <property name="client" />
+
+    <property name="subcontractor" />
+
+    <property name="interactsWithApplications"
+        column="interacts_with_applications" />
+
+    <property name="appURI" column="app_uri" />
+
+    <property name="ourCompanyLogin" column="our_company_login" />
+
+    <property name="ourCompanyPassword" column="our_company_password" />
+
+    <!-- Not indexed, navigation from User to this is not even implemented -->
+    <many-to-one name="companyUser" class="org.libreplan.business.users.entities.User"
+        column="company_user" />
+</class>
+
+</hibernate-mapping>

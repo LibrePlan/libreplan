@@ -1,4 +1,0 @@
-<taglib>
-    <taglib-uri>http://org.navalplanner.web/i18n</taglib-uri>
-    <taglib-location>webapp/WEB-INF/tld/i18n.tld</taglib-location>
-</taglib>

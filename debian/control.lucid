@@ -1,23 +1,23 @@
-Source: navalplan
+Source: libreplan
 Section: web
 Priority: optional
 Maintainer: Adrian Perez <aperez@igalia.com>
 Build-Depends: debhelper (>= 7.0.50), maven2, python-docutils,
  gettext (>= 0.17), texlive-latex-recommended, pgf, openjdk-6-jdk
 Standards-Version: 3.8.4
-Homepage: http://www.navalplan.org/en/
+Homepage: http://www.libreplan.org/en/
 
-Package: navalplan
+Package: libreplan
 Architecture: any
 Depends: cutycapt, postgresql, postgresql-client, xvfb, dbconfig-common, ucf,
  tomcat6, openjdk-6-jre-headless | openjdk-6-jre, libpg-java, ttf-freefont,
  ${misc:Depends}
 Description: Web application for project management.
- NavalPlan is a planning tool for users based on some concepts: company and
+ LibrePlan is a planning tool for users based on some concepts: company and
  multi-project overview, criteria assignments, tasks tagging, resources
  management, resource allocation (specific and generic), company load control,
  external integration, etc.
  .
- Although its name is clearly related to shipbuilding, NavalPlan is a fully
+ Although its name is clearly related to shipbuilding, LibrePlan is a fully
  useful planning tool for any type of company whose workflow requires project
  and order administration and scheduling.

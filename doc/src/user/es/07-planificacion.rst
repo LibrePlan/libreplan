@@ -8,7 +8,7 @@ Planificación de tareas
 Planificación de tareas
 ========================
 
-La planificación en "NavalPlan" es un proceso que se describe a lo largo de todos los capítulos del documento de usuario, entre los cuales destacan los capítulos de pedidos y de asignación de recursos. En este capítulo se tratan las operaciones básicas de planificación, una vez el pedido está correctamente configurado y la interacción con los diagramas de Gantt.
+La planificación en "LibrePlan" es un proceso que se describe a lo largo de todos los capítulos del documento de usuario, entre los cuales destacan los capítulos de pedidos y de asignación de recursos. En este capítulo se tratan las operaciones básicas de planificación, una vez el pedido está correctamente configurado y la interacción con los diagramas de Gantt.
 
 .. figure:: images/planning-view.png
    :scale: 35

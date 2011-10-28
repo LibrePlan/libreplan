@@ -1,5 +1,5 @@
 /*
- * This file is part of NavalPlan
+ * This file is part of LibrePlan
  *
  * Copyright (C) 2011 Igalia, S.L.
  *
@@ -43,7 +43,7 @@ _include("../common_functions.sah");
  */
 
 function configChangeInCheckboxes($list) {
-    _click(_link("NavalPlan Configuration"));
+    _click(_link("LibrePlan Configuration"));
     configPressCheckboxes($list);
     _click(_cell("Save"));
     configSaveValidation();
@@ -74,7 +74,7 @@ function configCheckMonteCarlo(){
     _assertExists(_cell("MonteCarlo Method"));
     _assert(_isVisible(_cell("MonteCarlo Method")));
     _log("Monte Carlo is showed", "custom1");
-    _click(_link("NavalPlan Configuration"));
+    _click(_link("LibrePlan Configuration"));
     _click(_checkbox(0, _near(_label("Enable scenarios module"))));
     _click(_cell("Save"));
     commonDeleteProject("projectForCheckMontecarlo");
@@ -85,7 +85,7 @@ function configCheckScenario(){
     _assertExists(_span("scenario:"));
     _assert(_isVisible(_span("scenario:")));
     _log("Scenario is showed", "custom1");
-    _click(_link("NavalPlan Configuration"));
+    _click(_link("LibrePlan Configuration"));
     _click(_checkbox(0, _near(_label("Enable scenarios module"))));
     _click(_cell("Save"));
 }
@@ -127,13 +127,13 @@ function configCheckMaterial(){
 }
 
 function configCheckWorkReport(){
-    _click(_link("NavalPlan Configuration"));
+    _click(_link("LibrePlan Configuration"));
     _click(_checkbox(0, _near(_label("Work report types"))));
     _click(_cell("Save"));
     commonWorkReportModelCreate("modelForConfiguration", "line")
     configCheckWorkReportCreate();
     commonWorkReportModelDelete("modelForConfiguration");
-    _click(_link("NavalPlan Configuration"));
+    _click(_link("LibrePlan Configuration"));
     _click(_checkbox(0, _near(_label("Work report types"))));
     _click(_cell("Save"));
 }
@@ -176,7 +176,7 @@ function configChangeCalendar($name){
 }
 
 function configChangeCalendarOption($name){
-    _click(_link("NavalPlan Configuration"));
+    _click(_link("LibrePlan Configuration"));
     _click(_italic(0, _near(_span("Default calendar"))));
     _click(_div($name));
     _click(_cell("Save"));

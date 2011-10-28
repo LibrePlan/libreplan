@@ -1633,20 +1633,20 @@ UPDATE configuration SET company_logo_url = NULL;
 INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('ltilve', 'Add new column with configuration setting', NOW(), 'Add Column, Update Data', 'EXECUTED', 'src/main/resources/db.changelog-initial.xml', 'add-company-logo-url-configuration-setting', '2.0-rc7', '3:009cd5341d49b5415bf7ec539de24c79', 322);
 
 -- Changeset src/main/resources/db.changelog-initial.xml::add scheduling mode::ogonzalez::(Checksum: 3:8a4ed0c0131906744a85a38278180e13)
--- column for org.navalplanner.business.orders.entities.Order.schedulingMode
+-- column for org.libreplan.business.orders.entities.Order.schedulingMode
 ALTER TABLE order_table ADD scheduling_mode INT;
 
 UPDATE order_table SET scheduling_mode = '0';
 
-INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('ogonzalez', 'column for org.navalplanner.business.orders.entities.Order.schedulingMode', NOW(), 'Add Column, Update Data', 'EXECUTED', 'src/main/resources/db.changelog-initial.xml', 'add scheduling mode', '2.0-rc7', '3:8a4ed0c0131906744a85a38278180e13', 323);
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('ogonzalez', 'column for org.libreplan.business.orders.entities.Order.schedulingMode', NOW(), 'Add Column, Update Data', 'EXECUTED', 'src/main/resources/db.changelog-initial.xml', 'add scheduling mode', '2.0-rc7', '3:8a4ed0c0131906744a85a38278180e13', 323);
 
 -- Changeset src/main/resources/db.changelog-initial.xml::rename start_constraint_type in task and task milestone::ogonzalez::(Checksum: 3:0ba5792ffc0bff2a1ce571047b008796)
--- Caused by renaming org.navalplanner.business.planner.entities.TaskPositionConstraint.startConstraintType
+-- Caused by renaming org.libreplan.business.planner.entities.TaskPositionConstraint.startConstraintType
 ALTER TABLE task RENAME COLUMN start_constraint_type TO constraint_type;
 
 ALTER TABLE task_milestone RENAME COLUMN start_constraint_type TO constraint_type;
 
-INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('ogonzalez', 'Caused by renaming org.navalplanner.business.planner.entities.TaskPositionConstraint.startConstraintType', NOW(), 'Rename Column (x2)', 'EXECUTED', 'src/main/resources/db.changelog-initial.xml', 'rename start_constraint_type in task and task milestone', '2.0-rc7', '3:0ba5792ffc0bff2a1ce571047b008796', 324);
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('ogonzalez', 'Caused by renaming org.libreplan.business.planner.entities.TaskPositionConstraint.startConstraintType', NOW(), 'Rename Column (x2)', 'EXECUTED', 'src/main/resources/db.changelog-initial.xml', 'rename start_constraint_type in task and task milestone', '2.0-rc7', '3:0ba5792ffc0bff2a1ce571047b008796', 324);
 
 -- Changeset src/main/resources/db.changelog-initial.xml::add-scenarios-enabled-configuration-setting::ltilve::(Checksum: 3:53d99bb420a0c55c8eaa9389e3fc0ed5)
 -- Add new column with scenarios visibility flag
@@ -1658,7 +1658,7 @@ INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXEC
 
 
 -- *********************************************************************
--- Update Database Script - NavalPlan 1.0.0
+-- Update Database Script - LibrePlan 1.0.0
 -- *********************************************************************
 -- Change Log: src/main/resources/db.changelog-initial.xml
 -- Ran at: 1/7/11 3:49 PM
@@ -1680,7 +1680,7 @@ INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXEC
 
 
 -- *********************************************************************
--- Update Database Script - NavalPlan 1.1.0
+-- Update Database Script - LibrePlan 1.1.0
 -- *********************************************************************
 -- Change Log: src/main/resources/db.changelog.xml
 -- Ran at: 5/11/11 1:11 PM

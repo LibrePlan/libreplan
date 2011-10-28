@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<language-addon>
+
+    <addon-name>libreplan-webapp</addon-name>
+    <language-name>xul/html</language-name>
+
+    <component>
+        <component-name>twowayselector</component-name>
+        <component-class>org.libreplan.web.common.components.TwoWaySelector</component-class>
+        <macro-uri>/common/components/twowayselector.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>i18n</component-name>
+        <component-class>org.libreplan.web.common.components.I18n</component-class>
+        <macro-uri>/common/components/i18n.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>l10n</component-name>
+        <component-class>org.libreplan.web.common.components.L10n</component-class>
+        <extends>label</extends>
+    </component>
+
+    <component>
+        <component-name>effortDurationPicker</component-name>
+        <component-class>org.libreplan.web.common.components.EffortDurationPicker</component-class>
+        <extends>hbox</extends>
+    </component>
+
+    <component>
+        <component-name>autocomplete</component-name>
+        <component-class>org.libreplan.web.common.components.Autocomplete</component-class>
+        <extends>combobox</extends>
+    </component>
+
+    <component>
+        <component-name>bandboxSearch</component-name>
+        <component-class>org.libreplan.web.common.components.bandboxsearch.BandboxSearch</component-class>
+        <macro-uri>/common/components/bandbox_search.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>bandboxMultipleSearch</component-name>
+        <component-class>org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch</component-class>
+        <macro-uri>/common/components/bandbox_search.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>newdatasortablecolumn</component-name>
+        <component-class>org.libreplan.web.common.components.NewDataSortableColumn</component-class>
+        <extends>column</extends>
+    </component>
+
+    <component>
+        <component-name>schedulingStateToggler</component-name>
+        <component-class>org.libreplan.web.orders.SchedulingStateToggler</component-class>
+        <macro-uri>/common/components/schedulingStateToggler.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>newdatasortablegrid</component-name>
+        <component-class>org.libreplan.web.common.components.NewDataSortableGrid</component-class>
+        <extends>grid</extends>
+        <annotation>
+            <annotation-name>default-bind</annotation-name>
+            <property-name>model</property-name>
+            <attribute>
+                <attribute-name>converter</attribute-name>
+                <attribute-value>org.zkoss.zkplus.databind.ListModelConverter</attribute-value>
+            </attribute>
+        </annotation>
+    </component>
+
+    <component>
+        <component-name>doublebox</component-name>
+            <extends>doublebox</extends>
+            <property>
+                <property-name>format</property-name>
+                <property-value>###,##0.00####</property-value>
+            </property>
+    </component>
+
+    <component>
+        <component-name>templateFinderPopup</component-name>
+        <component-class>org.libreplan.web.orders.assigntemplates.TemplateFinderPopup</component-class>
+        <macro-uri>/common/components/templateFinder.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>LenientDecimalBox</component-name>
+        <component-class>org.libreplan.web.common.LenientDecimalBox</component-class>
+        <widget-class>webcommon.LenientDecimalBox</widget-class>
+    </component>
+
+    <component>
+        <component-name>LimitingResourcesPanel</component-name>
+        <component-class>org.libreplan.web.limitingresources.LimitingResourcesPanel</component-class>
+            <macro-uri>/limitingresources/limitingResourcesLayout.zul</macro-uri>
+        <widget-class>limitingresources.LimitingResourcesPanel</widget-class>
+    </component>
+
+    <component>
+        <component-name>queueListComponent</component-name>
+        <component-class>org.libreplan.web.limitingresources.QueueListComponent</component-class>
+        <widget-class>limitingresources.QueueListComponent</widget-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>mold/queue-list-component.js</mold-uri>
+            <!-- <mold-uri>/limitingresources/queuelistcomponent.dsp</mold-uri> -->
+        </mold>
+    </component>
+
+    <component>
+        <component-name>limitingResourcesLeftPane</component-name>
+        <component-class>org.libreplan.web.limitingresources.LimitingResourcesLeftPane</component-class>
+        <macro-uri>/limitingresources/leftPane.zul</macro-uri>
+    </component>
+
+    <component>
+        <component-name>queuecomponent</component-name><!-- Limiting resources queue -->
+        <component-class>org.libreplan.web.limitingresources.QueueComponent</component-class>
+        <widget-class>limitingresources.QueueComponent</widget-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>mold/queue-component.js</mold-uri>
+            <!-- <mold-uri>/limitingresources/queuecomponent.dsp</mold-uri> -->
+        </mold>
+    </component>
+
+    <component>
+        <component-name>QueueTask</component-name>
+        <component-class>org.libreplan.web.limitingresources.QueueTask</component-class>
+        <widget-class>limitingresources.QueueTask</widget-class>
+    </component>
+
+    <!-- Depencencies displayed in limiting resources window -->
+    <component>
+        <component-name>limitingdependencylist</component-name>
+        <component-class>org.libreplan.web.limitingresources.LimitingDependencyList</component-class>
+        <widget-class>limitingresources.LimitingDependencyList</widget-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>mold/limiting-dependency-list.js</mold-uri>
+            <!-- <mold-uri>/limitingresources/limitingdependencylist.dsp</mold-uri> -->
+        </mold>
+    </component>
+
+    <component>
+        <component-name>limitingdependency</component-name>
+        <component-class>org.libreplan.web.limitingresources.LimitingDependencyComponent</component-class>
+        <widget-class>limitingresources.LimitingDependencyComponent</widget-class>
+        <mold>
+            <mold-name>default</mold-name>
+            <mold-uri>mold/limiting-dependency-component.js</mold-uri>
+            <!-- <mold-uri>/limitingresources/limitingdependency.dsp</mold-uri> -->
+        </mold>
+    </component>
+
+</language-addon>

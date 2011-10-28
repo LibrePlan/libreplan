@@ -1,16 +1,16 @@
 
-NavalPlan: Guía de integración
+LibrePlan: Guía de integración
 ##############################
 
-A guía de integración de NavalPlan detalla as posibilidades existentes para a integración entre aplicacións co software NavalPlan.
+A guía de integración de LibrePlan detalla as posibilidades existentes para a integración entre aplicacións co software LibrePlan.
 
-As funcionalidades de integración da ferramenta para a Xestión da Producción permitirán a compartición de datos entre as distintas ferramentas existentes en cada empresa. NavalPlan define unha serie de formatos de intercambio de información empregando a sintaxe XML. A descrición das interfaces e formatos de intercambio son totalmente abertos e está dispoñible a súa implementación para incorporar novas posibilidades de integración se fose necesario.
+As funcionalidades de integración da ferramenta para a Xestión da Producción permitirán a compartición de datos entre as distintas ferramentas existentes en cada empresa. LibrePlan define unha serie de formatos de intercambio de información empregando a sintaxe XML. A descrición das interfaces e formatos de intercambio son totalmente abertos e está dispoñible a súa implementación para incorporar novas posibilidades de integración se fose necesario.
 
 
 Visión Global
 =============
 
-NavalPlan é unha aplicación que ten coma núcleo de funcionalidades a xestión da planificación e control dunha empresa. NavalPlan traballa cun conxunto de datos enfocado a xestión de recursos para a realización de tarefas permitindo a súa planificación e control. Aínda que NavalPlan permite xestionar o proceso de forma autónoma é necesario provelo de mecanismos de intercambio que permitan a incorporación de información recollida por outras aplicacións xa existentes nas empresas usuarias de NavalPlan.
+LibrePlan é unha aplicación que ten coma núcleo de funcionalidades a xestión da planificación e control dunha empresa. LibrePlan traballa cun conxunto de datos enfocado a xestión de recursos para a realización de tarefas permitindo a súa planificación e control. Aínda que LibrePlan permite xestionar o proceso de forma autónoma é necesario provelo de mecanismos de intercambio que permitan a incorporación de información recollida por outras aplicacións xa existentes nas empresas usuarias de LibrePlan.
 
 As empresas que teñen unha certa implantación de sistemas de xestión deberían permitir incorporar a información dos mesmos para facer máis rico e sinxelo o traballo co planificador. As entidades que teñen unha utilidade fóra do planificador son:
 
@@ -20,28 +20,28 @@ As empresas que teñen unha certa implantación de sistemas de xestión debería
 
 Estes elementos son empregados directamente no planificador, xa que os pedidos organízanse en tarefas, que son asignadas a recursos e logo a súa execución é controlada a través dos partes de traballo e a súa vez faise un análise de custos.
 
-NavalPlan permite a integración en dous escenarios:
+LibrePlan permite a integración en dous escenarios:
 
-   * Integración con outras aplicacións: permitindo a incorporación de datos de programas desenvoltos por terceiros. Isto será posible empregando as Interfaces Públicas da Aplicación (API) dispoñibles. A API de NavalPlan permite a interacción coas seguintes entidades propias: recursos, pedidos e partes de traballo, aínda que incorporan outras entidades de interese coma materiais, etiquetas, criterios, categorías de custo e tipos de horas.
-   * Integración con outras instancias de NavalPlan: permitindo operacións que deixen compartir información entre distintas empresas centrándose no proceso de subcontratación e reporte de avances do subcontratista.
+   * Integración con outras aplicacións: permitindo a incorporación de datos de programas desenvoltos por terceiros. Isto será posible empregando as Interfaces Públicas da Aplicación (API) dispoñibles. A API de LibrePlan permite a interacción coas seguintes entidades propias: recursos, pedidos e partes de traballo, aínda que incorporan outras entidades de interese coma materiais, etiquetas, criterios, categorías de custo e tipos de horas.
+   * Integración con outras instancias de LibrePlan: permitindo operacións que deixen compartir información entre distintas empresas centrándose no proceso de subcontratación e reporte de avances do subcontratista.
 
 
 Integración con outras aplicacións da propia empresa
 ----------------------------------------------------
 
-NavalPlan permite a integración con outras aplicacións, NavalPlan poderá incorporar información procedente de outras aplicacións empregando un formato de intercambio común que será recibido por un servizo web que permitirá realizar actualizacións de datos ao longo do tempo.
+LibrePlan permite a integración con outras aplicacións, LibrePlan poderá incorporar información procedente de outras aplicacións empregando un formato de intercambio común que será recibido por un servizo web que permitirá realizar actualizacións de datos ao longo do tempo.
 
-Esta integración deberá ser configurada mediante a habilitación dun usuario que terá permiso de acceso para cada un dos servizos que é de interese integrar, as aplicacións poderán chamar aos servizos empregando o nome de usuario e contrasinal e NavalPlan procesará a incorporación dos datos enviados. En caso de que ocorran erros na incorporación de datos na resposta da petición incorporarase a información dispoñible sobre o erro.
+Esta integración deberá ser configurada mediante a habilitación dun usuario que terá permiso de acceso para cada un dos servizos que é de interese integrar, as aplicacións poderán chamar aos servizos empregando o nome de usuario e contrasinal e LibrePlan procesará a incorporación dos datos enviados. En caso de que ocorran erros na incorporación de datos na resposta da petición incorporarase a información dispoñible sobre o erro.
 
 A integración dentro da empresa permite unha integración forte con distintas aplicacións que poderán chamar en calquera momento aos servizos web para a actualización de datos.
 
 
-Integración entre aplicacións NavalPlan de distintas empresas
+Integración entre aplicacións LibrePlan de distintas empresas
 -------------------------------------------------------------
 
-NavalPlan ten sido concibido coma un software que permita a realación con distintas empresas que empreguen a aplicación. O escenario principal de colaboración entre empresas é a contratación entre as mesmas, dentro do proceso de planificación é normal a situación que varias empresas colaboren nun mesmo proxecto sendo unha a contratista principal e outras subcontratistas desta.
+LibrePlan ten sido concibido coma un software que permita a realación con distintas empresas que empreguen a aplicación. O escenario principal de colaboración entre empresas é a contratación entre as mesmas, dentro do proceso de planificación é normal a situación que varias empresas colaboren nun mesmo proxecto sendo unha a contratista principal e outras subcontratistas desta.
 
-NavalPlan ten desenvolto un sistema de intercambio de información que permite remitir a información das tarefas a subcontratar a outras empresas e recibir os reportes de avance dos proxectos subcontratados.
+LibrePlan ten desenvolto un sistema de intercambio de información que permite remitir a información das tarefas a subcontratar a outras empresas e recibir os reportes de avance dos proxectos subcontratados.
 
 Esta integración a nivel aplicación precisa da existencia de usuarios cruzados entre as empresas subcontratante e subcontratista. Esta configuración permitirá que as aplicacións se poidan comunicar a información en tempo real.
 
@@ -61,10 +61,10 @@ Un *servizo web* defínese como un mecanismo de comunicación que se establece e
 
 As razóns que levaron á elección de servizos web como vehículo de comunicación para levar a cabo a integración son as seguintes:
 
-   * Por unha banda, os servizos web utilizan o protocolo HTTP como transporte, que é o que usa a WWW. Debido a que practicamente en todas as redes de ordenadores está permitido o acceso á WWW, os firewalls das corporacións non filtran o porto no que se serve a web, e de forma transparente a integración de NavalPlan con outra instalación do programa en outra empresa ou con outras aplicacións dentro da compañía funcionaría.
+   * Por unha banda, os servizos web utilizan o protocolo HTTP como transporte, que é o que usa a WWW. Debido a que practicamente en todas as redes de ordenadores está permitido o acceso á WWW, os firewalls das corporacións non filtran o porto no que se serve a web, e de forma transparente a integración de LibrePlan con outra instalación do programa en outra empresa ou con outras aplicacións dentro da compañía funcionaría.
    * Permiten a definición de mensaxes estruturados en XML - non son protocolos binarios de comunicación - de forma que é sinxelo entender as mensaxes de intercambio se o XML se define de forma acorde ao *modelo de dominio*.
    * É unha tecnoloxía amplamente probada.
-   * É independente da linguaxe de programación. Isto permite que aínda que NavalPlan está desenvolvido utilizando a plataforma Java póidanse realizar clientes en distintas tecnoloxías como .NET, C, C++ maximizando as capacidades de integración e facilitándoa.
+   * É independente da linguaxe de programación. Isto permite que aínda que LibrePlan está desenvolvido utilizando a plataforma Java póidanse realizar clientes en distintas tecnoloxías como .NET, C, C++ maximizando as capacidades de integración e facilitándoa.
 
 Dentro dos servizos web existen dous grandes subtipos: Os servizos web baseados en *SOAP* e os servizos web *REST*.
 
@@ -72,17 +72,17 @@ A grandes trazos os servizos web baseados en *SOAP* utilizan como corpo das mens
 
 Os servizos web REST (REpresentational State Transfer) usan as operacións do protocolo HTTP (POST, PUT, DELETE e GET) para especificar parte das operacións e non poñen restricións acerca do corpo das mensaxes. Poden ser XML ou non e, se son XML, non teñen que cinguirse ao estándar *SOAP*.
 
-En NavalPlan os servizos web nos que se baseará a integración serán servizos *REST*. As razóns da elección de servizos REST son as seguintes:
+En LibrePlan os servizos web nos que se baseará a integración serán servizos *REST*. As razóns da elección de servizos REST son as seguintes:
 
-   * Son máis sinxelos de implementar que os servizos *SOAP*. Isto facilita aos usuarios que queiran integrarse con NavalPlan o proceso, xa que o desenvolvemento e a depuración é máis sinxela.
+   * Son máis sinxelos de implementar que os servizos *SOAP*. Isto facilita aos usuarios que queiran integrarse con LibrePlan o proceso, xa que o desenvolvemento e a depuración é máis sinxela.
    * Unicamente son máis directos de implementar os servizos web *SOAP* se se utilizan ferramentas automáticas (que existen en linguaxes como Java ou .NET)  que a partir da descrición dos servizos (WSDL) son capaces de xerar os clientes. Agora ben, esta vantaxe descartouse para a elección do tipo de servizos web a implementar porque se quere que, no caso de que non exista integración automática e os XML de intercambio de datos se xeren a man ou ben a partir dunha base de datos pero sen ter que programarse o cliente *SOAP*, esta integración siga sendo posible.
 
-Invocar un servizo web REST de NavalPlan será tan sinxelo como cun cliente HTTP (como pode ser simplemente o navegador para algunhas operacións) invocar unha URL.
+Invocar un servizo web REST de LibrePlan será tan sinxelo como cun cliente HTTP (como pode ser simplemente o navegador para algunhas operacións) invocar unha URL.
 
 Seguridade
 ----------
 
-Os servizos web REST de que constará NavalPlan para a integración contemplan un soporte de seguridade. A seguridade trátase en 3 dimensións:
+Os servizos web REST de que constará LibrePlan para a integración contemplan un soporte de seguridade. A seguridade trátase en 3 dimensións:
 
    * Seguridade da comunicación.
    * Autenticación do cliente.
@@ -92,9 +92,9 @@ Os servizos web REST de que constará NavalPlan para a integración contemplan u
 Seguridade da comunicación
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A seguridade da comunicación refírese a garantir que as mensaxes que se intercambian entre unha instalación de NavalPlan e os seus clientes (que pode ser outra aplicación ou outra instalación de NavalPlan realizada noutra compañía) sexan confidencias entre os dous extremos da comunicación. Quere dicir isto que, como pode que atravesen redes públicas - integración a través de Internet -, están suxeitas a poder ser examinados por todas as persoas ou axentes que teñan acceso ao medio. Para evitar, por tanto, que ao examinar o medio se obteña información privada das empresas que manteñen a comunicación con NavalPlan este proporciona un mecanismo de seguridade.
+A seguridade da comunicación refírese a garantir que as mensaxes que se intercambian entre unha instalación de LibrePlan e os seus clientes (que pode ser outra aplicación ou outra instalación de LibrePlan realizada noutra compañía) sexan confidencias entre os dous extremos da comunicación. Quere dicir isto que, como pode que atravesen redes públicas - integración a través de Internet -, están suxeitas a poder ser examinados por todas as persoas ou axentes que teñan acceso ao medio. Para evitar, por tanto, que ao examinar o medio se obteña información privada das empresas que manteñen a comunicación con LibrePlan este proporciona un mecanismo de seguridade.
 
-A seguridade consiste na posibilidade de servir cifrados os datos e a elección feita para realizar o cifrado é servir os servizos web por HTTPS (HTTP Secure) en lugar de por HTTP. HTTPS é a combinación de HTTP con SSL. Con SSL conséguese por una parte garantir a identidade do servidor NavalPlan e, por outra banda, cifrar a comunicación entre o servidor e o cliente.
+A seguridade consiste na posibilidade de servir cifrados os datos e a elección feita para realizar o cifrado é servir os servizos web por HTTPS (HTTP Secure) en lugar de por HTTP. HTTPS é a combinación de HTTP con SSL. Con SSL conséguese por una parte garantir a identidade do servidor LibrePlan e, por outra banda, cifrar a comunicación entre o servidor e o cliente.
 
 Servir os servizos web con HTTPS pódese facer tanto dende o contedor de Servlets necesario para servir a aplicación (Apache Tomcat, Jetty) como se se serve detrás dun proxy que realice o cifrado por HTTPS (por exemplo detrás dun servidor web Apache). En calquera caso, será necesario que a empresa posúa un *certificado público* que permita servir por HTTPS os servizos web e/ou a aplicación.
 
@@ -104,9 +104,9 @@ Autenticación do cliente
 
 O proceso de autenticación consiste en determinar quen é a persoa ou entidade que quere efectuar unha operación ofrecida por un servizo web.
 
-A aplicación NavalPlan conta con autenticación a través da súa interface web. Está desenvolvido un módulo de usuarios que permite a alta, baixa de usuarios e a configuración dos permisos que poden posuír. Existe un conxunto predefinido de roles e estes roles se poden outorgar/denegar aos diferentes usuarios. Un rol permite realizar un determinado conxunto de operacións.
+A aplicación LibrePlan conta con autenticación a través da súa interface web. Está desenvolvido un módulo de usuarios que permite a alta, baixa de usuarios e a configuración dos permisos que poden posuír. Existe un conxunto predefinido de roles e estes roles se poden outorgar/denegar aos diferentes usuarios. Un rol permite realizar un determinado conxunto de operacións.
 
-Para a autenticación nos servizos web proponse reutilizar o sistema de usuarios de forma que para que o servidor vaia a proporcionar unha resposta haberá un paso de autenticar ao peticionario. Por tanto as aplicacións que se desexen integrar con NavalPlan terán que ter creadas na aplicación un usuario coas credencias adecuadas para invocar as operacións desexadas.
+Para a autenticación nos servizos web proponse reutilizar o sistema de usuarios de forma que para que o servidor vaia a proporcionar unha resposta haberá un paso de autenticar ao peticionario. Por tanto as aplicacións que se desexen integrar con LibrePlan terán que ter creadas na aplicación un usuario coas credencias adecuadas para invocar as operacións desexadas.
 
 Para identificar o peticionario vaise usar a autenticación Basic Access Authentication HTTP. Con este método de autenticación pode pasarse un usuario/contrasinal ao servidor web. Pásase cunha cabeceira na mensaxe HTTP. O formato é o seguinte:
 
@@ -118,7 +118,7 @@ A codificación base64 unicamente é para ocultar o usuario:contrasinal da vista
 Autorización do cliente respecto á operación invocada
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Unha vez se é capaz de identificar o peticionario da operación do servizo web, é necesario autorizalo ou denegarlle o acceso. Na aplicación web que forma parte de NavalPlan a autorización faise utilizando o framework *Spring Security*. A través deste framework é posible de forma declarativa esixir a posesión de un rol para acceder a unha determinada operación.
+Unha vez se é capaz de identificar o peticionario da operación do servizo web, é necesario autorizalo ou denegarlle o acceso. Na aplicación web que forma parte de LibrePlan a autorización faise utilizando o framework *Spring Security*. A través deste framework é posible de forma declarativa esixir a posesión de un rol para acceder a unha determinada operación.
 
 Os servizos web se identifican por URL e método HTTP. Exemplos diso son:
 
@@ -139,7 +139,7 @@ Desta maneira garántese que o usuario peticionario do servizo ten as credencias
 Conceptos xerais e políticas globais
 ====================================
 
-Nesta sección detállase unha serie de asuncións e requisitos que se deberán cumprir para ter unha boa integración con NavalPlan. Nesta sección se tratarán as seguintes temáticas:
+Nesta sección detállase unha serie de asuncións e requisitos que se deberán cumprir para ter unha boa integración con LibrePlan. Nesta sección se tratarán as seguintes temáticas:
 
    * Codificación das entidades
    * Comportamentos das altas e actualizacións
@@ -149,21 +149,21 @@ Nesta sección detállase unha serie de asuncións e requisitos que se deberán 
 Codificación das entidades
 --------------------------
 
-En todos os fluxos de integración de entidades, cada un dos obxectos que se transmiten dunha aplicación a outra terán unha codificación. Desta forma un obxecto terá un identificador alfanumérico que o identifique tanto na aplicación de NavalPlan coma no resto das aplicacións que se integren.
+En todos os fluxos de integración de entidades, cada un dos obxectos que se transmiten dunha aplicación a outra terán unha codificación. Desta forma un obxecto terá un identificador alfanumérico que o identifique tanto na aplicación de LibrePlan coma no resto das aplicacións que se integren.
 
-As entidades que participan na integración terán un atributo *code*, no que se gardará a codificación. A existencia deste código e o seu mantemento é necesario para a correcta integración. O código debe ser único por entidade. Aínda que as entidades suxeitas a integración con outras aplicacións teñen este atributo *code* único dentro de NavalPlan para todas as entidades utilizarase un identificador subrogado autoxerado polo framework de persistencia.
+As entidades que participan na integración terán un atributo *code*, no que se gardará a codificación. A existencia deste código e o seu mantemento é necesario para a correcta integración. O código debe ser único por entidade. Aínda que as entidades suxeitas a integración con outras aplicacións teñen este atributo *code* único dentro de LibrePlan para todas as entidades utilizarase un identificador subrogado autoxerado polo framework de persistencia.
 
-NavalPlan á hora de comunicarse con outras aplicacións recibirá os obxectos e cotexará a existencia dentro do sistema de obxectos de NavalPlan. Se se recibe un obxecto cunha codificación existente entendese que é unha actualización do mesmo, se o obxecto que se recibe non existe no sistema NavalPlan darao de alta.
+LibrePlan á hora de comunicarse con outras aplicacións recibirá os obxectos e cotexará a existencia dentro do sistema de obxectos de LibrePlan. Se se recibe un obxecto cunha codificación existente entendese que é unha actualización do mesmo, se o obxecto que se recibe non existe no sistema LibrePlan darao de alta.
 
 No caso de que se incorporen entidades con referencias a outras entidades entón na importación comprobarase se existe esta entidade referenciada e se non existe darase un erro. Un exemplo disto sería cando se realice a importación dun traballador e se fai referencia ao calendario que se lle quere asignar. Se non existe, indicarase que non se atopa a instancia.
 
-A incorporación mediante ficheiro XML supón a introdución dunha secuencia de _ítems_ que se van a ir procesando secuencialmente. Esta secuencia de ítems estará formada polas entidades que se incorporan a aplicación. Para identificar as entidades que se transmiten NavalPlan empregará unha codificación baseada en dous parámetros:
+A incorporación mediante ficheiro XML supón a introdución dunha secuencia de _ítems_ que se van a ir procesando secuencialmente. Esta secuencia de ítems estará formada polas entidades que se incorporan a aplicación. Para identificar as entidades que se transmiten LibrePlan empregará unha codificación baseada en dous parámetros:
 
    * A posición da instancia no XML. Chamarase *num_item*
    * A codificación baseada no código. Chamarase *code*
    * O tipo de entidade da instancia. Chamarase *entity-type*
 
-No caso de que unha instancia referencie a unha terceira da cal non se dispón do código dado de alta no sistema, NavalPlan reportará un erro de importación indicando o num_item e a codificación da entidade que produciu o erro de importación.
+No caso de que unha instancia referencie a unha terceira da cal non se dispón do código dado de alta no sistema, LibrePlan reportará un erro de importación indicando o num_item e a codificación da entidade que produciu o erro de importación.
 
 Resumo da codificación da identificación das instancias:
 
@@ -175,16 +175,16 @@ Resumo da codificación da identificación das instancias:
 Espazo de nomes e codificación na relación con terceiras empresas
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-No caso de integración de servizos dentro da mesma empresa partimos da existencia e control dunha unicidade de código dentro da organización. Iso non se pode presupoñer cando nos referimos á situación de relación entre dúas empresas. Nese caso NavalPlan manterá unha referencia dobre sobre as instancias de entidades que son compartidas entre dúas organizacións.
+No caso de integración de servizos dentro da mesma empresa partimos da existencia e control dunha unicidade de código dentro da organización. Iso non se pode presupoñer cando nos referimos á situación de relación entre dúas empresas. Nese caso LibrePlan manterá unha referencia dobre sobre as instancias de entidades que son compartidas entre dúas organizacións.
 
-NavalPlan respectará a codificación das entidades da empresa subcontratante e será a empresa subcontratista a que manteña ao longo de todas as comunicacións a referencia ás entidades reportadas pola empresa subcontratante. Esta relación manterase no caso das entidades relacionadas cos pedidos como é o caso de Order e OrderElement. Nesas entidades incorporarase un novo atributo *external-code* que fará referencia ao atributo *code* da entidade contratante.
+LibrePlan respectará a codificación das entidades da empresa subcontratante e será a empresa subcontratista a que manteña ao longo de todas as comunicacións a referencia ás entidades reportadas pola empresa subcontratante. Esta relación manterase no caso das entidades relacionadas cos pedidos como é o caso de Order e OrderElement. Nesas entidades incorporarase un novo atributo *external-code* que fará referencia ao atributo *code* da entidade contratante.
 
 Internamente a empresa subcontratista traballará coa súa codificación propia no atributo *code* que será empregada na interacción coas outras aplicacións da propia empresa.
 
 Comportamentos das altas e actualizacións
 -----------------------------------------
 
-A aplicación NavalPlan permitirá realizar unha alta a través de bloques de entidades. A semántica que se adoptará nestas incorporación de conxuntos de entidades será a seguinte. Realmente a operación non é unha alta senón que vai a ser unha alta ou modificación. Isto significa que cando se leva a cabo a incorporación se segue o seguinte algoritmo:
+A aplicación LibrePlan permitirá realizar unha alta a través de bloques de entidades. A semántica que se adoptará nestas incorporación de conxuntos de entidades será a seguinte. Realmente a operación non é unha alta senón que vai a ser unha alta ou modificación. Isto significa que cando se leva a cabo a incorporación se segue o seguinte algoritmo:
 
    1. Compróbase se existe a entidade do bloque a inserir.
    #. Se non existe a entidade, entón procédese a levar a cabo a alta.
@@ -215,14 +215,14 @@ As mensaxes de resposta HTTP conteñen unha liña que se coñece como liña de e
 
 Como se pode apreciar existe un campo que é o código de estado, *Status-Code*. O código de estado é un numero de 3 díxitos que se usa para indicar como foi satisfeita a petición por parte do servidor web. Existen un conxunto de estados predefinidos que indican causas comúns que poden acontecer cando se invoca unha URL por parte dun cliente.
 
-NavalPlan vai a facer o seguinte uso dos códigos de estado das respostas HTTP:
+LibrePlan vai a facer o seguinte uso dos códigos de estado das respostas HTTP:
 
    1. *200 OK*. Se a petición é servida correctamente. Os erros lóxicos froito dos datos de entrada do servizo tamén se reportarán mediante este código. Xa que o cliente poderá procesalos para analizar as causas dos erros.
-   #. *404 Not Found*. Este código de estado non se vai a devolver por parte de ningún servizo web de NavalPlan. Será devolto unicamente polo contedor de servlets se o cliente invoca unha URL que non se corresponde con ningún dos servizos publicados.
-   #. *403 Access is denied*. Este código de estado será devolto por NavalPlan cando a autenticación do usuario é correcta no sistema de usuarios da aplicación pero non ten permiso para executar o servizo que se está solicitando.
-   #. *401 Bad credentials*. É utilizado na resposta por NavalPlan para indicar que a autenticación é incorrecta. Quere dicir o anterior que non existe un usuario/contrasinal válido.
+   #. *404 Not Found*. Este código de estado non se vai a devolver por parte de ningún servizo web de LibrePlan. Será devolto unicamente polo contedor de servlets se o cliente invoca unha URL que non se corresponde con ningún dos servizos publicados.
+   #. *403 Access is denied*. Este código de estado será devolto por LibrePlan cando a autenticación do usuario é correcta no sistema de usuarios da aplicación pero non ten permiso para executar o servizo que se está solicitando.
+   #. *401 Bad credentials*. É utilizado na resposta por LibrePlan para indicar que a autenticación é incorrecta. Quere dicir o anterior que non existe un usuario/contrasinal válido.
    #. *500 Internal Server Error*. Devólvese este código de estado sempre que se produce algún erro provocado por unha excepción que provoque a finalización do fío de execución (thread) no servidor que atende a petición do servizo.
-   #. *400 Bad Request*. Darase este erro cando a validación do corpo da petición XML por parte do servizo web de NavalPlan non sexa correcta por non axustarse ao esquema XML que describe o servizo.
+   #. *400 Bad Request*. Darase este erro cando a validación do corpo da petición XML por parte do servizo web de LibrePlan non sexa correcta por non axustarse ao esquema XML que describe o servizo.
 
 
 Erros que provocan a finalización do fío de execución (thread)
@@ -233,7 +233,7 @@ Se existe un erro de programación que xorde froito da invocación dun servizo n
 ::
 
   <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-    <internal-error xmlns="http://rest.ws.navalplanner.org"
+    <internal-error xmlns="http://rest.ws.libreplan.org"
      message="">
     <stack-trace>
     </stack-trace>
@@ -241,17 +241,17 @@ Se existe un erro de programación que xorde froito da invocación dun servizo n
 
 Dentro de *<stack-trace>* irá a pila de execución de chamadas do programa ata chegar a función que desencadeou o problema.
 
-Cando se produce un erro deste tipo a entidade que estea realizando a integración podería crear unha incidencia no sistema de xestión de erros describindo a situación que levou a aparición do erro e incluíndo o stack-trace devolto polo servizo web para facilitar a solución do erro pola comunidade de NavalPlan.
+Cando se produce un erro deste tipo a entidade que estea realizando a integración podería crear unha incidencia no sistema de xestión de erros describindo a situación que levou a aparición do erro e incluíndo o stack-trace devolto polo servizo web para facilitar a solución do erro pola comunidade de LibrePlan.
 
 Erros lóxicos
 ~~~~~~~~~~~~~
 
-Os erros lóxicos son erros que non son debidos a un defecto na aplicación NavalPlan senón que son debidos a dúas posibles causas:
+Os erros lóxicos son erros que non son debidos a un defecto na aplicación LibrePlan senón que son debidos a dúas posibles causas:
 
-   * Os datos que se teñen na base de datos de NavalPlan non son compatibles cos datos de entrada da petición.
+   * Os datos que se teñen na base de datos de LibrePlan non son compatibles cos datos de entrada da petición.
    * Os datos de entrada para a operación solicitada no servizo web non son correctos.
 
-Cando se producen erros lóxicos van a ser catalogados polo equipo de desenvolvemento de NavalPlan en dous posibles tipos:
+Cando se producen erros lóxicos van a ser catalogados polo equipo de desenvolvemento de LibrePlan en dous posibles tipos:
 
    1. Erros recuperables. Os erros recuperables son aqueles para os que os desenvolvedores da integración do cliente poden decidir intentar realizar unha recuperación automática do erro.
    #. Erros non recuperables. Os erros non recuperables son aqueles para os que non se pode implementar ningún mecanismo automático de solución do problema e o único camiño e a intervención humana para a solución dos problemas detectados.
@@ -278,7 +278,7 @@ Cada erro recuperable indícase a través da etiqueta *<recoverable-error>* e ca
 
 A descrición dun *<recoverable-error>* é a seguinte:
 
-  * Atributo *error-code*. No atributo *error-code* irá un código de erro interno definido en NavalPlan. Será un número e existirá unha táboa de códigos de erros recuperables en NavalPlan que permitirán aos integradores implementar unha solución recuperable adecuada a cada código de erro.
+  * Atributo *error-code*. No atributo *error-code* irá un código de erro interno definido en LibrePlan. Será un número e existirá unha táboa de códigos de erros recuperables en LibrePlan que permitirán aos integradores implementar unha solución recuperable adecuada a cada código de erro.
   * Atributo *message*. Aquí indicarase unha descrición do erro.
   * Etiqueta *<property>*. Pode haber varias etiquetas deste tipo que son usadas para proporcionar datos que poden ser necesarios con dous atributos cada unha:
 
@@ -299,7 +299,7 @@ O framework que se utiliza para a implementación dos servizos web é Apache CXF
 
 Os documentos XML Schema son un estándar da W3C que permite especificar a estrutura e formato dos documentos XML. Poden ser utilizados para validar se un determinado XML se axusta a un determinado esquema e así determinar se hai algún erro.
 
-Xa que para os servizos web de NavalPlan van estar dispoñibles os XML Schema dos mesmos, estes poderán ser utilizados polos integradores de aplicacións con NavalPlan para validar que xeran os XML de intercambio correctos.
+Xa que para os servizos web de LibrePlan van estar dispoñibles os XML Schema dos mesmos, estes poderán ser utilizados polos integradores de aplicacións con LibrePlan para validar que xeran os XML de intercambio correctos.
 
 Tamén se implementará a través de CXF unha validación do XML entrante no corpo das mensaxes HTTP de invocación dos servizos web por parte dos clientes. Por tanto, se validará se o XML contra o esquema XML e se non é correcto mandarase unha mensaxe de resposta HTTP con código de estado 400 e corpo baleiro.
 
@@ -307,12 +307,12 @@ Tamén se implementará a través de CXF unha validación do XML entrante no cor
 Fluxos de integración
 =====================
 
-Os fluxos de integración detallan a secuencia que ten que facer unha aplicación cliente para integrarse coa aplicación NavalPlan e en que secuencia poderá realizar as chamadas aos servizos web dispoñibles.
+Os fluxos de integración detallan a secuencia que ten que facer unha aplicación cliente para integrarse coa aplicación LibrePlan e en que secuencia poderá realizar as chamadas aos servizos web dispoñibles.
 
 Os servizos web atópanse dispoñibles a partir da URL_BASE da aplicación en /ws/rest/:
 
-   * URL Base de Servizos: URL_BASE_NAVALPLANNER_WEBAPP/ws/rest
-   * Exemplo: http://www.navalplan.org/navalplanner-webapp/ws/rest
+   * URL Base de Servizos: URL_BASE_LIBREPLAN_WEBAPP/ws/rest
+   * Exemplo: http://www.libreplan.org/libreplan-webapp/ws/rest
 
 A partir deste intre denominase a esta URL de servizos coma *BASE_SERVICES_URL*.
 
@@ -327,7 +327,7 @@ Descrición
      * A incorporación de materiais permitirá asociar materiais a necesidades para o inicio de tarefas no planificador.
 
 Roles
-     * Cliente: proporciona nova información sobre os materiais ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre os materiais ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información dos materiais.
 
 Precondicións
@@ -341,10 +341,10 @@ Postcondicións
        * os seus campos propios serán actualizados coa nova información.
        * se un material cambia de categoría modificarase a categoría a que pertence o material.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/materials.png
     :width: 300
-    :alt: Diagrama de Clases do dominio de Materiais en NavalPlan
+    :alt: Diagrama de Clases do dominio de Materiais en LibrePlan
 
 Descrición do fluxo
   1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
@@ -356,7 +356,7 @@ Descrición do fluxo
 Exemplo de ficheiro de importación
  ::
 
-  <material-units-list xmlns="http://rest.ws.navalplanner.org">
+  <material-units-list xmlns="http://rest.ws.libreplan.org">
      <material-unit code="10" name="Unidades"/>
      <material-unit code="20" name="M3"/>
      <material-unit code="30" name="Metros Lineales"/>
@@ -364,7 +364,7 @@ Exemplo de ficheiro de importación
 
 
 
-  <material-category-list xmlns="http://rest.ws.navalplanner.org">
+  <material-category-list xmlns="http://rest.ws.libreplan.org">
     <material-category code="10" name="Tornillos" >
        <material-list>
          <material code="TOR12" description="Tornillos Serie-12" price="123.12" unit-type="10" disabled="false"/>
@@ -398,7 +398,7 @@ Descrición
      * Exemplos de etiquetas: Zonas do Buque, Prioridades, Centros de Coste, etc...
 
 Roles
-     * Cliente: proporciona nova información sobre as etiquetas ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre as etiquetas ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información das etiquetas.
 
 Precondicións
@@ -413,10 +413,10 @@ Postcondicións
 
        * os seus campos propios serán actualizados coa nova información.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/labels.png
     :width: 200
-    :alt: Diagrama de Clases do dominio de Etiquetas en NavalPlan
+    :alt: Diagrama de Clases do dominio de Etiquetas en LibrePlan
 
 Descrición do fluxo
   1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
@@ -428,7 +428,7 @@ Descrición do fluxo
 Exemplo de ficheiro de importación
  ::
 
-  <labels-type-list xmlns="http://rest.ws.navalplanner.org">
+  <labels-type-list xmlns="http://rest.ws.libreplan.org">
     <label-type code="10" name="Prioridad" >
        <labels-list>
          <label code="1001" name="Baja" />
@@ -462,7 +462,7 @@ Descrición
             * Criterio: Tubeiro
 
 Roles
-     * Cliente: proporciona nova información sobre os criterios e tipos de criterio ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre os criterios e tipos de criterio ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información dos criterios e tipos de criterio.
 
 Precondicións
@@ -477,10 +477,10 @@ Postcondicións
        * non se poderá cambiar unha entidade que estivera definida como xerárquica e tiña unha estrutura de criterios a non xerárquica.
        * se un criterio non aparece nunha nova importación non se realizará ningún cambio xa que non se realizan borrados. So se realizan actualizacións e marcados coma non activados.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/criterions.png
     :width: 350
-    :alt: Diagrama de Clases do dominio de Criterios en NavalPlan
+    :alt: Diagrama de Clases do dominio de Criterios en LibrePlan
 
 
 Descrición do fluxo
@@ -492,7 +492,7 @@ Descrición do fluxo
 
 Información de realización da chamada
    * *URL Servizo*: BASE_SERVICE_URL/criteriontypes
-   * *Exemplo URL*:http://www.navalplan.org/navalplanner-webapp/ws/rest/services/criteriontypes
+   * *Exemplo URL*:http://www.libreplan.org/libreplan-webapp/ws/rest/services/criteriontypes
    * *Método POST*
 
 Descrición do formato do ficheiro XML::
@@ -501,7 +501,7 @@ Descrición do formato do ficheiro XML::
 
       * Nodo criterion-type: representa un tipo de criterio.
 
-         * Atributo code (String): código único compartido entre NavalPlan e outras aplicacións que referencia ao tipo de criterio.
+         * Atributo code (String): código único compartido entre LibrePlan e outras aplicacións que referencia ao tipo de criterio.
          * Atributo name (String): nome que identifica o tipo de criterio.
          * Atributo description (String): describe ao criterio.
          * Atributo allow-hierarchy (boolean): indica se os criterios deste tipo de criterio teñen unha xerarquía de criterios.
@@ -512,7 +512,7 @@ Descrición do formato do ficheiro XML::
 
             * Nodo criterion: representa a unha instancia da entidade criterio.
 
-               * Atributo code (String): código único compartido entre NavalPlan e outras aplicacións que referencia a un criterio.
+               * Atributo code (String): código único compartido entre LibrePlan e outras aplicacións que referencia a un criterio.
                * Atributo name (String): nome descritivo do criterio.
                * Atributo active (boolean): indica se este criterio está activo. Se non estivera activo este criterio non sería aplicable a outras entidades no futuro.
                * Nodo children: indica que un criterio ten fillos na xerarquía, polo cal todos os fillos cumpren o criterio do nodo pai.
@@ -524,7 +524,7 @@ Exemplo de ficheiro de importación
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-  <criterion-type-list xmlns="http://rest.ws.navalplanner.org">
+  <criterion-type-list xmlns="http://rest.ws.libreplan.org">
     <criterion-type code="CRITYPE4" name="ct-4" description="ct-4 desc" allow-hierarchy="true"
         allow-simultaneous-criterions-per-resource="true" enabled="true"
         resource="RESOURCE">
@@ -556,7 +556,7 @@ Descrición
      * Estes tipos de horas empregaranse na incorporación dos partes de traballo.
 
 Roles
-     * Cliente: proporciona nova información sobre os tipos de horas ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre os tipos de horas ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información dos tipos de horas.
 
 Precondicións
@@ -567,10 +567,10 @@ Postcondicións
     *  Os novos tipos de horas de traballo serán incorporadas ao sistema.
     *  As instancias que existían previamente no sistema verán actualizada a súa información.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/typeofworkhours.png
     :width: 150
-    :alt: Diagrama de Clases do dominio de Tipos de Horas en NavalPlan
+    :alt: Diagrama de Clases do dominio de Tipos de Horas en LibrePlan
 
 
 Descrición do fluxo
@@ -583,7 +583,7 @@ Descrición do fluxo
 Exemplo de ficheiro de importación
  ::
 
-  <hours-type-list xmlns="http://rest.ws.navalplanner.org">
+  <hours-type-list xmlns="http://rest.ws.libreplan.org">
     <hours-type code="12" name="Ordinaria" default-price="10.2" enabled="true" />
     <hours-type code="13" name="Extra" default-price="14.2" enabled="true" />
     <hours-type code="14" name="Nocturna" default-price="14.2" enabled="true" />
@@ -600,7 +600,7 @@ Descrición
      * Exemplo: Categorías de custo: Oficial de primeira. Ten un precio asociado de hora extra de 20 euros á hora durante o ano 2010.
 
 Roles
-     * Cliente: proporciona nova información sobre as categorías de custo ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre as categorías de custo ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información das categorías de custo.
 
 Precondicións
@@ -613,10 +613,10 @@ Postcondicións
     *  As novas categorías de custo serán incorporadas ao sistema.
     *  As instancias que xa existían previamente no sistema verán actualizada a súa información.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/costcategories.png
     :width: 150
-    :alt: Diagrama de Clases do dominio de Categorías de Coste en NavalPlan
+    :alt: Diagrama de Clases do dominio de Categorías de Coste en LibrePlan
 
 
 Descrición do fluxo
@@ -631,7 +631,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-  <cost-category-list xmlns="http://rest.ws.navalplanner.org">
+  <cost-category-list xmlns="http://rest.ws.libreplan.org">
     <cost-category enabled="true" name="Categoria A"
     code="18d6ef79-5b45-4928-bfd5-ec80a374699c">
       <hour-cost-list>
@@ -667,13 +667,13 @@ Descrición
      * A incorporación dos recursos poderá facer referencia ao calendario laboral existente.
 
 Roles
-     * Cliente: proporciona nova información sobre os recursos ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre os recursos ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información dos recursos.
 
 Precondicións
     * É necesario que as referencias aos criterios que cumpren os recursos estean dispoñibles na aplicación.
     * Débense cumprir as restricións temporais da aplicación dos criterios nos casos dos criterios que só poden ter un único valor no mesmo instante do tempo.
-    * É necesario que as categorías de custo ás que pertencen os recursos xa foran importadas previamente en NavalPlan.
+    * É necesario que as categorías de custo ás que pertencen os recursos xa foran importadas previamente en LibrePlan.
     * Un recurso só pode pertencer a unha categoría de custo nun momento do tempo.
     * Se se incorpora un calendario de traballo para o recurso, este deberá estar dado de alta na aplicación no momento da importación.
 
@@ -682,12 +682,12 @@ Postcondicións
     *  As instancias que existían previamente no sistema:
 
        * os seus campos propios serán actualizados coa nova información.
-       * as relacións con novos criterios e categorías de custo serán incorporadas. Nunca se borrarán categorías nin criterios se non son incorporados na aplicación xa que poden ter sido dados de alta a través da interface web de NavalPlan. En caso de incoherencia nunca se borrará a información de NavalPlan e reportarase a existencia de inconsistencias para que sexan emendadas.
+       * as relacións con novos criterios e categorías de custo serán incorporadas. Nunca se borrarán categorías nin criterios se non son incorporados na aplicación xa que poden ter sido dados de alta a través da interface web de LibrePlan. En caso de incoherencia nunca se borrará a información de LibrePlan e reportarase a existencia de inconsistencias para que sexan emendadas.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/resources.png
     :width: 350
-    :alt: Diagrama de Clases do dominio de Recursos en NavalPlan
+    :alt: Diagrama de Clases do dominio de Recursos en LibrePlan
 
 
 Descrición do fluxo
@@ -699,7 +699,7 @@ Descrición do fluxo
 
 Información de realización da chamada
    * *URL Servizo*: BASE_SERVICE_URL/resources
-   * *Exemplo URL*:http://www.navalplan.org/navalplanner-webapp/ws/rest/services/resources
+   * *Exemplo URL*:http://www.libreplan.org/libreplan-webapp/ws/rest/services/resources
    * *Método POST*
 
 Descrición do formato do ficheiro XML::
@@ -708,14 +708,14 @@ Descrición do formato do ficheiro XML::
 
       * Nodo machine: representa un recurso máquina.
 
-         * Atributo code (String): código único compartido entre NavalPlan e outras aplicacións que referencia a unha máquina.
+         * Atributo code (String): código único compartido entre LibrePlan e outras aplicacións que referencia a unha máquina.
          * Atributo name (String): nome que identifica a máquina.
          * Atributo description (String): describe a máquina.
          * Nodo criterion-satisfaction-list: inclúe a lista de satisfacción de criterios. Pode conter un ou varios nodos de tipo criterion-satisfaction.
 
             * Nodo criterion-satisfaction: representa que un recurso cumpre un criterio nun momento do tempo.
 
-               * Atributo code (String): código único compartido entre NavalPlan e outras aplicacións que referencia a un criterio.
+               * Atributo code (String): código único compartido entre LibrePlan e outras aplicacións que referencia a un criterio.
                * Atributo criterion-type-name (String): nome descritivo do tipo de criterio ao que pertence o criterio en cuestión.
                * Atributo criterion-name (String): nome descritivo do criterio que se aplica neste nodo criterion-satisfaction.
                * Atributo start-date (String): data de inicio do cumprimento do criterio polo recurso en formato ISO 8601 (YYYY-MM-DD).
@@ -725,14 +725,14 @@ Descrición do formato do ficheiro XML::
 
             * Nodo resources-cost-category-assignment: representa que un recurso pertence a unha categoría de custo nun momento do tempo.
 
-               * Atributo code (String): código único compartido entre NavalPlan e outras aplicacións que referencia a unha categoría de custo.
+               * Atributo code (String): código único compartido entre LibrePlan e outras aplicacións que referencia a unha categoría de custo.
                * Atributo cost-category-name (String): nome descritivo da categoría de custo a que pertence o recurso.
                * Atributo start-date (String): data de inicio da pertenza á categoría de custo en formato ISO 8601 (YYYY-MM-DD).
                * Atributo end-date (String): data de finalización da pertenza á categoría de custo en formato ISO 8601 (YYYY-MM-DD).
 
       * Nodo worker: representa un recurso humano.
 
-         * Atributo code (String): código único compartido entre NavalPlan e outras aplicacións que referencia a un traballador.
+         * Atributo code (String): código único compartido entre LibrePlan e outras aplicacións que referencia a un traballador.
          * Atributo first-name (String): nome do traballador.
          * Atributo surname (String): apelidos do traballador.
          * Atributo nif (String): nif do traballador.
@@ -744,7 +744,7 @@ Exemplo de ficheiro de importación
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-  <resource-list xmlns="http://rest.ws.navalplanner.org">
+  <resource-list xmlns="http://rest.ws.libreplan.org">
     <!-- [It assumes existence of "TestLocationGroupCriterion" and
          "TestCostCategory"] OK. -->
     <machine code="machineA" name="name" description="desc">
@@ -801,7 +801,7 @@ Descrición
      * Exemplo: O operario Xavier dedicou 3 horas extras o 2 de xaneiro de 2010 na orde de traballo C5232.
 
 Roles
-     * Cliente: proporciona nova información sobre os partes de traballo ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre os partes de traballo ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información dos partes de traballo.
 
 Precondicións
@@ -812,10 +812,10 @@ Postcondicións
     *  Os novos partes de traballo serán incorporados ao sistema.
     *  Os partes xa existentes verán actualizada a súa información.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/workreports.png
     :width: 400
-    :alt: Diagrama de Clases do dominio de Partes de Traballo en NavalPlan
+    :alt: Diagrama de Clases do dominio de Partes de Traballo en LibrePlan
 
 Descrición do fluxo
   1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
@@ -830,7 +830,7 @@ Descrición do fluxo
 Exemplo de ficheiro de importación:
  ::
 
-  <work-report-list xmlns="http://rest.ws.navalplanner.org">
+  <work-report-list xmlns="http://rest.ws.libreplan.org">
    <work-report code="312321" work-report-type="30" @date="2009-10-21" @resource="121" work-order="4323">
     <label-list>
       <label code="adfsdf" value="urxente" type="prioridade"/>
@@ -876,12 +876,12 @@ Descrición
      * A estructura de traballo pode incorporar a información do número de horas de traballo presupuestadas para cada elemento. Esta etimación será realizada nos nodos folla.
 
 Roles
-     * Cliente: proporciona nova información sobre os pedidos ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre os pedidos ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información dos pedidos.
 
 Precondicións
     * Os pedidos e os elementos do pedido terán unha codificación unica dentro da empresa.
-    * Os materiais, etiquetas e criterios referenciados deberán ter sido previamente importados a NavalPlan.
+    * Os materiais, etiquetas e criterios referenciados deberán ter sido previamente importados a LibrePlan.
     * Un pedido previamente importado permitirá a incorporación de novos nodos sempre e cando non se modifique a estructura dos nodos existentes previamente.
 
 
@@ -889,13 +889,13 @@ Postcondicións
     *  Os novos pedidos serán incorporados ao sistema.
     *  Os pedidos xa existentes verán actualizada a súa información.
 
-      * Non se eliminarán referencias a materiais, etiquetas ou criterios no proceso de actualización, xa que estas poideron ser creadas dentro de NavalPlan.
+      * Non se eliminarán referencias a materiais, etiquetas ou criterios no proceso de actualización, xa que estas poideron ser creadas dentro de LibrePlan.
       * Actualizarase a información dos elementos do pedido.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/orders.png
     :width: 350
-    :alt: Diagrama de Clases do dominio de Pedidos en NavalPlan
+    :alt: Diagrama de Clases do dominio de Pedidos en LibrePlan
 
 
 Descrición do fluxo
@@ -909,7 +909,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-  <order-lists xmlns="http://rest.ws.navalplanner.org">
+  <order-lists xmlns="http://rest.ws.libreplan.org">
    <order code="ORDER-1" name="Order" init-date="2010-01-01" deadline="2010-05-30">
     <label-list>
      <label code="10" name="low" type="priority" />
@@ -1003,7 +1003,7 @@ Descrición
      * Os calendarios empréganse para determinar a dispoñinibilidade dos traballadores na aplicación.
 
 Roles
-     * Cliente: proporciona nova información sobre os calendarios ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre os calendarios ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información dos calendarios.
 
 Precondicións
@@ -1013,10 +1013,10 @@ Postcondicións
     *  Os novos calendarios serán incorporados ao sistema.
     *  Os calendarios xa existentes verán actualizada a súa información.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/calendars.png
     :width: 450
-    :alt: Diagrama de Clases do dominio de Calendarios en NavalPlan
+    :alt: Diagrama de Clases do dominio de Calendarios en LibrePlan
 
 Descrición do fluxo
   1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
@@ -1029,7 +1029,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-  <base-calendar-list xmlns="http://rest.ws.navalplanner.org">
+  <base-calendar-list xmlns="http://rest.ws.libreplan.org">
   <base-calendar name="Spanish Calendar" code="000-001">
       <calendar-exception-list>
         <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
@@ -1108,7 +1108,7 @@ Descrición
      * Os tipos de horas de traballo empréganse para determinar as categorías de coste na aplicación.
 
 Roles
-     * Cliente: proporciona nova información sobre os tipos de horas de traballo ao servidor NavalPlan.
+     * Cliente: proporciona nova información sobre os tipos de horas de traballo ao servidor LibrePlan.
      * Servidor: procesa a petición do cliente incorporando a nova información dos tipos de horas de traballo.
 
 Precondicións
@@ -1118,10 +1118,10 @@ Postcondicións
     *  Os novos tipos de horas de traballo serán incorporados ao sistema.
     *  Os tipos de horas xa existentes verán actualizada a súa información.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/costcategories.png
     :width: 150
-    :alt: Diagrama de Clases do dominio de Tipos de Horas de Traballo en NavalPlan
+    :alt: Diagrama de Clases do dominio de Tipos de Horas de Traballo en LibrePlan
 
 Descrición do fluxo
   1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
@@ -1134,7 +1134,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-  <type-work-hours-list xmlns="http://rest.ws.navalplanner.org">
+  <type-work-hours-list xmlns="http://rest.ws.libreplan.org">
   <!-- Ok-->
     <type-work-hours enabled="true" defaultPrice="8.00" name="Hora Extra" code="t1" />
 
@@ -1175,7 +1175,7 @@ Descrición
      * O servizo permitirá unha consulta particular que mostrará a información do recursos particular nun periodo de tempo.
 
 Roles
-     * Cliente: pide a aplicación NavalPlan indicando un periodo de tempo, e opcionalmente o código dun recurso, o dato de horas traballadas.
+     * Cliente: pide a aplicación LibrePlan indicando un periodo de tempo, e opcionalmente o código dun recurso, o dato de horas traballadas.
      * Servidor: procesa a petición do cliente xerando un ficheiro XML coa información das horas traballadas por cada un dos recursos da empresa ou dun recurso particular.
 
 Precondicións
@@ -1185,10 +1185,10 @@ Postcondicións
     *  Obtense o sumatorio para cada recurso do número de horas traballadas nun periodo de tempo.
     *  Se a consulta é particular, obtense únicamente o número de horas traballadas por ese recurso.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/workedhours.png
     :width: 150
-    :alt: Diagrama de Clases do dominio de Recursos en NavalPlan
+    :alt: Diagrama de Clases do dominio de Recursos en LibrePlan
 
 Descrición do fluxo
   1. A aplicación cliente que se integra fara unha petición ao servizo indicando o periodo de tempo e opcionalmente o código do recurso.
@@ -1201,7 +1201,7 @@ Descrición do fluxo
 Exemplo de ficheiro de exportación:
  ::
 
-  <resource-worked-hours-list xmlns="http://rest.ws.navalplanner.org" start-date="2009-10-01" end-date="2009-10-31">
+  <resource-worked-hours-list xmlns="http://rest.ws.libreplan.org" start-date="2009-10-01" end-date="2009-10-31">
    <resource-worked-hours resource="321" hours="160" >
    <resource-worked-hours resource="322" hours="165" >
    <resource-worked-hours resource="323" hours="142" >
@@ -1216,16 +1216,16 @@ Descrición
      * O servizo de exportación dos tipos de excepción permite consultar os diferentes tipos de excepcións do calendario definidos na aplicación.
 
 Roles
-     * Cliente: pide a aplicación NavalPlan sen necesidade de pasar ningún argumento.
+     * Cliente: pide a aplicación LibrePlan sen necesidade de pasar ningún argumento.
      * Servidor: procesa a petición do cliente xerando un ficheiro XML coa información dos tipos de excepcións do calendario.
 
 Postcondicións
     *  Obtense a lista de tipos de excepcións do calendario definidos na aplicación.
 
-Clases involucradas en NavalPlan
+Clases involucradas en LibrePlan
  .. image:: images/calendars.png
     :width: 450
-    :alt: Diagrama de Clases do dominio de Calendarios en NavalPlan
+    :alt: Diagrama de Clases do dominio de Calendarios en LibrePlan
 
 Descrición do fluxo
   1. A aplicación cliente que se integra fara unha petición ao servizo.
@@ -1238,7 +1238,7 @@ Descrición do fluxo
 Exemplo de ficheiro de exportación:
  ::
 
-  <calendar-exception-type-list xmlns="http://rest.ws.navalplanner.org">
+  <calendar-exception-type-list xmlns="http://rest.ws.libreplan.org">
     <calendar-exception-type over-assignable="false" color="red"
       name="BANK_HOLIDAY" code="BANK_HOLIDAY" />
     <calendar-exception-type over-assignable="false" color="red"
@@ -1254,14 +1254,14 @@ Exemplo de ficheiro de exportación:
   </calendar-exception-type-list>
 
 
-Fluxos con outras instancias de NavalPlan
+Fluxos con outras instancias de LibrePlan
 -----------------------------------------
 
 Exportación-importación de Pedidos entre empresas Cliente-Proveedor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Descrición
-     * A incorporación de pedidos permitirá a importación da información dos pedidos dende a aplicación navalplan dunha empresa subcontratante.
+     * A incorporación de pedidos permitirá a importación da información dos pedidos dende a aplicación libreplan dunha empresa subcontratante.
      * Os pedidos reflexan unha estructura do traballo que e preciso realizar dunha forma xerarquica.
      * Os cada elemento do pedido está codificado, e estes códigos serán os empregados para reportar os avances a empresa subcontratante.
      * Os elementos do pedido poderán incorporar etiquetas que poderán ser empregadas para a realización de filtrados.
@@ -1269,7 +1269,7 @@ Descrición
      * A estructura de traballo pode incorporar a información do número de horas de traballo presupuestadas para cada elemento. Esta estimación será realizada nos nodos folla.
 
 Roles
-     * Cliente: aplicación NavalPlan que remite un novo pedido a outra empresa cunha instalación de NavalPlan.
+     * Cliente: aplicación LibrePlan que remite un novo pedido a outra empresa cunha instalación de LibrePlan.
      * Servidor: procesa a petición do cliente incorporando o novo pedido
 
 Precondicións
@@ -1280,11 +1280,11 @@ Precondicións
 Postcondicións
     * O novo pedido será incorporados ao sistema.
     * Se o pedido xa estaba no sistema actualizaránse os datos.
-      * Non se eliminarán referencias a materiais ou etiquetas no proceso de actualización, xa que estas poideron ser creadas dentro de NavalPlan.
+      * Non se eliminarán referencias a materiais ou etiquetas no proceso de actualización, xa que estas poideron ser creadas dentro de LibrePlan.
       * Actualizarase a información dos elementos do pedido.
 
 Descrición do fluxo
-  1. A aplicación NavalPlan cliente (a empresa subcontratante)  que se integra xerará un ficheiro seguindo o formato detallado.
+  1. A aplicación LibrePlan cliente (a empresa subcontratante)  que se integra xerará un ficheiro seguindo o formato detallado.
   #. A aplicación cliente realiza a chamada ao servizo web (da empresa subcontratista) cos datos de autorización.
   #. O servizo web procesa a alta de pedidos e actualiza os datos dos xa existentes.
   #. O servizo web devolve nun XML a saída de erros ou a correcta execución do servizo.
@@ -1294,7 +1294,7 @@ Exemplo de ficheiro de importación
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-   <subcontracted-task-data xmlns="http://rest.ws.navalplanner.org" work-description="Pedido de 100 puertas"
+   <subcontracted-task-data xmlns="http://rest.ws.libreplan.org" work-description="Pedido de 100 puertas"
     subcontracted-code="REFERENCE-CODE-1" subcontracted-price="152200.03" external-company-nif="B15323232">
     <materials>
      <material code="MAT-1" material-reference="MATERIAL-1" name="Tuercas 2x20" descripcion="Tuercas moi resistentes"  unit-price="10.5"/>
@@ -1345,7 +1345,7 @@ Descrición
      * O avance remitido será o que teña a empresa subcontratista de tipo *subcontractor*. Este avance sempre terá tipo porcentual.
 
 Roles
-     * Cliente: aplicación NavalPlan que remite as medicións de avances dun pedido comunicado previamente por outra empresa usuaria de NavalPlan.
+     * Cliente: aplicación LibrePlan que remite as medicións de avances dun pedido comunicado previamente por outra empresa usuaria de LibrePlan.
      * Servidor: procesa a petición do cliente incorporando as novas medicións de avance.
 
 Precondicións
@@ -1358,7 +1358,7 @@ Postcondicións
     * A empresa subcontratante incorpora as medicións de avance proporciondas pola emrpesa subcontratista.
 
 Descrición do fluxo
-  1. A aplicación NavalPlan cliente (a empresa subcontratista)  que se integra xerará un ficheiro seguindo o formato detallado.
+  1. A aplicación LibrePlan cliente (a empresa subcontratista)  que se integra xerará un ficheiro seguindo o formato detallado.
   #. A aplicación cliente realiza a chamada ao servizo web (da empresa subcontratante) cos datos de autorización.
   #. O servizo web procesa as medicións de avances e actualiza os datos dos xa existentes.
   #. O servizo web devolve nun XML a saída de erros ou a correcta execución do servizo.
@@ -1368,7 +1368,7 @@ Exemplo de ficheiro de importación de avances.
  ::
 
   <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-   <subcontracted-task-data xmlns="http://rest.ws.navalplanner.org" work-description="Pedido de 100 puertas"
+   <subcontracted-task-data xmlns="http://rest.ws.libreplan.org" work-description="Pedido de 100 puertas"
     subcontracted-code="REFERENCE-CODE-1" subcontracted-price="152200.03" external-company-nif="B15323232">
    <children>
     <order-line-group code="ORDER-1-OE-1" name="Order element 1" description="Descripcion">
@@ -1411,8 +1411,8 @@ O seguinte script permite interactuar co servizo de importación de recursos emp
 
  #!/bin/sh
 
- DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/navalplanner-webapp/ws/rest
- PRODUCTION_BASE_SERVICE_URL=http://www.navalplan.org/navalplanner-webapp/ws/rest
+ DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/libreplan-webapp/ws/rest
+ PRODUCTION_BASE_SERVICE_URL=http://www.libreplan.org/libreplan-webapp/ws/rest
 
  DEVELOPMENT_CERTIFICATE=""
  PRODUCTION_CERTIFICATE=-k
@@ -1454,8 +1454,8 @@ O seguinte código de exemplo fai unha petición por GET que nos devolve o lista
 
  #!/bin/sh
 
- DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/navalplanner-webapp/ws/rest
- PRODUCTION_BASE_SERVICE_URL=http://www.navalplan.org/navalplanner-webapp/ws/rest
+ DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/libreplan-webapp/ws/rest
+ PRODUCTION_BASE_SERVICE_URL=http://www.libreplan.org/libreplan-webapp/ws/rest
 
  DEVELOPMENT_CERTIFICATE=""
  PRODUCTION_CERTIFICATE=-k

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<resource-list xmlns="http://rest.ws.navalplanner.org">
+<resource-list xmlns="http://rest.ws.libreplan.org">
   <worker nif="71717171G" surname="Gómez" first-name="Perico"
   code="263bc2dc-cb89-43b6-8a8b-478ed90fb092">
     <calendar capacity="1"

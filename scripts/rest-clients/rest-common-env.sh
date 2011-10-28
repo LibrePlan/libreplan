@@ -1,6 +1,6 @@
-DEMO_BASE_SERVICE_URL=http://demo.navalplan.org/navalplan-demo/ws/rest
-DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/navalplanner-webapp/ws/rest
-PRODUCTION_BASE_SERVICE_URL=http://localhost:8080/navalplan/ws/rest
+DEMO_BASE_SERVICE_URL=http://demo.libreplan.org/libreplan-demo/ws/rest
+DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/libreplan-webapp/ws/rest
+PRODUCTION_BASE_SERVICE_URL=http://localhost:8080/libreplan/ws/rest
 
 DEMO_CERTIFICATE=""
 DEVELOPMENT_CERTIFICATE=""

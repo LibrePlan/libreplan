@@ -1,5 +1,5 @@
 /*
- * This file is part of NavalPlan
+ * This file is part of LibrePlan
  *
  * Copyright (C) 2011 Igalia, S.L.
  *
@@ -17,14 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Function to login in NavalPlan */
+/* Function to login in LibrePlan */
 function commonLogin($user, $password) {
     _setValue(_textbox("j_username"), $user);
     _setValue(_password("j_password"), $password);
     _click(_submit("Log in"));
 }
 
-/* Function to logout in NavalPlan */
+/* Function to logout in LibrePlan */
 function commonLogout() {
     _click(_link("[Log out]"));
 }
@@ -89,7 +89,7 @@ function commonCreateTask($projectName, $name, $hours){
 }
 
 function commonConfigurationChangeCheckboxMainPreferences($element){
-    _click(_link("NavalPlan Configuration"));
+    _click(_link("LibrePlan Configuration"));
     _click(_checkbox(0, _near(_label($element))));
     _click(_cell("Save"));
     commonSaveConfigurationValidation();
@@ -326,7 +326,7 @@ function commonCompanyForm($name, $ID) {
     _click(_checkbox(0, _near(_span("Subcontractor:"))));
     _setValue(_textbox(0, _near(_span("User:"))), "wswriter");
     _click(_checkbox(0, _near(_span("Interacts with applications:"))));
-    _setValue(_textbox(0, _near(_span("Application URI:"))), "http://localhost:8080/navalplanner-webapp/");
+    _setValue(_textbox(0, _near(_span("Application URI:"))), "http://localhost:8080/libreplan-webapp/");
     _setValue(_textbox(0, _near(_span("Our company login:"))), "wswriter");
     _setValue(_textbox(0, _near(_span("Our company password:"))), "wswriter");
     _click(_cell("Save"));

@@ -1,18 +1,18 @@
-NavalPlan
+LibrePlan
 =========
 
 
 Description
 -----------
 
-*NavalPlan* is a free software web application for project management.
+*LibrePlan* is a free software web application for project management.
 
-*NavalPlan* is a planning tool for users based on some concepts: company and
+*LibrePlan* is a planning tool for users based on some concepts: company and
 multi-project overview, criteria assignments, tasks tagging, resources
 management, resource allocation (specific and generic), company load control,
 external integration, etc.
 
-Although its name is clearly related to shipbuilding, *Navalplan* is a fully
+Although its name is clearly related to shipbuilding, *LibrePlan* is a fully
 useful planning tool for any type of company whose workflow requires project and
 order administration and scheduling.
 
@@ -28,7 +28,7 @@ Features
 * Overload resource allocation control.
 * Earned Value Management [3]_.
 * Cost analysis based on work reports.
-* Integration with other *NavalPlan* instances and third-parties.
+* Integration with other *LibrePlan* instances and third-parties.
 * Other functionalities: Materials, quality forms, project templates, planning
   scenarios, multiple task progress measurement ...
 
@@ -74,32 +74,32 @@ Availability
 ------------
 
 The cutting-edge version of this project is always available from the Git
-repository at http://navalplan.git.sourceforge.net/.
+repository at http://libreplan.git.sourceforge.net/.
 
 Released versions are available at
-http://sourceforge.net/projects/navalplan/files.
+http://sourceforge.net/projects/libreplan/files.
 
 
 Webpage
 -------
 
-You can find more information about *NavalPlan* at
-http://www.navalplan.org/en/.
+You can find more information about *LibrePlan* at
+http://www.libreplan.org/en/.
 
-For information related with *NavalPlan* development you can visit the wiki at
-http://wiki.navalplan.org/.
+For information related with *LibrePlan* development you can visit the wiki at
+http://wiki.libreplan.org/.
 
 
 Reporting bugs
 --------------
 
-Please use the bug tracker to report bugs at http://bugs.navalplan.org/.
+Please use the bug tracker to report bugs at http://bugs.libreplan.org/.
 
 
 License
 -------
 
-*NavalPlan* is released under the terms of the GNU Affero General Public
+*LibrePlan* is released under the terms of the GNU Affero General Public
 License version 3 [4]_.
 
 Please read the ``COPYING`` file for details.

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <aop:aspectj-autoproxy/>
+
+    <!--  Data source. -->
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"
+        p:jndiName="${dataSource.jndiName}" p:resourceRef="true" />
+
+   <!-- Letting Spring do automatically exception translation -->
+   <bean  class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
+   <bean id="hibernateDatabaseModificationsListener" class="org.libreplan.business.hibernate.notification.HibernateDatabaseModificationsListener" scope="singleton"/>
+
+    <!-- Hibernate Session Factory. -->
+    <bean id="sessionFactory"
+    class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+        p:dataSource-ref="dataSource" p:configLocation="classpath:/libreplan-business-hibernate.cfg.xml">
+        <property name="mappingResources">
+            <list>
+                <value>
+                    org/libreplan/business/advance/entities/Advance.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/resources/entities/Resources.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/orders/entities/Orders.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/templates/entities/Templates.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/planner/entities/Tasks.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/planner/entities/ResourceAllocations.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/workreports/entities/WorkReports.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/calendars/entities/Calendars.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/labels/entities/Labels.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/requirements/entities/Requirements.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/common/entities/Configuration.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/materials/entities/Materials.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/users/entities/Users.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/costcategories/entities/CostCategories.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/qualityforms/entities/QualityForms.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/common/entities/EntitySequence.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/externalcompanies/entities/ExternalCompanies.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/planner/entities/AdvanceConsolidations.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/scenarios/entities/Scenarios.hbm.xml
+                </value>
+                </list>
+        </property>
+            <property name="eventListeners">
+                <map>
+                    <entry key="post-insert">
+                        <ref bean="hibernateDatabaseModificationsListener"/>
+                    </entry>
+                    <entry key="post-delete">
+                        <ref bean="hibernateDatabaseModificationsListener"/>
+                    </entry>
+                    <entry key="post-update">
+                        <ref bean="hibernateDatabaseModificationsListener"/>
+                    </entry>
+                </map>
+            </property>
+    </bean>
+
+    <!-- Spring Transaction manager  -->
+    <bean id="transactionManager"
+        class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+        p:sessionFactory-ref="sessionFactory" />
+
+    <!--
+        Enable configuration of transactional behavior based on annotations
+    -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!--
+        For enabling annotation-based configuration (in particular, required
+        for Autowired annotation)
+    -->
+    <context:annotation-config />
+
+    <context:component-scan base-package="org.libreplan.business" />
+
+    <bean id="registry"
+        class="org.libreplan.business.common.Registry"
+        factory-method="getInstance" />
+
+    <bean id="CriterionRequirementOrderElementHandler"
+        class="org.libreplan.business.orders.entities.CriterionRequirementOrderElementHandler"
+        factory-method="getInstance" />
+
+    <bean id="versionInformation"
+        class="org.libreplan.business.common.VersionInformation"
+        factory-method="getInstance"
+        lazy-init="false">
+        <property name="projectVersion">
+            <value>${project.version}</value>
+        </property>
+    </bean>
+
+    <bean id="configuration"
+        class="org.libreplan.business.common.Configuration"
+        factory-method="getInstance"
+        lazy-init="false">
+        <property name="defaultPasswordsControl">
+        <value>${default.passwordsControl}</value>
+        </property>
+    </bean>
+
+    <bean id="scenarioManager"
+        class="org.libreplan.business.scenarios.OnlyMainScenarioAwareManager"
+        scope="singleton"/>
+
+</beans>

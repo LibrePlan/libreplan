@@ -1,0 +1,56 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="${arg.top_id}"
+    apply="${controller.workRelationshipsController}">
+    <grid id="history"
+        model="@{controller.workRelationship.criterionSatisfactions}"
+        mold="paging" pageSize="10">
+        <columns>
+            <column label="${i18n:_('Starting date')}" width="150px"/>
+            <column label="${i18n:_('Ending date')}" width="150px"/>
+            <column label="${i18n:_('Relationship')}"/>
+            <column label="${i18n:_('Operations')}"/>
+        </columns>
+        <rows>
+            <row self="@{each='criterionSatisfaction'}"
+                value="@{criterionSatisfaction}">
+                <label id="date_start"
+                    value="@{criterionSatisfaction.startDate}" width="150px" />
+                <label id="date_end"
+                    value="@{criterionSatisfaction.endDate}" width="150px" />
+                <label value="@{criterionSatisfaction.criterion.name}" />
+                <hbox>
+                    <button label="${i18n:_('Edit')}"
+                        onClick="controller.goToEditWorkRelationshipForm(
+                        self.getParent().getParent().value);">
+                    </button>
+                    <button label="${i18n:_('Delete')}"
+                        onClick="controller.workRelationship.deleteCriterionSatisfaction(self.getParent().getParent().value);">
+                    </button>
+                </hbox>
+            </row>
+        </rows>
+      </grid>
+    <button label="${i18n:_('New entry')}"
+        onClick="controller.goToAddWorkRelationshipForm()">
+    </button>
+</window>

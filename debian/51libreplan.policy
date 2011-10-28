@@ -1,0 +1,6 @@
+grant codeBase "file:/var/lib/tomcat6/webapps/libreplan/-" {
+	permission java.security.AllPermission;
+};
+grant codeBase "file:/var/lib/tomcat6/webapps/libreplan.war" {
+	permission java.security.AllPermission;
+};

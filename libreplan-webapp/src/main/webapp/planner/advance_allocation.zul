@@ -1,0 +1,97 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Advanced allocation')}"?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+<zscript><![CDATA[
+    advancedAllocationController = arg.get("advancedAllocationController");
+]]>
+</zscript>
+
+<n:div class="advanced-allocation-layout">
+<div id="noDataLayout">
+    <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
+</div>
+
+<borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
+    <north height="30px" border="0" sclass="toolbar-box">
+        <hbox align="center">
+            <button label="${i18n:_('Apply')}" id="acceptButton" image="/common/img/bt_ok.png"
+                if="${advancedAllocationController.advancedAllocationOfSingleTask}"
+                tooltiptext="${i18n:_('Apply changes and go back to scheduling')}" />
+            <button label="${i18n:_('Cancel')}" id="cancelButton" image="/common/img/bt_cancel.png"
+                if="${advancedAllocationController.advancedAllocationOfSingleTask}"
+                tooltiptext="${i18n:_('Cancel changes and back to scheduling')}" />
+            <button label="${i18n:_('Apply')}" id="saveButton" image="/common/img/bt_ok.png"
+                if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}"
+                tooltiptext="${i18n:_('Apply changes and continue edition')}" />
+            <separator/>
+            <space bar="true" />
+            <label>${i18n:_('Zoom level')}:</label>
+            <listbox mold="select" rows="1" id="advancedAllocationZoomLevel"
+                model="${advancedAllocationController.zoomLevels}"
+                onSelect="advancedAllocationController.setZoomLevel(self.selectedItem.value);" >
+            </listbox>
+
+            <separator/>
+            <label>${i18n:_('Pagination')}:</label>
+            <button tooltiptext="Page down" image="/common/img/ico_left.png" id="paginationDownButton"
+            onClick="advancedAllocationController.paginationDown();" disabled="true" />
+            <listbox mold="select" rows="1" visible="false" id="advancedAllocationHorizontalPagination"
+            onSelect="advancedAllocationController.goToSelectedHorizontalPage();" />
+            <button tooltiptext="Page up" image="/common/img/ico_right.png" id="paginationUpButton"
+            onClick="advancedAllocationController.paginationUp();" />
+
+            <separator/>
+
+            <button tooltiptext="Vertical Page up" image="/common/img/ico_up.png" id="verticalPaginationUpButton"
+            onClick="advancedAllocationController.verticalPageup();" disabled="true" />
+            <listbox mold="select" rows="1" visible="true" id="advancedAllocationVerticalPagination"
+            onSelect="advancedAllocationController.goToSelectedVerticalPage();" />
+            <button tooltiptext="Vertical Page down" image="/common/img/ico_down.png" id="verticalPaginationDownButton"
+            onClick="advancedAllocationController.verticalPagedown();" disabled="true" />
+            <n:div id="messages-div">
+                <div id="messages" />
+            </n:div>
+        </hbox>
+   </north>
+
+    <center border="0">
+        <borderlayout>
+            <west size="400px" flex="true" collapsible="true"
+                splittable="true" sclass="advancedassignmentdetails">
+                        <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+            </west>
+
+            <center sclass="taskspanel">
+                <borderlayout>
+                    <north border="0"><div sclass="timetrackergap" id="insertionPointTimetracker"></div></north>
+                    <!-- <north border="0" sclass="timetrackergap" height="31px" id="insertionPointTimetracker" /> -->
+                    <center style="overflow-y:auto;overflow-x:auto;" border="0" sclass="advanced-assignment-area rightpanellayout taskspanelgap" id="insertionPointRightPanel" />
+                </borderlayout>
+            </center>
+        </borderlayout>
+    </center>
+</borderlayout>
+</n:div>
+</zk>

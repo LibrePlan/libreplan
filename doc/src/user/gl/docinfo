@@ -5,13 +5,13 @@ Documentación de usuario da aplicación
 .. image:: images/logo.png
    :align: left
 
-No seguinte documento proporciónase a documentación de axuda necesaria para utilizar NavalPlan, a aplicación web de código aberto para a planificación de proxectos.
+No seguinte documento proporciónase a documentación de axuda necesaria para utilizar LibrePlan, a aplicación web de código aberto para a planificación de proxectos.
 
 Esta documentación está organizada do seguinte modo:
 
 En primeiro lugar descrébense os obxectivos fundamentais da aplicación e o comportamento global da mesma a modo introductorio e como contextualización xeral do uso da mesma.
 
-A continuación introdúcense as entidades básicas que será necesario administrar para poder empregar todas as funcionalidades de NavalPlan e que se mencionarán nas seguintes seccións da documentación.
+A continuación introdúcense as entidades básicas que será necesario administrar para poder empregar todas as funcionalidades de LibrePlan e que se mencionarán nas seguintes seccións da documentación.
 
 Posteriormente, detállanse os procesos completos de creación de pedidos e proxectos, planificación, asignación de recursos, imputación de avances e extración de resultados.
 

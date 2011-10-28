@@ -6,7 +6,7 @@ cutycapt (20110107-2) lenny lucid maverick; urgency=low
 
 cutycapt (20110107-1) lenny squeeze intrepid karmic lucid maverick; urgency=low
 
-  * Updated to NavalPlan package naming.
+  * Updated to LibrePlan package naming.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Fri, 07 Jan 2011 10:35:17 +0100
 

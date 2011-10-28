@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<order-list xmlns="http://rest.ws.navalplanner.org">
+<order-list xmlns="http://rest.ws.libreplan.org">
   <order
     code="ORDER-1" name="Order" init-date="2010-01-01">
     <children>

@@ -1,0 +1,4 @@
+<taglib>
+    <taglib-uri>http://org.libreplan.web/i18n</taglib-uri>
+    <taglib-location>webapp/WEB-INF/tld/i18n.tld</taglib-location>
+</taglib>

@@ -13,7 +13,7 @@ Nas seguintes seccións describiranse as operacións que un usuario pode realiza
 Pedido
 ======
 
-Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa. O pedido para o planificador identifica a entidade de proxecto dentro da empresa. A diferencia das aplicacións de xestión globais, "NavalPlan" só necesita utilizar certos datos dos pedidos. Estes datos son:
+Un pedido é un proxecto ou traballo que un cliente lle solicita a unha empresa. O pedido para o planificador identifica a entidade de proxecto dentro da empresa. A diferencia das aplicacións de xestión globais, "LibrePlan" só necesita utilizar certos datos dos pedidos. Estes datos son:
 
 * Nome do pedido
 * Código do pedido.

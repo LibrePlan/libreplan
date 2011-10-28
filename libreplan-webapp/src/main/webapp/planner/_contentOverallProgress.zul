@@ -1,0 +1,70 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+
+<div sclass="plannergraph">
+
+    <vbox style="margin-left: 25px" >
+
+        <separator />
+
+        <!-- Spreading progress -->
+        <label id="textProgressSpread" style="font-weight: regular; font-size: 11px" />
+
+        <hbox style="margin-top: 5px">
+            <progressmeter id="progressSpread" style="margin-right: 5px" width="400px" />
+            <label id="lbProgressSpread" style="font-weight: regular; font-size: 11px" />
+        </hbox>
+
+        <separator />
+
+        <!-- Progress with all task tasks by hours -->
+        <label id="textProgressAllByNumHours" style="font-weight: regular; font-size: 11px" />
+
+        <hbox style="margin-top: 5px">
+            <progressmeter id="progressAllByNumHours" style="margin-right: 5px" width="400px" />
+            <label id="lbProgressAllByNumHours" style="font-weight: regular; font-size: 11px" />
+        </hbox>
+
+        <separator />
+
+        <!-- Progress with critical path tasks by hours -->
+        <label id="textCriticalPathByDuration" style="font-weight: regular; font-size: 11px" />
+
+        <hbox style="margin-top: 5px">
+            <progressmeter id="progressCriticalPathByDuration" style="margin-right: 5px" width="400px" />
+            <label id="lbCriticalPathByDuration" style="font-weight: regular; font-size: 11px" />
+        </hbox>
+
+        <separator />
+
+        <!-- Progress with critical path tasks by duration -->
+        <label id="textCriticalPathByNumHours" style="font-weight: regular; font-size: 11px" />
+
+        <hbox style="margin-top: 5px">
+            <progressmeter id="progressCriticalPathByNumHours" style="margin-right: 5px" width="400px" />
+            <label id="lbCriticalPathByNumHours" style="font-weight: regular; font-size: 11px" />
+        </hbox>
+
+    </vbox>
+
+</div>

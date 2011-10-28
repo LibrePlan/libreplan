@@ -41,7 +41,7 @@ C) Comprobar diferentes tipos de avances:
 
 E) Método de Montecarlo:
 
-   * Acceder a NavalPlan Configuración e habilitar o método de Montecarlo.
+   * Acceder a LibrePlan Configuración e habilitar o método de Montecarlo.
 
    * Acceder ó pedido do grupo 5.
 
@@ -57,7 +57,7 @@ E) Método de Montecarlo:
 Exercicio 2 .- Subcontratación de tarefas (10m)
 ===============================================
 
-Para poder subcontratar unha tarefa, antes é necesario contar con unha empresa dada de alta con NavalPlan instalado. Crear dita empresa:
+Para poder subcontratar unha tarefa, antes é necesario contar con unha empresa dada de alta con LibrePlan instalado. Crear dita empresa:
 
    * Nome: Empresa subcontratada grupo 5
    * NIF: COMPANY_CODE
@@ -65,7 +65,7 @@ Para poder subcontratar unha tarefa, antes é necesario contar con unha empresa 
    * Subcontractor: Si.
    * Usuario: wswriter
    * Interactúa con aplicaciones: Si.
-   * URI: http://localhost:8080/navalplanner-webapp/
+   * URI: http://localhost:8080/libreplan-webapp/
    * Login: wswriter
    * Contraseña: wswriter
 
@@ -184,7 +184,7 @@ O alumno ten que crear un tipo de parte de traballo cos seguintes datos:
    * Crear un campo de tipo de etiqueta a nivel de cabeceira que inclúa o centro de custo. Incluír como etiqueta por defecto "CC Vigo".
 
 
-Exercicio 11.- Introducir os seguintes tipos de horas en NavalPlan (10m)
+Exercicio 11.- Introducir os seguintes tipos de horas en LibrePlan (10m)
 ============================================================================
 
    * **Tipo de hora:**

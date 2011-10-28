@@ -2,7 +2,7 @@
 Introdución
 -----------
 
-O obxetivo deste curso formativo é **capacitar aos futuros usuarios de NavalPlan** para que obteñan o máximo rendemento das características do software NavalPlan desenvolvido pola Fundación para o Fomento da Calidade Industrial e Desenvolvemento Tecnolóxico de Galicia para a xestión da producción no sector naval.
+O obxetivo deste curso formativo é **capacitar aos futuros usuarios de LibrePlan** para que obteñan o máximo rendemento das características do software LibrePlan desenvolvido pola Fundación para o Fomento da Calidade Industrial e Desenvolvemento Tecnolóxico de Galicia para a xestión da producción no sector naval.
 
 Os asistentes ao curso ao final da primeira sesión serán capaces de:
 
@@ -15,10 +15,10 @@ Os asistentes ao curso ao final da primeira sesión serán capaces de:
 
 Para isto:
 
-   * Traballarán os conceptos necesarios para a realización de planificacións con NavalPlan.
-   * Coñecerán as distintas pantallas de NavalPlan e aplicarán as súas funcionalidades en casos prácticos.
+   * Traballarán os conceptos necesarios para a realización de planificacións con LibrePlan.
+   * Coñecerán as distintas pantallas de LibrePlan e aplicarán as súas funcionalidades en casos prácticos.
 
-Estarán en disposición de utilizar NavalPlan para **realizar planificacións reais nas súas empresas**.
+Estarán en disposición de utilizar LibrePlan para **realizar planificacións reais nas súas empresas**.
 
 ---------------------------------------------
 Módulo de administración de entidades básicas
@@ -76,7 +76,7 @@ Sera posible a realización das seguintes operacións sobre criterios:
 * Modificación dos datos dun tipo de criterio
 * Reorganización da estrutura de criterios
 
-Máis documentación na sección da axuda da documentación de NavalPlan
+Máis documentación na sección da axuda da documentación de LibrePlan
 
 Administración de etiquetas
 ===========================
@@ -193,7 +193,7 @@ Para facilitar o emprego e configuración dos calendarios na aplicación é posi
 
 Para a súa selección seguense os seguintes pasos:
 
-   * Entrar na sección de **Administración / Xestión > NavalPlan: Configuración** do menú principal.
+   * Entrar na sección de **Administración / Xestión > LibrePlan: Configuración** do menú principal.
    * Seleccionar no campo *Calendario por defecto* o calendario desexado.
    * Premer no botón *Gardar*
 
@@ -207,10 +207,10 @@ Conceptos teóricos
 
 Os recursos son as entidades que realizan os traballos necesarios para completar os proxectos. Os proxectos na planificación represéntanse mediante diagramas de Gantt que dispoñen no tempo as diferentes actividades.
 
-En NavalPlan existen tres tipos de recursos capaces de realizar traballo. Estos tres tipos son:
+En LibrePlan existen tres tipos de recursos capaces de realizar traballo. Estos tres tipos son:
 
    * Traballadores. Os traballadores son os recursos humanos da empresa.
-   * Máquinas. As máquinas son capaces tamén de desenvolver tarefas e teñen existencia en NavalPlan.
+   * Máquinas. As máquinas son capaces tamén de desenvolver tarefas e teñen existencia en LibrePlan.
    * Recursos virtuais. Os recursos virtuais son como grupos de traballadores que non teñen existencia real na empresa, é dicir, non se corresponden con traballadores reais, con nome e apelidos, da empresa.
 
 Utilidade dos recursos virtuais
@@ -218,7 +218,7 @@ Utilidade dos recursos virtuais
 
 Os recursos virtuais son, como se explicou, como grupos de traballadores pero que non se corresponden con traballadores concretos con nome e apelidos.
 
-Dotouse a NavalPlan a posibilidade de usar recursos virtuais debido a dous escenario de uso:
+Dotouse a LibrePlan a posibilidade de usar recursos virtuais debido a dous escenario de uso:
 
    * Usar recursos virtuais para simular contratacións futuras por necesidades de proxectos. Pode ocorrer que para satisfacer proxectos futuros as empresas necesiten contratar traballadores nun momento futuro do tempo. Para prever e simular cantos traballadores poden necesitar os usuarios da aplicación poden usar os recursos virtuais.
    * Pode existir empresas que dexesen xestionar as aplicación sen ter que levar unha xestión dos recursos con respecto os datos dos traballadores reais da empresa. Para estes casos, os usuario poden usar tamén os recursos virtuais.
@@ -236,7 +236,7 @@ Para crear un traballador hai que realizar os seguintes pasos:
    * Cubrir os campos do formulario: Nome, Apelidos.
    * Premer o botón "Gardar" ou ben "Gardar e continuar".
 
-A partir dese momento existirá un novo traballador en NavalPlan.
+A partir dese momento existirá un novo traballador en LibrePlan.
 
 Como nota dicir que existe unha comprobación que impide a gravación de dous traballadores co mesmo nome, apelidos e NIF. Todos estos campos son, ademais, obrigatorios.
 
@@ -338,14 +338,14 @@ Os traballadores teñen un calendario propio. Sen embargo, non é un calendario 
 
 O feito de derivar dun calendario significa que, senón se configura, herda completamente a definicións do calendario do cal deriva: herda a definición da semana de traballo, os días festivos, etc.
 
-NavalPlan, sen embargo, ademais de facer que os seus recursos deriven do calendario da empresa, permite a definición de particularidades do calendario. Isto implica que as vacacións do traballador, particularidades da súa xornada de traballo como o número de horas de que consta o seu contrato de traballo, sexa contemplado na planificación.
+LibrePlan, sen embargo, ademais de facer que os seus recursos deriven do calendario da empresa, permite a definición de particularidades do calendario. Isto implica que as vacacións do traballador, particularidades da súa xornada de traballo como o número de horas de que consta o seu contrato de traballo, sexa contemplado na planificación.
 
 Asignación de calendario pai a traballadores en creación de traballador
 -----------------------------------------------------------------------
 
 Na creación dun traballador créase un calendario ao traballador que deriva, por defecto, do calendario configurado por defecto na aplicación.
 
-A configuración da aplicación pódese consultar en *Administracion* > *NavalPlan: Configuracion*.
+A configuración da aplicación pódese consultar en *Administracion* > *LibrePlan: Configuracion*.
 
 Para cambiar o calendario do cal deriva un recurso no momento da creación hai que dar os seguintes pasos:
 
@@ -407,7 +407,7 @@ Os dous primeiros conceptos, é dicir, a xornada semanal de traballo e as excepc
 
 Agora ben, os calendarios dos recursos teñen unha particularidade con respecto ao calendario da empresa. Esta peculariedade son os períodos de activación.
 
-Os períodos de activación son intervalos nos cales os traballadores se encontran dispoñibles para a planificación. Conceptualmente correspóndense con aqueles períodos nos cales o traballador se atopa contratado pola empresa. Un traballador pode ser contratado por un tempo, despois abandonar a empresa e reincorporarse posteriormente. NavalPlan garda a historia de planificación de todos os recursos, utiliza a información de activación para impedir que se lle asigne traballo.
+Os períodos de activación son intervalos nos cales os traballadores se encontran dispoñibles para a planificación. Conceptualmente correspóndense con aqueles períodos nos cales o traballador se atopa contratado pola empresa. Un traballador pode ser contratado por un tempo, despois abandonar a empresa e reincorporarse posteriormente. LibrePlan garda a historia de planificación de todos os recursos, utiliza a información de activación para impedir que se lle asigne traballo.
 
 No momento da creación dun traballador configúrase con un período de activación que vai dende o momento da alta ata o infinito. Neste momento non é posible cambialo e esta operación ten que ser feita cunha edición posterior do recurso.
 
@@ -442,7 +442,7 @@ Básicamente existen dous tipos de nodos:
    * Nodos contedores. Un nodo contedor é un agregador e actúa como clasificador de elementos. Non introduce traballo por el mesmo, senón que o traballo por el representado e a suma de todalas horas dos nodos descendentes do mesmo.
    * Nodos folla. Un nodo folla é un nodo que non ten fillos e que que está constituido por un ou máis conxuntos de horas.
 
-En NavalPlan, por tanto, permítese o traballo con proxectos estruturados según os tipos de nodos precendentes.
+En LibrePlan, por tanto, permítese o traballo con proxectos estruturados según os tipos de nodos precendentes.
 
 Acceso a vista global da empresa
 ================================
@@ -470,10 +470,10 @@ Para a creación dun proxecto hai que acometer os seguintes pasos:
 
    * Acceder ao opción Planificación > Proxectos.
    * Premer no botón situado na barra de botón co texto *Crear proxecto novo*.
-   * NavalPlan amosa una ventá onde se solicitan os datos básicos do proxecto:
+   * LibrePlan amosa una ventá onde se solicitan os datos básicos do proxecto:
 
       * Nome. Cadena identificativa do proxecto. Obligatorio.
-      * Código do proxecto. Código para identificar o proxecto. Deber ser único. Non cubrilo e manter marcado o checkbox Autoxeneración de código. Se éste está cuberto encárgase NavalPlan de crear o código correspondente. Obligatorio.
+      * Código do proxecto. Código para identificar o proxecto. Deber ser único. Non cubrilo e manter marcado o checkbox Autoxeneración de código. Se éste está cuberto encárgase LibrePlan de crear o código correspondente. Obligatorio.
       * Data de inicio. Esta data é a data a partir da cal se comenzará a planificación do proxecto. Obligatorio.
       * Data límite. Este campo é opcional e indica cal é o deadline.
       * Cliente. Campo para seleccionar cales dos clientes da empresa é o contratista do proxecto.
@@ -483,7 +483,7 @@ Para a creación dun proxecto hai que acometer os seguintes pasos:
    * Os datos xerais poden ser editados premendo na pestana *Datos xerais*. Os datos que se poden introducir son:
 
       * Nome do proxecto. Cadena identificativa do proxecto. Obligatorio.
-      * Código do proxecto. Código para identificar o proxecto. Deber ser único. Non cubrilo e manter marcado o checkbox Autoxeneración de código. Se éste está cuberto encárgase NavalPlan de crear o código correspondente. Obligatorio.
+      * Código do proxecto. Código para identificar o proxecto. Deber ser único. Non cubrilo e manter marcado o checkbox Autoxeneración de código. Se éste está cuberto encárgase LibrePlan de crear o código correspondente. Obligatorio.
       * Código externo: Campo utilizado para integración con terceiras aplicacións.
       * Modo de planificación: Adiante ou atrás. A planificación cara adiante é aquela que as tarefas se van colocando dende a tarefa de inicio e se moven cara adiante segundo se establecen dependencias. A planificación cara atrás é aquela que as tarefas se colocan con fin na data de entrega e as dependencias entre elas se xestionan cara atrás.
       * Data de inicio. Esta data é a data a partir da cal se comenzará a planificación do proxecto. Obligatorio.
@@ -603,7 +603,7 @@ Conceptos teóricos
 
 Unha vez os proxectos está introducidos cun conxunto de horas o seguinte paso e determinar como se planifican.
 
-NavalPlan é flexible para determinar a granularidade do que se quere planificar e para elo introduce o concepto de puntos de planificación. Isto permite aos usuarios ter flexibilidade á hora de decidir se un proxecto interesa planificalo con moito detalle ou ben se interesa xestionalo máis globalmente.
+LibrePlan é flexible para determinar a granularidade do que se quere planificar e para elo introduce o concepto de puntos de planificación. Isto permite aos usuarios ter flexibilidade á hora de decidir se un proxecto interesa planificalo con moito detalle ou ben se interesa xestionalo máis globalmente.
 
 Os puntos de planificación son marcas que se realizan sobre as árbores de tarefas dun proxecto para indicar a que nivel se desexa planificar. Se se marca unha tarefa como punto de planificación significa que se vai a crear unha tarea de planificación a ese nivel que agrupa o traballo de tódalas tarefas situados por debaixo del. Se este punto de planificación se corresponde cunha tarefa que non é raíz o que se fai é que as tarefas por enriba del se converten en tareas contedoras en planificación.
 
@@ -794,7 +794,7 @@ Na **vista de proxecto** existen catro perspectivas dispoñibles:
    * Uso de recursos: amosa a visión dos recursos asignados ao proxecto no tempo coa súa carga de traballo tanto en tarefas deste proxecto coma as pertencentes a outros proxectos por asignacións xenéricas ou específicas.
    * Detalles de proxecto: permite acceder a toda a información do proxecto, organización do traballo, asignación de criterios, materiais, etc. Xa foi tratada dentro da edición de proxectos.
    * Asignación avanzada: amosa a asignación numérica con diversos niveles de granularidade (dia,semana,mes) dos recursos nas tarefas do proxecto. Permite modificar as asignacións de recursos no tempo as distintas tarefas do mesmo.
-   * Se se habilitou o "método de Montecarlo": método que permite recorrer as planificacións baseándose nunha estimación, optimista, pesimista e realista das duracións das tarefas e unhas probabilidades de ocorrencia. A partir da anterior información, NavalPlan ofrece a probabilidade de finalización do proxecto nunha data ou unha semana concreta.
+   * Se se habilitou o "método de Montecarlo": método que permite recorrer as planificacións baseándose nunha estimación, optimista, pesimista e realista das duracións das tarefas e unhas probabilidades de ocorrencia. A partir da anterior información, LibrePlan ofrece a probabilidade de finalización do proxecto nunha data ou unha semana concreta.
 
 Vista de planificación de empresa
 =================================
@@ -858,7 +858,7 @@ Na vista de planificación dun proxecto pódese facer as seguintes operacións d
 Asignación de dependencias
 --------------------------
 
-Unha dependencia é una relación entre dúas tarefas pola cal unha tarefa A non pode comezar ou terminar ata que unha tarefa B comece ou remate. Navalplan implementa as seguintes relacións de dependencias entre tarefas entre dúas tarefas chamadas A e B.
+Unha dependencia é una relación entre dúas tarefas pola cal unha tarefa A non pode comezar ou terminar ata que unha tarefa B comece ou remate. LibrePlan implementa as seguintes relacións de dependencias entre tarefas entre dúas tarefas chamadas A e B.
 
    * Fin - Inicio: A tarefa B non pode comezar ata que a tarefa A remate. Esta e a relación de dependencia máis común.
    * Inicio - Inicio: A tarefa B non pode comezar ata que a tarefa A teña comezado.
@@ -915,8 +915,8 @@ Para realizar calquera das dúas asignacións de recursos é necesario  dar os s
    * Introducir o nome do recurso ou criterio desexado no campo "Seleccione criterios ou recursos". Tamén é posible premer en "Búsqueda avanzada" para realizar unha procura avanzada.
    * Se se elixiu a primeira opción: O sistema amosará un listado que cumpra coas condicións de procura. O usuario debe elixir o recurso ou criterio que desexa e premer en "Engadir".
 
-      * Se o usuario elixe un recurso, NavalPlan realizará unha asignación específica. Ver sección "Asignación específica" para  coñecer que significa elixir esta opción.
-      * Se o usuario elixe un criterio, NavalPlan realizará unha asignación xenérica. Ver sección "Asignación xenérica" para coñecer que significa elixir esta opción.
+      * Se o usuario elixe un recurso, LibrePlan realizará unha asignación específica. Ver sección "Asignación específica" para  coñecer que significa elixir esta opción.
+      * Se o usuario elixe un criterio, LibrePlan realizará unha asignación xenérica. Ver sección "Asignación xenérica" para coñecer que significa elixir esta opción.
 
    * Se se elixiu a segunda opción: A aplicación amosa unha nova pantalla formada por unha árbore de  criterios e un listado á dereita dos traballadores que cumpren os criterios seleccionados:
       * Seleccionar o tipo de asignación a realizar:
@@ -1095,14 +1095,14 @@ Módulo de progresos
 Conceptos teóricos
 ==================
 
-O progreso ou avance é unha medida que indica en que grao está feito un traballo. En NavalPlan os progresos se xestionan a dous niveis:
+O progreso ou avance é unha medida que indica en que grao está feito un traballo. En LibrePlan os progresos se xestionan a dous niveis:
 
    * Tarefa. unha tarefa representa un traballo a ser realizado e, consecuentemente, é posible no programa medir o progreso dese traballo.
    * Proxecto, equivalencia de proxecto. Os proxectos de forma global tamén teñen un estado de progreso según o grao de completitude que teñen.
 
 O progreso ten que ser medido manualmente polas persoas encargadas da planificación na empresa porque é un xuízo que se leva en base a unha valoración do estado dos traballos.
 
-As características máis importantes do sistema de progresos en NavalPlan é o seguinte:
+As características máis importantes do sistema de progresos en LibrePlan é o seguinte:
 
    * É posible ter varias maneiras de medir o progreso sobre unha determinada tarefa. Debido a elo, os progresos caracterízanse por ser medidos en diferentes unidades e son administrables os distintos tipos de progresos.
    * Programouse un sistema de propagación de progresos de maneira que se un progreso se mide a un determinado nivel da árbore de proxectos, entón calcúlase no nivel superior automáticamente cal debería ser o progreso en función das horas representadas polos fillos que teñan medido ese tipo de progreso.
@@ -1128,7 +1128,7 @@ A administración de tipos de progreso permite ao usuario definir as distintas m
 Borrado de tipo de progreso
 ---------------------------
 
-O borrado dun tipo de progreso só ten sentido no caso de que non fora asignado nunca. Ademais, existen tipos de progreso predefinidos en NavalPlan necesarios para o seu funcionamento. Esto tipos de progreso predefinidos tampouco se poden borrar.
+O borrado dun tipo de progreso só ten sentido no caso de que non fora asignado nunca. Ademais, existen tipos de progreso predefinidos en LibrePlan necesarios para o seu funcionamento. Esto tipos de progreso predefinidos tampouco se poden borrar.
 
 Se este é o caso hai que dar os seguintes pasos:
 
@@ -1265,11 +1265,11 @@ Outros conceptos avanzados
 Recursos limitantes
 ===================
 
-Os recursos limitantes son recursos que limitan a planificación, de xeito que só aceptan tarefas de xeito secuencial. Por esta razón, o modo de funcionamento é en modo de colas. Un recurso declarado como limitante aceptará planificación de tarefas encoladas. NavalPlan permite a xestión de ditas colas.
+Os recursos limitantes son recursos que limitan a planificación, de xeito que só aceptan tarefas de xeito secuencial. Por esta razón, o modo de funcionamento é en modo de colas. Un recurso declarado como limitante aceptará planificación de tarefas encoladas. LibrePlan permite a xestión de ditas colas.
 
 Para xestionar ditas colas é necesario contar con tarefas de tipo "Asignación de recursos limitantes". Para conseguir tarefas deste tipo accederase ás propiedades da tarefa (dende Planificación > Planificación de proxectos) e no combo de selección "Asignación de tipos de recursos" seleccionar "Asignación de recursos limitantes".
 
-Unha vez unha tarefa é do tipo anterior, NavalPlan ofrece a posibilidade de asignar:
+Unha vez unha tarefa é do tipo anterior, LibrePlan ofrece a posibilidade de asignar:
 
    * Un recurso limitante específico.
    * Un criterio xenérico. É importante asignar un criterio que se saiba satisfarán os recursos limitantes.
@@ -1307,18 +1307,18 @@ Para entender a consolidación de progreso, é necesario analizar dous supostos.
 
    * Exemplo 1: Introducíuse un progreso do 60% no segundo día e consolídase:
 
-      * NavalPlan busca cantas horas se fixeron ata o día no que se introduxo o progreso. No exemplo, 16 horas correspondentes ás asignacións de 2 días de 8 horas cada día.
+      * LibrePlan busca cantas horas se fixeron ata o día no que se introduxo o progreso. No exemplo, 16 horas correspondentes ás asignacións de 2 días de 8 horas cada día.
       * O sistema calcula canto quedaría por finalizar (no exemplo, quedaría un 40% da tarefa). En consecuencia quedan un 40% das 40 horas, o cal significa que quedan 16 horas.
       * O sistema entón marca como consolidadas as horas que calculou no primeiro punto (16h) e marca como que quedan 16 horas calculadas no segundo punto. En consecuencia, a tarefa ten agora unha duración de 32h.
-      * NavalPlan, coas horas que quedan por facer, ás últimas 16h, non recalcula datas, senón que recalcula o ratio de recursos por día que se necesitan para poder finalizar na data inicial. É o usuario quen pode establecer o ratio orixinal de recursos por día para que se recalculen as asignacións e en consecuencia as datas de finalización.
+      * LibrePlan, coas horas que quedan por facer, ás últimas 16h, non recalcula datas, senón que recalcula o ratio de recursos por día que se necesitan para poder finalizar na data inicial. É o usuario quen pode establecer o ratio orixinal de recursos por día para que se recalculen as asignacións e en consecuencia as datas de finalización.
       * Neste exemplo, se se establece 1 recurso por día ó que resta da tarefa contaríase con 1 día de adianto.
 
    * Exemplo 2: Introducíuse un progreso do 40% no cuarto día e consolídase:
 
-      * NavalPlan busca cantas horas se fixeron ata o día no que se introduxo o progreso. No exemplo, 32 horas correspondentes ás asignacións de 4 días de 8 horas cada día.
+      * LibrePlan busca cantas horas se fixeron ata o día no que se introduxo o progreso. No exemplo, 32 horas correspondentes ás asignacións de 4 días de 8 horas cada día.
       * O sistema calcula canto quedaría por finalizar (no exemplo, quedaría un 60% da tarefa). En consecuencia quedan un 60% das 40 horas, o cal significa que quedan 24 horas.
       * O sistema entón marca como consolidadas as horas que calculou no primeiro punto (32h) e marca como que quedan 24 horas calculadas no segundo punto. En consecuencia, a tarefa ten agora unha duración de 56h.
-      * NavalPlan, coas horas que quedan por facer, ás últimas 24h, non recalcula datas, senón que recalcula o ratio de recursos por día que se necesitan para poder finalizar na data inicial. É o usuario quen pode establecer o ratio orixinal de recursos por día para que se recalculen as asignacións e en consecuencia as datas de finalización.
+      * LibrePlan, coas horas que quedan por facer, ás últimas 24h, non recalcula datas, senón que recalcula o ratio de recursos por día que se necesitan para poder finalizar na data inicial. É o usuario quen pode establecer o ratio orixinal de recursos por día para que se recalculen as asignacións e en consecuencia as datas de finalización.
       * Neste exemplo, se se establece 1 recurso por día ó que resta da tarefa contaríase con 2 día de atraso.
 
 
@@ -1340,6 +1340,6 @@ As operacións básicas de operación entre escenarios son:
    * Creación de proxecto en escenario
    * Envío de proxecto de un escenario a outro. Esta operación copia toda a información de un proxecto de un escenario a outro, excepto as asignacións de horas.
 
-Os escenarios son xestionados dende a opción de menú "Escenarios" onde é posible administrar os escenarios existentes e crear novos. Por outro lado existe un botón de acceso rápido a escenario na zona dereita superior de NavalPlan.
+Os escenarios son xestionados dende a opción de menú "Escenarios" onde é posible administrar os escenarios existentes e crear novos. Por outro lado existe un botón de acceso rápido a escenario na zona dereita superior de LibrePlan.
 
-As operacións de escenarios só se amosan se se configura na sección *Administración* > *NavalPlan: Configuración* que se amosen estas operacións.
+As operacións de escenarios só se amosan se se configura na sección *Administración* > *LibrePlan: Configuración* que se amosen estas operacións.

@@ -3,7 +3,7 @@
     "http://jetty.mortbay.org/configure.dtd">
 
 <Configure class="org.mortbay.jetty.webapp.WebAppContext">
-    <New id="navalplanner-ds" class="org.mortbay.jetty.plus.naming.Resource">
+    <New id="libreplan-ds" class="org.mortbay.jetty.plus.naming.Resource">
         <Arg>${dataSource.jndiName}</Arg>
         <Arg>
             <New class="org.springframework.jdbc.datasource.DriverManagerDataSource">

@@ -1,0 +1,93 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<zk>
+    <vbox apply="${selectorController}">
+
+        <groupbox style="margin-top: 5px" closable="false">
+
+            <caption label="${i18n:_('Select criteria set or specific resources for allocation')}" />
+
+            <hbox>
+
+                <!-- Criteria -->
+                <vbox sclass="allocation-criterion-selector">
+
+                    <tree id="criterionsTree" width="420px"
+                            height="340px" vflex="true" multiple="true"
+                            model="@{selectorController.criterions}"
+                            zclass="z-dottree" style="margin-top:5px;margin-bottom:5px;">
+                        <treecols>
+                            <treecol label="${i18n:_('Criteria')}" tooltiptext="${i18n:_('Criteria (Hold CTRL for multiple selection)')}" />
+                        </treecols>
+                   </tree>
+
+                </vbox>
+
+                <!--Matchings -->
+                <vbox>
+
+                    <listbox id="listBoxResources" width="420px" height="340px"
+                            vflex="true" multiple="@{selectorController.allowSelectMultipleResources}" style="margin:5px;"
+                            itemRenderer="@{selectorController.listitemRenderer}" >
+                        <listhead>
+                            <listheader label="${i18n:_('Found resources')}"
+                                    tooltiptext="${i18n:_('Resources matching selected criteria')}" sort="auto" />
+                        </listhead>
+                    </listbox>
+
+                </vbox>
+
+            </hbox>
+
+            <!-- Assignment Type -->
+            <vbox width="100%">
+                <grid fixedLayout="true" span="1" width="100%">
+                    <columns>
+                        <column width="200px" />
+                        <column  />
+                    </columns>
+                    <rows>
+                        <row>
+                            <hbox width="100%">
+                                <label value="${i18n:_('Assignment Type')}" />
+                                <image src="/common/img/axuda.gif" tooltip="allocation-type-popup"
+                                        sclass="context-help-popup" height="15px" />
+                            </hbox>
+                            <radiogroup id="allocationTypeSelector" orient="vertical" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Current selection')}" />
+                            <label id="allocationSelectedItems" value="${i18n:_('[generic all workers]')}" />
+                        </row>
+                    </rows>
+                </grid>
+            </vbox>
+
+        </groupbox>
+
+        <popup id="allocation-type-popup" width="700px" >
+            <iframe id="iframe" src="/help/${i18n:_('en')}/08-asignacion.html" width="100%" />
+        </popup>
+
+    </vbox>
+
+</zk>

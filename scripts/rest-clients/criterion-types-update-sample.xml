@@ -6,7 +6,7 @@
      criterion-types-sample.xml first, and then
      criterion-types-update-sample.xml). -->
 
-<criterion-type-list xmlns="http://rest.ws.navalplanner.org">
+<criterion-type-list xmlns="http://rest.ws.libreplan.org">
 
     <!-- OK (change criterion type's name and description, move criterion
          "ct-4-c2-1-1" of position in the criterion hierarchy and set active to

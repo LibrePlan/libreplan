@@ -18,7 +18,7 @@ Para comezar a traballar o primerio que terá que facer o desenvolvedor e descar
 
 ::
 
- $ git clone git://navalplan.git.sourceforge.net/gitroot/navalplan/navalplan
+ $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
 
 
 Esto creará unha copia local de trabajo, para empezar a trabajar se recomienda la creación de una rama para cada caso de uso a desarrollar o nombre de la rama é recomendable que teña realación coa funcionalidade que implemente ou o número de bug que trata de solucionar, e logo nos movemos a traballar na rama cun checkout.
@@ -152,7 +152,7 @@ A diferencia do resto dos usuarios debería descargar o repositorio da seguinte 
 
 ::
 
- $ git clone ssh://user@navalplan.git.sourceforge.net/gitroot/navalplan/navalplan
+ $ git clone ssh://user@libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
 
 
 Esta forma de acceso permite un acceso de escritura ao repositorio:

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 
-<order-list xmlns="http://rest.ws.navalplanner.org">
-  <order xmlns="http://rest.ws.navalplanner.org"
+<order-list xmlns="http://rest.ws.libreplan.org">
+  <order xmlns="http://rest.ws.libreplan.org"
     code="ORDER-1" name="Order UPDATED" init-date="2010-01-01">
     <children>
       <order-line-group code="ORDER-1-OE-1" name="Order element 1">

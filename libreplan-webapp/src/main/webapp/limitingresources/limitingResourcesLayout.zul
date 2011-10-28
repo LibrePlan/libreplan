@@ -1,0 +1,149 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?xel-method prefix="i18n" name="_" class="org.libreplan.web.I18nHelper"
+    signature="java.lang.String _(java.lang.String name)" ?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<?component name="manualAllocationWindow"
+    macroURI="/limitingresources/manualAllocation.zul"
+    inline="true" ?>
+
+<?component name="editTaskWindow"
+    macroURI="/planner/editTask.zul"
+    inline="true" ?>
+
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+    <n:script type="text/javascript" src="/libreplan-webapp/js/highlightDaysInInterval.js" />
+
+    <zscript><![CDATA[
+        limitingResourcesPanel = self;
+        editController = editTaskController;
+    ]]>
+    </zscript>
+    <borderlayout sclass="resourcesloadlayout" width="auto">
+
+        <!-- Top control button bar -->
+        <north height="30px" border="0" sclass="toolbar-box">
+            <hbox align="center" id="toolbar">
+
+                <separator/>
+
+                <button image="/common/img/ico_save.png" style="margin-top: -4px"
+                    tooltiptext="${i18n:_('Save')}"
+                    onClick="limitingResourcesController.saveQueues()"/>
+
+                <separator/>
+
+                <!-- Zoom -->
+                <label>${i18n:_('Zoom')}:</label>
+                <listbox id="listZoomLevels" mold="select" rows="1"
+                    model="${limitingResourcesPanel.zoomLevels}"
+                    onSelect="limitingResourcesPanel.setZoomLevel(self.selectedItem.value);" >
+                </listbox>
+
+                <separator/>
+
+                <label>${i18n:_('Pagination')}:</label>
+                <button id="paginationDownButton" tooltiptext="${i18n:_('Page down')}" disabled="true"
+                        image="/common/img/ico_left.png"
+                        onClick="limitingResourcesPanel.paginationDown();" />
+                <listbox id="horizontalPagination" mold="select" rows="1" visible="true"
+                        onSelect="limitingResourcesPanel.goToSelectedHorizontalPage();" />
+                <button id="paginationUpButton" tooltiptext="${i18n:_('Page up')}"
+                        image="/common/img/ico_right.png"
+                        onClick="limitingResourcesPanel.paginationUp();" />
+
+            </hbox>
+        </north>
+
+        <!-- List of queues -->
+        <center border="0">
+            <borderlayout sclass="resourcesload limitingresources">
+                <west size="250px" flex="true" collapsible="true"
+                    splittable="true" autoscroll="true">
+
+                    <borderlayout >
+                        <north border="0" height="31px" flex="true" collapsible="true">
+                            <tree fixedLayout="true">
+                                <treecols>
+                                    <treecol label="${i18n:_('Name')}" height="26px"/>
+                                </treecols>
+                            </tree>
+                        </north>
+                        <center border="0" style="overflow-x:scroll">
+                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+                        </center>
+                    </borderlayout>
+                </west>
+
+                <center sclass="taskspanel">
+                    <borderlayout>
+                        <north border="0"><div sclass="timetrackergap" height="30px" id="insertionPointTimetracker"></div></north>
+                        <center autoscroll="true" border="0" sclass="rightpanellayout">
+                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                        </center>
+                    </borderlayout>
+                </center>
+            </borderlayout>
+        </center>
+
+        <south height="170px" collapsible="true" title="${i18n:_('Tasks input buffer')}" sclass="limiting-resources-buffer">
+            <vbox width="100%">
+                <!-- Assign selected elements -->
+                <hbox style="padding-left: 10px; padding-top: 3px">
+                    <button id="btnAssignSelectedItems"
+                            label="${i18n:_('Assign selected items')}"
+                            onClick="limitingResourcesController.assignAllSelectedElements()"/>
+                </hbox>
+
+                <!-- List of unassigned queue elements -->
+                <newdatasortablegrid id="gridUnassignedLimitingResourceQueueElements"
+                        sizedByContent="false"
+                        style="margin: 10px" >
+                    <columns sizable="true">
+                        <newdatasortablecolumn width="40px" >
+                            <hbox pack="center" style="margin-left:2px">
+                                <checkbox id="cbSelectAll"
+                                    onCheck="limitingResourcesController.selectedAllUnassignedQueueElements()"
+                                    tooltiptext="Select/deselect all"/>
+                            </hbox>
+                        </newdatasortablecolumn>
+                        <newdatasortablecolumn label="${i18n:_('Project')}" sort="auto(lower(orderName))"/>
+                        <newdatasortablecolumn label="${i18n:_('Task')}" sort="auto(lower(taskName))"/>
+                        <newdatasortablecolumn label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
+                        <newdatasortablecolumn label="${i18n:_('Earlier starting date')}" sort="auto(date)"/>
+                        <newdatasortablecolumn label="${i18n:_('Hours to allocate')}" sort="auto(hoursToAllocate)"/>
+                        <newdatasortablecolumn label="${i18n:_('Operations')}" width="200px"/>
+                    </columns>
+                </newdatasortablegrid>
+            </vbox>
+        </south>
+
+    </borderlayout>
+
+    <manualAllocationWindow id="manualAllocationWindow" />
+
+    <editTaskWindow editController="${editController}" />
+
+</zk>

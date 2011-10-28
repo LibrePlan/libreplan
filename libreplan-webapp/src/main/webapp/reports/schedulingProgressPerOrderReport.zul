@@ -1,0 +1,171 @@
+<!--
+    This file is part of LibrePlan
+
+    Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+    Desenvolvemento Tecnolóxico de Galicia
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Work And Progress Per Project')}" id="reports"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<?component name="combobox_output_format" macroURI="combobox_output_format.zul"
+    class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
+
+<zk>
+
+    <window self="@{define(content)}"
+        apply="org.libreplan.web.reports.SchedulingProgressPerOrderController"
+        title="${i18n:_('Work And Progress Per Project')}"
+        border="normal" >
+
+        <!-- Select dates -->
+        <panel title="${i18n:_('Date')}" border="normal"
+                style="overflow:auto">
+            <panelchildren>
+                 <grid width="600px">
+                     <columns>
+                         <column width="200px" />
+                         <column />
+                     </columns>
+                     <rows>
+                         <row>
+                             <label value="${i18n:_('Starting date')}:" />
+                             <datebox id="startingDate"
+                                     onChange="controller.checkCannotBeHigher(startingDate, endingDate)"/>
+                         </row>
+                         <row>
+                             <label value="${i18n:_('Ending date')}:" />
+                             <datebox id="endingDate"
+                                     onChange="controller.checkCannotBeHigher(startingDate, endingDate)"/>
+                         </row>
+                         <row>
+                             <label value="${i18n:_('Reference date')}:" />
+                             <datebox id="referenceDate" onCreate="self.value = new Date()"/>
+                         </row>
+                     </rows>
+                 </grid>
+             </panelchildren>
+        </panel>
+
+        <!-- Advance type -->
+        <panel title="${i18n:_('Progress type')}" border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="600px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Progress type')}:" />
+                            <listbox id="lbAdvanceType"
+                                    model="@{controller.advanceTypeDTOs}"
+                                    mold="select"
+                                    multiple="false" >
+                                <listitem self="@{each='advanceTypeDTO'}" value="@{advanceTypeDTO}">
+                                    <listcell label="@{advanceTypeDTO.name}" />
+                                </listitem>
+                            </listbox>
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+
+        <!-- Select orders -->
+        <panel title="${i18n:_('Filter by projects')}"
+            border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                 <vbox>
+                    <separator spacing="5px"/>
+                    <hbox>
+                        <bandboxSearch id="bdOrders" finder="OrderBandboxFinder" model="@{controller.allOrders}"
+                            widthListbox="680px" widthBandbox="480px"/>
+                        <button label="${i18n:_('Add')}"
+                            onClick="controller.onSelectOrder()" style="margin-top: -4px" />
+                    </hbox>
+                 </vbox>
+                <separator spacing="10px"/>
+                 <listbox id="lbOrders"
+                        width="700px"
+                        multiple="true"
+                        model="@{controller.selectedOrders}">
+                    <listhead>
+                        <listheader label="${i18n:_('Name')}" align="center" sort="auto(name)" />
+                        <listheader label="${i18n:_('Code')}" sort="auto(code)" align="center" />
+                        <listheader label="${i18n:_('Start date')}" sort="auto(initDate)" align="center" />
+                        <listheader label="${i18n:_('Operations')}" sort="auto(initDate)" align="center" width="100px"/>
+                    </listhead>
+                    <listitem self="@{each='order'}" value="@{order}">
+                        <listcell label="@{order.name}" />
+                        <listcell label="@{order.code}" />
+                        <listcell label="@{order.initDate, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
+                        <listcell>
+                            <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                hoverImage="/common/img/ico_borrar.png"
+                                tooltiptext="${i18n:_('Delete')}"
+                                onClick="controller.onRemoveOrder(self.parent.parent.value);">
+                            </button>
+                        </listcell>
+                    </listitem>
+                </listbox>
+            </panelchildren>
+        </panel>
+
+        <!-- Select output format -->
+        <panel title="${i18n:_('Format')}" border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="600px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Output format')}:" />
+                            <combobox_output_format id="outputFormat" />
+                        </row>
+                    </rows>
+                </grid>
+
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal"/>
+
+        <hbox style="display: none" id="URItext">
+            <label value="${i18n:_('Click on ')}" />
+            <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
+                    label="${i18n:_('direct link')}" />
+            <label value="${i18n:_(' to go to output directly')}" />
+        </hbox>
+        <separator spacing="10px" orient="horizontal" />
+
+        <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
+
+        <jasperreportcomponent id="report" />
+    </window>
+
+</zk>

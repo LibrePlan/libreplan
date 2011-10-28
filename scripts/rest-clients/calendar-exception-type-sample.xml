@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<calendar-exception-type-list xmlns="http://rest.ws.navalplanner.org">
+<calendar-exception-type-list xmlns="http://rest.ws.libreplan.org">
 
   <calendar-exception-type code="HALF_DAY" name="Half day"
     color="GREEN" duration="14400" over-assignable="true" />

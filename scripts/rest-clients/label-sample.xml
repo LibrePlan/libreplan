@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<label-type-list xmlns="http://rest.ws.navalplanner.org">
+<label-type-list xmlns="http://rest.ws.libreplan.org">
   <label-type name="Centro de coste"
   code="a3636840-33ed-4e25-8ffd-6f98aa72df2a">
     <label-list>

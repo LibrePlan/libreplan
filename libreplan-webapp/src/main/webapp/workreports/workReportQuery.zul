@@ -1,0 +1,197 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?page title="${i18n:_('LibrePlan: Work Reports')}" id="work_report_admin_query"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+    <window self="@{define(content)}"
+        apply="org.libreplan.web.workreports.WorkReportCRUDController">
+        <vbox id="messagesContainer"></vbox>
+
+    <window id="listQueryWindow" title="${i18n:_('Work Report Lines List')}">
+       <panel title="${i18n:_('Filter work report by :')}" border="normal"
+                    style="overflow:auto">
+        <panelchildren>
+        <separator bar="false" spacing="5px" orient="horizontal"/>
+        <div align="center">
+        <hbox id="hboxFilter" align="end">
+          <!-- Filter work report lines -->
+          <label value="${i18n:_('Resource :')}"/>
+          <autocomplete id="filterResource" buttonVisible="true"
+               finder="ResourceFinder"/>
+          <label value="${i18n:_('task :')}"/>
+          <bandboxSearch id="bandboxFilterOrderElement" widthBandbox="285px" widthListbox="700px"
+              finder="OrderElementBandboxFinder" model="@{controller.orderElements}"/>
+          <label value="${i18n:_('from')}"/>
+          <datebox id="filterStartDateLine" constraint = "@{controller.checkConstraintStartDateLine}"/>
+          <label value="${i18n:_('to')}"/>
+          <datebox id="filterFinishDateLine" constraint = "@{controller.checkConstraintFinishDateLine}"/>
+          <label value="${i18n:_('hours type :')}"/>
+          <autocomplete id="filterHoursType" buttonVisible="true"
+               finder="TypeOfWorkHoursFinder" width="100px"/>
+          <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+                onClick="controller.onApplyFilterWorkReportLines(event)"/>
+        </hbox>
+        </div>
+
+        <separator bar="false" spacing="5px" orient="horizontal"/>
+        </panelchildren>
+            </panel>
+            <separator bar="false" spacing="20px" orient="horizontal"/>
+            <grid id="gridListQuery"  mold="paging" pageSize="10"
+                model="@{controller.queryWorkReportLines}"
+                onInitRender ="controller.sortQueryWorkReportLines();"
+                sizedByContent="true" span="true">
+                <columns sizable="true">
+                <column id="date" label="${i18n:_('Date')}" align="center"
+                    sort="auto(date)" sortDirection="ascending"/>
+                <column id="resource" label="${i18n:_('Resource')}" align="center"
+                    sort="auto(resource.shortDescription)" sortDirection="ascending"/>
+                <column id="projectCode" label="${i18n:_('Project Code')}" align="center"
+                    sort="auto(orderElement.order.code)" sortDirection="ascending"/>
+                <column id="projectName" label="${i18n:_('Project Name')}" align="center"
+                    sort="auto(orderElement.order.name)" sortDirection="ascending"/>
+                <column id="taskCode" label="${i18n:_('Task Code')}" align="center"
+                    sort="auto(orderElement.code)" sortDirection="ascending"/>
+                <column id="taskName" label="${i18n:_('Task name')}" align="center"
+                    sort="auto(orderElement.name)" sortDirection="ascending"/>
+                <column id="startHour" label="${i18n:_('Start hour')}" align="center"
+                    sort="auto(clockStart)" sortDirection="ascending"/>
+                <column id="finishHour" label="${i18n:_('Finish hour')}" align="center"
+                    sort="auto(clockFinish)" sortDirection="ascending"/>
+                <column id="hours" label="${i18n:_('Hours')}" align="center"
+                    sort="auto(effort)" sortDirection="ascending"/>
+                <column id="hourType" label="${i18n:_('Hours type')}" align="center"
+                    sort="auto(typeOfWorkHours.name)" sortDirection="ascending"/>
+                <column label="${i18n:_('Work Report')}" align="center"/>
+                </columns>
+                <rows>
+                <row self="@{each='queryWorkReportLine'}" value="@{queryWorkReportLine}">
+                    <label value="@{queryWorkReportLine.date, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
+                    <label value="@{queryWorkReportLine.resource.shortDescription}"/>
+                    <label value="@{queryWorkReportLine.orderElement.order.code}" />
+                    <label value="@{queryWorkReportLine.orderElement.order.name}" />
+                    <label value="@{queryWorkReportLine.orderElement.code}" />
+                    <label value="@{queryWorkReportLine.orderElement.name}" />
+                    <label value="@{queryWorkReportLine.clockStart, converter='org.libreplan.web.common.typeconverters.TimeConverter'}" />
+                    <label value="@{queryWorkReportLine.clockFinish, converter='org.libreplan.web.common.typeconverters.TimeConverter'}" />
+                    <label value="@{queryWorkReportLine.effort.toFormattedString}" />
+                    <label value="@{queryWorkReportLine.typeOfWorkHours.name}" />
+                    <button sclass="icono" image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
+                        tooltiptext="${i18n:_('Edit')}"
+                        onClick="controller.goToEditFormQuery(self.parent.value);">
+                    </button>
+                </row>
+                </rows>
+            </grid>
+        </window>
+
+        <window id="createWindow" title="${i18n:_('Edit work report')}">
+            <tabbox>
+                <tabs>
+                    <tab label="${i18n:_('Report data')}"></tab>
+                </tabs>
+                <tabpanels>
+                    <tabpanel>
+                        <vbox width="100%">
+
+                    <panel title="${i18n:_('Heading Fields')}" border="normal"
+                            style="overflow:auto">
+                        <panelchildren>
+                        <grid id="HeadingRequirementsFields" mold="paging" pageSize="4" fixedLayout="true">
+                            <columns>
+                              <column width="200px"/>
+                              <column />
+                            </columns>
+                            <rows>
+                                <row visible = "@{controller.workReport.workReportType.dateIsSharedByLines}">
+                                        <label value="${i18n:_('Date')}" />
+                                        <datebox id="date" value="@{controller.workReport.date}" />
+                                </row>
+                                <row visible = "@{controller.workReport.workReportType.resourceIsSharedInLines}">
+                                        <label value="${i18n:_('Resource')}" />
+                                        <autocomplete id="autocompleteResource" buttonVisible="true"
+                                            onChange ="controller.changeResource(self.selectedItem);"
+                                            finder="ResourceFinder"
+                                            selectedItem="@{controller.workReport.resource}"/>
+                                </row>
+                                <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
+                                    <label value="${i18n:_('Task Code')}" />
+                                    <bandboxSearch id="bandboxSelectOrderElementInHead"
+                                        finder="OrderElementBandboxFinder"
+                                        model="@{controller.orderElements}"
+                                        selectedElement="@{controller.workReport.orderElement}"
+                                        onSelect="controller.setOrderElementInComponent(event)" />
+                                </row>
+                            </rows>
+                        </grid>
+
+                        <grid id="headingFieldsAndLabels" mold="paging" pageSize="4"
+                            fixedLayout="true"
+                            model="@{controller.fieldsAndLabelsHeading}"
+                            rowRenderer= "@{controller.orderedFieldsAndLabelsRowRenderer}">
+                            <columns>
+                              <column width="200px"/>
+                              <column />
+                            </columns>
+                        </grid>
+                        </panelchildren>
+                        </panel>
+
+                        <separator bar="false" spacing="80px" orient="vertical"/>
+
+                            <!-- Work report lines -->
+                            <panel title="${i18n:_('Work report lines')}"
+                                border="normal">
+                                <panelchildren>
+                                    <hbox>
+                                        <button label="${i18n:_('Add new row')}"
+                                            onClick="controller.addWorkReportLine()" />
+                                    </hbox>
+
+                                   <newdatasortablegrid id="listWorkReportLines" fixedLayout="true"
+                                        rowRenderer="@{controller.renderer}" />
+                                </panelchildren>
+                            </panel>
+                        </vbox>
+                    </tabpanel>
+                </tabpanels>
+            </tabbox>
+
+            <button onClick="controller.saveAndExit();"
+                label="${i18n:_('Save')}" sclass="save-button global-action"/>
+            <button onClick="controller.saveAndContinue();"
+                label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
+            <button onClick="controller.newWorkReportWithSameType();"
+                label="${i18n:_('Save &amp; New work report')}" sclass="saveandcontinue-button global-action"/>
+            <button onClick="controller.cancel();"
+                label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
+
+        </window>
+
+    </window>
+</zk>

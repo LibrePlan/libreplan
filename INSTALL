@@ -1,14 +1,14 @@
 Install
 =======
 
-This is a guide about how to install *NavalPlan* project in your system. If you
-want to upgrade your *NavalPlan* version see ``UPDATE`` file. If you want to
+This is a guide about how to install *LibrePlan* project in your system. If you
+want to upgrade your *LibrePlan* version see ``UPDATE`` file. If you want to
 know how to compile it manually see ``HACKING`` file.
 
 .. contents::
 
 
-NavalPlan automatic installation
+LibrePlan automatic installation
 --------------------------------
 
 Ubuntu PPAs
@@ -22,31 +22,31 @@ Instructions::
 
   $ sudo add-apt-repository ppa:libreplan/ppa
   $ sudo apt-get update
-  $ sudo apt-get install navalplan
+  $ sudo apt-get install libreplan
 
 
 Debian packages
 ~~~~~~~~~~~~~~~
 
 There are Debian packages for Squeeze (i386 and amd64), you can download them
-from: http://sourceforge.net/projects/navalplan/files/NavalPlan/
+from: http://sourceforge.net/projects/libreplan/files/LibrePlan/
 
 Instructions:
 
 * Download the package::
 
-    $ wget http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1-1_amd64.deb
 
 * Install package::
 
-    # dpkg -i navalplan_1.1.1-1_amd64.deb
+    # dpkg -i libreplan_1.1.1-1_amd64.deb
 
 * Install dependencies::
 
     # apt-get install -f
 
 
-NavalPlan manual installation
+LibrePlan manual installation
 -----------------------------
 
 Debian/Ubuntu
@@ -62,44 +62,44 @@ Debian/Ubuntu
 
 * Use SQL sentences to create database::
 
-    CREATE DATABASE navalplan;
-    CREATE USER navalplan WITH PASSWORD 'navalplan';
-    GRANT ALL PRIVILEGES ON DATABASE navalplan TO navalplan;
+    CREATE DATABASE libreplan;
+    CREATE USER libreplan WITH PASSWORD 'libreplan';
+    GRANT ALL PRIVILEGES ON DATABASE libreplan TO libreplan;
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/NavalPlan/install_1.1.1.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.1.1.sql
 
 * Create database structure::
 
-    $ psql -h localhost -U navalplan -W navalplan < install.sql
+    $ psql -h localhost -U libreplan -W libreplan < install.sql
 
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O navalplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1.war
 
-* Create a new file ``/etc/tomcat6/Catalina/localhost/navalplan.xml`` (file
+* Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
   Tomcat 6::
 
     <?xml version="1.0" encoding="UTF-8"?>
 
     <Context antiJARLocking="true" path="">
-        <Resource name="jdbc/navalplanner-ds" auth="Container"
+        <Resource name="jdbc/libreplan-ds" auth="Container"
             type="javax.sql.DataSource"
             maxActive="100" maxIdle="30" maxWait="10000"
-            username="navalplan" password="navalplan"
+            username="libreplan" password="libreplan"
             driverClassName="org.postgresql.Driver"
-            url="jdbc:postgresql://localhost/navalplan" />
+            url="jdbc:postgresql://localhost/libreplan" />
     </Context>
 
-* Add a new Tomcat 6 policy file ``/etc/tomcat6/policy.d/51navalplan.policy``
+* Add a new Tomcat 6 policy file ``/etc/tomcat6/policy.d/51libreplan.policy``
   with the following content::
 
-    grant codeBase "file:/var/lib/tomcat6/webapps/navalplan/-" {
+    grant codeBase "file:/var/lib/tomcat6/webapps/libreplan/-" {
        permission java.security.AllPermission;
     };
-    grant codeBase "file:/var/lib/tomcat6/webapps/navalplan.war" {
+    grant codeBase "file:/var/lib/tomcat6/webapps/libreplan.war" {
        permission java.security.AllPermission;
     };
 
@@ -108,9 +108,9 @@ Debian/Ubuntu
 
     grant codeBase "file:${catalina.home}/bin/tomcat-juli.jar" {
       ...
-      // begin:navalplan
-      permission java.io.FilePermission "${catalina.base}${file.separator}webapps${file.separator}navalplan${file.separator}WEB-INF${file.separator}classes${file.separator}logging.properties", "read";
-      // end:navalplan
+      // begin:libreplan
+      permission java.io.FilePermission "${catalina.base}${file.separator}webapps${file.separator}libreplan${file.separator}WEB-INF${file.separator}classes${file.separator}logging.properties", "read";
+      // end:libreplan
       ...
     };
 
@@ -120,13 +120,13 @@ Debian/Ubuntu
 
 * Copy war to Tomcat 6 web applications directory::
 
-    # cp navalplan.war /var/lib/tomcat6/webapps/
+    # cp libreplan.war /var/lib/tomcat6/webapps/
 
 * Restart Tomcat 6::
 
     # /etc/init.d/tomcat6 restart
 
-* Go to http://localhost:8080/navalplan/
+* Go to http://localhost:8080/libreplan/
 
 
 openSUSE
@@ -154,9 +154,9 @@ openSUSE
 
 * SQL sentences to create database::
 
-    CREATE DATABASE navalplan;
-    CREATE USER navalplan WITH PASSWORD 'navalplan';
-    GRANT ALL PRIVILEGES ON DATABASE navalplan TO navalplan;
+    CREATE DATABASE libreplan;
+    CREATE USER libreplan WITH PASSWORD 'libreplan';
+    GRANT ALL PRIVILEGES ON DATABASE libreplan TO libreplan;
 
 * Set ``postgres`` user password::
 
@@ -170,29 +170,29 @@ openSUSE
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/NavalPlan/install_1.1.1.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.1.1.sql
 
 * Create database structure::
 
-    $ psql -h localhost -U navalplan -W navalplan < install.sql
+    $ psql -h localhost -U libreplan -W libreplan < install.sql
 
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O navalplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1.war
 
-* Create a new file ``/etc/tomcat6/Catalina/localhost/navalplan.xml`` (file
+* Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
   Tomcat 6::
 
     <?xml version="1.0" encoding="UTF-8"?>
 
     <Context antiJARLocking="true" path="">
-        <Resource name="jdbc/navalplanner-ds" auth="Container"
+        <Resource name="jdbc/libreplan-ds" auth="Container"
             type="javax.sql.DataSource"
             maxActive="100" maxIdle="30" maxWait="10000"
-            username="navalplan" password="navalplan"
+            username="libreplan" password="libreplan"
             driverClassName="org.postgresql.Driver"
-            url="jdbc:postgresql://localhost/navalplan" />
+            url="jdbc:postgresql://localhost/libreplan" />
     </Context>
 
 * Add link to Java JDBC driver for PostgreSQL in Tomcat6 libraries directory::
@@ -201,21 +201,21 @@ openSUSE
 
 * Copy war to Tomcat 6 web applications directory::
 
-    # cp navalplan.war /srv/tomcat6/webapps/
+    # cp libreplan.war /srv/tomcat6/webapps/
 
 * Restart Tomcat 6::
 
     # /etc/init.d/tomcat6 restart
 
-* Go to http://localhost:8080/navalplan/
+* Go to http://localhost:8080/libreplan/
 
 
 Logs
 ----
 
-Since *NavalPlan 1.1.1* log system is configured automatically creating a new
+Since *LibrePlan 1.1.1* log system is configured automatically creating a new
 folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
-``/var/log/tomcat6/navalplan.war``.
+``/var/log/tomcat6/libreplan.war``.
 
-Inside this new directory there will be two files (``navalplan.log`` and
-``navalplan-error.log``) that will be rotated every day.
+Inside this new directory there will be two files (``libreplan.log`` and
+``libreplan-error.log``) that will be rotated every day.

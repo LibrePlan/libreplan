@@ -13,7 +13,7 @@ The following sections will describe the operations that users can carry out wit
 Order
 ======
 
-An order is a project or work that a client requests from a company. The order for the planned works identifies the project in the company.  The difference with comprehensive management programs such as "NavalPlan" is that they only need to use certain order details. These details are:
+An order is a project or work that a client requests from a company. The order for the planned works identifies the project in the company.  The difference with comprehensive management programs such as "LibrePlan" is that they only need to use certain order details. These details are:
 
 * Order name
 * Order code

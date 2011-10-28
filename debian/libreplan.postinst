@@ -1,0 +1,92 @@
+#! /bin/bash
+set -e
+
+. /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/postinst.pgsql
+
+dbc_go libreplan $@
+
+
+if [[ $1 = configure && -r /etc/dbconfig-common/libreplan.conf ]]
+then
+	. /etc/dbconfig-common/libreplan.conf
+
+	if [ -z "${dbc_dbhost}" ] ; then
+		database_host='localhost'
+	else
+		database_host=${dbc_dbhost}
+	fi
+
+	echo "Adding libreplan Tomcat configuration bits"
+
+	# Remove first (just in case!)
+	sed -i -e '/begin:libreplan/,/end:libreplan/d' /etc/tomcat6/policy.d/03catalina.policy
+	sed -i -e '/begin:libreplan/,/end:libreplan/d' /etc/tomcat6/context.xml
+
+	# Modify /etc/tomcat6/context.xml
+	#
+	saved_ifs=${IFS}
+	IFS=$'\n'
+	{ cat /etc/tomcat6/context.xml; echo; } |
+	while read -r line ; do
+		if [[ ${line} = *\</Context\>* ]] ; then
+			cat <<-EOF
+				<!-- begin:libreplan -->
+				<Resource name="jdbc/libreplan-ds" auth="Container"
+					type="javax.sql.DataSource"
+					maxActive="100" maxIdle="30" maxWait="10000"
+					username="${dbc_dbuser}" password="${dbc_dbpass}"
+					driverClassName="org.postgresql.Driver"
+					url="jdbc:postgresql://${database_host}/${dbc_dbname}"/>
+				<!-- end:libreplan -->
+			EOF
+		fi
+		echo "${line}"
+	done > /etc/tomcat6/context.xml.new
+	IFS=${saved_ifs}
+
+	mv /etc/tomcat6/context.xml.new \
+	   /etc/tomcat6/context.xml
+
+	# Modify /etc/tomcat6/policy.d/03catalina.policy
+	#
+	saved_ifs=${IFS}
+	IFS=$'\n'
+	while read -r line ; do
+		echo "${line}"
+		if [[ ${line} = *tomcat-juli.jar* ]] ; then
+			echo '  // begin:libreplan'
+			echo '  permission java.io.FilePermission "${catalina.base}${file.separator}webapps${file.separator}libreplan-webapp${file.separator}WEB-INF${file.separator}classes${file.separator}logging.properties", "read";'
+			echo '  // end:libreplan'
+		fi
+	done < /etc/tomcat6/policy.d/03catalina.policy \
+	     > /etc/tomcat6/policy.d/03catalina.policy.new
+	IFS=${saved_ifs}
+
+	mv /etc/tomcat6/policy.d/03catalina.policy.new \
+	   /etc/tomcat6/policy.d/03catalina.policy
+
+fi
+
+
+if [ -x /etc/init.d/tomcat6 ] ; then
+	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+		invoke-rc.d tomcat6 stop
+	else
+		/etc/init.d/tomcat6 stop
+	fi
+fi
+
+if [ -d /var/lib/tomcat6/webapps/libreplan/ ] ;  then
+    rm -rf /var/lib/tomcat6/webapps/libreplan/
+fi
+
+if [ -x /etc/init.d/tomcat6 ] ; then
+	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+		invoke-rc.d tomcat6 start
+	else
+		/etc/init.d/tomcat6 start
+	fi
+fi
+
+#DEBHELPER#

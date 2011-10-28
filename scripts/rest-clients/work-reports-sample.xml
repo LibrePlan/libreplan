@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<work-report-list xmlns="http://rest.ws.navalplanner.org">
+<work-report-list xmlns="http://rest.ws.libreplan.org">
 
 
 <!-- the type wr1 has got the following structure

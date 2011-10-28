@@ -1,0 +1,88 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?page id="work_report_admin" title="${i18n:_('LibrePlan: Transfer Projects Between Scenarios')}" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+
+<window self="@{define(content)}" id="transferOrdersWindow"
+    title="${i18n:_('Transfer Projects Between Scenarios')}"
+    apply="org.libreplan.web.scenarios.TransferOrdersController">
+
+    <vbox id="messagesContainer"></vbox>
+
+                <grid fixedLayout="true">
+                    <columns>
+                        <column label="${i18n:_('Source scenario')}"/>
+                        <column label="${i18n:_('Destination scenario')}"/>
+                    </columns>
+                    <rows>
+                        <row  style="padding:10px">
+                        <hbox>
+                        <label value="${i18n:_('Select source')}"/>
+                        <bandboxSearch
+                    id="sourceScenarioBandboxSearch"
+                    finder="ScenarioBandboxFinder"
+                    model="@{transferOrdersController.scenarios}"
+                    selectedElement="@{transferOrdersController.sourceScenario}" />
+                    </hbox>
+                    <hbox>
+                      <label value="${i18n:_('Select destination')}"/>
+                <bandboxSearch
+                    id="destinationScenarioBandboxSearch"
+                    finder="ScenarioBandboxFinder"
+                    model="@{transferOrdersController.scenarios}"
+                    selectedElement="@{transferOrdersController.destinationScenario}" />
+                    </hbox>
+                        </row>
+                        <row  style="padding:10px; vertical-align:top;">
+            <listbox id="sourceScenarioOrders"
+                model="@{transferOrdersController.sourceScenarioOrders}"
+                itemRenderer="@{transferOrdersController.sourceOrderRenderer}">
+                <listhead>
+                    <listheader label="${i18n:_('Code')}" tooltiptext="${i18n:_('Code')}" sort="auto(lower(code))" />
+                    <listheader label="${i18n:_('Name')}" tooltiptext="${i18n:_('Name')}" sort="auto(lower(name))"/>
+                    <listheader label="${i18n:_('Version')}" tooltiptext="${i18n:_('Version')}" />
+                    <listheader label="${i18n:_('Operations')}" tooltiptext="${i18n:_('Operations')}" />
+                </listhead>
+            </listbox>
+            <listbox id="destinationScenarioOrders"
+                model="@{transferOrdersController.destinationScenarioOrders}"
+                itemRenderer="@{transferOrdersController.destinationOrderRenderer}">
+                <listhead>
+                    <listheader label="${i18n:_('Code')}" tooltiptext="${i18n:_('Code')}" sort="auto(lower(code))" />
+                    <listheader label="${i18n:_('Name')}" tooltiptext="${i18n:_('Name')}" sort="auto(lower(name))"/>
+                    <listheader label="${i18n:_('Version')}" tooltiptext="${i18n:_('Version')}" />
+                </listhead>
+            </listbox>
+                        </row>
+                    </rows>
+                    </grid>
+
+
+</window>
+
+</zk>

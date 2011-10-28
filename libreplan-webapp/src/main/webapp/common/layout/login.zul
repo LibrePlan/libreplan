@@ -1,0 +1,152 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<?page title="${i18n:_('LibrePlan: User access')}" ?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/login.css"?>
+
+<?xel-method prefix="project" name="version" class="org.libreplan.business.common.VersionInformation"
+    signature="java.lang.String getVersion()"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<div xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+<zscript>
+<![CDATA[
+    controller = loginController;
+    contextPath = Executions.getCurrent().getContextPath();
+    loginError = Executions.getCurrent().getParameter("login_error");
+    logoLoginLink = contextPath + "/common/img/" +
+        org.libreplan.web.I18nHelper._("en") + "/logo_login.png";
+]]>
+</zscript>
+
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0">
+  <n:tr>
+    <n:td background="${contextPath}/common/img/flechitas.gif"></n:td>
+  </n:tr>
+</n:table>
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+  <n:tr>
+    <n:td height="100" align="left" valign="middle"><n:img src="${contextPath}/common/img/logo_login.png" alt="LibrePlan" /></n:td>
+  </n:tr>
+</n:table>
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+  <n:tr>
+    <n:td width="20" class="identificacion"> </n:td>
+    <n:td class="identificacion">${i18n:_('Access to the system')}</n:td>
+    <n:td align="right" valign="bottom">
+        <div tooltiptext="${i18n:_('Help on authentication (opens a new window)')}">
+            <n:a href="${contextPath}/help/${i18n:_('en')}/index.html" target="_blank" class="ayuda">${i18n:_('Help')}</n:a>
+        </div>
+    </n:td>
+  </n:tr>
+</n:table>
+
+<n:form action="${contextPath}/j_spring_security_check" method="POST">
+
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="fondo_identificacion">
+  <n:tr>
+    <n:td width="20" height="165" valign="top"></n:td>
+    <n:td valign="top" class="authentication"><n:table border="0" cellpadding="0" cellspacing="0">
+        <n:tr>
+          <n:td></n:td>
+        </n:tr>
+        <n:tr>
+          <n:td class="usuario_clave">${i18n:_('User')}</n:td>
+        </n:tr>
+        <n:tr>
+          <n:td><label> </label>
+              <div align="center">
+                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" value="${controller.loginValue}" />
+            </div></n:td>
+        </n:tr>
+        <n:tr>
+          <n:td class="usuario_clave">${i18n:_('Password')}</n:td>
+        </n:tr>
+        <n:tr>
+          <n:td><div align="center">
+              <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" value="${controller.loginValue}"/>
+          </div></n:td>
+        </n:tr>
+        <n:tr>
+          <n:td></n:td>
+        </n:tr>
+        <n:tr>
+          <n:td>
+              <n:div align="left">
+                <n:input name="button" type="submit" class="entrar" id="button" value="${i18n:_('Log in')}" />
+            </n:div></n:td>
+        </n:tr>
+    </n:table></n:td>
+    <n:td width="450" height="165" valign="top">
+        <html if="${loginError == 'true' and SPRING_SECURITY_LAST_EXCEPTION.class.name == 'org.springframework.security.DisabledException'}">
+            <![CDATA[
+                <div class="login_ERROR">${i18n:_('User disabled')}</div>
+            ]]>
+        </html>
+        <html if="${loginError == 'true' and SPRING_SECURITY_LAST_EXCEPTION.class.name == 'org.springframework.security.BadCredentialsException'}">
+            <![CDATA[
+               <div class="login_ERROR">${i18n:_('Incorrect authentication')}</div>
+            ]]>
+        </html>
+    </n:td>
+  </n:tr>
+</n:table>
+
+</n:form>
+
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="tabla_inferior">
+  <n:tr>
+    <n:td height="10" background="${contextPath}/common/img/linea_pie_login.gif"></n:td>
+  </n:tr>
+  <n:tr>
+    <n:td><n:span class="supported-browsers" id="supported-browsers-box">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span>
+    <n:div style="float:right;color:green;font-size:10px;">v${project:version()}</n:div></n:td>
+  </n:tr>
+  <n:tr>
+    <n:td height="100"><div align="right"><n:img src="${contextPath}/common/img/logos_footer.gif" width="475" height="40" /></div></n:td>
+  </n:tr>
+</n:table>
+<n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0">
+  <n:tr>
+    <n:td background="${contextPath}/common/img/flechitas.gif"></n:td>
+  </n:tr>
+</n:table>
+
+<n:script language="javascript">
+<![CDATA[
+function checkbrowser() {
+
+    if ( (navigator.appName =="Microsoft Internet Explorer") || (navigator.appName =="Opera") ) {
+        document.getElementById("supported-browsers-box").setAttribute("class", "supported-browsers not-supported");
+        alertString = "${i18n:_('The browser you are using')}";
+        alertString += " ("+navigator.appName+") ";
+        alertString += "${i18n:_('is not supported for its use with LibrePlan.')}";
+        alertString += "${i18n:_('Please use some of the compatible browsers: Chrome, Firefox, Safari or Epiphany.')}";
+        window.alert(alertString);
+    }
+}
+
+document.onload = checkbrowser();
+]]>
+</n:script>
+</div>

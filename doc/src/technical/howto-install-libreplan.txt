@@ -1,0 +1,99 @@
+----------------- Creación e configuración da base de datos
+
+$ sudo apt-get install postgresql
+
+$ sudo su -c "psql" postgres
+
+<----------------- Executar os seguintes comandos SQL ----------
+create database navaldev;
+create user naval with password 'naval';
+grant all privileges on database navaldev to naval;
+\q
+------------------------------------------------------------------
+
+----------------- Instalación de dependencias necesarias para o sistema de impresión
+
+IMPORTANTE a instalación supon a instalación sobre unha ubuntu karmic i386
+
+Instalamos o soporte de webkit para instalar CutyCapt e xvfb
+
+$ sudo apt-get install libqt4-webkit libqt4-svg xvfb
+
+Descargamos a utilidade CutyCapt
+
+$ wget http://libreplan.org/downloads/cutycapt_20100108_i386.deb
+
+Instalamos CutyCapt
+
+$ sudo dpkg -i cutycapt_20100108_i386.deb
+
+------------------ Instalando Tomcat e a aplicación --------------
+
+$ sudo apt-get install openjdk-6-jre tomcat6 libpg-java
+
+en /etc/tomcat6/context.xml incluimos o código o elemento XML Resource
+para permitir o acceso a base de datos
+
+---------------------- context.xml -----------------------------
+   <Context>
+    ...
+    <Resource name="jdbc/libreplan-ds" auth="Container"
+      type="javax.sql.DataSource"
+      maxActive="100" maxIdle="30" maxWait="10000"
+      username="naval" password="naval"
+      driverClassName="org.postgresql.Driver"
+      url="jdbc:postgresql://localhost/navaldev"/>
+    ...
+    </Context>
+---------------------- ---------------------------------------
+
+incluimos a seguintes directivas en un nuevo fichero /etc/tomcat6/policy.d/51libreplan.policy
+
+-------------------------- 51libreplan.policy-----------------------
+
+   grant codeBase "file:/var/lib/tomcat6/webapps/libreplan-webapp/-" {
+       permission java.security.AllPermission;
+   };
+
+
+------------------------------------------------------------------
+
+incluimos a seguintes directivas en /etc/tomcat6/policy.d/03catalina.policy
+dentro dos permisos de "tomcat-juli.jar"
+
+---------------------------03catalina.policy ----------------------
+
+    permission java.io.FilePermission "${catalina.base}${file.separator}webapps${file.separator}libreplan-webapp${file.separator}WEB-INF${file.separator}classes${file.separator}logging.properties", "read";
+
+-------------------------------------------------------------------
+
+Incluimos no ficheiro /etc/default/tomcat6 a seguinte directiva para que o sistema reserve unha cantidade axeitada de memoria para a execución da aplicación:
+
+----------------------- /etc/default/tomcat6 ---------------------------
+
+JAVA_OPTS="-Xms1024m -Xmx1024m -XX:PermSize=512m -XX:MaxPermSize=1024m"
+
+------------------------------------------------------------------------
+
+
+Instalamos a librería de acceso a jdbc a postgresql en tomcat, o jar está no paquete libpg-java:
+
+# sudo ln -s /usr/share/java/postgresql-jdbc3-8.2.jar /usr/share/tomcat6/lib
+
+Instalamos a última versión da aplicación no tomcat
+
+$ cd /var/lib/tomcat6/webapps
+$ sudo wget http://libreplan.org/downloads/libreplan-webapp.war
+$ sudo chown tomcat6.tomcat6 libreplan-webapp.war
+
+Reiniciamos o tomcat para que recolla todas as modificacións da configuración:
+
+$ sudo /etc/init.d/tomcat6 restart
+
+
+Neste intre a aplicación debería estar accesible en : http://localhost:8080/libreplan-webapp/
+
+------------------------------------------------------------------------
+Se quixeramos facer un volcado da base de datos so precisariamos empregar o seguinte comando, isto non é necesario para a instalación.
+
+$ pg_dump -h localhost -U naval -c -F p -v -f bdxestionproducion.dump navaldev
