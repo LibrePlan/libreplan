@@ -32,7 +32,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
@@ -44,11 +43,12 @@ import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
+import org.libreplan.business.scenarios.daos.IOrderVersionDAO;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
+import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.test.scenarios.daos.ScenarioDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,6 +74,9 @@ public class ScenariosBootstrapTest {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
+
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
@@ -87,13 +90,27 @@ public class ScenariosBootstrapTest {
     }
 
     private void removeCurrentScenarios() {
-        for (Scenario scenario : scenarioDAO.getAll()) {
-            try {
-                scenarioDAO.remove(scenario.getId());
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                try {
+                    for (Order order : orderDAO.findAll()) {
+                        orderDAO.remove(order.getId());
+                    }
+                    for (OrderVersion orderVersion : orderVersionDAO
+                            .list(OrderVersion.class)) {
+                        orderVersionDAO.remove(orderVersion.getId());
+                    }
+                    for (Scenario scenario : scenarioDAO.getAll()) {
+                        scenarioDAO.remove(scenario.getId());
+                    }
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
             }
-        }
+        });
     }
 
     private Order givenOrderStored() {
@@ -101,7 +118,6 @@ public class ScenariosBootstrapTest {
     }
 
     @Test
-    @Ignore("FIXME pending review after rename to libreplan")
     public void loadBasicData() throws InstanceNotFoundException {
         removeCurrentScenarios();
         scenariosBootstrap.loadRequiredData();
@@ -112,41 +128,29 @@ public class ScenariosBootstrapTest {
     }
 
     @Test
-    @NotTransactional
-    @Ignore("FIXME pending review after rename to libreplan")
     public void loadBasicDataAssociatedWithCurrentOrders()
             throws InstanceNotFoundException {
-        final Order orderAssociated = transactionService
-                .runOnAnotherTransaction(new IOnTransaction<Order>() {
+        removeCurrentScenarios();
+        scenariosBootstrap.loadRequiredData();
 
-            @Override
-            public Order execute() {
-                removeCurrentScenarios();
-                Order order = givenOrderStored();
-                scenariosBootstrap.loadRequiredData();
-                return order;
-            }
-        });
-        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+        assertFalse(scenarioDAO.getAll().isEmpty());
+        Scenario scenario = PredefinedScenarios.MASTER.getScenario();
+        assertNotNull(scenario);
 
-            @Override
-            public Void execute() {
-                assertFalse(scenarioDAO.getAll().isEmpty());
-                Scenario scenario = PredefinedScenarios.MASTER.getScenario();
-                assertNotNull(scenario);
-                assertTrue(isAt(orderAssociated, scenario.getTrackedOrders()));
-                return null;
-            }
+        Order orderAssociated = givenOrderStored();
+        scenario.addOrder(orderAssociated);
+        scenarioDAO.save(scenario);
 
-            private boolean isAt(Order orderAssociated, Set<Order> trackedOrders) {
-                for (Order each : trackedOrders) {
-                    if (each.getId().equals(orderAssociated.getId())) {
-                        return true;
-                    }
-                }
-                return false;
+        assertTrue(isAt(orderAssociated, scenario.getTrackedOrders()));
+    }
+
+    private boolean isAt(Order orderAssociated, Set<Order> trackedOrders) {
+        for (Order each : trackedOrders) {
+            if (each.getId().equals(orderAssociated.getId())) {
+                return true;
             }
-        });
+        }
+        return false;
     }
 
 }
