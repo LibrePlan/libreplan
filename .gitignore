@@ -1,7 +1,7 @@
 # ignore build output directory
-navalplanner-webapp/target
-navalplanner-business/target
-navalplanner-gantt-zk/target
+libreplan-webapp/target
+libreplan-business/target
+libreplan-gantt-zk/target
 ganttzk-demo-webapp/target
 ganttzk/target
 
@@ -14,8 +14,8 @@ ganttzk/target
 *.patch
 
 #ignore logs
-navalplanner-webapp/*.log
-navalplanner-webapp/*.log.????-??-??
+libreplan-webapp/*.log
+libreplan-webapp/*.log.????-??-??
 
 #ignore backup files
 *~
