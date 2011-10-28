@@ -59,7 +59,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.chart.ContiguousDaysLine;
-import org.libreplan.business.planner.chart.ContiguousDaysLine.ONDay;
+import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.ICostCalculator;
@@ -1205,10 +1205,10 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
             List<DayAssignment> filteredAssignments = new ArrayList<DayAssignment>();
 
-            Iterator<ONDay<List<DayAssignment>>> iterator = orderAssignments
+            Iterator<OnDay<List<DayAssignment>>> iterator = orderAssignments
                     .iterator();
             while (iterator.hasNext()) {
-                ONDay<List<DayAssignment>> onDay = iterator.next();
+                OnDay<List<DayAssignment>> onDay = iterator.next();
                 Set<Resource> resources = getResources(onDay.getValue());
                 filteredAssignments.addAll(filterAssignmentsByResource(
                         allAssignments.get(onDay.getDay()), resources));
