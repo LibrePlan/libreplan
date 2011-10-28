@@ -33,9 +33,13 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.CalendarData.Days;
@@ -73,6 +77,21 @@ public class BaseCalendarModelTest {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Before
+    public void loadRequiredaData() {
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                configurationBootstrap.loadRequiredData();
+                return null;
+            }
+        });
+    }
 
     @Test
     public void testCreateAndSave() {
