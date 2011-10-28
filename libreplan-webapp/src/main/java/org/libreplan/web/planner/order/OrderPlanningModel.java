@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +59,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.chart.ContiguousDaysLine;
+import org.libreplan.business.planner.chart.ContiguousDaysLine.ONDay;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.ICostCalculator;
@@ -1143,17 +1145,19 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             ContiguousDaysLine<List<DayAssignment>> orderAssignments = ContiguousDaysLine
                     .byDay(orderDayAssignments);
             ContiguousDaysLine<List<DayAssignment>> allAssignments = allAssignments(orderAssignments);
+            ContiguousDaysLine<List<DayAssignment>> filteredAssignments = filterAllAssignmentsByOrderResources(
+                    allAssignments, orderAssignments);
 
             ContiguousDaysLine<EffortDuration> maxCapacityOnResources = orderAssignments
                     .transform(ResourceLoadChartData
                             .extractAvailabilityOnAssignedResources());
             ContiguousDaysLine<EffortDuration> orderLoad = orderAssignments
                     .transform(ResourceLoadChartData.extractLoad());
-            ContiguousDaysLine<EffortDuration> allLoad = allAssignments
+            ContiguousDaysLine<EffortDuration> allLoad = filteredAssignments
                     .transform(ResourceLoadChartData.extractLoad());
             ContiguousDaysLine<EffortDuration> orderOverload = orderAssignments
                     .transform(ResourceLoadChartData.extractOverload());
-            ContiguousDaysLine<EffortDuration> allOverload = allAssignments
+            ContiguousDaysLine<EffortDuration> allOverload = filteredAssignments
                     .transform(ResourceLoadChartData.extractOverload());
 
             Plotinfo plotOrderLoad = createPlotinfoFromDurations(
@@ -1194,6 +1198,41 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
             return new Plotinfo[] { plotOtherOverload, plotOrderOverload,
                     plotMaxCapacity, plotOtherLoad, plotOrderLoad };
+        }
+
+        private ContiguousDaysLine<List<DayAssignment>> filterAllAssignmentsByOrderResources(
+                ContiguousDaysLine<List<DayAssignment>> allAssignments,
+                ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
+            List<DayAssignment> filteredAssignments = new ArrayList<DayAssignment>();
+
+            Iterator<ONDay<List<DayAssignment>>> iterator = orderAssignments
+                    .iterator();
+            while (iterator.hasNext()) {
+                ONDay<List<DayAssignment>> onDay = iterator.next();
+                Set<Resource> resources = getResources(onDay.getValue());
+                filteredAssignments.addAll(filterAssignmentsByResource(
+                        allAssignments.get(onDay.getDay()), resources));
+            }
+            return ContiguousDaysLine.byDay(filteredAssignments);
+        }
+
+        private List<DayAssignment> filterAssignmentsByResource(
+                List<DayAssignment> list, Set<Resource> resources) {
+            List<DayAssignment> result = new ArrayList<DayAssignment>();
+            for (DayAssignment each : list) {
+                if (resources.contains(each.getResource())) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        private Set<Resource> getResources(List<DayAssignment> dayAssignments) {
+            Set<Resource> resources = new HashSet<Resource>();
+            for (DayAssignment each : dayAssignments) {
+                resources.add(each.getResource());
+            }
+            return resources;
         }
 
         private ContiguousDaysLine<List<DayAssignment>> allAssignments(
