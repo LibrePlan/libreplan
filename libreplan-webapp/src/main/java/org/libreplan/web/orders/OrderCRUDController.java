@@ -257,13 +257,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void setupGlobalButtons() {
-
         Hbox perspectiveButtonsInsertionPoint = (Hbox) page
                 .getFellow("perspectiveButtonsInsertionPoint");
-
-        List<Component> children = perspectiveButtonsInsertionPoint
-                .getChildren();
-        perspectiveButtonsInsertionPoint.getChildren().removeAll(children);
+        perspectiveButtonsInsertionPoint.getChildren().clear();
 
         createOrderButton.setParent(perspectiveButtonsInsertionPoint);
         createOrderButton.addEventListener(Events.ON_CLICK,
