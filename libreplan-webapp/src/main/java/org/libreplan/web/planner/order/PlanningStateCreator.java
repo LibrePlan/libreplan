@@ -1044,6 +1044,12 @@ public class PlanningStateCreator {
                 orderAuthorizationsRemoval.add(orderAuthorization);
             }
         }
+
+        public void cleanOrderAuthorizationsAdditionAndRemoval() {
+            orderAuthorizationsAddition.clear();
+            orderAuthorizationsRemoval.clear();
+        }
+
     }
 
     public interface IAllocationCriteria {

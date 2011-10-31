@@ -1103,6 +1103,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         editNewCreatedOrder();
         // close project details window
         detailsWindow.setVisible(false);
+        setupOrderAuthorizationController();
         saveAndContinue(false);
     }
 

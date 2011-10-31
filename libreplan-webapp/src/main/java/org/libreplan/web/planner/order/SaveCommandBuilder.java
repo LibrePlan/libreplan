@@ -366,6 +366,7 @@ public class SaveCommandBuilder {
                     throw new RuntimeException(e);
                 }
             }
+            state.cleanOrderAuthorizationsAdditionAndRemoval();
         }
 
         private void createAdvancePercentagesIfRequired(Order order) {
