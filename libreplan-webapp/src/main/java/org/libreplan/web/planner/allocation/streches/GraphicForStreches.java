@@ -129,12 +129,13 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
             for (Stretch stretch : stretches) {
                 BigDecimal amountWork = stretch.getAmountWorkPercentage()
                         .subtract(previousPercentage).multiply(taskHours);
-                Integer days = Days.daysBetween(previousDate,
-                        stretch.getDateIn(allocation)).getDays();
+                LocalDate endDate = stretch.getDateIn(allocation);
+                Integer days = Days.daysBetween(previousDate, endDate)
+                        .getDays();
 
                 if (calendar != null) {
                     days -= calendar.getNonWorkableDays(previousDate,
-                            stretch.getDateIn(allocation)).size();
+                            endDate.minusDays(1)).size();
                 }
 
                 BigDecimal hoursPerDay = BigDecimal.ZERO;
@@ -144,11 +145,13 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
                 }
 
                 xymodel.addValue(title, previousDate.toDateTimeAtStartOfDay()
-                        .getMillis() + 1, hoursPerDay);
-                xymodel.addValue(title, stretch.getDateIn(allocation)
-                        .toDateTimeAtStartOfDay().getMillis(), hoursPerDay);
+                        .getMillis(), hoursPerDay);
+                if (days > 0) {
+                    xymodel.addValue(title, endDate.toDateTimeAtStartOfDay()
+                            .getMillis() - 1, hoursPerDay);
+                }
 
-                previousDate = stretch.getDateIn(allocation);
+                previousDate = endDate;
                 previousPercentage = stretch.getAmountWorkPercentage();
             }
 
