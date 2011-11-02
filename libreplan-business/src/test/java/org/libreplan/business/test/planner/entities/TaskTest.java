@@ -34,20 +34,25 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+import static org.libreplan.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.libreplan.business.workingday.EffortDuration.hours;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
+import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.calendars.entities.Capacity;
+import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderLine;
@@ -57,10 +62,12 @@ import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
+import org.libreplan.business.workingday.ResourcesPerDay;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,11 +89,15 @@ public class TaskTest {
         return result;
     }
 
+    private BaseCalendar taskCalendar;
+
     private Task task;
 
     private HoursGroup hoursGroup;
 
-    private BaseCalendar calendar;
+    private ResourceCalendar workerCalendar;
+
+    private Worker worker;
 
     @Resource
     private IDataBootstrap defaultAdvanceTypesBootstrapListener;
@@ -113,11 +124,13 @@ public class TaskTest {
     }
 
     private BaseCalendar stubCalendar() {
-        calendar = createNiceMock(BaseCalendar.class);
-        expect(calendar.getCapacityOn(isA(PartialDay.class)))
+        taskCalendar = createNiceMock(BaseCalendar.class);
+        expect(taskCalendar.getCapacityOn(isA(PartialDay.class)))
                 .andReturn(hours(8)).anyTimes();
-        replay(calendar);
-        return calendar;
+        expect(taskCalendar.getAvailability()).andReturn(
+                AvailabilityTimeLine.allValid()).anyTimes();
+        replay(taskCalendar);
+        return taskCalendar;
     }
 
     @Test
@@ -236,8 +249,8 @@ public class TaskTest {
     public void ifSomeDayIsNotWorkableIsNotCounted() {
         final LocalDate start = new LocalDate(2010, 1, 13);
 
-        resetToNice(calendar);
-        expect(calendar.getCapacityOn(isA(PartialDay.class))).andAnswer(
+        resetToNice(taskCalendar);
+        expect(taskCalendar.getCapacityOn(isA(PartialDay.class))).andAnswer(
                 new IAnswer<EffortDuration>() {
                     @Override
                     public EffortDuration answer() throws Throwable {
@@ -247,7 +260,7 @@ public class TaskTest {
                                 : hours(8);
                     }
                 }).anyTimes();
-        replay(calendar);
+        replay(taskCalendar);
 
         task.setIntraDayStartDate(IntraDayDate.create(start,
                 EffortDuration.hours(3)));
@@ -292,6 +305,121 @@ public class TaskTest {
         SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
         task.addResourceAllocation(resourceAllocation);
         assertTrue(task.getNonLimitingResourceAllocations().size() == 1);
+    }
+
+    @Test
+    public void theoreticalHoursIsZeroIfNoResourcesAreAllocated() {
+        assertThat(task.getTheoreticalCompletedHoursUntilDate(new Date()), equalTo(0));
+    }
+
+    @Test
+    public void theoreticalHoursIsTotalIfDateIsLaterThanEndDate() {
+        prepareTaskForTheoreticalAdvanceTesting();
+        assertThat(task.getTheoreticalCompletedHoursUntilDate(task.getEndDate()), equalTo(task.getTotalHours()));
+
+    }
+
+    @Test
+    public void theoreticalHoursIsZeroIfDateIsEarlierThanStartDate() {
+        prepareTaskForTheoreticalAdvanceTesting();
+        assertThat(task.getTheoreticalCompletedHoursUntilDate(task.getStartDate()), equalTo(0));
+
+    }
+
+    @Test
+    public void theoreticalHoursWithADateWithinStartAndEndDateHead() {
+        prepareTaskForTheoreticalAdvanceTesting();
+        LocalDate limit = task.getStartAsLocalDate().plusDays(1);
+        assertThat(task.getTheoreticalCompletedHoursUntilDate(limit.toDateTimeAtStartOfDay().toDate()), equalTo(8));
+    }
+
+    @Test
+    public void theoreticalHoursWithADateWithinStartAndEndDateTail() {
+        prepareTaskForTheoreticalAdvanceTesting();
+        LocalDate limit = task.getEndAsLocalDate().minusDays(1);
+        assertThat(task.getTheoreticalCompletedHoursUntilDate(limit.toDateTimeAtStartOfDay().toDate()), equalTo(32));
+    }
+
+    @Test
+    public void theoreticalAdvancePercentageIsZeroIfNoResourcesAreAllocated() {
+        assertThat(task.getTheoreticalAdvancePercentageUntilDate(new Date()), equalTo(new BigDecimal(0)));
+    }
+
+    @Test
+    public void theoreticalPercentageIsOneIfDateIsLaterThanEndDate() {
+        prepareTaskForTheoreticalAdvanceTesting();
+        assertThat(task.getTheoreticalAdvancePercentageUntilDate(task.getEndDate()), equalTo(new BigDecimal(1)));
+
+    }
+
+    @Test
+    public void theoreticalPercentageWithADateWithinStartAndEndDateHead() {
+        prepareTaskForTheoreticalAdvanceTesting();
+        LocalDate limit = task.getStartAsLocalDate().plusDays(1);
+        assertThat(task.getTheoreticalAdvancePercentageUntilDate(limit.toDateTimeAtStartOfDay().toDate()),
+                equalTo(new BigDecimal("0.2")));
+    }
+
+    private void prepareTaskForTheoreticalAdvanceTesting() {
+        task.getHoursGroup().setWorkingHours(40);
+        assertThat(task.getTotalHours(), equalTo(40));
+        task.setEndDate(task.getStartAsLocalDate().plusDays(5).toDateTimeAtStartOfDay().toDate());
+
+        SpecificResourceAllocation resourceAllocation = SpecificResourceAllocation.create(task);
+
+        givenWorker(8);
+        resourceAllocation.setResource(this.worker);
+        assertTrue(resourceAllocation.getResource() != null);
+
+        resourceAllocation.allocate(ResourcesPerDay.amount(1));
+        assertThat(resourceAllocation.getAssignments().size(), equalTo(5));
+        assertThat(resourceAllocation.getAssignments(), haveHours(8, 8, 8, 8, 8));
+
+        assertThat(task.getAssignedHours(), equalTo(0));
+        task.addResourceAllocation(resourceAllocation);
+        assertTrue(task.getNonLimitingResourceAllocations().size() == 1);
+        assertThat(task.getAssignedHours(), equalTo(40));
+        assertTrue(task.getDayAssignments().size() == 5);
+    }
+
+    private void givenWorker(int hoursPerDay) {
+        this.worker = createNiceMock(Worker.class);
+        givenResourceCalendarAlwaysReturning(hoursPerDay);
+        expect(this.worker.getCalendar()).andReturn(this.workerCalendar).anyTimes();
+        replay(this.worker);
+    }
+
+    /* Taken from: SpecificResourceAllocationTest (TODO: Refactor) */
+    private void givenResourceCalendarAlwaysReturning(final int hours) {
+        this.workerCalendar = createNiceMock(ResourceCalendar.class);
+        expect(this.workerCalendar.getCapacityOn(isA(PartialDay.class)))
+        .andReturn(EffortDuration.hours(hours)).anyTimes();
+        IAnswer<? extends EffortDuration> asDurationAnswer = asDurationOnAnswer(hours(hours));
+        expect(
+                this.workerCalendar.asDurationOn(isA(PartialDay.class),
+                        isA(ResourcesPerDay.class)))
+                        .andAnswer(asDurationAnswer).anyTimes();
+        expect(this.workerCalendar.getCapacityWithOvertime(isA(LocalDate.class)))
+        .andReturn(
+                Capacity.create(hours(hours))
+                .overAssignableWithoutLimit()).anyTimes();
+        expect(this.workerCalendar.getAvailability()).andReturn(
+                AvailabilityTimeLine.allValid()).anyTimes();
+        replay(this.workerCalendar);
+    }
+
+    /* Taken from: SpecificResourceAllocationTest (TODO: Refactor) */
+    private IAnswer<? extends EffortDuration> asDurationOnAnswer(
+            final EffortDuration duration) {
+        return new IAnswer<EffortDuration>() {
+
+            @Override
+            public EffortDuration answer() throws Throwable {
+                ResourcesPerDay perDay = (ResourcesPerDay) EasyMock
+                        .getCurrentArguments()[1];
+                return perDay.asDurationGivenWorkingDayOf(duration);
+            }
+        };
     }
 
 }

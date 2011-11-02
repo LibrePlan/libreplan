@@ -181,4 +181,10 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
         return false;
     }
 
+    @Override
+    public Integer getTheoreticalCompletedHoursUntilDate(Date date) {
+        // TODO Auto-generated method stub FIXME
+        return null;
+    }
+
 }

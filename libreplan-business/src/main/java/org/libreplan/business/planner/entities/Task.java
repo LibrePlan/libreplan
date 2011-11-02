@@ -27,6 +27,7 @@ import static org.libreplan.business.workingday.EffortDuration.min;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1085,4 +1086,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return true;
     }
 
+    @Override
+    public Integer getTheoreticalCompletedHoursUntilDate(Date date) {
+        return AggregateOfDayAssignments.createByDataRange(
+                this.getDayAssignments(),
+                this.getStartDate(),
+                date).getTotalHours();
+    }
 }

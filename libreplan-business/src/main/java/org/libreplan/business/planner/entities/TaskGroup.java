@@ -24,6 +24,7 @@ package org.libreplan.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -302,6 +303,15 @@ public class TaskGroup extends TaskElement {
     @Override
     public boolean isTask() {
         return false;
+    }
+
+    @Override
+    public Integer getTheoreticalCompletedHoursUntilDate(Date date) {
+        int sum = 0;
+        for(TaskElement each: taskElements) {
+            sum += each.getTheoreticalCompletedHoursUntilDate(date);
+        }
+        return sum;
     }
 
 }
