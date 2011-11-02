@@ -704,7 +704,8 @@ public abstract class TaskElement extends BaseEntity {
     public abstract Integer getTheoreticalCompletedHoursUntilDate(Date date);
 
     public BigDecimal getTheoreticalAdvancePercentageUntilDate(Date date) {
-        int totalAllocatedHours = this.getSumOfHoursAllocated();
+        int totalAllocatedHours = AggregateOfDayAssignments.create(
+                this.getDayAssignments()).getTotalHours();
         int totalTheoreticalCompletedHours = this.getTheoreticalCompletedHoursUntilDate(date);
         if(Math.min(totalAllocatedHours, totalTheoreticalCompletedHours) == 0) {
             return BigDecimal.ZERO;

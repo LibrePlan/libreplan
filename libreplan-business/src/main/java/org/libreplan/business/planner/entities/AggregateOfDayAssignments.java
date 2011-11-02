@@ -46,16 +46,15 @@ public class AggregateOfDayAssignments {
             Date start,
             Date end) {
 
-        Collections.sort(assignments, new Comparator<DayAssignment>() {
-            @Override
-            public int compare(DayAssignment arg0, DayAssignment arg1) {
-                return arg0.getDay().compareTo(arg1.getDay());
-            }
-        });
+        assignments = DayAssignment.orderedByDay(assignments);
 
         return new AggregateOfDayAssignments(
                 DayAssignment.getAtInterval(assignments,
                         new LocalDate(start), new LocalDate(end)));
+    }
+
+    public static AggregateOfDayAssignments create(List<DayAssignment> assignments) {
+        return new AggregateOfDayAssignments(assignments);
     }
 
     private Set<DayAssignment> dayAssignments;

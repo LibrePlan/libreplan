@@ -163,7 +163,8 @@ public class PlanningData extends BaseEntity {
 
         for (Task each: criticalPath) {
             theoreticalNumHours += each.getTheoreticalCompletedHoursUntilDate(limit);
-            totalNumHours += each.getSumOfHoursAllocated();
+            totalNumHours += AggregateOfDayAssignments.create(
+                    each.getDayAssignments()).getTotalHours();
         }
         return divide(new BigDecimal(theoreticalNumHours), totalNumHours);
     }

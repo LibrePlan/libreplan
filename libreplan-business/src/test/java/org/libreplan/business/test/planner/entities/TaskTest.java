@@ -348,7 +348,8 @@ public class TaskTest {
     @Test
     public void theoreticalPercentageIsOneIfDateIsLaterThanEndDate() {
         prepareTaskForTheoreticalAdvanceTesting();
-        assertThat(task.getTheoreticalAdvancePercentageUntilDate(task.getEndDate()), equalTo(new BigDecimal(1)));
+        assertThat(task.getTheoreticalAdvancePercentageUntilDate(task.getEndDate()),
+                equalTo(new BigDecimal("1.00000000")));
 
     }
 
@@ -357,7 +358,7 @@ public class TaskTest {
         prepareTaskForTheoreticalAdvanceTesting();
         LocalDate limit = task.getStartAsLocalDate().plusDays(1);
         assertThat(task.getTheoreticalAdvancePercentageUntilDate(limit.toDateTimeAtStartOfDay().toDate()),
-                equalTo(new BigDecimal("0.2")));
+                equalTo(new BigDecimal("0.20000000")));
     }
 
     private void prepareTaskForTheoreticalAdvanceTesting() {
