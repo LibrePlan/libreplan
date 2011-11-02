@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
 
 /**
@@ -169,8 +170,15 @@ public class PlanningData extends BaseEntity {
 
     private BigDecimal calculateTheoreticalAdvanceByDurationForCriticalPath(
             List<Task> criticalPath, Date limit) {
-        // TODO Needs some extra code
-        return null;
+        int totalTheoreticalProgressDays = 0;
+        int totalDurationDays = 0;
+        LocalDate limitLocalDate = new LocalDate(limit);
+
+        for (Task each : criticalPath) {
+            totalTheoreticalProgressDays += each.getWorkableDaysUntil(limitLocalDate);
+            totalDurationDays += each.getWorkableDays();
+        }
+        return divide(new BigDecimal(totalTheoreticalProgressDays), totalDurationDays);
     }
 
 }
