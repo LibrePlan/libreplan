@@ -533,12 +533,12 @@ function commonWorkReportModelCreate($name, $type){
 }
 
 function commonWorkReportModelForm($name, $type){
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _removeFocus(_textbox(0, _near(_div("Name:"))));
-    _setSelected(_select(0, _near(_span("Task:"))), $type);
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name"))));
+    _setSelected(_select(0, _near(_span("Task"))), $type);
     _click(_cell("Add New Complementary Field"));
-    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
-    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _setValue(_textbox(0, _near(_span("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_span("Complementary text fields"))), "12");
     _click(_cell("Save"));
 }
 

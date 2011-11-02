@@ -140,8 +140,8 @@ function workReportCreate($wReport, $project, $workHour) {
 function workReportForm($machine, $project, $workHour) {
     _click(_cell("New work report"));
     _click(_cell("Add new row"));
-    _setValue(_textbox(2, _near(_parentTable(_div("Date")))),$machine);
-    _click(_italic(0, _near(_textbox(3, _near(_parentTable(_div("Date")))))));
+    _setValue(_textbox(2, _near(_span("Work report lines"))), $machine);
+    _click(_italic(0, _near(_textbox(3, _near(_span("Work report lines"))))));
     _click(_div($project+"[2]", _parentTable(_div("Project code[1]"))));
     _setValue(_textbox("z-textbox[1]"),"8");
     _setSelected(_select(2), $workHour);
