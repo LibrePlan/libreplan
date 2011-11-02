@@ -701,17 +701,16 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
-    public abstract Integer getTheoreticalCompletedHoursUntilDate(Date date);
+    public abstract EffortDuration getTheoreticalCompletedTimeUntilDate(Date date);
 
     public BigDecimal getTheoreticalAdvancePercentageUntilDate(Date date) {
-        int totalAllocatedHours = AggregateOfDayAssignments.create(
-                this.getDayAssignments()).getTotalHours();
-        int totalTheoreticalCompletedHours = this.getTheoreticalCompletedHoursUntilDate(date);
-        if(Math.min(totalAllocatedHours, totalTheoreticalCompletedHours) == 0) {
+        EffortDuration totalAllocatedTime = AggregateOfDayAssignments.create(
+                this.getDayAssignments()).getTotalTime();
+        EffortDuration totalTheoreticalCompletedTime = this.getTheoreticalCompletedTimeUntilDate(date);
+        if(totalAllocatedTime.isZero() || totalTheoreticalCompletedTime.isZero()) {
             return BigDecimal.ZERO;
         }
-        Validate.isTrue(totalTheoreticalCompletedHours <= totalAllocatedHours);
-        return new BigDecimal(totalTheoreticalCompletedHours).divide(
-                new BigDecimal(totalAllocatedHours), 8, BigDecimal.ROUND_HALF_EVEN);
+        Validate.isTrue(totalTheoreticalCompletedTime.getSeconds() <= totalAllocatedTime.getSeconds());
+        return totalTheoreticalCompletedTime.dividedByAndResultAsBigDecimal(totalAllocatedTime);
     }
 }

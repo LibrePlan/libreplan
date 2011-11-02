@@ -1087,10 +1087,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     @Override
-    public Integer getTheoreticalCompletedHoursUntilDate(Date date) {
+    public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
         return AggregateOfDayAssignments.createByDataRange(
                 this.getDayAssignments(),
                 this.getStartDate(),
-                date).getTotalHours();
+                date).getTotalTime();
     }
 }

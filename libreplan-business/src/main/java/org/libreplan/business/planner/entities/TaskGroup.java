@@ -37,6 +37,7 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
 /**
@@ -306,10 +307,11 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    public Integer getTheoreticalCompletedHoursUntilDate(Date date) {
-        int sum = 0;
+    public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
+        EffortDuration sum = EffortDuration.zero();
         for(TaskElement each: taskElements) {
-            sum += each.getTheoreticalCompletedHoursUntilDate(date);
+            sum = EffortDuration.sum(sum, each.getTheoreticalCompletedTimeUntilDate(date));
+
         }
         return sum;
     }

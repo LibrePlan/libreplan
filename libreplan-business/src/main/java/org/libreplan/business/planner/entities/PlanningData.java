@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.workingday.EffortDuration;
 
 /**
  *
@@ -159,14 +160,15 @@ public class PlanningData extends BaseEntity {
 
     private BigDecimal calculateTheoreticalAdvanceByNumHoursForCriticalPath(
             List<Task> criticalPath, Date limit) {
-        int theoreticalNumHours = 0, totalNumHours = 0;
+        EffortDuration theoreticalCompletedTime = EffortDuration.zero();
+        EffortDuration totalAssignedTime = EffortDuration.zero();
 
         for (Task each: criticalPath) {
-            theoreticalNumHours += each.getTheoreticalCompletedHoursUntilDate(limit);
-            totalNumHours += AggregateOfDayAssignments.create(
-                    each.getDayAssignments()).getTotalHours();
+            EffortDuration.sum(theoreticalCompletedTime, each.getTheoreticalCompletedTimeUntilDate(limit));
+            EffortDuration.sum(totalAssignedTime, AggregateOfDayAssignments.create(
+                    each.getDayAssignments()).getTotalTime());
         }
-        return divide(new BigDecimal(theoreticalNumHours), totalNumHours);
+        return theoreticalCompletedTime.dividedByAndResultAsBigDecimal(totalAssignedTime);
     }
 
     private BigDecimal calculateTheoreticalAdvanceByDurationForCriticalPath(

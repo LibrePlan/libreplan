@@ -22,8 +22,6 @@
 package org.libreplan.business.planner.entities;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +31,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.workingday.EffortDuration;
 
 /**
  * Computes aggregate values on a set{@link DayAssignment}.
@@ -67,10 +66,10 @@ public class AggregateOfDayAssignments {
                 assignments);
     }
 
-    public int getTotalHours() {
-        int sum = 0;
+    public EffortDuration getTotalTime() {
+        EffortDuration sum = EffortDuration.zero();
         for (DayAssignment dayAssignment : dayAssignments) {
-            sum += dayAssignment.getDuration().getHours();
+            sum = EffortDuration.sum(sum, dayAssignment.getDuration());
         }
         return sum;
     }

@@ -58,6 +58,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.entities.AggregateOfDayAssignments;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -309,20 +310,22 @@ public class TaskTest {
 
     @Test
     public void theoreticalHoursIsZeroIfNoResourcesAreAllocated() {
-        assertThat(task.getTheoreticalCompletedHoursUntilDate(new Date()), equalTo(0));
+        assertThat(task.getTheoreticalCompletedTimeUntilDate(new Date()), equalTo(EffortDuration.zero()));
     }
 
     @Test
     public void theoreticalHoursIsTotalIfDateIsLaterThanEndDate() {
         prepareTaskForTheoreticalAdvanceTesting();
-        assertThat(task.getTheoreticalCompletedHoursUntilDate(task.getEndDate()), equalTo(task.getTotalHours()));
+        EffortDuration totalAllocatedTime = AggregateOfDayAssignments.create(
+                task.getDayAssignments()).getTotalTime();
+        assertThat(task.getTheoreticalCompletedTimeUntilDate(task.getEndDate()), equalTo(totalAllocatedTime));
 
     }
 
     @Test
     public void theoreticalHoursIsZeroIfDateIsEarlierThanStartDate() {
         prepareTaskForTheoreticalAdvanceTesting();
-        assertThat(task.getTheoreticalCompletedHoursUntilDate(task.getStartDate()), equalTo(0));
+        assertThat(task.getTheoreticalCompletedTimeUntilDate(task.getStartDate()), equalTo(EffortDuration.zero()));
 
     }
 
@@ -330,14 +333,18 @@ public class TaskTest {
     public void theoreticalHoursWithADateWithinStartAndEndDateHead() {
         prepareTaskForTheoreticalAdvanceTesting();
         LocalDate limit = task.getStartAsLocalDate().plusDays(1);
-        assertThat(task.getTheoreticalCompletedHoursUntilDate(limit.toDateTimeAtStartOfDay().toDate()), equalTo(8));
+        EffortDuration expected = EffortDuration.hours(8);
+        assertThat(task.getTheoreticalCompletedTimeUntilDate(limit.toDateTimeAtStartOfDay().toDate()),
+                equalTo(expected));
     }
 
     @Test
     public void theoreticalHoursWithADateWithinStartAndEndDateTail() {
         prepareTaskForTheoreticalAdvanceTesting();
         LocalDate limit = task.getEndAsLocalDate().minusDays(1);
-        assertThat(task.getTheoreticalCompletedHoursUntilDate(limit.toDateTimeAtStartOfDay().toDate()), equalTo(32));
+        EffortDuration expected = EffortDuration.hours(32);
+        assertThat(task.getTheoreticalCompletedTimeUntilDate(limit.toDateTimeAtStartOfDay().toDate()),
+                equalTo(expected));
     }
 
     @Test
