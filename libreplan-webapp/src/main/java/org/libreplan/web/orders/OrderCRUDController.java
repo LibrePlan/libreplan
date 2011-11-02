@@ -166,19 +166,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
-    private TemplateFinderPopup templateFinderPopup;
-
-    public void createOrderFromTemplate() {
-        templateFinderPopup.openForOrderCreation(createOrderFromTemplateButton,
-                "after_start", new IOnResult<OrderTemplate>() {
-
-                    @Override
-                    public void found(OrderTemplate template) {
-                        showCreateFormFromTemplate(template);
-                    }
-                });
-    }
-
     public void showCreateFormFromTemplate(OrderTemplate template) {
         showOrderElementFilter();
         showCreateButtons(false);
@@ -261,28 +248,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void setupGlobalButtons() {
         Hbox perspectiveButtonsInsertionPoint = (Hbox) page
                 .getFellow("perspectiveButtonsInsertionPoint");
-        perspectiveButtonsInsertionPoint.getChildren().clear();
 
-        createOrderButton.setParent(perspectiveButtonsInsertionPoint);
-        createOrderButton.addEventListener(Events.ON_CLICK,
-                new EventListener() {
-            @Override
-                    public void onEvent(Event event) throws Exception {
-                goToCreateForm();
-                    }
-                });
-
-        createOrderFromTemplateButton
-                .setParent(perspectiveButtonsInsertionPoint);
-        createOrderFromTemplateButton.addEventListener(Events.ON_CLICK,
-                new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        createOrderFromTemplate();
-            }
-        });
-
-        saveOrderAndContinueButton.setParent(perspectiveButtonsInsertionPoint);
         saveOrderAndContinueButton.addEventListener(Events.ON_CLICK,
                 new EventListener() {
                     @Override
@@ -291,7 +257,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                     }
                 });
 
-        cancelEditionButton.setParent(perspectiveButtonsInsertionPoint);
         cancelEditionButton.addEventListener(Events.ON_CLICK,
                 new EventListener() {
                     @Override
@@ -1418,10 +1383,27 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void showCreateButtons(boolean showCreate) {
-        createOrderButton.setVisible(showCreate);
+        if (!showCreate) {
+            Hbox perspectiveButtonsInsertionPoint = (Hbox) page
+                    .getFellow("perspectiveButtonsInsertionPoint");
+            perspectiveButtonsInsertionPoint.getChildren().clear();
+            saveOrderAndContinueButton
+                    .setParent(perspectiveButtonsInsertionPoint);
+            cancelEditionButton.setParent(perspectiveButtonsInsertionPoint);
+        }
+        if (createOrderButton != null) {
+            createOrderButton.setVisible(showCreate);
+        }
+        if (createOrderFromTemplateButton != null) {
         createOrderFromTemplateButton.setVisible(showCreate);
-        saveOrderAndContinueButton.setVisible(!showCreate);
-        cancelEditionButton.setVisible(!showCreate);
+        }
+        if (saveOrderAndContinueButton != null) {
+            saveOrderAndContinueButton.setVisible(!showCreate);
+        }
+        if (cancelEditionButton != null) {
+            cancelEditionButton.setVisible(!showCreate);
+        }
+
     }
 
     public void highLight(final OrderElement orderElement) {

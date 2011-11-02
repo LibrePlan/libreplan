@@ -61,13 +61,9 @@ import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskMilestone;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
-import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workreports.entities.WorkReportLine;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.chart.Chart;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller;
@@ -92,9 +88,7 @@ import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
-import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
-import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -108,7 +102,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
@@ -126,6 +119,7 @@ import org.zkoss.zul.Vbox;
  * Model for company planning view.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -229,63 +223,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setChartComponent(chartComponent);
         if (doubleClickCommand != null) {
             configuration.setDoubleClickCommand(doubleClickCommand);
-        }
-
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            ICommand<TaskElement> createNewOrderCommand = new ICommand<TaskElement>() {
-
-                @Override
-                public String getName() {
-                    return _("Create new project");
-                }
-
-                @Override
-                public String getImage() {
-                    return "/common/img/ico_add.png";
-                }
-
-                @Override
-                public void doAction(IContext<TaskElement> context) {
-                    tabs.goToCreateForm();
-                }
-
-            };
-
-            configuration.addGlobalCommand(createNewOrderCommand);
-
-            ICommand<TaskElement> createNewOrderFromTemplateCommand = new ICommand<TaskElement>() {
-
-                @Override
-                public String getName() {
-                    return _("Create new project from template");
-                }
-
-                @Override
-                public String getImage() {
-                    return "/common/img/ico_copy.png";
-                }
-
-                @Override
-                public void doAction(IContext<TaskElement> context) {
-                    TemplateFinderPopup templateFinderPopup = (TemplateFinderPopup) planner
-                            .getFellowIfAny("templateFinderPopup");
-                    Button createOrderFromTemplateButton = planner
-                            .findCommandComponent(getName());
-                    if (templateFinderPopup != null) {
-                        templateFinderPopup.openForOrderCreation(
-                                createOrderFromTemplateButton, "after_start",
-                                new IOnResult<OrderTemplate>() {
-                                    @Override
-                                    public void found(OrderTemplate template) {
-                                        goToCreateOtherOrderFromTemplate(template);
-                                    }
-                                });
-                    }
-                }
-
-            };
-
-            configuration.addGlobalCommand(createNewOrderFromTemplateCommand);
         }
 
         addAdditionalCommands(additional, configuration);

@@ -32,7 +32,6 @@ planner = self;
 
         <separator/>
         <!--  Commands -->
-        <templateFinderPopup id="templateFinderPopup" acceptButtonLabel="${ganttzk_i18n:_('Create Project')}" caption="${i18n:_('Choosing Template')}" />
 
         <button onClick="planner.invalidate()"
             image="/common/img/ico_refresh.png"

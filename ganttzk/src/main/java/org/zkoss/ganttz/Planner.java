@@ -482,7 +482,9 @@ public class Planner extends HtmlMacroComponent  {
     private void insertGlobalCommands() {
         Component commontoolbar = getCommonCommandsInsertionPoint();
         Component plannerToolbar = getSpecificCommandsInsertionPoint();
-        commontoolbar.getChildren().removeAll(commontoolbar.getChildren());
+        if (!contextualizedGlobalCommands.isEmpty()) {
+            commontoolbar.getChildren().removeAll(commontoolbar.getChildren());
+        }
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
             // Comparison through icon as name is internationalized
             if (c.getCommand().getImage()
