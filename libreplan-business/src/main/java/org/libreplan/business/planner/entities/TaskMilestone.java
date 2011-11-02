@@ -184,7 +184,6 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
 
     @Override
     public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
-        // TODO Auto-generated method stub FIXME
         return EffortDuration.zero();
     }
 
