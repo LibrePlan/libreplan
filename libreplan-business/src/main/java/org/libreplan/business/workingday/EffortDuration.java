@@ -267,6 +267,24 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     /**
+     * <p>
+     * Divides this duration by other (using total seconds) returning the
+     * quotient as BigDecimal.
+     * </p>
+     * @param other
+     * @return
+     */
+    public BigDecimal dividedByAndResultAsBigDecimal(EffortDuration other) {
+        if (other.isZero()) {
+            return BigDecimal.ZERO;
+        }
+        else {
+            return new BigDecimal(this.getSeconds()).divide(
+                    new BigDecimal(other.getSeconds()), 8, BigDecimal.ROUND_HALF_EVEN);
+        }
+    }
+
+    /**
      * Calculates the remainder resulting of doing the integer division of both
      * durations
      *
