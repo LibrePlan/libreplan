@@ -159,11 +159,12 @@ public class PlanningData extends BaseEntity {
     private BigDecimal calculateTheoreticalAdvanceByNumHoursForCriticalPath(
             List<Task> criticalPath, Date limit) {
         int theoreticalNumHours = 0, totalNumHours = 0;
+
         for (Task each: criticalPath) {
             theoreticalNumHours += each.getTheoreticalCompletedHoursUntilDate(limit);
             totalNumHours += each.getTotalHours();
         }
-        return new BigDecimal(theoreticalNumHours).divide(new BigDecimal(totalNumHours));
+        return divide(new BigDecimal(theoreticalNumHours), totalNumHours);
     }
 
     private BigDecimal calculateTheoreticalAdvanceByDurationForCriticalPath(
