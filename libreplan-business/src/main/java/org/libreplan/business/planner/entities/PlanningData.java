@@ -56,11 +56,11 @@ public class PlanningData extends BaseEntity {
 
     private BigDecimal progressByNumHours;
 
-    private BigDecimal theoreticalProgressAllByNumHours;
+    private BigDecimal theoreticalProgressByNumHoursForAllTasks;
 
-    private BigDecimal theoreticalProgressByDuration;
+    private BigDecimal theoreticalProgressByDurationForCriticalPath;
 
-    private BigDecimal theoreticalProgressByNumHours;
+    private BigDecimal theoreticalProgressByNumHoursForCriticalPath;
 
     public PlanningData() {
 
@@ -78,16 +78,16 @@ public class PlanningData extends BaseEntity {
         return progressByNumHours;
     }
 
-    public BigDecimal getTheoreticalProgressAllByNumHours() {
-        return theoreticalProgressAllByNumHours;
+    public BigDecimal getTheoreticalProgressByNumHoursForAllTasks() {
+        return theoreticalProgressByNumHoursForAllTasks;
     }
 
-    public BigDecimal getTheoreticalProgressByDuration() {
-        return theoreticalProgressByDuration;
+    public BigDecimal getTheoreticalProgressByDurationForCriticalPath() {
+        return theoreticalProgressByDurationForCriticalPath;
     }
 
-    public BigDecimal getTheoreticalProgressByNumHours() {
-        return theoreticalProgressByNumHours;
+    public BigDecimal getTheoreticalProgressByNumHoursForCriticalPath() {
+        return theoreticalProgressByNumHoursForCriticalPath;
     }
 
     private PlanningData(TaskGroup rootTask) {
@@ -105,9 +105,9 @@ public class PlanningData extends BaseEntity {
         progressByNumHours = calculateByNumHours(criticalPath);
 
         Date now = new Date();
-        theoreticalProgressAllByNumHours = rootTask.getTheoreticalAdvancePercentageUntilDate(now);
-        theoreticalProgressByDuration = calculateTheoreticalAdvanceByDurationForCriticalPath(criticalPath, now);
-        theoreticalProgressByNumHours = calculateTheoreticalAdvanceByNumHoursForCriticalPath(criticalPath, now);
+        theoreticalProgressByNumHoursForAllTasks = rootTask.getTheoreticalAdvancePercentageUntilDate(now);
+        theoreticalProgressByDurationForCriticalPath = calculateTheoreticalAdvanceByDurationForCriticalPath(criticalPath, now);
+        theoreticalProgressByNumHoursForCriticalPath = calculateTheoreticalAdvanceByNumHoursForCriticalPath(criticalPath, now);
     }
 
     private BigDecimal calculateByDuration(List<Task> criticalPath) {
