@@ -704,7 +704,13 @@ public abstract class TaskElement extends BaseEntity {
     public abstract Integer getTheoreticalCompletedHoursUntilDate(Date date);
 
     public BigDecimal getTheoreticalAdvancePercentageUntilDate(Date date) {
-        BigDecimal result = new BigDecimal(this.getTheoreticalCompletedHoursUntilDate(date));
-        return result.divide(new BigDecimal(this.getWorkHours()));
+        int totalAllocatedHours = this.getSumOfHoursAllocated();
+        int totalTheoreticalCompletedHours = this.getTheoreticalCompletedHoursUntilDate(date);
+        if(Math.min(totalAllocatedHours, totalTheoreticalCompletedHours) == 0) {
+            return BigDecimal.ZERO;
+        }
+        Validate.isTrue(totalTheoreticalCompletedHours <= totalAllocatedHours);
+        return new BigDecimal(totalTheoreticalCompletedHours).divide(
+                new BigDecimal(totalAllocatedHours), 8, BigDecimal.ROUND_HALF_EVEN);
     }
 }
