@@ -62,12 +62,12 @@ function workReportModelCreateEmpty(){
 }
 
 function workReportModelForm($name){
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _removeFocus(_textbox(0, _near(_div("Name:"))));
-    _setSelected(_select(0, _near(_span("Task:"))),"heading");
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name"))));
+    _setSelected(_select(0, _near(_span("Task"))),"heading");
     _click(_cell("Add New Complementary Field"));
-    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
-    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _setValue(_textbox(0, _near(_span("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_span("Complementary text fields"))), "12");
     _click(_cell("Save"));
 }
 
@@ -85,8 +85,8 @@ function workReportModelEdit($oldName, $newName, $cell){
 }
 
 function workReportModelEditForm($name){
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name"))));
     _click(_cell("Save & Continue"));
 }
 
@@ -117,15 +117,15 @@ function workReportModelEmptyCodeValidation(){
 
 function workReportModelCheckComplementaryTextFields($name){
     commonCreate("Work Report Models");
-   _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _removeFocus(_textbox(0, _near(_div("Name:"))));
+   _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name"))));
     _click(_cell("Add New Complementary Field"));
     _click(_cell("Save"));
     workReportModelCheckComplementaryTextFieldsValidationName();
-    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
+    _setValue(_textbox(0, _near(_span("Complementary text fields"))), $name);
     _click(_cell("Save"));
     workReportModelCheckComplementaryTextFieldsValidationLength();
-    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _setValue(_textbox(1, _near(_span("Complementary text fields"))), "12");
     _click(_cell("Save"));
 }
 
@@ -142,12 +142,12 @@ function workReportModelCheckComplementaryTextFieldsValidationLength(){
 function workReportModelCheckLabelTypeFields($name){
     commonLabelCreate("labelforModel",["New"]);
     commonCreate("Work Report Models");
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name"))));
     _click(_cell("Add New Label Type Field"));
     _click(_cell("Save"));
     workReportModelCheckLabelTypeFieldsValidationName();
-    _click(_italic(0, _near(_div("Label Type fields"))));
+    _click(_italic(0, _near(_span("Label Type fields"))));
     _click(_cell("labelforModel"));
     _click(_cell("Save"));
     workReportModelCheckLabelTypeFieldsValidationLabel();
