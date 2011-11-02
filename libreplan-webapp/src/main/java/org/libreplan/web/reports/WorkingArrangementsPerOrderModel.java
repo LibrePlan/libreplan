@@ -25,6 +25,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,10 +43,10 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.Dependency;
+import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
-import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.reports.dtos.WorkingArrangementPerOrderDTO;
 import org.libreplan.business.reports.dtos.WorkingArrangementPerOrderDTO.DependencyWorkingArrangementDTO;
 import org.libreplan.business.resources.daos.ICriterionTypeDAO;
@@ -136,6 +137,7 @@ public class WorkingArrangementsPerOrderModel implements
             initializeOrderElements(each.getOrderElements());
             each.useSchedulingDataFor(currentScenario);
         }
+        Collections.sort(orders);
         return orders;
     }
 
