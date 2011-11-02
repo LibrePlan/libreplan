@@ -43,7 +43,6 @@ import java.util.Date;
 import javax.annotation.Resource;
 
 import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +50,6 @@ import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.calendars.entities.Capacity;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
@@ -397,37 +395,8 @@ public class TaskTest {
         replay(this.worker);
     }
 
-    /* Taken from: SpecificResourceAllocationTest (TODO: Refactor) */
     private void givenResourceCalendarAlwaysReturning(final int hours) {
-        this.workerCalendar = createNiceMock(ResourceCalendar.class);
-        expect(this.workerCalendar.getCapacityOn(isA(PartialDay.class)))
-        .andReturn(EffortDuration.hours(hours)).anyTimes();
-        IAnswer<? extends EffortDuration> asDurationAnswer = asDurationOnAnswer(hours(hours));
-        expect(
-                this.workerCalendar.asDurationOn(isA(PartialDay.class),
-                        isA(ResourcesPerDay.class)))
-                        .andAnswer(asDurationAnswer).anyTimes();
-        expect(this.workerCalendar.getCapacityWithOvertime(isA(LocalDate.class)))
-        .andReturn(
-                Capacity.create(hours(hours))
-                .overAssignableWithoutLimit()).anyTimes();
-        expect(this.workerCalendar.getAvailability()).andReturn(
-                AvailabilityTimeLine.allValid()).anyTimes();
-        replay(this.workerCalendar);
+        this.workerCalendar = SpecificResourceAllocationTest.
+                createResourceCalendarAlwaysReturning(hours);
     }
-
-    /* Taken from: SpecificResourceAllocationTest (TODO: Refactor) */
-    private IAnswer<? extends EffortDuration> asDurationOnAnswer(
-            final EffortDuration duration) {
-        return new IAnswer<EffortDuration>() {
-
-            @Override
-            public EffortDuration answer() throws Throwable {
-                ResourcesPerDay perDay = (ResourcesPerDay) EasyMock
-                        .getCurrentArguments()[1];
-                return perDay.asDurationGivenWorkingDayOf(duration);
-            }
-        };
-    }
-
 }
