@@ -48,10 +48,9 @@ import org.libreplan.business.resources.entities.Worker;
 public class CriterionTest {
     @Test
     public void testCreateWithAType() {
-        Criterion firedCriterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .createCriterion("fired");
-        assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
-                .contains(firedCriterion));
+        Criterion managerCriterion = PredefinedCriterionTypes.CATEGORY
+                .createCriterion("Manager");
+        assertTrue(PredefinedCriterionTypes.CATEGORY.contains(managerCriterion));
     }
 
     @Test
@@ -190,9 +189,9 @@ public class CriterionTest {
 
     @Test
     public void testCanBeRelatedTo() {
-        assertTrue(PredefinedCriterionTypes.LOCATION_GROUP
+        assertTrue(PredefinedCriterionTypes.LOCATION
                 .criterionCanBeRelatedTo(Worker.class));
-        assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
+        assertTrue(PredefinedCriterionTypes.CATEGORY
                 .criterionCanBeRelatedTo(Worker.class));
     }
 

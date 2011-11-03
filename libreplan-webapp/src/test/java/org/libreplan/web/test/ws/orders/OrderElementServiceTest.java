@@ -64,7 +64,6 @@ import org.libreplan.business.materials.entities.MaterialAssignment;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
-import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
@@ -1311,8 +1310,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);
@@ -1364,8 +1363,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);
@@ -1451,8 +1450,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);
@@ -1480,7 +1479,7 @@ public class OrderElementServiceTest {
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
 
-        String name2 = PredefinedCriterionTypes.LEAVE.getPredefined().get(1);
+        String name2 = PredefinedCriterionTypes.LOCATION.getPredefined().get(1);
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
@@ -1554,8 +1553,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);
@@ -1705,8 +1704,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);

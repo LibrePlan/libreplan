@@ -82,7 +82,7 @@ public class WorkerModelTest {
         List<Criterion> criterions = new ArrayList<Criterion>();
         expect(
                 criterionServiceMock
-                        .findByType(PredefinedCriterionTypes.LOCATION_GROUP))
+                        .findByType(PredefinedCriterionTypes.LOCATION))
                 .andReturn(criterions).anyTimes();
         expect(resourceDAOMock.find(workerToReturn.getId()))
                 .andReturn(workerToReturn);
@@ -109,7 +109,7 @@ public class WorkerModelTest {
         List<Criterion> criterions = new ArrayList<Criterion>();
         expect(
                 criterionServiceMock
-                        .findByType(PredefinedCriterionTypes.LOCATION_GROUP))
+                        .findByType(PredefinedCriterionTypes.LOCATION))
                 .andReturn(criterions).anyTimes();
         expect(resourceDAOMock.find(workerToReturn.getId())).andReturn(
                 workerToReturn);

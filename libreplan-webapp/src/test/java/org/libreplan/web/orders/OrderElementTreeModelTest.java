@@ -150,7 +150,7 @@ public class OrderElementTreeModelTest {
     }
 
     private void addCriterionRequirement(OrderElement orderElement) {
-        criterion = criterionDAO.findByNameAndType("medicalLeave", "LEAVE")
+        criterion = criterionDAO.findByNameAndType("Europe", "LOCATION")
                 .get(0);
         DirectCriterionRequirement directCriterionRequirement = DirectCriterionRequirement
                 .create(criterion);
@@ -158,8 +158,8 @@ public class OrderElementTreeModelTest {
     }
 
     private void addAnotherCriterionRequirement(OrderElement orderElement) {
-        criterion2 = criterionDAO.findByNameAndType(
-                "hiredResourceWorkingRelationship", "WORK_RELATIONSHIP").get(0);
+        criterion2 = criterionDAO.findByNameAndType("Manager", "CATEGORY").get(
+                0);
         DirectCriterionRequirement directCriterionRequirement = DirectCriterionRequirement
                 .create(criterion2);
         orderElement.addCriterionRequirement(directCriterionRequirement);
@@ -167,7 +167,7 @@ public class OrderElementTreeModelTest {
 
     private void addAnotherDifferentCriterionRequirement(
             OrderElement orderElement) {
-        criterion3 = criterionDAO.findByNameAndType("paternityLeave", "LEAVE")
+        criterion3 = criterionDAO.findByNameAndType("Asia", "LOCATION")
                 .get(0);
         DirectCriterionRequirement directCriterionRequirement = DirectCriterionRequirement
                 .create(criterion3);
