@@ -29,12 +29,11 @@ package org.libreplan.business.calendars.entities;
  */
 public enum PredefinedCalendarExceptionTypes {
 
-    HOLIDAY("HOLIDAY", CalendarExceptionTypeColor.DEFAULT, true),
-    SICK_LEAVE("SICK_LEAVE", CalendarExceptionTypeColor.DEFAULT, true),
-    LEAVE("LEAVE", CalendarExceptionTypeColor.DEFAULT, true),
-    STRIKE("STRIKE", CalendarExceptionTypeColor.DEFAULT, true),
+    RESOURCE_HOLIDAY("RESOURCE_HOLIDAY", CalendarExceptionTypeColor.YELLOW, true),
+    LEAVE("LEAVE", CalendarExceptionTypeColor.MAGENTA, true),
+    STRIKE("STRIKE", CalendarExceptionTypeColor.PURPLE, true),
     BANK_HOLIDAY("BANK_HOLIDAY", CalendarExceptionTypeColor.DEFAULT, true),
-    WORKABLE_BANK_HOLIDAY("WORKABLE_BANK_HOLIDAY", CalendarExceptionTypeColor.DEFAULT, false);
+    HALF_DAY_HOLIDAY("HALF_DAY_HOLIDAY", CalendarExceptionTypeColor.ORANGE, false);
 
     private CalendarExceptionType calendarExceptionType;
 
