@@ -142,7 +142,7 @@ function configCheckWorkReportCreate(){
     var $code;
     _click(_cell("New work report"));
     _click(_cell("Add new row"));
-    _set($code, _textbox(0, _near(_span("Code:"))).value);
+    _setValue(_textbox(6, _near(_span("Work report lines"))), $code);
     if ($code == ""){
     _log("Work report code is empty", "custom1");
     }
