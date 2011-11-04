@@ -395,7 +395,7 @@ public abstract class TaskElement extends BaseEntity {
         this.deadline = deadline;
     }
 
-    void add(Dependency dependency) {
+    public void add(Dependency dependency) {
         if (this.equals(dependency.getOrigin())) {
             dependenciesWithThisOrigin.add(dependency);
         }
