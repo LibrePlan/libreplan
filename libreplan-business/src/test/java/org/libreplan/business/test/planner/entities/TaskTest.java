@@ -32,12 +32,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 import static org.libreplan.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.libreplan.business.workingday.EffortDuration.hours;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.Date;
 import javax.annotation.Resource;
@@ -55,11 +57,16 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
+import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.entities.AggregateOfDayAssignments;
+import org.libreplan.business.planner.entities.Dependency;
+import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.planner.entities.TaskGroup;
+import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.OrderVersion;
@@ -161,6 +168,12 @@ public class TaskTest {
         TaskSource taskSource = TaskSource.create(version, Arrays
                 .asList(hoursGroup));
         return Task.createTask(taskSource);
+    }
+
+    public static Task createValidTaskWithFullProgress(){
+        Task task = createValidTask();
+        task.setAdvancePercentage(BigDecimal.ONE);
+        return task;
     }
 
     @Test
@@ -366,6 +379,124 @@ public class TaskTest {
                 equalTo(new BigDecimal("0.20000000")));
     }
 
+    @Test
+    public void taskIsFinishedIfAdvancePertentageIsOne() {
+        task.setAdvancePercentage(BigDecimal.ONE);
+        assertTrue(task.isFinished());
+        assertFalse(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.FINISHED);
+    }
+
+    @Test
+    public void taskIsProgressIfAdvancePercentageIsLessThanOne() {
+        task.setAdvancePercentage(new BigDecimal("0.9999", new MathContext(4)));
+        assertFalse(task.isFinished());
+        assertTrue(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.IN_PROGRESS);
+    }
+
+    @Test
+    public void taskIsProgressIfAdvancePercentageIsGreaterThanZero() {
+        task.setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+        assertFalse(task.isFinished());
+        assertTrue(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.IN_PROGRESS);
+    }
+
+    @Test
+    public void taskIsNotInProgressIfAdvancePercentageIsZeroAndNoWorkReportsAttached() {
+        task.setAdvancePercentage(BigDecimal.ZERO);
+        assertTrue(task.getOrderElement().getSumChargedEffort().isZero());
+        assertFalse(task.isFinished());
+        assertFalse(task.isInProgress());
+    }
+
+    @Test
+    public void taskIsInProgressIfAdvancePercentageIsZeroButWorkReportsAttached() {
+        SumChargedEffort sumChargedEffort = SumChargedEffort.create();
+        sumChargedEffort.addDirectChargedEffort(EffortDuration.hours(1));
+        task.getOrderElement().setSumChargedEffort(sumChargedEffort);
+        assertFalse(task.isFinished());
+        assertTrue(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.IN_PROGRESS);
+    }
+
+    @Test
+    public void taskIsReadyToStartIfAllEndStartDepsAreFinished() {
+        Dependency dependency = mockDependency(Type.END_START);
+        dependency.getOrigin().setAdvancePercentage(BigDecimal.ONE);
+        assertFalse(task.isFinished());
+        assertFalse(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.READY_TO_START);
+    }
+
+    @Test
+    public void taskIsReadyToStartIfAllStartStartDepsAreInProgressOrFinished() {
+        Dependency dependency1 = mockDependency(Type.START_START);
+        dependency1.getOrigin().setAdvancePercentage(BigDecimal.ONE);
+        Dependency dependency2 = mockDependency(Type.START_START);
+        dependency2.getOrigin().setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+        assertFalse(task.isFinished());
+        assertFalse(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.READY_TO_START);
+    }
+
+    @Test
+    public void taskIsBlockedIfHasAnUnfinishedEndStartDependency() {
+        Dependency dependency = mockDependency(Type.END_START);
+        dependency.getOrigin().setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+        assertTrue(task.getDependenciesWithThisDestination().size() == 1);
+        assertFalse(task.isFinished());
+        assertFalse(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.BLOCKED);
+    }
+
+    @Test
+    public void taskIsBlockedIfHasANotStartedStartStartDependency() {
+        Dependency dependency = mockDependency(Type.START_START);
+        dependency.getOrigin().setAdvancePercentage(BigDecimal.ZERO);
+        assertFalse(task.isFinished());
+        assertFalse(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.BLOCKED);
+    }
+
+    @Test
+    public void taskIsBlockedIfHasAnUnfinishedEndStartDependencyUsingGroup() {
+         Task task1 = createValidTaskWithFullProgress();
+         Task task2 = createValidTask();
+         task2.setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+         TaskGroup taskGroup = new TaskGroup();
+         taskGroup.addTaskElement(task1);
+         taskGroup.addTaskElement(task2);
+         mockDependency(taskGroup, this.task, Type.END_START);
+         assertFalse(task.isFinished());
+         assertFalse(task.isInProgress());
+         assertTrue(task.getTaskStatus() == TaskStatusEnum.BLOCKED);
+    }
+
+    @Test
+    public void taskDependenciesDontMatterIfProgressIsNotZero() {
+         Task task1 = createValidTaskWithFullProgress();
+         Task task2 = createValidTask();
+         task2.setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+         TaskGroup taskGroup = new TaskGroup();
+         taskGroup.addTaskElement(task1);
+         taskGroup.addTaskElement(task2);
+         mockDependency(taskGroup, this.task, Type.END_START);
+         task.setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+         assertFalse(task.isFinished());
+         assertTrue(task.getTaskStatus() == TaskStatusEnum.IN_PROGRESS);
+         task.setAdvancePercentage(BigDecimal.ONE);
+         assertTrue(task.getTaskStatus() == TaskStatusEnum.FINISHED);
+    }
+
+    @Test
+    public void taskStatusNotAffectedByEndEndDeps() {
+        Dependency dependency = mockDependency(Type.END_END);
+        dependency.getOrigin().setAdvancePercentage(BigDecimal.ZERO);
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.READY_TO_START);
+    }
+
     private void prepareTaskForTheoreticalAdvanceTesting() {
         task.getHoursGroup().setWorkingHours(40);
         assertThat(task.getTotalHours(), equalTo(40));
@@ -398,5 +529,20 @@ public class TaskTest {
     private void givenResourceCalendarAlwaysReturning(final int hours) {
         this.workerCalendar = SpecificResourceAllocationTest.
                 createResourceCalendarAlwaysReturning(hours);
+    }
+
+    private Dependency mockDependency(Type type){
+        return mockDependency(createValidTask(), this.task, type);
+    }
+
+    private Dependency mockDependency(TaskElement origin, TaskElement destination, Type type) {
+        Dependency dependency = createNiceMock(Dependency.class);
+        expect(dependency.getOrigin()).andReturn(origin).anyTimes();
+        expect(dependency.getDestination()).andReturn(destination).anyTimes();
+        expect(dependency.getType()).andReturn(type).anyTimes();
+        replay(dependency);
+        origin.add(dependency);
+        destination.add(dependency);
+        return dependency;
     }
 }

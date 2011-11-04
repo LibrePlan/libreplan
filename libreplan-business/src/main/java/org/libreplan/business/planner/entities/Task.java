@@ -24,6 +24,7 @@ package org.libreplan.business.planner.entities;
 import static java.util.Collections.emptyList;
 import static org.libreplan.business.workingday.EffortDuration.min;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,6 +48,7 @@ import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
 import org.libreplan.business.planner.entities.allocationalgorithms.AllocationModification;
@@ -60,6 +62,7 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.util.deepcopy.AfterCopy;
+import org.libreplan.business.util.Visitor;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
@@ -1092,5 +1095,90 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 this.getDayAssignments(),
                 this.getStartDate(),
                 date).getTotalTime();
+    }
+
+    public TaskStatusEnum getTaskStatus() {
+        if (this.isFinished()) {
+            return TaskStatusEnum.FINISHED;
+        } else if (this.isInProgress()) {
+            return TaskStatusEnum.IN_PROGRESS;
+        } else if (this.isReadyToStart()) {
+            return TaskStatusEnum.READY_TO_START;
+        } else if (this.isBlocked()){
+            return TaskStatusEnum.BLOCKED;
+        } else {
+            throw new RuntimeException("Unknown task status. You've found a bug :)");
+        }
+    }
+
+    @Override
+    public boolean isFinished() {
+        return this.getAdvancePercentage().equals(BigDecimal.ONE);
+    }
+
+    @Override
+    public boolean isInProgress() {
+        BigDecimal currentAdvancePercentage = this.getAdvancePercentage();
+        boolean advanceBetweenZeroAndOne = this.advancePertentageIsGreaterThanZero() &&
+               !currentAdvancePercentage.equals(BigDecimal.ONE);
+        return advanceBetweenZeroAndOne || this.hasAttachedWorkReports();
+    }
+
+    public boolean isReadyToStart() {
+        if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
+            return false;
+        }
+        Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
+        for(Dependency dependency: dependencies) {
+            Type dependencyType = dependency.getType();
+            if (dependencyType.equals(Type.END_START)) {
+                if (!dependency.getOrigin().isFinished()) {
+                    return false;
+                }
+            } else if (dependencyType.equals(Type.START_START)) {
+                if (!dependency.getOrigin().isFinished() &&
+                        !dependency.getOrigin().isInProgress()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isBlocked() {
+        if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
+            return false;
+        }
+        Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
+        for(Dependency dependency: dependencies) {
+            Type dependencyType = dependency.getType();
+            if (dependencyType.equals(Type.END_START)) {
+                if (!dependency.getOrigin().isFinished()) {
+                    return true;
+                }
+            } else if (dependencyType.equals(Type.START_START)) {
+                if (!dependency.getOrigin().isFinished() &&
+                        !dependency.getOrigin().isInProgress()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+     }
+
+    private boolean advancePertentageIsGreaterThanZero() {
+        return this.getAdvancePercentage().compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    private boolean advancePercentageIsZero() {
+        return this.getAdvancePercentage().equals(BigDecimal.ZERO);
+    }
+
+    private boolean hasAttachedWorkReports() {
+        return !this.getOrderElement().getSumChargedEffort().isZero();
+    }
+
+    public void acceptVisitor(Visitor visitor) {
+        visitor.visit(this);
     }
 }

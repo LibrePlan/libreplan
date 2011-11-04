@@ -24,6 +24,7 @@ package org.libreplan.business.planner.entities;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -32,6 +33,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.Visitor;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
@@ -185,6 +187,21 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
     @Override
     public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
         return EffortDuration.zero();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isInProgress() {
+        return false;
+    }
+
+    @Override
+    public void acceptVisitor(Visitor visitor) {
+        throw new RuntimeException("No visitors should visit this type of TaskElement");
     }
 
 }

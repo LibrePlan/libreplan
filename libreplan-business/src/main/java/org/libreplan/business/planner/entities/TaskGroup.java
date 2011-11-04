@@ -37,6 +37,7 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.Visitor;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
@@ -315,4 +316,25 @@ public class TaskGroup extends TaskElement {
         return sum;
     }
 
+    @Override
+    public boolean isFinished() {
+        for(TaskElement each: taskElements) {
+            if(!each.isFinished())
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isInProgress() {
+        for(TaskElement each: taskElements) {
+            if(each.isInProgress())
+                return true;
+        }
+        return false;
+    }
+
+    public void acceptVisitor(Visitor visitor) {
+        visitor.visit(this);
+    }
 }
