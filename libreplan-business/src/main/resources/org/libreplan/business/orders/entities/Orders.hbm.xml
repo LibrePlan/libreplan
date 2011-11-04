@@ -145,6 +145,11 @@
                     <many-to-many column="order_version_id"
                         class="org.libreplan.business.scenarios.entities.OrderVersion"/>
                 </map>
+
+                <set name="customerComunications" cascade="delete-orphan" inverse="true" >
+                    <key column="order_id" />
+                    <one-to-many class="org.libreplan.business.externalcompanies.entities.CustomerComunication" />
+                </set>
             </joined-subclass>
 
         </joined-subclass>
