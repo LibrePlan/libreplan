@@ -148,7 +148,7 @@
                         <hbox align="middle">
                           <label value="${i18n:_('Normal Effort')}:" />
                           <hbox id="exceptionDayNormalEffortRow" />
-                          <label value="${i18n:_('Extra Effort')}:" />
+                          <label value="${i18n:_('Overtime Effort')}:" />
                           <hbox id="exceptionDayExtraEffortBox"
                             sclass="exceptionDayExtraEffortBox" />
                         </hbox>

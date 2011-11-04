@@ -32,7 +32,7 @@
             <newdatasortablecolumn label="${i18n:_('Color')}"/>
             <newdatasortablecolumn label="${i18n:_('Over assignable')}" />
             <newdatasortablecolumn label="${i18n:_('Standard Effort')}" />
-            <newdatasortablecolumn label="${i18n:_('Extra Effort')}" />
+            <newdatasortablecolumn label="${i18n:_('Overtime Effort')}" />
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
     </newdatasortablegrid>
