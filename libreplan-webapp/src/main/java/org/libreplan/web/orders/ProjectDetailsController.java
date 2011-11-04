@@ -2,6 +2,8 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2010-2011 Wireless Galicia, S.L.
+ * Copyright (C) 2011 Igalia, S.L.
+
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
@@ -53,7 +56,9 @@ import org.zkoss.zul.Window;
 /**
  * Controller for the creation of an {@link order} with its principal
  * properties.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgailicia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 
 public class ProjectDetailsController extends GenericForwardComposer {
@@ -78,6 +83,8 @@ public class ProjectDetailsController extends GenericForwardComposer {
     private Datebox initDate;
 
     private BandboxSearch bdExternalCompanies;
+
+    private BandboxSearch bdProjectTemplate;
 
     private Textbox txtName;
 
@@ -130,6 +137,13 @@ public class ProjectDetailsController extends GenericForwardComposer {
         if (validate()) {
             if (tabs != null) {
                 tabs.goToOrdersList();
+            }
+
+            if (bdProjectTemplate.getSelectedElement() != null) {
+                OrderTemplate template = (OrderTemplate) bdProjectTemplate
+                        .getSelectedElement();
+
+                orderController.createFromTemplate(template);
             }
             orderController.editNewCreatedOrder(window);
         }

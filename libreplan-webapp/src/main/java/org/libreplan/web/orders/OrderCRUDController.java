@@ -105,7 +105,9 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -944,6 +946,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderTemplates.goToCreateTemplateFrom(order);
     }
 
+    public void createFromTemplate(OrderTemplate template) {
+        orderModel.prepareCreationFrom(template, getDesktop());
+    }
+
     private Runnable onUp;
 
     public void goToEditForm(Order order) {
@@ -1088,18 +1094,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.prepareForCreate(desktop);
     }
 
-    private void editNewCreatedOrder() {
+    public void editNewCreatedOrder(Window detailsWindow) {
         showOrderElementFilter();
         hideCreateButtons();
         prepareEditWindow();
         showEditWindow(_("Create project"));
-    }
-
-    public void editNewCreatedOrder(Window detailsWindow) {
-        editNewCreatedOrder();
-        // close project details window
         detailsWindow.setVisible(false);
         setupOrderAuthorizationController();
+        detailsWindow.getAttributes();
         saveAndContinue(false);
     }
 

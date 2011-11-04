@@ -20,7 +20,7 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <window id="projectCreationWindow"
-        title="${i18n:_('Create project')}"
+        title="${i18n:_('Create new project')}"
         width="650px"
         closable="true"
         onClose="self.visible = false; event.stopPropagation();">
@@ -47,6 +47,11 @@
                 </hbox>
             </row>
             <row>
+                <label value="${i18n:_('Template')}" />
+                <bandboxSearch id="bdProjectTemplate" finder="templatesEligibleForOrder"
+                    widthBandbox="300px" widthListbox="500px" />
+            </row>
+            <row>
                 <label value="${i18n:_('Starting date')}" />
                 <datebox id="initDate"
                     value="@{projectController.order.initDate}"
@@ -71,6 +76,7 @@
                     itemRenderer="@{projectController.baseCalendarsComboitemRenderer}"
                     onSelect="projectController.setBaseCalendar(self.selectedItem.value);" />
             </row>
+
         </rows>
     </grid>
 
