@@ -21,11 +21,28 @@
 
 package org.libreplan.business.externalcompanies.entities;
 
+import static org.libreplan.business.i18n.I18nHelper._;
+
 /**
  * Enum for specified the type of {@link CustomerComunication}
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public enum ComunicationType {
-    New_Project
+
+    NEW_PROJECT(_("New project"));
+
+    private String description;
+
+    private ComunicationType(String description) {
+        this.description = description;
+    }
+
+    public String toString() {
+        return this.description;
+    }
+
+    public static ComunicationType getDefault() {
+        return NEW_PROJECT;
+    }
 }

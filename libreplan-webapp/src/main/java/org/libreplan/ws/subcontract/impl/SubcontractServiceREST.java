@@ -325,7 +325,7 @@ public class SubcontractServiceREST implements ISubcontractService {
         Date comunicationDate = new Date();
         CustomerComunication customerComunication = CustomerComunication
                 .create(deadline, comunicationDate,
-                        ComunicationType.New_Project, order);
+                        ComunicationType.NEW_PROJECT, order);
         customerComunicationDAO.save(customerComunication);
     }
 }

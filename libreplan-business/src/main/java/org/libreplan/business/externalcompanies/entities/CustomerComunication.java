@@ -63,7 +63,8 @@ public class CustomerComunication extends BaseEntity{
     }
 
     public static CustomerComunication createTodayNewProject(Date deadline) {
-        return (CustomerComunication) create(new CustomerComunication(deadline, new Date(), ComunicationType.New_Project));
+        return (CustomerComunication) create(new CustomerComunication(deadline,
+                new Date(), ComunicationType.NEW_PROJECT));
     }
 
     protected CustomerComunication(Date deadline, Date comunicationDate, ComunicationType comunicationType) {

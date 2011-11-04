@@ -31,14 +31,12 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.ComunicationType;
 import org.libreplan.business.externalcompanies.entities.CustomerComunication;
-import org.libreplan.business.materials.entities.MaterialStatusEnum;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.workreports.entities.PositionInWorkReportEnum;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
-import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -48,8 +46,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModel;
-import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
@@ -134,8 +130,9 @@ public class CustomerComunicationCRUDController extends GenericForwardComposer {
             CustomerComunication customerComunication = (CustomerComunication) data;
             row.setValue(customerComunication);
 
-            appendLabel(row, customerComunication.getComunicationType()
-                    .toString());
+            final ComunicationType type = customerComunication.getComunicationType();
+            appendLabel(row, type.toString());
+
             appendLabel(row, customerComunication.getOrder().getName());
             appendLabel(row, toString(customerComunication.getDeadline()));
             appendLabel(row, customerComunication.getOrder().getCode());
