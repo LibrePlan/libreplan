@@ -297,7 +297,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
         resourcesItems.add(subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
                 subItem(_("Subcontracted Tasks"), "/subcontract/subcontractedTasks.zul", ""),
-                subItem(_("Report Progress"), "/subcontract/reportAdvances.zul", "")));
+                subItem(_("Report Progress"), "/subcontract/reportAdvances.zul", ""),
+                subItem(_("Customer subcontracted projects communications"), "/subcontract/customerComunications.zul","")));
         topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
 
         if (isScenariosVisible()) {
