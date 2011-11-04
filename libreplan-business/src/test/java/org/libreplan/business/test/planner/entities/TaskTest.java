@@ -460,6 +460,19 @@ public class TaskTest {
     }
 
     @Test
+    public void taskStatusCalculationTakesIntoAccountDifferentDepType() {
+        Dependency dependency1 = mockDependency(Type.END_START);
+        dependency1.getOrigin().setAdvancePercentage(BigDecimal.ONE);
+        Dependency dependency2 = mockDependency(Type.START_START);
+        dependency2.getOrigin().setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+        assertFalse(task.isFinished());
+        assertFalse(task.isInProgress());
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.READY_TO_START);
+        dependency2.getOrigin().setAdvancePercentage(BigDecimal.ZERO);
+        assertTrue(task.getTaskStatus() == TaskStatusEnum.BLOCKED);
+    }
+
+    @Test
     public void taskIsBlockedIfHasAnUnfinishedEndStartDependencyUsingGroup() {
          Task task1 = createValidTaskWithFullProgress();
          Task task2 = createValidTask();
