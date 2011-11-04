@@ -94,6 +94,7 @@ import org.zkoss.zk.ui.Desktop;
  * yet, it creates and initializes a new PlanningState.
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -694,6 +695,9 @@ public class PlanningStateCreator {
         }
 
         private List<OrderAuthorization> loadOrderAuthorizations() {
+            if (order.isNewObject()) {
+                return new ArrayList<OrderAuthorization>();
+            }
             List<OrderAuthorization> orderAuthorizations = orderAuthorizationDAO
                     .listByOrder(order);
             for (OrderAuthorization each : orderAuthorizations) {
