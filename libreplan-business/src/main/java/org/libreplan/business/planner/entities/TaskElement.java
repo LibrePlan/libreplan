@@ -707,7 +707,7 @@ public abstract class TaskElement extends BaseEntity {
         EffortDuration totalAllocatedTime = AggregateOfDayAssignments.create(
                 this.getDayAssignments()).getTotalTime();
         EffortDuration totalTheoreticalCompletedTime = this.getTheoreticalCompletedTimeUntilDate(date);
-        if(totalAllocatedTime.isZero() || totalTheoreticalCompletedTime.isZero()) {
+        if (totalAllocatedTime.isZero() || totalTheoreticalCompletedTime.isZero()) {
             return BigDecimal.ZERO;
         }
         Validate.isTrue(totalTheoreticalCompletedTime.getSeconds() <= totalAllocatedTime.getSeconds());

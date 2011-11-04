@@ -311,7 +311,6 @@ public class TaskGroup extends TaskElement {
         EffortDuration sum = EffortDuration.zero();
         for(TaskElement each: taskElements) {
             sum = EffortDuration.sum(sum, each.getTheoreticalCompletedTimeUntilDate(date));
-
         }
         return sum;
     }
