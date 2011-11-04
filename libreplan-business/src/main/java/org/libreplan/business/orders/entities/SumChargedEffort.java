@@ -70,4 +70,8 @@ public class SumChargedEffort extends BaseEntity {
         return directChargedEffort.plus(indirectChargedEffort);
     }
 
+    public boolean isZero() {
+        return directChargedEffort.isZero() && indirectChargedEffort.isZero();
+    }
+
 }
