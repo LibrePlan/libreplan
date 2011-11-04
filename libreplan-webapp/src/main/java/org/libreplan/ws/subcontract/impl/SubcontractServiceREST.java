@@ -24,6 +24,7 @@ package org.libreplan.ws.subcontract.impl;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -44,7 +45,10 @@ import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.daos.ICustomerComunicationDAO;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.libreplan.business.externalcompanies.entities.ComunicationType;
+import org.libreplan.business.externalcompanies.entities.CustomerComunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -95,6 +99,9 @@ public class SubcontractServiceREST implements ISubcontractService {
 
     @Autowired
     private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private ICustomerComunicationDAO customerComunicationDAO;
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
@@ -228,6 +235,13 @@ public class SubcontractServiceREST implements ISubcontractService {
 
         order.validate();
         orderElementDAO.save(order);
+
+        /*
+         * create the customer comunication to a new subcontrating project.
+         */
+        if(!StringUtils.isBlank(order.getExternalCode())){
+            createCustomerComunication(order);
+        }
     }
 
     private void synchronizeWithSchedule(OrderElement orderElement,
@@ -306,4 +320,12 @@ public class SubcontractServiceREST implements ISubcontractService {
                 Util.generateInstanceId(1, code), message);
     }
 
+    private void createCustomerComunication(Order order){
+        Date deadline = order.getDeadline();
+        Date comunicationDate = new Date();
+        CustomerComunication customerComunication = CustomerComunication
+                .create(deadline, comunicationDate,
+                        ComunicationType.New_Project, order);
+        customerComunicationDAO.save(customerComunication);
+    }
 }
