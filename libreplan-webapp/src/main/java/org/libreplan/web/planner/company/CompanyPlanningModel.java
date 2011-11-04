@@ -872,10 +872,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    public void goToCreateOtherOrderFromTemplate(OrderTemplate template) {
-        tabs.goToCreateotherOrderFromTemplate(template);
-    }
-
     @Transactional(readOnly=true)
     public ProgressType getProgressTypeFromConfiguration() {
         return configurationDAO.getConfiguration().getProgressType();

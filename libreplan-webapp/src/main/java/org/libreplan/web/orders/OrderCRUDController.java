@@ -53,8 +53,6 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
 import org.libreplan.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.libreplan.web.orders.labels.LabelsAssignmentToOrderElementComponent;
@@ -194,7 +192,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Vbox orderElementFilter;
 
     private Button createOrderButton;
-    private Button createOrderFromTemplateButton;
     private Button saveOrderAndContinueButton;
     private Button cancelEditionButton;
 
@@ -1394,9 +1391,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (createOrderButton != null) {
             createOrderButton.setVisible(showCreate);
         }
-        if (createOrderFromTemplateButton != null) {
-        createOrderFromTemplateButton.setVisible(showCreate);
-        }
         if (saveOrderAndContinueButton != null) {
             saveOrderAndContinueButton.setVisible(!showCreate);
         }
@@ -1439,7 +1433,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void checkCreationPermissions() {
         if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
             createOrderButton.setDisabled(true);
-            createOrderFromTemplateButton.setDisabled(true);
         }
     }
 

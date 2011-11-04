@@ -384,16 +384,6 @@ public class MultipleTabsPlannerController implements Composer,
                     }
                 });
 
-            final Button createOrderFromTemplateButton = (Button) comp
-                    .getPage()
-                .getFellow("createOrderFromTemplateButton");
-        createOrderFromTemplateButton.addEventListener(Events.ON_CLICK,
-                new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                            goToCreateOrderFromTemplate(createOrderFromTemplateButton);
-                    }
-                });
         }
     }
 
@@ -429,18 +419,6 @@ public class MultipleTabsPlannerController implements Composer,
 
     }
 
-    public void goToCreateOrderFromTemplate(org.zkoss.zk.ui.Component button) {
-        TemplateFinderPopup templateFinderPopup = (TemplateFinderPopup) button
-                .getPage().getFellow("templateFinderPopup");
-        templateFinderPopup.openForOrderCreation(button, "after_start",
-                new IOnResult<OrderTemplate>() {
-                    @Override
-                    public void found(OrderTemplate template) {
-                        goToCreateotherOrderFromTemplate(template);
-                    }
-                });
-    }
-
     @Override
     public void goToOrder(Order order) {
         planningTab.toggleToNoFeedback();
@@ -472,12 +450,6 @@ public class MultipleTabsPlannerController implements Composer,
     @Override
     public void goToAdvancedAllocation(Order order) {
         getTabsRegistry().show(advancedAllocationTab, changeModeTo(order));
-    }
-
-    @Override
-    public void goToCreateotherOrderFromTemplate(OrderTemplate template) {
-        getTabsRegistry().show(ordersTab);
-        orderCRUDController.showCreateFormFromTemplate(template);
     }
 
     private IBeforeShowAction changeModeTo(final Order order) {

@@ -115,15 +115,8 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     <west class="perspectives-column" width="90px">
         <vbox>
             <hbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box global-commands" height="30px" width="100%">
-
-            <button id="createOrderButton" image="/common/img/ico_add.png" sclass="planner-icon"
-             tooltiptext="${i18n:_('Create New Project')}" />
-
-            <button id="createOrderFromTemplateButton" image="/common/img/ico_copy.png" sclass="planner-icon"
-            tooltiptext="${i18n:_('Create From Template')}" />
-
-            <templateFinderPopup id="templateFinderPopup" acceptButtonLabel="${i18n:_('Create Project')}" caption="${i18n:_('Choosing Template')}" />
-
+                <button id="createOrderButton" image="/common/img/ico_add.png" sclass="planner-icon"
+                     tooltiptext="${i18n:_('Create New Project')}" />
             </hbox>
             <vbox id="registeredItemsInsertionPoint" width="90px"/>
         </vbox>

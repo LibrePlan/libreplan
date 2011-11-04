@@ -65,6 +65,4 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint("order_advanced_allocation")
     void goToAdvancedAllocation(Order order);
 
-    @EntryPoint("create_order_from_template")
-    void goToCreateotherOrderFromTemplate(OrderTemplate template);
 }
