@@ -445,7 +445,6 @@ public class TaskTest {
     public void taskIsBlockedIfHasAnUnfinishedEndStartDependency() {
         Dependency dependency = mockDependency(Type.END_START);
         dependency.getOrigin().setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
-        assertTrue(task.getDependenciesWithThisDestination().size() == 1);
         assertFalse(task.isFinished());
         assertFalse(task.isInProgress());
         assertTrue(task.getTaskStatus() == TaskStatusEnum.BLOCKED);
