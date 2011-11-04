@@ -195,6 +195,7 @@ public class SubcontractServiceREST implements ISubcontractService {
             order = (Order) orderElement;
             order.setVersionForScenario(current, version);
             order.useSchedulingDataFor(version);
+            order.setExternalCode(order.getCode());
         } else {
             order = wrapInOrder(current, version,
                     orderElement);
