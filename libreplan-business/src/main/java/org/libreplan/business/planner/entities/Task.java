@@ -1111,6 +1111,17 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
+    public TaskDeadlineViolationStatusEnum getDeadlineViolationStatus() {
+        LocalDate deadline = this.getDeadline();
+        if (deadline == null) {
+            return TaskDeadlineViolationStatusEnum.NO_DEADLINE;
+        } else if (this.getEndAsLocalDate().isAfter(deadline)) {
+            return TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED;
+        } else {
+            return TaskDeadlineViolationStatusEnum.ON_SCHEDULE;
+        }
+    }
+
     @Override
     public boolean isFinished() {
         return this.getAdvancePercentage().equals(BigDecimal.ONE);

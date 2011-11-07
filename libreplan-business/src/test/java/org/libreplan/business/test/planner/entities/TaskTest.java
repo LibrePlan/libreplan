@@ -64,6 +64,7 @@ import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.TaskDeadlineViolationStatusEnum;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
@@ -507,6 +508,40 @@ public class TaskTest {
         Dependency dependency = mockDependency(Type.END_END);
         dependency.getOrigin().setAdvancePercentage(BigDecimal.ZERO);
         assertTrue(task.getTaskStatus() == TaskStatusEnum.READY_TO_START);
+    }
+
+    @Test
+    public void taskWithNoDeadlineHasCorrectDeadlineViolationStatus() {
+        task.setDeadline(null);
+        assertTrue(task.getDeadlineViolationStatus() ==
+                TaskDeadlineViolationStatusEnum.NO_DEADLINE);
+    }
+
+    @Test
+    public void taskWithViolatedDeadlineHasCorrectDeadlineViolationStatus() {
+        task.setDeadline(new LocalDate());
+        LocalDate tomorrow = new LocalDate().plusDays(1);
+        task.setEndDate(tomorrow.toDateTimeAtStartOfDay().toDate());
+        assertTrue(task.getDeadlineViolationStatus() ==
+                TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED);
+    }
+
+    @Test
+    public void taskWithUnviolatedDeadlineHasCorrectDeadlineViolationStatusJustInTime() {
+        LocalDate now = new LocalDate();
+        task.setDeadline(now);
+        task.setEndDate(now.toDateTimeAtStartOfDay().toDate());
+        assertTrue(task.getDeadlineViolationStatus() ==
+                TaskDeadlineViolationStatusEnum.ON_SCHEDULE);
+    }
+
+    @Test
+    public void taskWithUnviolatedDeadlineHasCorrectDeadlineViolationStatusMargin() {
+        LocalDate now = new LocalDate();
+        task.setDeadline(now);
+        task.setEndDate(now.minusDays(1).toDateTimeAtStartOfDay().toDate());
+        assertTrue(task.getDeadlineViolationStatus() ==
+                TaskDeadlineViolationStatusEnum.ON_SCHEDULE);
     }
 
     private void prepareTaskForTheoreticalAdvanceTesting() {
