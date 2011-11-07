@@ -24,7 +24,7 @@ package org.libreplan.business.workreports.entities;
  * @author Ignacio Díaz Teijido <ignacio.diaz@cafedered.com>
  */
 public enum PredefinedWorkReportTypes {
-    DEFAULT("Default", true, true, true);
+    DEFAULT("Default", false, false, false);
 
     private WorkReportType workReportType;
 
