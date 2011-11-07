@@ -27,6 +27,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
@@ -45,6 +46,7 @@ import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
+import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -248,6 +250,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     public boolean save() {
+        ConstraintChecker.isValid(createWindow);
         workReportModel.generateWorkReportLinesIfIsNecessary();
         try {
             workReportModel.confirmSave();
@@ -1102,6 +1105,17 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void appendEffortDuration(Row row) {
         WorkReportLine workReportLine = (WorkReportLine) row.getValue();
         Textbox effort = new Textbox();
+        effort.setConstraint(new Constraint() {
+
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                if (!Pattern.matches("(\\d+)(\\s*:\\s*\\d+\\s*)*",
+                        (String) value))
+                    throw new WrongValueException(comp,
+                            _("Please, enter a valid effort"));
+            }
+        });
         bindEffort(effort, workReportLine);
 
         if (getWorkReportType().getHoursManagement().equals(
