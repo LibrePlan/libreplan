@@ -48,7 +48,7 @@ function templateProjectAssignTemplate($template){
     _click(_image("ico_copy.png"));
     _click(_italic(0, _cell("z-caption-l")));
     _click(_div($template));
-    _click(_cell("Create Order"));
+    _click(_cell("Create Project"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
     _log("Assign the project template", "custom1")
