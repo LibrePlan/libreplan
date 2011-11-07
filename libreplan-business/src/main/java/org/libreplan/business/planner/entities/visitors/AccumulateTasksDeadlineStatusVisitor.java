@@ -42,13 +42,13 @@ public class AccumulateTasksDeadlineStatusVisitor extends Visitor {
         this.taskDeadlineViolationStatusData = new HashMap<TaskDeadlineViolationStatusEnum, Integer>();
     }
 
-    public Map<TaskDeadlineViolationStatusEnum, Integer> getTaskStatusData() {
+    public Map<TaskDeadlineViolationStatusEnum, Integer> getTaskDeadlineViolationStatusData() {
         return taskDeadlineViolationStatusData;
     }
 
     public void visit(Task task) {
         TaskDeadlineViolationStatusEnum status = task.getDeadlineViolationStatus();
-        Integer currentValue = getTaskStatusData().get(status);
+        Integer currentValue = taskDeadlineViolationStatusData.get(status);
         taskDeadlineViolationStatusData.put(status, currentValue++);
     }
 
