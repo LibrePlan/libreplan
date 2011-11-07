@@ -38,15 +38,10 @@
 
 _include("../common_functions.sah");
 
-function workReportCreateWithoutElements(){
-    _click(_link("Work Reports"));
-    _click(_cell("New work report"));
-    workReportNoElementsValidation();
-}
-
 function workReportCreateLineModel($modelName){
     workReportModelLineCreate($modelName);
     _click(_link("Work Reports"));
+    _setSelected(_select(0, _near(_span("Select type :"))), $modelName);
     _click(_cell("New work report"));
     _click(_cell("Save"));
     workReportAcctionValidation("saved");
@@ -61,11 +56,11 @@ function workReportModelLineCreate($name){
 }
 
 function workReportModelLineForm($name){
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name"))));
     _click(_cell("Add New Complementary Field"));
-    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
-    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _setValue(_textbox(0, _near(_span("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_span("Complementary text fields"))), "12");
     _click(_cell("Save"));
 }
 
@@ -87,12 +82,12 @@ function workReportModelHeadingCreate($name){
 }
 
 function workReportModelHeadingForm($name){
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _removeFocus(_textbox(0, _near(_div("Name:"))));
-    _setSelected(_select(0, _near(_span("Task:"))),"heading");
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name"))));
+    _setSelected(_select(0, _near(_span("Task"))),"heading");
     _click(_cell("Add New Complementary Field"));
-    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
-    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _setValue(_textbox(0, _near(_span("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_span("Complementary text fields"))), "12");
     _click(_cell("Save"));
 }
 
@@ -107,10 +102,10 @@ function workReportEditForm($name){
     _click(_cell("Add new row"));
     _click(_cell("Save"));
     workReportResourceValidation();
-    _setValue(_textbox(2, _near(_parentTable(_div("Date")))), $machineName);
+    _setValue(_textbox(2, _near(_span("Work report lines"))), $machineName);
     _click(_cell("Save"));
     workReportTaskValidation();
-    _click(_italic(0, _near(_textbox(3, _near(_parentTable(_div("Date")))))));
+    _click(_italic(0, _near(_textbox(3, _near(_span("Work report lines"))))));
     _click(_div($projectName+"[2]", _parentTable(_div("Project code[1]"))));
     _click(_cell("Save"));
     workReportHourValidation();
@@ -143,11 +138,6 @@ function DeleteRequiredElements(){
 function workReportAcctionValidation($action){
     _assertExists(_span("Work report "+$action));
     _assert(_isVisible(_span("Work report "+$action)));
-}
-
-function workReportNoElementsValidation(){
-    _assertExists(_div("please, select a work report type"));
-    _assert(_isVisible(_div("please, select a work report type")));
 }
 
 function workReportHeadingCodeValidation(){
@@ -183,7 +173,6 @@ var $projectName = "projectForWorkReport";
 
 commonLogin("admin", "admin");
 
-workReportCreateWithoutElements();
 workReportCreateLineModel($workReportModelName);
 workReportCreateHeadingModel($workReportModelName2);
 workReportEdit($workReportModelName);
