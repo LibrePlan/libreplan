@@ -33,7 +33,9 @@ import org.zkoss.zul.Treeitem;
 
 /**
  * macro component for order elements tree and similar pages<br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public abstract class TreeComponent extends HtmlMacroComponent {
 
@@ -71,6 +73,10 @@ public abstract class TreeComponent extends HtmlMacroComponent {
             return tooltip;
         }
 
+        public String getHflex() {
+            return cssClass.equals("name") ? "1" : "min";
+        }
+
         public abstract <T extends ITreeNode<T>> void doCell(
                 TreeController<T>.Renderer renderer,
                 Treeitem item, T currentElement);
@@ -95,8 +101,8 @@ public abstract class TreeComponent extends HtmlMacroComponent {
             renderer.addDescriptionCell(currentElement);
         }
     };
-    protected final Column operationsColumn = new Column(_("Operations"),
-            "operations") {
+    protected final Column operationsColumn = new Column(_("Op."),
+            "operations", _("Operations")) {
 
         @Override
         public <T extends ITreeNode<T>> void doCell(

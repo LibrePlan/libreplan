@@ -565,8 +565,8 @@ div.z-grid {
 
 .orderTree .z-textbox,.orderTree .z-decimalbox,
 .orderTree .z-intbox,.orderTree .z-longbox,
-.orderTree .z-doublebox {
-    height: 23px;
+.orderTree .z-doublebox, .orderTree .z-datebox {
+    height: 21px;
     width: 100%;
 }
 
@@ -583,19 +583,20 @@ div.z-grid {
     height:25px;
 }
 .orderTree .operations {
-    width:80px;
+    width: 50px;
 }
 .orderTree .name {
-    min-width:120px;
+    min-width: 120px;
 }
 .orderTree .hours {
-    width:40px;
+    width: 50px;
 }
 .orderTree .code {
-    min-width:100px;
+    min-width: 100px;
 }
+
 .orderTree .scheduling_state {
-    min-width:160px;
+    min-width:140px;
 }
 .orderTree .estimated_init,
 .orderTree .estimated_end {
@@ -612,6 +613,10 @@ div.z-grid {
 
 .orderTree td {
     border-bottom: 1px dotted #7EAAC6;
+}
+
+.orderTree td td {
+    border-bottom: 0;
 }
 
 .orderTree .icono td {
@@ -823,6 +828,12 @@ div.z-listbox-pgi-b {
     float:left;
 }
 
+.orderTree .not-scheduled span.z-button,
+.orderTree .partially-scheduled span.z-button,
+.orderTree .completely-scheduled span.z-button {
+    margin: 4px 1px 0 0;
+}
+
 .orderTree .not-scheduled span.scheduling-state,
 .orderTree .partially-scheduled span.scheduling-state,
 .orderTree .completely-scheduled span.scheduling-state {
@@ -859,7 +870,7 @@ span.completely-scheduled {
 span.z-dottree-tee-open,
 span.z-dottree-tee-close,
 span.z-dottree-line {
-    min-height: 28px;
+    min-height: 25px;
 }
 
 
@@ -1119,8 +1130,13 @@ span.perspective, span.perspective-active {
 tr.z-tree-row-seld, tr.z-list-item-seld,
 .z-combobox-pp .z-combo-item-seld,
 tr.z-treerow-seld {
-    background-color: #fdd772;
+    background-color: #fdd772; /* Dark orange */
     color: #000000;
+}
+
+tr.z-treerow-seld input {
+    background-color: #fdf3da; /* Soft orange */
+    background-image: none;
 }
 
 .timeplot-canvas {
