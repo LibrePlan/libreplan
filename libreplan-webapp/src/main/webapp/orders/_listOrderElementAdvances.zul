@@ -20,6 +20,7 @@
 -->
 <vbox id="${arg.id}"
     apply="org.libreplan.web.orders.ManageOrderElementAdvancesController" width="100%">
+
     <groupbox sclass="progress-assignments" closable="false">
     <caption label="${i18n:_('Progress assignments')}" />
             <vbox id="messagesContainerAdvances" />
@@ -32,7 +33,7 @@
             </vbox>
             <vbox>
             <radiogroup>
-            <listbox id="editAdvances" height="170px"
+            <listbox id="editAdvances"
                      model="@{manageOrderElementAdvancesController.advanceAssignments}"
                      itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
                      onSelect="manageOrderElementAdvancesController.selectAdvanceLine(self.selectedItem);"
@@ -52,14 +53,15 @@
             </radiogroup>
     </vbox>
     </groupbox>
+
     <groupbox sclass="advance-measurement" width="100%" closable="false">
     <caption label="@{manageOrderElementAdvancesController.getInfoAdvance}" />
             <hbox>
-                <vbox>
-                    <listbox id="editAdvancesMeasurement" width="390px" height="200px"
+                <hbox>
+                    <listbox id="editAdvancesMeasurement" width="390px" style="min-height:200px;background-color: #FFFFFF"
                              model="@{manageOrderElementAdvancesController.advanceMeasurements}"
                              itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
-                             mold="paging" pageSize="5" sclass="advance-measurement"
+                             mold="paging" pageSize="10" sclass="advance-measurement"
                              onPaging="manageOrderElementAdvancesController.onPagingMeasurement();">
                             <listhead>
                                 <listheader label="${i18n:_('Value')}" width="100px" align="center"/>
@@ -68,8 +70,8 @@
                                 <listheader label="${i18n:_('Operations')}" width="90px" align="center"/>
                             </listhead>
                     </listbox>
-                </vbox>
-                <vbox width="20px" />
+                </hbox>
+                <hbox width="20px"/>
                 <zscript>
                     import java.awt.Font;
                     String fontname = "Verdana";
