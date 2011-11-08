@@ -34,7 +34,8 @@
             <row>
                 <label value="${i18n:_('Name')}" />
                 <textbox id="txtName" value="@{projectController.order.name}" width="500px"
-                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                    onOK="projectController.accept();"/>
             </row>
             <row>
                 <label value="${i18n:_('Code')}" />
@@ -49,7 +50,7 @@
             <row>
                 <label value="${i18n:_('Template')}" />
                 <bandboxSearch id="bdProjectTemplate" finder="templatesEligibleForOrder"
-                    widthBandbox="300px" widthListbox="500px" />
+                    widthBandbox="400px" widthListbox="500px" />
             </row>
             <row>
                 <label value="${i18n:_('Starting date')}" />

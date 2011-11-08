@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -143,11 +144,9 @@ public class ProjectDetailsController extends GenericForwardComposer {
             if (tabs != null) {
                 tabs.goToOrdersList();
             }
-
             if (bdProjectTemplate.getSelectedElement() != null) {
                 OrderTemplate template = (OrderTemplate) bdProjectTemplate
                         .getSelectedElement();
-
                 orderController.createFromTemplate(template);
             }
             orderController.editNewCreatedOrder(window);
@@ -280,12 +279,23 @@ public class ProjectDetailsController extends GenericForwardComposer {
                         bdExternalCompanies.close();
                     }
                 });
-        txtName.addEventListener(Events.ON_OK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                accept();
-            }
-        });
+        bdProjectTemplate.setListboxEventListener(Events.ON_SELECT,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        calculateDeadlineDate();
+                    }
+                });
     }
 
+    public void calculateDeadlineDate() {
+        if ((bdProjectTemplate.getSelectedElement() == null)
+                || (((OrderTemplate) bdProjectTemplate.getSelectedElement())
+                        .getDeadlineAsDaysFromBeginning() == null)
+                || (initDate.getValue() == null)) {
+            return;
+        }
+        int days = ((OrderTemplate) bdProjectTemplate.getSelectedElement()).getDeadlineAsDaysFromBeginning();
+        deadline.setValue( new LocalDate(initDate.getValue()).plusDays(days).toDateTimeAtStartOfDay().toDate());
+        }
 }
