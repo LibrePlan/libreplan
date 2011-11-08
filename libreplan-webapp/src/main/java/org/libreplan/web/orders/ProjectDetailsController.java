@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
+import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.ConstraintChecker;
@@ -38,6 +39,7 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.planner.consolidations.AdvanceConsolidationController;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -89,6 +91,9 @@ public class ProjectDetailsController extends GenericForwardComposer {
     private Textbox txtName;
 
     private Datebox deadline;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     public ProjectDetailsController() {
         Window window = (Window) Executions.createComponents(
@@ -155,11 +160,20 @@ public class ProjectDetailsController extends GenericForwardComposer {
             showWrongValue();
             return false;
         }
+        if (orderDAO.existsByNameAnotherTransaction(txtName.getValue())) {
+            showWrongName();
+            return false;
+        }
         return true;
     }
 
     private void showWrongValue() {
         throw new WrongValueException(initDate, _("cannot be null or empty"));
+    }
+
+    private void showWrongName() {
+        throw new WrongValueException(txtName,
+                _("project name already being used"));
     }
 
     private void close() {

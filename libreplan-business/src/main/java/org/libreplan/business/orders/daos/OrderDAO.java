@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
@@ -407,12 +408,11 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public boolean existsByNameAnotherTransaction(String name) {
-        try {
-            Order order = findByName(name);
-            return order.getName().equals(name);
-        } catch (InstanceNotFoundException e) {
-            return false;
-        }
+
+        Criteria c = getSession().createCriteria(getEntityClass());
+        c.add(Restrictions.eq("infoComponent.name", name).ignoreCase());
+
+        return c.list().size() > 0;
     }
 
 }
