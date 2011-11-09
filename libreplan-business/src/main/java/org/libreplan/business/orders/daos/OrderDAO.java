@@ -27,9 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
@@ -291,9 +289,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         }
 
         Order order = (Order) getSession().createCriteria(getEntityClass())
-                .add(
-                        Restrictions.ilike("infoComponent.name", name,
-                                MatchMode.EXACT))
+                .add(Restrictions.eq("infoComponent.name", name).ignoreCase())
                 .uniqueResult();
 
         if (order == null) {
@@ -408,11 +404,12 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public boolean existsByNameAnotherTransaction(String name) {
-
-        Criteria c = getSession().createCriteria(getEntityClass());
-        c.add(Restrictions.eq("infoComponent.name", name).ignoreCase());
-
-        return c.list().size() > 0;
+        try {
+            Order order = findByName(name);
+            return order != null;
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
     }
 
 }
