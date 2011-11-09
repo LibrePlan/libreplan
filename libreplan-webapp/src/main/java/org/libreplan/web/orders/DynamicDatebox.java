@@ -36,6 +36,14 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Textbox;
 
+/**
+ * Textbox component which is transformed into a Datebox picker on demand <br />
+ *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
+ */
 public class DynamicDatebox extends GenericForwardComposer {
 
     private final OrderElement orderElement;
@@ -65,14 +73,19 @@ public class DynamicDatebox extends GenericForwardComposer {
         return orderElement;
     }
 
-    public Datebox getDateBox() {
+    public Datebox createDateBox() {
+        dateBox = new Datebox();
+        dateBox.setFormat("short");
+        dateBox.setValue(getter.get());
+        registerOnEnterOpenDateBox(dateBox);
+        registerBlurListener(dateBox);
+        registerOnChange(dateBox);
+        dateTextBox.getParent().appendChild(dateBox);
         return dateBox;
     }
 
-    public void setDateBox(Datebox dateBox) {
-        this.dateBox = dateBox;
-        this.dateBox.setCompact(true);
-        this.dateBox.setFormat("dd/MM/yyyy");
+    public Datebox getDateBox() {
+        return dateBox;
     }
 
     /**
@@ -83,15 +96,17 @@ public class DynamicDatebox extends GenericForwardComposer {
      */
     public void userWantsDateBox(Component component) {
         if (component == dateTextBox) {
-            showDateBox(dateBox, dateTextBox);
+            showDateBox(dateTextBox);
         }
     }
 
-    private void showDateBox(Datebox currentDateBox, Textbox associatedTextBox) {
+    private void showDateBox(Textbox associatedTextBox) {
         associatedTextBox.setVisible(false);
-        currentDateBox.setVisible(true);
-        currentDateBox.setFocus(true);
-        currentDateBox.setOpen(true);
+        getDateBox();
+        createDateBox();
+        dateBox.setVisible(true);
+        dateBox.setFocus(true);
+        dateBox.setOpen(true);
     }
 
     /**
@@ -101,13 +116,12 @@ public class DynamicDatebox extends GenericForwardComposer {
      */
     public void dateBoxHasLostFocus(Datebox currentDateBox) {
         if (currentDateBox == dateBox) {
-            hideDateBox(dateBox, dateTextBox);
+            hideDateBox(dateTextBox);
         }
     }
 
-    private void hideDateBox(Datebox dateBoxToDissapear,
-            Textbox associatedTextBox) {
-        dateBoxToDissapear.setVisible(false);
+    private void hideDateBox(Textbox associatedTextBox) {
+        dateBox.detach();
         associatedTextBox.setVisible(true);
     }
 
@@ -122,22 +136,14 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     private void registerListeners() {
         registerOnEnterListener(dateTextBox);
-        registerOnEnterOpenDateBox(dateBox);
-        registerBlurListener(dateBox);
-        registerOnChange(dateBox);
     }
 
     private void findComponents(Hbox hbox) {
         List<Object> children = hbox.getChildren();
-        assert children.size() == 2;
+        assert children.size() == 1;
 
         dateTextBox = findTextBoxOfCell(children);
-        dateBox = findDateBoxOfCell(children);
-    }
-
-    private static Datebox findDateBoxOfCell(List<Object> children) {
-        return ComponentsFinder.findComponentsOfType(Datebox.class, children)
-                .get(0);
+        // dateBox = findDateBoxOfCell(children);
     }
 
     private static Textbox findTextBoxOfCell(List<Object> children) {
@@ -210,7 +216,6 @@ public class DynamicDatebox extends GenericForwardComposer {
     }
 
     private void updateComponents() {
-        getDateBox().setValue(getter.get());
         getDateTextBox().setValue(asString(getter.get()));
     }
 
@@ -239,9 +244,6 @@ public class DynamicDatebox extends GenericForwardComposer {
     }
 
     private void applyDisabledToElements(boolean disabled) {
-        if(dateBox != null) {
-            dateBox.setDisabled(disabled);
-        }
         if(dateTextBox != null) {
             dateTextBox.setDisabled(disabled);
         }
