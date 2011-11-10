@@ -36,8 +36,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
+import org.libreplan.business.materials.daos.IMaterialCategoryDAO;
+import org.libreplan.business.materials.entities.MaterialCategory;
+import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
@@ -216,6 +221,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OrderElementTreeController orderElementTreeController;
 
     private ProjectDetailsController projectDetailsController;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -1470,6 +1478,32 @@ public class OrderCRUDController extends GenericForwardComposer {
                 columnDateStart.sort(true, false);
                 columnDateStart.setSortDirection("descending");
             }
+        }
+    }
+
+    public void chekValidProjectName(Textbox textbox) {
+        try {
+            Order found = orderDAO.findByNameAnotherTransaction(textbox
+                    .getValue());
+            if ((found != null) && (!found.getId().equals(getOrder().getId()))) {
+                throw new WrongValueException(textbox,
+                        _("project name already being used"));
+            }
+        } catch (InstanceNotFoundException e) {
+            return;
+        }
+    }
+
+    public void chekValidProjectCode(Textbox textbox) {
+        try {
+            Order found = orderDAO.findByCodeAnotherTransaction(textbox
+                    .getValue());
+            if ((found != null) && (!found.getId().equals(getOrder().getId()))) {
+                throw new WrongValueException(textbox,
+                        _("code already being used"));
+            }
+        } catch (InstanceNotFoundException e) {
+            return;
         }
     }
 
