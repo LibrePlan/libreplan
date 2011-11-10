@@ -1448,4 +1448,8 @@ public abstract class OrderElement extends IntegrationEntity implements
         return new ArrayList<OrderVersion>(schedulingDatasForVersion.keySet());
     }
 
+    public String toString() {
+        return super.toString() + " :: " + getName();
+    }
+
 }
