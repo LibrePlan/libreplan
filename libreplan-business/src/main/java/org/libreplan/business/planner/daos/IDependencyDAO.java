@@ -21,6 +21,7 @@
 package org.libreplan.business.planner.daos;
 
 import org.libreplan.business.common.daos.IGenericDAO;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.planner.entities.Dependency;
 
 /**
@@ -28,8 +29,9 @@ import org.libreplan.business.planner.entities.Dependency;
  * entity
  *
  * @author Javier Moran Rua <jmoran@igalia.com>
- *
  */
-public interface IDependencyDAO extends IGenericDAO<Dependency,Long> {
+public interface IDependencyDAO extends IGenericDAO<Dependency, Long> {
+
+    void deleteUnattachedDependencies() throws InstanceNotFoundException;
 
 }

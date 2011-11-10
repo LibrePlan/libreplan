@@ -36,13 +36,13 @@
         <one-to-one name="taskSource" cascade="delete" />
 
         <!-- Indexed on the other side -->
-        <set name="dependenciesWithThisOrigin" cascade="all-delete-orphan">
+        <set name="dependenciesWithThisOrigin" cascade="all">
             <key column="origin"></key>
             <one-to-many class="Dependency" />
         </set>
 
         <!-- Not indexed -->
-        <set name="dependenciesWithThisDestination" cascade="all-delete-orphan">
+        <set name="dependenciesWithThisDestination" cascade="all">
             <key column="destination"></key>
             <one-to-many class="Dependency" />
         </set>
