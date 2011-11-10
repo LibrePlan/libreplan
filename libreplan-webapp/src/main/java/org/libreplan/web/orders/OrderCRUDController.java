@@ -1481,30 +1481,51 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    public void chekValidProjectName(Textbox textbox) {
-        try {
-            Order found = orderDAO.findByNameAnotherTransaction(textbox
-                    .getValue());
-            if ((found != null) && (!found.getId().equals(getOrder().getId()))) {
-                throw new WrongValueException(textbox,
-                        _("project name already being used"));
+    public Constraint chekValidProjectName() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+
+                if (StringUtils.isBlank((String) value)) {
+                    throw new WrongValueException(comp,
+                            _("cannot be null or empty"));
+                }
+                try {
+                    Order found = orderDAO
+                            .findByNameAnotherTransaction((String) value);
+                    if (!found.getId().equals(getOrder().getId())) {
+                        throw new WrongValueException(comp,
+                                _("project name already being used"));
+                    }
+                } catch (InstanceNotFoundException e) {
+                    return;
+                }
             }
-        } catch (InstanceNotFoundException e) {
-            return;
-        }
+        };
     }
 
-    public void chekValidProjectCode(Textbox textbox) {
-        try {
-            Order found = orderDAO.findByCodeAnotherTransaction(textbox
-                    .getValue());
-            if ((found != null) && (!found.getId().equals(getOrder().getId()))) {
-                throw new WrongValueException(textbox,
-                        _("code already being used"));
-            }
-        } catch (InstanceNotFoundException e) {
-            return;
-        }
-    }
+    public Constraint chekValidProjectCode() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
 
+                if (StringUtils.isBlank((String) value)) {
+                    throw new WrongValueException(comp,
+                            _("cannot be null or empty"));
+                }
+                try {
+                    Order found = orderDAO
+                            .findByCodeAnotherTransaction((String) value);
+                    if (!found.getId().equals(getOrder().getId())) {
+                        throw new WrongValueException(comp,
+                                _("project code already being used"));
+                    }
+                } catch (InstanceNotFoundException e) {
+                    return;
+                }
+            }
+        };
+    }
 }
