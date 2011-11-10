@@ -395,6 +395,13 @@ public abstract class OrderElement extends IntegrationEntity implements
         removeChildrenTaskSource(result);
         if (getOnDBTaskSource() != null) {
             result.add(taskSourceRemoval());
+        } else {
+            TaskSource taskSource = getTaskSource();
+            if (taskSource != null) {
+                taskSource.getTask().detachFromDependencies();
+                taskSource.getTask().detachFromParent();
+                getCurrentSchedulingData().taskSourceRemovalRequested();
+            }
         }
     }
 
