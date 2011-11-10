@@ -472,6 +472,11 @@ div.z-row-cnt {
     font-size: 11px;
 }
 
+
+tr.z-treerow td.z-treerow-focus {
+    background-image: none;
+}
+
 div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column-cnt,div.z-tree-col-cnt {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
