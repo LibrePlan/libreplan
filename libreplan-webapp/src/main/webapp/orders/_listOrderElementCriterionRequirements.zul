@@ -149,7 +149,7 @@
             model="@{criterionRequirementsController.hoursGroups}"
             itemRenderer="@{criterionRequirementsController.renderer}">
             <listhead>
-                <listheader label="${i18n:_('Criterion Requirements')}" width="500px"/>
+                <listheader label="${i18n:_('Criterion Requirements')}" width="500px" hflex="1"/>
                 <listheader label="${i18n:_('Type')}" align="center" width="150px" />
                 <listheader label="${i18n:_('Hours')}" align="center" width="150px" />
             </listhead>
@@ -171,8 +171,7 @@
         <newdatasortablegrid id="listHoursGroups"
                 model="@{criterionRequirementsController.hoursGroupWrappers}"
                 mold="paging"
-                pageSize="4"
-                fixedLayout="true">
+                pageSize="4">
             <columns>
                 <newdatasortablecolumn width="25px" sort="auto"/>
                 <newdatasortablecolumn label="Code" width="160px" sort="auto(code)" sortDirection="ascending" align="center"/>
