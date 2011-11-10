@@ -5,14 +5,14 @@
 # This file is distributed under the same license as the LibrePlan package.
 # Diego Pino García <dpino@igalia.com>, 2009.
 # Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2009, 2010.
-# Manuel Rego Casasnovas <mrego@igalia.com>, 2010, 2011.
+# Manuel Rego Casasnovas <rego@igalia.com>, 2010, 2011.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.1.3\n"
+"Project-Id-Version: 1.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-09 16:17+0200\n"
+"POT-Creation-Date: 2011-11-10 20:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Erase"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:319
+#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:299
 msgid "Add Dependency"
 msgstr ""
 
@@ -38,20 +38,20 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:592
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:629
 msgid "Show reported hours"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:92
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
 msgid "by criteria"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:72
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
 msgid "Show/Hide reported hours"
 msgstr ""
 
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:46
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
 msgid "Zoom"
 msgstr ""
 
@@ -59,7 +59,7 @@ msgstr ""
 msgid "Limiting resources"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:68
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:67
 msgid "The specified dependency is not allowed"
 msgstr ""
 
@@ -67,15 +67,15 @@ msgstr ""
 msgid "Set End-End"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:80
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
 msgid "Show/Hide progress"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:188
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
 msgid "available effort: {0}, assigned effort: {1}"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:91
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
 msgid "by resources"
 msgstr ""
 
@@ -87,7 +87,7 @@ msgstr ""
 msgid "Criterion"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:41
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
 msgid "Print"
 msgstr ""
 
@@ -95,7 +95,7 @@ msgstr ""
 msgid "Week"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:489
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:501
 msgid "filtering by name"
 msgstr ""
 
@@ -105,10 +105,6 @@ msgstr ""
 
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
 msgid "End"
-msgstr ""
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:37
-msgid "Choosing Template"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:243
@@ -123,7 +119,7 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:69
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
 msgid "Flatten/Unflatten tree"
 msgstr ""
 
@@ -135,7 +131,7 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:68
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:67
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
 msgid "Name"
 msgstr ""
@@ -144,27 +140,23 @@ msgstr ""
 msgid "Name filter"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:572
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:609
 msgid "Show progress"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:66
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
 msgid "Expand/Collapse all"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:56
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
 msgid "Show/Hide critical path"
-msgstr ""
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
-msgid "Create Project"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
 msgid "Year"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:145
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
 msgid "showing criteria"
 msgstr ""
 
@@ -172,7 +164,7 @@ msgstr ""
 msgid "Month"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:63
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
 msgid "Show/Hide resources"
 msgstr ""
 
@@ -180,11 +172,11 @@ msgstr ""
 msgid "Set End-Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:302
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:298
 msgid "decreasing zoom"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:559
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:590
 msgid "Hide critical path"
 msgstr ""
 
@@ -192,19 +184,19 @@ msgstr ""
 msgid "Day"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:599
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:636
 msgid "Hide reported hours"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:182
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:193
 msgid "Load: {0}%"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:142
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:147
 msgid "showing resources"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:60
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
 msgid "Show/Hide labels"
 msgstr ""
 
@@ -212,8 +204,8 @@ msgstr ""
 msgid "Hour"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:91
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:116
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:114
 msgid "Graphics"
 msgstr ""
 
@@ -221,30 +213,30 @@ msgstr ""
 msgid "Set Start-Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:141
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:152
 msgid "See resource allocation"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:285
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:281
 msgid "increasing zoom"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:455
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:467
 msgid "Show all elements"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:454
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:466
 msgid "All"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:39
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:38
 msgid "Refresh"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:554
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:585
 msgid "Show critical path"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:577
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:614
 msgid "Hide progress"
 msgstr ""
