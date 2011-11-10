@@ -21,6 +21,7 @@ package org.libreplan.web.planner.order;
 import static org.libreplan.business.planner.entities.TaskElement.justTasks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -260,6 +261,7 @@ public class PlanningStateCreator {
             forceLoadOf(rootTask);
             forceLoadDayAssignments(orderReloaded.getResources());
             forceLoadOfDepedenciesCollections(rootTask);
+            forceLoadOfLabels(Arrays.asList((TaskElement) rootTask));
         }
 
         if (orderReloaded.getCalendar() != null) {
@@ -271,7 +273,6 @@ public class PlanningStateCreator {
                 currentScenario);
 
         forceLoadOfWorkingHours(result.getInitial());
-        forceLoadOfLabels(result.getInitial());
         return result;
     }
 
