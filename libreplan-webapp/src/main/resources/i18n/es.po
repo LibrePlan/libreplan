@@ -2099,7 +2099,7 @@ msgstr "Mover"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/settings/PasswordController.java:67
 msgid "Password saved"
-msgstr "Contraseña guardadaj"
+msgstr "Contraseña guardada"
 
 #: libreplan-webapp/src/main/java/org/libreplan/ws/resources/impl/ResourceConverter.java:224
 msgid "missing code in the resource calendar"
