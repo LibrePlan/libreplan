@@ -24,12 +24,12 @@
     ]]>
 </zscript>
     <treecell>
-        <textbox ctrlKeys="#down#up#right#left" class="task_title"/>
+        <textbox ctrlKeys="#down#up" class="task_title"/>
     </treecell>
     <treecell>
-        <textbox value="" ctrlKeys="#down#up#right#left"  />
+        <textbox value="" ctrlKeys="#down#up"  />
     </treecell>
     <treecell>
-        <textbox value="" ctrlKeys="#down#up#right#left"  />
+        <textbox value="" ctrlKeys="#down#up"  />
     </treecell>
 </treerow>

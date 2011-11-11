@@ -216,20 +216,6 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         case DOWN:
             focusGoDown(position);
             break;
-        case LEFT:
-            if (position == 0) {
-                focusGoUp(getTextBoxes().size() - 1);
-            } else {
-                textBoxes.get(position - 1).focus();
-            }
-            break;
-        case RIGHT:
-            if (position < textBoxes.size() - 1) {
-                textBoxes.get(position + 1).focus();
-            } else {
-                focusGoDown(0);
-            }
-            break;
         default:
             throw new RuntimeException("case not covered: " + navigation);
         }
