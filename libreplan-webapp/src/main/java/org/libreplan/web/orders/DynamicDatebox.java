@@ -29,6 +29,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -46,8 +47,6 @@ import org.zkoss.zul.Textbox;
  */
 public class DynamicDatebox extends GenericForwardComposer {
 
-    private final OrderElement orderElement;
-
     final Getter<Date> getter;
 
     final Setter<Date> setter;
@@ -60,17 +59,12 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     private boolean disabled = false;
 
-    public DynamicDatebox(final OrderElement orderElement, Getter<Date> getter,
+    public DynamicDatebox(Getter<Date> getter,
             Setter<Date> setter) {
-        this.orderElement = orderElement;
         this.setter = setter;
         this.getter = getter;
         this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
                 .getCurrent());
-    }
-
-    public OrderElement getOrderElement() {
-        return orderElement;
     }
 
     public Datebox createDateBox() {
@@ -104,7 +98,6 @@ public class DynamicDatebox extends GenericForwardComposer {
         associatedTextBox.setVisible(false);
         getDateBox();
         createDateBox();
-        dateBox.setVisible(true);
         dateBox.setFocus(true);
         dateBox.setOpen(true);
     }
@@ -125,9 +118,8 @@ public class DynamicDatebox extends GenericForwardComposer {
         associatedTextBox.setVisible(true);
     }
 
-    @Override
+
     public void doAfterCompose(Component component) throws Exception {
-        super.doAfterCompose(component);
         findComponents((Hbox) component);
         registerListeners();
         updateComponents();
@@ -212,7 +204,6 @@ public class DynamicDatebox extends GenericForwardComposer {
     public void updateBean() {
         Date date = getDateBox().getValue();
         setter.set(date);
-
     }
 
     private void updateComponents() {
