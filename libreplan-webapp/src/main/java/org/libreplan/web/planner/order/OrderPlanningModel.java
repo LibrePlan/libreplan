@@ -1021,7 +1021,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 try {
                     Messagebox
                             .show(_("Unsaved changes will be lost. Are you sure?"),
-                                    "Confirm exit dialog", Messagebox.OK
+                                    _("Confirm exit dialog"), Messagebox.OK
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION,
                             new org.zkoss.zk.ui.event.EventListener() {
