@@ -24,10 +24,13 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -47,6 +50,13 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.api.Label;
 import org.zkoss.zul.api.Treerow;
 
+/**
+ * Row composer for Tasks details Tree <br />
+ *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ */
 public class LeftTasksTreeRow extends GenericForwardComposer {
 
     public interface ILeftTasksTreeNavigator {
@@ -71,9 +81,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private Textbox endDateTextBox;
 
-    private Datebox startDateBox;
-
-    private Datebox endDateBox;
+    private Datebox openedDateBox = null;
 
     private DateFormat dateFormat;
 
@@ -113,19 +121,6 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         this.nameBox = nameBox;
     }
 
-    public Datebox getStartDateBox() {
-        return startDateBox;
-    }
-
-    public void setStartDateBox(Datebox startDateBox) {
-        this.startDateBox = startDateBox;
-        this.startDateBox.setCompact(true);
-        this.startDateBox.setFormat("dd/MM/yyyy");
-    }
-
-    public Datebox getEndDateBox() {
-        return endDateBox;
-    }
 
     public Task getData() {
         return task;
@@ -140,21 +135,35 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     public void userWantsDateBox(Component component) {
         if (component == startDateTextBox) {
             if (canChangeStartDate()) {
-                showDateBox(startDateBox, startDateTextBox);
+                createDateBox(startDateTextBox);
             }
         }
         if (component == endDateTextBox) {
             if (canChangeEndDate()) {
-                showDateBox(endDateBox, endDateTextBox);
+                createDateBox(endDateTextBox);
             }
         }
     }
 
-    private void showDateBox(Datebox dateBox, Textbox associatedTextBox) {
-        associatedTextBox.setVisible(false);
-        dateBox.setVisible(true);
-        dateBox.setFocus(true);
-        dateBox.setOpen(true);
+    public void createDateBox(Textbox textbox) {
+        openedDateBox = new Datebox();
+        openedDateBox.setFormat("short");
+        openedDateBox.setButtonVisible(false);
+
+        try {
+            openedDateBox.setValue(dateFormat.parse(textbox.getValue()));
+        } catch (ParseException e) {
+            return;
+        }
+
+        registerOnEnterOpenDateBox(openedDateBox);
+        registerBlurListener(openedDateBox);
+        registerOnChangeDatebox(openedDateBox, textbox);
+
+        textbox.setVisible(false);
+        textbox.getParent().appendChild(openedDateBox);
+        openedDateBox.setFocus(true);
+        openedDateBox.setOpen(true);
     }
 
     private enum Navigation {
@@ -236,25 +245,15 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
      *            the component that has lost focus
      */
     public void dateBoxHasLostFocus(Datebox dateBox) {
-        if (dateBox == startDateBox) {
-            hideDateBox(startDateBox, startDateTextBox);
-        }
-        if (dateBox == endDateBox) {
-            hideDateBox(endDateBox, endDateTextBox);
-        }
-    }
-
-    private void hideDateBox(Datebox dateBoxToDissapear,
-            Textbox associatedTextBox) {
-        dateBoxToDissapear.setVisible(false);
-        associatedTextBox.setVisible(true);
+        dateBox.getPreviousSibling().setVisible(true);
+        dateBox.setParent(null);
     }
 
     @Override
     public void doAfterCompose(Component component) throws Exception {
         super.doAfterCompose(component);
         findComponents((Treerow) component);
-        registerListeners();
+        registerTextboxesListeners();
         updateComponents();
         task
                 .addFundamentalPropertiesChangeListener(new PropertyChangeListener() {
@@ -266,25 +265,20 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                 });
     }
 
-    private void registerListeners() {
+    private void registerTextboxesListeners() {
         if (disabilityConfiguration.isTreeEditable()) {
             registerKeyboardListener(nameBox);
+            registerOnChange(nameBox);
             registerKeyboardListener(startDateTextBox);
             registerKeyboardListener(endDateTextBox);
-
             registerOnEnterListener(startDateTextBox);
             registerOnEnterListener(endDateTextBox);
-
-            registerOnEnterOpenDateBox(startDateBox);
-            registerOnEnterOpenDateBox(endDateBox);
-
-            registerBlurListener(startDateBox);
-            registerBlurListener(endDateBox);
-
-            registerOnChange(nameBox);
-            registerOnChange(startDateBox);
-            registerOnChange(endDateBox);
+            registerOnChange(startDateTextBox);
+            registerOnChange(endDateTextBox);
         }
+    }
+
+    public void registerDateboxListeners(Datebox datebox) {
     }
 
     private void findComponents(Treerow row) {
@@ -297,14 +291,10 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         findComponentsForEndDateCell(treeCells.get(2));
     }
 
-    private static Datebox findDateBoxOfCell(Treecell treecell) {
-        List<Object> children = treecell.getChildren();
-        return ComponentsFinder.findComponentsOfType(Datebox.class, children).get(0);
-    }
-
     private static Textbox findTextBoxOfCell(Treecell treecell) {
         List<Object> children = treecell.getChildren();
-        return ComponentsFinder.findComponentsOfType(Textbox.class, children).get(0);
+        return ComponentsFinder.findComponentsOfType(Textbox.class, children)
+                .get(0);
     }
 
     private void findComponentsForNameCell(Treecell treecell) {
@@ -335,6 +325,18 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         });
     }
 
+    private void registerOnChangeDatebox(final Datebox datebox,
+            final Textbox textbox) {
+        datebox.addEventListener("onChange", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) {
+                textbox.setValue(dateFormat.format(datebox.getValue()));
+                updateBean(textbox);
+            }
+        });
+    }
+
     private void registerOnEnterListener(final Textbox textBox) {
         textBox.addEventListener("onOK", new EventListener() {
 
@@ -358,7 +360,6 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     private void findComponentsForStartDateCell(Treecell treecell) {
         if (disabilityConfiguration.isTreeEditable()) {
             startDateTextBox = findTextBoxOfCell(treecell);
-            startDateBox = findDateBoxOfCell(treecell);
         } else {
             startDateLabel = (Label) treecell.getChildren().get(0);
         }
@@ -366,8 +367,6 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private void findComponentsForEndDateCell(Treecell treecell) {
         if (disabilityConfiguration.isTreeEditable()) {
-            endDateBox = findDateBoxOfCell(treecell);
-            endDateBox.setDisabled(true);
             endDateTextBox = findTextBoxOfCell(treecell);
         } else {
             endDateLabel = (Label) treecell.getChildren().get(0);
@@ -387,12 +386,26 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
     public void updateBean(Component updatedComponent) {
         if (updatedComponent == getNameBox()) {
             task.setName(getNameBox().getValue());
-        } else if (updatedComponent == getStartDateBox()) {
-            Date begin = getStartDateBox().getValue();
-            task.moveTo(GanttDate.createFrom(begin));
-        } else if (updatedComponent == getEndDateBox()) {
-            Date newEnd = getEndDateBox().getValue();
-            task.resizeTo(LocalDate.fromDateFields(newEnd));
+            if (StringUtils.isEmpty(getNameBox().getValue())) {
+                getNameBox().setValue(task.getName());
+            }
+        } else if (updatedComponent == getStartDateTextBox()) {
+            try {
+                Date begin = dateFormat.parse(getStartDateTextBox().getValue());
+                task.moveTo(GanttDate.createFrom(begin));
+            } catch (ParseException e) {
+                getStartDateTextBox().setValue(
+                        dateFormat.format(task.getBeginDate()
+                                .toDayRoundedDate()));
+            }
+        } else if (updatedComponent == getEndDateTextBox()) {
+            try {
+                Date newEnd = dateFormat.parse(getEndDateTextBox().getValue());
+                task.resizeTo(LocalDate.fromDateFields(newEnd));
+            } catch (ParseException e) {
+                getEndDateTextBox().setValue(
+                        asString(task.getEndDate().toDayRoundedDate()));
+            }
         }
         planner.updateTooltips();
     }
@@ -403,13 +416,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             getNameBox().setDisabled(!canRenameTask());
             getNameBox().setTooltiptext(task.getName());
 
-            getStartDateBox().setValue(
-                    task.getBeginDate().toDayRoundedDate());
-            getStartDateBox().setDisabled(!canChangeStartDate());
             getStartDateTextBox().setDisabled(!canChangeStartDate());
-
-            getEndDateBox().setValue(task.getEndDate().toDayRoundedDate());
-            getEndDateBox().setDisabled(!canChangeEndDate());
             getEndDateTextBox().setDisabled(!canChangeEndDate());
 
             getStartDateTextBox().setValue(

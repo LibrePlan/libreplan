@@ -28,10 +28,8 @@
     </treecell>
     <treecell>
         <textbox value="" ctrlKeys="#down#up#right#left"  />
-        <datebox  compact="true" visible="${false}"/>
     </treecell>
     <treecell>
-        <textbox ctrlKeys="#down#up#right#left"  />
-        <datebox compact="true" visible ="${false}"/>
+        <textbox value="" ctrlKeys="#down#up#right#left"  />
     </treecell>
 </treerow>
