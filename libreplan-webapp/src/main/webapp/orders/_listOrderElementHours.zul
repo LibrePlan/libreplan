@@ -27,7 +27,7 @@
             <panelchildren>
                 <grid
                     model="@{assignedHoursToOrderElementController.workReportLines}"
-                    mold="paging" pageSize="10" fixedLayout="true">
+                    mold="paging" pageSize="10" >
                     <columns>
                         <column label="${i18n:_('Date')}" width="120px" />
                         <column label="${i18n:_('Resource')}" />
