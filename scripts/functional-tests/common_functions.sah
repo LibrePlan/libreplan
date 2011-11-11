@@ -80,8 +80,8 @@ function commonDeleteProject($name){
 function commonCreateTask($projectName, $name, $hours){
     _click(_link("Projects List"));
     _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($projectName))))));
-    _setValue(_textbox(0, _near(_span("New task:"))), $name);
-    _setValue(_textbox("z-intbox", _near(_span("Hours:"))), $hours);
+    _setValue(_textbox(0, _near(_span("New task"))), $name);
+    _setValue(_textbox("z-intbox", _near(_span("Hours"))), $hours);
     _click(_cell("Add"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
