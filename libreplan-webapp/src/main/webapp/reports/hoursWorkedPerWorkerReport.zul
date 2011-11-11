@@ -48,11 +48,11 @@
                      </columns>
                      <rows>
                          <row>
-                             <label value="${i18n:_('Start date:')}" />
+                             <label value="${i18n:_('Start date')}" />
                              <datebox id="startingDate" />
                          </row>
                          <row>
-                             <label value="${i18n:_('End date:')}" />
+                             <label value="${i18n:_('End date')}" />
                              <datebox id="endingDate" />
                          </row>
                      </rows>
@@ -108,9 +108,9 @@
                     </hbox>
                     <hbox>
                         <radiogroup>
-                            <label value="${i18n:_('Apply filter to: ') }"/>
+                            <label value="${i18n:_('Apply filter to')}:"/>
                             <radio id="filterByWorkReports" label="${i18n:_('Work reports')}" />
-                            <radio id="filterByOrderElements" label="${i18n:_('Order elements')}" />
+                            <radio id="filterByOrderElements" label="${i18n:_('Tasks')}" />
                             <radio id="filterByBoth" label="${i18n:_('Both')}" checked="true" />
                         </radiogroup>
                     </hbox>
@@ -194,7 +194,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format:')}" />
+                            <label value="${i18n:_('Output format')}" />
                             <combobox_output_format id="outputFormat" />
                         </row>
                     </rows>

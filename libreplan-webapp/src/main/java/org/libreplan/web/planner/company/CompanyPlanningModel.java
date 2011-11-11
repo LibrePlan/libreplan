@@ -417,7 +417,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         vbox.setPack("center");
 
         Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date:")));
+        dateHbox.appendChild(new Label(_("Select date")));
 
         LocalDate initialDate = earnedValueChartFiller
                 .initialDateForIndicatorValues();

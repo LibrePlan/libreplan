@@ -23,7 +23,7 @@
     <div align="right">
         <hbox align="end">
           <!-- Filter by name -->
-          <label value="${i18n:_('Filter quality forms by :')}"/>
+          <label value="${i18n:_('Filter quality forms by')}:"/>
           <label value="${i18n:_('name')}"/>
           <textbox value="" id="txtFilter"/>
           <button label="${i18n:_('Filter')}" onClick="controller.onApplyFilter(event)"/>

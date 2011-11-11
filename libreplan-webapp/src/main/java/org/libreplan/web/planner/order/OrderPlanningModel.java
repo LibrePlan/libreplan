@@ -495,7 +495,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         vbox.setPack("center");
 
         Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date:")));
+        dateHbox.appendChild(new Label(_("Select date")));
 
         LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
         Datebox datebox = new Datebox(initialDateForIndicatorValues
