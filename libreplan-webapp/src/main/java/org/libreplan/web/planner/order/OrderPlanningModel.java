@@ -1020,7 +1020,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
                 try {
                     Messagebox
-                            .show("Are you sure to want to leave? Unsaved changes will be lost.",
+                            .show(_("Unsaved changes will be lost. Are you sure?"),
                                     "Confirm exit dialog", Messagebox.OK
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION,
