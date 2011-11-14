@@ -52,7 +52,7 @@ public class AccumulateTasksStatusVisitor extends TaskElementVisitor {
     public void visit(Task task) {
         TaskStatusEnum status = task.getTaskStatus();
         Integer currentValue = getTaskStatusData().get(status);
-        taskStatusData.put(status, currentValue++);
+        taskStatusData.put(status, Integer.valueOf(currentValue.intValue() + 1));
     }
 
     public void visit(TaskGroup taskGroup) {

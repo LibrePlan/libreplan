@@ -49,7 +49,7 @@ public class AccumulateTasksDeadlineStatusVisitor extends TaskElementVisitor {
     public void visit(Task task) {
         TaskDeadlineViolationStatusEnum status = task.getDeadlineViolationStatus();
         Integer currentValue = taskDeadlineViolationStatusData.get(status);
-        taskDeadlineViolationStatusData.put(status, currentValue++);
+        taskDeadlineViolationStatusData.put(status, Integer.valueOf(currentValue.intValue() + 1));
     }
 
     public void visit(TaskGroup taskGroup) {
