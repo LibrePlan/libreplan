@@ -69,11 +69,16 @@ public class DashboardController extends GenericForwardComposer {
         if (dashboardModel.getPercentageOfFinishedTasks() == null) {
             return "NULL";
         }
-        String out = dashboardModel.getPercentageOfFinishedTasks().toString() + " " +
-                dashboardModel.getPercentageOfInProgressTasks() + " " +
-                dashboardModel.getPercentageOfReadyToStartTasks() + " " +
-                dashboardModel.getPercentageOfBlockedTasks() + "\n" +
-                dashboardModel.getTheoreticalAdvancePercentageByHoursUntilNow();
+        String out = "% Finished: " + dashboardModel.getPercentageOfFinishedTasks().toString() + "" +
+                "% In progress: " + dashboardModel.getPercentageOfInProgressTasks() + " " +
+                "% Ready to Start: " + dashboardModel.getPercentageOfReadyToStartTasks() + " " +
+                "% Blocked: " + dashboardModel.getPercentageOfBlockedTasks() + " " +
+                "A% hours: " + dashboardModel.getAdvancePercentageByHours() + " " +
+                "TA% hours: " + dashboardModel.getTheoreticalAdvancePercentageByHoursUntilNow() + " " +
+                "ACP% hours: " + dashboardModel.getCriticalPathProgressByNumHours() + " " +
+                "TACP% hours: " + dashboardModel.getTheoreticalProgressByNumHoursForCriticalPathUntilNow() + " " +
+                "ACP% duration: " + dashboardModel.getCriticalPathProgressByDuration() + " " +
+                "TACP% duration: " + dashboardModel.getTheoreticalProgressByDurationForCriticalPathUntilNow();
         return out;
     }
 

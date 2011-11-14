@@ -84,6 +84,27 @@ public class TaskGroup extends TaskElement {
         return planningData.getProgressAllByNumHours();
     }
 
+    public BigDecimal getTheoreticalProgressByNumHoursForAllTasksUntilNow() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getTheoreticalProgressByNumHoursForAllTasks();
+    }
+
+    public BigDecimal getTheoreticalProgressByDurationForCriticalPathUntilNow() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getTheoreticalProgressByDurationForCriticalPath();
+    }
+
+    public BigDecimal getTheoreticalProgressByNumHoursForCriticalPathUntilNow() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getTheoreticalProgressByNumHoursForCriticalPath();
+    }
+
     @SuppressWarnings("unused")
     @AssertTrue(message = "order element associated to a task group must be not null")
     private boolean theOrderElementMustBeNotNull() {

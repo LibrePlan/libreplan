@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.business.planner.entities.visitors.AccumulateTasksStatusVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
@@ -55,6 +56,7 @@ public class DashboardModel {
         this.calculateTaskStatusStatistics();
     }
 
+    /* Progress KPI: "Number of tasks by status" */
     public BigDecimal getPercentageOfFinishedTasks() {
         return taskStatusStats.get(TaskStatusEnum.FINISHED);
     }
@@ -71,8 +73,58 @@ public class DashboardModel {
         return taskStatusStats.get(TaskStatusEnum.BLOCKED);
     }
 
+    /* Progress KPI: "Global Progress of the Project" */
+    public BigDecimal getAdvancePercentageByHours(){
+        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        if(rootAsTaskGroup == null) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal ratio = rootAsTaskGroup.getProgressAllByNumHours();
+        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+    }
+
     public BigDecimal getTheoreticalAdvancePercentageByHoursUntilNow(){
-        BigDecimal ratio = getRootTask().getTheoreticalAdvancePercentageUntilDate(new Date());
+        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        if(rootAsTaskGroup == null) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByNumHoursForAllTasksUntilNow();
+        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+    }
+
+    public BigDecimal getCriticalPathProgressByNumHours() {
+        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        if(rootAsTaskGroup == null) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByNumHours();
+        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+    }
+
+    public BigDecimal getTheoreticalProgressByNumHoursForCriticalPathUntilNow() {
+        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        if(rootAsTaskGroup == null) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
+        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+    }
+
+    public BigDecimal getCriticalPathProgressByDuration() {
+        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        if(rootAsTaskGroup == null) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByDuration();
+        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+    }
+
+    public BigDecimal getTheoreticalProgressByDurationForCriticalPathUntilNow() {
+        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        if(rootAsTaskGroup == null) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByDurationForCriticalPathUntilNow();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
