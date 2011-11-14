@@ -101,6 +101,8 @@ public class TaskGroupTest {
         taskGroup.addTaskElement(task2);
         assertTrue(taskGroup.isFinished());
         task2.setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+        task2.resetStatus();
+        taskGroup.resetStatus();
         assertFalse(taskGroup.isFinished());
     }
 
@@ -113,6 +115,8 @@ public class TaskGroupTest {
         taskGroup.addTaskElement(task2);
         assertFalse(taskGroup.isInProgress());
         task2.setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+        task2.resetStatus();
+        taskGroup.resetStatus();
         assertTrue(taskGroup.isInProgress());
     }
 
