@@ -19,7 +19,7 @@
 
 package org.libreplan.business.planner.entities.visitors;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.libreplan.business.planner.entities.Task;
@@ -33,7 +33,10 @@ public class AccumulateTasksStatusVisitor extends Visitor {
     private Map<TaskStatusEnum, Integer> taskStatusData;
 
     public AccumulateTasksStatusVisitor() {
-        this.taskStatusData = new HashMap<TaskStatusEnum, Integer>();
+        this.taskStatusData = new EnumMap<TaskStatusEnum, Integer>(TaskStatusEnum.class);
+        for(TaskStatusEnum status: TaskStatusEnum.values()) {
+            this.taskStatusData.put(status, new Integer(0));
+        }
     }
 
     public Map<TaskStatusEnum, Integer> getTaskStatusData() {
