@@ -164,9 +164,12 @@ public class PlanningData extends BaseEntity {
         EffortDuration totalAssignedTime = EffortDuration.zero();
 
         for (Task each: criticalPath) {
-            EffortDuration.sum(theoreticalCompletedTime, each.getTheoreticalCompletedTimeUntilDate(limit));
-            EffortDuration.sum(totalAssignedTime, AggregateOfDayAssignments.create(
-                    each.getDayAssignments()).getTotalTime());
+            theoreticalCompletedTime = EffortDuration.sum(
+                    theoreticalCompletedTime,
+                    each.getTheoreticalCompletedTimeUntilDate(limit));
+            totalAssignedTime = EffortDuration.sum(totalAssignedTime,
+                    AggregateOfDayAssignments.create(each.getDayAssignments())
+                            .getTotalTime());
         }
         return theoreticalCompletedTime.dividedByAndResultAsBigDecimal(totalAssignedTime);
     }
