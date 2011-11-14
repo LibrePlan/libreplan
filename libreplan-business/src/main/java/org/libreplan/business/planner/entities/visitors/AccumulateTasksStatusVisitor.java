@@ -40,7 +40,7 @@ public class AccumulateTasksStatusVisitor extends TaskElementVisitor {
 
     public AccumulateTasksStatusVisitor() {
         this.taskStatusData = new EnumMap<TaskStatusEnum, Integer>(TaskStatusEnum.class);
-        for(TaskStatusEnum status: TaskStatusEnum.values()) {
+        for (TaskStatusEnum status: TaskStatusEnum.values()) {
             this.taskStatusData.put(status, new Integer(0));
         }
     }
@@ -56,7 +56,7 @@ public class AccumulateTasksStatusVisitor extends TaskElementVisitor {
     }
 
     public void visit(TaskGroup taskGroup) {
-        for(TaskElement each: taskGroup.getAllChildren()) {
+        for (TaskElement each: taskGroup.getAllChildren()) {
             each.acceptVisitor(this);
         }
     }

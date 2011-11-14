@@ -1140,7 +1140,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             return false;
         }
         Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
-        for(Dependency dependency: dependencies) {
+        for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
             if (dependencyType.equals(Type.END_START)) {
                 if (!dependency.getOrigin().isFinished()) {
@@ -1161,7 +1161,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             return false;
         }
         Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
-        for(Dependency dependency: dependencies) {
+        for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
             if (dependencyType.equals(Type.END_START)) {
                 if (!dependency.getOrigin().isFinished()) {

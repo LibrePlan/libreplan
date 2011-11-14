@@ -310,7 +310,7 @@ public class TaskGroup extends TaskElement {
     @Override
     public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
         EffortDuration sum = EffortDuration.zero();
-        for(TaskElement each: taskElements) {
+        for (TaskElement each: taskElements) {
             sum = EffortDuration.sum(sum, each.getTheoreticalCompletedTimeUntilDate(date));
         }
         return sum;
@@ -318,8 +318,8 @@ public class TaskGroup extends TaskElement {
 
     @Override
     public boolean isFinished() {
-        for(TaskElement each: taskElements) {
-            if(!each.isFinished())
+        for (TaskElement each: taskElements) {
+            if (!each.isFinished())
                 return false;
         }
         return true;
@@ -327,8 +327,8 @@ public class TaskGroup extends TaskElement {
 
     @Override
     public boolean isInProgress() {
-        for(TaskElement each: taskElements) {
-            if(each.isInProgress())
+        for (TaskElement each: taskElements) {
+            if (each.isInProgress())
                 return true;
         }
         return false;

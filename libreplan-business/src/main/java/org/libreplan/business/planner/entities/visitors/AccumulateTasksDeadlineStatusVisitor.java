@@ -53,7 +53,7 @@ public class AccumulateTasksDeadlineStatusVisitor extends TaskElementVisitor {
     }
 
     public void visit(TaskGroup taskGroup) {
-        for(TaskElement each: taskGroup.getAllChildren()) {
+        for (TaskElement each: taskGroup.getAllChildren()) {
             each.acceptVisitor(this);
         }
     }
