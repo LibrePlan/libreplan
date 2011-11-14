@@ -210,7 +210,6 @@ public class TaskSource extends BaseEntity {
             task.initializeDatesIfNeeded();
         }
         if (!hasSomeAllocationDone(task)) {
-            task.setEndDate(null);
             task.initializeDatesIfNeeded();
         }
         task.updateDeadlineFromOrderElement();
