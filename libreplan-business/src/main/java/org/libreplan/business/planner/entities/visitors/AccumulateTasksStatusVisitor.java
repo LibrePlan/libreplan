@@ -19,6 +19,12 @@
 
 package org.libreplan.business.planner.entities.visitors;
 
+/**
+ * Visits a task graph computing statuses and writing them
+ * down in a Map.
+ *
+ * @author Nacho Barrientos <nacho@igalia.com>
+ */
 import java.util.EnumMap;
 import java.util.Map;
 

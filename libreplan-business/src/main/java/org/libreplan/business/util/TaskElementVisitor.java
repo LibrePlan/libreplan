@@ -19,6 +19,12 @@
 
 package org.libreplan.business.util;
 
+/**
+ * This class represents an abstract visitor to traverse
+ * task graphs.
+ *
+ * @author Nacho Barrientos <nacho@igalia.com>
+ */
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskGroup;
 
