@@ -1134,7 +1134,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if (this.currentStatus != null) {
             return this.currentStatus == TaskStatusEnum.FINISHED;
         } else {
-            boolean outcome = this.getAdvancePercentage().equals(BigDecimal.ONE);
+            boolean outcome = this.advancePercentageIsOne();
             if (outcome == true) {
                 this.currentStatus = TaskStatusEnum.FINISHED;
             }
@@ -1147,9 +1147,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if (this.currentStatus != null) {
             return this.currentStatus == TaskStatusEnum.IN_PROGRESS;
         } else {
-            BigDecimal currentAdvancePercentage = this.getAdvancePercentage();
             boolean advanceBetweenZeroAndOne = this.advancePertentageIsGreaterThanZero() &&
-                    !currentAdvancePercentage.equals(BigDecimal.ONE);
+                    !advancePercentageIsOne();
             boolean outcome = advanceBetweenZeroAndOne || this.hasAttachedWorkReports();
             if (outcome == true) {
                 this.currentStatus = TaskStatusEnum.IN_PROGRESS;
@@ -1205,7 +1204,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     private boolean advancePercentageIsZero() {
-        return this.getAdvancePercentage().equals(BigDecimal.ZERO);
+        return this.getAdvancePercentage().compareTo(BigDecimal.ZERO) == 0;
+    }
+
+    private boolean advancePercentageIsOne() {
+        return this.getAdvancePercentage().compareTo(BigDecimal.ONE) == 0;
     }
 
     private boolean hasAttachedWorkReports() {
