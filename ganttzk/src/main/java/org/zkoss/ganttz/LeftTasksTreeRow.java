@@ -77,25 +77,28 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
 
     private DateFormat dateFormat;
 
+    private Planner planner;
+
     private final ILeftTasksTreeNavigator leftTasksTreeNavigator;
 
     private final IDisabilityConfiguration disabilityConfiguration;
 
     public static LeftTasksTreeRow create(
             IDisabilityConfiguration disabilityConfiguration, Task bean,
-            ILeftTasksTreeNavigator taskDetailnavigator) {
+            ILeftTasksTreeNavigator taskDetailnavigator, Planner planner) {
         return new LeftTasksTreeRow(disabilityConfiguration, bean,
-                taskDetailnavigator);
+                taskDetailnavigator, planner);
     }
 
     private LeftTasksTreeRow(IDisabilityConfiguration disabilityConfiguration,
-            Task task,
-            ILeftTasksTreeNavigator leftTasksTreeNavigator) {
+            Task task, ILeftTasksTreeNavigator leftTasksTreeNavigator,
+            Planner planner) {
         this.disabilityConfiguration = disabilityConfiguration;
         this.task = task;
         this.dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locales
                 .getCurrent());
         this.leftTasksTreeNavigator = leftTasksTreeNavigator;
+        this.planner = planner;
     }
 
     public Task getTask() {
@@ -391,6 +394,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             Date newEnd = getEndDateBox().getValue();
             task.resizeTo(LocalDate.fromDateFields(newEnd));
         }
+        planner.updateTooltips();
     }
 
     private void updateComponents() {

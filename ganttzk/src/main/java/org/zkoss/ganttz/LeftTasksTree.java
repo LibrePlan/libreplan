@@ -79,8 +79,8 @@ public class LeftTasksTree extends HtmlMacroComponent {
                     task);
             String cssClass = "depth_" + path.length;
             LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(
-                    disabilityConfiguration, task,
-                    new TreeNavigator(tasksTreeModel, task));
+                    disabilityConfiguration, task, new TreeNavigator(
+                            tasksTreeModel, task), planner);
             if (task.isContainer()) {
                 expandWhenOpened((TaskContainer) task, item);
             }
@@ -330,12 +330,15 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private final List<Task> visibleTasks = new ArrayList<Task>();
 
+    private Planner planner;
+
     public LeftTasksTree(IDisabilityConfiguration disabilityConfiguration,
-            List<Task> tasks,
+            Planner planner,
             FilterAndParentExpandedPredicates predicate) {
         this.disabilityConfiguration = disabilityConfiguration;
-        this.tasks = tasks;
+        this.tasks = planner.getTaskList().getAllTasks();
         this.predicate = predicate;
+        this.planner = planner;
     }
 
     private void fillModel(Collection<? extends Task> tasks, boolean firstTime) {

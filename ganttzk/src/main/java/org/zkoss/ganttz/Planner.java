@@ -71,7 +71,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.South;
 
@@ -468,14 +467,21 @@ public class Planner extends HtmlMacroComponent  {
                 return true;
             }
         };
-        this.leftPane = new LeftPane(disabilityConfiguration, this.diagramGraph
-                .getTopLevelTasks(), predicate);
+        this.leftPane = new LeftPane(disabilityConfiguration, this, predicate);
         this.ganttPanel = new GanttPanel(this,
                 commandsOnTasksContextualized, doubleClickCommand,
                 disabilityConfiguration, predicate);
 
         Button button = (Button) getFellow("btnPrint");
         button.setDisabled(!context.isPrintEnabled());
+    }
+
+    public GanttZKDiagramGraph getDiagramGraph() {
+        return this.diagramGraph;
+    }
+
+    public void updateTooltips() {
+        this.ganttPanel.updateTooltips();
     }
 
     @SuppressWarnings("unchecked")
