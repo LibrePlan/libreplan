@@ -19,6 +19,8 @@
 
 package org.libreplan.web.dashboard;
 
+import static org.libreplan.web.I18nHelper._;
+
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.CategoryModel;
+import org.zkoss.zul.Chart;
+import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.Window;
 
 /**
@@ -43,6 +48,8 @@ public class DashboardController extends GenericForwardComposer {
 
     private Order order;
 
+    private Chart progressKPIglobalProgressChart;
+
     public DashboardController() {
     }
 
@@ -59,27 +66,37 @@ public class DashboardController extends GenericForwardComposer {
 
     public void reload() {
         dashboardModel.setCurrentOrder(order);
+        this.reloadCharts();
         if (this.dashboardWindow != null) {
             Util.reloadBindings(this.dashboardWindow);
         }
     }
 
-    /* Test */
-    public String getTextForLabel() {
-        if (dashboardModel.getPercentageOfFinishedTasks() == null) {
-            return "NULL";
-        }
-        String out = "% Finished: " + dashboardModel.getPercentageOfFinishedTasks().toString() + "" +
-                "% In progress: " + dashboardModel.getPercentageOfInProgressTasks() + " " +
-                "% Ready to Start: " + dashboardModel.getPercentageOfReadyToStartTasks() + " " +
-                "% Blocked: " + dashboardModel.getPercentageOfBlockedTasks() + " " +
-                "A% hours: " + dashboardModel.getAdvancePercentageByHours() + " " +
-                "TA% hours: " + dashboardModel.getTheoreticalAdvancePercentageByHoursUntilNow() + " " +
-                "ACP% hours: " + dashboardModel.getCriticalPathProgressByNumHours() + " " +
-                "TACP% hours: " + dashboardModel.getTheoreticalProgressByNumHoursForCriticalPathUntilNow() + " " +
-                "ACP% duration: " + dashboardModel.getCriticalPathProgressByDuration() + " " +
-                "TACP% duration: " + dashboardModel.getTheoreticalProgressByDurationForCriticalPathUntilNow();
-        return out;
+    private void reloadCharts() {
+        generateProgressKPIglobalProgressChart();
+    }
+
+    private void generateProgressKPIglobalProgressChart() {
+        CategoryModel xymodel;
+        xymodel = refreshProgressKPIglobalProgressCategoryModel();
+        progressKPIglobalProgressChart.setModel(xymodel);
+    }
+
+    private CategoryModel refreshProgressKPIglobalProgressCategoryModel() {
+        CategoryModel result = new SimpleCategoryModel();
+        result.setValue(_("Current"), _("All tasks (hours)"),
+                dashboardModel.getAdvancePercentageByHours());
+        result.setValue(_("Expected"), _("All tasks (hours)"),
+                dashboardModel.getTheoreticalAdvancePercentageByHoursUntilNow());
+        result.setValue(_("Current"), _("Critical path (hours)"),
+                dashboardModel.getCriticalPathProgressByNumHours());
+        result.setValue(_("Expected"), _("Critical path (hours)"), dashboardModel
+                .getTheoreticalProgressByNumHoursForCriticalPathUntilNow());
+        result.setValue(_("Current"), _("Critical path (duration)"),
+                dashboardModel.getCriticalPathProgressByDuration());
+        result.setValue(_("Expected"), _("Critical path (duration)"),
+                dashboardModel.getTheoreticalProgressByDurationForCriticalPathUntilNow());
+        return result;
     }
 
 }
