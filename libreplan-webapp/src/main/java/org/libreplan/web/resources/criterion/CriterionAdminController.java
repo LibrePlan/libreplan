@@ -211,9 +211,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
         try {
             setupCriterionTreeController(editWindow);
         } catch (Exception e) {
-            LOG.error(
-                    _("Error setting up creationg form for Criterion Type with id}"),
-                    e);
+            LOG.error("Error setting up creationg form for Criterion Type", e);
         }
         setResourceComboboxValue((Combobox) editWindow
                 .getFellowIfAny("resourceCombobox"));
@@ -226,8 +224,8 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
             setupCriterionTreeController(editWindow);
         } catch (Exception e) {
             LOG.error(
-                    _("Error setting up edition form for Criterion Type with id: {0}",
-                            criterionType.getId()), e);
+                    "Error setting up edition form for Criterion Type with id: "
+                            + criterionType.getId(), e);
         }
         setResourceComboboxValue((Combobox) editWindow
                 .getFellowIfAny("resourceCombobox"));

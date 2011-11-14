@@ -149,7 +149,9 @@ function workerAssignProjectForm($workerName, $workerSurName){
     _click(_div($workerSurName+", "+$workerName));
     _click(_cell($workerSurName+", "+$workerName));
     _click(_cell("Add"));
-    _click(_cell("z-button-cm[39]"));
+    _click(_cell("z-button-cm[40]"));
+    _assertExists(_div("box standard-task assigned"));
+    _log("Task assigned", "custom1");
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
 }

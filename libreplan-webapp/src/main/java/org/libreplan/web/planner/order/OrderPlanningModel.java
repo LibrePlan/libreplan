@@ -495,7 +495,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         vbox.setPack("center");
 
         Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date:")));
+        dateHbox.appendChild(new Label(_("Select date")));
 
         LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
         Datebox datebox = new Datebox(initialDateForIndicatorValues
@@ -1020,8 +1020,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
                 try {
                     Messagebox
-                            .show("Are you sure to want to leave? Unsaved changes will be lost.",
-                                    "Confirm exit dialog", Messagebox.OK
+                            .show(_("Unsaved changes will be lost. Are you sure?"),
+                                    _("Confirm exit dialog"), Messagebox.OK
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION,
                             new org.zkoss.zk.ui.event.EventListener() {

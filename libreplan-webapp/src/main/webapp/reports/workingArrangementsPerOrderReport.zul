@@ -70,7 +70,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Show dependencies:')}" />
+                            <label value="${i18n:_('Show dependencies')}" />
                             <checkbox id="cbShowDependencies" />
                         </row>
                     </rows>
@@ -171,7 +171,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format:')}" />
+                            <label value="${i18n:_('Output format')}" />
                             <combobox_output_format id="outputFormat" />
                         </row>
                     </rows>

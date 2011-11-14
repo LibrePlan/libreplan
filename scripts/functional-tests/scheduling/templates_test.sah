@@ -48,7 +48,7 @@ function templateProjectAssignTemplate($template){
     _click(_image("ico_copy.png"));
     _click(_italic(0, _cell("z-caption-l")));
     _click(_div($template));
-    _click(_cell("Create Order"));
+    _click(_cell("Create Project"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
     _log("Assign the project template", "custom1")
@@ -57,8 +57,8 @@ function templateProjectAssignTemplate($template){
 function templateTaskCreateTaskChild($name, $hours){
     commonEditProject($projectName);
     _click(_span("z-dottree-ico z-dottree-firstspacer"));
-    _setValue(_textbox(0, _near(_span("New task:"))), $name);
-    _setValue(_textbox("z-intbox", _near(_span("Hours:"))), $hours);
+    _setValue(_textbox(0, _near(_span("New task"))), $name);
+    _setValue(_textbox("z-intbox", _near(_span("Hours"))), $hours);
     _click(_cell("Add"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));

@@ -32,8 +32,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.resources.bootstrap.ICriterionsBootstrap;
 import org.libreplan.business.resources.daos.ICriterionDAO;
+import org.libreplan.business.resources.entities.CategoryCriteria;
 import org.libreplan.business.resources.entities.Criterion;
-import org.libreplan.business.resources.entities.WorkingRelationship;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -59,8 +59,8 @@ public class CriterionsBootstrapTest {
 
     private List<Criterion> getSomePredefinedCriterions() {
         List<Criterion> result = new ArrayList<Criterion>();
-        for (WorkingRelationship workingRelationship : WorkingRelationship.values()) {
-            result.add(workingRelationship.criterion());
+        for (CategoryCriteria category : CategoryCriteria.values()) {
+            result.add(category.criterion());
         }
         return result;
     }

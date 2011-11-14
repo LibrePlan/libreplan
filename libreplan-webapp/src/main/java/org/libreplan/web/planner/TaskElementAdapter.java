@@ -638,10 +638,21 @@ public class TaskElementAdapter {
                 if (daysBetween == 0) {
                     return calculateLimitDateWhenDaysBetweenAreZero(advancePercentage);
                 }
-                int daysAdvance = advancePercentage.multiply(
-                        new BigDecimal(daysBetween)).intValue();
-                return GanttDate.createFrom(taskElement.getIntraDayStartDate()
-                        .getDate().plusDays(daysAdvance));
+                BigDecimal daysAdvance = advancePercentage
+                        .multiply(new BigDecimal(daysBetween));
+                int days = daysAdvance.intValue();
+
+                LocalDate advanceDate = taskElement.getStartAsLocalDate()
+                        .plusDays(days);
+                EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                        .wholeDay(advanceDate));
+
+                int seconds = daysAdvance.subtract(new BigDecimal(days))
+                        .multiply(new BigDecimal(capacity.getSeconds()))
+                        .intValue();
+
+                return toGantt(IntraDayDate.create(advanceDate,
+                        EffortDuration.seconds(seconds)));
             }
 
             private GanttDate calculateLimitDateWhenDaysBetweenAreZero(

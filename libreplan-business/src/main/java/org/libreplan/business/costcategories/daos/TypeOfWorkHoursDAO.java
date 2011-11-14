@@ -167,4 +167,11 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         }
     }
 
+    @Override
+    public boolean existsByName(TypeOfWorkHours typeOfWorkHours) {
+        Criteria c = getSession().createCriteria(TypeOfWorkHours.class).add(
+                Restrictions.eq("name", typeOfWorkHours.getName()));
+        return c.uniqueResult() != null;
+    }
+
 }

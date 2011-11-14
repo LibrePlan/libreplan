@@ -290,7 +290,9 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
             return true;
         }
         for (T each : children) {
-            return find(child, getChildren(each));
+            if (find(child, getChildren(each))) {
+                return true;
+            }
         }
         return false;
     }

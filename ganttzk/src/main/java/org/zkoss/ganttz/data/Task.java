@@ -96,7 +96,6 @@ public abstract class Task implements ITaskFundamentalProperties {
             fundamentalPropertiesListeners.firePropertyChange("beginDate",
                     previousStart, fundamentalProperties.getBeginDate());
             fireEndDate(previousEnd);
-            reloadResourcesTextIfChange(newStart, previousStart);
         }
 
         @Override
@@ -202,13 +201,6 @@ public abstract class Task implements ITaskFundamentalProperties {
         fundamentalProperties.setBeginDate(newStart);
         dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
                 newStart);
-    }
-
-    private void reloadResourcesTextIfChange(GanttDate newDate,
-            GanttDate previousDate) {
-        if (!ObjectUtils.equals(newDate, previousDate)) {
-            reloadResourcesText();
-        }
     }
 
     public void fireChangesForPreviousValues(GanttDate previousStart,

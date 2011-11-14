@@ -38,7 +38,7 @@
                 <vbox align="right">
                 <hbox id="hboxFilter" align="center">
                   <!-- Filter by type, start date and finish date -->
-                  <label value="${i18n:_('Filter work report by :')}"/>
+                  <label value="${i18n:_('Filter work report by')}:"/>
                   <label value="${i18n:_('Type')}"/>
                   <listbox id="listType" mold="select" rows="1"
                     model="@{controller.filterWorkReportTypes}" width="150px">
@@ -92,7 +92,7 @@
             <div align="left">
                 <hbox align="center">
                   <!-- Create new Work Report  -->
-                  <label value="${i18n:_('Select type :')}"/>
+                  <label value="${i18n:_('Select type')}:"/>
                   <listbox id="listTypeToAssign" mold="select" rows="1"
                     model="@{controller.workReportTypes}" width="150px"
                     selectedItem="@{controller.firstType}">

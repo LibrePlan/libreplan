@@ -60,7 +60,13 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     $define :{
         resourcesText    : null,
         labelsText    : null,
-        tooltipText : null
+        tooltipText : null,
+        left: function() {
+            this.$supers('setLeft', arguments);
+            this._getRelatedDependencies().forEach(function(dependency) {
+                dependency.draw();
+            });
+        }
     },
     $init : function(){
         this.$supers('$init', arguments);
@@ -113,6 +119,14 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     },
     consolidateNewDependency : function(task){
         zAu.send(new zk.Event(this, 'onAddDependency', {dependencyId : task.id}));
+    },
+    _getRelatedDependencies: function() {
+        return jq('.dependency[idtaskorig='+ this.uuid + ']')
+                .add('.dependency[idtaskend='+ this.uuid + ']')
+                .get()
+                .map(function(dep) {
+                    return ganttz.DependencyComponentBase.$(dep);
+                });
     },
     _addDragDrop : function(){
         var dragdropregion = this._getDragDropRegion();

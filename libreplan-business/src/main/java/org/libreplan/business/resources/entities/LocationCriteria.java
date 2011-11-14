@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 CafédeRed Solutions, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,18 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Predefined working relationships<br />
- * @author Óscar González Fernández <ogonzalez@igalia.com>
- * @author Diego Pino García <dpino@igalia.com>
+ * Predefined location criterions<br />
+ *
+ * @author Ignacio Díaz Teijido <ignacio.diaz@cafedered.com>
  */
-public enum WorkingRelationship {
-    HIRED("hiredResourceWorkingRelationship"),
-    FIRED("firedResourceWorkingRelationship");
+public enum LocationCriteria {
+    AFRICA("Africa"), AMERICA("America"), ASIA("Asia"), AUSTRALIA("Australia"), EUROPE(
+            "Europe");
 
     public static List<String> getCriterionNames() {
         ArrayList<String> result = new ArrayList<String>();
-        for (WorkingRelationship workingRelationship : values()) {
-            result.add(workingRelationship.criterionName);
+        for (LocationCriteria locationCriterions : values()) {
+            result.add(locationCriterions.criterionName);
         }
         return result;
     }
@@ -44,14 +42,11 @@ public enum WorkingRelationship {
     private final String criterionName;
 
     public Criterion criterion() {
-        return Criterion.create(criterionName, CriterionType.asCriterionType(PredefinedCriterionTypes.WORK_RELATIONSHIP));
+        return Criterion.create(criterionName, CriterionType
+                .asCriterionType(PredefinedCriterionTypes.LOCATION));
     }
 
-    public String getCriterionName() {
-        return criterionName;
-    }
-
-    private WorkingRelationship(String name) {
+    private LocationCriteria(String name) {
         this.criterionName = name;
     }
 }

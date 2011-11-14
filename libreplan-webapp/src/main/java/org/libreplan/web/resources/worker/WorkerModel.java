@@ -92,8 +92,8 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     private IBaseCalendarDAO baseCalendarDAO;
 
     private final ICriterionType<?>[] laboralRelatedTypes = {
-            PredefinedCriterionTypes.LEAVE,
-            PredefinedCriterionTypes.WORK_RELATIONSHIP };
+            PredefinedCriterionTypes.LOCATION,
+            PredefinedCriterionTypes.CATEGORY, PredefinedCriterionTypes.SKILL };
 
     private Worker worker;
 
@@ -214,8 +214,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             setDefaultCode();
         }
         localizationsAssigner = new MultipleCriterionActiveAssigner(
-                criterionDAO, worker,
-                PredefinedCriterionTypes.LOCATION_GROUP);
+                criterionDAO, worker, PredefinedCriterionTypes.LOCATION);
     }
 
     @Override
@@ -228,7 +227,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             forceLoadCalendar(this.worker);
             localizationsAssigner = new MultipleCriterionActiveAssigner(
                     criterionDAO, this.worker,
-                    PredefinedCriterionTypes.LOCATION_GROUP);
+                    PredefinedCriterionTypes.LOCATION);
             initOldCodes();
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);

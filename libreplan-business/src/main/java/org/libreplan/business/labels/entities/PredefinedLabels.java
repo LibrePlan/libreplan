@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 CafédeRed Solutions, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,20 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libreplan.business.planner.daos;
+package org.libreplan.business.labels.entities;
 
-import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.planner.entities.Dependency;
 
 /**
- * Interface for interface for repositories related with @{link Dependency}
- * entity
+ * Defines the default {@link Label}.
  *
- * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Ignacio Díaz Teijido <ignacio.diaz@cafedered.com>
  */
-public interface IDependencyDAO extends IGenericDAO<Dependency, Long> {
+public enum PredefinedLabels {
 
-    void deleteUnattachedDependencies() throws InstanceNotFoundException;
+    HIGH_URGENCY("High urgency"), MEDIUM_URGENCY("Medium urgency"), LOW_URGENCY(
+            "Low urgency");
+
+    private Label label;
+
+    private PredefinedLabels(String name) {
+        label = Label.create(name);
+    }
+
+    public Label getLabel() {
+        return label;
+    }
 
 }

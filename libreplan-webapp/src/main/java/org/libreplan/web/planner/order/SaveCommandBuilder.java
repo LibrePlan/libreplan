@@ -57,6 +57,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.planner.daos.IConsolidationDAO;
+import org.libreplan.business.planner.daos.IDependencyDAO;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
@@ -125,7 +126,7 @@ public class SaveCommandBuilder {
                 "/planner/index.zul;company_scheduling", ISaveCommand.class,
                 result);
     }
-    
+
     public static void dontPoseAsTransientAndChildrenObjects(
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {
@@ -134,8 +135,7 @@ public class SaveCommandBuilder {
             for (DayAssignment eachAssignment : each.getAssignments()) {
                 eachAssignment.dontPoseAsTransientObjectAnymore();
             }
-            for (DerivedAllocation eachDerived : each
-                    .getDerivedAllocations()) {
+            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 eachDerived.dontPoseAsTransientObjectAnymore();
                 Collection<DerivedDayAssignmentsContainer> containers = eachDerived
                         .getContainers();
@@ -151,8 +151,7 @@ public class SaveCommandBuilder {
         }
     }
 
-    private static void dontPoseAsTransient(
-            LimitingResourceQueueElement element) {
+    private static void dontPoseAsTransient(LimitingResourceQueueElement element) {
         if (element != null) {
             for (LimitingResourceQueueDependency d : element
                     .getDependenciesAsOrigin()) {
@@ -199,6 +198,9 @@ public class SaveCommandBuilder {
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
+    @Autowired
+    private IDependencyDAO dependencyDAO;
+
     private class SaveCommand implements ISaveCommand {
 
         private PlanningState state;
@@ -209,7 +211,7 @@ public class SaveCommandBuilder {
 
         private IAdapterToTaskFundamentalProperties<TaskElement> adapter;
 
-        private List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
+        private final List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
 
         public SaveCommand(PlanningState planningState,
                 PlannerConfiguration<TaskElement> configuration) {
@@ -270,7 +272,7 @@ public class SaveCommandBuilder {
                                     }
                                     doTheSaving();
                                     return null;
-                        }
+                                }
                             });
                     dontPoseAsTransientObjectAnymore(state.getOrder());
                     state.getScenarioInfo().afterCommit();
@@ -286,7 +288,8 @@ public class SaveCommandBuilder {
 
                 try {
                     String message = validationException.getMessage();
-                    for (InvalidValue invalidValue : validationException.getInvalidValues()) {
+                    for (InvalidValue invalidValue : validationException
+                            .getInvalidValues()) {
                         message += "\n" + invalidValue.getPropertyName() + ": "
                                 + invalidValue.getMessage();
                     }
@@ -329,6 +332,7 @@ public class SaveCommandBuilder {
             checkConstraintOrderUniqueCode(order);
             checkConstraintHoursGroupUniqueCode(order);
             state.synchronizeTrees();
+
             TaskGroup rootTask = state.getRootTask();
             if (rootTask != null) {
                 // This reattachment is needed to ensure that the root task in
@@ -339,8 +343,10 @@ public class SaveCommandBuilder {
                 taskElementDAO.reattach(rootTask);
             }
             orderDAO.save(order);
+
             saveDerivedScenarios(order);
             deleteOrderElementWithoutParent(order);
+            deleteUnboundedDependencies();
 
             updateTasksRelatedData();
             removeTasksToRemove();
@@ -489,6 +495,14 @@ public class SaveCommandBuilder {
                 if (!(orderElement instanceof Order)) {
                     tryToRemove(orderElement);
                 }
+            }
+        }
+
+        private void deleteUnboundedDependencies() {
+            try {
+                dependencyDAO.deleteUnattachedDependencies();
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -842,7 +856,6 @@ public class SaveCommandBuilder {
                 throw new RuntimeException(e);
             }
         }
-
 
         private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
             orderElement.dontPoseAsTransientObjectAnymore();

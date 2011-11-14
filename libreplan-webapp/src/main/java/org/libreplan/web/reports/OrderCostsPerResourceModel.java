@@ -156,6 +156,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     private void loadAllOrders() {
         this.allOrders = orderDAO.getOrders();
+        Collections.sort(this.allOrders);
     }
 
     @Override

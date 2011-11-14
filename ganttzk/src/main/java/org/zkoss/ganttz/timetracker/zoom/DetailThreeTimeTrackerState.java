@@ -35,7 +35,7 @@ import org.zkoss.util.Locales;
 public class DetailThreeTimeTrackerState extends
         TimeTrackerStateWithSubintervalsFitting {
 
-    private static final int NUMBER_OF_MONTHS_MINIMUM = 20;
+    private static final int NUMBER_OF_MONTHS_MINIMUM = 30;
 
     DetailThreeTimeTrackerState(IDetailItemModificator firstLevelModificator,
             IDetailItemModificator secondLevelModificator) {

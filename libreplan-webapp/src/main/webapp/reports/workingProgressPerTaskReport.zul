@@ -48,7 +48,7 @@
                      </columns>
                      <rows>
                          <row>
-                             <label value="${i18n:_('Reference date:')}" />
+                             <label value="${i18n:_('Reference date')}" />
                              <datebox id="referenceDate" onCreate="self.value = new Date()"/>
                          </row>
                      </rows>
@@ -163,7 +163,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format:')}" />
+                            <label value="${i18n:_('Output format')}" />
                             <combobox_output_format id="outputFormat" />
                         </row>
                     </rows>

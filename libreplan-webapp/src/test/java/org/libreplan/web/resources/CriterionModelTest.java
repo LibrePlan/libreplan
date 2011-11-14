@@ -112,12 +112,11 @@ public class CriterionModelTest {
     @Test
     public void savingCriterionIncreasesTheNumberOfCriterions()
             {
-        givenValidCriterionFor(PredefinedCriterionTypes.WORK_RELATIONSHIP);
-        int initial = getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP);
+        givenValidCriterionFor(PredefinedCriterionTypes.CATEGORY);
+        int initial = getCriterionsNumber(PredefinedCriterionTypes.CATEGORY);
         criterionDAO.save(criterion);
         criterionDAO.flush();
-        assertThat(
-                getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP),
+        assertThat(getCriterionsNumber(PredefinedCriterionTypes.CATEGORY),
                 equalTo(initial + 1));
     }
 
@@ -175,13 +174,12 @@ public class CriterionModelTest {
 
     @Test
     public void modifyingDontAlterTheNumberOfCriterions() {
-        givenCreatedCriterionFor(PredefinedCriterionTypes.WORK_RELATIONSHIP);
-        int initial = getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP);
+        givenCreatedCriterionFor(PredefinedCriterionTypes.CATEGORY);
+        int initial = getCriterionsNumber(PredefinedCriterionTypes.CATEGORY);
         String newName = UUID.randomUUID().toString() + "random";
         criterion.setName(newName);
         criterionDAO.save(criterion);
-        assertThat(
-                getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP),
+        assertThat(getCriterionsNumber(PredefinedCriterionTypes.CATEGORY),
                 equalTo(initial));
     }
 
@@ -221,7 +219,7 @@ public class CriterionModelTest {
             @Override
             public Void execute() {
                 Criterion criterion = givenValidCriterionFor(
-                        PredefinedCriterionTypes.WORK_RELATIONSHIP, unique);
+                        PredefinedCriterionTypes.CATEGORY, unique);
                 try {
                     criterionDAO.save(criterion);
                 } catch (ValidationException e) {
@@ -236,7 +234,7 @@ public class CriterionModelTest {
             public Void execute() {
                 try {
                     Criterion criterion2 = givenValidCriterionFor(
-                            PredefinedCriterionTypes.WORK_RELATIONSHIP, unique);
+                            PredefinedCriterionTypes.CATEGORY, unique);
                     criterionDAO.save(criterion2);
                     fail("must send "
                             + ValidationException.class.getSimpleName());

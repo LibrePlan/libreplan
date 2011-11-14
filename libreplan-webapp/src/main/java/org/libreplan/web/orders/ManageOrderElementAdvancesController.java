@@ -341,7 +341,7 @@ public class ManageOrderElementAdvancesController extends
             return _("Progress measurements");
         }
 
-        return _("Progress measurements: ") + infoAdvanceAssignment;
+        return _("Progress measurements") + ": " + infoAdvanceAssignment;
     }
 
     public boolean isReadOnlyAdvanceMeasurements() {

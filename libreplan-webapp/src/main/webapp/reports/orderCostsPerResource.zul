@@ -55,11 +55,11 @@
                      </columns>
                      <rows>
                          <row>
-                             <label value="${i18n:_('Work done from starting date:')}" />
+                             <label value="${i18n:_('Work done from starting date')}" />
                              <datebox id="startingDate" width="200px" constraint = "@{controller.checkConstraintStartingDate}"/>
                          </row>
                          <row>
-                             <label value="${i18n:_('Work done until ending date:')}" />
+                             <label value="${i18n:_('Work done until ending date')}" />
                              <datebox id="endingDate" width="200px" constraint = "@{controller.checkConstraintEndingDate}"/>
                          </row>
                      </rows>
@@ -201,7 +201,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format:')}" />
+                            <label value="${i18n:_('Output format')}" />
                             <combobox_output_format id="outputFormat" />
                         </row>
                     </rows>

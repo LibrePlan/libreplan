@@ -40,7 +40,7 @@
     closable="true"
     onClose="orderElementController.close(event)" >
 
-    <tabbox height="620px" id="tabboxOrderElement">
+    <tabbox height="560px" id="tabboxOrderElement">
         <tabs>
             <tab id="tabDetails" label="${i18n:_('Details')}" selected="true"
                 onSelect="orderElementController.clearAll();"/>

@@ -59,4 +59,13 @@ public class LabelDAO extends IntegrationEntityDAO<Label> implements ILabelDAO {
                 Restrictions.eq("type", labelType));
         return ((List<Label>) c.list());
     }
+
+    @Override
+    public boolean existsByName(String labelName) {
+        Criteria c = getSession().createCriteria(Label.class).add(
+                Restrictions.eq("name", labelName));
+        if (c.uniqueResult() != null)
+            return true;
+        return false;
+    }
 }

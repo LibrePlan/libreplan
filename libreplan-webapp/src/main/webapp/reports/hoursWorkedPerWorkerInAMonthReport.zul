@@ -71,7 +71,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format:')}" />
+                            <label value="${i18n:_('Output format')}" />
                             <combobox_output_format id="outputFormat" />
                         </row>
                     </rows>
