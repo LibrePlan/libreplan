@@ -1,8 +1,6 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,27 +20,26 @@
 package org.libreplan.web.dashboard;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.web.common.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Label;
+import org.zkoss.zul.Window;
 
 /**
- * Controller for global resourceload view
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * Controller for dashboardfororder view
  * @author Nacho Barrientos <nacho@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class DashboardController extends GenericForwardComposer {
 
-    //@Autowired
-    //private IResourceLoadModel resourceLoadModel;
+    @Autowired
+    private DashboardModel dashboardModel;
 
-    private Label testlabel;
-
-    private org.zkoss.zk.ui.Component parent;
+    private Window dashboardWindow;
 
     private Order order;
 
@@ -52,11 +49,31 @@ public class DashboardController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
-        this.parent = comp;
-        this.testlabel.setValue("hello world");
+        this.dashboardWindow = (Window)comp;
+        Util.createBindingsFor(this.dashboardWindow);
     }
 
     public void setCurrentOrder(Order order) {
         this.order = order;
     }
+
+    public void reload() {
+        dashboardModel.setCurrentOrder(order);
+        if (this.dashboardWindow != null) {
+            Util.reloadBindings(this.dashboardWindow);
+        }
+    }
+
+    /* Test */
+    public String getTextForLabel() {
+        if (dashboardModel.getPercentageOfFinishedTasks() == null) {
+            return "NULL";
+        }
+        String out = dashboardModel.getPercentageOfFinishedTasks().toString() + " " +
+                dashboardModel.getPercentageOfInProgressTasks() + " " +
+                dashboardModel.getPercentageOfReadyToStartTasks() + " " +
+                dashboardModel.getPercentageOfBlockedTasks();
+        return out;
+    }
+
 }

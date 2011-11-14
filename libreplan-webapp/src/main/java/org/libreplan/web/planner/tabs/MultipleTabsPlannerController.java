@@ -271,32 +271,8 @@ public class MultipleTabsPlannerController implements Composer,
 
                 }, parameters);
 
-        dashboardTab = DashboardTabCreator.create(mode, dashboardController, orderPlanningController,
-                breadcrumbs, new IOrderPlanningGate() {
-
-                    @Override
-                    public void goToScheduleOf(Order order) {
-                        getTabsRegistry()
-                                .show(planningTab, changeModeTo(order));
-                    }
-
-                    @Override
-                    public void goToOrderDetails(Order order) {
-                        getTabsRegistry().show(ordersTab, changeModeTo(order));
-                    }
-
-                    @Override
-                    public void goToTaskResourceAllocation(Order order,
-                            TaskElement task) {
-                        // do nothing
-                    }
-
-                    @Override
-                    public void goToDashboard(Order order) {
-                        // do nothing
-                    }
-
-                });
+        dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
+                dashboardController, breadcrumbs);
 
         final boolean isMontecarloVisible = isMonteCarloVisible();
         if (isMontecarloVisible) {

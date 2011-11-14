@@ -25,13 +25,18 @@ import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSc
 import java.util.HashMap;
 import java.util.Map;
 
+import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.dashboard.DashboardController;
-import org.libreplan.web.planner.order.IOrderPlanningGate;
-import org.libreplan.web.planner.order.OrderPlanningController;
+import org.libreplan.web.planner.order.PlanningStateCreator;
+import org.libreplan.web.planner.order.PlanningStateCreator.IActionsOnRetrieval;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
@@ -43,33 +48,26 @@ import org.zkoss.zul.Label;
  */
 public class DashboardTabCreator {
 
-    private final IOrderPlanningGate orderPlanningGate;
-
     public static ITab create(Mode mode,
+            PlanningStateCreator planningStateCreator,
             DashboardController dashboardController,
-            OrderPlanningController orderPlanningController,
-            Component breadcrumbs,
-            IOrderPlanningGate orderPlanningGate) {
-        return new DashboardTabCreator(mode, dashboardController,
-                orderPlanningController, orderPlanningGate,
-                breadcrumbs)
-                .build();
+            Component breadcrumbs) {
+        return new DashboardTabCreator(mode, planningStateCreator,
+                dashboardController, breadcrumbs).build();
     }
 
+    private final PlanningStateCreator planningStateCreator;
     private final Mode mode;
     private final DashboardController dashboardController;
-    private final OrderPlanningController orderPlanningController;
     private final Component breadcrumbs;
 
     private DashboardTabCreator(Mode mode,
+            PlanningStateCreator planningStateCreator,
             DashboardController dashboardController,
-            OrderPlanningController orderPlanningController,
-            IOrderPlanningGate orderPlanningGate,
             Component breadcrumbs) {
         this.mode = mode;
+        this.planningStateCreator = planningStateCreator;
         this.dashboardController = dashboardController;
-        this.orderPlanningController = orderPlanningController;
-        this.orderPlanningGate = orderPlanningGate;
         this.breadcrumbs = breadcrumbs;
     }
 
@@ -99,17 +97,34 @@ public class DashboardTabCreator {
 
             @Override
             protected void afterShowAction() {
-                Order order = orderPlanningController.getOrder();
-                dashboardController.setCurrentOrder(order);
+                PlanningState planningState = getPlanningState(mode.getOrder(), getDesktop());
+                Order currentOrder = planningState.getOrder();
+                dashboardController.setCurrentOrder(currentOrder);
+                dashboardController.reload();
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(_("Order Dashboard")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                Order currentOrder = mode.getOrder();
                 breadcrumbs.appendChild(new Label(currentOrder.getName()));
             }
         };
+    }
+
+    PlanningState getPlanningState(final Order order, final Desktop desktop) {
+        IAdHocTransactionService transactionService = Registry.getTransactionService();
+        return transactionService.runOnTransaction(new IOnTransaction<PlanningState>() {
+                    public PlanningState execute() {
+                        return planningStateCreator.retrieveOrCreate(desktop,
+                                order, new IActionsOnRetrieval() {
+
+                                    @Override
+                                    public void onRetrieval(PlanningState planningState) {
+                                        planningState.reattach();
+                                    }
+                        });
+                    }
+        });
     }
 }
