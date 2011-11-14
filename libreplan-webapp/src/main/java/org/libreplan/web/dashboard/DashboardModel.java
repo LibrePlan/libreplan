@@ -21,7 +21,6 @@ package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -98,7 +97,7 @@ public class DashboardModel {
     /* Progress KPI: "Global Progress of the Project" */
     public BigDecimal getAdvancePercentageByHours(){
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if(rootAsTaskGroup == null) {
+        if (rootAsTaskGroup == null) {
             return BigDecimal.ZERO;
         }
         BigDecimal ratio = rootAsTaskGroup.getProgressAllByNumHours();
@@ -107,7 +106,7 @@ public class DashboardModel {
 
     public BigDecimal getTheoreticalAdvancePercentageByHoursUntilNow(){
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if(rootAsTaskGroup == null) {
+        if (rootAsTaskGroup == null) {
             return BigDecimal.ZERO;
         }
         BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByNumHoursForAllTasksUntilNow();
@@ -116,7 +115,7 @@ public class DashboardModel {
 
     public BigDecimal getCriticalPathProgressByNumHours() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if(rootAsTaskGroup == null) {
+        if (rootAsTaskGroup == null) {
             return BigDecimal.ZERO;
         }
         BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByNumHours();
@@ -125,7 +124,7 @@ public class DashboardModel {
 
     public BigDecimal getTheoreticalProgressByNumHoursForCriticalPathUntilNow() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if(rootAsTaskGroup == null) {
+        if (rootAsTaskGroup == null) {
             return BigDecimal.ZERO;
         }
         BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
@@ -134,7 +133,7 @@ public class DashboardModel {
 
     public BigDecimal getCriticalPathProgressByDuration() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if(rootAsTaskGroup == null) {
+        if (rootAsTaskGroup == null) {
             return BigDecimal.ZERO;
         }
         BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByDuration();
@@ -143,7 +142,7 @@ public class DashboardModel {
 
     public BigDecimal getTheoreticalProgressByDurationForCriticalPathUntilNow() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if(rootAsTaskGroup == null) {
+        if (rootAsTaskGroup == null) {
             return BigDecimal.ZERO;
         }
         BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByDurationForCriticalPathUntilNow();
@@ -153,7 +152,7 @@ public class DashboardModel {
     private void calculateTaskStatusStatistics() {
         AccumulateTasksStatusVisitor visitor = new AccumulateTasksStatusVisitor();
         TaskElement rootTask = getRootTask();
-        if(rootTask != null) {
+        if (rootTask != null) {
             resetTasksStatusInGraph();
             rootTask.acceptVisitor(visitor);
         }
@@ -162,7 +161,7 @@ public class DashboardModel {
 
         for (Map.Entry<TaskStatusEnum, Integer> entry : count.entrySet()) {
             BigDecimal percentage;
-            if(totalTasks == 0){
+            if (totalTasks == 0){
                 percentage = BigDecimal.ZERO;
 
             } else {
