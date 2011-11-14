@@ -113,18 +113,14 @@ public class DashboardTabCreator {
     }
 
     PlanningState getPlanningState(final Order order, final Desktop desktop) {
-        IAdHocTransactionService transactionService = Registry.getTransactionService();
-        return transactionService.runOnTransaction(new IOnTransaction<PlanningState>() {
+        IAdHocTransactionService transactionService = Registry
+                .getTransactionService();
+        return transactionService
+                .runOnTransaction(new IOnTransaction<PlanningState>() {
                     public PlanningState execute() {
                         return planningStateCreator.retrieveOrCreate(desktop,
-                                order, new IActionsOnRetrieval() {
-
-                                    @Override
-                                    public void onRetrieval(PlanningState planningState) {
-                                        planningState.reattach();
-                                    }
-                        });
+                                order);
                     }
-        });
+                });
     }
 }
