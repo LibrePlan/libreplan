@@ -52,6 +52,7 @@ public class DashboardController extends GenericForwardComposer {
 
     private Chart progressKPIglobalProgressChart;
     private Chart progressKPItaskStatusChart;
+    private Chart progressKPItaskDeadlineViolationStatusChart;
 
     public DashboardController() {
     }
@@ -78,11 +79,17 @@ public class DashboardController extends GenericForwardComposer {
     private void reloadCharts() {
         generateProgressKPIglobalProgressChart();
         generateProgressKPItaskStatusChart();
+        generateProgressKPItaskDeadlineViolationStatusChart();
     }
 
     private void generateProgressKPItaskStatusChart() {
         PieModel model = refreshProgressKPItaskStatusPieModel();
         progressKPItaskStatusChart.setModel(model);
+    }
+
+    private void generateProgressKPItaskDeadlineViolationStatusChart() {
+        PieModel model = refreshProgressKPItaskDeadlieViolationStatusPieModel();
+        progressKPItaskDeadlineViolationStatusChart.setModel(model);
     }
 
     private void generateProgressKPIglobalProgressChart() {
@@ -97,6 +104,14 @@ public class DashboardController extends GenericForwardComposer {
         model.setValue("In progress", dashboardModel.getPercentageOfInProgressTasks());
         model.setValue("Ready to start", dashboardModel.getPercentageOfReadyToStartTasks());
         model.setValue("Blocked", dashboardModel.getPercentageOfBlockedTasks());
+        return model;
+    }
+
+    private PieModel refreshProgressKPItaskDeadlieViolationStatusPieModel() {
+        PieModel model = new SimplePieModel();
+        model.setValue(_("On schedule"), dashboardModel.getPercentageOfOnScheduleTasks());
+        model.setValue(_("Violated deadline"), dashboardModel.getPercentageOfTasksWithViolatedDeadline());
+        model.setValue(_("No deadline"), dashboardModel.getPercentageOfTasksWithNoDeadline());
         return model;
     }
 

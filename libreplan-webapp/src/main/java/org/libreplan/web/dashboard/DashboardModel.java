@@ -26,9 +26,11 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskDeadlineViolationStatusEnum;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
+import org.libreplan.business.planner.entities.visitors.AccumulateTasksDeadlineStatusVisitor;
 import org.libreplan.business.planner.entities.visitors.AccumulateTasksStatusVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -44,16 +46,23 @@ import org.springframework.stereotype.Component;
 public class DashboardModel {
 
     private Order currentOrder;
+    private Integer taskCount = null;
 
     private Map<TaskStatusEnum, BigDecimal> taskStatusStats;
+    private Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
 
     public DashboardModel() {
-        taskStatusStats = new EnumMap<TaskStatusEnum, BigDecimal>(TaskStatusEnum.class);
+        taskStatusStats = new EnumMap<TaskStatusEnum, BigDecimal>(
+                TaskStatusEnum.class);
+        taskDeadlineViolationStatusStats = new EnumMap<TaskDeadlineViolationStatusEnum, BigDecimal>(
+                TaskDeadlineViolationStatusEnum.class);
     }
 
     public void setCurrentOrder(Order order) {
         this.currentOrder = order;
+        this.taskCount = null;
         this.calculateTaskStatusStatistics();
+        this.calculateTaskViolationStatusStatistics();
     }
 
     /* Progress KPI: "Number of tasks by status" */
@@ -71,6 +80,19 @@ public class DashboardModel {
 
     public BigDecimal getPercentageOfBlockedTasks() {
         return taskStatusStats.get(TaskStatusEnum.BLOCKED);
+    }
+
+    /* Progress KPI: "Deadline violation" */
+    public BigDecimal getPercentageOfOnScheduleTasks() {
+        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.ON_SCHEDULE);
+    }
+
+    public BigDecimal getPercentageOfTasksWithViolatedDeadline() {
+        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED);
+    }
+
+    public BigDecimal getPercentageOfTasksWithNoDeadline() {
+        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.NO_DEADLINE);
     }
 
     /* Progress KPI: "Global Progress of the Project" */
@@ -151,7 +173,30 @@ public class DashboardModel {
         }
     }
 
-    private TaskElement getRootTask(){
+    private void calculateTaskViolationStatusStatistics() {
+        AccumulateTasksDeadlineStatusVisitor visitor = new AccumulateTasksDeadlineStatusVisitor();
+        TaskElement rootTask = getRootTask();
+        if (rootTask != null) {
+            rootTask.acceptVisitor(visitor);
+        }
+        Map<TaskDeadlineViolationStatusEnum, Integer> count = visitor.getTaskDeadlineViolationStatusData();
+        int totalTasks = this.countTasksInAResultMap(count);
+
+        for (Map.Entry<TaskDeadlineViolationStatusEnum, Integer> entry : count.entrySet()) {
+            BigDecimal percentage;
+            if (totalTasks == 0) {
+                percentage = BigDecimal.ZERO;
+
+            } else {
+                percentage = new BigDecimal(
+                        100 * (entry.getValue() / (1.0 * totalTasks)),
+                        MathContext.DECIMAL32);
+            }
+            taskDeadlineViolationStatusStats.put(entry.getKey(), percentage);
+        }
+    }
+
+    private TaskElement getRootTask() {
         return currentOrder.getAssociatedTaskElement();
     }
 
@@ -161,10 +206,17 @@ public class DashboardModel {
     }
 
     private int countTasksInAResultMap(Map<? extends Object, Integer> map) {
-        int sum = 0;
-        for (Object count: map.values()) {
-            sum += (Integer)count;
+        /* It's only needed to count the number of tasks once
+         * each time setOrder is called.
+         */
+        if (this.taskCount != null) {
+            return this.taskCount.intValue();
         }
+        int sum = 0;
+        for (Object count : map.values()) {
+            sum += (Integer) count;
+        }
+        this.taskCount = new Integer(sum);
         return sum;
     }
 
