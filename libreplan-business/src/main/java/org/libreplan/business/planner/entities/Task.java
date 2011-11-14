@@ -125,6 +125,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
+    private TaskStatusEnum currentStatus = null;
+
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
     @Valid
@@ -1123,16 +1125,37 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     @Override
+    /* If the status of the task was needed in the past was because
+     * a TaskGroup needed to calculate children status, but only asked
+     * if this task was FINISHED or IN_PROGRESS. Thus, there is no need
+     * to cache other statutes because they only will be queried once.
+     */
     public boolean isFinished() {
-        return this.getAdvancePercentage().equals(BigDecimal.ONE);
+        if (this.currentStatus != null) {
+            return this.currentStatus == TaskStatusEnum.FINISHED;
+        } else {
+            boolean outcome = this.getAdvancePercentage().equals(BigDecimal.ONE);
+            if (outcome == true) {
+                this.currentStatus = TaskStatusEnum.FINISHED;
+            }
+            return outcome;
+        }
     }
 
     @Override
     public boolean isInProgress() {
-        BigDecimal currentAdvancePercentage = this.getAdvancePercentage();
-        boolean advanceBetweenZeroAndOne = this.advancePertentageIsGreaterThanZero() &&
-               !currentAdvancePercentage.equals(BigDecimal.ONE);
-        return advanceBetweenZeroAndOne || this.hasAttachedWorkReports();
+        if (this.currentStatus != null) {
+            return this.currentStatus == TaskStatusEnum.IN_PROGRESS;
+        } else {
+            BigDecimal currentAdvancePercentage = this.getAdvancePercentage();
+            boolean advanceBetweenZeroAndOne = this.advancePertentageIsGreaterThanZero() &&
+                    !currentAdvancePercentage.equals(BigDecimal.ONE);
+            boolean outcome = advanceBetweenZeroAndOne || this.hasAttachedWorkReports();
+            if (outcome == true) {
+                this.currentStatus = TaskStatusEnum.IN_PROGRESS;
+            }
+            return outcome;
+        }
     }
 
     public boolean isReadyToStart() {
@@ -1191,5 +1214,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public void acceptVisitor(TaskElementVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public void resetStatus() {
+        this.currentStatus = null;
     }
 }

@@ -316,25 +316,43 @@ public class TaskGroup extends TaskElement {
         return sum;
     }
 
+    private Boolean isFinished = null;
+    private Boolean isInProgress = null;
+
     @Override
     public boolean isFinished() {
-        for (TaskElement each: taskElements) {
-            if (!each.isFinished())
-                return false;
+        if (this.isFinished == null) {
+            this.isFinished = new Boolean(true);
+            for (TaskElement each: taskElements) {
+                if (!each.isFinished()) {
+                    this.isFinished = new Boolean(false);
+                    break;
+                }
+            }
         }
-        return true;
+        return this.isFinished.booleanValue();
     }
 
     @Override
     public boolean isInProgress() {
-        for (TaskElement each: taskElements) {
-            if (each.isInProgress())
-                return true;
+        if (this.isInProgress == null) {
+            this.isInProgress = new Boolean(false);
+            for (TaskElement each: taskElements) {
+                if (each.isInProgress()) {
+                    this.isInProgress = new Boolean(true);
+                    break;
+                }
+            }
         }
-        return false;
+        return this.isInProgress.booleanValue();
     }
 
     public void acceptVisitor(TaskElementVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public void resetStatus() {
+        this.isFinished = this.isInProgress = null;
     }
 }

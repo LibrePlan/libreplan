@@ -204,4 +204,8 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
         throw new RuntimeException("No visitors should visit this type of TaskElement");
     }
 
+    @Override
+    public void resetStatus() {
+    }
+
 }

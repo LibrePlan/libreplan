@@ -721,4 +721,6 @@ public abstract class TaskElement extends BaseEntity {
 
     public abstract void acceptVisitor(TaskElementVisitor visitor);
 
+    public abstract void resetStatus();
+
 }
