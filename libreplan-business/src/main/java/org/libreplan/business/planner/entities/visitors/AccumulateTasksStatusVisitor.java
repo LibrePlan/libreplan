@@ -26,9 +26,9 @@ import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
-import org.libreplan.business.util.Visitor;
+import org.libreplan.business.util.TaskElementVisitor;
 
-public class AccumulateTasksStatusVisitor extends Visitor {
+public class AccumulateTasksStatusVisitor extends TaskElementVisitor {
 
     private Map<TaskStatusEnum, Integer> taskStatusData;
 

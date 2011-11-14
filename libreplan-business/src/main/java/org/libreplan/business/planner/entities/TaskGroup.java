@@ -37,7 +37,7 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.business.util.Visitor;
+import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
@@ -334,7 +334,7 @@ public class TaskGroup extends TaskElement {
         return false;
     }
 
-    public void acceptVisitor(Visitor visitor) {
+    public void acceptVisitor(TaskElementVisitor visitor) {
         visitor.visit(this);
     }
 }

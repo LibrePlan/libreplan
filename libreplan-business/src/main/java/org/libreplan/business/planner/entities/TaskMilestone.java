@@ -33,7 +33,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.business.util.Visitor;
+import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
@@ -200,7 +200,7 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
     }
 
     @Override
-    public void acceptVisitor(Visitor visitor) {
+    public void acceptVisitor(TaskElementVisitor visitor) {
         throw new RuntimeException("No visitors should visit this type of TaskElement");
     }
 

@@ -32,9 +32,9 @@ import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskDeadlineViolationStatusEnum;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
-import org.libreplan.business.util.Visitor;
+import org.libreplan.business.util.TaskElementVisitor;
 
-public class AccumulateTasksDeadlineStatusVisitor extends Visitor {
+public class AccumulateTasksDeadlineStatusVisitor extends TaskElementVisitor {
 
     private Map<TaskDeadlineViolationStatusEnum, Integer> taskDeadlineViolationStatusData;
 

@@ -53,7 +53,7 @@ import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
-import org.libreplan.business.util.Visitor;
+import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.ResourcesPerDay;
@@ -719,6 +719,6 @@ public abstract class TaskElement extends BaseEntity {
 
     public abstract boolean isInProgress();
 
-    public abstract void acceptVisitor(Visitor visitor);
+    public abstract void acceptVisitor(TaskElementVisitor visitor);
 
 }

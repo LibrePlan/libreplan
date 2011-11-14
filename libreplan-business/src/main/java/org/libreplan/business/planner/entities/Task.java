@@ -62,7 +62,7 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.util.deepcopy.AfterCopy;
-import org.libreplan.business.util.Visitor;
+import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
@@ -1189,7 +1189,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return !this.getOrderElement().getSumChargedEffort().isZero();
     }
 
-    public void acceptVisitor(Visitor visitor) {
+    public void acceptVisitor(TaskElementVisitor visitor) {
         visitor.visit(this);
     }
 }
