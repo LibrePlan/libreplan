@@ -181,7 +181,7 @@ public class PlanningData extends BaseEntity {
         LocalDate limitLocalDate = new LocalDate(limit);
 
         for (Task each : criticalPath) {
-            totalTheoreticalProgressDays += each.getWorkableDaysUntil(limitLocalDate);
+            totalTheoreticalProgressDays += each.getWorkableDaysFromLimitedByEndOfTheTask(limitLocalDate);
             totalDurationDays += each.getWorkableDays();
         }
         return divide(new BigDecimal(totalTheoreticalProgressDays), totalDurationDays);

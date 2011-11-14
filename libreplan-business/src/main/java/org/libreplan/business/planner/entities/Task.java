@@ -1030,6 +1030,29 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return result;
     }
 
+    /* Older methods didn't consider until dates more recent than
+     * task end date
+     */
+    public Integer getWorkableDaysFromLimitedByEndOfTheTask(LocalDate end) {
+        return getWorkableDaysFromLimitedByEndOfTheTask(getStartAsLocalDate(), end);
+    }
+
+    public Integer getWorkableDaysFromLimitedByEndOfTheTask(LocalDate startInclusive,
+            LocalDate endExclusive) {
+        int result = 0;
+        if(endExclusive.compareTo(this.getEndAsLocalDate()) > 0) {
+            endExclusive = getIntraDayEndDate().asExclusiveEnd();
+        }
+        for (LocalDate current = startInclusive; current
+                .compareTo(endExclusive) < 0; current = current
+                .plusDays(1)) {
+            if (isWorkable(current)) {
+                result++;
+            }
+        }
+        return result;
+    }
+
     public LocalDate calculateEndGivenWorkableDays(int workableDays) {
         return calculateEndGivenWorkableDays(getIntraDayStartDate().getDate(),
                 workableDays);
