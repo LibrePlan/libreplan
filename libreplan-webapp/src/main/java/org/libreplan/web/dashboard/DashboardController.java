@@ -72,7 +72,8 @@ public class DashboardController extends GenericForwardComposer {
         String out = dashboardModel.getPercentageOfFinishedTasks().toString() + " " +
                 dashboardModel.getPercentageOfInProgressTasks() + " " +
                 dashboardModel.getPercentageOfReadyToStartTasks() + " " +
-                dashboardModel.getPercentageOfBlockedTasks();
+                dashboardModel.getPercentageOfBlockedTasks() + "\n" +
+                dashboardModel.getTheoreticalAdvancePercentageByHoursUntilNow();
         return out;
     }
 

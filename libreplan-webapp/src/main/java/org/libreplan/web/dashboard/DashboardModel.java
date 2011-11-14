@@ -21,6 +21,7 @@ package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -68,6 +69,11 @@ public class DashboardModel {
 
     public BigDecimal getPercentageOfBlockedTasks() {
         return taskStatusStats.get(TaskStatusEnum.BLOCKED);
+    }
+
+    public BigDecimal getTheoreticalAdvancePercentageByHoursUntilNow(){
+        BigDecimal ratio = getRootTask().getTheoreticalAdvancePercentageUntilDate(new Date());
+        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
     private void calculateTaskStatusStatistics() {
