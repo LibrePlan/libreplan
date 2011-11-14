@@ -19,25 +19,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.planner.order;
+package org.libreplan.web.dashboard;
 
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.planner.entities.TaskElement;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Label;
 
 /**
- * This interface allows to go to the schedule and the details of an
- * {@link Order}.
- *
+ * Controller for global resourceload view
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Nacho Barrientos <nacho@igalia.com>
  */
-public interface IOrderPlanningGate {
+@Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class DashboardController extends GenericForwardComposer {
 
-    void goToTaskResourceAllocation(Order order, TaskElement task);
+    //@Autowired
+    //private IResourceLoadModel resourceLoadModel;
 
-    void goToScheduleOf(Order order);
+    private Label testlabel;
 
-    void goToOrderDetails(Order order);
+    private org.zkoss.zk.ui.Component parent;
 
-    void goToDashboard(Order order);
+    private Order order;
 
+    public DashboardController() {
+    }
+
+    @Override
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        this.parent = comp;
+        this.testlabel.setValue("hello world");
+    }
+
+    public void setCurrentOrder(Order order) {
+        this.order = order;
+    }
 }
