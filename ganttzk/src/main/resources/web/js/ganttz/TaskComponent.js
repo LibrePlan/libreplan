@@ -191,7 +191,7 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
         this.mouseOverTask = true;
         this._tooltipTimeout = setTimeout(jq.proxy(function(offset) {
             var element = jq("#tasktooltip" + this.uuid);
-            if (element!=null) {
+            if (element.length > 0) {
                 element.show();
                 offset = ganttz.GanttPanel.getInstance().getXMouse()
                         - element.parent().offset().left
