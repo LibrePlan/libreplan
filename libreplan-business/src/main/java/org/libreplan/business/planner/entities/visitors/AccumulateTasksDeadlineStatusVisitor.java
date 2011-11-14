@@ -25,7 +25,7 @@ package org.libreplan.business.planner.entities.visitors;
  *
  * @author Nacho Barrientos <nacho@igalia.com>
  */
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.libreplan.business.planner.entities.Task;
@@ -39,7 +39,12 @@ public class AccumulateTasksDeadlineStatusVisitor extends TaskElementVisitor {
     private Map<TaskDeadlineViolationStatusEnum, Integer> taskDeadlineViolationStatusData;
 
     public AccumulateTasksDeadlineStatusVisitor() {
-        this.taskDeadlineViolationStatusData = new HashMap<TaskDeadlineViolationStatusEnum, Integer>();
+        this.taskDeadlineViolationStatusData = new EnumMap<TaskDeadlineViolationStatusEnum, Integer>(
+                TaskDeadlineViolationStatusEnum.class);
+        for (TaskDeadlineViolationStatusEnum status : TaskDeadlineViolationStatusEnum
+                .values()) {
+            this.taskDeadlineViolationStatusData.put(status, new Integer(0));
+        }
     }
 
     public Map<TaskDeadlineViolationStatusEnum, Integer> getTaskDeadlineViolationStatusData() {
