@@ -25,6 +25,7 @@ package org.libreplan.business.planner.entities.visitors;
  * @author Nacho Barrientos <nacho@igalia.com>
  */
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.util.TaskElementVisitor;
 
@@ -39,6 +40,9 @@ public class ResetTasksStatusVisitor extends TaskElementVisitor {
 
     public void visit(TaskGroup taskGroup) {
         taskGroup.resetStatus();
+        for (TaskElement each: taskGroup.getChildren()) {
+            each.acceptVisitor(this);
+        }
     }
 
 }
