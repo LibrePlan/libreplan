@@ -35,7 +35,8 @@ public enum Language {
     GALICIAN_LANGUAGE(_("Galician"), new Locale("gl")),
     SPANISH_LANGUAGE(_("Spanish"), new Locale("es")),
     ENGLISH_LANGUAGE(_("English"), Locale.ENGLISH),
-    RUSSIAN_LANGUAGE(_("Russian"), new Locale("ru"));
+    RUSSIAN_LANGUAGE(_("Russian"), new Locale("ru")),
+    PORTUGUESE_LANGUAGE(_("Portuguese"), new Locale("pt"));
 
     private final String displayName;
 
