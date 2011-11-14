@@ -100,10 +100,10 @@ public class DashboardController extends GenericForwardComposer {
 
     private PieModel refreshProgressKPItaskStatusPieModel() {
         PieModel model = new SimplePieModel();
-        model.setValue("Finished", dashboardModel.getPercentageOfFinishedTasks());
-        model.setValue("In progress", dashboardModel.getPercentageOfInProgressTasks());
-        model.setValue("Ready to start", dashboardModel.getPercentageOfReadyToStartTasks());
-        model.setValue("Blocked", dashboardModel.getPercentageOfBlockedTasks());
+        model.setValue(_("Finished"), dashboardModel.getPercentageOfFinishedTasks());
+        model.setValue(_("In progress"), dashboardModel.getPercentageOfInProgressTasks());
+        model.setValue(_("Ready to start"), dashboardModel.getPercentageOfReadyToStartTasks());
+        model.setValue(_("Blocked"), dashboardModel.getPercentageOfBlockedTasks());
         return model;
     }
 
