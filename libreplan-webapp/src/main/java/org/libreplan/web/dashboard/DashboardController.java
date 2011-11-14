@@ -30,7 +30,9 @@ import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Chart;
+import org.zkoss.zul.PieModel;
 import org.zkoss.zul.SimpleCategoryModel;
+import org.zkoss.zul.SimplePieModel;
 import org.zkoss.zul.Window;
 
 /**
@@ -49,6 +51,7 @@ public class DashboardController extends GenericForwardComposer {
     private Order order;
 
     private Chart progressKPIglobalProgressChart;
+    private Chart progressKPItaskStatusChart;
 
     public DashboardController() {
     }
@@ -74,12 +77,27 @@ public class DashboardController extends GenericForwardComposer {
 
     private void reloadCharts() {
         generateProgressKPIglobalProgressChart();
+        generateProgressKPItaskStatusChart();
+    }
+
+    private void generateProgressKPItaskStatusChart() {
+        PieModel model = refreshProgressKPItaskStatusPieModel();
+        progressKPItaskStatusChart.setModel(model);
     }
 
     private void generateProgressKPIglobalProgressChart() {
         CategoryModel xymodel;
         xymodel = refreshProgressKPIglobalProgressCategoryModel();
         progressKPIglobalProgressChart.setModel(xymodel);
+    }
+
+    private PieModel refreshProgressKPItaskStatusPieModel() {
+        PieModel model = new SimplePieModel();
+        model.setValue("Finished", dashboardModel.getPercentageOfFinishedTasks());
+        model.setValue("In progress", dashboardModel.getPercentageOfInProgressTasks());
+        model.setValue("Ready to start", dashboardModel.getPercentageOfReadyToStartTasks());
+        model.setValue("Blocked", dashboardModel.getPercentageOfBlockedTasks());
+        return model;
     }
 
     private CategoryModel refreshProgressKPIglobalProgressCategoryModel() {

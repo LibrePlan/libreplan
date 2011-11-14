@@ -23,13 +23,20 @@
     </zscript>
     <div self="@{define(content)}">
         <window id="dashboardWindow" apply="${dsController}">
-            <vbox id="charts">
-                <chart id="progressKPIglobalProgressChart" height="400px"
-                    width="600px" type="bar" threeD="true"
-                    yAxis="%" orient="horizontal"
+            <hbox id="charts">
+                <chart id="progressKPIglobalProgressChart"
+                    height="400px" width="600px" type="bar"
+                    threeD="true" yAxis="%" orient="horizontal"
                     title="${i18n:_('Global progress of the project')}"
                     paneColor="#FFFFFF" showLegend="true" />
-            </vbox>
+                <separator bar="false" spacing="40px"
+                    orient="vertical" />
+                <chart id="progressKPItaskStatusChart" height="400px"
+                    width="600px" type="pie" threeD="true"
+                    title="${i18n:_('Task status')}" paneColor="#FFFFFF"
+                    bgColor="#FFFFFF"
+                    showLegend="true" showTooltiptext="true" />
+            </hbox>
         </window>
     </div>
 </zk>
