@@ -466,9 +466,10 @@ div.z-row-cnt {
     padding-left: 2px;
 }
 
-.leftpanelgap .z-textbox,.leftpanelgap .z-decimalbox,.leftpanelgap .z-intbox,
-.leftpanelgap .z-longbox,.leftpanelgap .z-doublebox,.leftpanelgap .z-datebox,
-.leftpanelgap .z-datebox-inp,.leftpanelgap .z-datebox-focus .z-datebox-inp {
+.leftpanelgap .z-textbox, .leftpanelgap .z-decimalbox, .leftpanelgap .z-intbox,
+.leftpanelgap .z-longbox, .leftpanelgap .z-doublebox, .leftpanelgap .z-datebox,
+.leftpanelgap .z-datebox-inp, .leftpanelgap .z-datebox-focus .z-datebox-inp,
+.leftpanelgap .z-datebox-inp {
     font-size: 11px;
 }
 
@@ -577,9 +578,14 @@ div.z-grid {
 
 .listdetails .z-textbox, .listdetails .z-decimalbox,
 .listdetails .z-intbox, .listdetails .z-longbox,
-.listdetails .z-doublebox, .listdetails .z-datebox-inp {
+.listdetails .z-doublebox, .listdetails .z-tree .z-datebox-inp {
     height: 15px;
 }
+
+.listdetails .z-tree .z-datebox-inp {
+padding-top: 3px;
+}
+
 .listdetails input {
     padding-top: 5px;
 }

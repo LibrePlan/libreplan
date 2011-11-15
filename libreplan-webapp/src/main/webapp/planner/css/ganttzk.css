@@ -796,6 +796,7 @@ div.z-tree {
 
 .listdetails td {
     border-bottom: 1px dotted #CCC !important;
+    border-right: 1px dotted #CCC;
 }
 
 .plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
