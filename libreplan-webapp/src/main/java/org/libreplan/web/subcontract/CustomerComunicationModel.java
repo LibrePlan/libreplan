@@ -1,3 +1,24 @@
+/*
+ * This file is part of LibrePlan
+ *
+ * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+ *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.libreplan.web.subcontract;
 
 import java.util.List;
@@ -19,7 +40,7 @@ public class CustomerComunicationModel implements ICustomerComunicationModel{
     @Autowired
     private ICustomerComunicationDAO customerComunicationDAO;
     
-    private FilterCustomerComunicationEnum currentFilter = FilterCustomerComunicationEnum.NOT_REVIEWED;
+    private FilterComunicationEnum currentFilter = FilterComunicationEnum.NOT_REVIEWED;
 
     @Override
     @Transactional
@@ -31,7 +52,7 @@ public class CustomerComunicationModel implements ICustomerComunicationModel{
     @Transactional
     public List<CustomerComunication> getCustomerAllComunications(){
         List<CustomerComunication> list = customerComunicationDAO.getAll();
-        forceLoadAssociatedOrder(list);
+        forceLoadAssociatedData(list);
         return list;
     }
 
@@ -39,11 +60,11 @@ public class CustomerComunicationModel implements ICustomerComunicationModel{
     @Transactional
     public List<CustomerComunication> getCustomerComunicationWithoutReviewed(){
         List<CustomerComunication> list = customerComunicationDAO.getAllNotReviewed();
-        forceLoadAssociatedOrder(list);
+        forceLoadAssociatedData(list);
         return list;
     }
 
-    private void forceLoadAssociatedOrder(List<CustomerComunication> customerComunicationList){
+    private void forceLoadAssociatedData(List<CustomerComunication> customerComunicationList){
         if (customerComunicationList != null) {
             for (CustomerComunication customerComunication : customerComunicationList) {
                 customerComunication.getOrder().getName();
@@ -52,12 +73,12 @@ public class CustomerComunicationModel implements ICustomerComunicationModel{
     }
 
     @Override
-    public void setCurrentFilter(FilterCustomerComunicationEnum currentFilter) {
+    public void setCurrentFilter(FilterComunicationEnum currentFilter) {
         this.currentFilter = currentFilter;
     }
 
     @Override
-    public FilterCustomerComunicationEnum getCurrentFilter() {
+    public FilterComunicationEnum getCurrentFilter() {
         return currentFilter;
     }
 }

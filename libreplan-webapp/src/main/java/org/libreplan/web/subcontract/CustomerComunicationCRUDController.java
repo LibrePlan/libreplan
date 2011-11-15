@@ -88,15 +88,15 @@ public class CustomerComunicationCRUDController extends GenericForwardComposer {
         }
     }
 
-    public FilterCustomerComunicationEnum[] getFilterItems(){
-        return FilterCustomerComunicationEnum.values();
+    public FilterComunicationEnum[] getFilterItems(){
+        return FilterComunicationEnum.values();
     }
 
-    public FilterCustomerComunicationEnum getCurrentFilterItem() {
+    public FilterComunicationEnum getCurrentFilterItem() {
        return customerComunicationModel.getCurrentFilter();
     }
 
-    public void setCurrentFilterItem(FilterCustomerComunicationEnum selected) {
+    public void setCurrentFilterItem(FilterComunicationEnum selected) {
         customerComunicationModel.setCurrentFilter(selected);
 
         // update the customer comunication list
@@ -110,7 +110,7 @@ public class CustomerComunicationCRUDController extends GenericForwardComposer {
     }
 
     public List<CustomerComunication> getCustomerComunications() {
-        FilterCustomerComunicationEnum currentFilter = customerComunicationModel.getCurrentFilter();
+        FilterComunicationEnum currentFilter = customerComunicationModel.getCurrentFilter();
         switch(currentFilter){
             case ALL: return customerComunicationModel.getCustomerAllComunications();
             case NOT_REVIEWED: return customerComunicationModel.getCustomerComunicationWithoutReviewed();
