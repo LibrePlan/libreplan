@@ -22,6 +22,8 @@ package org.libreplan.web.planner.tabs;
 
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.entrypoints.EntryPoint;
 import org.libreplan.web.common.entrypoints.EntryPoints;
@@ -65,4 +67,7 @@ public interface IGlobalViewEntryPoints {
 
     @EntryPoint("create_order_from_template")
     void goToCreateotherOrderFromTemplate(OrderTemplate template);
+
+    @EntryPoint({"order","task"})
+    void goToAdvanceTask(Order order,TaskElement task);
 }

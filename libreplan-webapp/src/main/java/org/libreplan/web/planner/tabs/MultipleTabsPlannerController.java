@@ -216,6 +216,7 @@ public class MultipleTabsPlannerController implements Composer,
                     public void goToTaskResourceAllocation(Order order,
                             TaskElement task) {
                         orderPlanningController.setShowedTask(task);
+                        orderPlanningController.setCurrentControllerToShow(orderPlanningController.getEditTaskController());
                         getTabsRegistry()
                                 .show(planningTab, changeModeTo(order));
                     }
@@ -436,6 +437,15 @@ public class MultipleTabsPlannerController implements Composer,
     public void goToCreateotherOrderFromTemplate(OrderTemplate template) {
         getTabsRegistry().show(ordersTab);
         orderCRUDController.showCreateFormFromTemplate(template);
+    }
+
+    @Override
+    public void goToAdvanceTask(Order order,TaskElement task) {
+        orderPlanningController.setShowedTask(task);
+        orderPlanningController
+                .setCurrentControllerToShow(orderPlanningController
+                        .getAdvanceAssignmentPlanningController());
+        getTabsRegistry().show(planningTab, changeModeTo(order));
     }
 
     private IBeforeShowAction changeModeTo(final Order order) {

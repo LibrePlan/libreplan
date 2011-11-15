@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Customer subcontracted projects communications')}"?>
+<?page title="${i18n:_('LibrePlan: Incoming communications from subcontractors ')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
@@ -30,11 +30,11 @@
 
 <zk>
 <window self="@{define(content)}"
-        apply="org.libreplan.web.subcontract.CustomerComunicationCRUDController"
-        title="${i18n:_('Customer communications List')}">
+        apply="org.libreplan.web.subcontract.SubcontractorComunicationCRUDController"
+        title="${i18n:_('Subcontractor communications List')}">
 
     <vbox id="messagesContainer" />
-	<div align="right">
+    <div align="right">
 		<label class="subtitulo" value="${i18n:_('Show :')}" />
         <listbox id="listFilter" mold="select" rows="1"
             model="@{controller.filterItems}"
@@ -43,20 +43,37 @@
         </listbox>
     </div>
 	<separator bar="false" spacing="20px" orient="horizontal"/>
-    <grid id="listing"
-        model="@{controller.customerComunications}"
-        rowRenderer="@{controller.customerComunicationRenderer}"
+	 <grid id="listing"
+        model="@{controller.subcontractorComunications}"
+        rowRenderer="@{controller.subcontractorComunicationRenderer}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Communication Type')}" sort="auto(lower(comunicationType))"/>
-            <column label="${i18n:_('Project Name')}" sort="auto(lower(order.name))"/>
-            <column label="${i18n:_('Deadline')}" width="150px" align="center" sort="auto(lower(deadline))"/>
-            <column label="${i18n:_('Project Code')}" sort="auto(lower(order.code))"/>
-            <column label="${i18n:_('Customer')}" sort="auto(lower(order.customerReference))"/>
+            <column label="${i18n:_('Communication Type')}" align="center" width="140px" sort="auto(lower(comunicationType))"/>
+            <column label="${i18n:_('Subcontrated task')}" align="center" sort="auto(lower(subcontractedTaskData.task.name))"/>
+            <column label="${i18n:_('Project name')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.task.orderElement.name))"/>
+            <column label="${i18n:_('Project Code')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.task.orderElement.code))"/>
+            <column label="${i18n:_('Company')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.externalCompany.name))"/>
             <column label="${i18n:_('Communication Date')}" width="150px" align="center" sort="auto(lower(comunicationDate))"/>
+            <column label="${i18n:_('Value')}" width="200px" align="center" sort="auto(lower(lastSubcontratorComunicationValueDate))"/>
             <column label="${i18n:_('Reviewed')}" width="80px" align="center"/>
             <column label="${i18n:_('Operations')}" width="80px" align="center"/>
         </columns>
     </grid>
+
+   
+    <popup id="pp">
+    	<grid id="listingValues" width="300px" fixedLayout="true">
+			<columns>
+            	<column label="${i18n:_('Date')}" width="150px" sort="auto(date)" sortDirection="descending"/>
+                <column label="${i18n:_('Progress')}" width="150px" sort="auto(progress)" sortDirection="descending"/>
+            </columns>
+            <rows>
+            	<row self="@{each='value'}" value="@{value}">
+                    <label value="@{value.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
+                    <label value="@{value.progress}"/>
+                </row>
+            </rows>
+        </grid>
+	</popup>
 </window>
 </zk>

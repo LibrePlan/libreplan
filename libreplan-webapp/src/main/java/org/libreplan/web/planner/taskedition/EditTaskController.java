@@ -185,7 +185,6 @@ public class EditTaskController extends GenericForwardComposer {
                     planningState, messagesForUser);
             showLimitingResourcesTab();
         }
-
     }
 
     private void showSubcontractTab() {

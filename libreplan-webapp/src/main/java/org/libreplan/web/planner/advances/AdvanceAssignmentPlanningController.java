@@ -75,7 +75,6 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
     public void showWindow(IContextWithPlannerTask<TaskElement> context,
             TaskElement task,
             PlanningState planningState) {
-
         this.context = context;
         advanceAssignmentPlanningModel.initAdvancesFor(task, context,
                 planningState);
@@ -84,7 +83,7 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
         try {
             window.setTitle(getTitle());
             Util.reloadBindings(window);
-            this.window.doModal();
+            this.window.setMode("modal");
         } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

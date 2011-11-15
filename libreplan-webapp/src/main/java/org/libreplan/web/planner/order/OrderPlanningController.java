@@ -63,6 +63,7 @@ import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -107,6 +108,8 @@ public class OrderPlanningController implements Composer {
 
     @Autowired
     private OrderCRUDController orderCRUDController;
+
+    private GenericForwardComposer currentControllerToShow;
 
     private Order order;
 
@@ -214,6 +217,7 @@ public class OrderPlanningController implements Composer {
                     + (System.currentTimeMillis() - time) + " ms");
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();
+
         }
     }
 
@@ -362,9 +366,17 @@ public class OrderPlanningController implements Composer {
             if ((foundTask != null) && (foundTaskElement != null)) {
                 IContextWithPlannerTask<TaskElement> contextTask = ContextWithPlannerTask
                         .create(context, foundTask);
-                this.editTaskController
-                        .showEditFormResourceAllocation(contextTask,
-                                foundTaskElement, model.getPlanningState());
+                if (this.getCurrentControllerToShow().equals(
+                        getEditTaskController())) {
+                    this.editTaskController.showEditFormResourceAllocation(
+                            contextTask, foundTaskElement,
+                            model.getPlanningState());
+                } else if (this.getCurrentControllerToShow().equals(
+                        this.getAdvanceAssignmentPlanningController())) {
+                    getAdvanceAssignmentPlanningController().showWindow(
+                            contextTask, foundTaskElement,
+                            model.getPlanningState());
+                }
             }
         }
     }
@@ -375,6 +387,14 @@ public class OrderPlanningController implements Composer {
 
     public AdvanceAssignmentPlanningController getAdvanceAssignmentPlanningController() {
         return advanceAssignmentPlanningController;
+    }
+
+    public void setCurrentControllerToShow(GenericForwardComposer currentControllerToShow) {
+        this.currentControllerToShow = currentControllerToShow;
+    }
+
+    public GenericForwardComposer getCurrentControllerToShow() {
+        return currentControllerToShow;
     }
 
 }

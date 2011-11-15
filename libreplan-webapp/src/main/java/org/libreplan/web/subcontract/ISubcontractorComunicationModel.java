@@ -1,5 +1,5 @@
 /*
- * This file is part of LibrePlan
+ * This file is part of NavalPlan
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
@@ -19,31 +19,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.planner.daos;
+package org.libreplan.web.subcontract;
 
 import java.util.List;
 
-import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.SubcontractorComunication;
 
-/**
- * DAO interface for the {@link SubcontractedTaskDataDAO} entity.
- *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
- */
-public interface ISubcontractedTaskDataDAO extends
-        IGenericDAO<SubcontractedTaskData, Long> {
+public interface ISubcontractorComunicationModel {
 
-    boolean existsInAnohterTransaction(Long id);
+    void confirmSave(SubcontractorComunication customerComunication);
 
-    List<SubcontractedTaskData> getAll();
+    List<SubcontractorComunication> getSubcontractorComunicationWithoutReviewed();
 
-    void removeOrphanedSubcontractedTaskData();
+    List<SubcontractorComunication> getSubcontractorAllComunications();
 
-    List<SubcontractedTaskData> getAllForMasterScenario();
+    void setCurrentFilter(FilterComunicationEnum currentFilter);
 
-    SubcontractedTaskData getSubcontratedTaskDataByOrderElement(
-            OrderElement orderElement) throws InstanceNotFoundException;
+    FilterComunicationEnum getCurrentFilter();
+
+    String getOrderCode(SubcontractedTaskData subcontractedTaskData);
+
+    String getOrderName(SubcontractedTaskData subcontractedTaskData);
+
+    Order getOrder(OrderElement orderElement);
+
 }
