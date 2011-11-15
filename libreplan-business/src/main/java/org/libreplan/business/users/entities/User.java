@@ -286,4 +286,10 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return loginName;
     }
 
+    public String getAuthenticationMethod() {
+        if (isLibrePlanUser())
+            return "LibrePlan";
+        return "LDAP";
+    }
+
 }
