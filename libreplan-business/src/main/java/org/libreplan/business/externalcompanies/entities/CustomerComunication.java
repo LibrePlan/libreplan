@@ -45,17 +45,17 @@ public class CustomerComunication extends BaseEntity{
 
     private Order order;
 
-    public CustomerComunication() {
+    protected CustomerComunication() {
+        this.setComunicationDate(new Date());
+    }
+
+    private CustomerComunication(Date deadline) {
+        this.setDeadline(deadline);
         this.setComunicationDate(new Date());
     }
 
     public static CustomerComunication create() {
         return (CustomerComunication) create(new CustomerComunication());
-    }
-
-    public CustomerComunication(Date deadline) {
-        this.setDeadline(deadline);
-        this.setComunicationDate(new Date());
     }
 
     public static CustomerComunication createToday(Date deadline) {
