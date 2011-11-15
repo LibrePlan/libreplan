@@ -54,6 +54,13 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 
+/**
+ * Tree element to display tasks structure in the planning Gantt <br />
+ *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ */
 public class LeftTasksTree extends HtmlMacroComponent {
 
     private final class TaskBeanRenderer implements TreeitemRenderer {
@@ -75,9 +82,6 @@ public class LeftTasksTree extends HtmlMacroComponent {
                 container.addExpandListener(expandListener);
 
             }
-            final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
-                    task);
-            String cssClass = "depth_" + path.length;
             LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(
                     disabilityConfiguration, task, new TreeNavigator(
                             tasksTreeModel, task), planner);
@@ -96,9 +100,6 @@ public class LeftTasksTree extends HtmlMacroComponent {
             List<Object> rowChildren = row.getChildren();
             List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(
                     Treecell.class, rowChildren);
-            for (Treecell cell : treeCells) {
-                cell.setSclass(cssClass);
-            }
             detailsForBeans.put(task, leftTasksTreeRow);
             deferredFiller.isBeingRendered(task, item);
         }

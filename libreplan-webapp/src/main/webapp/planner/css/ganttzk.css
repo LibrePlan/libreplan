@@ -66,14 +66,14 @@
     font-size: 10px !important;
     border-bottom: 0px;
     border-right: 0px;
-    border-top: 0px;
-    border-left: 1px dotted #86A4BE;
+    border-top: 0;
+    border-left: 0;
     height: 16px;
     padding-left:2px;
 }
 
-.listdetails input.task_title {
-    width: auto;
+.listdetails input.task-name {
+    border-left: dotted 1px #CCC;
 }
 
 .listdetails div.z-tree-cell-cnt {
@@ -96,41 +96,6 @@
     /* min-width: 90px; */
     height: 19px;
 }
-
-.listdetails .depth_1 input.task_title {
-    /*on change org.libreplan.web.print.CutyPrint.BASE_TASK_NAME_PIXEL must
-     be changed too */
-    width: 82%;
-}
-
-.listdetails .depth_2 input.task_title {
-    width: 78%;
-}
-
-.listdetails .depth_3 .task_title {
-    width: 74%;
-}
-
-.listdetails .depth_4 .task_title {
-    width: 70%;
-}
-
-.listdetails .depth_5 .task_title {
-    width: 66%;
-}
-
-.listdetails .depth_6 .task_title {
-    width: 62%;
-}
-
-.listdetails .depth_7 .task_title {
-    width: 58%;
-}
-
-.listdetails .depth_8 .task_title {
-    width: 54%;
-}
-
 
 .listdetails {
     min-width:200px;

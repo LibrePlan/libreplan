@@ -24,7 +24,7 @@
     ]]>
 </zscript>
     <treecell>
-        <textbox ctrlKeys="#down#up" class="task_title"/>
+        <textbox ctrlKeys="#down#up" hflex="1" sclass="task-name" />
     </treecell>
     <treecell>
         <textbox value="" ctrlKeys="#down#up"  />
