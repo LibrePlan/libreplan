@@ -18,4 +18,31 @@
             <column name="order_id" type="BIGINT"/>
         </createTable>
     </changeSet>
+    <changeSet author="smontes" id="initial-database-creation-subcontractor-comunication">
+        <createTable tableName="subcontractor_comunication">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="subcontractor_comunication_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comunication_type" type="INTEGER"/>
+            <column name="comunication_date" type="DATETIME"/>
+            <column name="reviewed" type="BOOLEAN"/>
+            <column name="subcontracted_task_data" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="smontes" id="initial-database-creation-subcontractor-comunication-value">
+        <createTable tableName="subcontrator_comunication_values">
+            <column name="subcontractor_comunication_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="DATETIME"/>
+            <column name="progress" type="DECIMAL(19,2)"/>
+            <column name="idx" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
 </databaseChangeLog>
