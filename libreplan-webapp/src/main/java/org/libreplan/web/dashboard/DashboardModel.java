@@ -157,19 +157,7 @@ public class DashboardModel {
             rootTask.acceptVisitor(visitor);
         }
         Map<TaskStatusEnum, Integer> count = visitor.getTaskStatusData();
-        int totalTasks = this.countTasksInAResultMap(count);
-
-        for (Map.Entry<TaskStatusEnum, Integer> entry : count.entrySet()) {
-            BigDecimal percentage;
-            if (totalTasks == 0){
-                percentage = BigDecimal.ZERO;
-
-            } else {
-                percentage = new BigDecimal(100*(entry.getValue()/(1.0*totalTasks)),
-                        MathContext.DECIMAL32);
-            }
-            taskStatusStats.put(entry.getKey(), percentage);
-        }
+        mapAbsoluteValuesToPercentages(count, taskStatusStats);
     }
 
     private void calculateTaskViolationStatusStatistics() {
@@ -179,9 +167,13 @@ public class DashboardModel {
             rootTask.acceptVisitor(visitor);
         }
         Map<TaskDeadlineViolationStatusEnum, Integer> count = visitor.getTaskDeadlineViolationStatusData();
-        int totalTasks = this.countTasksInAResultMap(count);
+        mapAbsoluteValuesToPercentages(count, taskDeadlineViolationStatusStats);
+    }
 
-        for (Map.Entry<TaskDeadlineViolationStatusEnum, Integer> entry : count.entrySet()) {
+    private <T> void mapAbsoluteValuesToPercentages(Map<T, Integer> source,
+            Map<T, BigDecimal> dest) {
+        int totalTasks = countTasksInAResultMap(source);
+        for (Map.Entry<T, Integer> entry : source.entrySet()) {
             BigDecimal percentage;
             if (totalTasks == 0) {
                 percentage = BigDecimal.ZERO;
@@ -191,7 +183,7 @@ public class DashboardModel {
                         100 * (entry.getValue() / (1.0 * totalTasks)),
                         MathContext.DECIMAL32);
             }
-            taskDeadlineViolationStatusStats.put(entry.getKey(), percentage);
+            dest.put(entry.getKey(), percentage);
         }
     }
 
