@@ -79,7 +79,7 @@
                             </row>
                             <row>
                                 <label value="${i18n:_('Authentication type')}" />
-                                <label value="@{controller.user.authenticationMethod}" />
+                                <label value="@{controller.user.authenticationType}" />
                             </row>
                         </rows>
                     </grid>
