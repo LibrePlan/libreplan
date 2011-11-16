@@ -239,8 +239,10 @@
                     <!-- Activation -->
                     <groupbox style="margin-top: 5px" closable="false">
                         <caption label="${i18n:_('Activation')}" />
-                        <label value="${i18n:_('LDAP Authentication enabled')}" />
+                        <label value="${i18n:_('Enable LDAP authentication')}" />
                         <checkbox id="ldapAuthEnabled" checked="@{configurationController.ldapConfiguration.ldapAuthEnabled}" />
+                        <label value="${i18n:_('Use LDAP roles')}" />
+                        <checkbox id="ldapSaveRolesDB" checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" />
                     </groupbox>
 
                     <!-- Configuration -->
@@ -329,8 +331,11 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Import LDAP roles')}" />
-                                    <checkbox id="ldapSaveRolesDB" checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" onCheck="configurationController.showLdapRoles()"/>
+                                    <label value="${i18n:_('Role search strategy')}" />
+                                    <radiogroup id="strategy" onCheck="configurationController.changeRoleStrategy()">
+                                        <radio label="Group strategy" value="group" />
+                                        <radio label="Property strategy" value="property" />
+                                    </radiogroup>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Group path')}" />
@@ -357,7 +362,7 @@
                         </grid>
                         <separator />
                         <separator />
-                        <vbox id="ldapRoles" visible="false">
+                        <vbox id="ldapRoles">
                             <grid id="configurationRoles"
                                 model="@{configurationController.roles}"
                                 rowRenderer="@{configurationController.allUserRolesRenderer}"
