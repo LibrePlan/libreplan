@@ -64,8 +64,7 @@
                             </row>
                             <row>
                                 <label value="${i18n:_('Report progress')}" />
-                                <checkbox id="checkBoxReportProgress" checked="@{controller.qualityForm.reportAdvance}"
-                                    onCheck="controller.validateReportProgress(self);" />
+                                <checkbox id="checkBoxReportProgress" checked="@{controller.qualityForm.reportAdvance}" />
                             </row>
                         </rows>
                     </grid>
@@ -78,7 +77,7 @@
                             <button label="${i18n:_('New quality form item')}"
                             onClick="controller.createQualityFormItem()" />
                         </hbox>
-                        <grid id="gridQualityFormItems" height="200px"
+                        <grid id="gridQualityFormItems"
                             model="@{controller.qualityFormItems}" fixedLayout="true">
                             <columns sizable="true">
                                 <column label="${i18n:_('Name')}"/>

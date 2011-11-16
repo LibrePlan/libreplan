@@ -135,6 +135,8 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                 .getFellowIfAny("qualityFormName");
         validate(boxName, boxName.getValue());
 
+        validateReportProgress();
+
         List<Row> rows = gridQualityFormItems.getRows().getChildren();
         for (Row row : rows) {
             validate(row);
@@ -410,16 +412,14 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
         predicate = getSelectedName();
     }
 
-    public void validateReportProgress(Component comp) {
-        Checkbox checkbox = (Checkbox) comp;
-        if (checkbox != null) {
-            if ((checkbox.isChecked()) && (!hasItemWithTotalPercentage())) {
-                disabledCheckbocReportProgress(checkbox);
-                messagesForUser
-                        .showMessage(
-                                Level.ERROR,
-                                _("The quality form must have an item with 100% value to report progress"));
-            }
+    public void validateReportProgress() {
+        if ((getQualityForm().getReportAdvance())
+                && (!hasItemWithTotalPercentage())) {
+            Checkbox checkBoxReportProgress = (Checkbox) editWindow
+                    .getFellowIfAny("checkBoxReportProgress");
+            throw new WrongValueException(
+                    checkBoxReportProgress,
+                    _("The quality form must have an item with 100% value to report progress"));
         }
     }
 
