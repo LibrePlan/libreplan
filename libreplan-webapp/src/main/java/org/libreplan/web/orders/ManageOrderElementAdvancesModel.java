@@ -29,11 +29,9 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -96,8 +94,6 @@ public class ManageOrderElementAdvancesModel implements
     private List<AdvanceAssignment> listAdvanceAssignments;
 
     private List<AdvanceType> listAdvanceTypes;
-
-    private CancelOperation cancelOperation = new CancelOperation();
 
     @Autowired
     public ManageOrderElementAdvancesModel(
@@ -242,11 +238,6 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void cancel() {
-        cancelOperation.restoreOriginalState();
-    }
-
-    @Override
     public boolean addNewLineAdvanceAssignment() {
         DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
         newAdvance.setOrderElement(orderElement);
@@ -311,7 +302,6 @@ public class ManageOrderElementAdvancesModel implements
             measurement.setDate(null);
             advanceAssignment.addAdvanceMeasurements(measurement);
         }
-        cancelOperation.markAsAdded(measurement);
     }
 
     @Override
@@ -324,7 +314,6 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void removeLineAdvanceMeasurement(AdvanceMeasurement measurement) {
-        cancelOperation.markAsRemoved(measurement);
         this.advanceAssignment.removeAdvanceMeasurement(measurement);
     }
 
@@ -431,7 +420,6 @@ public class ManageOrderElementAdvancesModel implements
         reattachmentOrderElement();
         orderElement.updateAdvancePercentageTaskElement();
         validateBasicData();
-        cancelOperation.clear();
     }
 
     private void validateBasicData()  throws InstanceNotFoundException,
@@ -799,80 +787,6 @@ public class ManageOrderElementAdvancesModel implements
             }
         }
         return false;
-    }
-
-    /**
-     * @author Diego Pino García <dpino@igalia.com>
-     *
-     *      Keeps track of added and removed measurements. When the cancel button is
-     *      pressed, restores the original state of the advance assignments
-     *
-     */
-    private static class CancelOperation {
-
-        private Set<AdvanceMeasurement> addedMeasurements = new HashSet<AdvanceMeasurement>();
-
-        private Map<AdvanceAssignment, Set<AdvanceMeasurement>> removedMeasurements = new HashMap<AdvanceAssignment, Set<AdvanceMeasurement>>();
-
-        public void restoreOriginalState() {
-            addRemovedMeasurements();
-            removeAddedMeasurements();
-            clear();
-        }
-
-        private void clear() {
-            addedMeasurements.clear();
-            removedMeasurements.clear();
-        }
-
-        private void addRemovedMeasurements() {
-            for (AdvanceAssignment each : removedMeasurements.keySet()) {
-                if (each instanceof DirectAdvanceAssignment) {
-                    DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) each;
-                    directAdvanceAssignment
-                            .addAdvanceMeasurements(removedMeasurements
-                                    .get(each));
-                }
-            }
-            removedMeasurements.clear();
-        }
-
-        private void removeAddedMeasurements() {
-            for (AdvanceMeasurement each : addedMeasurements) {
-                AdvanceAssignment assignment = each.getAdvanceAssignment();
-                if (assignment instanceof DirectAdvanceAssignment) {
-                    DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) assignment;
-                    directAdvanceAssignment.removeAdvanceMeasurement(each);
-                }
-            }
-            addedMeasurements.clear();
-        }
-
-        /**
-         * Keeps track of new measurement added to {@link AdvanceAssignment}. If
-         * the user later clicks cancel these elements will be removed
-         *
-         * @param measurement
-         */
-        public void markAsAdded(AdvanceMeasurement measurement) {
-            addedMeasurements.add(measurement);
-        }
-
-        /**
-         * Keeps track of measurement removed from {@link AdvanceAssignment}. If
-         * the user later clicks cancel these elements will be added back again
-         *
-         * @param measurement
-         */
-        public void markAsRemoved(AdvanceMeasurement measurement) {
-            AdvanceAssignment assignment = measurement.getAdvanceAssignment();
-            if (!removedMeasurements.containsKey(assignment)) {
-                removedMeasurements.put(assignment, new HashSet<AdvanceMeasurement>());
-            }
-            Set<AdvanceMeasurement> measurements = removedMeasurements.get(assignment);
-            measurements.add(measurement);
-        }
-
     }
 
 }
