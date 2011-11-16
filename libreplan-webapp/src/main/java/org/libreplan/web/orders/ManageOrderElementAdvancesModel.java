@@ -815,8 +815,8 @@ public class ManageOrderElementAdvancesModel implements
         private Map<AdvanceAssignment, Set<AdvanceMeasurement>> removedMeasurements = new HashMap<AdvanceAssignment, Set<AdvanceMeasurement>>();
 
         public void restoreOriginalState() {
-            removeAddedMeasurements();
             addRemovedMeasurements();
+            removeAddedMeasurements();
             clear();
         }
 
@@ -825,7 +825,7 @@ public class ManageOrderElementAdvancesModel implements
             removedMeasurements.clear();
         }
 
-        private void removeAddedMeasurements() {
+        private void addRemovedMeasurements() {
             for (AdvanceAssignment each : removedMeasurements.keySet()) {
                 if (each instanceof DirectAdvanceAssignment) {
                     DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) each;
@@ -837,7 +837,7 @@ public class ManageOrderElementAdvancesModel implements
             removedMeasurements.clear();
         }
 
-        private void addRemovedMeasurements() {
+        private void removeAddedMeasurements() {
             for (AdvanceMeasurement each : addedMeasurements) {
                 AdvanceAssignment assignment = each.getAdvanceAssignment();
                 if (assignment instanceof DirectAdvanceAssignment) {
