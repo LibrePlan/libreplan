@@ -87,7 +87,7 @@ function unitMeasureAssign($UMeasure, $materialName){
 function materialFormCreate($material, $measure){
     _click(_link("Materials"));
     _click(_span("z-dottree-ico z-dottree-firstspacer"));
-    _click(_cell("z-button-cm[3]"));
+    _click(_cell("New"));
     _setValue(_textbox("z-textbox[2]"), $material);
     _setSelected(_select(0), $measure);
     _click(_cell("Save"));
