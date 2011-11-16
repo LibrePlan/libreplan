@@ -374,9 +374,11 @@ public class MultipleTabsPlannerController implements Composer,
         handler.registerBookmarkListener(this, comp.getPage());
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-        org.zkoss.zk.ui.Component createOrderButton = comp.getPage().getFellow(
+            org.zkoss.zk.ui.Component createOrderButton = comp.getPage()
+                    .getFellowIfAny(
                 "createOrderButton");
-        createOrderButton.addEventListener(Events.ON_CLICK,
+            if (createOrderButton != null) {
+                createOrderButton.addEventListener(Events.ON_CLICK,
                 new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
@@ -384,6 +386,7 @@ public class MultipleTabsPlannerController implements Composer,
                     }
                 });
 
+            }
         }
     }
 
