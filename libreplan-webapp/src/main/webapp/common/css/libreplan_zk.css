@@ -1138,8 +1138,8 @@ span.perspective, span.perspective-active {
     overflow-x: auto;
 }
 
-tr.z-tree-row-seld, tr.z-list-item-seld,
-.z-combobox-pp .z-combo-item-seld,
+tr.z-tree-row-seld, tr.z-listitem-seld,
+.z-combobox-pp .z-comboitem-seld,
 tr.z-treerow-seld {
     background-color: #fdd772; /* Dark orange */
     color: #000000;
