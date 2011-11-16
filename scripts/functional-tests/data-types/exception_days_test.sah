@@ -94,7 +94,7 @@ function exceptDayCheckCode($exceptDayName){
 
 function exceptDayCreateWithoutCode($name){
     commonCreate("Exception Days");
-    exceptDayForm($name);
+    exceptDayForm($name,"","");
     commonEmptyCodeValidation();
 }
 
@@ -110,7 +110,7 @@ commonLogin("admin", "admin");
 
 exceptDayCreate($exceptDayName, $exceptDaystandar, 2);
 exceptDayCreateDuplicateName($exceptDayName, $exceptDaystandar, 1);
-exceptDayCreateEmpty("", $exceptDaystandar);
+exceptDayCreateEmpty("", $exceptDaystandar,"");
 
 exceptDayEdit($exceptDayName, $exceptDayNewName, 5);
 
