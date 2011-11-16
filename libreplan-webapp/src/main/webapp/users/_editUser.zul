@@ -44,7 +44,8 @@
                                 <textbox id="loginName"
                                     value="@{controller.user.loginName}" width="300px"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"
-                                    onBlur="controller.updateWindowTitle()"/>
+                                    onBlur="controller.updateWindowTitle()"
+                                    disabled="@{controller.ldapUser}" />
                             </row>
                             <row>
                                 <label value="${i18n:_('First name')}" />
@@ -70,7 +71,8 @@
                             <row>
                                 <label value="${i18n:_('Disabled')}" />
                                 <checkbox id="disabled"
-                                    checked="@{controller.user.disabled}" width="300px" />
+                                    checked="@{controller.user.disabled}" width="300px"
+                                    disabled="@{controller.ldapUser}" />
                             </row>
                             <row>
                                 <label value="${i18n:_('E-mail')}" />

@@ -32,7 +32,6 @@ import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
-import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
@@ -216,4 +215,13 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     protected void delete(User user) throws InstanceNotFoundException {
         userModel.confirmRemove(user);
     }
+
+    public boolean isLdapUser() {
+        User user = userModel.getUser();
+        if (user == null) {
+            return false;
+        }
+        return !user.isLibrePlanUser();
+    }
+
 }
