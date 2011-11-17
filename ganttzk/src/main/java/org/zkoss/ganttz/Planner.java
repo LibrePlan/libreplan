@@ -873,7 +873,10 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void updateCompletion(String progressType) {
-        getTaskList().updateCompletion(progressType);
+        TaskList taskList = getTaskList();
+        if (taskList != null) {
+            taskList.updateCompletion(progressType);
+        }
     }
 
 }

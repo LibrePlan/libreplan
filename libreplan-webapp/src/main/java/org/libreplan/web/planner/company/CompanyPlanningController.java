@@ -164,13 +164,9 @@ public class CompanyPlanningController implements Composer {
 
         cbProgressTypes.setVisible(true);
 
-        Comboitem item = findListitemValue(cbProgressTypes,
-                getProgressTypeFromConfiguration());
-
-        if (item != null) {
-            cbProgressTypes.setSelectedItem(item);
-            planner.updateCompletion(((ProgressType) item.getValue())
-                    .toString());
+        ProgressType progressType = getProgressTypeFromConfiguration();
+        if (progressType != null) {
+            planner.updateCompletion(progressType.toString());
         }
 
     }
@@ -183,16 +179,6 @@ public class CompanyPlanningController implements Composer {
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));
         }
-    }
-
-    private Comboitem findListitemValue(Combobox listbox, ProgressType value) {
-        for (Object each : listbox.getChildren()) {
-            final Comboitem item = (Comboitem) each;
-            if (value.equals(item.getValue())) {
-                return item;
-            }
-        }
-        return null;
     }
 
     public ProgressType getProgressTypeFromConfiguration() {
