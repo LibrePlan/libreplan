@@ -575,19 +575,7 @@ public class TaskElementAdapter {
 
             @Override
             public GanttDate getAdvanceEndDate() {
-                BigDecimal advancePercentage = BigDecimal.ZERO;
-
-                if (taskElement.getOrderElement() != null) {
-                    if (isTaskRoot(taskElement)) {
-                        ProgressType progressType = getProgressTypeFromConfiguration();
-                        advancePercentage = taskElement
-                                .getAdvancePercentage(progressType);
-
-                    } else {
-                        advancePercentage = taskElement.getAdvancePercentage();
-                    }
-                }
-                return getAdvanceEndDate(advancePercentage);
+                return getAdvanceEndDate(getAdvancePercentage());
             }
 
             private boolean isTaskRoot(TaskElement taskElement) {
@@ -887,14 +875,21 @@ public class TaskElementAdapter {
             @Override
             public BigDecimal getAdvancePercentage() {
                 if (taskElement != null) {
-                    return taskElement.getAdvancePercentage();
+                    BigDecimal advancePercentage;
+                    if (isTaskRoot(taskElement)) {
+                        ProgressType progressType = getProgressTypeFromConfiguration();
+                        advancePercentage = taskElement
+                                .getAdvancePercentage(progressType);
+                    } else {
+                        advancePercentage = taskElement.getAdvancePercentage();
+                    }
+                    return advancePercentage;
                 }
                 return new BigDecimal(0);
             }
 
             private String buildTooltipText() {
-                return buildTooltipText(asPercentage(taskElement
-                        .getAdvancePercentage()));
+                return buildTooltipText(asPercentage(getAdvancePercentage()));
             }
 
             private BigDecimal asPercentage(BigDecimal value) {
