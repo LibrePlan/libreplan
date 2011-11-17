@@ -340,21 +340,24 @@
                                 <row>
                                     <label value="${i18n:_('Group path')}" />
                                     <hbox>
-                                        <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"/>
+                                        <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"
+                                            disabled="@{configurationController.ldapPropertyStrategy}" />
                                         <label value="${i18n:__('Example: {0}', 'ou=groups')}" /><label value="${i18n:_('(If it is empty, a node strategy is used)')}" />
                                     </hbox>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Role property')}" />
                                     <hbox>
-                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"/>
+                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"
+                                            disabled="@{configurationController.ldapGroupStrategy}" />
                                         <label value="${i18n:__('Example: {0}', 'member')}" />
                                     </hbox>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Role search query')}" />
                                     <hbox>
-                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"/>
+                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"
+                                            disabled="@{configurationController.ldapGroupStrategy}" />
                                         <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>

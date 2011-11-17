@@ -71,6 +71,8 @@ public class LDAPConfiguration extends BaseEntity {
     // LDAP roles will be used or not
     private Boolean ldapSaveRolesDB = false;
 
+    // LDAP strategy if true means group strategy if false means property
+    // strategy
     private Boolean ldapGroupStrategy = true;
 
     /**

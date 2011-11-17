@@ -113,8 +113,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Checkbox scenariosVisible;
 
-    private Component ldapRoles;
-
     private UserRole roles;
 
     private Textbox ldapGroupPath;
@@ -839,6 +837,14 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public boolean isChangedDefaultPasswdAdmin() {
         return configurationModel.isChangedDefaultPasswdAdmin();
+    }
+
+    public boolean isLdapGroupStrategy() {
+        return getLdapConfiguration().getLdapGroupStrategy();
+    }
+
+    public boolean isLdapPropertyStrategy() {
+        return !getLdapConfiguration().getLdapGroupStrategy();
     }
 
 }
