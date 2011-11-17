@@ -333,8 +333,8 @@
                                 <row>
                                     <label value="${i18n:_('Role search strategy')}" />
                                     <radiogroup id="strategy" onCheck="configurationController.changeRoleStrategy()">
-                                        <radio label="Group strategy" value="group" />
-                                        <radio label="Property strategy" value="property" />
+                                        <radio label="${i18n:_('Group strategy')}" value="group" />
+                                        <radio label="${i18n:_('Property strategy')}" value="property" />
                                     </radiogroup>
                                 </row>
                                 <row>
