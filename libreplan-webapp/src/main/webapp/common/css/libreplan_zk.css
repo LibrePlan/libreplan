@@ -1463,7 +1463,7 @@ display:none;
 }
 
 .progress-types {
-    margin-left:-10px;
+    margin-left:-12px;
 }
 
 .progress-types.z-combobox .z-combobox-inp {
@@ -1475,11 +1475,11 @@ display:none;
     border: 0;
     border-width: 0;
     outline: none;
-    text-indent: -200px;
+    width: 0;
 }
 
 .progress-types.z-combobox input {
-    display: none;
+    font-size: 0;
 }
 
 .show-advances img  {
