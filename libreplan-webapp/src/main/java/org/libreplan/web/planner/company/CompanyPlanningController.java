@@ -147,8 +147,6 @@ public class CompanyPlanningController implements Composer {
         cbProgressTypes.setModel(new ListModelList(ProgressType.getAll()));
         cbProgressTypes.setItemRenderer(new ProgressTypeRenderer());
 
-        // FIXME: Select default configuration option
-
         // Update completion of tasks on selecting new progress type
         cbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
 
@@ -171,6 +169,8 @@ public class CompanyPlanningController implements Composer {
 
         if (item != null) {
             cbProgressTypes.setSelectedItem(item);
+            planner.updateCompletion(((ProgressType) item.getValue())
+                    .toString());
         }
 
     }
