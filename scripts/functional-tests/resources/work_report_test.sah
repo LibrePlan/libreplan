@@ -41,7 +41,7 @@ _include("../common_functions.sah");
 function workReportCreateLineModel($modelName){
     workReportModelLineCreate($modelName);
     _click(_link("Work Reports"));
-    _setSelected(_select(0, _near(_span("Select type :"))), $modelName);
+    _setSelected(_select(0, _near(_span("Select type:"))), $modelName);
     _click(_cell("New work report"));
     _click(_cell("Save"));
     workReportAcctionValidation("saved");
@@ -67,7 +67,7 @@ function workReportModelLineForm($name){
 function workReportCreateHeadingModel($modelName){
     workReportModelHeadingCreate($modelName);
     _click(_link("Work Reports"));
-    _setSelected(_select(0, _near(_span("Select type :"))), $modelName);
+    _setSelected(_select(0, _near(_span("Select type:"))), $modelName);
     _click(_cell("New work report"));
     _click(_cell("Save"));
     workReportHeadingCodeValidation();
