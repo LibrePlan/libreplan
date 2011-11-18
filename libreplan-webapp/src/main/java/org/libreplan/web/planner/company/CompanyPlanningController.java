@@ -152,8 +152,8 @@ public class CompanyPlanningController implements Composer {
 
             @Override
             public void onEvent(Event event) {
-                planner.updateCompletion(getSelectedProgressType().toString());
                 planner.forcedShowAdvances();
+                planner.updateCompletion(getSelectedProgressType().toString());
             }
 
             private ProgressType getSelectedProgressType() {
