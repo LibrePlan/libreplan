@@ -118,10 +118,6 @@ public class ManageOrderElementAdvancesController extends
         return manageOrderElementAdvancesModel.getAdvanceAssignments();
     }
 
-    public void cancel() {
-        manageOrderElementAdvancesModel.cancel();
-    }
-
     public boolean close()  {
         return save();
     }

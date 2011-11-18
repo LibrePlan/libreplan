@@ -45,10 +45,11 @@ function templateProjectCreateTemplate($projectName, $template){
 
 function templateProjectAssignTemplate($template){
     _click(_link("Projects List"));
-    _click(_image("ico_copy.png"));
+    _click(_image("ico_add.png"));
+    _setValue(_textbox(0, _near(_span("Name"))), "ProjectTemplate");
     _click(_italic(0, _cell("z-caption-l")));
     _click(_div($template));
-    _click(_cell("Create Project"));
+    _click(_cell("Accept"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
     _log("Assign the project template", "custom1")

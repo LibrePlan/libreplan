@@ -239,8 +239,10 @@
                     <!-- Activation -->
                     <groupbox style="margin-top: 5px" closable="false">
                         <caption label="${i18n:_('Activation')}" />
-                        <label value="${i18n:_('LDAP Authentication enabled')}" />
+                        <label value="${i18n:_('Enable LDAP authentication')}" />
                         <checkbox id="ldapAuthEnabled" checked="@{configurationController.ldapConfiguration.ldapAuthEnabled}" />
+                        <label value="${i18n:_('Use LDAP roles')}" />
+                        <checkbox id="ldapSaveRolesDB" checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" />
                     </groupbox>
 
                     <!-- Configuration -->
@@ -329,27 +331,33 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Import LDAP roles')}" />
-                                    <checkbox id="ldapSaveRolesDB" checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" onCheck="configurationController.showLdapRoles()"/>
+                                    <label value="${i18n:_('Role search strategy')}" />
+                                    <radiogroup id="strategy" onCheck="configurationController.changeRoleStrategy()">
+                                        <radio label="${i18n:_('Group strategy')}" value="group" />
+                                        <radio label="${i18n:_('Property strategy')}" value="property" />
+                                    </radiogroup>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Group path')}" />
                                     <hbox>
-                                        <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"/>
+                                        <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"
+                                            disabled="@{configurationController.ldapPropertyStrategy}" />
                                         <label value="${i18n:__('Example: {0}', 'ou=groups')}" /><label value="${i18n:_('(If it is empty, a node strategy is used)')}" />
                                     </hbox>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Role property')}" />
                                     <hbox>
-                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"/>
+                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"
+                                            disabled="@{configurationController.ldapGroupStrategy}" />
                                         <label value="${i18n:__('Example: {0}', 'member')}" />
                                     </hbox>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Role search query')}" />
                                     <hbox>
-                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"/>
+                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"
+                                            disabled="@{configurationController.ldapGroupStrategy}" />
                                         <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
@@ -357,7 +365,7 @@
                         </grid>
                         <separator />
                         <separator />
-                        <vbox id="ldapRoles" visible="false">
+                        <vbox id="ldapRoles">
                             <grid id="configurationRoles"
                                 model="@{configurationController.roles}"
                                 rowRenderer="@{configurationController.allUserRolesRenderer}"

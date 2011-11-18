@@ -429,7 +429,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         void addInitDateCell(final OrderElement currentOrderElement) {
             DynamicDatebox dinamicDatebox = new DynamicDatebox(
-                    currentOrderElement, new DynamicDatebox.Getter<Date>() {
+                    new DynamicDatebox.Getter<Date>() {
 
                         @Override
                         public Date get() {
@@ -451,7 +451,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         void addEndDateCell(final OrderElement currentOrderElement) {
             DynamicDatebox dinamicDatebox = new DynamicDatebox(
-                    currentOrderElement, new DynamicDatebox.Getter<Date>() {
+                    new DynamicDatebox.Getter<Date>() {
 
                         @Override
                         public Date get() {

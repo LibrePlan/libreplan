@@ -379,6 +379,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Listbox advancedAllocationHorizontalPagination;
     private Listbox advancedAllocationVerticalPagination;
 
+    private boolean fixedZoomByUser = false;
+    private ZoomLevel zoomLevel;
+
     public AdvancedAllocationController(IBack back,
             List<AllocationInput> allocationInputs) {
         setInputData(back, allocationInputs);
@@ -576,6 +579,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private void createComponents() {
         timeTracker = new TimeTracker(addMarginTointerval(), self);
         paginatorFilter = new PaginatorFilter();
+        if (fixedZoomByUser && (zoomLevel != null)) {
+            timeTracker.setZoomLevel(zoomLevel);
+        }
         paginatorFilter.setZoomLevel(timeTracker.getDetailLevel());
         paginatorFilter.setInterval(timeTracker.getRealInterval());
         paginationUpButton.setDisabled(isLastPage());
@@ -585,6 +591,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         timeTracker.addZoomListener(new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
+                fixedZoomByUser = true;
+                zoomLevel = detailLevel;
+
                 paginatorFilter.setZoomLevel(detailLevel);
                 paginatorFilter.setInterval(timeTracker.getRealInterval());
                 timeTracker.setFilter(paginatorFilter);

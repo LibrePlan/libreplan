@@ -36,8 +36,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
+import org.libreplan.business.materials.daos.IMaterialCategoryDAO;
+import org.libreplan.business.materials.entities.MaterialCategory;
+import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
@@ -216,6 +221,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OrderElementTreeController orderElementTreeController;
 
     private ProjectDetailsController projectDetailsController;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -1473,4 +1481,51 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
+    public Constraint chekValidProjectName() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+
+                if (StringUtils.isBlank((String) value)) {
+                    throw new WrongValueException(comp,
+                            _("cannot be null or empty"));
+                }
+                try {
+                    Order found = orderDAO
+                            .findByNameAnotherTransaction((String) value);
+                    if (!found.getId().equals(getOrder().getId())) {
+                        throw new WrongValueException(comp,
+                                _("project name already being used"));
+                    }
+                } catch (InstanceNotFoundException e) {
+                    return;
+                }
+            }
+        };
+    }
+
+    public Constraint chekValidProjectCode() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+
+                if (StringUtils.isBlank((String) value)) {
+                    throw new WrongValueException(comp,
+                            _("cannot be null or empty"));
+                }
+                try {
+                    Order found = orderDAO
+                            .findByCodeAnotherTransaction((String) value);
+                    if (!found.getId().equals(getOrder().getId())) {
+                        throw new WrongValueException(comp,
+                                _("project code already being used"));
+                    }
+                } catch (InstanceNotFoundException e) {
+                    return;
+                }
+            }
+        };
+    }
 }

@@ -116,6 +116,4 @@ public interface IManageOrderElementAdvancesModel {
 
     AdvanceAssignment getSpreadAdvance();
 
-    void cancel();
-
 }

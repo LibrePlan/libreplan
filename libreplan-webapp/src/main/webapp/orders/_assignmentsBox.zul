@@ -20,24 +20,22 @@
 -->
 
         <newdatasortablegrid id="gridMaterials"
-            fixedLayout="false"
-            model="@{assignedMaterialsController.assignedMaterials}" >
-            <columns>
-                <newdatasortablecolumn label="${i18n:_('Code')}" />
+            sizedByContent="true"
+            model="@{assignedMaterialsController.assignedMaterials}">
+            <columns width="100%">
+                <newdatasortablecolumn label="${i18n:_('Code')}" hflex="1" />
                 <newdatasortablecolumn label="${i18n:_('Receipt date')}" />
                 <newdatasortablecolumn label="${i18n:_('Units')}" />
                 <newdatasortablecolumn label="${i18n:_('Unit type')}" />
                 <newdatasortablecolumn label="${i18n:_('Unit price')}" />
                 <newdatasortablecolumn label="${i18n:_('Total price')}" />
-                <newdatasortablecolumn label="${i18n:_('Category')}" />
+                <newdatasortablecolumn label="${i18n:_('Category')}" hflex="1"/>
                 <newdatasortablecolumn label="${i18n:_('Status')}" />
                 <newdatasortablecolumn label="${i18n:_('Op.')}" />
             </columns>
             <rows>
                 <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}">
-                    <textbox value="@{assignedMaterial.material.code}"
-                        constraint="no empty:${i18n:_('cannot be null or empty')}"
-                        readonly="true" />
+                    <label value="@{assignedMaterial.material.code}" hflex="true" />
                     <datebox value="@{assignedMaterial.estimatedAvailability}" />
                     <doublebox value="@{assignedMaterial.units}"
                         onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
@@ -48,7 +46,7 @@
                     <doublebox value="@{assignedMaterial.unitPrice}"
                         onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
                     <doublebox value="@{assignedMaterial.totalPrice}" disabled="${true}"/>
-                    <label value="@{assignedMaterial.material.category.name}" width="150px" />
+                    <label value="@{assignedMaterial.material.category.name}" />
                     <listbox mold="select" model="@{materialStatus}"
                         selectedItem="@{assignedMaterial.status}"
                         itemRenderer="org.libreplan.web.common.EnumsListitemRenderer" />

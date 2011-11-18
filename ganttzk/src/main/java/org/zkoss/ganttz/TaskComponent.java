@@ -306,6 +306,9 @@ public class TaskComponent extends Div implements AfterCompose {
     private transient PropertyChangeListener propertiesListener;
     private IConstraintViolationListener<GanttDate> taskViolationListener;
 
+    // FIXME Bug #1270
+    private String progressType;
+
     public TaskRow getRow() {
         if (getParent() == null) {
             throw new IllegalStateException(
@@ -529,11 +532,13 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateTooltipText() {
-        smartUpdate("taskTooltipText", task.updateTooltipText());
+        // FIXME Bug #1270
+        this.progressType = null;
     }
 
     public void updateTooltipText(String progressType) {
-        smartUpdate("taskTooltipText", task.updateTooltipText(progressType));
+        // FIXME Bug #1270
+        this.progressType = progressType;
     }
 
     private DependencyList getDependencyList() {
@@ -567,7 +572,12 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public String getTooltipText() {
-        return task.getTooltipText();
+        // FIXME Bug #1270
+        if (progressType == null) {
+            return task.getTooltipText();
+        } else {
+            return task.updateTooltipText(progressType);
+        }
     }
 
     public String getLabelsText() {

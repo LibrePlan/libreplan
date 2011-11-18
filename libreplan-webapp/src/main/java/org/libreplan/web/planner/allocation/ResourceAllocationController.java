@@ -216,6 +216,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
             newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
             newAllocationSelectorCombo
                     .setAllocationsAdder(resourceAllocationModel);
+
+            Util.reloadBindings(allocationsGrid);
         } catch (WrongValueException e) {
             LOG.error("there was a WrongValueException initializing window", e);
             throw e;

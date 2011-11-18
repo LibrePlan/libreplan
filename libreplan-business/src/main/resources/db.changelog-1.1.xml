@@ -323,4 +323,18 @@
           newColumnName="libreplan_user" columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="add-new-column-ldap-role-strategy" author="idiazt">
+        <comment>Add new column to store ldap role strategy</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_group_strategy" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+           columnName="ldap_group_strategy"
+           defaultValueBoolean="TRUE" />
+       <addNotNullConstraint tableName="configuration"
+           columnName="ldap_group_strategy"
+           defaultNullValue="TRUE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>

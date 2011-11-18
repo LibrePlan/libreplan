@@ -49,6 +49,7 @@ import org.libreplan.web.common.Util.Setter;
 import org.libreplan.web.orders.DynamicDatebox;
 import org.libreplan.web.orders.SchedulingStateToggler;
 import org.libreplan.web.tree.TreeComponent.Column;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -764,7 +765,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         private Intbox buildHoursIntboxFor(final T element) {
-            Intbox result = new Intbox();
+            Intbox result = new IntboxDirectValue();
             if (isLine(element)) {
                 Util.bind(result, getHoursGetterFor(element),
                         getHoursSetterFor(element));
@@ -795,9 +796,31 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     // Order node, not an OrderElement
                     parentNodes.remove(parentNodes.size() - 1);
                     for (T node : parentNodes) {
-                        Intbox intbox = hoursIntBoxByElement.get(node);
-                        intbox.setValue(getHoursGroupHandler().getWorkHoursFor(node));
+                        IntboxDirectValue intbox = (IntboxDirectValue) hoursIntBoxByElement
+                                .get(node);
+                        Integer hours = getHoursGroupHandler()
+                                .getWorkHoursFor(node);
+                        if (isInCurrentPage(intbox)) {
+                            intbox.setValue(hours);
+                        } else {
+                            intbox.setValueDirectly(hours);
+                        }
                     }
+                }
+
+                private boolean isInCurrentPage(IntboxDirectValue intbox) {
+                    Treeitem treeItem = (Treeitem) intbox.getParent().getParent().getParent();
+                    List<Treeitem> treeItems = new ArrayList<Treeitem>(
+                            tree.getItems());
+                    int position = treeItems.indexOf(treeItem);
+
+                    if (position < 0) {
+                        throw new RuntimeException("Treeitem " + treeItem
+                                + " has to belong to tree.getItems() list");
+                    }
+
+                    return (position / tree.getPageSize()) == tree
+                            .getActivePage();
                 }
             };
         }
@@ -1066,6 +1089,26 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     public void setTreeComponent(TreeComponent orderElementsTree) {
         this.orderElementTreeComponent = orderElementsTree;
+    }
+
+    /**
+     * This class is to give visibility to method
+     * {@link Intbox#setValueDirectly} which is marked as protected in
+     * {@link Intbox} class.
+     *
+     * <br />
+     *
+     * This is needed to prevent calling {@link AbstractComponent#smartUpdate}
+     * when the {@link Intbox} is not in current page. <tt>smartUpdate</tt> is
+     * called by {@link Intbox#setValue(Integer)}. This call causes a JavaScript
+     * error when trying to update {@link Intbox} that are not in current page
+     * in the tree.
+     */
+    private class IntboxDirectValue extends Intbox {
+        @Override
+        public void setValueDirectly(Object value) {
+            super.setValueDirectly(value);
+        }
     }
 
 }

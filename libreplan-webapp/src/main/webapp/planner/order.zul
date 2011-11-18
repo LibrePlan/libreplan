@@ -67,12 +67,9 @@
 
         <!-- Control buttons -->
         <hbox>
-            <button label="${i18n:_('Accept')}"
-                    sclass="save-button global-action"
+            <button label="${i18n:_('Back')}"
+                    sclass="back-button global-action"
                     onClick="advanceAssignmentController.accept();" />
-            <button label="${i18n:_('Cancel')}"
-                    sclass="cancel-button global-action"
-                    onClick="advanceAssignmentController.cancel();" />
         </hbox>
 
     </window>

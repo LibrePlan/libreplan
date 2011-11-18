@@ -135,6 +135,7 @@ public abstract class TaskElement extends BaseEntity {
         taskElement.taskSource = taskSource;
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
+        taskElement.updateAdvancePercentageFromOrderElement();
         Order order = taskElement.getOrderElement().getOrder();
         if (order.isScheduleBackwards()) {
             taskElement.setEndDate(order.getDeadline());
@@ -640,7 +641,8 @@ public abstract class TaskElement extends BaseEntity {
      * depending on parameter
      */
     public BigDecimal getAdvancePercentage(ProgressType progressType) {
-        if (progressType.equals(ProgressType.SPREAD_PROGRESS)) {
+        if (progressType != null
+                && progressType.equals(ProgressType.SPREAD_PROGRESS)) {
             return advancePercentage;
         }
         return BigDecimal.ZERO;
@@ -722,5 +724,9 @@ public abstract class TaskElement extends BaseEntity {
     public abstract void acceptVisitor(TaskElementVisitor visitor);
 
     public abstract void resetStatus();
+
+    public void updateAdvancePercentageFromOrderElement() {
+        setAdvancePercentage(getOrderElement().getAdvancePercentage());
+    }
 
 }

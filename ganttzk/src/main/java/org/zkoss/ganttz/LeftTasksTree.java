@@ -54,6 +54,13 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 
+/**
+ * Tree element to display tasks structure in the planning Gantt <br />
+ *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ */
 public class LeftTasksTree extends HtmlMacroComponent {
 
     private final class TaskBeanRenderer implements TreeitemRenderer {
@@ -75,12 +82,9 @@ public class LeftTasksTree extends HtmlMacroComponent {
                 container.addExpandListener(expandListener);
 
             }
-            final int[] path = tasksTreeModel.getPath(tasksTreeModel.getRoot(),
-                    task);
-            String cssClass = "depth_" + path.length;
             LeftTasksTreeRow leftTasksTreeRow = LeftTasksTreeRow.create(
-                    disabilityConfiguration, task,
-                    new TreeNavigator(tasksTreeModel, task));
+                    disabilityConfiguration, task, new TreeNavigator(
+                            tasksTreeModel, task), planner);
             if (task.isContainer()) {
                 expandWhenOpened((TaskContainer) task, item);
             }
@@ -96,9 +100,6 @@ public class LeftTasksTree extends HtmlMacroComponent {
             List<Object> rowChildren = row.getChildren();
             List<Treecell> treeCells = ComponentsFinder.findComponentsOfType(
                     Treecell.class, rowChildren);
-            for (Treecell cell : treeCells) {
-                cell.setSclass(cssClass);
-            }
             detailsForBeans.put(task, leftTasksTreeRow);
             deferredFiller.isBeingRendered(task, item);
         }
@@ -330,12 +331,15 @@ public class LeftTasksTree extends HtmlMacroComponent {
 
     private final List<Task> visibleTasks = new ArrayList<Task>();
 
+    private Planner planner;
+
     public LeftTasksTree(IDisabilityConfiguration disabilityConfiguration,
-            List<Task> tasks,
+            Planner planner,
             FilterAndParentExpandedPredicates predicate) {
         this.disabilityConfiguration = disabilityConfiguration;
-        this.tasks = tasks;
+        this.tasks = planner.getTaskList().getAllTasks();
         this.predicate = predicate;
+        this.planner = planner;
     }
 
     private void fillModel(Collection<? extends Task> tasks, boolean firstTime) {

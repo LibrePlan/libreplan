@@ -56,6 +56,7 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.daos.IConsolidationDAO;
 import org.libreplan.business.planner.daos.IDependencyDAO;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
@@ -568,7 +569,10 @@ public class SaveCommandBuilder {
         }
 
         private void saveTaskSources(TaskElement taskElement) {
-            taskSourceDAO.save(taskElement.getTaskSource());
+            TaskSource taskSource = taskElement.getTaskSource();
+            if (taskSource != null) {
+                taskSourceDAO.save(taskSource);
+            }
             if (taskElement.isLeaf()) {
                 return;
             }

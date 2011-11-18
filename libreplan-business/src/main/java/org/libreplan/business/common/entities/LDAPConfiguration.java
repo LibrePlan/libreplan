@@ -71,6 +71,10 @@ public class LDAPConfiguration extends BaseEntity {
     // LDAP roles will be used or not
     private Boolean ldapSaveRolesDB = false;
 
+    // LDAP strategy if true means group strategy if false means property
+    // strategy
+    private Boolean ldapGroupStrategy = true;
+
     /**
      * A list which stores the matching between LDAP roles and LibrePlan roles.
      * {@link ConfigurationRolesLDAP} is a component.
@@ -243,5 +247,13 @@ public class LDAPConfiguration extends BaseEntity {
      */
     public void setLdapSearchQuery(String ldapSearchQuery) {
         this.ldapSearchQuery = ldapSearchQuery;
+    }
+
+    public Boolean getLdapGroupStrategy() {
+        return ldapGroupStrategy;
+    }
+
+    public void setLdapGroupStrategy(Boolean ldapGroupStrategy) {
+        this.ldapGroupStrategy = ldapGroupStrategy;
     }
 }
