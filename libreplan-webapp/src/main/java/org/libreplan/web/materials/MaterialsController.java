@@ -69,7 +69,6 @@ import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.api.Panel;
 
 /**
  * Controller for {@link Material} materials
@@ -384,6 +383,7 @@ public class MaterialsController extends
     }
 
     private void reloadCategoriesTree(Treeitem treeitem) {
+        Util.reloadBindings(categoriesTree);
         if (treeitem != null) {
             final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
             categoriesTree.invalidate();
