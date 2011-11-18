@@ -1134,6 +1134,10 @@ span.perspective, span.perspective-active {
     border-bottom:1px solid #9ECAD8;
 }
 
+.orderslayout-area > .z-center-body {
+    height: auto !important;
+}
+
 .orderelements-tab {
     overflow-x: auto;
 }
