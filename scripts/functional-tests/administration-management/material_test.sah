@@ -41,7 +41,7 @@ function materialCreate($name) {
 
 function materialCreateWithoutCategory(){
     _click(_link("Materials"));
-    _click(_cell("z-button-cm[3]"));
+    _click(_cell("New"));
     materialWithoutCategoryValidation();
 }
 
@@ -54,7 +54,7 @@ function materialCreateEmpty(){
 function materialForm($description) {
     _click(_link("Materials"));
     _click(_span("z-dottree-ico z-dottree-firstspacer"));
-    _click(_cell("z-button-cm[3]"));
+    _click(_cell("New"));
     _setValue(_textbox("z-textbox[2]"), $description);
     _click(_cell("Save"));
 }
