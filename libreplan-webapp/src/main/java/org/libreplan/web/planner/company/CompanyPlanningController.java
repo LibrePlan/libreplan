@@ -171,13 +171,17 @@ public class CompanyPlanningController implements Composer {
 
     }
 
-    private static class ProgressTypeRenderer implements ComboitemRenderer {
+    private class ProgressTypeRenderer implements ComboitemRenderer {
 
         @Override
         public void render(Comboitem item, Object data) {
             ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));
+
+            if (getProgressTypeFromConfiguration().equals(progressType)) {
+                cbProgressTypes.setSelectedItem(item);
+            }
         }
     }
 
