@@ -52,7 +52,7 @@ function subcontractingTaskForSubcontractForm($company, $subProjectName){
     _setValue(_textbox(0, _near(_span("Subcontract price"))), "6000");
     _setValue(_textbox(0, _near(_span("Subcontracted code"))), $companyId);
     _click(_checkbox(0, _near(_span("Hours groups"))));
-    _click(_cell("z-button-cm[39]"));
+    _click(_row("Accept[2]"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
 }

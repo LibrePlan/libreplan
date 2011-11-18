@@ -73,7 +73,7 @@ function planningAssignWorker($workerName){
     _click(_div($workerName+", "+$workerName));
     _click(_cell($workerName+", "+$workerName));
     _click(_cell("Add"));
-    _click(_cell("z-button-cm[40]"));
+    _click(_row("Accept[2]"));
     planningCheckIncorrectWorkerValidation()
     _log("try to assign calendar", "custom1");
 }
@@ -86,7 +86,7 @@ function planningAssignCriterion($criterion){
     _click(_div($criterion+" ( "+$criterion+" )[1]"));
     _click(_cell($criterion+" ( "+$criterion+" )[1]"));
     _click(_cell("Add"));
-    _click(_cell("z-button-cm[40]"));
+    _click(_row("Accept[2]"));
     planningCheckIncorrectCriterionValidation()
     _log("Try to assign criterion", "custom1");
 }
