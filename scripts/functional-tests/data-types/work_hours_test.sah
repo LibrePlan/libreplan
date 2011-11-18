@@ -81,7 +81,7 @@ function workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescr
     commonWorkReportModelCreate($ModelName);
     commonCreateProject("new project");
     commonMachineCreate($materialName, $materialDescription);
-    workReportCreate($materialName, "new project", $hWorkNewName);
+    workReportCreate($materialName, "new project", $hWorkNewName, $ModelName);
     workHourTryDelete($hWorkNewName, "work report line");
     reportModelTryDelete($ModelName);
     commonTryDeleteProject("new project");
@@ -131,19 +131,20 @@ function reportModelTryDelete($ModelName){
  * Functions of Work Report
  * */
 
-function workReportCreate($wReport, $project, $workHour) {
+function workReportCreate($wReport, $project, $workHour, $modelName) {
     _click(_link("Work Reports"));
-    workReportForm($wReport, $project, $workHour);
+    workReportForm($wReport, $project, $workHour, $modelName);
     _log("Create a Work Report", "custom1");
 }
 
-function workReportForm($machine, $project, $workHour) {
+function workReportForm($machine, $project, $workHour, $modelName) {
+    _setSelected(_select(0, _near(_span("Select type:"))), $modelName);
     _click(_cell("New work report"));
     _click(_cell("Add new row"));
     _setValue(_textbox(2, _near(_span("Work report lines"))), $machine);
     _click(_italic(0, _near(_textbox(3, _near(_span("Work report lines"))))));
     _click(_div($project+"[2]", _parentTable(_div("Project code[1]"))));
-    _setValue(_textbox("z-textbox[1]"),"8");
+    _setValue(_textbox("z-textbox[1]"), "8");
     _setSelected(_select(2), $workHour);
     _click(_cell("Save"));
     _assertExists(_div("Work report saved"));
