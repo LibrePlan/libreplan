@@ -63,6 +63,7 @@ import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
+import org.libreplan.business.resources.bootstrap.ICriterionsBootstrap;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
@@ -96,7 +97,7 @@ public class OrderElementTreeModelTest {
     private IDataBootstrap scenariosBootstrap;
 
     @Resource
-    private IDataBootstrap criterionsBootstrap;
+    private ICriterionsBootstrap criterionsBootstrap;
 
     @Resource
     private IDataBootstrap configurationBootstrap;
@@ -130,7 +131,7 @@ public class OrderElementTreeModelTest {
         configurationBootstrap.loadRequiredData();
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         scenariosBootstrap.loadRequiredData();
-        criterionsBootstrap.loadRequiredData();
+        criterionsBootstrap.loadRequiredData(true);
 
         givenOrder();
         givenModel();

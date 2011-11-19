@@ -68,7 +68,7 @@ public class CriterionsBootstrapTest {
     @Test
     public void testBootstrap() {
         givenNoSomePredefinedCriterionExists();
-        criterionsBootstrap.loadRequiredData();
+        criterionsBootstrap.loadRequiredData(true);
         thenAllSomePredefinedCriterionsExist();
     }
 

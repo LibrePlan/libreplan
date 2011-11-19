@@ -31,4 +31,6 @@ public interface ICriterionsBootstrap extends IDataBootstrap {
 
     public abstract void loadRequiredData();
 
+    public void loadRequiredData(boolean test);
+
 }
