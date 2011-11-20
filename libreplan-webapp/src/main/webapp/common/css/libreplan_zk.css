@@ -1013,7 +1013,8 @@ span.perspective, span.perspective-active {
     display: none;
 }
 
-.taskdetailsContainer {
+.taskdetailsContainer,
+.resourceloaddetailsContainer {
     border-left:0;
     border-top:0;
 }
