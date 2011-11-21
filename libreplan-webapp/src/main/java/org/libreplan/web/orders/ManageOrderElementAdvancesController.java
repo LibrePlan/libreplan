@@ -192,17 +192,8 @@ public class ManageOrderElementAdvancesController extends
         }
     }
 
-    private void resetScreenHeight() {
-        if ((tabboxOrderElement != null)
-                && (!tabboxOrderElement.getHeight().equals("620px"))) {
-            tabboxOrderElement.setHeight("620px");
-            tabboxOrderElement.invalidate();
-        }
-    }
-
     private void reloadAdvances() {
         Util.reloadBindings(self);
-        resetScreenHeight();
         setSelectedAdvanceLine();
     }
 
@@ -883,7 +874,6 @@ public class ManageOrderElementAdvancesController extends
         }
         ((AdvanceAssignment) item.getValue()).setReportGlobalAdvance(spread);
         Util.reloadBindings(editAdvances);
-        resetScreenHeight();
         setSelectedAdvanceLine();
     }
 

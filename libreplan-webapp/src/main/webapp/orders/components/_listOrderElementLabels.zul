@@ -28,7 +28,7 @@
     <vbox width="100%">
         <panel title="${i18n:_('Inherited labels')}" border="normal">
             <panelchildren>
-                <grid id="inheritedLabels" height="150px" fixedLayout="true"
+                <grid id="inheritedLabels" fixedLayout="true"
                     model="@{assignedLabelsController.inheritedLabels}">
                     <columns>
                         <column label="${i18n:_('Label type')}" />
@@ -49,7 +49,7 @@
     <vbox width="100%">
         <panel title="${i18n:_('Direct labels')}" border="normal">
             <panelchildren>
-                <newdatasortablegrid id="directLabels" height="200px" fixedLayout="true"
+                <newdatasortablegrid id="directLabels" fixedLayout="true"
                     model="@{assignedLabelsController.labels}">
                     <columns>
                         <newdatasortablecolumn label="${i18n:_('Label type')}" sort="auto(lower(type.name))"/>
