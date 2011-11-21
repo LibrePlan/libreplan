@@ -1,9 +1,7 @@
 /*
- * This file is part of NavalPlan
+ * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 WirelessGalicia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,10 +32,6 @@ import org.libreplan.business.INewObject;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia>
  */
 public class SubcontractorComunicationValue implements INewObject {
-
-    public final static String propertyDate = "date";
-
-    public final static String propertyProgress = "progress";
 
     public static SubcontractorComunicationValue create() {
         SubcontractorComunicationValue subcontractorComunicationValue = new SubcontractorComunicationValue();

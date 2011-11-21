@@ -1,9 +1,7 @@
 /*
- * This file is part of NavalPlan
+ * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 WirelessGalicia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,29 +24,28 @@ package org.libreplan.web.subcontract;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-    public enum FilterComunicationEnum {
-        ALL(_("All")),
-        NOT_REVIEWED(_("Not Reviewed"));
+public enum FilterComunicationEnum {
+    ALL(_("All")), NOT_REVIEWED(_("Not Reviewed"));
 
-        /**
-         * Forces to mark the string as needing translation
-         */
-        private static String _(String string) {
-            return string;
-        }
-
-        private String displayName;
-
-        private FilterComunicationEnum(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public static FilterComunicationEnum getDefault() {
-            return ALL;
-        }
-
-        @Override
-        public String toString() {
-            return displayName;
-        }
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
     }
+
+    private String displayName;
+
+    private FilterComunicationEnum(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public static FilterComunicationEnum getDefault() {
+        return ALL;
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
+    }
+}

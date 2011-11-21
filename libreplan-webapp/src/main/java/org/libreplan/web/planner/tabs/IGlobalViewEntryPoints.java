@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 WirelessGalicia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +32,7 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 /**
  * Entry points for {@link MultipleTabsPlannerController} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @EntryPoints(page = "/planner/index.zul", registerAs = "globalView")
 public interface IGlobalViewEntryPoints {

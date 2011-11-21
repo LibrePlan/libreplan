@@ -1,9 +1,7 @@
 /*
- * This file is part of NavalPlan
+ * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 WirelessGalicia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,8 +28,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum ComunicationType {
 
-    NEW_PROJECT(_("New project")),
-    REPORT_ADVANCE(_("Report advance"));
+    NEW_PROJECT(_("New project")), REPORT_PROGRESS(_("Report advance"));
 
     private String description;
 

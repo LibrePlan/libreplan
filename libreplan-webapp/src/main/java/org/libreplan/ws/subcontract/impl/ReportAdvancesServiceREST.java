@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -77,6 +79,7 @@ import org.springframework.transaction.annotation.Transactional;
  * REST-based implementation of {@link IReportAdvancesService}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Path("/reportadvances/")
 @Produces("application/xml")
@@ -250,7 +253,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
             if (subcontractedTaskData != null) {
                 SubcontractorComunication subcontractorComunication = SubcontractorComunication
                         .create(subcontractedTaskData,
-                                ComunicationType.REPORT_ADVANCE, new Date(),
+                                ComunicationType.REPORT_PROGRESS, new Date(),
                                 false);
 
                 for (AdvanceMeasurementDTO advanceMeasurementDTO : advanceMeasurementDTOs) {
