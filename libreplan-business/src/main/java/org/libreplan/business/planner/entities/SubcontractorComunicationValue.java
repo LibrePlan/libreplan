@@ -53,11 +53,11 @@ public class SubcontractorComunicationValue implements INewObject {
         return subcontractorComunicationValue;
     }
 
-    public SubcontractorComunicationValue() {
+    protected SubcontractorComunicationValue() {
 
     }
 
-    public SubcontractorComunicationValue(Date date, BigDecimal progress) {
+    private SubcontractorComunicationValue(Date date, BigDecimal progress) {
         this.setDate(date);
         this.setProgress(progress);
     }

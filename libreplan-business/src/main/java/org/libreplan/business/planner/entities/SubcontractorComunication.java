@@ -63,12 +63,12 @@ public class SubcontractorComunication extends BaseEntity {
             SubcontractedTaskData subcontractedTaskData,
             ComunicationType comunicationType, Date comunicationDate,
             Boolean reviewed) {
-        return new SubcontractorComunication(subcontractedTaskData,
-                comunicationType, comunicationDate, reviewed);
+        return create(new SubcontractorComunication(subcontractedTaskData,
+                comunicationType, comunicationDate, reviewed));
     }
 
     public static SubcontractorComunication create() {
-        return new SubcontractorComunication();
+        return create(new SubcontractorComunication());
     }
 
     public void setSubcontractedTaskData(SubcontractedTaskData subcontractedTaskData) {
