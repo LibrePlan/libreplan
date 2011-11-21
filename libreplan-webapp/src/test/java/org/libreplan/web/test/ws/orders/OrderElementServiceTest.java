@@ -69,9 +69,13 @@ import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
+import org.libreplan.business.resources.daos.ICriterionTypeDAO;
+import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.PredefinedCriterionTypes;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.web.orders.OrderElementTreeModelTest;
 import org.libreplan.ws.common.api.AdvanceMeasurementDTO;
 import org.libreplan.ws.common.api.ConstraintViolationDTO;
 import org.libreplan.ws.common.api.CriterionRequirementDTO;
@@ -129,8 +133,25 @@ public class OrderElementServiceTest {
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
     @Before
     public void loadRequiredaData() {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                OrderElementTreeModelTest.cleanCriteria(workReportDAO,
+                        resourceDAO, criterionTypeDAO);
+                return null;
+            }
+        });
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {

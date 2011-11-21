@@ -39,6 +39,7 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -51,6 +52,7 @@ import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.materials.entities.Material;
@@ -65,11 +67,16 @@ import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
 import org.libreplan.business.resources.bootstrap.ICriterionsBootstrap;
 import org.libreplan.business.resources.daos.ICriterionDAO;
+import org.libreplan.business.resources.daos.ICriterionTypeDAO;
+import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.Criterion;
+import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.business.workreports.entities.WorkReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -105,6 +112,15 @@ public class OrderElementTreeModelTest {
     @Autowired
     private ICriterionDAO criterionDAO;
 
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
     private Order order;
 
     private OrderElementTreeModel model;
@@ -127,14 +143,40 @@ public class OrderElementTreeModelTest {
 
     @Before
     public void loadRequiredaData() {
+        cleanCriteria(workReportDAO, resourceDAO, criterionTypeDAO);
+
         // Load data
         configurationBootstrap.loadRequiredData();
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         scenariosBootstrap.loadRequiredData();
-        criterionsBootstrap.loadRequiredData(true);
+        criterionsBootstrap.loadRequiredData();
 
         givenOrder();
         givenModel();
+    }
+
+    public static void cleanCriteria(IWorkReportDAO workReportDAO,
+            IResourceDAO resourceDAO, ICriterionTypeDAO criterionTypeDAO) {
+        try {
+            List<WorkReport> reports = workReportDAO.findAll();
+            for (WorkReport each : reports) {
+                workReportDAO.remove(each.getId());
+            }
+
+            List<org.libreplan.business.resources.entities.Resource> resources = resourceDAO
+                    .findAll();
+            for (org.libreplan.business.resources.entities.Resource each : resources) {
+                resourceDAO.remove(each.getId());
+            }
+
+            List<CriterionType> types = criterionTypeDAO.findAll();
+            for (CriterionType each : types) {
+                criterionTypeDAO.remove(each.getId());
+            }
+
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void givenOrder() {

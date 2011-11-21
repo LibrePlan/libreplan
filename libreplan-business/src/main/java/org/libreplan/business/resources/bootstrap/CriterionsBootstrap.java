@@ -64,33 +64,24 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
     @Autowired
     private List<ICriterionTypeProvider> providers;
 
-    private boolean isTest = false;
-
     public CriterionsBootstrap() {
     }
 
     @Override
     @Transactional
     public void loadRequiredData() {
-        Map<CriterionType, List<String>> typesWithCriterions = getTypesWithCriterions();
-        // Insert predefined criterions
-        for (Entry<CriterionType, List<String>> entry : typesWithCriterions
-                .entrySet()) {
-            CriterionType criterionType = retrieveOrCreate(entry.getKey());
-            // FIXME when tests are fixed isTest has no sense
-            if (isTest || criterionDAO.getAll().size() == 0) {
+        if (criterionTypeDAO.findAll().isEmpty()) {
+            Map<CriterionType, List<String>> typesWithCriterions = getTypesWithCriterions();
+            // Insert predefined criterions
+            for (Entry<CriterionType, List<String>> entry : typesWithCriterions
+                    .entrySet()) {
+                CriterionType criterionType = retrieveOrCreate(entry.getKey());
                 // Create predefined criterions for criterionType
                 for (String criterionName : entry.getValue()) {
                     ensureCriterionExists(criterionName, criterionType);
                 }
             }
         }
-    }
-
-    // FIXME this method is not needed when tests are fixed
-    public void loadRequiredData(boolean test) {
-        isTest = test;
-        loadRequiredData();
     }
 
     private void ensureCriterionExists(String criterionName,
