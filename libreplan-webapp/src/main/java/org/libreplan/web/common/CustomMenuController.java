@@ -201,14 +201,20 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                         for (CustomMenuItem c : child.children) {
                             if (c.contains(requestPath)) {
                                 c.setActive(true);
-                                break;
+                                return;
                             }
                         }
-                        break;
+                        return;
                     }
                 }
-                break;
+                return;
             }
+        }
+
+        if (requestPath.isEmpty()) {
+            CustomMenuItem item = this.firstLevel.get(0);
+            item.setActive(true);
+            item.children.get(0).setActive(true);
         }
     }
 
