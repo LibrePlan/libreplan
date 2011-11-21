@@ -156,12 +156,12 @@ public class SubcontractorComunicationDAOTest {
         order.setCode("code-" + UUID.randomUUID());
         order.useSchedulingDataFor(orderVersion);
         order.add(orderLine);
-        
+
         //add a basic calendar
         BaseCalendar basicCalendar = BaseCalendarTest.createBasicCalendar();
         calendarDAO.save(basicCalendar);
         order.setCalendar(basicCalendar);
-        
+
         try {
             orderDAO.save(order);
             sessionFactory.getCurrentSession().flush();
@@ -201,7 +201,7 @@ public class SubcontractorComunicationDAOTest {
         taskElementDAO.flush();
         sessionFactory.getCurrentSession().evict(task);
         sessionFactory.getCurrentSession().evict(subcontractedTaskData);
-        
+
         subcontractedTaskDataDAO.save(subcontractedTaskData);
         return subcontractedTaskData;
     }

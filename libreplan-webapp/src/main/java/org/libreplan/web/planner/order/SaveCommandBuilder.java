@@ -103,11 +103,11 @@ import org.zkoss.zul.Messagebox;
 /**
  * Builds a command that saves the changes in the taskElements. It can be
  * considered the final step in the conversation <br />
- * 
+ *
  * In the save operation it is also kept the consistency of the
  * LimitingResourceQueueDependencies with the Dependecies between the task of
  * the planning gantt.
- * 
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
@@ -125,7 +125,7 @@ public class SaveCommandBuilder {
                 "/planner/index.zul;company_scheduling", ISaveCommand.class,
                 result);
     }
-    
+
     public static void dontPoseAsTransientAndChildrenObjects(
             Collection<? extends ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each : resourceAllocations) {

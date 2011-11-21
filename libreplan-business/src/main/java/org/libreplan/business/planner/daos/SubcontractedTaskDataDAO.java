@@ -110,7 +110,7 @@ public class SubcontractedTaskDataDAO extends
          .createCriteria("taskSource","ts")
          .createCriteria("schedulingData","data")
          .add(Restrictions.eq("data.orderElement",orderElement));
-        
+
         TaskElement taskElement = (TaskElement) c.uniqueResult();
         return (taskElement != null && taskElement.isSubcontracted()) ? ((Task) taskElement)
                 .getSubcontractedTaskData() : null;

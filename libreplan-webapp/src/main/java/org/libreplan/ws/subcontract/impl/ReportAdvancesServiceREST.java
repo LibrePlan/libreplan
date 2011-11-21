@@ -87,10 +87,10 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
-    private ISubcontractedTaskDataDAO subcontractedTaskDataDAO; 
+    private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
     @Autowired
-    private ISubcontractorComunicationDAO subcontractorComunicationDAO; 
+    private ISubcontractorComunicationDAO subcontractorComunicationDAO;
 
     @Autowired
     private IOrderDAO orderDAO;
@@ -215,7 +215,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
                 createSubcontractorComunication(
                         orderElement,
                         orderElementWithAdvanceMeasurementsDTO.advanceMeasurements);
-                 
+
 
             } catch (ValidationException e) {
                 instanceConstraintViolationsDTO = ConstraintViolationConverter

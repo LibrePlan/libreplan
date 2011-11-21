@@ -30,7 +30,7 @@ import org.libreplan.business.INewObject;
 
 /**
  * Entity to represent each {@SubcontractorComunicationValue}.
- * 
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia>
  */
 public class SubcontractorComunicationValue implements INewObject {

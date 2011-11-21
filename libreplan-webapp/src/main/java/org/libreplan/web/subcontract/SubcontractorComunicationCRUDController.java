@@ -60,7 +60,7 @@ import org.zkoss.zul.SimpleListModel;
 
 /**
  * Controller for CRUD actions over a {@link SubcontractorComunication}
- * 
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @SuppressWarnings("serial")
@@ -183,11 +183,11 @@ public class SubcontractorComunicationCRUDController extends GenericForwardCompo
         private void appendLabel(Row row, String label) {
             row.appendChild(new Label(label));
         }
-        
+
         private void appendLabelWitTooltip(final Row row,final SubcontractorComunication subcontractorComunication) {
             String lastValue = getLastValue(subcontractorComunication);
             final Label compLabel = new Label(lastValue);
-            
+
             compLabel.setTooltip(pp);
             compLabel.addEventListener(Events.ON_MOUSE_OVER,
                     new EventListener() {

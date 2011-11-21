@@ -112,7 +112,7 @@ public class SubcontractorComunication extends BaseEntity {
     public List<SubcontractorComunicationValue> getSubcontratorComunicationValues() {
         return subcontratorComunicationValues;
     }
-    
+
     public SubcontractorComunicationValue getLastSubcontratorComunicationValues(){
         if (subcontratorComunicationValues.isEmpty()){
             return null;

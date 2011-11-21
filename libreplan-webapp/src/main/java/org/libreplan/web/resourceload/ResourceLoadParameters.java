@@ -104,7 +104,7 @@ public class ResourceLoadParameters {
         criteriaToShowList.clear();
         criteriaToShowList.addAll(criteriaList);
     }
-    
+
     public <T> Paginator<T> getEntities(Class<T> type,
             Callable<List<T>> allEntities, IReattacher<T> reattacher) {
         Validate.isTrue(
@@ -119,7 +119,7 @@ public class ResourceLoadParameters {
                     allEntities, reattacher);
         }
     }
-    
+
     private <T> List<T> listOfType(Class<T> klass, Collection<?> objects) {
         List<T> result = new ArrayList<T>();
         for (Object each : objects) {

@@ -60,7 +60,7 @@
         </columns>
     </grid>
 
-   
+
     <popup id="pp">
     	<grid id="listingValues" width="300px" fixedLayout="true">
 			<columns>

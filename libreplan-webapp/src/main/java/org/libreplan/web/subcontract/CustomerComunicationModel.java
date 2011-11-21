@@ -39,7 +39,7 @@ public class CustomerComunicationModel implements ICustomerComunicationModel{
 
     @Autowired
     private ICustomerComunicationDAO customerComunicationDAO;
-    
+
     private FilterComunicationEnum currentFilter = FilterComunicationEnum.NOT_REVIEWED;
 
     @Override

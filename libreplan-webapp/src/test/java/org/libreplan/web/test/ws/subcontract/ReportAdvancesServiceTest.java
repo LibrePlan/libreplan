@@ -242,7 +242,7 @@ public class ReportAdvancesServiceTest {
 
         OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
-        SubcontractorComunication subcontractorComunication = SubcontractorComunication.create(); 
+        SubcontractorComunication subcontractorComunication = SubcontractorComunication.create();
         reportAdvancesService
                 .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
 
@@ -270,7 +270,7 @@ public class ReportAdvancesServiceTest {
 
         int currentComunications = subcontractorComunicationDAO.getAll().size();
         assertThat((previousComunications+1), equalTo(currentComunications));
-    }   
+    }
 
     @Test
     public void validAdvancesReportWithSeveralDates() {
@@ -418,7 +418,7 @@ public class ReportAdvancesServiceTest {
                 Arrays.asList(associatedHoursGroup));
 
         orderLine.getCurrentSchedulingData().requestedCreationOf(taskSource);
-                
+
         TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
         mustAdd.apply(TaskSource.persistTaskSources(taskSourceDAO));
 
@@ -436,10 +436,10 @@ public class ReportAdvancesServiceTest {
         taskElementDAO.save(task);
         task.dontPoseAsTransientObjectAnymore();
         taskElementDAO.flush();
-       
+
         sessionFactory.getCurrentSession().evict(task);
         sessionFactory.getCurrentSession().evict(subcontractedTaskData);
-        
+
         subcontractedTaskDataDAO.save(subcontractedTaskData);
         return subcontractedTaskData;
     }

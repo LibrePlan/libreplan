@@ -45,7 +45,7 @@ public class SubcontractorComunicationModel implements ISubcontractorComunicatio
 
     @Autowired
     private ISubcontractorComunicationDAO subcontractorComunicationDAO;
-    
+
     @Autowired
     IOrderDAO orderDAO;
 

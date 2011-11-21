@@ -455,7 +455,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             this.planningState.getSaveCommand().save(beforeSaveActions, null);
         }
     }
-    
+
     private void reattachCalendar() {
         if (planningState.getOrder().getCalendar() == null) {
             return;
