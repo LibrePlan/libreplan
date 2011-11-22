@@ -51,7 +51,7 @@ public class DashboardModel {
 
     public final static int EA_STRECHES_PERCENTAGE_SIZE = 10;
     public final static int EA_STRECHES_MIN_VALUE = -100;
-    public final static int EA_STRECHES_MAX_VALUE = 200;
+    public final static int EA_STRECHES_MAX_VALUE = 150;
 
     private Order currentOrder;
     private Integer taskCount = null;
