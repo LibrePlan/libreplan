@@ -22,60 +22,66 @@
 ]]>
     </zscript>
     <div self="@{define(content)}">
-        <window id="dashboardWindow" apply="${dsController}" style="height:auto">
-            <vbox>
-                 <hbox>
-                    <chart id="timeKPIEstimationAccuracyChart"
-                        height="200px" width="1200px" type="bar"
-                        xAxis="deviation class [i, i+1) (%)"
-                        threeD="false" yAxis="probability" orient="vertical"
-                        title="${i18n:_('Estimation Accuracy')}"
-                        paneColor="#FFFFFF" showLegend="false" />
-                </hbox>
-                 <hbox>
-                    <chart id="timeKPILagInTaskCompletionChart"
-                        height="200px" width="1200px" type="bar"
-                        xAxis="deviation class [i, i+1) (days)"
-                        threeD="false" yAxis="probability" orient="vertical"
-                        title="${i18n:_('Lead/Lag in task completion')}"
-                        paneColor="#FFFFFF" showLegend="false" />
-                </hbox>
-                <hbox>
-                    <chart id="progressKPIglobalProgressChart"
-                        height="400px" width="600px" type="bar"
-                        threeD="true" yAxis="%" orient="horizontal"
-                        title="${i18n:_('Global progress of the project')}"
-                        paneColor="#FFFFFF" showLegend="true" />
-                    <separator bar="false" spacing="40px"
-                        orient="vertical" />
-                    <chart id="progressKPItaskStatusChart"
-                        height="400px" width="600px" type="pie"
-                        threeD="true" title="${i18n:_('Task status')}"
-                        paneColor="#FFFFFF" bgColor="#FFFFFF"
-                        showLegend="true" showTooltiptext="true" />
-                </hbox>
-                <hbox>
-                    <chart
-                        id="progressKPItaskDeadlineViolationStatusChart"
-                        height="400px" width="600px" type="pie"
-                        threeD="true"
-                        title="${i18n:_('Deadline violation')}"
-                        paneColor="#FFFFFF" bgColor="#FFFFFF"
-                        showLegend="true" showTooltiptext="true" />
-                    <chart id="timeKPImarginWithDeadlineChart"
-                        height="400px" width="250px" type="bar"
-                        threeD="true" yAxis="x D days" orient="vertical"
-                        title="${i18n:_('Margin with deadline')}"
-                        paneColor="#FFFFFF" showLegend="false" />
-                </hbox>
-                <hbox>
-                    <n:h4 class="message_WARNING">
-                        <label id="noTasksWarningLabel"
-                            value="${i18n:_('No tasks available yet')}"
-                            visible="false" />
-                    </n:h4>
-                </hbox>
-            </vbox>
+        <window id="dashboardWindow" apply="${dsController}"
+            style="height:auto">
+            <div id="projectDashboardChartsDiv" visible="true">
+                <vbox>
+                    <hbox>
+                        <chart id="timeKPIEstimationAccuracyChart"
+                            height="200px" width="1200px" type="bar"
+                            xAxis="deviation class [i, i+1) (%)"
+                            threeD="false" yAxis="probability"
+                            orient="vertical"
+                            title="${i18n:_('Estimation Accuracy')}"
+                            paneColor="#FFFFFF" showLegend="false" />
+                    </hbox>
+                    <hbox>
+                        <chart id="timeKPILagInTaskCompletionChart"
+                            height="200px" width="1200px" type="bar"
+                            xAxis="deviation class [i, i+1) (days)"
+                            threeD="false" yAxis="probability"
+                            orient="vertical"
+                            title="${i18n:_('Lead/Lag in task completion')}"
+                            paneColor="#FFFFFF" showLegend="false" />
+                    </hbox>
+                    <hbox>
+                        <chart id="progressKPIglobalProgressChart"
+                            height="400px" width="600px" type="bar"
+                            threeD="true" yAxis="%" orient="horizontal"
+                            title="${i18n:_('Global progress of the project')}"
+                            paneColor="#FFFFFF" showLegend="true" />
+                        <separator bar="false" spacing="40px"
+                            orient="vertical" />
+                        <chart id="progressKPItaskStatusChart"
+                            height="400px" width="600px" type="pie"
+                            threeD="true"
+                            title="${i18n:_('Task status')}"
+                            paneColor="#FFFFFF" bgColor="#FFFFFF"
+                            showLegend="true" showTooltiptext="true" />
+                    </hbox>
+                    <hbox>
+                        <chart
+                            id="progressKPItaskDeadlineViolationStatusChart"
+                            height="400px" width="600px" type="pie"
+                            threeD="true"
+                            title="${i18n:_('Deadline violation')}"
+                            paneColor="#FFFFFF" bgColor="#FFFFFF"
+                            showLegend="true" showTooltiptext="true" />
+                        <chart id="timeKPImarginWithDeadlineChart"
+                            height="400px" width="250px" type="bar"
+                            threeD="true" yAxis="x D days"
+                            orient="vertical"
+                            title="${i18n:_('Margin with deadline')}"
+                            paneColor="#FFFFFF" showLegend="false" />
+                    </hbox>
+                </vbox>
+            </div>
+            <div id="projectDashboardNoTasksWarningDiv" visible="false">
+                <n:h4 class="message_WARNING">
+                    <label id="noTasksWarningLabel"
+                        value="${i18n:_('No tasks available yet')}" />
+                </n:h4>
+            </div>
         </window>
     </div>
 </zk>

@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Chart;
-import org.zkoss.zul.Label;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.PieModel;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.SimplePieModel;
@@ -60,7 +60,8 @@ public class DashboardController extends GenericForwardComposer {
     private Chart timeKPIEstimationAccuracyChart;
     private Chart timeKPILagInTaskCompletionChart;
 
-    private Label noTasksWarningLabel;
+    private Div projectDashboardChartsDiv;
+    private Div projectDashboardNoTasksWarningDiv;
 
     public DashboardController() {
     }
@@ -94,13 +95,8 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private void hideChartsAndShowWarningMessage() {
-        progressKPIglobalProgressChart.setVisible(false);
-        progressKPItaskStatusChart.setVisible(false);
-        progressKPItaskDeadlineViolationStatusChart.setVisible(false);
-        timeKPImarginWithDeadlineChart.setVisible(false);
-        timeKPIEstimationAccuracyChart.setVisible(false);
-        timeKPILagInTaskCompletionChart.setVisible(false);
-        noTasksWarningLabel.setVisible(true);
+        projectDashboardChartsDiv.setVisible(false);
+        projectDashboardNoTasksWarningDiv.setVisible(true);
     }
 
     private void generateTimeKPILagInTaskCompletionChart() {
