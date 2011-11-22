@@ -82,11 +82,13 @@ public class DashboardModel {
     public void setCurrentOrder(Order order) {
         this.currentOrder = order;
         this.taskCount = null;
-        this.calculateTaskStatusStatistics();
-        this.calculateTaskViolationStatusStatistics();
-        this.calculateMarginWithDeadLine();
-        this.calculateFinishedTasksEstimationAccuracyHistogram();
-        this.calculateLagInTaskCompletionHistogram();
+        if(tasksAvailable()) {
+            this.calculateTaskStatusStatistics();
+            this.calculateTaskViolationStatusStatistics();
+            this.calculateMarginWithDeadLine();
+            this.calculateFinishedTasksEstimationAccuracyHistogram();
+            this.calculateLagInTaskCompletionHistogram();
+        }
     }
 
     /* Progress KPI: "Number of tasks by status" */
@@ -122,8 +124,8 @@ public class DashboardModel {
     /* Progress KPI: "Global Progress of the Project" */
     public BigDecimal getAdvancePercentageByHours(){
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if (rootAsTaskGroup == null) {
-            return BigDecimal.ZERO;
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
         }
         BigDecimal ratio = rootAsTaskGroup.getProgressAllByNumHours();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
@@ -131,8 +133,8 @@ public class DashboardModel {
 
     public BigDecimal getTheoreticalAdvancePercentageByHoursUntilNow(){
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if (rootAsTaskGroup == null) {
-            return BigDecimal.ZERO;
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
         }
         BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByNumHoursForAllTasksUntilNow();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
@@ -140,8 +142,8 @@ public class DashboardModel {
 
     public BigDecimal getCriticalPathProgressByNumHours() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if (rootAsTaskGroup == null) {
-            return BigDecimal.ZERO;
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
         }
         BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByNumHours();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
@@ -149,8 +151,8 @@ public class DashboardModel {
 
     public BigDecimal getTheoreticalProgressByNumHoursForCriticalPathUntilNow() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if (rootAsTaskGroup == null) {
-            return BigDecimal.ZERO;
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
         }
         BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
@@ -158,8 +160,8 @@ public class DashboardModel {
 
     public BigDecimal getCriticalPathProgressByDuration() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if (rootAsTaskGroup == null) {
-            return BigDecimal.ZERO;
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
         }
         BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByDuration();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
@@ -167,8 +169,8 @@ public class DashboardModel {
 
     public BigDecimal getTheoreticalProgressByDurationForCriticalPathUntilNow() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
-        if (rootAsTaskGroup == null) {
-            return BigDecimal.ZERO;
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
         }
         BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByDurationForCriticalPathUntilNow();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
@@ -180,9 +182,12 @@ public class DashboardModel {
     }
 
     private void calculateMarginWithDeadLine() {
-        if (this.currentOrder.getDeadline() == null ||
-                this.getRootTask() == null) {
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
+        }
+        if (this.currentOrder.getDeadline() == null) {
             this.marginWithDeadLine = null;
+            return;
         }
         TaskElement rootTask = getRootTask();
         Days orderDuration = Days.daysBetween(rootTask.getStartAsLocalDate(),
@@ -206,6 +211,9 @@ public class DashboardModel {
     }
 
     private void calculateFinishedTasksEstimationAccuracyHistogram() {
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
+        }
         CalculateFinishedTasksEstimationDeviationVisitor visitor =
                 new CalculateFinishedTasksEstimationDeviationVisitor();
         TaskElement rootTask = getRootTask();
@@ -226,6 +234,9 @@ public class DashboardModel {
     }
 
     private void calculateLagInTaskCompletionHistogram() {
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
+        }
         CalculateFinishedTasksLagInCompletionVisitor visitor =
                 new CalculateFinishedTasksLagInCompletionVisitor();
         TaskElement rootTask = getRootTask();
@@ -277,10 +288,11 @@ public class DashboardModel {
     private void calculateTaskStatusStatistics() {
         AccumulateTasksStatusVisitor visitor = new AccumulateTasksStatusVisitor();
         TaskElement rootTask = getRootTask();
-        if (rootTask != null) {
-            resetTasksStatusInGraph();
-            rootTask.acceptVisitor(visitor);
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
         }
+        resetTasksStatusInGraph();
+        rootTask.acceptVisitor(visitor);
         Map<TaskStatusEnum, Integer> count = visitor.getTaskStatusData();
         mapAbsoluteValuesToPercentages(count, taskStatusStats);
     }
@@ -288,9 +300,10 @@ public class DashboardModel {
     private void calculateTaskViolationStatusStatistics() {
         AccumulateTasksDeadlineStatusVisitor visitor = new AccumulateTasksDeadlineStatusVisitor();
         TaskElement rootTask = getRootTask();
-        if (rootTask != null) {
-            rootTask.acceptVisitor(visitor);
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
         }
+        rootTask.acceptVisitor(visitor);
         Map<TaskDeadlineViolationStatusEnum, Integer> count = visitor.getTaskDeadlineViolationStatusData();
         mapAbsoluteValuesToPercentages(count, taskDeadlineViolationStatusStats);
     }
@@ -334,6 +347,10 @@ public class DashboardModel {
         }
         this.taskCount = new Integer(sum);
         return sum;
+    }
+
+    public boolean tasksAvailable() {
+        return getRootTask() != null;
     }
 
 }

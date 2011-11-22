@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.CategoryModel;
 import org.zkoss.zul.Chart;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.PieModel;
 import org.zkoss.zul.SimpleCategoryModel;
 import org.zkoss.zul.SimplePieModel;
@@ -63,6 +64,8 @@ public class DashboardController extends GenericForwardComposer {
     private Chart timeKPIEstimationAccuracyChart;
     private Chart timeKPILagInTaskCompletionChart;
 
+    private Label noTasksWarningLabel;
+
     public DashboardController() {
     }
 
@@ -79,7 +82,11 @@ public class DashboardController extends GenericForwardComposer {
 
     public void reload() {
         dashboardModel.setCurrentOrder(order);
-        this.reloadCharts();
+        if(dashboardModel.tasksAvailable()) {
+            this.reloadCharts();
+        } else {
+            this.hideChartsAndShowWarningMessage();
+        }
         if (this.dashboardWindow != null) {
             Util.reloadBindings(this.dashboardWindow);
         }
@@ -92,6 +99,16 @@ public class DashboardController extends GenericForwardComposer {
         generateTimeKPImarginWithDeadlineChart();
         generateTimeKPIEstimationAccuracyChart();
         generateTimeKPILagInTaskCompletionChart();
+    }
+
+    private void hideChartsAndShowWarningMessage() {
+        progressKPIglobalProgressChart.setVisible(false);
+        progressKPItaskStatusChart.setVisible(false);
+        progressKPItaskDeadlineViolationStatusChart.setVisible(false);
+        timeKPImarginWithDeadlineChart.setVisible(false);
+        timeKPIEstimationAccuracyChart.setVisible(false);
+        timeKPILagInTaskCompletionChart.setVisible(false);
+        noTasksWarningLabel.setVisible(true);
     }
 
     private void generateTimeKPILagInTaskCompletionChart() {
@@ -119,6 +136,10 @@ public class DashboardController extends GenericForwardComposer {
     private void generateTimeKPImarginWithDeadlineChart() {
         CategoryModel categoryModel;
         categoryModel = refreshTimeKPImarginWithDeadlineCategoryModel();
+        if (categoryModel == null) { // Project has no deadline set.
+            timeKPImarginWithDeadlineChart.setVisible(false);
+            return;
+        }
         timeKPImarginWithDeadlineChart.setAttribute("range-axis-lower-bound",
                 new Double(-3.0));
         timeKPImarginWithDeadlineChart.setAttribute("range-axis-upper-bound",
@@ -189,9 +210,12 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private CategoryModel refreshTimeKPImarginWithDeadlineCategoryModel() {
-        CategoryModel result = new SimpleCategoryModel();
-        result.setValue(_("None"), _("Deviation"),
-                dashboardModel.getMarginWithDeadLine());
+        CategoryModel result = null;
+        BigDecimal marginWithDeadLine = dashboardModel.getMarginWithDeadLine();
+        if (marginWithDeadLine != null) {
+            result = new SimpleCategoryModel();
+            result.setValue(_("None"), _("Deviation"), marginWithDeadLine);
+        }
         return result;
     }
 

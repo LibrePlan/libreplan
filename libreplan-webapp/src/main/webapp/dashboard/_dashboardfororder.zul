@@ -68,6 +68,11 @@
                         title="${i18n:_('Margin with deadline')}"
                         paneColor="#FFFFFF" showLegend="false" />
                 </hbox>
+                <hbox>
+                    <label id="noTasksWarningLabel"
+                    value="${i18n:_('No tasks available yet')}"
+                    visible="false"/>
+                </hbox>
             </vbox>
         </window>
     </div>
