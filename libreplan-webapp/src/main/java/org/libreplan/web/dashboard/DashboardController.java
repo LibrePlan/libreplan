@@ -61,6 +61,7 @@ public class DashboardController extends GenericForwardComposer {
     private Chart progressKPItaskDeadlineViolationStatusChart;
     private Chart timeKPImarginWithDeadlineChart;
     private Chart timeKPIEstimationAccuracyChart;
+    private Chart timeKPILagInTaskCompletionChart;
 
     public DashboardController() {
     }
@@ -90,6 +91,18 @@ public class DashboardController extends GenericForwardComposer {
         generateProgressKPItaskDeadlineViolationStatusChart();
         generateTimeKPImarginWithDeadlineChart();
         generateTimeKPIEstimationAccuracyChart();
+        generateTimeKPILagInTaskCompletionChart();
+    }
+
+    private void generateTimeKPILagInTaskCompletionChart() {
+        CategoryModel categoryModel;
+        categoryModel = refreshTimeKPILagInTaskCompletionCategoryModel();
+        Font labelFont = new Font("serif", Font.PLAIN, 10);
+        timeKPILagInTaskCompletionChart.setXAxisTickFont(labelFont);
+        Color[] seriesColorMappings = {Color.BLUE};
+        timeKPILagInTaskCompletionChart.setAttribute("series-color-mappings",
+                seriesColorMappings);
+        timeKPILagInTaskCompletionChart.setModel(categoryModel);
     }
 
     private void generateTimeKPIEstimationAccuracyChart() {
@@ -197,4 +210,18 @@ public class DashboardController extends GenericForwardComposer {
         return result;
     }
 
+    private CategoryModel refreshTimeKPILagInTaskCompletionCategoryModel() {
+        CategoryModel result = new SimpleCategoryModel();
+        List<Double> values = dashboardModel.getLagInTaskCompletionHistogram();
+        Iterator<Double> it = values.iterator();
+        for(double ii= DashboardModel.LTC_STRETCHES_MIN_VALUE;
+                ii < DashboardModel.LTC_STRETCHES_MAX_VALUE;
+                ii += DashboardModel.LTC_STRETCHES_STEP) {
+            result.setValue(_("None"), _(String.valueOf(ii)), it.next());
+        }
+        result.setValue(_("None"),
+                _(">"+DashboardModel.LTC_STRETCHES_MAX_VALUE),
+                it.next());
+        return result;
+    }
 }
