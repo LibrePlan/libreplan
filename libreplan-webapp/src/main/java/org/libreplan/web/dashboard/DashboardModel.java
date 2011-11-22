@@ -51,10 +51,17 @@ import org.springframework.stereotype.Component;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class DashboardModel {
 
+    /* Parameters */
     public final static int EA_STRETCHES_PERCENTAGE_STEP = 10;
     public final static int EA_STRETCHES_MIN_VALUE = -100;
     public final static int EA_STRETCHES_MAX_VALUE = 150;
     public final static int LTC_NUMBER_OF_INTERVALS = 10;
+
+    /* To be calculated */
+    public static double LTC_STRETCHES_STEP = 0;
+    public static double LTC_STRETCHES_MIN_VALUE = 0;
+    public static double LTC_STRETCHES_MAX_VALUE = 0;
+
 
     private Order currentOrder;
     private Integer taskCount = null;
@@ -225,12 +232,14 @@ public class DashboardModel {
         rootTask.acceptVisitor(visitor);
         List<Double> deviations = visitor.getDeviations();
 
-        Double minDeviation = Collections.min(deviations);
-        Double maxDeviation = Collections.max(deviations);
+        LTC_STRETCHES_MIN_VALUE = Collections.min(deviations);
+        LTC_STRETCHES_MAX_VALUE = Collections.max(deviations);
+        LTC_STRETCHES_STEP = (LTC_STRETCHES_MAX_VALUE - LTC_STRETCHES_MIN_VALUE)
+                /LTC_NUMBER_OF_INTERVALS;
         this.lagInTaskCompletionHistogram = createHistogram(
-                Collections.min(deviations),
-                Collections.max(deviations),
-                (maxDeviation - minDeviation)/LTC_NUMBER_OF_INTERVALS,
+                LTC_STRETCHES_MIN_VALUE,
+                LTC_STRETCHES_MAX_VALUE,
+                LTC_STRETCHES_STEP,
                 deviations);
     }
 
