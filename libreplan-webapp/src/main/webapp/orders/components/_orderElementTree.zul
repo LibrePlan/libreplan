@@ -28,7 +28,7 @@
     <vbox width="100%">
         <hbox style="margin-bottom:4px;" width="100%" hflex="true">
 
-        <hbox pack="center">
+        <hbox align="center" pack="center">
             <templateFinderPopup id="templateFinderPopupAtTree" acceptButtonLabel="${i18n:_('Create Task')}" caption="${i18n:_('Choosing Template')}" />
             <label value="${i18n:_('New task')}" />
             <textbox value="" id="newOrderElementName" width="150px"
