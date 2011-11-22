@@ -23,6 +23,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
@@ -105,6 +106,18 @@ public class DashboardController extends GenericForwardComposer {
     private void generateTimeKPImarginWithDeadlineChart() {
         CategoryModel categoryModel;
         categoryModel = refreshTimeKPImarginWithDeadlineCategoryModel();
+        timeKPImarginWithDeadlineChart.setAttribute("range-axis-lower-bound",
+                new Double(-3.0));
+        timeKPImarginWithDeadlineChart.setAttribute("range-axis-upper-bound",
+                new Double(3.0));
+        Color[] seriesColorMappings = new Color[1];
+        if(dashboardModel.getMarginWithDeadLine().compareTo(BigDecimal.ZERO) >= 0) {
+            seriesColorMappings[0] = Color.GREEN;
+        } else {
+            seriesColorMappings[0] = Color.RED;
+        }
+        timeKPImarginWithDeadlineChart.setAttribute("series-color-mappings",
+                seriesColorMappings);
         timeKPImarginWithDeadlineChart.setModel(categoryModel);
     }
 
