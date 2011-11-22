@@ -49,9 +49,9 @@ import org.springframework.stereotype.Component;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class DashboardModel {
 
-    public final static int EA_STRECHES_PERCENTAGE_SIZE = 10;
-    public final static int EA_STRECHES_MIN_VALUE = -100;
-    public final static int EA_STRECHES_MAX_VALUE = 150;
+    public final static int EA_STRETCHES_PERCENTAGE_STEP = 10;
+    public final static int EA_STRETCHES_MIN_VALUE = -100;
+    public final static int EA_STRETCHES_MAX_VALUE = 150;
 
     private Order currentOrder;
     private Integer taskCount = null;
@@ -191,10 +191,10 @@ public class DashboardModel {
         rootTask.acceptVisitor(visitor);
         List<Double> deviations = visitor.getDeviations();
 
-        int lowBound = EA_STRECHES_MIN_VALUE;
-        int highBound = EA_STRECHES_MAX_VALUE;
+        int lowBound = EA_STRETCHES_MIN_VALUE;
+        int highBound = EA_STRETCHES_MAX_VALUE;
         int variableRange = highBound - lowBound;
-        int numberOfClasses = variableRange/EA_STRECHES_PERCENTAGE_SIZE;
+        int numberOfClasses = variableRange/EA_STRETCHES_PERCENTAGE_STEP;
         // [-100, -90), [-90, -80), ..., [190, 200), [200, inf)
         int[] classes = new int[numberOfClasses+1];
 
