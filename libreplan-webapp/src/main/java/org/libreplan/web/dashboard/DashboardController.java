@@ -21,6 +21,8 @@ package org.libreplan.web.dashboard;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.util.Iterator;
 import java.util.List;
 
@@ -92,6 +94,11 @@ public class DashboardController extends GenericForwardComposer {
     private void generateTimeKPIEstimationAccuracyChart() {
         CategoryModel categoryModel;
         categoryModel = refreshTimeKPIEstimationAccuracyCategoryModel();
+        Font labelFont = new Font("serif", Font.PLAIN, 10);
+        timeKPIEstimationAccuracyChart.setXAxisTickFont(labelFont);
+        Color[] seriesColorMappings = {Color.BLUE};
+        timeKPIEstimationAccuracyChart.setAttribute("series-color-mappings",
+                seriesColorMappings);
         timeKPIEstimationAccuracyChart.setModel(categoryModel);
     }
 
@@ -114,6 +121,10 @@ public class DashboardController extends GenericForwardComposer {
     private void generateProgressKPIglobalProgressChart() {
         CategoryModel xymodel;
         xymodel = refreshProgressKPIglobalProgressCategoryModel();
+        progressKPIglobalProgressChart.setAttribute("range-axis-lower-bound",
+                new Double(0.0));
+        progressKPIglobalProgressChart.setAttribute("range-axis-upper-bound",
+                new Double(100.0));
         progressKPIglobalProgressChart.setModel(xymodel);
     }
 
