@@ -24,6 +24,8 @@ import java.math.MathContext;
 import java.util.EnumMap;
 import java.util.Map;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskDeadlineViolationStatusEnum;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -147,6 +149,25 @@ public class DashboardModel {
         }
         BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByDurationForCriticalPathUntilNow();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+    }
+
+    /* Time KPI: Margin with deadline */
+    public BigDecimal getMarginWithDeadLine() {
+        if (this.currentOrder.getDeadline() == null ||
+                this.getRootTask() == null) {
+            return null;
+        }
+        TaskElement rootTask = getRootTask();
+        Days orderDuration = Days.daysBetween(rootTask.getStartAsLocalDate(),
+                rootTask.getEndAsLocalDate());
+
+        LocalDate deadLineAsLocalDate = LocalDate.fromDateFields(currentOrder
+                .getDeadline());
+        Days deadlineOffset = Days.daysBetween(rootTask.getEndAsLocalDate(),
+                deadLineAsLocalDate);
+
+        BigDecimal outcome = new BigDecimal(deadlineOffset.getDays(), MathContext.DECIMAL32);
+        return outcome.divide(new BigDecimal(orderDuration.getDays()), 8, BigDecimal.ROUND_HALF_EVEN);
     }
 
     private void calculateTaskStatusStatistics() {
