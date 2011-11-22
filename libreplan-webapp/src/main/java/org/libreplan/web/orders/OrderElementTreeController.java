@@ -375,6 +375,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (readOnly) {
                 textBox.setDisabled(true);
             }
+            textBox.setConstraint("no empty:" + _("cannot be empty"));
             addCell(cssClass, textBox);
         }
 

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
@@ -213,6 +214,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
         Intbox hours = (Intbox) cmp.getFellow("newOrderElementHours");
+
+        if (StringUtils.isEmpty(name.getValue())) {
+            throw new WrongValueException(name, _("cannot be empty"));
+        }
 
         if (hours.getValue() == null) {
             hours.setValue(0);
