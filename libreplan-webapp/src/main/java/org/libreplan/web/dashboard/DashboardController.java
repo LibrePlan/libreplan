@@ -55,8 +55,6 @@ public class DashboardController extends GenericForwardComposer {
 
     private Window dashboardWindow;
 
-    private Order order;
-
     private Chart progressKPIglobalProgressChart;
     private Chart progressKPItaskStatusChart;
     private Chart progressKPItaskDeadlineViolationStatusChart;
@@ -77,10 +75,6 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     public void setCurrentOrder(Order order) {
-        this.order = order;
-    }
-
-    public void reload() {
         dashboardModel.setCurrentOrder(order);
         if(dashboardModel.tasksAvailable()) {
             this.reloadCharts();

@@ -100,7 +100,6 @@ public class DashboardTabCreator {
                 PlanningState planningState = getPlanningState(mode.getOrder(), getDesktop());
                 Order currentOrder = planningState.getOrder();
                 dashboardController.setCurrentOrder(currentOrder);
-                dashboardController.reload();
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
