@@ -16,7 +16,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<zk>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
     <zscript><![CDATA[
     dsController = arg.get("dashboardController");
 ]]>
@@ -69,9 +69,11 @@
                         paneColor="#FFFFFF" showLegend="false" />
                 </hbox>
                 <hbox>
-                    <label id="noTasksWarningLabel"
-                    value="${i18n:_('No tasks available yet')}"
-                    visible="false"/>
+                    <n:h4 class="message_WARNING">
+                        <label id="noTasksWarningLabel"
+                            value="${i18n:_('No tasks available yet')}"
+                            visible="false" />
+                    </n:h4>
                 </hbox>
             </vbox>
         </window>
