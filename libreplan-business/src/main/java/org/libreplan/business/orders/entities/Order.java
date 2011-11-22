@@ -41,7 +41,7 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.externalcompanies.entities.CustomerComunication;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.planner.entities.DayAssignment;
@@ -105,7 +105,7 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private CurrentVersionInfo currentVersionInfo;
 
-    private Set<CustomerComunication> customerComunications = new HashSet<CustomerComunication>();
+    private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
 
     public enum SchedulingMode {
         FORWARD, BACKWARDS;
@@ -568,12 +568,12 @@ public class Order extends OrderLineGroup implements Comparable {
         return this.getName().compareToIgnoreCase(((Order) o).getName());
     }
 
-    public void setCustomerComunications(Set<CustomerComunication> customerComunications) {
-        this.customerComunications = customerComunications;
+    public void setCustomerCommunications(Set<CustomerCommunication> customerCommunications) {
+        this.customerCommunications = customerCommunications;
     }
 
-    public Set<CustomerComunication> getCustomerComunications() {
-        return customerComunications;
+    public Set<CustomerCommunication> getCustomerCommunications() {
+        return customerCommunications;
     }
 
 }

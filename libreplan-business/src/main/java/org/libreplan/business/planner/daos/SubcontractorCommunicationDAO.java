@@ -24,29 +24,29 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
-import org.libreplan.business.planner.entities.SubcontractorComunication;
+import org.libreplan.business.planner.entities.SubcontractorCommunication;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 /**
- * DAO for {@link SubcontractorComunication}
+ * DAO for {@link SubcontractorCommunication}
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class SubcontractorComunicationDAO extends GenericDAOHibernate<SubcontractorComunication, Long>
-        implements ISubcontractorComunicationDAO {
+public class SubcontractorCommunicationDAO extends GenericDAOHibernate<SubcontractorCommunication, Long>
+        implements ISubcontractorCommunicationDAO {
 
     @Override
-    public List<SubcontractorComunication> getAll() {
-        return list(SubcontractorComunication.class);
+    public List<SubcontractorCommunication> getAll() {
+        return list(SubcontractorCommunication.class);
     }
 
     @Override
-    public List<SubcontractorComunication> getAllNotReviewed(){
-        Criteria c = getSession().createCriteria(SubcontractorComunication.class);
+    public List<SubcontractorCommunication> getAllNotReviewed(){
+        Criteria c = getSession().createCriteria(SubcontractorCommunication.class);
         c.add(Restrictions.eq("reviewed", false));
         return c.list();
     }

@@ -22,18 +22,18 @@ package org.libreplan.business.externalcompanies.daos;
 import java.util.List;
 
 import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.externalcompanies.entities.CustomerComunication;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 
 
 /**
- * Interface of the DAO for {@link CustomerComunication}
+ * Interface of the DAO for {@link CustomerCommunication}
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface ICustomerComunicationDAO extends IGenericDAO<CustomerComunication, Long> {
+public interface ICustomerCommunicationDAO extends IGenericDAO<CustomerCommunication, Long> {
 
-    List<CustomerComunication> getAll();
+    List<CustomerCommunication> getAll();
 
-    List<CustomerComunication> getAllNotReviewed();
+    List<CustomerCommunication> getAllNotReviewed();
 
 }

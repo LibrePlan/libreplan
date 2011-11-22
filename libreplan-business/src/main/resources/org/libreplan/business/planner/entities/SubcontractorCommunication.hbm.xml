@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.planner.entities"
+	default-access="field">
+
+	<!-- SubcontractorCommunication -->
+	<class name="SubcontractorCommunication" table="subcontractor_communication">
+		<id name="id" type="long" access="property">
+			<generator class="hilo">
+				<param name="max_lo">100</param>
+			</generator>
+		</id>
+		<version name="version" access="property" type="long" />
+		<property name="communicationType" access="field"
+			column="communication_type">
+			<type name="org.hibernate.type.EnumType">
+				<param name="enumClass">
+					org.libreplan.business.externalcompanies.entities.CommunicationType
+            </param>
+			</type>
+		</property>
+		<property name="communicationDate" access="field"
+			column="communication_date" />
+		<property name="reviewed" access="field" column="reviewed" />
+		<many-to-one name="subcontractedTaskData"
+			class="org.libreplan.business.planner.entities.SubcontractedTaskData"
+			column="Subcontracted_task_data" />
+
+		<list name="subcontractorCommunicationValues" table="subcontractor_communication_values">
+			<key column="subcontractor_communication_id" />
+			<index column="idx" />
+			<composite-element
+				class="org.libreplan.business.planner.entities.SubcontractorCommunicationValue">
+				<property name="date" access="field" />
+				<property name="progress" access="field" />
+			</composite-element>
+		</list>
+	</class>
+
+</hibernate-mapping>

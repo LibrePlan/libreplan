@@ -22,17 +22,17 @@ package org.libreplan.business.externalcompanies.entities;
 import static org.libreplan.business.i18n.I18nHelper._;
 
 /**
- * Enum for specified the type of {@link CustomerComunication}
+ * Enum for specified the type of {@link CustomerCommunication}
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public enum ComunicationType {
+public enum CommunicationType {
 
     NEW_PROJECT(_("New project")), REPORT_PROGRESS(_("Report advance"));
 
     private String description;
 
-    private ComunicationType(String description) {
+    private CommunicationType(String description) {
         this.description = description;
     }
 
@@ -40,7 +40,7 @@ public enum ComunicationType {
         return this.description;
     }
 
-    public static ComunicationType getDefault() {
+    public static CommunicationType getDefault() {
         return NEW_PROJECT;
     }
 }

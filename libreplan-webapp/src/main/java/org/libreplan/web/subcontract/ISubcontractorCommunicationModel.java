@@ -24,19 +24,19 @@ import java.util.List;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
-import org.libreplan.business.planner.entities.SubcontractorComunication;
+import org.libreplan.business.planner.entities.SubcontractorCommunication;
 
-public interface ISubcontractorComunicationModel {
+public interface ISubcontractorCommunicationModel {
 
-    void confirmSave(SubcontractorComunication customerComunication);
+    void confirmSave(SubcontractorCommunication customerCommunication);
 
-    List<SubcontractorComunication> getSubcontractorComunicationWithoutReviewed();
+    List<SubcontractorCommunication> getSubcontractorCommunicationWithoutReviewed();
 
-    List<SubcontractorComunication> getSubcontractorAllComunications();
+    List<SubcontractorCommunication> getSubcontractorAllCommunications();
 
-    void setCurrentFilter(FilterComunicationEnum currentFilter);
+    void setCurrentFilter(FilterCommunicationEnum currentFilter);
 
-    FilterComunicationEnum getCurrentFilter();
+    FilterCommunicationEnum getCurrentFilter();
 
     String getOrderCode(SubcontractedTaskData subcontractedTaskData);
 

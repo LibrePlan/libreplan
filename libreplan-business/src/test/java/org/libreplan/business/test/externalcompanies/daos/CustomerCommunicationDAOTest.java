@@ -39,8 +39,8 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.externalcompanies.daos.ICustomerComunicationDAO;
-import org.libreplan.business.externalcompanies.entities.CustomerComunication;
+import org.libreplan.business.externalcompanies.daos.ICustomerCommunicationDAO;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -54,7 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests for {@link CustomerComunication}
+ * Tests for {@link CustomerCommunication}
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -62,10 +62,10 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
 @Transactional
-public class CustomerComunicationDAOTest {
+public class CustomerCommunicationDAOTest {
 
     @Autowired
-    ICustomerComunicationDAO customerComunicationDAO;
+    ICustomerCommunicationDAO customerCommunicationDAO;
 
     @Autowired
     IOrderDAO orderDAO;
@@ -91,12 +91,12 @@ public class CustomerComunicationDAOTest {
         return date.toDateTimeAtStartOfDay().toDate();
     }
 
-    public CustomerComunication createValidCustomerComunication() {
+    public CustomerCommunication createValidCustomerCommunication() {
         Order order = createValidOrder("Order A");
-        CustomerComunication customerComunication = CustomerComunication
+        CustomerCommunication customerCommunication = CustomerCommunication
                 .createTodayNewProject(givenDeadLine(2));
-        customerComunication.setOrder(order);
-        return customerComunication;
+        customerCommunication.setOrder(order);
+        return customerCommunication;
     }
 
     @Test
@@ -105,35 +105,35 @@ public class CustomerComunicationDAOTest {
     }
 
     @Test
-    public void testCustomerComunicationDAOInSpringContainer() {
-        assertNotNull(customerComunicationDAO);
+    public void testCustomerCommunicationDAOInSpringContainer() {
+        assertNotNull(customerCommunicationDAO);
     }
 
     @Test
-    public void testSaveCustomerComunication() {
-        CustomerComunication customerComunication = createValidCustomerComunication();
-        customerComunicationDAO.save(customerComunication);
-        assertTrue(customerComunication.getId() != null);
+    public void testSaveCustomerCommunication() {
+        CustomerCommunication customerCommunication = createValidCustomerCommunication();
+        customerCommunicationDAO.save(customerCommunication);
+        assertTrue(customerCommunication.getId() != null);
     }
 
     @Test
-    public void testRemoveCustomerComunication()
+    public void testRemoveCustomerCommunication()
             throws InstanceNotFoundException {
-        CustomerComunication customerComunication = createValidCustomerComunication();
-        customerComunicationDAO.save(customerComunication);
-        assertTrue(customerComunication.getId() != null);
-        customerComunicationDAO.remove(customerComunication.getId());
-        assertFalse(customerComunicationDAO
-                .exists(customerComunication.getId()));
+        CustomerCommunication customerCommunication = createValidCustomerCommunication();
+        customerCommunicationDAO.save(customerCommunication);
+        assertTrue(customerCommunication.getId() != null);
+        customerCommunicationDAO.remove(customerCommunication.getId());
+        assertFalse(customerCommunicationDAO
+                .exists(customerCommunication.getId()));
     }
 
     @Test
-    public void testSaveCustomerComunicationWithoutOrder()
+    public void testSaveCustomerCommunicationWithoutOrder()
             throws InstanceNotFoundException {
-        CustomerComunication customerComunication = createValidCustomerComunication();
-        customerComunication.setOrder(null);
+        CustomerCommunication customerCommunication = createValidCustomerCommunication();
+        customerCommunication.setOrder(null);
         try {
-            customerComunicationDAO.save(customerComunication);
+            customerCommunicationDAO.save(customerCommunication);
             fail("It should throw an exception");
         } catch (ValidationException e) {
             // Ok

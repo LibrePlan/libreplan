@@ -17,35 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.subcontract;
+package org.libreplan.business.planner.daos;
 
-/**
- * Enum to filter the {@link CustomerComunication} list.
- *
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- */
-public enum FilterComunicationEnum {
-    ALL(_("All")), NOT_REVIEWED(_("Not Reviewed"));
+import java.util.List;
 
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
+import org.libreplan.business.common.daos.IGenericDAO;
+import org.libreplan.business.planner.entities.SubcontractorCommunication;
 
-    private String displayName;
+public interface ISubcontractorCommunicationDAO extends IGenericDAO<SubcontractorCommunication, Long> {
 
-    private FilterComunicationEnum(String displayName) {
-        this.displayName = displayName;
-    }
+    List<SubcontractorCommunication> getAll();
 
-    public static FilterComunicationEnum getDefault() {
-        return ALL;
-    }
-
-    @Override
-    public String toString() {
-        return displayName;
-    }
+    List<SubcontractorCommunication> getAllNotReviewed();
 }

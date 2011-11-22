@@ -21,8 +21,8 @@ package org.libreplan.web.subcontract;
 
 import java.util.List;
 
-import org.libreplan.business.externalcompanies.daos.ICustomerComunicationDAO;
-import org.libreplan.business.externalcompanies.entities.CustomerComunication;
+import org.libreplan.business.externalcompanies.daos.ICustomerCommunicationDAO;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -32,51 +32,51 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/subcontract/customerComunication.zul")
-public class CustomerComunicationModel implements ICustomerComunicationModel{
+@OnConcurrentModification(goToPage = "/subcontract/customerCommunication.zul")
+public class CustomerCommunicationModel implements ICustomerCommunicationModel{
 
     @Autowired
-    private ICustomerComunicationDAO customerComunicationDAO;
+    private ICustomerCommunicationDAO customerCommunicationDAO;
 
-    private FilterComunicationEnum currentFilter = FilterComunicationEnum.NOT_REVIEWED;
+    private FilterCommunicationEnum currentFilter = FilterCommunicationEnum.NOT_REVIEWED;
 
     @Override
     @Transactional
-    public void confirmSave(CustomerComunication customerComunication){
-        customerComunicationDAO.save(customerComunication);
+    public void confirmSave(CustomerCommunication customerCommunication){
+        customerCommunicationDAO.save(customerCommunication);
     }
 
     @Override
     @Transactional
-    public List<CustomerComunication> getCustomerAllComunications(){
-        List<CustomerComunication> list = customerComunicationDAO.getAll();
+    public List<CustomerCommunication> getCustomerAllCommunications(){
+        List<CustomerCommunication> list = customerCommunicationDAO.getAll();
         forceLoadAssociatedData(list);
         return list;
     }
 
     @Override
     @Transactional
-    public List<CustomerComunication> getCustomerComunicationWithoutReviewed(){
-        List<CustomerComunication> list = customerComunicationDAO.getAllNotReviewed();
+    public List<CustomerCommunication> getCustomerCommunicationWithoutReviewed(){
+        List<CustomerCommunication> list = customerCommunicationDAO.getAllNotReviewed();
         forceLoadAssociatedData(list);
         return list;
     }
 
-    private void forceLoadAssociatedData(List<CustomerComunication> customerComunicationList){
-        if (customerComunicationList != null) {
-            for (CustomerComunication customerComunication : customerComunicationList) {
-                customerComunication.getOrder().getName();
+    private void forceLoadAssociatedData(List<CustomerCommunication> customerCommunicationList){
+        if (customerCommunicationList != null) {
+            for (CustomerCommunication customerCommunication : customerCommunicationList) {
+                customerCommunication.getOrder().getName();
             }
         }
     }
 
     @Override
-    public void setCurrentFilter(FilterComunicationEnum currentFilter) {
+    public void setCurrentFilter(FilterCommunicationEnum currentFilter) {
         this.currentFilter = currentFilter;
     }
 
     @Override
-    public FilterComunicationEnum getCurrentFilter() {
+    public FilterCommunicationEnum getCurrentFilter() {
         return currentFilter;
     }
 }

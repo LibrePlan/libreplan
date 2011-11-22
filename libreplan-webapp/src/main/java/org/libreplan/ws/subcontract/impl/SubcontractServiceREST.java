@@ -47,10 +47,10 @@ import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.externalcompanies.daos.ICustomerComunicationDAO;
+import org.libreplan.business.externalcompanies.daos.ICustomerCommunicationDAO;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
-import org.libreplan.business.externalcompanies.entities.ComunicationType;
-import org.libreplan.business.externalcompanies.entities.CustomerComunication;
+import org.libreplan.business.externalcompanies.entities.CommunicationType;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -104,7 +104,7 @@ public class SubcontractServiceREST implements ISubcontractService {
     private IScenarioDAO scenarioDAO;
 
     @Autowired
-    private ICustomerComunicationDAO customerComunicationDAO;
+    private ICustomerCommunicationDAO customerCommunicationDAO;
 
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
@@ -240,10 +240,10 @@ public class SubcontractServiceREST implements ISubcontractService {
         orderElementDAO.save(order);
 
         /*
-         * create the customer comunication to a new subcontrating project.
+         * create the customer communication to a new subcontrating project.
          */
         if(!StringUtils.isBlank(order.getExternalCode())){
-            createCustomerComunication(order);
+            createCustomerCommunication(order);
         }
     }
 
@@ -323,12 +323,20 @@ public class SubcontractServiceREST implements ISubcontractService {
                 Util.generateInstanceId(1, code), message);
     }
 
-    private void createCustomerComunication(Order order){
+    private void createCustomerCommunication(Order order){
         Date deadline = order.getDeadline();
-        Date comunicationDate = new Date();
-        CustomerComunication customerComunication = CustomerComunication
-                .create(deadline, comunicationDate,
-                        ComunicationType.NEW_PROJECT, order);
-        customerComunicationDAO.save(customerComunication);
+        Date communicationDate = new Date();
+        CustomerCommunication customerCommunication = CustomerCommunication
+                .create(deadline, communicationDate,
+                        CommunicationType.NEW_PROJECT, order);
+        if(customerCommunication.getCommunicationType() != null){
+            System.out.println(" type before  "+ customerCommunication.getCommunicationType().toString());
+        }else{
+            customerCommunication.setCommunicationType(CommunicationType.NEW_PROJECT);
+        }
+        customerCommunicationDAO.save(customerCommunication);
+        if(customerCommunication.getCommunicationType() != null){
+            System.out.println(" type after  "+ customerCommunication.getCommunicationType().toString());
+        }
     }
 }

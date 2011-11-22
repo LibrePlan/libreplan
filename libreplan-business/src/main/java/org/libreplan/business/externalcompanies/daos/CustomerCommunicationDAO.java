@@ -24,29 +24,29 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
-import org.libreplan.business.externalcompanies.entities.CustomerComunication;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 /**
- * Hibernate DAO for {@link CustomerComunication}
+ * Hibernate DAO for {@link CustomerCommunication}
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class CustomerComunicationDAO extends GenericDAOHibernate<CustomerComunication, Long>
-implements ICustomerComunicationDAO {
+public class CustomerCommunicationDAO extends GenericDAOHibernate<CustomerCommunication, Long>
+implements ICustomerCommunicationDAO {
 
     @Override
-    public List<CustomerComunication> getAll(){
-        return list(CustomerComunication.class);
+    public List<CustomerCommunication> getAll(){
+        return list(CustomerCommunication.class);
     }
 
     @Override
-    public List<CustomerComunication> getAllNotReviewed(){
-        Criteria c = getSession().createCriteria(CustomerComunication.class);
+    public List<CustomerCommunication> getAllNotReviewed(){
+        Criteria c = getSession().createCriteria(CustomerCommunication.class);
         c.add(Restrictions.eq("reviewed", false));
         return c.list();
     }

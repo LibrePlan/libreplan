@@ -146,9 +146,9 @@
                         class="org.libreplan.business.scenarios.entities.OrderVersion"/>
                 </map>
 
-                <set name="customerComunications" cascade="delete-orphan" inverse="true" >
+                <set name="customerCommunications" cascade="delete-orphan" inverse="true" >
                     <key column="order_id" />
-                    <one-to-many class="org.libreplan.business.externalcompanies.entities.CustomerComunication" />
+                    <one-to-many class="org.libreplan.business.externalcompanies.entities.CustomerCommunication" />
                 </set>
             </joined-subclass>
 

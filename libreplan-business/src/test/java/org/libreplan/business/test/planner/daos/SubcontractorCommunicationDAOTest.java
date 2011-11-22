@@ -43,10 +43,10 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.externalcompanies.daos.ICustomerComunicationDAO;
+import org.libreplan.business.externalcompanies.daos.ICustomerCommunicationDAO;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
-import org.libreplan.business.externalcompanies.entities.ComunicationType;
-import org.libreplan.business.externalcompanies.entities.CustomerComunication;
+import org.libreplan.business.externalcompanies.entities.CommunicationType;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -56,11 +56,11 @@ import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
-import org.libreplan.business.planner.daos.ISubcontractorComunicationDAO;
+import org.libreplan.business.planner.daos.ISubcontractorCommunicationDAO;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
-import org.libreplan.business.planner.entities.SubcontractorComunication;
+import org.libreplan.business.planner.entities.SubcontractorCommunication;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
@@ -75,7 +75,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests for {@link SubcontractorComunication}
+ * Tests for {@link SubcontractorCommunication}
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -83,10 +83,10 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
         BUSINESS_SPRING_CONFIG_TEST_FILE })
 @Transactional
-public class SubcontractorComunicationDAOTest {
+public class SubcontractorCommunicationDAOTest {
 
     @Autowired
-    ISubcontractorComunicationDAO subcontractorComunicationDAO;
+    ISubcontractorCommunicationDAO subcontractorCommunicationDAO;
 
     @Autowired
     ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
@@ -204,45 +204,45 @@ public class SubcontractorComunicationDAOTest {
         return subcontractedTaskData;
     }
 
-    public SubcontractorComunication createValidSubcontractorComunication(){
+    public SubcontractorCommunication createValidSubcontractorCommunication(){
         SubcontractedTaskData subcontractedTaskData = createValidSubcontractedTaskData("Task A");
-        Date comunicationDate = new Date();
-        SubcontractorComunication subcontractorComunication = SubcontractorComunication
-                .create(subcontractedTaskData, ComunicationType.NEW_PROJECT,
-                        comunicationDate, false);
-        return subcontractorComunication;
+        Date communicationDate = new Date();
+        SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication
+                .create(subcontractedTaskData, CommunicationType.NEW_PROJECT,
+                        communicationDate, false);
+        return subcontractorCommunication;
     }
 
     @Test
-    public void testSubcontractorComunicationDAOInSpringContainer() {
-        assertNotNull(subcontractorComunicationDAO);
+    public void testSubcontractorCommunicationDAOInSpringContainer() {
+        assertNotNull(subcontractorCommunicationDAO);
     }
 
     @Test
-    public void testSaveCustomerComunication() {
-        SubcontractorComunication subcontractorComunication = createValidSubcontractorComunication();
-        subcontractorComunicationDAO.save(subcontractorComunication);
-        assertTrue(subcontractorComunication.getId() != null);
+    public void testSaveCustomerCommunication() {
+        SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
+        subcontractorCommunicationDAO.save(subcontractorCommunication);
+        assertTrue(subcontractorCommunication.getId() != null);
     }
 
     @Test
-    public void testRemoveCustomerComunication()
+    public void testRemoveCustomerCommunication()
             throws InstanceNotFoundException {
-        SubcontractorComunication customerComunication = createValidSubcontractorComunication();
-        subcontractorComunicationDAO.save(customerComunication);
-        assertTrue(customerComunication.getId() != null);
-        subcontractorComunicationDAO.remove(customerComunication.getId());
-        assertFalse(subcontractorComunicationDAO
-                .exists(customerComunication.getId()));
+        SubcontractorCommunication customerCommunication = createValidSubcontractorCommunication();
+        subcontractorCommunicationDAO.save(customerCommunication);
+        assertTrue(customerCommunication.getId() != null);
+        subcontractorCommunicationDAO.remove(customerCommunication.getId());
+        assertFalse(subcontractorCommunicationDAO
+                .exists(customerCommunication.getId()));
     }
 
     @Test
-    public void testSaveCustomerComunicationWithoutSubcontratedTaskData()
+    public void testSaveCustomerCommunicationWithoutSubcontratedTaskData()
             throws InstanceNotFoundException {
-        SubcontractorComunication subcontractorComunication = createValidSubcontractorComunication();
-        subcontractorComunication.setSubcontractedTaskData(null);
+        SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
+        subcontractorCommunication.setSubcontractedTaskData(null);
         try {
-            subcontractorComunicationDAO.save(subcontractorComunication);
+            subcontractorCommunicationDAO.save(subcontractorCommunication);
             fail("It should throw an exception");
         } catch (ValidationException e) {
             // Ok

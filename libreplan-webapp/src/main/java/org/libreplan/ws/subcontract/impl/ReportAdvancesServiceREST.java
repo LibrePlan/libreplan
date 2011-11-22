@@ -46,17 +46,17 @@ import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalA
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
-import org.libreplan.business.externalcompanies.entities.ComunicationType;
+import org.libreplan.business.externalcompanies.entities.CommunicationType;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
-import org.libreplan.business.planner.daos.ISubcontractorComunicationDAO;
+import org.libreplan.business.planner.daos.ISubcontractorCommunicationDAO;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
-import org.libreplan.business.planner.entities.SubcontractorComunication;
-import org.libreplan.business.planner.entities.SubcontractorComunicationValue;
+import org.libreplan.business.planner.entities.SubcontractorCommunication;
+import org.libreplan.business.planner.entities.SubcontractorCommunicationValue;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
 import org.libreplan.business.scenarios.entities.OrderVersion;
@@ -93,7 +93,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
     @Autowired
-    private ISubcontractorComunicationDAO subcontractorComunicationDAO;
+    private ISubcontractorCommunicationDAO subcontractorCommunicationDAO;
 
     @Autowired
     private IOrderDAO orderDAO;
@@ -212,10 +212,10 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
                 /*
                  * If the order element is subcontrated then create the
-                 * subcontrated comunication for the subcontrated task data to
+                 * subcontrated communication for the subcontrated task data to
                  * which the order element belongs.
                  */
-                createSubcontractorComunication(
+                createSubcontractorCommunication(
                         orderElement,
                         orderElementWithAdvanceMeasurementsDTO.advanceMeasurements);
 
@@ -241,7 +241,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
                 instanceConstraintViolationsList);
     }
 
-    public void createSubcontractorComunication(OrderElement orderElement,
+    public void createSubcontractorCommunication(OrderElement orderElement,
             Set<AdvanceMeasurementDTO> advanceMeasurementDTOs)
             throws InstanceNotFoundException {
         if (orderElement != null
@@ -251,26 +251,26 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
             SubcontractedTaskData subcontractedTaskData = task
                     .getSubcontractedTaskData();
             if (subcontractedTaskData != null) {
-                SubcontractorComunication subcontractorComunication = SubcontractorComunication
+                SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication
                         .create(subcontractedTaskData,
-                                ComunicationType.REPORT_PROGRESS, new Date(),
+                                CommunicationType.REPORT_PROGRESS, new Date(),
                                 false);
 
                 for (AdvanceMeasurementDTO advanceMeasurementDTO : advanceMeasurementDTOs) {
-                    // add subcontractorComunicationValue
-                    addSubcontractorComunicationValue(advanceMeasurementDTO,
-                            subcontractorComunication);
+                    // add subcontractorCommunicationValue
+                    addSubcontractorCommunicationValue(advanceMeasurementDTO,
+                            subcontractorCommunication);
                 }
-                subcontractorComunicationDAO.save(subcontractorComunication);
+                subcontractorCommunicationDAO.save(subcontractorCommunication);
             }
         }
     }
 
-    private void addSubcontractorComunicationValue(AdvanceMeasurementDTO advanceMeasurementDTO, SubcontractorComunication subcontractorComunication ){
+    private void addSubcontractorCommunicationValue(AdvanceMeasurementDTO advanceMeasurementDTO, SubcontractorCommunication subcontractorCommunication ){
         Date dateValue = DateConverter.toDate(advanceMeasurementDTO.date);
-        SubcontractorComunicationValue value = SubcontractorComunicationValue
+        SubcontractorCommunicationValue value = SubcontractorCommunicationValue
                 .create(dateValue, advanceMeasurementDTO.value);
-        subcontractorComunication.getSubcontratorComunicationValues()
+        subcontractorCommunication.getSubcontractorCommunicationValues()
                 .add(value);
     }
 

@@ -17,16 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.planner.daos;
+package org.libreplan.web.subcontract;
 
 import java.util.List;
 
-import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.planner.entities.SubcontractorComunication;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 
-public interface ISubcontractorComunicationDAO extends IGenericDAO<SubcontractorComunication, Long> {
+public interface ICustomerCommunicationModel {
 
-    List<SubcontractorComunication> getAll();
+    void confirmSave(CustomerCommunication customerCommunication);
 
-    List<SubcontractorComunication> getAllNotReviewed();
+    List<CustomerCommunication> getCustomerCommunicationWithoutReviewed();
+
+    List<CustomerCommunication> getCustomerAllCommunications();
+
+    void setCurrentFilter(FilterCommunicationEnum currentFilter);
+
+    FilterCommunicationEnum getCurrentFilter();
+
 }

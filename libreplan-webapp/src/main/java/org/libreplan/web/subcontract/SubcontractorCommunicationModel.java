@@ -24,10 +24,10 @@ import java.util.List;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.planner.daos.ISubcontractorComunicationDAO;
+import org.libreplan.business.planner.daos.ISubcontractorCommunicationDAO;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
-import org.libreplan.business.planner.entities.SubcontractorComunication;
-import org.libreplan.business.planner.entities.SubcontractorComunicationValue;
+import org.libreplan.business.planner.entities.SubcontractorCommunication;
+import org.libreplan.business.planner.entities.SubcontractorCommunicationValue;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,53 +38,53 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/subcontract/subcontractorComunication.zul")
-public class SubcontractorComunicationModel implements ISubcontractorComunicationModel{
+@OnConcurrentModification(goToPage = "/subcontract/subcontractorCommunication.zul")
+public class SubcontractorCommunicationModel implements ISubcontractorCommunicationModel{
 
     @Autowired
-    private ISubcontractorComunicationDAO subcontractorComunicationDAO;
+    private ISubcontractorCommunicationDAO subcontractorCommunicationDAO;
 
     @Autowired
     IOrderDAO orderDAO;
 
-    private FilterComunicationEnum currentFilter = FilterComunicationEnum.NOT_REVIEWED;
+    private FilterCommunicationEnum currentFilter = FilterCommunicationEnum.NOT_REVIEWED;
 
     @Override
     @Transactional
-    public void confirmSave(SubcontractorComunication subcontractorComunication){
-        subcontractorComunicationDAO.save(subcontractorComunication);
+    public void confirmSave(SubcontractorCommunication subcontractorCommunication){
+        subcontractorCommunicationDAO.save(subcontractorCommunication);
     }
 
     @Override
     @Transactional
-    public List<SubcontractorComunication> getSubcontractorAllComunications(){
-        List<SubcontractorComunication> list = subcontractorComunicationDAO.getAll();
+    public List<SubcontractorCommunication> getSubcontractorAllCommunications(){
+        List<SubcontractorCommunication> list = subcontractorCommunicationDAO.getAll();
         forceLoadAssociatedData(list);
         return list;
     }
 
     @Override
     @Transactional
-    public List<SubcontractorComunication> getSubcontractorComunicationWithoutReviewed(){
-        List<SubcontractorComunication> list = subcontractorComunicationDAO.getAllNotReviewed();
+    public List<SubcontractorCommunication> getSubcontractorCommunicationWithoutReviewed(){
+        List<SubcontractorCommunication> list = subcontractorCommunicationDAO.getAllNotReviewed();
         forceLoadAssociatedData(list);
         return list;
     }
 
-    private void forceLoadAssociatedData(List<SubcontractorComunication> subcontractorComunicationList){
-        if (subcontractorComunicationList != null) {
-            for (SubcontractorComunication subcontractorComunication : subcontractorComunicationList) {
-                subcontractorComunication.getSubcontractedTaskData().getExternalCompany().getName();
-                subcontractorComunication.getSubcontractedTaskData().getTask().getName();
-                subcontractorComunication.getSubcontractedTaskData().getTask().getOrderElement().getName();
-                subcontractorComunication.getLastSubcontratorComunicationValues().getDate();
+    private void forceLoadAssociatedData(List<SubcontractorCommunication> subcontractorCommunicationList){
+        if (subcontractorCommunicationList != null) {
+            for (SubcontractorCommunication subcontractorCommunication : subcontractorCommunicationList) {
+                subcontractorCommunication.getSubcontractedTaskData().getExternalCompany().getName();
+                subcontractorCommunication.getSubcontractedTaskData().getTask().getName();
+                subcontractorCommunication.getSubcontractedTaskData().getTask().getOrderElement().getName();
+                subcontractorCommunication.getLastSubcontractorCommunicationValues().getDate();
             }
         }
     }
 
-    private void forceLoadAssociatedDataValue(List<SubcontractorComunicationValue> subcontractorComunicationValueList){
-        if (subcontractorComunicationValueList != null) {
-            for (SubcontractorComunicationValue value : subcontractorComunicationValueList) {
+    private void forceLoadAssociatedDataValue(List<SubcontractorCommunicationValue> subcontractorCommunicationValueList){
+        if (subcontractorCommunicationValueList != null) {
+            for (SubcontractorCommunicationValue value : subcontractorCommunicationValueList) {
                 value.getDate();
             }
         }
@@ -109,12 +109,12 @@ public class SubcontractorComunicationModel implements ISubcontractorComunicatio
     }
 
     @Override
-    public void setCurrentFilter(FilterComunicationEnum currentFilter) {
+    public void setCurrentFilter(FilterCommunicationEnum currentFilter) {
         this.currentFilter = currentFilter;
     }
 
     @Override
-    public FilterComunicationEnum getCurrentFilter() {
+    public FilterCommunicationEnum getCurrentFilter() {
         return currentFilter;
     }
 

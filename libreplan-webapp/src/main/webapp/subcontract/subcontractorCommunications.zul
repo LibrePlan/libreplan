@@ -28,7 +28,7 @@
 
 <zk>
 <window self="@{define(content)}"
-        apply="org.libreplan.web.subcontract.SubcontractorComunicationCRUDController"
+        apply="org.libreplan.web.subcontract.SubcontractorCommunicationCRUDController"
         title="${i18n:_('Subcontractor communications List')}">
 
     <vbox id="messagesContainer" />
@@ -42,17 +42,17 @@
     </div>
 	<separator bar="false" spacing="20px" orient="horizontal"/>
 	 <grid id="listing"
-        model="@{controller.subcontractorComunications}"
-        rowRenderer="@{controller.subcontractorComunicationRenderer}"
+        model="@{controller.subcontractorCommunications}"
+        rowRenderer="@{controller.subcontractorCommunicationRenderer}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Communication Type')}" align="center" width="140px" sort="auto(lower(comunicationType))"/>
+            <column label="${i18n:_('Communication Type')}" align="center" width="140px" sort="auto(lower(communicationType))"/>
             <column label="${i18n:_('Subcontrated task')}" align="center" sort="auto(lower(subcontractedTaskData.task.name))"/>
             <column label="${i18n:_('Project name')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.task.orderElement.name))"/>
             <column label="${i18n:_('Project Code')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.task.orderElement.code))"/>
             <column label="${i18n:_('Company')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.externalCompany.name))"/>
-            <column label="${i18n:_('Communication Date')}" width="150px" align="center" sort="auto(lower(comunicationDate))"/>
-            <column label="${i18n:_('Value')}" width="200px" align="center" sort="auto(lower(lastSubcontratorComunicationValueDate))"/>
+            <column label="${i18n:_('Communication Date')}" width="150px" align="center" sort="auto(lower(communicationDate))"/>
+            <column label="${i18n:_('Value')}" width="200px" align="center" sort="auto(lower(lastSubcontractorCommunicationValueDate))"/>
             <column label="${i18n:_('Reviewed')}" width="80px" align="center"/>
             <column label="${i18n:_('Operations')}" width="80px" align="center"/>
         </columns>
@@ -60,13 +60,13 @@
 
 
     <popup id="pp">
-    	<grid id="listingValues" width="300px" fixedLayout="true">
+        <grid id="listingValues" width="300px" fixedLayout="true">
 			<columns>
-            	<column label="${i18n:_('Date')}" width="150px" sort="auto(date)" sortDirection="descending"/>
+                <column label="${i18n:_('Date')}" width="150px" sort="auto(date)" sortDirection="descending"/>
                 <column label="${i18n:_('Progress')}" width="150px" sort="auto(progress)" sortDirection="descending"/>
             </columns>
             <rows>
-            	<row self="@{each='value'}" value="@{value}">
+                <row self="@{each='value'}" value="@{value}">
                     <label value="@{value.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
                     <label value="@{value.progress}"/>
                 </row>

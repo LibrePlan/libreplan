@@ -27,31 +27,31 @@ import org.hibernate.validator.AssertTrue;
 import org.libreplan.business.INewObject;
 
 /**
- * Entity to represent each {@SubcontractorComunicationValue}.
+ * Entity to represent each {@SubcontractorCommunicationValue}.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia>
  */
-public class SubcontractorComunicationValue implements INewObject {
+public class SubcontractorCommunicationValue implements INewObject {
 
-    public static SubcontractorComunicationValue create() {
-        SubcontractorComunicationValue subcontractorComunicationValue = new SubcontractorComunicationValue();
-        subcontractorComunicationValue.setNewObject(true);
-        return subcontractorComunicationValue;
+    public static SubcontractorCommunicationValue create() {
+        SubcontractorCommunicationValue subcontractorCommunicationValue = new SubcontractorCommunicationValue();
+        subcontractorCommunicationValue.setNewObject(true);
+        return subcontractorCommunicationValue;
     }
 
-    public static SubcontractorComunicationValue create(Date date,
+    public static SubcontractorCommunicationValue create(Date date,
             BigDecimal progress) {
-        SubcontractorComunicationValue subcontractorComunicationValue = new SubcontractorComunicationValue(
+        SubcontractorCommunicationValue subcontractorCommunicationValue = new SubcontractorCommunicationValue(
                 date, progress);
-        subcontractorComunicationValue.setNewObject(true);
-        return subcontractorComunicationValue;
+        subcontractorCommunicationValue.setNewObject(true);
+        return subcontractorCommunicationValue;
     }
 
-    protected SubcontractorComunicationValue() {
+    protected SubcontractorCommunicationValue() {
 
     }
 
-    private SubcontractorComunicationValue(Date date, BigDecimal progress) {
+    private SubcontractorCommunicationValue(Date date, BigDecimal progress) {
         this.setDate(date);
         this.setProgress(progress);
     }

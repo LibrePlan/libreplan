@@ -19,20 +19,33 @@
 
 package org.libreplan.web.subcontract;
 
-import java.util.List;
+/**
+ * Enum to filter the {@link CustomerCommunication} list.
+ *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
+public enum FilterCommunicationEnum {
+    ALL(_("All")), NOT_REVIEWED(_("Not Reviewed"));
 
-import org.libreplan.business.externalcompanies.entities.CustomerComunication;
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
-public interface ICustomerComunicationModel {
+    private String displayName;
 
-    void confirmSave(CustomerComunication customerComunication);
+    private FilterCommunicationEnum(String displayName) {
+        this.displayName = displayName;
+    }
 
-    List<CustomerComunication> getCustomerComunicationWithoutReviewed();
+    public static FilterCommunicationEnum getDefault() {
+        return ALL;
+    }
 
-    List<CustomerComunication> getCustomerAllComunications();
-
-    void setCurrentFilter(FilterComunicationEnum currentFilter);
-
-    FilterComunicationEnum getCurrentFilter();
-
+    @Override
+    public String toString() {
+        return displayName;
+    }
 }

@@ -72,7 +72,7 @@ import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
-import org.libreplan.business.planner.daos.ISubcontractorComunicationDAO;
+import org.libreplan.business.planner.daos.ISubcontractorCommunicationDAO;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
@@ -86,7 +86,7 @@ import org.libreplan.ws.subcontract.api.IReportAdvancesService;
 import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsDTO;
 import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.libreplan.business.planner.entities.SubcontractorComunication;
+import org.libreplan.business.planner.entities.SubcontractorCommunication;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -155,7 +155,7 @@ public class ReportAdvancesServiceTest {
     private IScenarioManager scenarioManager;
 
     @Autowired
-    private ISubcontractorComunicationDAO subcontractorComunicationDAO;
+    private ISubcontractorCommunicationDAO subcontractorCommunicationDAO;
 
     @Autowired
     private ISubcontractedTaskDataDAO subcontractorTaskDataDAO;
@@ -235,7 +235,7 @@ public class ReportAdvancesServiceTest {
 
     @Test
     public void validAdvancesReportToSubcontratedOrderElement() {
-        int previousComunications = subcontractorComunicationDAO.getAll().size();
+        int previousCommunications = subcontractorCommunicationDAO.getAll().size();
         OrderLine orderLine = createOrderLine();
         String orderElementCode = orderLine.getCode();
 
@@ -244,7 +244,7 @@ public class ReportAdvancesServiceTest {
 
         OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
-        SubcontractorComunication subcontractorComunication = SubcontractorComunication.create();
+        SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication.create();
         reportAdvancesService
                 .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
 
@@ -270,8 +270,8 @@ public class ReportAdvancesServiceTest {
             assertThat(advanceMeasurement.getValue(), equalTo(entry.getValue()));
         }
 
-        int currentComunications = subcontractorComunicationDAO.getAll().size();
-        assertThat((previousComunications+1), equalTo(currentComunications));
+        int currentCommunications = subcontractorCommunicationDAO.getAll().size();
+        assertThat((previousCommunications+1), equalTo(currentCommunications));
     }
 
     @Test

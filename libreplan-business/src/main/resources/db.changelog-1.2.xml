@@ -43,6 +43,51 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+    </changeSet>
+      <changeSet id="rename-table-customer_comunication-to-customer_communication" author="smontes">
+        <comment>Rename table customer_comunication to customer_communication</comment>
+        <renameTable oldTableName="customer_comunication" newTableName="customer_communication" />
+    </changeSet>
+
+    <changeSet id="rename-column-comunication_type-to-communication_type" author="smontes">
+        <comment>Rename column comunication_type to communication_type</comment>
+        <renameColumn tableName="customer_communication" oldColumnName="comunication_type"
+        newColumnName="communication_type"/>
+    </changeSet>
+
+    <changeSet id="rename-column-comunication_date-to-communication_date" author="smontes">
+        <comment>Rename column comunication_date to communication_date</comment>
+        <renameColumn tableName="customer_communication" oldColumnName="comunication_date"
+        newColumnName="communication_date"/>
+    </changeSet>
+
+    <changeSet id="rename-table-subcontractor_comunication" author="smontes">
+        <comment>Rename table subcontractor_comunication to subcontractor_communication</comment>
+        <renameTable oldTableName="subcontractor_comunication" newTableName="subcontractor_communication" />
+    </changeSet>
+
+    <changeSet id="rename-column-comunication_type-on-subcontractor-communication" author="smontes">
+        <comment>Rename column comunication_type to communication_type</comment>
+        <renameColumn tableName="subcontractor_communication" oldColumnName="comunication_type"
+        newColumnName="communication_type"/>
+    </changeSet>
+
+    <changeSet id="rename-column-comunication_date-on-subcontractor-communication" author="smontes">
+        <comment>Rename column comunication_date to communication_date</comment>
+        <renameColumn tableName="subcontractor_communication" oldColumnName="comunication_date"
+        newColumnName="communication_date"/>
+    </changeSet>
+
+    <changeSet id="rename-table-subcontractor_comunication_values" author="smontes">
+        <comment>Rename table subcontractor_comunication_values to subcontractor_communication_values</comment>
+        <renameTable oldTableName="subcontrator_comunication_values" newTableName="subcontractor_communication_values" />
+    </changeSet>
+
+    <changeSet id="rename-column-subcontractor_comunication_id" author="smontes">
+        <comment>Rename column subcontractor_comunication_id</comment>
+        <renameColumn tableName="subcontractor_communication_values" oldColumnName="subcontractor_comunication_id"
+        newColumnName="subcontractor_communication_id"/>
     </changeSet>
 
 </databaseChangeLog>

@@ -28,7 +28,7 @@
 
 <zk>
 <window self="@{define(content)}"
-        apply="org.libreplan.web.subcontract.CustomerComunicationCRUDController"
+        apply="org.libreplan.web.subcontract.CustomerCommunicationCRUDController"
         title="${i18n:_('Customer communications List')}">
 
     <vbox id="messagesContainer" />
@@ -42,16 +42,16 @@
     </div>
 	<separator bar="false" spacing="20px" orient="horizontal"/>
     <grid id="listing"
-        model="@{controller.customerComunications}"
-        rowRenderer="@{controller.customerComunicationRenderer}"
+        model="@{controller.customerCommunications}"
+        rowRenderer="@{controller.customerCommunicationRenderer}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Communication Type')}" sort="auto(lower(comunicationType))"/>
+            <column label="${i18n:_('Communication Type')}" sort="auto(lower(communicationType))"/>
             <column label="${i18n:_('Project Name')}" sort="auto(lower(order.name))"/>
             <column label="${i18n:_('Deadline')}" width="150px" align="center" sort="auto(lower(deadline))"/>
             <column label="${i18n:_('Project Code')}" sort="auto(lower(order.code))"/>
             <column label="${i18n:_('Customer')}" sort="auto(lower(order.customerReference))"/>
-            <column label="${i18n:_('Communication Date')}" width="150px" align="center" sort="auto(lower(comunicationDate))"/>
+            <column label="${i18n:_('Communication Date')}" width="150px" align="center" sort="auto(lower(communicationDate))"/>
             <column label="${i18n:_('Reviewed')}" width="80px" align="center"/>
             <column label="${i18n:_('Operations')}" width="80px" align="center"/>
         </columns>
