@@ -29,7 +29,6 @@ import java.util.List;
 
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.Util;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -50,8 +49,7 @@ import org.zkoss.zul.Window;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class DashboardController extends GenericForwardComposer {
 
-    @Autowired
-    private DashboardModel dashboardModel;
+    private IDashboardModel dashboardModel;
 
     private Window dashboardWindow;
 

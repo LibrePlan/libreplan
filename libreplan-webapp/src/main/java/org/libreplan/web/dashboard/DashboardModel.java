@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class DashboardModel {
+public class DashboardModel implements IDashboardModel {
 
     /* Parameters */
     public final static int EA_STRETCHES_PERCENTAGE_STEP = 10;
