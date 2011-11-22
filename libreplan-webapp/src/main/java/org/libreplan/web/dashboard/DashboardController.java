@@ -119,13 +119,13 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private void generateProgressKPIglobalProgressChart() {
-        CategoryModel xymodel;
-        xymodel = refreshProgressKPIglobalProgressCategoryModel();
+        CategoryModel categoryModel;
+        categoryModel = refreshProgressKPIglobalProgressCategoryModel();
         progressKPIglobalProgressChart.setAttribute("range-axis-lower-bound",
                 new Double(0.0));
         progressKPIglobalProgressChart.setAttribute("range-axis-upper-bound",
                 new Double(100.0));
-        progressKPIglobalProgressChart.setModel(xymodel);
+        progressKPIglobalProgressChart.setModel(categoryModel);
     }
 
     private PieModel refreshProgressKPItaskStatusPieModel() {
