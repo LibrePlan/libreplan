@@ -59,6 +59,7 @@ public class DashboardModel {
     private Map<TaskStatusEnum, BigDecimal> taskStatusStats;
     private Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
     private List<Double> taskEstimationAccuracyHistogram;
+    private BigDecimal marginWithDeadLine;
 
     public DashboardModel() {
         taskStatusStats = new EnumMap<TaskStatusEnum, BigDecimal>(
@@ -72,6 +73,7 @@ public class DashboardModel {
         this.taskCount = null;
         this.calculateTaskStatusStatistics();
         this.calculateTaskViolationStatusStatistics();
+        this.calculateMarginWithDeadLine();
         this.calculateFinishedTasksEstimationAccuracyHistogram();
     }
 
@@ -162,9 +164,13 @@ public class DashboardModel {
 
     /* Time KPI: Margin with deadline */
     public BigDecimal getMarginWithDeadLine() {
+        return this.marginWithDeadLine;
+    }
+
+    private void calculateMarginWithDeadLine() {
         if (this.currentOrder.getDeadline() == null ||
                 this.getRootTask() == null) {
-            return null;
+            this.marginWithDeadLine = null;
         }
         TaskElement rootTask = getRootTask();
         Days orderDuration = Days.daysBetween(rootTask.getStartAsLocalDate(),
@@ -175,8 +181,11 @@ public class DashboardModel {
         Days deadlineOffset = Days.daysBetween(rootTask.getEndAsLocalDate(),
                 deadLineAsLocalDate);
 
-        BigDecimal outcome = new BigDecimal(deadlineOffset.getDays(), MathContext.DECIMAL32);
-        return outcome.divide(new BigDecimal(orderDuration.getDays()), 8, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal outcome = new BigDecimal(deadlineOffset.getDays(),
+                MathContext.DECIMAL32);
+        this.marginWithDeadLine = outcome.divide(
+                new BigDecimal(orderDuration.getDays()), 8,
+                BigDecimal.ROUND_HALF_EVEN);
     }
 
     /* Time KPI: Estimation accuracy */
