@@ -53,6 +53,7 @@ public class DashboardController extends GenericForwardComposer {
     private Chart progressKPIglobalProgressChart;
     private Chart progressKPItaskStatusChart;
     private Chart progressKPItaskDeadlineViolationStatusChart;
+    private Chart timeKPImarginWithDeadlineChart;
 
     public DashboardController() {
     }
@@ -80,6 +81,13 @@ public class DashboardController extends GenericForwardComposer {
         generateProgressKPIglobalProgressChart();
         generateProgressKPItaskStatusChart();
         generateProgressKPItaskDeadlineViolationStatusChart();
+        generateTimeKPImarginWithDeadlineChart();
+    }
+
+    private void generateTimeKPImarginWithDeadlineChart() {
+        CategoryModel categoryModel;
+        categoryModel = refreshTimeKPImarginWithDeadlineCategoryModel();
+        timeKPImarginWithDeadlineChart.setModel(categoryModel);
     }
 
     private void generateProgressKPItaskStatusChart() {
@@ -129,6 +137,13 @@ public class DashboardController extends GenericForwardComposer {
                 dashboardModel.getCriticalPathProgressByDuration());
         result.setValue(_("Expected"), _("Critical path (duration)"),
                 dashboardModel.getTheoreticalProgressByDurationForCriticalPathUntilNow());
+        return result;
+    }
+
+    private CategoryModel refreshTimeKPImarginWithDeadlineCategoryModel() {
+        CategoryModel result = new SimpleCategoryModel();
+        result.setValue(_("None"), _("Deviation"),
+                dashboardModel.getMarginWithDeadLine());
         return result;
     }
 

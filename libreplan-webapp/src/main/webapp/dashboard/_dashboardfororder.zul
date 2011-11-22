@@ -46,6 +46,11 @@
                         title="${i18n:_('Deadline violation')}"
                         paneColor="#FFFFFF" bgColor="#FFFFFF"
                         showLegend="true" showTooltiptext="true" />
+                    <chart id="timeKPImarginWithDeadlineChart"
+                        height="400px" width="600px" type="bar"
+                        threeD="true" yAxis="x D days" orient="vertical"
+                        title="${i18n:_('Margin with deadline')}"
+                        paneColor="#FFFFFF" showLegend="false" />
                 </hbox>
             </vbox>
         </window>
