@@ -21,7 +21,9 @@ package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joda.time.Days;
@@ -33,6 +35,7 @@ import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.business.planner.entities.visitors.AccumulateTasksDeadlineStatusVisitor;
 import org.libreplan.business.planner.entities.visitors.AccumulateTasksStatusVisitor;
+import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksEstimationDeviationVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -46,11 +49,16 @@ import org.springframework.stereotype.Component;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class DashboardModel {
 
+    public final static int EA_STRECHES_PERCENTAGE_SIZE = 10;
+    public final static int EA_STRECHES_MIN_VALUE = -100;
+    public final static int EA_STRECHES_MAX_VALUE = 200;
+
     private Order currentOrder;
     private Integer taskCount = null;
 
     private Map<TaskStatusEnum, BigDecimal> taskStatusStats;
     private Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
+    private List<Double> taskEstimationAccuracyHistogram;
 
     public DashboardModel() {
         taskStatusStats = new EnumMap<TaskStatusEnum, BigDecimal>(
@@ -64,6 +72,7 @@ public class DashboardModel {
         this.taskCount = null;
         this.calculateTaskStatusStatistics();
         this.calculateTaskViolationStatusStatistics();
+        this.calculateFinishedTasksEstimationAccuracyHistogram();
     }
 
     /* Progress KPI: "Number of tasks by status" */
@@ -168,6 +177,48 @@ public class DashboardModel {
 
         BigDecimal outcome = new BigDecimal(deadlineOffset.getDays(), MathContext.DECIMAL32);
         return outcome.divide(new BigDecimal(orderDuration.getDays()), 8, BigDecimal.ROUND_HALF_EVEN);
+    }
+
+    /* Time KPI: Estimation accuracy */
+    public List<Double> getFinishedTasksEstimationAccuracyHistogram() {
+        return this.taskEstimationAccuracyHistogram;
+    }
+
+    private void calculateFinishedTasksEstimationAccuracyHistogram() {
+        CalculateFinishedTasksEstimationDeviationVisitor visitor =
+                new CalculateFinishedTasksEstimationDeviationVisitor();
+        TaskElement rootTask = getRootTask();
+        rootTask.acceptVisitor(visitor);
+        List<Double> deviations = visitor.getDeviations();
+
+        int lowBound = EA_STRECHES_MIN_VALUE;
+        int highBound = EA_STRECHES_MAX_VALUE;
+        int variableRange = highBound - lowBound;
+        int numberOfClasses = variableRange/EA_STRECHES_PERCENTAGE_SIZE;
+        // [-100, -90), [-90, -80), ..., [190, 200), [200, inf)
+        int[] classes = new int[numberOfClasses+1];
+
+        for(Double deviation: deviations) {
+            int index;
+            if (deviation >= highBound) {
+                index = numberOfClasses;
+            } else {
+                index = (int)(numberOfClasses *
+                    (((deviation.doubleValue() - lowBound))/variableRange));
+            }
+            classes[index]++;
+        }
+
+        this.taskEstimationAccuracyHistogram = new ArrayList<Double>();
+        int numberOfConsideredTasks = visitor.getNumberOfConsideredTasks();
+        for(int numberOfElementsInClass: classes) {
+            Double relativeCount = new Double(0.0);
+            if (numberOfConsideredTasks > 0) {
+                relativeCount = new Double(1.0*numberOfElementsInClass/
+                        numberOfConsideredTasks);
+            }
+            this.taskEstimationAccuracyHistogram.add(relativeCount);
+        }
     }
 
     private void calculateTaskStatusStatistics() {
