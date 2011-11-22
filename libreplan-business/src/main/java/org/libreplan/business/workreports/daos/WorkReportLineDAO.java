@@ -38,6 +38,7 @@ import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Dao for {@link WorkReportLineDAO}
@@ -89,6 +90,7 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
 
     @SuppressWarnings("unchecked")
     @Override
+    @Transactional(readOnly=true)
     public List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement, boolean sortByDate) {
         // Create collection with current orderElement and all its children
         Collection<OrderElement> orderElements = orderElement.getAllChildren();
