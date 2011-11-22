@@ -22,7 +22,7 @@
 ]]>
     </zscript>
     <div self="@{define(content)}">
-        <window id="dashboardWindow" apply="${dsController}">
+        <window id="dashboardWindow" apply="${dsController}" style="height:auto">
             <vbox>
                  <hbox>
                     <chart id="timeKPIEstimationAccuracyChart"
