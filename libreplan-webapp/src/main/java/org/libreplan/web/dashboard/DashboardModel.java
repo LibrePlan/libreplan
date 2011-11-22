@@ -22,6 +22,7 @@ package org.libreplan.web.dashboard;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.business.planner.entities.visitors.AccumulateTasksDeadlineStatusVisitor;
 import org.libreplan.business.planner.entities.visitors.AccumulateTasksStatusVisitor;
 import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksEstimationDeviationVisitor;
+import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksLagInCompletionVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -52,6 +54,7 @@ public class DashboardModel {
     public final static int EA_STRETCHES_PERCENTAGE_STEP = 10;
     public final static int EA_STRETCHES_MIN_VALUE = -100;
     public final static int EA_STRETCHES_MAX_VALUE = 150;
+    public final static int LTC_NUMBER_OF_INTERVALS = 10;
 
     private Order currentOrder;
     private Integer taskCount = null;
@@ -60,6 +63,7 @@ public class DashboardModel {
     private Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
     private List<Double> taskEstimationAccuracyHistogram;
     private BigDecimal marginWithDeadLine;
+    private List<Double> lagInTaskCompletionHistogram;
 
     public DashboardModel() {
         taskStatusStats = new EnumMap<TaskStatusEnum, BigDecimal>(
@@ -75,6 +79,7 @@ public class DashboardModel {
         this.calculateTaskViolationStatusStatistics();
         this.calculateMarginWithDeadLine();
         this.calculateFinishedTasksEstimationAccuracyHistogram();
+        this.calculateLagInTaskCompletionHistogram();
     }
 
     /* Progress KPI: "Number of tasks by status" */
@@ -208,10 +213,32 @@ public class DashboardModel {
                 deviations);
     }
 
-    private List<Double> createHistogram(int lowBound, int highBound,
-            int intervalStep, List<Double> values) {
-        int variableRange = highBound - lowBound;
-        int numberOfClasses = variableRange/intervalStep;
+    /* Time KPI: Lead/Lag in task completion */
+    public List<Double> getLagInTaskCompletionHistogram() {
+        return this.lagInTaskCompletionHistogram;
+    }
+
+    private void calculateLagInTaskCompletionHistogram() {
+        CalculateFinishedTasksLagInCompletionVisitor visitor =
+                new CalculateFinishedTasksLagInCompletionVisitor();
+        TaskElement rootTask = getRootTask();
+        rootTask.acceptVisitor(visitor);
+        List<Double> deviations = visitor.getDeviations();
+
+        Double minDeviation = Collections.min(deviations);
+        Double maxDeviation = Collections.max(deviations);
+        this.lagInTaskCompletionHistogram = createHistogram(
+                Collections.min(deviations),
+                Collections.max(deviations),
+                (maxDeviation - minDeviation)/LTC_NUMBER_OF_INTERVALS,
+                deviations);
+    }
+
+    private List<Double> createHistogram(double lowBound, double highBound,
+            double intervalStep, List<Double> values) {
+        double variableRange = highBound - lowBound;
+        /* TODO: What if highBound == lowBound? */
+        int numberOfClasses = (int)(variableRange/intervalStep);
         int[] classes = new int[numberOfClasses+1];
 
         for(Double value: values) {
