@@ -200,34 +200,42 @@ public class DashboardModel {
         rootTask.acceptVisitor(visitor);
         List<Double> deviations = visitor.getDeviations();
 
-        int lowBound = EA_STRETCHES_MIN_VALUE;
-        int highBound = EA_STRETCHES_MAX_VALUE;
-        int variableRange = highBound - lowBound;
-        int numberOfClasses = variableRange/EA_STRETCHES_PERCENTAGE_STEP;
         // [-100, -90), [-90, -80), ..., [190, 200), [200, inf)
+        this.taskEstimationAccuracyHistogram = createHistogram(
+                EA_STRETCHES_MIN_VALUE,
+                EA_STRETCHES_MAX_VALUE,
+                EA_STRETCHES_PERCENTAGE_STEP,
+                deviations);
+    }
+
+    private List<Double> createHistogram(int lowBound, int highBound,
+            int intervalStep, List<Double> values) {
+        int variableRange = highBound - lowBound;
+        int numberOfClasses = variableRange/intervalStep;
         int[] classes = new int[numberOfClasses+1];
 
-        for(Double deviation: deviations) {
+        for(Double value: values) {
             int index;
-            if (deviation >= highBound) {
+            if (value >= highBound) {
                 index = numberOfClasses;
             } else {
                 index = (int)(numberOfClasses *
-                    (((deviation.doubleValue() - lowBound))/variableRange));
+                    (((value.doubleValue() - lowBound))/variableRange));
             }
             classes[index]++;
         }
 
-        this.taskEstimationAccuracyHistogram = new ArrayList<Double>();
-        int numberOfConsideredTasks = visitor.getNumberOfConsideredTasks();
-        for(int numberOfElementsInClass: classes) {
+        List<Double> histogram = new ArrayList<Double>();
+        int numberOfConsideredTasks = values.size();
+        for (int numberOfElementsInClass: classes) {
             Double relativeCount = new Double(0.0);
             if (numberOfConsideredTasks > 0) {
                 relativeCount = new Double(1.0*numberOfElementsInClass/
                         numberOfConsideredTasks);
             }
-            this.taskEstimationAccuracyHistogram.add(relativeCount);
+            histogram.add(relativeCount);
         }
+        return histogram;
     }
 
     private void calculateTaskStatusStatistics() {
