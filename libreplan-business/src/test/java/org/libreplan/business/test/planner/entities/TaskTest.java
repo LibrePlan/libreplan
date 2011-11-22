@@ -470,8 +470,6 @@ public class TaskTest {
         assertFalse(task.isInProgress());
         assertTrue(task.getTaskStatus() == TaskStatusEnum.READY_TO_START);
         dependency2.getOrigin().setAdvancePercentage(BigDecimal.ZERO);
-        dependency2.getOrigin().resetStatus();
-        task.resetStatus();
         assertTrue(task.getTaskStatus() == TaskStatusEnum.BLOCKED);
     }
 
@@ -502,7 +500,6 @@ public class TaskTest {
          assertFalse(task.isFinished());
          assertTrue(task.getTaskStatus() == TaskStatusEnum.IN_PROGRESS);
          task.setAdvancePercentage(BigDecimal.ONE);
-         task.resetStatus();
          assertTrue(task.getTaskStatus() == TaskStatusEnum.FINISHED);
     }
 

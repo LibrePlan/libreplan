@@ -650,6 +650,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setAdvancePercentage(BigDecimal advancePercentage) {
         this.advancePercentage = advancePercentage;
+        this.resetStatus();
     }
 
     public void detachFromDependencies() {
