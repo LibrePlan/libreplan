@@ -21,6 +21,9 @@ package org.libreplan.web.dashboard;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +57,7 @@ public class DashboardController extends GenericForwardComposer {
     private Chart progressKPItaskStatusChart;
     private Chart progressKPItaskDeadlineViolationStatusChart;
     private Chart timeKPImarginWithDeadlineChart;
+    private Chart timeKPIEstimationAccuracyChart;
 
     public DashboardController() {
     }
@@ -82,6 +86,13 @@ public class DashboardController extends GenericForwardComposer {
         generateProgressKPItaskStatusChart();
         generateProgressKPItaskDeadlineViolationStatusChart();
         generateTimeKPImarginWithDeadlineChart();
+        generateTimeKPIEstimationAccuracyChart();
+    }
+
+    private void generateTimeKPIEstimationAccuracyChart() {
+        CategoryModel categoryModel;
+        categoryModel = refreshTimeKPIEstimationAccuracyCategoryModel();
+        timeKPIEstimationAccuracyChart.setModel(categoryModel);
     }
 
     private void generateTimeKPImarginWithDeadlineChart() {
@@ -144,6 +155,21 @@ public class DashboardController extends GenericForwardComposer {
         CategoryModel result = new SimpleCategoryModel();
         result.setValue(_("None"), _("Deviation"),
                 dashboardModel.getMarginWithDeadLine());
+        return result;
+    }
+
+    private CategoryModel refreshTimeKPIEstimationAccuracyCategoryModel() {
+        CategoryModel result = new SimpleCategoryModel();
+        List<Double> values = dashboardModel.getFinishedTasksEstimationAccuracyHistogram();
+        Iterator<Double> it = values.iterator();
+        for(int ii= DashboardModel.EA_STRETCHES_MIN_VALUE;
+                ii < DashboardModel.EA_STRETCHES_MAX_VALUE;
+                ii += DashboardModel.EA_STRETCHES_PERCENTAGE_STEP) {
+            result.setValue(_("None"), _(String.valueOf(ii)), it.next());
+        }
+        result.setValue(_("None"),
+                _(">"+DashboardModel.EA_STRETCHES_MAX_VALUE),
+                it.next());
         return result;
     }
 

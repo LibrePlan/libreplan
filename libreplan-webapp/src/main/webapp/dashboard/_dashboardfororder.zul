@@ -24,6 +24,14 @@
     <div self="@{define(content)}">
         <window id="dashboardWindow" apply="${dsController}">
             <vbox>
+                 <hbox>
+                    <chart id="timeKPIEstimationAccuracyChart"
+                        height="200px" width="1200px" type="bar"
+                        xAxis="deviation class [i, i+1) (%)"
+                        threeD="false" yAxis="probability" orient="vertical"
+                        title="${i18n:_('Estimation Accuracy')}"
+                        paneColor="#FFFFFF" showLegend="false" />
+                </hbox>
                 <hbox>
                     <chart id="progressKPIglobalProgressChart"
                         height="400px" width="600px" type="bar"
