@@ -444,12 +444,7 @@ public class OrderElementServiceTest {
                 .addOrders(orderListDTO).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        try {
-            orderElementDAO.findByCode(code);
-            assertTrue(true);
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+        checkIfExistsByCodeInAnotherTransaction(code);
     }
 
     @Test
@@ -569,12 +564,7 @@ public class OrderElementServiceTest {
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
 
-        try {
-            orderElementDAO.findByCode(code);
-            assertTrue(true);
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+        checkIfExistsByCodeInAnotherTransaction(code);
     }
 
     @Test
@@ -657,12 +647,7 @@ public class OrderElementServiceTest {
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
 
-        try {
-            orderElementDAO.findByCode(code);
-            assertTrue(true);
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+        checkIfExistsByCodeInAnotherTransaction(code);
     }
 
     @Test
@@ -716,7 +701,11 @@ public class OrderElementServiceTest {
                 .addOrders(orderListDTO).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+        checkIfExistsByCodeInAnotherTransaction(code);
+    }
+
+    private void checkIfExistsByCodeInAnotherTransaction(final String code) {
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 try {
