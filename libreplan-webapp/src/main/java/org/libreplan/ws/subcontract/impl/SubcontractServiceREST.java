@@ -329,14 +329,6 @@ public class SubcontractServiceREST implements ISubcontractService {
         CustomerCommunication customerCommunication = CustomerCommunication
                 .create(deadline, communicationDate,
                         CommunicationType.NEW_PROJECT, order);
-        if(customerCommunication.getCommunicationType() != null){
-            System.out.println(" type before  "+ customerCommunication.getCommunicationType().toString());
-        }else{
-            customerCommunication.setCommunicationType(CommunicationType.NEW_PROJECT);
-        }
         customerCommunicationDAO.save(customerCommunication);
-        if(customerCommunication.getCommunicationType() != null){
-            System.out.println(" type after  "+ customerCommunication.getCommunicationType().toString());
-        }
     }
 }
