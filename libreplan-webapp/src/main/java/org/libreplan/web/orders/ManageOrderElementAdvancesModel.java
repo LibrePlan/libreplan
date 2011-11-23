@@ -57,6 +57,7 @@ import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalA
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -349,6 +350,14 @@ public class ManageOrderElementAdvancesModel implements
                     continue;
                 }
             }
+            // if the associated task of the order elemement or of some its
+            // children is subcontrated the advance type subcontractor is not
+            // permitted
+            if (advanceType.getUnitName().equals(
+                    PredefinedAdvancedTypes.SUBCONTRACTOR.getTypeName())
+                    && hasAnySubcontratedTaskOnChildren()) {
+                continue;
+            }
             advanceTypes.add(advanceType);
         }
         return getSpecificOrder(advanceTypes);
@@ -407,7 +416,11 @@ public class ManageOrderElementAdvancesModel implements
             }
         }
 
-        return this.isIndirectAdvanceAssignment;
+        if(isIndirectAdvanceAssignment){
+            return true;
+        }
+
+        return this.hasSubcontractedAssociatedTask(this.orderElement);
     }
 
     @Override
@@ -873,6 +886,27 @@ public class ManageOrderElementAdvancesModel implements
             measurements.add(measurement);
         }
 
+    }
+
+    public boolean hasAnySubcontratedTaskOnChildren() {
+        List<OrderElement> list = new ArrayList<OrderElement>();
+        list.add(orderElement);
+        list.addAll(orderElement.getAllChildren());
+        for (OrderElement child : list) {
+            if (hasSubcontractedAssociatedTask(child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasSubcontractedAssociatedTask(OrderElement orderElement) {
+        for (TaskElement task : orderElement.getTaskElements()) {
+            if (task.isSubcontracted()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -721,7 +721,7 @@ public abstract class OrderElement extends IntegrationEntity implements
      * @param newAdvanceAssignment
      * @throws DuplicateAdvanceAssignmentForOrderElementException
      */
-    private void checkAncestorsNoOtherAssignmentWithSameAdvanceType(
+    public void checkAncestorsNoOtherAssignmentWithSameAdvanceType(
             OrderElement orderElement,
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
