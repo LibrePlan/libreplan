@@ -64,7 +64,7 @@ function workHourCreateEmpty(){
     _log("Do not allow create a empty Work Hour", "custom1");
 }
 
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function workHourNotValid($hWorkType){
     _assertExists(_span("checkConstraintUniqueName: the type of work hours name has to be unique. It is already used"));
     _assert(_isVisible(_span("checkConstraintUniqueName: the type of work hours name has to be unique. It is already used")));
