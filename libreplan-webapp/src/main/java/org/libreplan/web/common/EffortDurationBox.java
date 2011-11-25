@@ -38,7 +38,12 @@ public class EffortDurationBox extends Textbox {
 
     @Override
     protected Object unmarshall(Object value) {
-        return coerceFromString((String) value);
+        EffortDuration result = EffortDuration
+                .parseFromFormattedString((String) value);
+        if (result == null) {
+            return EffortDuration.zero();
+        }
+        return result;
     }
 
     @Override
