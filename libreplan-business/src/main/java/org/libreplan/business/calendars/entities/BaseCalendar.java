@@ -23,7 +23,6 @@ package org.libreplan.business.calendars.entities;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +57,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class BaseCalendar extends IntegrationEntity implements ICalendar,
-        IHumanIdentifiable {
+        IHumanIdentifiable, Comparable<BaseCalendar> {
 
     private static final Capacity DEFAULT_VALUE = Capacity.zero()
             .overAssignableWithoutLimit();
@@ -81,23 +80,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         BaseCalendar calendar = create(code);
         resetDefaultCapacities(calendar);
         return calendar;
-    }
-
-    public static List<BaseCalendar> sortByName(List<BaseCalendar> baseCalendars) {
-        Collections.sort(baseCalendars, new Comparator<BaseCalendar>() {
-
-            @Override
-            public int compare(BaseCalendar o1, BaseCalendar o2) {
-                if (o2.getName() == null) {
-                    return -1;
-                }
-                if (o1.getName() == null) {
-                    return 1;
-                }
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        return baseCalendars;
     }
 
     private static void resetDefaultCapacities(BaseCalendar calendar) {
@@ -1225,6 +1207,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
     @Override
     public String getHumanId() {
         return name;
+    }
+
+    @Override
+    public int compareTo(BaseCalendar calendar) {
+        return this.getName().compareToIgnoreCase(calendar.getName());
     }
 
 }

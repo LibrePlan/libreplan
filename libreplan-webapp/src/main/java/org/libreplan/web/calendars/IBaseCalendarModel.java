@@ -208,8 +208,6 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     BaseCalendar getCurrentParent();
 
-    List<BaseCalendar> getSortedBaseCalendars(List<BaseCalendar> baseCalendars);
-
     Date getCurrentStartDate();
 
     Date getCurrentExpiringDate();
