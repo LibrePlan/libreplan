@@ -82,9 +82,9 @@ this behaviour and use it in all the tasks they want.
    If you want to run LibrePlan in development mode you need to follow the next
    instructions:
 
-   * Create a PostgreSQL database called ``navaldev`` with permissions for a
-     user ``naval`` with    password ``naval`` (see ``HACKING`` file for other
-     databases and more info).
+   * Create a PostgreSQL database called ``libreplandev`` with permissions for a
+     user ``libreplan`` with    password ``libreplan`` (see ``HACKING`` file for
+     other databases and more info).
 
    * Compile LibrePlan with the following command from project root folder::
 
