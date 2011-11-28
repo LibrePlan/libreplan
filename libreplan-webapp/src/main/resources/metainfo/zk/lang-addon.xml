@@ -89,12 +89,6 @@
     </component>
 
     <component>
-        <component-name>LenientDecimalBox</component-name>
-        <component-class>org.libreplan.web.common.LenientDecimalBox</component-class>
-        <widget-class>webcommon.LenientDecimalBox</widget-class>
-    </component>
-
-    <component>
         <component-name>LimitingResourcesPanel</component-name>
         <component-class>org.libreplan.web.limitingresources.LimitingResourcesPanel</component-class>
             <macro-uri>/limitingresources/limitingResourcesLayout.zul</macro-uri>

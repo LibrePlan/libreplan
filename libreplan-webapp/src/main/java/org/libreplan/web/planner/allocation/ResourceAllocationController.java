@@ -40,7 +40,6 @@ import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.web.I18nHelper;
 import org.libreplan.web.common.EffortDurationBox;
 import org.libreplan.web.common.IMessagesForUser;
-import org.libreplan.web.common.LenientDecimalBox;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.AllocationSelector;
 import org.libreplan.web.common.components.NewAllocationSelector;
@@ -142,7 +141,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        allResourcesPerDay = new LenientDecimalBox();
+        allResourcesPerDay = new Decimalbox();
         allResourcesPerDay.setWidth("80px");
         initAllocationLabels();
         makeReadyInputsForCalculationTypes();
