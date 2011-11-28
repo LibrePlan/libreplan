@@ -1,2 +1,3 @@
 <package name="webcommon" language="xul/html" depends="zul.inp">
+    <widget name="LenientDecimalBox"/>
 </package>

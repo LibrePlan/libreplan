@@ -60,6 +60,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 import org.libreplan.business.workingday.ResourcesPerDay;
 import org.libreplan.web.common.EffortDurationBox;
+import org.libreplan.web.common.LenientDecimalBox;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
 import org.zkoss.zk.au.out.AuWrongValue;
@@ -283,7 +284,7 @@ public abstract class AllocationRow {
 
     private EffortDurationBox effortInput = new EffortDurationBox();
 
-    private final Decimalbox intendedResourcesPerDayInput = new Decimalbox();
+    private final Decimalbox intendedResourcesPerDayInput = new LenientDecimalBox();
 
     private ResourcesPerDay editedValue;
 
