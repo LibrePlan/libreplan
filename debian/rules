@@ -81,6 +81,9 @@ install:
 	# Copy SQL upgrade script for version 1.1.0
 	$(call CMD,cp $(CURDIR)/scripts/database/upgrade_1.1.0.sql \
 		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.1.0)
+	# Copy SQL upgrade script for version 1.2.0
+	$(call CMD,cp $(CURDIR)/scripts/database/upgrade_1.2.0.sql \
+		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.0)
 	# Install Policy file
 	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/etc/tomcat6/policy.d)
 	$(call CMD,cp $(CURDIR)/debian/51libreplan.policy \

@@ -1,4 +1,10 @@
-libreplan (1.1.3-1) maverick; urgency=low
+libreplan (1.2.0-1) maverick; urgency=low
+
+  * Preparing Debian package for LibrePlan 1.2 release.
+
+ -- Manuel Rego Casasnovas <rego@igalia.com>  Mon, 28 Nov 2011 10:35:00 +0100
+
+navalplan (1.1.3-1) maverick; urgency=low
 
   * Fixed important issue in Gantt view for big projects with labels.
   * Added bugs fixed from stable branch.
@@ -6,7 +12,7 @@ libreplan (1.1.3-1) maverick; urgency=low
 
  -- Manuel Rego Casasnovas <rego@igalia.com>  Fri, 12 Aug 2011 13:08:00 +0200
 
-libreplan (1.1.2-1) maverick; urgency=low
+navalplan (1.1.2-1) maverick; urgency=low
 
   * Fixed critical bug that causes concurrency issues editing projects with
     labels.
@@ -15,7 +21,7 @@ libreplan (1.1.2-1) maverick; urgency=low
 
  -- Manuel Rego Casasnovas <rego@igalia.com>  Wed, 18 Jul 2011 13:23:00 +0200
 
-libreplan (1.1.1-1) maverick; urgency=low
+navalplan (1.1.1-1) maverick; urgency=low
 
   * Changed dependency from OpenJDK to default-jdk or default-jre.
   * Added bugs fixed from stable branch.
@@ -23,7 +29,7 @@ libreplan (1.1.1-1) maverick; urgency=low
 
  -- Manuel Rego Casasnovas <rego@igalia.com>  Wed, 07 Jun 2011 09:15:00 +0200
 
-libreplan (1.1.0-1) maverick; urgency=low
+navalplan (1.1.0-1) maverick; urgency=low
 
   * Removed unnecessary dependency with texlive-latex-recommended and pgf
     packages.
@@ -33,35 +39,35 @@ libreplan (1.1.0-1) maverick; urgency=low
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Wed, 19 Apr 2011 07:50:00 +0200
 
-libreplan (1.0.6-1) maverick; urgency=low
+navalplan (1.0.6-1) maverick; urgency=low
 
   * Several important bugs fixed during 1.1 stabilization.
   * Released version 1.0.6.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 27 Apr 2011 11:49:00 +0200
 
-libreplan (1.0.5-1) maverick; urgency=low
+navalplan (1.0.5-1) maverick; urgency=low
 
   * Added bugs fixed from stable branch.
   * Released version 1.0.5.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Fri, 08 Apr 2011 11:20:46 +0200
 
-libreplan (1.0.4-1) maverick; urgency=low
+navalplan (1.0.4-1) maverick; urgency=low
 
   * Added bugs fixed from stable branch.
   * Released version 1.0.4.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Thu, 17 Mar 2011 12:27:47 +0100
 
-libreplan (1.0.3-1) maverick; urgency=low
+navalplan (1.0.3-1) maverick; urgency=low
 
   * Added bugs fixed from stable branch.
   * Released version 1.0.3.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Mon, 14 Feb 2011 07:23:58 +0100
 
-libreplan (1.0.2-1) maverick; urgency=low
+navalplan (1.0.2-1) maverick; urgency=low
 
   * Fixed database installation script.
   * Added bugfixed from stable branch.
@@ -69,7 +75,7 @@ libreplan (1.0.2-1) maverick; urgency=low
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Fri, 21 Jan 2011 12:07:33 +0100
 
-libreplan (1.0.1-1) maverick; urgency=low
+navalplan (1.0.1-1) maverick; urgency=low
 
   * Added dependency with ttf-freefont on Debian package (needed for Jasper
     reports).
@@ -78,7 +84,7 @@ libreplan (1.0.1-1) maverick; urgency=low
 
  -- Manuel Rego Casasnovas <mrego@erizana>  Fri, 14 Jan 2011 09:58:33 +0100
 
-libreplan (1.0.0-1) maverick; urgency=low
+navalplan (1.0.0-1) maverick; urgency=low
 
   * Updated to upstream. Released version 1.0.
   * Added upgrade script needed to upgrade to version 1.0.
@@ -86,33 +92,33 @@ libreplan (1.0.0-1) maverick; urgency=low
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 07 Jan 2011 16:45:00 +0100
 
-libreplan (0.9.2-3) maverick; urgency=low
+navalplan (0.9.2-3) maverick; urgency=low
 
   * Added missing postgresql dependency.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 07 Jan 2011 10:00:00 +0100
 
-libreplan (0.9.2-2) maverick; urgency=low
+navalplan (0.9.2-2) maverick; urgency=low
 
   * Added postgresql-client dependency needed because of dbconfig.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 05 Jan 2011 16:12:00 +0100
 
-libreplan (0.9.2-1) maverick; urgency=low
+navalplan (0.9.2-1) maverick; urgency=low
 
   * Updated to upstream.
   * Fixed issues on debian package.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 04 Jan 2011 15:58:19 +0100
 
-libreplan (0.9.1) maverick; urgency=low
+navalplan (0.9.1) maverick; urgency=low
 
   * Updated to upstream.
   * Fixed problems with translations.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Thu, 23 Dec 2010 00:14:54 +0100
 
-libreplan (0.9.0) maverick; urgency=low
+navalplan (0.9.0) maverick; urgency=low
 
   * Updated to upstream.
   * Fixed issues with context.xml file.
@@ -121,19 +127,19 @@ libreplan (0.9.0) maverick; urgency=low
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 21 Dec 2010 17:31:08 +0100
 
-libreplan (20100908) lucid; urgency=low
+navalplan (20100908) lucid; urgency=low
 
   * Updated to upstream.
 
  -- Jose Maria Casanova Crespo (Chema) <jmcasanova@igalia.com>  Wed, 8 Sep 2010 00:00:00 +0000
 
-libreplan (20100415) karmic; urgency=low
+navalplan (20100415) karmic; urgency=low
 
   * Updated to upstream.
 
  --  Jose Maria Casanova Crespo (Chema) <jmcasanova@igalia.com>  Thu, 15 Mar 2010 14:30:00 +0000
 
-libreplan (20100324) karmic; urgency=low
+navalplan (20100324) karmic; urgency=low
 
   * Initial release.
 
