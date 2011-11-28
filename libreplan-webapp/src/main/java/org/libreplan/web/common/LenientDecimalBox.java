@@ -26,11 +26,11 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Decimalbox;
 
 /**
- * Same behavior as a {@link Decimalbox}, but it always interprets <b>,</b> and
- * <b>.</b> as decimals separators. So you can use both freely as decimal
- * separators.
+ * Same behavior as a {@link Decimalbox}, but it always interprets <b>.</b> as
+ * decimal separator, even when the locale uses a different separator.
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  *
  */
 public class LenientDecimalBox extends Decimalbox {
