@@ -12,7 +12,7 @@ proxectos. O seu obxectivo principal é proporcionar unha solución completa par
 xestión dos proxectos da empresa.
 Para calquera información específica que necesites sobre este software, por
 favor ponte en contacto co equipo de desenvolvemento en
-http://www.libreplan.org/contacto
+http://www.libreplan.com/contact/
 
 
 .. figure:: images/company_view.png

@@ -54,8 +54,8 @@ Features
 
   * Company global analysis.
 
-  * Earned Value method. Project management method to objectively measure
-    progress and performance of a project.
+  * Earned Value Management [2]_. Project management method to objectively
+    measure progress and performance of a project.
 
   * Planning quality management. It is possible to control quality of the tasks
     to be performed through forms.
@@ -126,17 +126,17 @@ Availability
 ------------
 
 The cutting-edge version of this project is always available from the Git
-repository at http://libreplan.git.sourceforge.net/.
+repository at http://navalplan.git.sourceforge.net/.
 
 Released versions are available at
-http://sourceforge.net/projects/libreplan/files.
+http://sourceforge.net/projects/navalplan/files.
 
 
 Webpage
 -------
 
 You can find more information about *LibrePlan* at
-http://www.libreplan.org/en/.
+http://www.libreplan.com/.
 
 For information related with *LibrePlan* development you can visit the wiki at
 http://wiki.libreplan.org/.
@@ -152,7 +152,7 @@ License
 -------
 
 *LibrePlan* is released under the terms of the GNU Affero General Public
-License version 3 [4]_.
+License version 3 [3]_.
 
 Please read the ``COPYING`` file for details.
 
@@ -161,14 +161,13 @@ Authors
 -------
 
 This project is sponsored by *Fundación para o Fomento da Calidade Industrial e
-o Desenvolvemento Tecnolóxico de Galicia* [5]_.
+o Desenvolvemento Tecnolóxico de Galicia* [4]_.
 
 Please see ``AUTHORS`` file for more information about the authors.
 
 
 
 .. [1] http://en.wikipedia.org/wiki/Work_Breakdown_Structure
-.. [2] http://en.wikipedia.org/wiki/Resource_Breakdown_Structure
-.. [3] http://en.wikipedia.org/wiki/Earned_Value_Management
-.. [4] http://www.fsf.org/licensing/licenses/agpl.html
-.. [5] http://www.fundacioncalidade.org/
+.. [2] http://en.wikipedia.org/wiki/Earned_Value_Management
+.. [3] http://www.fsf.org/licensing/licenses/agpl.html
+.. [4] http://www.fundacioncalidade.org/
