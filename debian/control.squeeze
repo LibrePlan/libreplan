@@ -5,19 +5,20 @@ Maintainer: Adrian Perez <aperez@igalia.com>
 Build-Depends: debhelper (>= 7.0.50), maven2, python-docutils,
  gettext (>= 0.17), texlive-latex-recommended, pgf, openjdk-6-jdk
 Standards-Version: 3.8.4
-Homepage: http://www.libreplan.org/en/
+Homepage: http://www.libreplan.com/
 
 Package: libreplan
 Architecture: any
 Depends: cutycapt, postgresql, postgresql-client, xvfb, dbconfig-common, ucf,
  tomcat6, openjdk-6-jre-headless | openjdk-6-jre, libpg-java, ttf-freefont,
  ${misc:Depends}
-Description: Web application for project management.
- LibrePlan is a planning tool for users based on some concepts: company and
- multi-project overview, criteria assignments, tasks tagging, resources
- management, resource allocation (specific and generic), company load control,
- external integration, etc.
+Description: Web application for project planning, monitoring and control.
+ LibrePlan is a collaborative tool to plan, monitor and control projects and has
+ a rich web interface which provides a desktop alike user experience. All the
+ team members can take part in the planning and this makes possible to have a
+ real-time planning.
  .
- Although its name is clearly related to shipbuilding, LibrePlan is a fully
- useful planning tool for any type of company whose workflow requires project
- and order administration and scheduling.
+ It was designed thinking on a scenario where multiple projects and resources
+ interact to carry out the work inside a company. Besides, it makes possible
+ the communication with other company tools providing a wide set of web
+ services to import and export data.

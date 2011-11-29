@@ -5,32 +5,84 @@ LibrePlan
 Description
 -----------
 
-*LibrePlan* is a free software web application for project management.
+*LibrePlan* is a free software web application for project management,
+monitoring and control.
 
-*LibrePlan* is a planning tool for users based on some concepts: company and
-multi-project overview, criteria assignments, tasks tagging, resources
-management, resource allocation (specific and generic), company load control,
-external integration, etc.
+*LibrePlan* is a collaborative tool to plan, monitor and control projects and
+has a rich web interface which provides a desktop alike user experience. All the
+team members can take part in the planning and this makes possible to have a
+real-time planning.
 
-Although its name is clearly related to shipbuilding, *LibrePlan* is a fully
-useful planning tool for any type of company whose workflow requires project and
-order administration and scheduling.
+It was designed thinking on a scenario where multiple projects and resources
+interact to carry out the work inside a company. Besides, it makes possible
+the communication with other company tools providing a wide set of web
+services to import and export data.
+
 
 Features
 ~~~~~~~~
 
-* Multiproject management. It offers a global vision of the company managing
-  several projects sharing resources.
-* Group resource allocations: dynamic groups based on criteria.
-* Flexible calendars.
-* Configurable Gantt chart from Work Breakdown Structure (WBS) [1]_.
-* Resource Breakdown Structure (RBS) chart [2]_.
-* Overload resource allocation control.
-* Earned Value Management [3]_.
-* Cost analysis based on work reports.
-* Integration with other *LibrePlan* instances and third-parties.
-* Other functionalities: Materials, quality forms, project templates, planning
-  scenarios, multiple task progress measurement ...
+* Resource management:
+
+  * Two type of resources: machines and workers.
+  * Flexible calendars easily reusable.
+  * Resource configuration based on skills and roles.
+
+* Planning:
+
+  * Simple way to configure and estimate the work to plan. It is carried out
+    through Work Breakdown Structures (WBS) [1]_.
+  * Different detail levels during the planning.
+  * Two ways to allocate resources:
+
+    * Specific allocation: Concrete individuals.
+    * Assisted generic allocation: Based on skills and roles fulfilled by the
+      resources.
+
+  * Templates to reuse work. Projects can be created based on templates for
+    repeatable tasks being able to save time.
+
+  * Automatic resource reallocation in order to minimize overload (overtime).
+
+  * Advanced allocation. Manual configuration of daily work hours on a task
+    when automatic allocation does not suit your needs.
+
+  * Monte Carlo method. Statistical simulation to calculate the possibility to
+    complete a project in a range of dates.
+
+* Projects control and monitoring:
+
+  * Company global analysis.
+
+  * Earned Value method. Project management method to objectively measure
+    progress and performance of a project.
+
+  * Planning quality management. It is possible to control quality of the tasks
+    to be performed through forms.
+
+  * Projects cost analysis.
+
+  * Reported hours: worked hours are assigned to each task to track costs during
+    the planning
+
+  * Progress measurement through different unit types.
+
+* Outsourcing
+
+  LibrePlan provides support for companies that do outsourcing:
+
+  * Project tasks can be outsourced and sent to the LibrePlan installation of
+    the supplier.
+
+  * You can receive progress notifications of the subcontractors to know how
+    outsourced tasks are evolving .
+
+* Other features:
+
+  * Materials. You can manage the materials that planned tasks need to be
+    carried out.
+
+  * Complete users system with permissions, LDAP authentication, etc.
 
 
 Requirements
