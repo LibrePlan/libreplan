@@ -1933,16 +1933,27 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     public boolean hasVisibleIncomingDependencies(V task) {
-        return isSomeVisible(graph.incomingEdgesOf(task));
+        return isSomeVisibleAndNotEndEnd(graph.incomingEdgesOf(task));
+    }
+
+    private boolean isSomeVisibleAndNotEndEnd(Set<D> dependencies) {
+        for (D each : dependencies) {
+            if (!each.getType().equals(DependencyType.END_END)
+                    && adapter.isVisible(each)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean hasVisibleOutcomingDependencies(V task) {
-        return isSomeVisible(graph.outgoingEdgesOf(task));
+        return isSomeVisibleAndNotStartStart(graph.outgoingEdgesOf(task));
     }
 
-    private boolean isSomeVisible(Set<D> dependencies) {
+    private boolean isSomeVisibleAndNotStartStart(Set<D> dependencies) {
         for (D each : dependencies) {
-            if (adapter.isVisible(each)) {
+            if (!each.getType().equals(DependencyType.START_START)
+                    && adapter.isVisible(each)) {
                 return true;
             }
         }
