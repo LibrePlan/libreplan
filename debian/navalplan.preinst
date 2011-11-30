@@ -91,25 +91,5 @@ then
 
   rm $PGPASSFILE $old_db_dump
 
-  # Remove old deployment directory as it's no longer necessary.
-  if [ -d /var/lib/tomcat6/webapps/navalplan/ ] ;  then
-    rm -r /var/lib/tomcat6/webapps/navalplan/
-  fi
-
-  # Make sure the driver is there, as it might be removed when
-  # uninstalling older versions of the package.
-  if [ ! -L /usr/share/tomcat6/lib/postgresql-jdbc3.jar ] ; then
-    ln -sf /usr/share/java/postgresql-jdbc3.jar /usr/share/tomcat6/lib/
-  fi
-
-  # Start tomcat again
-  if [ -x /etc/init.d/tomcat6 ] ; then
-    if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
-      invoke-rc.d tomcat6 start
-    else
-      /etc/init.d/tomcat6 start
-    fi
-  fi
-
 fi
 #DEBHELPER#
