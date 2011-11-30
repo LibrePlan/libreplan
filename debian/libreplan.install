@@ -3,4 +3,4 @@ debian/tmp/etc/tomcat6/policy.d/51libreplan.policy
 debian/tmp/usr/share/dbconfig-common/data/libreplan/install/pgsql
 debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.0.0
 debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.1.0
-debian/tmp/usr/share/tomcat6/lib/postgresql-jdbc3.jar
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.0

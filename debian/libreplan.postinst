@@ -68,6 +68,9 @@ then
 
 fi
 
+if [ ! -L /usr/share/tomcat6/lib/postgresql-jdbc3.jar ] ; then
+	ln -sf /usr/share/java/postgresql-jdbc3.jar /usr/share/tomcat6/lib/
+fi
 
 if [ -x /etc/init.d/tomcat6 ] ; then
 	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then

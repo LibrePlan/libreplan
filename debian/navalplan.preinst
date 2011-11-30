@@ -1,0 +1,106 @@
+#! /bin/bash
+
+base_dbconfig_data_dir="/usr/share/dbconfig-common/data"
+
+install_upgrade_to() {
+  upgrade_file="$base_dbconfig_data_dir/libreplan/upgrade/pgsql/$1"
+  echo "Applying SQL statements to upgrade to version $1..."
+  psql -U $navalplan_user -h $database_host \
+    $navalplan_db < $upgrade_file > /dev/null
+}
+
+execute_sql_as_admin() {
+  sql=$1
+  su - -s /bin/sh $navalplan_admin_user -c "psql -c \"$sql\"" > /dev/null
+}
+
+if [[ $1 = upgrade && -r /etc/dbconfig-common/libreplan.conf
+  && -r /etc/dbconfig-common/navalplan.conf ]]
+then
+  old_version=$2
+
+	. /etc/dbconfig-common/libreplan.conf
+  libreplan_user=${dbc_dbuser}
+  libreplan_passwd=${dbc_dbpass}
+  libreplan_db=${dbc_dbname}
+
+	. /etc/dbconfig-common/navalplan.conf
+  navalplan_user=${dbc_dbuser}
+  navalplan_passwd=${dbc_dbpass}
+  navalplan_db=${dbc_dbname}
+  navalplan_admin_user=${dbc_dbadmin}
+
+	if [ -z "${dbc_dbhost}" ] ; then
+		database_host='localhost'
+	else
+		database_host=${dbc_dbhost}
+	fi
+
+  export PGPASSFILE=`mktemp`
+
+  # Stop tomcat to flush active connections.
+  if [ -x /etc/init.d/tomcat6 ] ; then
+    if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+      invoke-rc.d tomcat6 stop
+    else
+      /etc/init.d/tomcat6 stop
+    fi
+  fi
+
+  echo "Dropping newly created empty database...";
+  execute_sql_as_admin "DROP DATABASE $libreplan_db;"
+
+  echo "Trying to apply upgrades to old database..."
+
+  echo "*:*:*:*:$navalplan_passwd" > $PGPASSFILE
+
+  dpkg --compare-versions $old_version "<<" "1.0.0-1"
+  if [ $? -eq 0 ]; then
+    install_upgrade_to "1.0.0"
+  fi
+  dpkg --compare-versions $old_version "<<" "1.1.0-1"
+  if [ $? -eq 0 ]; then
+    install_upgrade_to "1.1.0"
+  fi
+  dpkg --compare-versions $old_version "<<" "1.2.0-1"
+  if [ $? -eq 0 ]; then
+    install_upgrade_to "1.2.0"
+  fi
+
+  # Rename old database (navalplan -> libreplan)
+  echo "Renaming old database..."
+  execute_sql_as_admin "ALTER DATABASE $navalplan_db RENAME TO $libreplan_db;"
+
+  # Grant permissions to libreplan user
+  echo "Fixing permissions..."
+  execute_sql_as_admin "GRANT ALL PRIVILEGES ON DATABASE $libreplan_db TO $libreplan_user;"
+  execute_sql_as_admin "ALTER DATABASE $libreplan_db OWNER TO $libreplan_user;"
+
+  su - -s /bin/sh $navalplan_admin_user -c \
+    "psql $libreplan_db -c \"GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA
+    public TO $libreplan_user;\"" > /dev/null
+
+  rm $PGPASSFILE
+
+  # Remove old deployment directory as it's no longer necessary.
+  if [ -d /var/lib/tomcat6/webapps/navalplan/ ] ;  then
+    rm -rf /var/lib/tomcat6/webapps/navalplan/
+  fi
+
+  # Make sure the driver is there, as it might be removed when
+  # uninstalling older versions of the package.
+  if [ ! -L /usr/share/tomcat6/lib/postgresql-jdbc3.jar ] ; then
+    ln -sf /usr/share/java/postgresql-jdbc3.jar /usr/share/tomcat6/lib/
+  fi
+
+  # Start tomcat again
+  if [ -x /etc/init.d/tomcat6 ] ; then
+    if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+      invoke-rc.d tomcat6 start
+    else
+      /etc/init.d/tomcat6 start
+    fi
+  fi
+
+fi
+#DEBHELPER#
