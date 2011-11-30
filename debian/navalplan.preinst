@@ -5,8 +5,15 @@ base_dbconfig_data_dir="/usr/share/dbconfig-common/data"
 install_upgrade_to() {
   upgrade_file="$base_dbconfig_data_dir/libreplan/upgrade/pgsql/$1"
   echo "Applying SQL statements to upgrade to version $1..."
-  psql -U $navalplan_user -h $database_host \
-    $navalplan_db < $upgrade_file > /dev/null
+  push_sql_from_file_as_user $upgrade_file $navalplan_user $navalplan_db
+}
+
+push_sql_from_file_as_user() {
+  filepath=$1
+  username=$2
+  database=$3
+  psql -U $username -h $database_host \
+    $database < $filepath > /dev/null 2>&1
 }
 
 execute_sql_as_admin() {
@@ -37,6 +44,11 @@ then
 	fi
 
   export PGPASSFILE=`mktemp`
+  chmod 600 $PGPASSFILE
+
+  old_db_dump=`mktemp`
+  chown $navalplan_admin_user:root $old_db_dump;
+  chmod 660 $old_db_dump;
 
   # Stop tomcat to flush active connections.
   if [ -x /etc/init.d/tomcat6 ] ; then
@@ -67,24 +79,21 @@ then
     install_upgrade_to "1.2.0"
   fi
 
-  # Rename old database (navalplan -> libreplan)
-  echo "Renaming old database..."
-  execute_sql_as_admin "ALTER DATABASE $navalplan_db RENAME TO $libreplan_db;"
+  echo "Dumping old database..."
+  su - -s /bin/sh $navalplan_admin_user -c "pg_dump $navalplan_db >> $old_db_dump" > /dev/null
 
-  # Grant permissions to libreplan user
-  echo "Fixing permissions..."
+  echo "Creating and populating new database...";
+  execute_sql_as_admin "CREATE DATABASE $libreplan_db;"
   execute_sql_as_admin "GRANT ALL PRIVILEGES ON DATABASE $libreplan_db TO $libreplan_user;"
   execute_sql_as_admin "ALTER DATABASE $libreplan_db OWNER TO $libreplan_user;"
+  echo "*:*:*:*:$libreplan_passwd" > $PGPASSFILE
+  push_sql_from_file_as_user $old_db_dump $libreplan_user $libreplan_db
 
-  su - -s /bin/sh $navalplan_admin_user -c \
-    "psql $libreplan_db -c \"GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA
-    public TO $libreplan_user;\"" > /dev/null
-
-  rm $PGPASSFILE
+  rm $PGPASSFILE $old_db_dump
 
   # Remove old deployment directory as it's no longer necessary.
   if [ -d /var/lib/tomcat6/webapps/navalplan/ ] ;  then
-    rm -rf /var/lib/tomcat6/webapps/navalplan/
+    rm -r /var/lib/tomcat6/webapps/navalplan/
   fi
 
   # Make sure the driver is there, as it might be removed when
