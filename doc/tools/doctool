@@ -240,7 +240,7 @@ class DocTool(object):
 
         out = DupRefsRemover(sys.stdout)
 
-        for name in args:
+        for name in sorted(args):
             if not name.endswith(".rst"):
                 continue
 
@@ -263,7 +263,7 @@ class DocTool(object):
             f.close()
             print
 
-        for name in args:
+        for name in sorted(args):
             # Skip non-RST inputs
             if not name.endswith(".rst"):
                 continue
