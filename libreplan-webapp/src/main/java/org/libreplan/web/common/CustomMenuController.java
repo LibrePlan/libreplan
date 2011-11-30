@@ -314,7 +314,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
-                subItem(_("LibrePlan Configuration"), "/common/configuration.zul","03-calendarios.html#calendario-por-defecto"),
+                    subItem(_("LibrePlan Configuration"),
+                            "/common/configuration.zul",
+                            "16-ldap-authentication.html"),
                 subItem(_("Users"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios",
                     subItem(_("Accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
                     subItem(_("Profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles")),
