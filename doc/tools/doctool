@@ -135,10 +135,10 @@ class LaTeXStandaloneTranslator(latex2e.LaTeXTranslator):
         if self.d_class.document_class == "igaliabk":
             self.d_class.document_class = "book"
 
-	try:
-		del self.head_prefix[self.head_prefix.index(self.typearea)]
-	except AttributeError:
-		pass
+        try:
+            del self.head_prefix[self.head_prefix.index(self.typearea)]
+        except AttributeError:
+            pass
 
     def __get_typearea(self):
         if self._class == "igaliabk" or self._class.startswith("scr"):
