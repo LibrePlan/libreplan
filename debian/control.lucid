@@ -22,3 +22,14 @@ Description: Web application for project planning, monitoring and control.
  interact to carry out the work inside a company. Besides, it makes possible
  the communication with other company tools providing a wide set of web
  services to import and export data.
+
+Package: navalplan
+Architecture: all
+Depends: ${misc:Depends}, libreplan (>= 1.2.0-1)
+Description: Web application for project management (transitional package)
+ NavalPlan is a planning tool for users based on some concepts: company and
+ multi-project overview, criteria assignments, tasks tagging, resources
+ management, resource allocation (specific and generic), company load control,
+ external integration, etc.
+ .
+ This package can be safely deleted after Libreplan is successfully installed.
