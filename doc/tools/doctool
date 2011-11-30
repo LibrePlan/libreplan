@@ -3,6 +3,7 @@
 import sys, shlex, subprocess
 from optparse import OptionParser, OptionGroup
 from docutils.writers import latex2e
+import re
 
 try:
     import locale
@@ -42,6 +43,23 @@ OPT.docinfo.add_option("-i", "--info", dest="docinfo",
         help="Read project information from FILE")
 
 
+is_index_filename = re.compile(r'^[0-9]{2}-[a-zA-Z].*').match
+
+
+def str_to_numeric_tuple(s):
+    r = []
+    for item in s.split("-"):
+        try:
+            r.append(int(item, 10))
+        except ValueError:
+            # Tried to convert a non-integer, bail out
+            break
+    return tuple(r)
+
+def str_tuple_sort(a, b):
+    return cmp(str_to_numeric_tuple(a), str_to_numeric_tuple(b))
+
+
 def optparser(*groups):
     parser.add_option_group(OPT.common)
     [parser.add_option_group(g) for g in groups]
@@ -50,7 +68,12 @@ def optparser(*groups):
 
 class DupRefsRemover(object):
     def __init__(self, out):
-        self.out = out
+        if hasattr(out, "write"):
+            self.out = out.write
+        elif hasattr(out, "handle_line"):
+            self.out = out.handle_line
+        else:
+            raise ValueError("%r has no write/handle_line" % out)
         self.ref = dict()
 
     def handle_line(self, line):
@@ -64,9 +87,35 @@ class DupRefsRemover(object):
             else:
                 # Add reference and print it out
                 self.ref[r[0]] = r[1]
-                self.out.write(line)
+                self.out(line)
         else:
-            self.out.write(line)
+            self.out(line)
+
+
+class UnderlineXlate(object):
+    _XLATE = {
+        "#": "=",
+        "=": "-",
+        "-": "~",
+        "~": "^",
+    }
+
+    def __init__(self, out):
+        if hasattr(out, "write"):
+            self.out = out.write
+        elif hasattr(out, "handle_line"):
+            self.out = out.handle_line
+        else:
+            raise ValueError("%r has no write/handle_line" % out)
+
+    def handle_line(self, line):
+        sline = line.strip()
+        if len(sline):
+            if sline[0] in self._XLATE:
+                sline = sline.replace(sline[0], self._XLATE[sline[0]])
+                self.out(sline)
+                return
+        self.out(line)
 
 
 
@@ -239,13 +288,17 @@ class DocTool(object):
         print
 
         out = DupRefsRemover(sys.stdout)
+        out_xlate = UnderlineXlate(out)
 
-        for name in sorted(args):
+        args = list(args)
+        args.sort(str_tuple_sort)
+
+        for name in args:
             if not name.endswith(".rst"):
                 continue
 
             f = file(name, "rU")
-            map(out.handle_line,
+            map(is_index_filename(name) and out.handle_line or out_xlate.handle_line,
                     filter(lambda l: ".. contents::" not in l,
                         f.readlines())
                     )
@@ -263,9 +316,12 @@ class DocTool(object):
             f.close()
             print
 
-        for name in sorted(args):
+        args = list(args)
+        args.sort(str_tuple_sort)
+
+        for name in args:
             # Skip non-RST inputs
-            if not name.endswith(".rst"):
+            if not name.endswith(".rst") or not is_index_filename(name):
                 continue
 
             f = file(name, "rU")
