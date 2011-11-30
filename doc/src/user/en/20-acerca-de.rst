@@ -79,6 +79,6 @@ Inside the global scope that LibrePlan is designed for regarding planning manage
 
 This project was part of Plan Avanza:
 
-.. figure:: images/avanza.gif
+.. figure:: images/avanza.png
    :scale: 100
 
