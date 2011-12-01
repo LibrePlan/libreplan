@@ -59,6 +59,33 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private String resourcesText;
 
+    private IUpdatablePosition position = new IUpdatablePosition() {
+
+        private final DefaultFundamentalProperties parent = DefaultFundamentalProperties.this;
+
+        @Override
+        public void setBeginDate(GanttDate beginDate) {
+            parent.beginDate = toMilliseconds(beginDate);
+        }
+
+        @Override
+        public void setEndDate(GanttDate endDate) {
+            parent.beginDate = toMilliseconds(endDate)
+                    - parent.lengthMilliseconds;
+        }
+
+        @Override
+        public void resizeTo(GanttDate endDate) {
+            parent.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
+        }
+
+        @Override
+        public void moveTo(GanttDate date) {
+            setBeginDate(date);
+        }
+
+    };
+
     public DefaultFundamentalProperties() {
     }
 
@@ -78,6 +105,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         this.tooltipText = "Default tooltip";
         this.labelsText = "";
         this.resourcesText = "";
+    }
+
+    @Override
+    public void doPositionModifications(IModifications modifications) {
+        modifications.doIt(position);
     }
 
     public String getName() {
@@ -115,11 +147,6 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return toGanttDate(beginDate);
     }
 
-    @Override
-    public void setBeginDate(GanttDate beginDate) {
-        this.beginDate = toMilliseconds(beginDate);
-    }
-
     public long getLengthMilliseconds() {
         return lengthMilliseconds;
     }
@@ -127,16 +154,6 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public GanttDate getEndDate() {
         return toGanttDate(beginDate + getLengthMilliseconds());
-    }
-
-    @Override
-    public void setEndDate(GanttDate endDate) {
-        this.beginDate = toMilliseconds(endDate) - this.lengthMilliseconds;
-    }
-
-    @Override
-    public void resizeTo(GanttDate endDate) {
-        this.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
     }
 
     public String getNotes() {
@@ -191,11 +208,6 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public List<Constraint<GanttDate>> getEndConstraints() {
         return Collections.emptyList();
-    }
-
-    @Override
-    public void moveTo(GanttDate date) {
-        setBeginDate(date);
     }
 
     @Override

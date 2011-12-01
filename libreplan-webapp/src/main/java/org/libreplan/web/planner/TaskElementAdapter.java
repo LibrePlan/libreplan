@@ -100,6 +100,8 @@ import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.util.ReentranceGuard;
+import org.zkoss.ganttz.util.ReentranceGuard.IReentranceCases;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -223,6 +225,8 @@ public class TaskElementAdapter {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    private final ReentranceGuard reentranceGuard = new ReentranceGuard();
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -396,6 +400,48 @@ public class TaskElementAdapter {
                 this.taskElement = taskElement;
             }
 
+            private final IUpdatablePosition position = new IUpdatablePosition() {
+
+                @Override
+                public void setEndDate(GanttDate endDate) {
+                    stepsBeforePossibleReallocation();
+                    getDatesHandler(taskElement).moveEndTo(toIntraDay(endDate));
+                }
+
+                @Override
+                public void setBeginDate(final GanttDate beginDate) {
+                    stepsBeforePossibleReallocation();
+                    getDatesHandler(taskElement).moveTo(toIntraDay(beginDate));
+                }
+
+                @Override
+                public void resizeTo(final GanttDate endDate) {
+                    stepsBeforePossibleReallocation();
+                    updateTaskPositionConstraint(endDate);
+                    getDatesHandler(taskElement).resizeTo(toIntraDay(endDate));
+                }
+
+                private void stepsBeforePossibleReallocation() {
+                    taskDAO.reattach(taskElement);
+                }
+
+                @Override
+                public void moveTo(GanttDate newStart) {
+                    if (taskElement instanceof ITaskPositionConstrained) {
+                        ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
+                        if (task.getPositionConstraint()
+                                .isConstraintAppliedToStart()) {
+                            setBeginDate(newStart);
+                            task.explicityMoved(toIntraDay(newStart));
+                        } else {
+                            GanttDate newEnd = inferEndFrom(newStart);
+                            setEndDate(newEnd);
+                            task.explicityMoved(toIntraDay(newEnd));
+                        }
+                    }
+                }
+            };
+
             @Override
             public void setName(String name) {
                 taskElement.setName(name);
@@ -432,51 +478,37 @@ public class TaskElementAdapter {
             }
 
             @Override
-            public void setBeginDate(final GanttDate beginDate) {
-                transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+            public void doPositionModifications(
+                    final IModifications modifications) {
+                reentranceGuard.entranceRequested(new IReentranceCases() {
+
+                    @Override
+                    public void ifNewEntrance() {
+                        transactionService.runOnReadOnlyTransaction(asTransaction(modifications));
+                    }
+
+                    IOnTransaction<Void> asTransaction(
+                            final IModifications modifications) {
+                        return new IOnTransaction<Void>() {
+
                             @Override
                             public Void execute() {
-                                stepsBeforePossibleReallocation();
-                                getDatesHandler(taskElement).moveTo(
-                                        toIntraDay(beginDate));
+                                modifications.doIt(position);
                                 return null;
                             }
-                        });
+                        };
+                    }
+
+                    @Override
+                    public void ifAlreadyInside() {
+                        modifications.doIt(position);
+                    }
+                });
             }
 
             @Override
             public GanttDate getEndDate() {
                 return toGantt(taskElement.getIntraDayEndDate());
-            }
-
-            @Override
-            public void setEndDate(final GanttDate endDate) {
-                transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                            @Override
-                            public Void execute() {
-                                stepsBeforePossibleReallocation();
-                                getDatesHandler(taskElement).moveEndTo(
-                                        toIntraDay(endDate));
-                                return null;
-                            }
-                        });
-            }
-
-            @Override
-            public void resizeTo(final GanttDate endDate) {
-                transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                            @Override
-                            public Void execute() {
-                                stepsBeforePossibleReallocation();
-                                updateTaskPositionConstraint(endDate);
-                                getDatesHandler(taskElement).resizeTo(
-                                        toIntraDay(endDate));
-                                return null;
-                            }
-                        });
             }
 
             IDatesHandler getDatesHandler(TaskElement taskElement) {
@@ -965,22 +997,6 @@ public class TaskElementAdapter {
                 return Collections.emptyList();
             }
 
-            @Override
-            public void moveTo(GanttDate newStart) {
-                if (taskElement instanceof ITaskPositionConstrained) {
-                    ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
-                    if (task.getPositionConstraint()
-                            .isConstraintAppliedToStart()) {
-                        setBeginDate(newStart);
-                        task.explicityMoved(toIntraDay(newStart));
-                    } else {
-                        GanttDate newEnd = inferEndFrom(newStart);
-                        setEndDate(newEnd);
-                        task.explicityMoved(toIntraDay(newEnd));
-                    }
-                }
-            }
-
             private GanttDate inferEndFrom(GanttDate newStart) {
                 if (taskElement instanceof Task) {
                     Task task = (Task) taskElement;
@@ -1035,10 +1051,6 @@ public class TaskElementAdapter {
 
             public boolean hasConsolidations() {
                 return taskElement.hasConsolidations();
-            }
-
-            private void stepsBeforePossibleReallocation() {
-                taskDAO.reattach(taskElement);
             }
 
             @Override

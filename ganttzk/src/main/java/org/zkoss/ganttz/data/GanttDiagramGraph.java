@@ -46,12 +46,16 @@ import org.apache.commons.logging.LogFactory;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.zkoss.ganttz.data.DependencyType.Point;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues;
 import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.ComparisonType;
 import org.zkoss.ganttz.data.criticalpath.ICriticalPathCalculable;
 import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper;
+import org.zkoss.ganttz.util.ReentranceGuard;
+import org.zkoss.ganttz.util.ReentranceGuard.IReentranceCases;
 
 /**
  * This class contains a graph with the {@link Task tasks} as vertexes and the
@@ -180,8 +184,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
 
         @Override
-        public void setEndDateFor(Task task, GanttDate newEnd) {
-            task.setEndDate(newEnd);
+        public void setEndDateFor(Task task, final GanttDate newEnd) {
+            task.doPositionModifications(new IModifications() {
+
+                @Override
+                public void doIt(IUpdatablePosition position) {
+                    position.setEndDate(newEnd);
+                }
+            });
         }
 
         @Override
@@ -190,8 +200,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         @Override
-        public void setStartDateFor(Task task, GanttDate newStart) {
-            task.setBeginDate(newStart);
+        public void setStartDateFor(Task task, final GanttDate newStart) {
+            task.doPositionModifications(new IModifications() {
+
+                @Override
+                public void doIt(IUpdatablePosition position) {
+                    position.setBeginDate(newStart);
+                }
+            });
         }
 
         @Override
@@ -2284,31 +2300,4 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return adapter.getChildren(task);
     }
 
-}
-
-interface IReentranceCases {
-    public void ifNewEntrance();
-
-    public void ifAlreadyInside();
-}
-
-class ReentranceGuard {
-    private final ThreadLocal<Boolean> inside = new ThreadLocal<Boolean>() {
-        protected Boolean initialValue() {
-            return false;
-        };
-    };
-
-    public void entranceRequested(IReentranceCases reentranceCases) {
-        if (inside.get()) {
-            reentranceCases.ifAlreadyInside();
-            return;
-        }
-        inside.set(true);
-        try {
-            reentranceCases.ifNewEntrance();
-        } finally {
-            inside.set(false);
-        }
-    }
 }

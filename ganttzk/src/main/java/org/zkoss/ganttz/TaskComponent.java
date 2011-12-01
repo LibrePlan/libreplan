@@ -34,6 +34,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
@@ -343,8 +345,14 @@ public class TaskComponent extends Div implements AfterCompose {
 
     void doUpdatePosition(int leftX, int topY) {
         GanttDate startBeforeMoving = this.task.getBeginDate();
-        LocalDate newPosition = getMapper().toDate(leftX);
-        this.task.moveTo(GanttDate.createFrom(newPosition));
+        final LocalDate newPosition = getMapper().toDate(leftX);
+        this.task.doPositionModifications(new IModifications() {
+
+            @Override
+            public void doIt(IUpdatablePosition position) {
+                position.moveTo(GanttDate.createFrom(newPosition));
+            }
+        });
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {

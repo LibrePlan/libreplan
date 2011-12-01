@@ -25,6 +25,8 @@ import java.util.Date;
 
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -120,12 +122,19 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         return localDate.toDateTimeAtStartOfDay().toDate();
     }
 
-    private void copyFromDTO(TaskDTO taskDTO, Task currentTask,
+    private void copyFromDTO(final TaskDTO taskDTO, Task currentTask,
             boolean copyDates) {
         currentTask.setName(taskDTO.name);
         if (copyDates) {
-            currentTask.setBeginDate(GanttDate.createFrom(taskDTO.beginDate));
-            currentTask.resizeTo(GanttDate.createFrom(taskDTO.endDate));
+            currentTask.doPositionModifications(new IModifications() {
+
+                @Override
+                public void doIt(IUpdatablePosition position) {
+                    position.setBeginDate(GanttDate
+                            .createFrom(taskDTO.beginDate));
+                    position.resizeTo(GanttDate.createFrom(taskDTO.endDate));
+                }
+            });
         }
         currentTask.setNotes(taskDTO.notes);
         currentTask.setDeadline(taskDTO.deadlineDate);

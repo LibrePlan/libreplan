@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -124,6 +123,70 @@ public abstract class Task implements ITaskFundamentalProperties {
                 .getEndConstraints());
     }
 
+    @Override
+    public void doPositionModifications(final IModifications modifications) {
+        fundamentalProperties.doPositionModifications(new IModifications() {
+
+            @Override
+            public void doIt(IUpdatablePosition p) {
+                modifications.doIt(position);
+
+            }
+        });
+    }
+
+    private final IUpdatablePosition position = new IUpdatablePosition() {
+
+        @Override
+        public void setEndDate(GanttDate value) {
+            if (value == null) {
+                return;
+            }
+            GanttDate previousEnd = fundamentalProperties.getEndDate();
+            getFundamentalPropertiesPosition().setEndDate(value);
+            dependenciesEnforcerHook.setNewEnd(previousEnd,
+                    fundamentalProperties.getEndDate());
+        }
+
+        @Override
+        public void setBeginDate(GanttDate newStart) {
+            GanttDate previousValue = fundamentalProperties.getBeginDate();
+            GanttDate previousEnd = fundamentalProperties.getEndDate();
+            getFundamentalPropertiesPosition().setBeginDate(newStart);
+            dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
+                    newStart);
+        }
+
+        @Override
+        public void resizeTo(GanttDate newEnd) {
+            GanttDate previousEnd = getEndDate();
+            getFundamentalPropertiesPosition().resizeTo(newEnd);
+            dependenciesEnforcerHook.setNewEnd(previousEnd, newEnd);
+        }
+
+        @Override
+        public void moveTo(GanttDate date) {
+            GanttDate previousStart = getBeginDate();
+            GanttDate previousEnd = getEndDate();
+            getFundamentalPropertiesPosition().moveTo(date);
+            dependenciesEnforcerHook.setStartDate(previousStart, previousEnd,
+                    date);
+        }
+
+        private IUpdatablePosition getFundamentalPropertiesPosition() {
+            final IUpdatablePosition[] result = new IUpdatablePosition[1];
+            fundamentalProperties.doPositionModifications(new IModifications() {
+
+                @Override
+                public void doIt(IUpdatablePosition position) {
+                    result[0] = position;
+                }
+            });
+            assert result[0] != null;
+            return result[0];
+        }
+    };
+
     public abstract boolean isLeaf();
 
     public abstract boolean isContainer();
@@ -193,14 +256,6 @@ public abstract class Task implements ITaskFundamentalProperties {
         Validate.notNull(factory);
         dependenciesEnforcerHook = factory.create(this, notifyDates);
         Validate.notNull(dependenciesEnforcerHook);
-    }
-
-    public void setBeginDate(GanttDate newStart) {
-        GanttDate previousValue = fundamentalProperties.getBeginDate();
-        GanttDate previousEnd = fundamentalProperties.getEndDate();
-        fundamentalProperties.setBeginDate(newStart);
-        dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
-                newStart);
     }
 
     public void fireChangesForPreviousValues(GanttDate previousStart,
@@ -284,28 +339,17 @@ public abstract class Task implements ITaskFundamentalProperties {
                 previousValue, this.fundamentalProperties.getNotes());
     }
 
-    @Override
-    public void setEndDate(GanttDate value) {
-        if (value == null) {
-            return;
-        }
-        GanttDate previousEnd = fundamentalProperties.getEndDate();
-        fundamentalProperties.setEndDate(value);
-        dependenciesEnforcerHook.setNewEnd(previousEnd,
-                fundamentalProperties.getEndDate());
-    }
-
-    public void resizeTo(LocalDate date) {
+    public void resizeTo(final LocalDate date) {
         if (date.compareTo(getBeginDateAsLocalDate()) < 0) {
             return;
         }
-        resizeTo(GanttDate.createFrom(date));
-    }
+        doPositionModifications(new IModifications() {
 
-    public void resizeTo(GanttDate newEnd) {
-        GanttDate previousEnd = getEndDate();
-        fundamentalProperties.resizeTo(newEnd);
-        dependenciesEnforcerHook.setNewEnd(previousEnd, newEnd);
+            @Override
+            public void doIt(IUpdatablePosition position) {
+                position.resizeTo(GanttDate.createFrom(date));
+            }
+        });
     }
 
     public void removed() {
@@ -354,13 +398,6 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public String getResourcesText() {
         return fundamentalProperties.getResourcesText();
-    }
-
-    public void moveTo(GanttDate date) {
-        GanttDate previousStart = getBeginDate();
-        GanttDate previousEnd = getEndDate();
-        fundamentalProperties.moveTo(date);
-        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd, date);
     }
 
     @Override
