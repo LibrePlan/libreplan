@@ -465,56 +465,15 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     }
 
-    private static abstract class AllocationModificationStrategy {
+    private static class WithPotentiallyNewResources {
 
         protected final IResourcesSearcher searcher;
 
-        public AllocationModificationStrategy(IResourcesSearcher searcher) {
+        public WithPotentiallyNewResources(IResourcesSearcher searcher) {
             Validate.notNull(searcher);
             this.searcher = searcher;
         }
 
-        public abstract ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
-                List<ResourceAllocation<?>> allocations);
-
-        public abstract ModificationsResult<EffortModification> getHoursModified(
-                List<ResourceAllocation<?>> allocations);
-
-    }
-
-    private static class WithTheSameHoursAndResourcesPerDay extends
-            AllocationModificationStrategy {
-
-        public WithTheSameHoursAndResourcesPerDay(IResourcesSearcher searcher) {
-            super(searcher);
-        }
-
-        @Override
-        public ModificationsResult<EffortModification> getHoursModified(
-                List<ResourceAllocation<?>> allocations) {
-            List<EffortModification> canBeModified = EffortModification
-                    .fromExistent(allocations, searcher);
-            return ModificationsResult.create(allocations, canBeModified);
-        }
-
-        @Override
-        public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
-                List<ResourceAllocation<?>> allocations) {
-            List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
-                    .fromExistent(allocations, searcher);
-            return ModificationsResult.create(allocations, canBeModified);
-        }
-
-    }
-
-    private static class WithAnotherResources extends
-            AllocationModificationStrategy {
-
-        public WithAnotherResources(IResourcesSearcher searcher) {
-            super(searcher);
-        }
-
-        @Override
         public ModificationsResult<EffortModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
             List<EffortModification> canBeModified = EffortModification
@@ -522,13 +481,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             return ModificationsResult.create(allocations, canBeModified);
         }
 
-        @Override
         public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
             List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
                     .withNewResources(allocations, searcher);
             return ModificationsResult.create(allocations, canBeModified);
         }
+
     }
 
     public void copyAssignmentsFromOneScenarioToAnother(Scenario from, Scenario to) {
@@ -554,8 +513,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             }
 
             private void doReassignment(Direction direction) {
-                reassign(scenario, direction,
-                        new WithTheSameHoursAndResourcesPerDay(searcher));
+                reassign(scenario, direction, new WithPotentiallyNewResources(
+                        searcher));
             }
 
             @Override
@@ -753,12 +712,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourcesSearcher searcher) {
-        reassign(scenario, getAllocationDirection(), new WithAnotherResources(
-                searcher));
+        reassign(scenario, getAllocationDirection(),
+                new WithPotentiallyNewResources(searcher));
     }
 
     private void reassign(Scenario onScenario, Direction direction,
-            AllocationModificationStrategy strategy) {
+            WithPotentiallyNewResources strategy) {
         try {
             this.lastAllocationDirection = direction;
             if (isLimiting()) {
@@ -784,7 +743,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    private void doAllocation(AllocationModificationStrategy strategy,
+    private void doAllocation(WithPotentiallyNewResources strategy,
             Direction direction, List<ResourceAllocation<?>> toBeModified) {
         ModificationsResult<ResourcesPerDayModification> modificationsResult = strategy
                 .getResourcesPerDayModified(toBeModified);

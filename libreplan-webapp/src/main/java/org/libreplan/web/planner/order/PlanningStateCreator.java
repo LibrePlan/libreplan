@@ -785,7 +785,7 @@ public class PlanningStateCreator {
             }
             IAdapterToTaskFundamentalProperties<TaskElement> adapter;
             adapter = taskElementAdapterCreator.createForOrder(
-                    getScenarioInfo().getCurrentScenario(), order);
+                    getScenarioInfo().getCurrentScenario(), order, this);
 
             PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                     adapter, new TaskElementNavigator(), getInitial());

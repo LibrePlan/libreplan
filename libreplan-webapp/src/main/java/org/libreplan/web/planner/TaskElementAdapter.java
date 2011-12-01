@@ -86,6 +86,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -211,8 +212,8 @@ public class TaskElementAdapter {
     }
 
     public IAdapterToTaskFundamentalProperties<TaskElement> createForOrder(
-            Scenario currentScenario, Order order) {
-        Adapter result = new Adapter();
+            Scenario currentScenario, Order order, PlanningState planningState) {
+        Adapter result = new Adapter(planningState);
         result.useScenario(currentScenario);
         result.setInitDate(asLocalDate(order.getInitDate()));
         result.setDeadline(asLocalDate(order.getDeadline()));
@@ -362,6 +363,8 @@ public class TaskElementAdapter {
 
         private boolean preventCalculateResourcesText = false;
 
+        private final PlanningState planningState;
+
         private void useScenario(Scenario scenario) {
             this.scenario = scenario;
         }
@@ -384,8 +387,12 @@ public class TaskElementAdapter {
         }
 
         public Adapter() {
+            this(null);
         }
 
+        public Adapter(PlanningState planningState) {
+            this.planningState = planningState;
+        }
 
         private class TaskElementWrapper implements ITaskFundamentalProperties {
 
@@ -493,6 +500,10 @@ public class TaskElementAdapter {
 
                             @Override
                             public Void execute() {
+                                if (planningState != null) {
+                                    planningState
+                                            .reassociateResourcesWithSession();
+                                }
                                 modifications.doIt(position);
                                 return null;
                             }
