@@ -73,13 +73,14 @@ usuario es un nodo de LDAP y que en el nodo existe una propiedad que representa
 el grupo o grupos al que pertenece el usuairo. En este caso, la configuración
 necesita dos parámetros:
 
-   * *Propiedad del rol*. Representa la propiedad en el nodo del usuario que
-     contiene todos los roles para el mismo.
-   * *Consulta para la búsqueda de roles*. Representa la ruta en el LDAP para
-     encontrar los nodos de los usuarios. En este caso, hay que tener en cuenta que
-     la cadena "[USER_ID]" representa el lugar en el que el nombre del usuario
-     proporcionado en el formulario de entrada debe ser situado para obtener el
-     nodo apropiado correspondiente al usuario en el LDAP.
+* *Propiedad del rol*. Representa la propiedad en el nodo del usuario que
+  contiene todos los roles para el mismo.
+
+* *Consulta para la búsqueda de roles*. Representa la ruta en el LDAP para
+  encontrar los nodos de los usuarios. En este caso, hay que tener en cuenta que
+  la cadena "[USER_ID]" representa el lugar en el que el nombre del usuario
+  proporcionado en el formulario de entrada debe ser situado para obtener el
+  nodo apropiado correspondiente al usuario en el LDAP.
 
 En el fondo de la pantalla de esta sección hay una tabla con todos los roles de
 LibrePlan y un campo de texto anexo a cada uno de ellos. Esta área es para la
