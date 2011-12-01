@@ -81,9 +81,9 @@
                             <panelchildren>
                                 <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}"
                                     onClick="assignedMaterialsController.clearSelectionAllCategoriesTree()" />
-                                <tree id="allCategoriesTree" rows="10" vflex="true" multiple="false">
+                                <tree id="allCategoriesTree" width="100%" rows="10" sizedByContent="true" vflex="true" hflex="true" multiple="false">
                                     <treecols>
-                                        <treecol label="Name" />
+                                        <treecol label="Name" hflex="true"/>
                                     </treecols>
                                 </tree>
                             </panelchildren>
