@@ -29,17 +29,17 @@ Debian packages
 ~~~~~~~~~~~~~~~
 
 There are Debian packages for Squeeze (i386 and amd64), you can download them
-from: http://sourceforge.net/projects/navalplan/files/NavalPlan/
+from: http://sourceforge.net/projects/navalplan/files/LibrePlan/
 
 Instructions:
 
 * Download the package::
 
-    $ wget http://downloads.sourceforge.net/project/navalplan/files/NavalPlan/navalplan_1.1.1-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/navalplan/files/LibrePlan/libreplan_1.2.0-1_amd64.deb
 
 * Install package::
 
-    # dpkg -i navalplan_1.1.1-1_amd64.deb
+    # dpkg -i libreplan_1.2.0-1_amd64.deb
 
 * Install dependencies::
 
@@ -68,7 +68,7 @@ Debian/Ubuntu
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/NavalPlan/install_1.1.1.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
@@ -76,7 +76,7 @@ Debian/Ubuntu
 
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/LibrePlan/libreplan_1.2.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
@@ -170,7 +170,7 @@ openSUSE
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/NavalPlan/install_1.1.1.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
@@ -178,7 +178,7 @@ openSUSE
 
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/LibrePlan/libreplan_1.2.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
@@ -215,7 +215,7 @@ Logs
 
 Since *LibrePlan 1.1.1* log system is configured automatically creating a new
 folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
-``/var/log/tomcat6/libreplan.war``.
+``/var/log/tomcat6/libreplan/``.
 
 Inside this new directory there will be two files (``libreplan.log`` and
 ``libreplan-error.log``) that will be rotated every day.
