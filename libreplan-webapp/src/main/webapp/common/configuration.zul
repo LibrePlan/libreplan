@@ -90,7 +90,8 @@
                                     disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
                                     tooltiptext = "${i18n:_('Enable/Disable autocomplete property in login form, if the admin password is still in default')}"
                                     checked="@{configurationController.autocompleteLogin}"
-                                    onCheck="configurationController.reloadGeneralConfiguration();" />
+                                    onCheck="configurationController.reloadGeneralConfiguration();"
+                                    disabled="true" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Generate code for')}" />
@@ -178,7 +179,8 @@
                                             <checkbox
                                                 id="scenariosVisible"
                                                 label="${i18n:_('Enable scenarios module')}"
-                                                checked="@{configurationController.scenariosVisible}" />
+                                                checked="@{configurationController.scenariosVisible}"
+                                                disabled="true" />
                                         </row>
                                     </rows>
                                 </grid>
