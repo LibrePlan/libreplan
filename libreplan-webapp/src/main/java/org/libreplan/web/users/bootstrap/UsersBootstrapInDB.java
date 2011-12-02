@@ -69,6 +69,7 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
                         getEncodedPassword(u), u.getInitialRoles(),
                         getProfiles(u.getInitialProfiles()));
                 user.setDisabled(u.isUserDisabled());
+                user.setApplicationLanguage(u.getApplicationLanguage());
 
                 userDAO.save(user);
             }
