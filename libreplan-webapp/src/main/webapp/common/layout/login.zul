@@ -90,6 +90,21 @@
         <n:tr>
           <n:td></n:td>
         </n:tr>
+        <n:tr height="5px">
+        </n:tr>
+        <n:tr>
+          <n:td>
+              <n:div align="left">
+                ${i18n:_('Select language')}
+                <n:select id="userLang" onchange="setUserLogin()" style="font-size:11px">
+                    <n:option title="admin_en">English</n:option>
+                    <n:option title="admin_es">Español</n:option>
+                    <n:option title="admin_gl">Galego</n:option>
+                    <n:option title="admin_pt">Português</n:option>
+                    <n:option title="admin_ru">русский</n:option>
+                </n:select>
+            </n:div></n:td>
+        </n:tr>
         <n:tr>
           <n:td>
               <n:div align="left">
@@ -144,6 +159,11 @@ function checkbrowser() {
         alertString += "${i18n:_('Please use some of the compatible browsers: Chrome, Firefox, Safari or Epiphany.')}";
         window.alert(alertString);
     }
+}
+
+function setUserLogin() {
+    var userLang = document.getElementById("userLang");
+    document.getElementById("textfield").value = userLang.options[userLang.selectedIndex].title;
 }
 
 document.onload = checkbrowser();
