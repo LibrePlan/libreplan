@@ -122,6 +122,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                 buttons[1]
                         .setTooltiptext(_("Default user \"admin\" cannot be removed as it is mandatory"));
             }
+            buttons[1].setDisabled(true);
         }
 
     };
