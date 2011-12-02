@@ -60,13 +60,15 @@
                             <row>
                                 <label value="${i18n:_('Password')}" />
                                 <textbox id="password" type="password"
-                                    onChange="controller.setPassword(self.value);" width="300px"/>
+                                    onChange="controller.setPassword(self.value);" width="300px"
+                                    disabled="true"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Password confirmation')}" />
                                 <textbox id="passwordConfirmation" type="password"
                                     constraint="@{controller.validatePasswordConfirmation}"
-                                    width="300px"/>
+                                    width="300px"
+                                    disabled="true"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Disabled')}" />
