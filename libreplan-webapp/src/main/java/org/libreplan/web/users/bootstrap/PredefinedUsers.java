@@ -58,6 +58,116 @@ public enum PredefinedUsers {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
     },
+    ADMIN_GL(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_ES(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_EN(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_RU(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_PT(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_IT(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_FR(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_NL(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_PL(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_CS(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_DE(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER), Configuration
             .isExampleUsersDisabled()) {
         @Override
@@ -169,6 +279,9 @@ public enum PredefinedUsers {
     }
 
     public String getClearPassword() {
+        if (getLoginName().startsWith("admin")) {
+            return "admin";
+        }
         return getLoginName();
     }
 
