@@ -24,21 +24,16 @@ package org.libreplan.web.qualityforms;
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.QualityFormItem;
 import org.libreplan.business.qualityforms.entities.QualityFormType;
-import org.libreplan.business.users.entities.Profile;
 import org.libreplan.web.common.BaseCRUDController;
-import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.users.ProfileCRUDController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -47,13 +42,11 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.impl.InputElement;
 
 /**
  * CRUD Controller for {@link QualityForm}
@@ -119,105 +112,13 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
 
     @Override
     protected void beforeSaving() throws ValidationException {
-        validate();
+        super.beforeSaving();
+        validateReportProgress();
     }
 
     @Override
     protected void save() throws ValidationException {
         qualityFormModel.confirmSave();
-    }
-
-    /**
-     * Validates all {@link Textbox} in the form
-     */
-    private void validate() {
-        Textbox boxName = (Textbox) editWindow
-                .getFellowIfAny("qualityFormName");
-        validate(boxName, boxName.getValue());
-
-        List<Row> rows = gridQualityFormItems.getRows().getChildren();
-        for (Row row : rows) {
-            validate(row);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void validate(Row row) {
-        for (Iterator i = row.getChildren().iterator(); i.hasNext();) {
-            final Component comp = (Component) i.next();
-            if (comp instanceof Textbox) {
-                validate((Textbox) comp, ((Textbox) comp).getValue());
-            }
-            if (comp instanceof Decimalbox) {
-                validate((Decimalbox) comp, ((Decimalbox) comp).getValue());
-            }
-        }
-    }
-
-    /**
-     * Validates {@link Textbox} checking {@link Constraint}
-     * @param comp
-     */
-    private void validate(InputElement comp, Object value) {
-        if (comp != null && comp.getConstraint() != null) {
-            final Constraint constraint = comp.getConstraint();
-            constraint.validate(comp, value);
-        }
-    }
-
-
-    private void showInvalidValues(ValidationException e) {
-        for (InvalidValue invalidValue : e.getInvalidValues()) {
-            Object value = invalidValue.getBean();
-            if (value instanceof QualityForm) {
-                validateQualityForm(invalidValue);
-            }
-            if (value instanceof QualityFormItem) {
-                validateQualityFormItem(invalidValue);
-            }
-        }
-    }
-
-    private void validateQualityForm(InvalidValue invalidValue) {
-        Component component = editWindow.getFellowIfAny("qualityFormName");
-        if (component != null) {
-            throw new WrongValueException(component, invalidValue.getMessage());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void validateQualityFormItem(InvalidValue invalidValue) {
-        Row rowItem = findQualityFormItem(gridQualityFormItems.getRows()
-                .getChildren(), (QualityFormItem) invalidValue.getBean());
-        if (rowItem != null) {
-            InputElement inputElement = getInputText(rowItem, invalidValue
-                    .getPropertyName());
-            if (inputElement != null) {
-                throw new WrongValueException(rowItem, invalidValue
-                        .getMessage());
-            }
-        }
-    }
-
-    private Row findQualityFormItem(List<Row> rows, QualityFormItem item) {
-        for (Row row : rows) {
-            if (item.equals(row.getValue())) {
-                return row;
-            }
-        }
-        return null;
-    }
-
-    private InputElement getInputText(Row row, String property) {
-        if (property != null) {
-            if (property.equals(QualityFormItem.propertyName)) {
-                return (InputElement) row.getFirstChild();
-            }
-            if (property.equals(QualityFormItem.propertyPercentage)) {
-                return (InputElement) row.getChildren().get(2);
-            }
-        }
-        return null;
     }
 
     public void createQualityFormItem() {
@@ -410,16 +311,14 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
         predicate = getSelectedName();
     }
 
-    public void validateReportProgress(Component comp) {
-        Checkbox checkbox = (Checkbox) comp;
-        if (checkbox != null) {
-            if ((checkbox.isChecked()) && (!hasItemWithTotalPercentage())) {
-                disabledCheckbocReportProgress(checkbox);
-                messagesForUser
-                        .showMessage(
-                                Level.ERROR,
-                                _("The quality form must have an item with 100% value to report progress"));
-            }
+    public void validateReportProgress() {
+        if ((getQualityForm().getReportAdvance())
+                && (!hasItemWithTotalPercentage())) {
+            Checkbox checkBoxReportProgress = (Checkbox) editWindow
+                    .getFellowIfAny("checkBoxReportProgress");
+            throw new WrongValueException(
+                    checkBoxReportProgress,
+                    _("The quality form must have an item with 100% value to report progress"));
         }
     }
 

@@ -102,13 +102,6 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         return baseCalendars;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<BaseCalendar> getSortedBaseCalendars(
-            List<BaseCalendar> baseCalendars) {
-        return BaseCalendar.sortByName(baseCalendars);
-    }
-
     /*
      * Initial conversation steps
      */

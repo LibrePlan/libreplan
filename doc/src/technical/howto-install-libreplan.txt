@@ -5,9 +5,9 @@ $ sudo apt-get install postgresql
 $ sudo su -c "psql" postgres
 
 <----------------- Executar os seguintes comandos SQL ----------
-create database navaldev;
-create user naval with password 'naval';
-grant all privileges on database navaldev to naval;
+create database libreplandev;
+create user libreplan with password 'libreplan';
+grant all privileges on database libreplandev to libreplan;
 \q
 ------------------------------------------------------------------
 
@@ -40,9 +40,9 @@ para permitir o acceso a base de datos
     <Resource name="jdbc/libreplan-ds" auth="Container"
       type="javax.sql.DataSource"
       maxActive="100" maxIdle="30" maxWait="10000"
-      username="naval" password="naval"
+      username="libreplan" password="libreplan"
       driverClassName="org.postgresql.Driver"
-      url="jdbc:postgresql://localhost/navaldev"/>
+      url="jdbc:postgresql://localhost/libreplandev"/>
     ...
     </Context>
 ---------------------- ---------------------------------------
@@ -96,4 +96,4 @@ Neste intre a aplicación debería estar accesible en : http://localhost:8080/li
 ------------------------------------------------------------------------
 Se quixeramos facer un volcado da base de datos so precisariamos empregar o seguinte comando, isto non é necesario para a instalación.
 
-$ pg_dump -h localhost -U naval -c -F p -v -f bdxestionproducion.dump navaldev
+$ pg_dump -h localhost -U libreplan -c -F p -v -f bdxestionproducion.dump libreplandev

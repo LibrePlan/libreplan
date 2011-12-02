@@ -201,14 +201,20 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                         for (CustomMenuItem c : child.children) {
                             if (c.contains(requestPath)) {
                                 c.setActive(true);
-                                break;
+                                return;
                             }
                         }
-                        break;
+                        return;
                     }
                 }
-                break;
+                return;
             }
+        }
+
+        if (requestPath.isEmpty()) {
+            CustomMenuItem item = this.firstLevel.get(0);
+            item.setActive(true);
+            item.children.get(0).setActive(true);
         }
     }
 
@@ -308,7 +314,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
-                subItem(_("LibrePlan Configuration"), "/common/configuration.zul","03-calendarios.html#calendario-por-defecto"),
+                    subItem(_("LibrePlan Configuration"),
+                            "/common/configuration.zul",
+                            "16-ldap-authentication.html"),
                 subItem(_("Users"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios",
                     subItem(_("Accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
                     subItem(_("Profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles")),
@@ -339,7 +347,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Task Scheduling Status In Project"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
             subItem(_("Materials Needs At Date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
 
-        topItem(_("My account"), "", "",
+        topItem(_("My account"), "/settings/settings.zul", "",
                 subItem(_("Settings"), "/settings/settings.zul", ""),
                 subItem(_("Change Password"), "/settings/changePassword.zul", ""));
     }

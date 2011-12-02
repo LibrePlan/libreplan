@@ -100,6 +100,11 @@ body .advancedallocationlayout .icono .z-button-cm {
     border-right:0;
 }
 
+
+.perspectives-column .global-commands {
+    margin-bottom: 0;
+}
+
 .toolbar-box {
     border:0;
 }
@@ -1008,7 +1013,8 @@ span.perspective, span.perspective-active {
     display: none;
 }
 
-.taskdetailsContainer {
+.taskdetailsContainer,
+.resourceloaddetailsContainer {
     border-left:0;
     border-top:0;
 }
@@ -1136,6 +1142,10 @@ span.perspective, span.perspective-active {
 
 .orderslayout .z-north {
     border-bottom:1px solid #9ECAD8;
+}
+
+.orderslayout-area > .z-center-body {
+    height: auto !important;
 }
 
 .orderelements-tab {

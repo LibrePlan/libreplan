@@ -44,9 +44,9 @@ work as ``.zul`` page still does not exist.
    If you want to run LibrePlan in development mode you need to follow the next
    instructions:
 
-   * Create a PostgreSQL database called ``navaldev`` with permissions for a
-     user ``naval`` with    password ``naval`` (see ``INSTALL`` file for other
-     databases and more info).
+   * Create a PostgreSQL database called ``libreplandev`` with permissions for a
+     user ``libreplan`` with    password ``libreplan`` (see ``INSTALL`` file for
+     other databases and more info).
 
    * Compile LibrePlan with the following command from project root folder::
 

@@ -101,7 +101,7 @@ function criteriaEdit($oldName, $newName, $cell){
     _log("Edit a criterion", "custom1");
 }
 
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function criteriaNotValid(){
     _assertExists(_div("checkConstraintUniqueCriterionTypeName: criterion type name is already being used"));
     _assert(_isVisible(_div("checkConstraintUniqueCriterionTypeName: criterion type name is already being used")));

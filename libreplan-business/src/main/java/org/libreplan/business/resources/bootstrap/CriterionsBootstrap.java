@@ -70,15 +70,16 @@ public class CriterionsBootstrap implements ICriterionsBootstrap {
     @Override
     @Transactional
     public void loadRequiredData() {
-        Map<CriterionType, List<String>> typesWithCriterions = getTypesWithCriterions();
-
-        // Insert predefined criterions
-        for (Entry<CriterionType, List<String>> entry : typesWithCriterions
-                .entrySet()) {
-            CriterionType criterionType = retrieveOrCreate(entry.getKey());
-            // Create predefined criterions for criterionType
-            for (String criterionName : entry.getValue()) {
-                ensureCriterionExists(criterionName, criterionType);
+        if (criterionTypeDAO.findAll().isEmpty()) {
+            Map<CriterionType, List<String>> typesWithCriterions = getTypesWithCriterions();
+            // Insert predefined criterions
+            for (Entry<CriterionType, List<String>> entry : typesWithCriterions
+                    .entrySet()) {
+                CriterionType criterionType = retrieveOrCreate(entry.getKey());
+                // Create predefined criterions for criterionType
+                for (String criterionName : entry.getValue()) {
+                    ensureCriterionExists(criterionName, criterionType);
+                }
             }
         }
     }

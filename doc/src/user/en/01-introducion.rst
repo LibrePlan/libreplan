@@ -6,7 +6,7 @@ Introduction
 The purpose of this document is to describe the features of LibrePlan and provide user information on how to configure and use the application.
 
 LibrePlan is an opensource web application for project planning. Its main goal is to provide a complete solution for company project management.
-For any specific information you may need about this software, please contact the development team at http://www.libreplan.org/en/contact
+For any specific information you may need about this software, please contact the development team at http://www.libreplan.com/contact/
 
 
 .. figure:: images/company_view.png

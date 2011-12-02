@@ -64,7 +64,7 @@ function exceptDayForm($name, $standar, $color){
     _click(_cell("Save"));
 }
 
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function exceptDayNotValid($ExceptDayName){
     _assertExists(_span("checkConstraintUniqueName: name is already used"));
     _assert(_isVisible(_span("checkConstraintUniqueName: name is already used")));
@@ -94,7 +94,7 @@ function exceptDayCheckCode($exceptDayName){
 
 function exceptDayCreateWithoutCode($name){
     commonCreate("Exception Days");
-    exceptDayForm($name);
+    exceptDayForm($name,"","");
     commonEmptyCodeValidation();
 }
 
@@ -110,7 +110,7 @@ commonLogin("admin", "admin");
 
 exceptDayCreate($exceptDayName, $exceptDaystandar, 2);
 exceptDayCreateDuplicateName($exceptDayName, $exceptDaystandar, 1);
-exceptDayCreateEmpty("", $exceptDaystandar);
+exceptDayCreateEmpty("", $exceptDaystandar,"");
 
 exceptDayEdit($exceptDayName, $exceptDayNewName, 5);
 

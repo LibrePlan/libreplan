@@ -394,6 +394,10 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
         this.reportAdvance = BooleanUtils.toBoolean(reportAdvance);
     }
 
+    public boolean getReportAdvance() {
+        return this.reportAdvance;
+    }
+
     public AdvanceType getAdvanceType() {
         return advanceType;
     }

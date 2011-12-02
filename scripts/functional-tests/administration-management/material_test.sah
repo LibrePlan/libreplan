@@ -41,7 +41,7 @@ function materialCreate($name) {
 
 function materialCreateWithoutCategory(){
     _click(_link("Materials"));
-    _click(_cell("z-button-cm[3]"));
+    _click(_cell("New"));
     materialWithoutCategoryValidation();
 }
 
@@ -54,12 +54,12 @@ function materialCreateEmpty(){
 function materialForm($description) {
     _click(_link("Materials"));
     _click(_span("z-dottree-ico z-dottree-firstspacer"));
-    _click(_cell("z-button-cm[3]"));
+    _click(_cell("New"));
     _setValue(_textbox("z-textbox[2]"), $description);
     _click(_cell("Save"));
 }
 
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function materialNotValid($material){
     _assertExists(_div("There exists other Materials with the same name."));
     _assert(_isVisible(_div("There exists other Materials with the same name.")));

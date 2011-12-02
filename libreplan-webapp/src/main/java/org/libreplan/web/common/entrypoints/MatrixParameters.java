@@ -45,11 +45,16 @@ public class MatrixParameters {
         return extract(request.getRequestURI());
     }
 
+    /**
+     * Extracts matrix parameters but skipping "jsessionid"
+     */
     public static Map<String, String> extract(String string) {
         Map<String, String> result = new HashMap<String, String>();
         Matcher matcher = matrixParamPattern.matcher(string);
         while (matcher.find()) {
-            result.put(matcher.group(1), matcher.group(2));
+            if (!matcher.group(1).equals("jsessionid")) {
+                result.put(matcher.group(1), matcher.group(2));
+            }
         }
         return result;
     }

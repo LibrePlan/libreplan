@@ -26,11 +26,11 @@ Instructions:
 
 * Download the new package::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1-1_amd64.deb
 
 * Install package::
 
-    # dpkg -i libreplan_1.1.1-1_amd64.deb
+    # dpkg -i navalplan_1.1.1-1_amd64.deb
 
 * Install new dependencies if needed::
 
@@ -51,7 +51,7 @@ Debian/Ubuntu
   are upgrading from *LibrePlan 1.0.4* to *LibrePlan 1.1.1* you should download
   ``upgrade_1.1.0.sql``::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/upgrade_1.1.0.sql
+    $ wget http://downloads.sourceforge.net/project/navalplan/NavalPlan/upgrade_1.1.0.sql
 
 * Upgrade database::
 
@@ -59,7 +59,7 @@ Debian/Ubuntu
 
 * Download ``.war`` file of new version from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
 
 * Backup current deployed application::
 
@@ -87,7 +87,7 @@ openSUSE
   are upgrading from *LibrePlan 1.0.4* to *LibrePlan 1.1.1* you should download
   ``upgrade_1.1.0.sql``::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/upgrade_1.1.0.sql
+    $ wget http://downloads.sourceforge.net/project/navalplan/NavalPlan/upgrade_1.1.0.sql
 
 * Upgrade database::
 
@@ -95,7 +95,7 @@ openSUSE
 
 * Download ``.war`` file of new version from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
 
 * Backup current deployed application::
 

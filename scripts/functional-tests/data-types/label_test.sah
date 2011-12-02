@@ -66,7 +66,7 @@ function labelCreateDuplicateName($type, $name){
     _log("Do not allow create a label with duplicate name", "custom1");
 }
 
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function labelNotValid($labelType){
     _assertExists(_div("name: "+$labelType+" already exists"));
     _assert(_isVisible(_div("name: "+$labelType+" already exists")));

@@ -28,12 +28,20 @@ import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CO
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.bootstrap.ICriterionsBootstrap;
 import org.libreplan.business.resources.daos.ICriterionDAO;
+import org.libreplan.business.resources.daos.ICriterionTypeDAO;
+import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.CategoryCriteria;
 import org.libreplan.business.resources.entities.Criterion;
+import org.libreplan.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -45,13 +53,48 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CriterionsBootstrapTest {
 
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
     @Autowired
     private ICriterionsBootstrap criterionsBootstrap;
 
     @Autowired
     private ICriterionDAO criterionDAO;
 
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
     private List<Criterion> somePredefinedCriterions;
+
+    @Before
+    public void loadRequiredaData() {
+        // Load data
+        configurationBootstrap.loadRequiredData();
+        cleanCriteria();
+    }
+
+    private void cleanCriteria() {
+        try {
+
+            List<org.libreplan.business.resources.entities.Resource> resources = resourceDAO
+                    .findAll();
+            for (org.libreplan.business.resources.entities.Resource resource : resources) {
+                resourceDAO.remove(resource.getId());
+            }
+
+            List<CriterionType> types = criterionTypeDAO.findAll();
+            for (CriterionType type : types) {
+                criterionTypeDAO.remove(type.getId());
+            }
+
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public CriterionsBootstrapTest() {
         somePredefinedCriterions = getSomePredefinedCriterions();

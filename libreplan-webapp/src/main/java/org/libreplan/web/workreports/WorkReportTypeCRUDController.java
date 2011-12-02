@@ -246,6 +246,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
 
     private void appendTextboBoxNameDescriptionField(final Row row) {
         Textbox boxName = new Textbox();
+        boxName.setHflex("1");
         boxName.setParent(row);
         boxName
                 .setConstraint(validateIfExistTheSameFieldName((DescriptionField) row
@@ -267,6 +268,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
 
     private void appendIntBoxLengthDescriptionField(final Row row) {
         Intbox boxLength = new Intbox();
+        boxLength.setHflex("1");
         boxLength.setReadonly(isReadOnly());
         boxLength.setParent(row);
         boxLength.setConstraint("no negative, no zero");

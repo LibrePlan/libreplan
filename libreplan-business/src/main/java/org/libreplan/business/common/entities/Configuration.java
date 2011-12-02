@@ -291,7 +291,8 @@ public class Configuration extends BaseEntity {
     }
 
     public ProgressType getProgressType() {
-        return progressType;
+        return (progressType == null) ? ProgressType.SPREAD_PROGRESS
+                : progressType;
     }
 
     public void setCompanyLogoURL(String companyLogoURL) {

@@ -94,9 +94,11 @@ public class CalendarServiceTest {
         BaseCalendarListDTO baseCalendars = calendarService.getBaseCalendars();
         assertThat(baseCalendars.baseCalendars.size(), equalTo(previous + 1));
 
-        BaseCalendarDTO calendarDTO = baseCalendars.baseCalendars.get(previous);
-        assertThat(calendarDTO.code, equalTo(calendar.getCode()));
-        assertThat(calendarDTO.name, equalTo(calendar.getName()));
+        for (BaseCalendarDTO calendarDTO : baseCalendars.baseCalendars)
+            if (calendarDTO.code.equals(calendar.getCode())) {
+                assertThat(calendarDTO.code, equalTo(calendar.getCode()));
+                assertThat(calendarDTO.name, equalTo(calendar.getName()));
+            }
     }
 
 }

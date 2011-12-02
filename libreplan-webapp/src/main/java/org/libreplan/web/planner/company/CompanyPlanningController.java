@@ -179,7 +179,9 @@ public class CompanyPlanningController implements Composer {
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));
 
-            if (getProgressTypeFromConfiguration().equals(progressType)) {
+            ProgressType configuredProgressType = getProgressTypeFromConfiguration();
+            if ((configuredProgressType != null)
+                    && configuredProgressType.equals(progressType)) {
                 cbProgressTypes.setSelectedItem(item);
             }
         }

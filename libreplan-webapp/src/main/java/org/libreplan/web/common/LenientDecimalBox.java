@@ -19,18 +19,17 @@
 package org.libreplan.web.common;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormatSymbols;
-
-import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Decimalbox;
 
 /**
- * Same behavior as a {@link Decimalbox}, but it always interprets <b>,</b> and
- * <b>.</b> as decimals separators. So you can use both freely as decimal
- * separators.
+ * Same behavior as a {@link Decimalbox}, but it always interprets <b>.</b> as
+ * decimal separator, even when the locale uses a different separator.
+ * We also reimplement coerceToString to workaround the bug
+ * http://tracker.zkoss.org/browse/ZK-629.
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  *
  */
 public class LenientDecimalBox extends Decimalbox {
@@ -41,6 +40,10 @@ public class LenientDecimalBox extends Decimalbox {
 
     public LenientDecimalBox(BigDecimal value) throws WrongValueException {
         super(value);
+    }
+
+    protected String coerceToString(Object value) {
+        return formatNumber(value, null);
     }
 
 }

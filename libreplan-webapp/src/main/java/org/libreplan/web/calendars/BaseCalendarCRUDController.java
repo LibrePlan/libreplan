@@ -128,9 +128,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void save() {
         try {
+            baseCalendarModel.generateCalendarCodes();
+            Util.reloadBindings(editWindow);
             ConstraintChecker.isValid(editWindow);
             validateCalendarExceptionCodes();
-            baseCalendarModel.generateCalendarCodes();
             baseCalendarModel.confirmSave();
             messagesForUser.showMessage(Level.INFO, _(
                     "Base calendar \"{0}\" saved", baseCalendarModel
@@ -143,9 +144,10 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void saveAndContinue() {
         try {
+            baseCalendarModel.generateCalendarCodes();
+            Util.reloadBindings(editWindow);
             ConstraintChecker.isValid(editWindow);
             validateCalendarExceptionCodes();
-            baseCalendarModel.generateCalendarCodes();
             baseCalendarModel.confirmSaveAndContinue();
             messagesForUser.showMessage(Level.INFO, _(
                     "Base calendar \"{0}\" saved", baseCalendarModel

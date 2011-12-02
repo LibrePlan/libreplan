@@ -246,12 +246,14 @@ public class BaseCalendarModelTest {
                 .getPossibleParentCalendars();
 
         assertThat(possibleParentCalendars.size(), equalTo(previous + 1));
-        assertThat(possibleParentCalendars.get(previous).getId(),
+        BaseCalendar calendarComparison = null;
+        for (BaseCalendar calendar : possibleParentCalendars)
+            if (calendar.getId().equals(parentNewVersion.getId()))
+                calendarComparison = calendar;
+        assertThat(calendarComparison.getId(),
                 equalTo(parentNewVersion.getId()));
-        assertThat(
-                possibleParentCalendars.get(previous)
-                .getCalendarDataVersions()
-                .size(), equalTo(2));
+        assertThat(calendarComparison.getCalendarDataVersions().size(),
+                equalTo(2));
     }
 
 }

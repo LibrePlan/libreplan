@@ -31,7 +31,7 @@ Written by
 LibrePlan Team
 --------------
 
-* Cristina Alavariño Pérez <cristina.alvarino@cafedered.es>
+* Cristina Alvariño Pérez <cristina.alvarino@cafedered.es>
 * Jacobo Aragunde Pérez <jaragunde@igalia.com>
 * Nacho Barrientos Arias <nacho@igalia.com>
 * Xavier Castaño García <xcastanho@igalia.com>
@@ -79,6 +79,6 @@ Inside the global scope that LibrePlan is designed for regarding planning manage
 
 This project was part of Plan Avanza:
 
-.. figure:: images/avanza.gif
+.. figure:: images/avanza.png
    :scale: 100
 

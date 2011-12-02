@@ -28,7 +28,7 @@ Escrito por
 Equipo de LibrePlan
 -------------------
 
-* Cristina Alavariño Pérez <cristina.alvarino@cafedered.es>
+* Cristina Alvariño Pérez <cristina.alvarino@cafedered.es>
 * Jacobo Aragunde Pérez <jaragunde@igalia.com>
 * Nacho Barrientos Arias <nacho@igalia.com>
 * Xavier Castaño García <xcastanho@igalia.com>

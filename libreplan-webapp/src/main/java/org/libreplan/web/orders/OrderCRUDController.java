@@ -36,12 +36,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
-import org.libreplan.business.materials.daos.IMaterialCategoryDAO;
-import org.libreplan.business.materials.entities.MaterialCategory;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
@@ -1440,7 +1437,9 @@ public class OrderCRUDController extends GenericForwardComposer {
      */
     private void checkCreationPermissions() {
         if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            createOrderButton.setDisabled(true);
+            if (createOrderButton != null) {
+                createOrderButton.setDisabled(true);
+            }
         }
     }
 
