@@ -31,6 +31,7 @@ import java.util.Set;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.users.entities.UserRole;
 
 /**
@@ -64,6 +65,11 @@ public enum MandatoryUser {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.ENGLISH_LANGUAGE;
+        }
     },
     ADMIN_ES(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
@@ -72,6 +78,11 @@ public enum MandatoryUser {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.SPANISH_LANGUAGE;
         }
     },
     ADMIN_GL(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
@@ -82,6 +93,11 @@ public enum MandatoryUser {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.GALICIAN_LANGUAGE;
+        }
     },
     ADMIN_PT(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
@@ -91,6 +107,11 @@ public enum MandatoryUser {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.PORTUGUESE_LANGUAGE;
+        }
     },
     ADMIN_RU(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
@@ -99,6 +120,11 @@ public enum MandatoryUser {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.RUSSIAN_LANGUAGE;
         }
     },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)) {
@@ -172,6 +198,10 @@ public enum MandatoryUser {
         } catch (InstanceNotFoundException e) {
             return true;
         }
+    }
+
+    public Language getApplicationLanguage() {
+        return Language.BROWSER_LANGUAGE;
     }
 
 }

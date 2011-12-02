@@ -58,8 +58,10 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
 
         if (!userDAO.existsByLoginName(u.getLoginName())) {
 
-            userDAO.save(User.create(u.getLoginName(), getEncodedPassword(u),
-                u.getInitialRoles()));
+            User user = User.create(u.getLoginName(), getEncodedPassword(u),
+                u.getInitialRoles());
+            user.setApplicationLanguage(u.getApplicationLanguage());
+            userDAO.save(user);
 
         }
 
