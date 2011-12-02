@@ -81,7 +81,7 @@
             </div></n:td>
         </n:tr>
         <n:tr>
-          <n:td class="usuario_clave">${i18n:_('Password')} (deafult: <n:tt>admin</n:tt>)</n:td>
+          <n:td class="usuario_clave">${i18n:_('Password')} (default: <n:tt>admin</n:tt>)</n:td>
         </n:tr>
         <n:tr>
           <n:td><div align="center">
@@ -98,6 +98,7 @@
               <n:div align="left">
                 ${i18n:_('Select language')}
                 <n:select id="userLang" onchange="setUserLogin()" style="font-size:11px">
+                    <n:option title="admin">Browser language</n:option>
                     <n:option title="admin_en">English</n:option>
                     <n:option title="admin_cs">Čeština</n:option>
                     <n:option title="admin_de">Deutsch</n:option>
