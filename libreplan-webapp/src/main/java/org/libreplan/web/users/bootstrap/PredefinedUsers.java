@@ -30,6 +30,7 @@ import java.util.Set;
 import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.users.bootstrap.PredefinedProfiles;
 import org.libreplan.business.users.entities.UserRole;
 
@@ -67,6 +68,11 @@ public enum PredefinedUsers {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.GALICIAN_LANGUAGE;
+        }
     },
     ADMIN_ES(Arrays.asList(UserRole.ROLE_SUPERUSER,
         UserRole.ROLE_READ_ALL_PROJECTS,
@@ -76,6 +82,11 @@ public enum PredefinedUsers {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.SPANISH_LANGUAGE;
         }
     },
     ADMIN_EN(Arrays.asList(UserRole.ROLE_SUPERUSER,
@@ -87,6 +98,11 @@ public enum PredefinedUsers {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.ENGLISH_LANGUAGE;
+        }
     },
     ADMIN_RU(Arrays.asList(UserRole.ROLE_SUPERUSER,
         UserRole.ROLE_READ_ALL_PROJECTS,
@@ -96,6 +112,11 @@ public enum PredefinedUsers {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.RUSSIAN_LANGUAGE;
         }
     },
     ADMIN_PT(Arrays.asList(UserRole.ROLE_SUPERUSER,
@@ -107,6 +128,11 @@ public enum PredefinedUsers {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.PORTUGUESE_LANGUAGE;
+        }
     },
     ADMIN_IT(Arrays.asList(UserRole.ROLE_SUPERUSER,
         UserRole.ROLE_READ_ALL_PROJECTS,
@@ -116,6 +142,11 @@ public enum PredefinedUsers {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.ITALIAN_LANGUAGE;
         }
     },
     ADMIN_FR(Arrays.asList(UserRole.ROLE_SUPERUSER,
@@ -127,6 +158,11 @@ public enum PredefinedUsers {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.FRENCH_LANGUAGE;
+        }
     },
     ADMIN_NL(Arrays.asList(UserRole.ROLE_SUPERUSER,
         UserRole.ROLE_READ_ALL_PROJECTS,
@@ -136,6 +172,11 @@ public enum PredefinedUsers {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.DUTCH_LANGUAGE;
         }
     },
     ADMIN_PL(Arrays.asList(UserRole.ROLE_SUPERUSER,
@@ -147,6 +188,11 @@ public enum PredefinedUsers {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.POLISH_LANGUAGE;
+        }
     },
     ADMIN_CS(Arrays.asList(UserRole.ROLE_SUPERUSER,
         UserRole.ROLE_READ_ALL_PROJECTS,
@@ -157,6 +203,11 @@ public enum PredefinedUsers {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.CZECH_LANGUAGE;
+        }
     },
     ADMIN_DE(Arrays.asList(UserRole.ROLE_SUPERUSER,
         UserRole.ROLE_READ_ALL_PROJECTS,
@@ -166,6 +217,11 @@ public enum PredefinedUsers {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.GERMAN_LANGUAGE;
         }
     },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER), Configuration
@@ -304,6 +360,10 @@ public enum PredefinedUsers {
         } catch (InstanceNotFoundException e) {
             return true;
         }
+    }
+
+    public Language getApplicationLanguage() {
+        return Language.BROWSER_LANGUAGE;
     }
 
 }
