@@ -37,7 +37,6 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
-import org.libreplan.business.users.entities.User.UserAuthenticationType;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Util;
@@ -101,7 +100,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             Util.appendLabel(row, user.getLoginName());
             Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
             Util.appendLabel(row, user.isSuperuser() ? _("Yes") : _("No"));
-            Util.appendLabel(row, _(user.getUserType().toString()));
+            Util.appendLabel(row, getAuthenticationType(user));
             Util.appendLabel(row, user.isBound() ? user.getWorker()
                     .getShortDescription() : "");
 
@@ -187,7 +186,6 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return userModel.getUsers();
     }
 
-    @Override
     protected void save() throws ValidationException {
         userModel.confirmSave();
         PasswordUtil.showOrHideDefaultPasswordWarnings();
@@ -285,7 +283,6 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         //because they are not directly associated to an attribute
         passwordBox.setRawValue("");
         passwordConfirmationBox.setRawValue("");
-        prepareAuthenticationTypesCombo();
     }
 
     @Override
@@ -297,25 +294,6 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         //cleans the box and forces the check of the new Constraint (null)
         passwordBox.setValue("");
         passwordConfirmationBox.setValue("");
-        //setup authentication type combo box
-        prepareAuthenticationTypesCombo();
-    }
-
-    private void prepareAuthenticationTypesCombo() {
-        Combobox combo = (Combobox) editWindow
-                .getFellowIfAny("authenticationTypeCombo");
-        combo.getChildren().clear();
-        for (UserAuthenticationType type : UserAuthenticationType.values()) {
-            Comboitem item = combo.appendItem(_(type.toString()));
-            item.setValue(type);
-            if (type.equals(getAuthenticationType())) {
-                combo.setSelectedItem(item);
-            }
-        }
-
-        Row comboRow = (Row) editWindow
-                .getFellowIfAny("authenticationTypeComboRow");
-        comboRow.setVisible(true);
     }
 
     @Override
@@ -376,12 +354,25 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                         removeRole(role);
                     }
                 });
-                removeButton.setDisabled(areRolesAndProfilesDisabled()
-                        || role.equals(UserRole.ROLE_BOUND_USER)
-                        || isUserDefaultAdmin());
+                removeButton.setDisabled(true);
                 row.appendChild(removeButton);
             }
         };
+    }
+
+    public String getAuthenticationType() {
+        User user = getUser();
+        if (user != null) {
+            return getAuthenticationType(user);
+        }
+        return "";
+    }
+
+    private String getAuthenticationType(User user) {
+        if (user.isLibrePlanUser()) {
+            return _("Database");
+        }
+        return _("LDAP");
     }
 
     public RowRenderer getUsersRenderer() {
@@ -461,35 +452,11 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     public boolean areRolesAndProfilesDisabled() {
-        return (isLdapUser() && userModel.isLDAPBeingUsed() && userModel
-                .isLDAPRolesBeingUsed()) || isUserDefaultAdmin();
+        return isLdapUserLdapConfiguration() || isUserDefaultAdmin();
     }
 
     public boolean isLdapUserOrDefaultAdmin() {
         return isLdapUser() || isUserDefaultAdmin();
-    }
-
-    public UserAuthenticationType getAuthenticationType() {
-        User user = getUser();
-        if (user != null) {
-            return user.getUserType();
-        }
-        return null;
-    }
-
-    public void setAuthenticationType(Comboitem item) {
-        if (item == null) {
-            throw new WrongValueException(
-                    editWindow.getFellowIfAny("authenticationTypeCombo"),
-                    _("cannot be empty"));
-        }
-        UserAuthenticationType authenticationType = (UserAuthenticationType) item
-                .getValue();
-        User user = getUser();
-        if (user != null) {
-            user.setLibrePlanUser(authenticationType
-                    .equals(UserAuthenticationType.DATABASE));
-        }
     }
 
 }
