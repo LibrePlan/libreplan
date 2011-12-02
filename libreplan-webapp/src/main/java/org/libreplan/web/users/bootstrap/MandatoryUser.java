@@ -56,6 +56,51 @@ public enum MandatoryUser {
             return getConfiguration().getChangedDefaultAdminPassword();
         }
     },
+    ADMIN_EN(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_ES(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_GL(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_PT(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    ADMIN_RU(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)) {
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -106,6 +151,9 @@ public enum MandatoryUser {
     }
 
     public String getClearPassword() {
+        if (getLoginName().startsWith("admin")) {
+            return "admin";
+        }
         return getLoginName();
     }
 
