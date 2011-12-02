@@ -81,15 +81,15 @@
                                 <column />
                             </columns>
                             <rows>
-                                <row>
+                                <!--row>
                                     <label value="${i18n:_('Select language')}" />
 
                                     <listbox id="applicationLanguage"
                                             model="@{settingsController.languages}"
                                             itemRenderer="@{settingsController.languagesRenderer}"
                                             selectedItem="@{settingsController.selectedLanguage}"
-                                            mold="select" />
-                                </row>
+                                            mold="select"/>
+                                </row-->
                                 <row>
                                     <label
                                         value="${i18n:_('Planning charts expanded')}" />
