@@ -353,9 +353,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                         removeRole(role);
                     }
                 });
-                removeButton.setDisabled(getLdapUserRolesLdapConfiguration()
-                        || role.equals(UserRole.ROLE_BOUND_USER)
-                        || isUserDefaultAdmin());
+                removeButton.setDisabled(true);
                 row.appendChild(removeButton);
             }
         };
