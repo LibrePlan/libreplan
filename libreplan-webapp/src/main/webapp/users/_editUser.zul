@@ -45,7 +45,7 @@
                                     value="@{controller.user.loginName}" width="300px"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"
                                     onBlur="controller.updateWindowTitle()"
-                                    disabled="@{controller.ldapUser}" />
+                                    disabled="true" />
                             </row>
                             <row>
                                 <label value="${i18n:_('First name')}" />
