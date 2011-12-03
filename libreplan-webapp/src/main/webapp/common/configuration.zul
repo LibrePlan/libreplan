@@ -87,11 +87,10 @@
                                 <label value="${i18n:_('Autocomplete login form')}" />
                                 <checkbox id="enableAutocompleteLogin"
                                     label="${i18n:_('Enable/Disable')}"
-                                    disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
+                                    disabled="true"
                                     tooltiptext = "${i18n:_('Enable/Disable autocomplete property in login form, if the admin password is still in default')}"
                                     checked="@{configurationController.autocompleteLogin}"
-                                    onCheck="configurationController.reloadGeneralConfiguration();"
-                                    disabled="true" />
+                                    onCheck="configurationController.reloadGeneralConfiguration();" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Generate code for')}" />
