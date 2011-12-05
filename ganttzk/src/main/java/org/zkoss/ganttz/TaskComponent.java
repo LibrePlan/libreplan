@@ -238,9 +238,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (isInPage()) {
-                        updateProperties();
-                    }
+                    updateProperties();
                 }
             };
         }
