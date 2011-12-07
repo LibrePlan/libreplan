@@ -1160,6 +1160,12 @@ tr.z-treerow-seld input {
     background-image: none;
 }
 
+tr.z-treerow-over input {
+    background-color: #eff2f6; /* Soft blue */
+        background-image: none;
+}
+
+
 .timeplot-canvas {
     position:relative;
     overflow:hidden;
