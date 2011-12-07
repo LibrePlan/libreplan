@@ -174,7 +174,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     public void move(Component dropedIn, Component dragged) {
-        if (isPredicateApplied()) {
+        if ((isPredicateApplied())
+                || (dropedIn.getUuid().equals(dragged.getUuid()))) {
             return;
         }
 
