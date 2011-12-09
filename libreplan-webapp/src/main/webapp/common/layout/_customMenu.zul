@@ -52,7 +52,7 @@
     <n:td class="migas_linea"><n:table border="0" cellspacing="0" cellpadding="0">
         <n:tr class="ruta">
           <n:td width="10" height="25"></n:td>
-          <n:td><n:a href="${contextPath}/" class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
+          <n:td><n:strong>${i18n:_('START')}</n:strong></n:td>
           <n:td width="5"></n:td>
           <n:td><hbox id="breadcrumbs"></hbox>
           <hbox>

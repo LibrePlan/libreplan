@@ -946,6 +946,7 @@ span.z-dottree-line {
 
 .migas_linea {
     border: 0px;
+    cursor: default;
 }
 
 /* ---- Perspectives ------ */
