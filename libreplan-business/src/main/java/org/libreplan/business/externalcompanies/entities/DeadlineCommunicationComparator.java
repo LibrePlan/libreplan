@@ -28,6 +28,7 @@ import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 *
 * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
 */
+
 public class DeadlineCommunicationComparator implements Comparator<DeadlineCommunication> {
 
         public DeadlineCommunicationComparator(){
