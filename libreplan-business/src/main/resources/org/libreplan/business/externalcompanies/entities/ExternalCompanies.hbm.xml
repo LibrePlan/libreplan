@@ -55,4 +55,17 @@
     <many-to-one name="order" class="org.libreplan.business.orders.entities.Order" column="order_id" />
 </class>
 
+<!-- DeadlineCommunication -->
+<class name="DeadlineCommunication" table="deadline_communication">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="saveDate" access="field" column="save_date"/>
+    <property name="deliverDate" access="field" column="deliver_date" />
+</class>
+
 </hibernate-mapping>

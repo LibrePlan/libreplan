@@ -90,4 +90,17 @@
         newColumnName="subcontractor_communication_id"/>
     </changeSet>
 
+	<changeSet author="smontes" id="creation-deadline-communication">
+        <createTable tableName="deadline_communication">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="deadline_comunication_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="save_date" type="DATETIME"/>
+            <column name="deliver_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
