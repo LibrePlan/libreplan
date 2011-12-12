@@ -110,4 +110,18 @@
         </addColumn>
     </changeSet>
 
+	<changeSet author="smontes" id="creation-subcontractor-deliver-date">
+        <createTable tableName="subcontractor_deliver_date">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="subcontrator_deliver_date_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="save_date" type="DATETIME"/>
+            <column name="subcontractor_deliver_date" type="DATETIME"/>
+            <column name="communication_date" type="DATETIME" />
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

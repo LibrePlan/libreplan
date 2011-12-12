@@ -37,4 +37,16 @@
 		</list>
 	</class>
 
-</hibernate-mapping>
+	<class name="SubcontractorDeliverDate" table="subcontractor_deliver_date">
+		<id name="id" type="long" access="property">
+			<generator class="hilo">
+				<param name="max_lo">100</param>
+			</generator>
+		</id>
+		<version name="version" access="property" type="long" />
+		<property name="saveDate" access="field" column="save_date" />
+		<property name="subcontractorDeliverDate" access="field" column="subcontractor_deliver_date" />
+		<property name="communicationDate" access="field" column="communication_date" />
+	</class>
+
+    </hibernate-mapping>
