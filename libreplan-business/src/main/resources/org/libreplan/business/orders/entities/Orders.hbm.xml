@@ -150,6 +150,14 @@
                     <key column="order_id" />
                     <one-to-many class="org.libreplan.business.externalcompanies.entities.CustomerCommunication" />
                 </set>
+
+		        <set name="deliveringDates" cascade="all,delete-orphan"
+	                inverse="true" access="field"
+	                sort="org.libreplan.business.externalcompanies.entities.DeadlineCommunicationComparator">
+	                    <key column="order_id" />
+	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.DeadlineCommunication" />
+                </set>
+
             </joined-subclass>
 
         </joined-subclass>

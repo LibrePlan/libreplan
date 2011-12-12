@@ -29,12 +29,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
+import org.libreplan.business.advance.entities.AdvanceMeasurement;
+import org.libreplan.business.advance.entities.AdvanceMeasurementComparator;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.calendars.entities.BaseCalendar;
@@ -42,6 +47,8 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
+import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
+import org.libreplan.business.externalcompanies.entities.DeadlineCommunicationComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.planner.entities.DayAssignment;
@@ -106,6 +113,10 @@ public class Order extends OrderLineGroup implements Comparable {
     private CurrentVersionInfo currentVersionInfo;
 
     private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
+
+    @Valid
+    private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
+            new DeadlineCommunicationComparator());
 
     public enum SchedulingMode {
         FORWARD, BACKWARDS;
@@ -574,6 +585,14 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public Set<CustomerCommunication> getCustomerCommunications() {
         return customerCommunications;
+    }
+
+    public void setDeliveringDates(SortedSet<DeadlineCommunication> deliveringDates) {
+        this.deliveringDates = deliveringDates;
+    }
+
+    public SortedSet<DeadlineCommunication> getDeliveringDates() {
+        return deliveringDates;
     }
 
 }

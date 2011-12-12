@@ -103,4 +103,11 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add-delivering-date-column-to-order-entity" author="smontes">
+        <comment>Add new delivering date column to order</comment>
+        <addColumn tableName="deadline_communication">
+            <column name="order_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
