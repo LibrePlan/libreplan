@@ -22,13 +22,14 @@ package org.libreplan.business.planner.entities;
 import java.util.Date;
 
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.externalcompanies.entities.DeliverDate;
 
 /**
  *  Entity {@link SubcontractorDeliverDate}.
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia>
  */
-public class SubcontractorDeliverDate extends BaseEntity{
+public class SubcontractorDeliverDate extends BaseEntity implements DeliverDate{
 
     private Date saveDate;
 

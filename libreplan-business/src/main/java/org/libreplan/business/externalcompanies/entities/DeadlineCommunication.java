@@ -29,7 +29,7 @@ import org.libreplan.business.common.BaseEntity;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class DeadlineCommunication extends BaseEntity {
+public class DeadlineCommunication extends BaseEntity implements DeliverDate{
 
     private Date saveDate;
 

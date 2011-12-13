@@ -24,18 +24,18 @@ import java.util.Comparator;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 
 /**
-* Comparator to {@link DeadlineCommunication}
+* Comparator to {@link DeliverDate} interface
 *
 * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
 */
 
-public class DeadlineCommunicationComparator implements Comparator<DeadlineCommunication> {
+public class DeliverDateComparator implements Comparator<DeliverDate> {
 
-        public DeadlineCommunicationComparator(){
+        public DeliverDateComparator(){
         }
 
         @Override
-        public int compare(DeadlineCommunication arg0, DeadlineCommunication arg1) {
+        public int compare(DeliverDate arg0, DeliverDate arg1) {
             if (arg0.getSaveDate() == arg1.getSaveDate()) {
                 return 0;
             }

@@ -48,7 +48,7 @@ import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
-import org.libreplan.business.externalcompanies.entities.DeadlineCommunicationComparator;
+import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.planner.entities.DayAssignment;
@@ -116,7 +116,7 @@ public class Order extends OrderLineGroup implements Comparable {
 
     @Valid
     private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
-            new DeadlineCommunicationComparator());
+            new DeliverDateComparator());
 
     public enum SchedulingMode {
         FORWARD, BACKWARDS;

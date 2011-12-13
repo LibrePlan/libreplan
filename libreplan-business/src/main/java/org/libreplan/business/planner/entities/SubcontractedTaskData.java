@@ -23,10 +23,14 @@ package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
