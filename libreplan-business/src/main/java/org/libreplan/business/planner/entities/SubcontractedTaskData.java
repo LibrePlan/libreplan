@@ -92,6 +92,9 @@ public class SubcontractedTaskData extends BaseEntity {
 
     private SubcontractState state = SubcontractState.PENDING;
 
+    private final SortedSet<SubcontractorDeliverDate> requiredDeliveringDates = new TreeSet<SubcontractorDeliverDate>(
+            new DeliverDateComparator());
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -250,6 +253,15 @@ public class SubcontractedTaskData extends BaseEntity {
     public boolean isSendable() {
         return state.isSendable()
                 && externalCompany.getInteractsWithApplications();
+    }
+
+    public void setRequiredDeliveringDates(SortedSet<SubcontractorDeliverDate> requiredDeliveringDates) {
+        this.requiredDeliveringDates.clear();
+        this.requiredDeliveringDates.addAll(requiredDeliveringDates);
+    }
+
+    public SortedSet<SubcontractorDeliverDate> getRequiredDeliveringDates() {
+        return requiredDeliveringDates;
     }
 
 }

@@ -230,10 +230,24 @@ public class SubcontractorCommunicationDAOTest {
             throws InstanceNotFoundException {
         SubcontractorCommunication customerCommunication = createValidSubcontractorCommunication();
         subcontractorCommunicationDAO.save(customerCommunication);
+
         assertTrue(customerCommunication.getId() != null);
+        Long idSubcontratecTaskData = customerCommunication.getSubcontractedTaskData().getId();
+        Long idCommunication = customerCommunication.getId();
+
         subcontractorCommunicationDAO.remove(customerCommunication.getId());
-        assertFalse(subcontractorCommunicationDAO
-                .exists(customerCommunication.getId()));
+
+        try{
+            subcontractorCommunicationDAO.findExistingEntity(idCommunication);
+            fail("error");
+        }catch(RuntimeException e){
+            //ok
+        }
+        try{
+            subcontractedTaskDataDAO.findExistingEntity(idSubcontratecTaskData);
+        }catch(RuntimeException e){
+            fail("error");
+        }
     }
 
     @Test

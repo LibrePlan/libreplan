@@ -237,6 +237,7 @@ public class ReportAdvancesServiceTest {
     public void validAdvancesReportToSubcontratedOrderElement() {
         int previousCommunications = subcontractorCommunicationDAO.getAll().size();
         OrderLine orderLine = createOrderLine();
+
         String orderElementCode = orderLine.getCode();
 
         Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0,
@@ -244,7 +245,6 @@ public class ReportAdvancesServiceTest {
 
         OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
-        SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication.create();
         reportAdvancesService
                 .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
 
@@ -438,9 +438,6 @@ public class ReportAdvancesServiceTest {
         taskElementDAO.save(task);
         task.dontPoseAsTransientObjectAnymore();
         taskElementDAO.flush();
-
-        sessionFactory.getCurrentSession().evict(task);
-        sessionFactory.getCurrentSession().evict(subcontractedTaskData);
 
         subcontractedTaskDataDAO.save(subcontractedTaskData);
         return subcontractedTaskData;

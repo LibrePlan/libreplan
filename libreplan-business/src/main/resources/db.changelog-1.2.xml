@@ -124,4 +124,10 @@
         </createTable>
     </changeSet>
 
+	<changeSet author="smontes" id="add-subcontracted-task-data">
+		<comment>Add the column subcontracted_task_id to maintain the relation</comment>
+		<addColumn tableName="subcontractor_deliver_date">
+			<column name="subcontracted_task_data_id" type="BIGINT"/>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

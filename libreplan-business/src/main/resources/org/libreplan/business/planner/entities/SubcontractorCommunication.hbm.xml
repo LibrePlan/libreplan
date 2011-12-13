@@ -24,7 +24,7 @@
 		<property name="reviewed" access="field" column="reviewed" />
 		<many-to-one name="subcontractedTaskData"
 			class="org.libreplan.business.planner.entities.SubcontractedTaskData"
-			column="Subcontracted_task_data" />
+			column="subcontracted_task_data" />
 
 		<list name="subcontractorCommunicationValues" table="subcontractor_communication_values">
 			<key column="subcontractor_communication_id" />

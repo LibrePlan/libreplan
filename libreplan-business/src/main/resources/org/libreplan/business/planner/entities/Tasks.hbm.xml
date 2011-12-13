@@ -212,6 +212,12 @@
             </type>
         </property>
 
+		<set name="requiredDeliveringDates" inverse="true" cascade="all-delete-orphan" access="field"
+	        sort="org.libreplan.business.externalcompanies.entities.DeliverDateComparator">
+	        <key column="subcontracted_task_data_id" />
+	        <one-to-many class="org.libreplan.business.planner.entities.SubcontractorDeliverDate" />
+		</set>
+
     </class>
 
 </hibernate-mapping>
