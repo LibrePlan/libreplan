@@ -176,7 +176,7 @@
 
         <hbox style="display: none" id="URItext">
             <label value="${i18n:_('Click on ')}" />
-            <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
+            <a id="URIlink" class="z-label" zclass="z-label"
                     label="${i18n:_('direct link')}" />
             <label value="${i18n:_(' to go to output directly')}" />
         </hbox>
