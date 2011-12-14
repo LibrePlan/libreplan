@@ -730,7 +730,8 @@ public class TaskElementAdapter {
 
             @Override
             public String getTooltipText() {
-                if (taskElement.isMilestone()) {
+                if (taskElement.isMilestone()
+                        || taskElement.getOrderElement() == null) {
                     return "";
                 }
                 return transactionService
@@ -747,7 +748,8 @@ public class TaskElementAdapter {
 
             @Override
             public String getLabelsText() {
-                if (taskElement.isMilestone()) {
+                if (taskElement.isMilestone()
+                        || taskElement.getOrderElement() == null) {
                     return "";
                 }
                 return transactionService
