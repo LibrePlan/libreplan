@@ -91,6 +91,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     public interface IAdapter<V, D extends IDependency<V>> {
         List<V> getChildren(V task);
 
+        V getOwner(V task);
+
         boolean isContainer(V task);
 
         void registerDependenciesEnforcerHookOn(V task,
@@ -133,6 +135,15 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         @Override
         public List<Task> getChildren(Task task) {
             return task.getTasks();
+        }
+
+        @Override
+        public Task getOwner(Task task) {
+            if (task instanceof Milestone) {
+                Milestone milestone = (Milestone) task;
+                return milestone.getOwner();
+            }
+            return null;
         }
 
         @Override
@@ -528,6 +539,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                             child, task, DependencyType.END_END));
                     dependenciesToAdd.add(adapter.createInvisibleDependency(
                             task, child, DependencyType.START_START));
+                }
+            } else {
+                V owner = adapter.getOwner(task);
+                if(owner != null) {
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            task, owner, DependencyType.END_END));
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            owner, task, DependencyType.START_START));
                 }
             }
         }
