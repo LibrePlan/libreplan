@@ -94,6 +94,11 @@ public class TemplateModelAdapter implements
     }
 
     @Override
+    public TaskElement getOwner(TaskElement task) {
+        return task.getParent();
+    }
+
+    @Override
     public Class<DependencyWithVisibility> getDependencyType() {
         return DependencyWithVisibility.class;
     }

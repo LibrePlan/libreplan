@@ -35,6 +35,8 @@ public class Milestone extends Task {
 
     private List<Task> tasks = new ArrayList<Task>();
 
+    private TaskContainer owner;
+
     private boolean expanded = false;
 
     @Override
@@ -71,6 +73,14 @@ public class Milestone extends Task {
     @Override
     public boolean canBeExplicitlyMoved() {
         return true;
+    }
+
+    public void setOwner(TaskContainer owner) {
+        this.owner = owner;
+    }
+
+    public TaskContainer getOwner() {
+        return this.owner;
     }
 
 }
