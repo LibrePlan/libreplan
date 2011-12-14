@@ -398,8 +398,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         } else {
             TaskSource taskSource = getTaskSource();
             if (taskSource != null) {
-                taskSource.getTask().detachFromDependencies();
-                taskSource.getTask().detachFromParent();
+                taskSource.getTask().detach();
                 getCurrentSchedulingData().taskSourceRemovalRequested();
             }
         }

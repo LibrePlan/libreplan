@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -477,7 +476,7 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
-    private void detachDependencies() {
+    public void detachDependencies() {
         detachOutcomingDependencies();
         detachIncomingDependencies();
     }
@@ -649,28 +648,6 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setAdvancePercentage(BigDecimal advancePercentage) {
         this.advancePercentage = advancePercentage;
-    }
-
-    public void detachFromDependencies() {
-        for (Dependency each : copy(getDependenciesWithThisDestination())) {
-            detachDependency(each);
-        }
-        for (Dependency each : copy(getDependenciesWithThisOrigin())) {
-            detachDependency(each);
-        }
-    }
-
-    /**
-     * Copy the dependencies to a list in order to avoid
-     * {@link ConcurrentModificationException}
-     */
-    private List<Dependency> copy(Set<Dependency> dependencies) {
-        return new ArrayList<Dependency>(dependencies);
-    }
-
-    private void detachDependency(Dependency each) {
-        each.getOrigin().removeDependencyWithDestination(each.getDestination(),
-                each.getType());
     }
 
     private Integer sumOfHoursAllocated = 0;
