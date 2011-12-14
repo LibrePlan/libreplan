@@ -37,8 +37,8 @@ import org.zkoss.util.Locales;
 import org.zkoss.zk.au.out.AuDownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Toolbarbutton;
 
 import com.igalia.java.zk.components.JasperreportComponent;
 
@@ -61,7 +61,7 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
 
     protected Hbox URItext;
 
-    protected Toolbarbutton URIlink;
+    protected A URIlink;
 
     private static Set<String> supportedLanguages = new HashSet<String>() {{
         add("es");
