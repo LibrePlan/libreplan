@@ -485,7 +485,10 @@ public abstract class TaskElement extends BaseEntity {
     private void detachIncomingDependencies() {
         Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
         for (Dependency dependency : dependenciesWithThisDestination) {
-            tasksToNotify.add(dependency.getOrigin());
+            TaskElement origin = dependency.getOrigin();
+            if (origin != null) {
+                tasksToNotify.add(origin);
+            }
         }
         for (TaskElement taskElement : tasksToNotify) {
             taskElement.removeDependenciesWithDestination(this);
@@ -495,7 +498,10 @@ public abstract class TaskElement extends BaseEntity {
     private void detachOutcomingDependencies() {
         Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
         for (Dependency dependency : dependenciesWithThisOrigin) {
-            tasksToNotify.add(dependency.getDestination());
+            TaskElement destination = dependency.getDestination();
+            if (destination != null) {
+                tasksToNotify.add(destination);
+            }
         }
         for (TaskElement taskElement : tasksToNotify) {
             taskElement.removeDependenciesWithOrigin(this);
