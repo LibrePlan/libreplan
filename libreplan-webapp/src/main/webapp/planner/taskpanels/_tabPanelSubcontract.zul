@@ -57,10 +57,6 @@
                 <textbox value="@{subController.subcontractedTaskData.subcontractedCode}" />
             </row>
             <row>
-                <label value="${i18n:_('End date')}" />
-                <datebox value="@{subController.endDate}" />
-            </row>
-            <row>
                 <label value="${i18n:_('Exportation options')}" />
                 <vbox>
                     <checkbox label="${i18n:_('Node without children')}"
@@ -75,4 +71,29 @@
             </row>
         </rows>
     </grid>
+    <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
+        <caption label="${i18n:_('Deliver date')}" />
+
+        <separator spacing="10px"/>
+
+        <hbox align="bottom" sclass="add-resources-or-criteria">
+            <label value="${i18n:_('New deliver date')}" />
+            <datebox id="newDeliverDate" value="@{subController.endDate}" />
+            <button label="${i18n:_('Add')}" onClick="subController.addDeliverDate(newDeliverDate)"/>
+        </hbox>
+
+        <separator spacing="20px"/>
+
+        <grid id="gridDeliverDate"
+            model="@{subController.deliverDates}"
+            rowRenderer="@{subController.deliverDatesRenderer}"
+	        mold="paging" pageSize="10" fixedLayout="true" width="880px">
+            <columns>
+                <column label="${i18n:_('Save date')}" sort="auto(saveDate)" align="center" width="220px"/>
+                <column label="${i18n:_('Deliver date')}" align="center" width="220px"/>
+                <column label="${i18n:_('Communication date')}" align="center" width="220px"/>
+                <column label="${i18n:_('Operations')}" align="center"/>
+            </columns>
+        </grid>
+    </groupbox>
 </tabpanel>

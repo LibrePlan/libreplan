@@ -22,6 +22,8 @@
 package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -66,6 +68,7 @@ public class SubcontractedTaskData extends BaseEntity {
         result.labelsExported = subcontractedTaskData.labelsExported;
         result.materialAssignmentsExported = subcontractedTaskData.materialAssignmentsExported;
         result.hoursGroupsExported = subcontractedTaskData.hoursGroupsExported;
+        result.setRequiredDeliveringDates(subcontractedTaskData.getRequiredDeliveringDates());
 
         return create(result);
     }
@@ -226,6 +229,7 @@ public class SubcontractedTaskData extends BaseEntity {
         this.labelsExported = subcontratedTask.labelsExported;
         this.materialAssignmentsExported = subcontratedTask.materialAssignmentsExported;
         this.hoursGroupsExported = subcontratedTask.hoursGroupsExported;
+        this.setRequiredDeliveringDates(subcontratedTask.getRequiredDeliveringDates());
     }
 
     @AssertTrue(message = "external company should be subcontractor")
@@ -255,13 +259,23 @@ public class SubcontractedTaskData extends BaseEntity {
                 && externalCompany.getInteractsWithApplications();
     }
 
-    public void setRequiredDeliveringDates(SortedSet<SubcontractorDeliverDate> requiredDeliveringDates) {
+    public void setRequiredDeliveringDates(
+            SortedSet<SubcontractorDeliverDate> requiredDeliveringDates) {
         this.requiredDeliveringDates.clear();
         this.requiredDeliveringDates.addAll(requiredDeliveringDates);
     }
 
     public SortedSet<SubcontractorDeliverDate> getRequiredDeliveringDates() {
-        return requiredDeliveringDates;
+        return Collections.unmodifiableSortedSet(this.requiredDeliveringDates);
     }
 
+    public void addRequiredDeliveringDates(
+            SubcontractorDeliverDate subDeliverDate) {
+        this.requiredDeliveringDates.add(subDeliverDate);
+    }
+
+    public void removeRequiredDeliveringDates(
+            SubcontractorDeliverDate subcontractorDeliverDate) {
+        this.requiredDeliveringDates.remove(subcontractorDeliverDate);
+    }
 }

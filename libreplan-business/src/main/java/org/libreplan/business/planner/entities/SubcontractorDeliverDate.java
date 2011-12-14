@@ -78,4 +78,5 @@ public class SubcontractorDeliverDate extends BaseEntity implements DeliverDate{
     public Date getCommunicationDate() {
         return communicationDate;
     }
+
 }

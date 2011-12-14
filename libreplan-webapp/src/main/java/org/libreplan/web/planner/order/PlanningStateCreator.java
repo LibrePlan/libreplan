@@ -57,6 +57,7 @@ import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.IVisitor;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.StretchesFunction;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -320,6 +321,7 @@ public class PlanningStateCreator {
     private void forceLoadOfDataAssociatedTo(TaskElement each) {
         forceLoadOfResourceAllocationsResourcesAndAssignmentFunction(each);
         forceLoadOfCriterions(each);
+        forceLoadOfSubcontractedTaskData(each);
 
         BaseCalendar calendar = each.getOwnCalendar();
         if (calendar == null) {
@@ -369,6 +371,18 @@ public class PlanningStateCreator {
         for (GenericResourceAllocation each : generic) {
             for (Criterion eachCriterion : each.getCriterions()) {
                 eachCriterion.getName();
+            }
+        }
+    }
+
+    private static void forceLoadOfSubcontractedTaskData(TaskElement taskElement){
+        if(taskElement.isLeaf()){
+            if(((Task)taskElement).getSubcontractedTaskData() != null){
+                for (SubcontractorDeliverDate subDeliverDate : ((Task) taskElement)
+                        .getSubcontractedTaskData()
+                        .getRequiredDeliveringDates()) {
+                    subDeliverDate.getSaveDate();
+                }
             }
         }
     }

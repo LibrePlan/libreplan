@@ -23,10 +23,12 @@ package org.libreplan.web.planner.order;
 
 import java.util.Date;
 import java.util.List;
+import java.util.SortedSet;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 
 /**
@@ -64,5 +66,14 @@ public interface ISubcontractModel {
      */
     void confirm() throws ValidationException;
     void cancel();
+
+    SortedSet<SubcontractorDeliverDate> getDeliverDates();
+
+    void addDeliverDate(Date subDeliverDate);
+
+    void removeRequiredDeliverDate(
+            SubcontractorDeliverDate subcontractorDeliverDate);
+
+    boolean alreadyExistsRepeatedDeliverDate(Date newDeliverDate);
 
 }

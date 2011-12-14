@@ -23,12 +23,16 @@ package org.libreplan.web.planner.order;
 
 import java.util.Date;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -42,6 +46,7 @@ import org.zkoss.ganttz.data.GanttDate;
  * {@link SubcontractedTaskData} entity.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -75,13 +80,26 @@ public class SubcontractModel implements ISubcontractModel {
 
         SubcontractedTaskData subcontractedTaskData = task
                 .getSubcontractedTaskData();
+
         this.currentSubcontractedTaskData = subcontractedTaskData;
 
         if (subcontractedTaskData == null) {
             this.subcontractedTaskData = SubcontractedTaskData.create(task);
+            this.addDeliverDate(getEndDate());
         } else {
+            subcontractedTaskDataDAO.reattach(subcontractedTaskData);
+            loadRequiredDeliveringDates(subcontractedTaskData);
             this.subcontractedTaskData = SubcontractedTaskData
                     .createFrom(subcontractedTaskData);
+        }
+    }
+
+    private void loadRequiredDeliveringDates(SubcontractedTaskData subcontractedTaskData){
+        if(subcontractedTaskData != null){
+            for (SubcontractorDeliverDate subDeliverDate : subcontractedTaskData
+                    .getRequiredDeliveringDates()) {
+                subDeliverDate.getSaveDate();
+            }
         }
     }
 
@@ -167,6 +185,55 @@ public class SubcontractModel implements ISubcontractModel {
     @Override
     public void removeSubcontractedTaskData() {
         subcontractedTaskData = null;
+    }
+
+    @Override
+    public SortedSet<SubcontractorDeliverDate> getDeliverDates(){
+        if(subcontractedTaskData != null){
+            return subcontractedTaskData.getRequiredDeliveringDates();
+        }
+        return new TreeSet<SubcontractorDeliverDate>();
+    }
+
+    @Override
+    public void addDeliverDate(Date subDeliverDate){
+        if(subcontractedTaskData != null){
+            SubcontractorDeliverDate subcontractorDeliverDate = SubcontractorDeliverDate
+                    .create(new Date(), subDeliverDate, null);
+            subcontractedTaskData
+                    .addRequiredDeliveringDates(subcontractorDeliverDate);
+
+            //update the end date of the task
+            updateEndDateWithDeliverDate();
+        }
+    }
+
+    private void updateEndDateWithDeliverDate(){
+        SubcontractorDeliverDate lastDeliverDate = this
+                .getSubcontractedTaskData().getRequiredDeliveringDates().last();
+        task.setEndDate(lastDeliverDate.getSubcontractorDeliverDate());
+    }
+
+    @Override
+    public boolean alreadyExistsRepeatedDeliverDate(Date newDeliverDate){
+        for(SubcontractorDeliverDate subDeliverDate : this
+        .getSubcontractedTaskData().getRequiredDeliveringDates()){
+            Date deliverDate = subDeliverDate.getSubcontractorDeliverDate();
+            Date currentDeliverDate = new LocalDate(deliverDate).toDateTimeAtStartOfDay().toDate();
+            newDeliverDate = new LocalDate(newDeliverDate).toDateTimeAtStartOfDay().toDate();
+            if(currentDeliverDate.compareTo(newDeliverDate) == 0){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void removeRequiredDeliverDate(
+            SubcontractorDeliverDate subcontractorDeliverDate) {
+        if(subcontractedTaskData != null){
+            subcontractedTaskData.removeRequiredDeliveringDates(subcontractorDeliverDate);
+        }
     }
 
 }

@@ -21,21 +21,48 @@
 
 package org.libreplan.web.planner.order;
 
+import static org.libreplan.web.I18nHelper._;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.SortedSet;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.Level;
+import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
+import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.CallbackServlet.DisposalMode;
+import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.api.Datebox;
 import org.zkoss.zul.api.Tabpanel;
 
 /**
@@ -51,10 +78,19 @@ public class SubcontractController extends GenericForwardComposer {
 
     private ISubcontractModel subcontractModel;
 
+    private Grid gridDeliverDate;
+
+    private DeliverDatesRenderer deliverDatesRenderer = new DeliverDatesRenderer();
+
+    protected IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         tabpanel = (Tabpanel) comp;
+        messagesForUser = new MessagesForUser(messagesContainer);
     }
 
     public void init(Task task,
@@ -99,6 +135,113 @@ public class SubcontractController extends GenericForwardComposer {
 
     public void removeSubcontractedTaskData() {
         subcontractModel.removeSubcontractedTaskData();
+    }
+
+    public SortedSet<SubcontractorDeliverDate> getDeliverDates() {
+        return subcontractModel.getDeliverDates();
+    }
+
+    public void addDeliverDate(Datebox newDeliverDate){
+        if (newDeliverDate == null || newDeliverDate.getValue() == null) {
+            messagesForUser.showMessage(Level.ERROR,
+                    _("You must select a valid date. "));
+            return;
+        }
+        if (thereIsSomeCommunicationDateEmpty()) {
+            messagesForUser
+            .showMessage(
+                    Level.ERROR,
+                    _("It will only be possible to add a Deliver Date if all the deliver date exiting in the table have a CommunicationDate not empty. "));
+            return;
+        }
+        if(subcontractModel.alreadyExistsRepeatedDeliverDate(newDeliverDate.getValue())){
+            messagesForUser
+            .showMessage(
+                    Level.ERROR,
+                    _("It already exists a deliver date with the same date. "));
+            return;
+        }
+        subcontractModel.addDeliverDate(newDeliverDate.getValue());
+        Util.reloadBindings(gridDeliverDate);
+        gridDeliverDate.invalidate();
+    }
+
+    private boolean thereIsSomeCommunicationDateEmpty(){
+        for(SubcontractorDeliverDate subDeliverDate : subcontractModel.getDeliverDates()){
+            if(subDeliverDate.getCommunicationDate() == null){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public DeliverDatesRenderer getDeliverDatesRenderer(){
+        return new DeliverDatesRenderer();
+    }
+
+    private class DeliverDatesRenderer implements RowRenderer{
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            SubcontractorDeliverDate subcontractorDeliverDate = (SubcontractorDeliverDate) data;
+            row.setValue(subcontractorDeliverDate);
+
+            appendLabel(row, toString(subcontractorDeliverDate.getSaveDate()));
+            appendLabel(row, toString(subcontractorDeliverDate.getSubcontractorDeliverDate()));
+            appendLabel(row, toString(subcontractorDeliverDate.getCommunicationDate()));
+            appendOperations(row, subcontractorDeliverDate);
+        }
+
+        private String toString(Date date) {
+            if (date == null) {
+                return "";
+            }
+            return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
+        }
+
+        private void appendLabel(Row row, String label) {
+            row.appendChild(new Label(label));
+        }
+
+        private void appendOperations(Row row,
+                SubcontractorDeliverDate subcontractorDeliverDate) {
+            Hbox hbox = new Hbox();
+            hbox.appendChild(getDeleteButton(subcontractorDeliverDate));
+            row.appendChild(hbox);
+        }
+
+        private Button getDeleteButton(
+                final SubcontractorDeliverDate subcontractorDeliverDate) {
+            Button deleteButton = new Button();
+            deleteButton.setDisabled(!isTheLastOne(subcontractorDeliverDate));
+
+            deleteButton.setImage("/common/img/ico_borrar_out.png");
+            deleteButton.setHoverImage("/common/img/ico_borrar_out.png");
+            deleteButton.setTooltiptext("");
+
+            deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    removeRequiredDeliverDate(subcontractorDeliverDate);
+                }
+            });
+
+            return deleteButton;
+        }
+
+        private boolean isTheLastOne(final SubcontractorDeliverDate subDeliverDate){
+            SubcontractorDeliverDate lastDeliverDate = getSubcontractedTaskData()
+                    .getRequiredDeliveringDates().first();
+            if (lastDeliverDate != null) {
+                return lastDeliverDate.equals(subDeliverDate) ? true : false;
+            }
+            return false;
+        }
+    }
+
+    public void removeRequiredDeliverDate(SubcontractorDeliverDate subcontractorDeliverDate){
+        subcontractModel.removeRequiredDeliverDate(subcontractorDeliverDate);
+        Util.reloadBindings(gridDeliverDate);
     }
 
 }
