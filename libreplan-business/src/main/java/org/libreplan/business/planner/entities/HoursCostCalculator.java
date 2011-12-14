@@ -59,8 +59,8 @@ public class HoursCostCalculator implements ICostCalculator {
     @Override
     public SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task,
             LocalDate filterStartDate, LocalDate filterEndDate) {
-        DirectAdvanceAssignment advanceAssignment = task.getOrderElement()
-                .getReportGlobalAdvanceAssignment();
+        DirectAdvanceAssignment advanceAssignment = (task.getOrderElement() != null) ? task
+                .getOrderElement().getReportGlobalAdvanceAssignment() : null;
 
         if (advanceAssignment == null) {
             return new TreeMap<LocalDate, BigDecimal>();
