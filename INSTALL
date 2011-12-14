@@ -219,3 +219,26 @@ folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
 
 Inside this new directory there will be two files (``libreplan.log`` and
 ``libreplan-error.log``) that will be rotated every day.
+
+What to do if printing support is not working in Debian Squeeze
+---------------------------------------------------------------
+
+Basically, you have to get a newer version of Cutycapt and Webkit dependencies
+from testing. This is how to do it:
+
+1) Gain root privileges
+2) Make sure stable remains the default distribution to pull packages from:
+
+  echo 'APT::Default-Release "stable";' >> /etc/apt/apt.conf
+
+3) Add a new repository to make testing packages available to apt-get:
+
+  echo "deb http://ftp.debian.org/debian testing main" >> /etc/apt/sources.list
+
+3) Refresh package index:
+
+  apt-get update
+
+4) Fetch and install cutycapt (and its dependencies) from testing:
+
+  apt-get -t testing install cutycapt
