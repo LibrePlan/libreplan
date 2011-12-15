@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
+import org.libreplan.business.planner.entities.SubcontractState;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
@@ -244,4 +245,15 @@ public class SubcontractController extends GenericForwardComposer {
         Util.reloadBindings(gridDeliverDate);
     }
 
+    public boolean isSent(){
+        if (this.getSubcontractedTaskData() != null && this.getSubcontractedTaskData().getState() != null) {
+            return this.getSubcontractedTaskData().getState()
+                    .equals(SubcontractState.SUCCESS_SENT);
+        }
+        return false;
+    }
+
+    public boolean isNotSent(){
+        return !isSent();
+    }
 }

@@ -31,6 +31,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
+import org.libreplan.business.planner.entities.SubcontractState;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;

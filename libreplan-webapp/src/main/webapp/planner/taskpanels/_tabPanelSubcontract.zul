@@ -25,48 +25,71 @@
         <rows>
             <row>
                 <label value="${i18n:_('External company')}" />
-                <combobox model="@{subController.subcontractorExternalCompanies}"
-                        value="@{subController.subcontractedTaskData.externalCompany.name}"
-                        onSelect="subController.setExternalCompany(self.selectedItem);">
-                    <comboitem self="@{each='externalCompany'}"
+                <hbox>
+                     <combobox model="@{subController.subcontractorExternalCompanies}"
+                            value="@{subController.subcontractedTaskData.externalCompany.name}"
+                            onSelect="subController.setExternalCompany(self.selectedItem);"
+                            visible="@{subController.notSent}" >
+                        <comboitem self="@{each='externalCompany'}"
                             value="@{externalCompany}"
-                            label="@{externalCompany.name}" />
-                </combobox>
+                            label="@{externalCompany.name}"
+                            readonly="@{subController.sent}" />
+                    </combobox>
+                    <label value="@{subController.subcontractedTaskData.externalCompany.name}"
+                        visible="@{subController.sent}"/>
+                </hbox>
             </row>
 
             <row>
                 <label value="${i18n:_('Subcontratation date')}" />
-                <datebox value="@{subController.subcontractedTaskData.subcontratationDate}"
-                        disabled="true" />
+                <hbox>
+                    <datebox value="@{subController.subcontractedTaskData.subcontratationDate}"
+                        disabled="true" visible="@{subController.notSent}"/>
+                    <label value="@{subController.subcontractedTaskData.subcontratationDate,
+                       converter='org.libreplan.web.common.typeconverters.DateConverter'}"
+                       visible="@{subController.sent}"/>
+                </hbox>
             </row>
             <row>
                 <label value="${i18n:_('Subcontract communication date')}" />
-                <datebox value="@{subController.subcontractedTaskData.subcontractCommunicationDate}"
-                        disabled="true" />
+                <hbox>
+                    <datebox value="@{subController.subcontractedTaskData.subcontractCommunicationDate}"
+                        disabled="true" visible="@{subController.notSent}"/>
+                    <label value="@{subController.subcontractedTaskData.subcontractCommunicationDate,
+                       converter='org.libreplan.web.common.typeconverters.DateConverter'}"
+                       visible="@{subController.sent}"/>
+                </hbox>
             </row>
             <row>
                 <label value="${i18n:_('Work description')}" />
-                <textbox value="@{subController.subcontractedTaskData.workDescription}" />
+                <textbox value="@{subController.subcontractedTaskData.workDescription}"
+                    readonly="@{subController.sent}"/>
             </row>
             <row>
                 <label value="${i18n:_('Subcontract price')}" />
-                <decimalbox value="@{subController.subcontractedTaskData.subcontractPrice}" />
+                <decimalbox value="@{subController.subcontractedTaskData.subcontractPrice}"
+                    readonly="@{subController.sent}"/>
             </row>
             <row>
                 <label value="${i18n:_('Subcontracted code')}" />
-                <textbox value="@{subController.subcontractedTaskData.subcontractedCode}" />
+                <textbox value="@{subController.subcontractedTaskData.subcontractedCode}"
+                    readonly="@{subController.sent}"/>
             </row>
             <row>
                 <label value="${i18n:_('Exportation options')}" />
                 <vbox>
                     <checkbox label="${i18n:_('Node without children')}"
-                            checked="@{subController.subcontractedTaskData.nodeWithoutChildrenExported}" />
+                            checked="@{subController.subcontractedTaskData.nodeWithoutChildrenExported}"
+                            disabled="@{subController.sent}" />
                     <checkbox label="${i18n:_('Labels')}"
-                            checked="@{subController.subcontractedTaskData.labelsExported}" />
+                            checked="@{subController.subcontractedTaskData.labelsExported}"
+                            disabled="@{subController.sent}" />
                     <checkbox label="${i18n:_('Material assignments')}"
-                            checked="@{subController.subcontractedTaskData.materialAssignmentsExported}" />
+                            checked="@{subController.subcontractedTaskData.materialAssignmentsExported}"
+                            disabled="@{subController.sent}" />
                     <checkbox label="${i18n:_('Hours groups')}"
-                            checked="@{subController.subcontractedTaskData.hoursGroupsExported}" />
+                            checked="@{subController.subcontractedTaskData.hoursGroupsExported}"
+                            disabled="@{subController.sent}" />
                 </vbox>
             </row>
         </rows>

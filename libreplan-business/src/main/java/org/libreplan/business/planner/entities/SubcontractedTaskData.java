@@ -68,6 +68,7 @@ public class SubcontractedTaskData extends BaseEntity {
         result.labelsExported = subcontractedTaskData.labelsExported;
         result.materialAssignmentsExported = subcontractedTaskData.materialAssignmentsExported;
         result.hoursGroupsExported = subcontractedTaskData.hoursGroupsExported;
+        result.setState(subcontractedTaskData.getState());
         result.setRequiredDeliveringDates(subcontractedTaskData.getRequiredDeliveringDates());
 
         return create(result);
@@ -229,6 +230,7 @@ public class SubcontractedTaskData extends BaseEntity {
         this.labelsExported = subcontratedTask.labelsExported;
         this.materialAssignmentsExported = subcontratedTask.materialAssignmentsExported;
         this.hoursGroupsExported = subcontratedTask.hoursGroupsExported;
+        this.state = subcontratedTask.getState();
         this.setRequiredDeliveringDates(subcontratedTask.getRequiredDeliveringDates());
     }
 
