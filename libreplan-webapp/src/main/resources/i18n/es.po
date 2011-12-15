@@ -1182,8 +1182,8 @@ msgstr "Detalles de proyecto"
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:181
 #: libreplan-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:189
 #: libreplan-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:162
-msgid " to go to output directly"
-msgstr " ir a la salida directamente"
+msgid "if the report isn't opened automatically"
+msgstr "si el informe no se abre automáticamente"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:167
 msgid "Add new hours group"
@@ -5800,8 +5800,8 @@ msgstr "Probabilidad"
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:178
 #: libreplan-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:186
 #: libreplan-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:159
-msgid "Click on "
-msgstr "Click en"
+msgid "Click on this"
+msgstr "Haga click en este"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:112
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:115
