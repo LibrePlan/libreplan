@@ -43,7 +43,7 @@ Download Eclipse Java EE
 
 * Download Eclipse IDE for **Java EE Developers** for your architecture
 
-.. figure:: libreplan-download-eclipse.png
+.. figure:: img/libreplan-download-eclipse.png
    :alt: Eclipse downloads webpage
    :width: 100%
 
@@ -87,7 +87,7 @@ Install Eclipse Maven plugin (m2e)
 
 * Click *Next* to install plugin
 
-.. figure:: libreplan-m2e.png
+.. figure:: img/libreplan-m2e.png
    :alt: Instal Eclipse Maven plugin (m2e)
    :width: 100%
 
@@ -105,7 +105,7 @@ Import LibrePlan project
 
 * Select as import source *Maven* > *Exising Maven Projects* and click *Next*
 
-.. figure:: libreplan-import-maven.png
+.. figure:: img/libreplan-import-maven.png
    :alt: Import LibrePlan as Maven project
    :width: 100%
 
@@ -115,7 +115,7 @@ Import LibrePlan project
 
 * Then mark all projects and click *Finish*
 
-.. figure:: libreplan-poms.png
+.. figure:: img/libreplan-poms.png
    :alt: Import LibrePlan from existent path
    :width: 100%
 
@@ -146,7 +146,7 @@ Configure project to run
     * Update Snapshots
     * Skip Tests
 
-.. figure:: libreplan-run-configurations.png
+.. figure:: img/libreplan-run-configurations.png
    :alt: Configure how to run LibrePlan in Eclipse
    :width: 100%
 
@@ -164,7 +164,7 @@ Configure Eclipse to follow coding style guidelines
 * Look for the different options to use always spaces instead of tabs and use 4
   spaces size for indentation
 
-.. figure:: libreplan-preferences-tab.png
+.. figure:: img/libreplan-preferences-tab.png
    :alt: Eclipse Preferences window
    :width: 100%
 
@@ -172,7 +172,7 @@ Configure Eclipse to follow coding style guidelines
 
 * Create new profile to follow the coding style guidelines
 
-.. figure:: libreplan-eclipse-profile.png
+.. figure:: img/libreplan-eclipse-profile.png
    :alt: New profile based on Eclipse default one
    :width: 100%
 
@@ -185,7 +185,7 @@ Configure Eclipse to follow coding style guidelines
   * Format edited lines
   * Organize imports
 
-.. figure:: libreplan-preferences-save-actions.png
+.. figure:: img/libreplan-preferences-save-actions.png
    :alt: Save Actions configuration
    :width: 100%
 
