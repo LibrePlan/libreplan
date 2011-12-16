@@ -222,7 +222,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                 i++;
             }
         } else if (navigator.isMilestone(data)) {
-            Milestone milestone = (Milestone) data;
+            Milestone milestone = (Milestone) result;
             milestone.setOwner(position.getParent());
         }
 
