@@ -1157,7 +1157,7 @@ msgstr "Создать тип критерия"
 #: libreplan-webapp/src/main/webapp/reports/orderCostsPerResource.zul:225
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:163
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:185
-msgid "if the report isn't opened automatically"
+msgid " to go to output directly"
 msgstr "направить сразу в производство"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:167
@@ -5695,8 +5695,8 @@ msgstr "Доступ к системе"
 #: libreplan-webapp/src/main/webapp/reports/orderCostsPerResource.zul:222
 #: libreplan-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:160
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:182
-msgid "Click on this"
-msgstr "Нажмите на"
+msgid "Click on "
+msgstr "Нажмите на "
 
 #: libreplan-webapp/src/main/webapp/planner/montecarlo_function.zul:61
 msgid "Probability"
