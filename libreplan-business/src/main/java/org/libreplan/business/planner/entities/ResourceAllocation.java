@@ -2198,4 +2198,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return false;
     }
 
+    public void resetIntendedIntendedResourcesPerDayWithNonConsolidated() {
+        intendedResourcesPerDay = getNonConsolidatedResourcePerDay();
+    }
+
 }
