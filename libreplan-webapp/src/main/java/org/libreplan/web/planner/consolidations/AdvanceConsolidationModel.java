@@ -221,6 +221,15 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         } else {
             reassignAll(end, allResourceAllocations);
         }
+
+        resetIntendedResourcesPerDayWithNonConsolidated(allResourceAllocations);
+    }
+
+    private void resetIntendedResourcesPerDayWithNonConsolidated(
+            Set<ResourceAllocation<?>> allResourceAllocations) {
+        for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
+            resourceAllocation.resetIntendedIntendedResourcesPerDayWithNonConsolidated();
+        }
     }
 
     private void withDetachOnDayAssignmentRemoval(
@@ -326,6 +335,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         withDetachOnDayAssignmentRemoval(allResourceAllocations);
 
         reassignAll(task.getIntraDayEndDate(), allResourceAllocations);
+
+        resetIntendedResourcesPerDayWithNonConsolidated(allResourceAllocations);
     }
 
     private void updateConsolidationInAdvanceIfIsNeeded() {
