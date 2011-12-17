@@ -192,6 +192,7 @@ public class ResourceLoadController implements Composer {
             resourcesLoadPanel = null;
             listeners = new ListenerTracker();
             visualizationModifiers = null;
+            listenersToAdd = null;
         }
 
         public IOnTransaction<Void> reload() {
