@@ -214,7 +214,7 @@ public class SubcontractController extends GenericForwardComposer {
         private Button getDeleteButton(
                 final SubcontractorDeliverDate subcontractorDeliverDate) {
             Button deleteButton = new Button();
-            deleteButton.setDisabled(!isTheLastOne(subcontractorDeliverDate));
+            deleteButton.setDisabled(isNotUpdate(subcontractorDeliverDate));
 
             deleteButton.setImage("/common/img/ico_borrar_out.png");
             deleteButton.setHoverImage("/common/img/ico_borrar_out.png");
@@ -230,13 +230,13 @@ public class SubcontractController extends GenericForwardComposer {
             return deleteButton;
         }
 
-        private boolean isTheLastOne(final SubcontractorDeliverDate subDeliverDate){
+        private boolean isNotUpdate(final SubcontractorDeliverDate subDeliverDate){
             SubcontractorDeliverDate lastDeliverDate = getSubcontractedTaskData()
                     .getRequiredDeliveringDates().first();
-            if (lastDeliverDate != null) {
-                return lastDeliverDate.equals(subDeliverDate) ? true : false;
+            if ((lastDeliverDate != null) && (lastDeliverDate.equals(subDeliverDate))) {
+                return (lastDeliverDate.getCommunicationDate() != null);
             }
-            return false;
+            return true;
         }
     }
 

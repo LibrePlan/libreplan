@@ -228,17 +228,23 @@ public class SubcontractModel implements ISubcontractModel {
     }
 
     @Override
-    public boolean alreadyExistsRepeatedDeliverDate(Date newDeliverDate){
-        for(SubcontractorDeliverDate subDeliverDate : this
-        .getSubcontractedTaskData().getRequiredDeliveringDates()){
-            Date deliverDate = subDeliverDate.getSubcontractorDeliverDate();
-            Date currentDeliverDate = new LocalDate(deliverDate).toDateTimeAtStartOfDay().toDate();
-            newDeliverDate = new LocalDate(newDeliverDate).toDateTimeAtStartOfDay().toDate();
-            if(currentDeliverDate.compareTo(newDeliverDate) == 0){
-                return true;
-            }
+    public boolean alreadyExistsRepeatedDeliverDate(Date newDeliverDate) {
+        if (this.getSubcontractedTaskData().getRequiredDeliveringDates()
+                .isEmpty()) {
+            return false;
         }
-        return false;
+
+        SubcontractorDeliverDate currentSubDeliverDate = this
+                .getSubcontractedTaskData().getRequiredDeliveringDates()
+                .first();
+
+        Date deliverDate = new LocalDate(newDeliverDate)
+                .toDateTimeAtStartOfDay().toDate();
+        Date currentDeliverDate = new LocalDate(
+                currentSubDeliverDate.getSubcontractorDeliverDate())
+                .toDateTimeAtStartOfDay().toDate();
+
+        return (currentDeliverDate.compareTo(deliverDate) == 0);
     }
 
     @Override
