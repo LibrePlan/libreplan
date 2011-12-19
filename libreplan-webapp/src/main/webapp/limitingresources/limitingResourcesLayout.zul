@@ -119,7 +119,7 @@
 
                 <!-- List of unassigned queue elements -->
                 <newdatasortablegrid id="gridUnassignedLimitingResourceQueueElements"
-                        sizedByContent="false"
+                        sizedByContent="false" height="100px"
                         style="margin: 10px" >
                     <columns sizable="true">
                         <newdatasortablecolumn width="40px" >
