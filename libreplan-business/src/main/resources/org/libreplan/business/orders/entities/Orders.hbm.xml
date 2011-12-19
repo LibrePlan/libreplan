@@ -151,8 +151,7 @@
                     <one-to-many class="org.libreplan.business.externalcompanies.entities.CustomerCommunication" />
                 </set>
 
-		        <set name="deliveringDates" cascade="all,delete-orphan"
-	                inverse="true" access="field"
+		        <set name="deliveringDates" inverse="false" cascade="all,delete-orphan" access="field"
 	                sort="org.libreplan.business.externalcompanies.entities.DeliverDateComparator">
 	                    <key column="order_id" />
 	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.DeadlineCommunication" />
