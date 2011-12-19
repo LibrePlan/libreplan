@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.ws.common.api.OrderDTO;
@@ -54,6 +55,9 @@ public class SubcontractedTaskDataDTO {
     @XmlAttribute(name = "subcontracted-code")
     public String subcontractedCode;
 
+    @XmlAttribute(name = "deliver-date")
+    public XMLGregorianCalendar deliverDate;
+
     @XmlElements( {
             @XmlElement(name = "order-line", type = OrderLineDTO.class),
             @XmlElement(name = "order-line-group", type = OrderLineGroupDTO.class),
@@ -65,12 +69,14 @@ public class SubcontractedTaskDataDTO {
 
     public SubcontractedTaskDataDTO(String externalCompanyNif,
             String workDescription, BigDecimal subcontractPrice,
-            String subcontractedCode, OrderElementDTO orderElementDTO) {
+            String subcontractedCode, OrderElementDTO orderElementDTO,
+            XMLGregorianCalendar deliverDate) {
         this.externalCompanyNif = externalCompanyNif;
         this.workDescription = workDescription;
         this.subcontractPrice = subcontractPrice;
         this.subcontractedCode = subcontractedCode;
         this.orderElementDTO = orderElementDTO;
+        this.deliverDate = deliverDate;
     }
 
 }

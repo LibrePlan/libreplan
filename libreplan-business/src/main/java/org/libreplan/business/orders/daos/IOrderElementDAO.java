@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.workingday.EffortDuration;
@@ -132,5 +133,7 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
      * @return
      */
     OrderElement findRepeatedOrderCodeInDB(OrderElement order);
+
+    OrderElement findByExternalCode(String code) throws InstanceNotFoundException;
 
 }

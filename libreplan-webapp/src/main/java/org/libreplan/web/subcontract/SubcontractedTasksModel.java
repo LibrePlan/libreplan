@@ -23,12 +23,15 @@ package org.libreplan.web.subcontract;
 import static org.libreplan.web.I18nHelper._;
 
 import java.io.StringWriter;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.WebApplicationException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -95,12 +98,43 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
         for (SubcontractedTaskData subcontractedTaskData : result) {
             forceLoadExternalCompany(subcontractedTaskData);
         }
-        return result;
+        return sortByState(result);
     }
 
     private void forceLoadExternalCompany(
             SubcontractedTaskData subcontractedTaskData) {
         subcontractedTaskData.getExternalCompany().getName();
+    }
+
+    private List<SubcontractedTaskData> sortByState(List<SubcontractedTaskData> tasks){
+        Collections.sort(tasks, new Comparator<SubcontractedTaskData>(){
+
+            @Override
+            public int compare(SubcontractedTaskData arg0, SubcontractedTaskData arg1) {
+                if((arg0 == null) || (arg0.getState() == null)){
+                    return -1;
+                }
+                if((arg1 == null) || (arg1.getState() == null)){
+                    return 1;
+                }
+                if(arg0.getState().equals(arg1.getState())){
+                      return 0;
+                }
+                if (arg0.getState().equals(
+                        SubcontractState.PENDING_INITIAL_SEND)) {
+                    return 1;
+                }
+                if (arg1.getState().equals(
+                        SubcontractState.PENDING_INITIAL_SEND)) {
+                        return -1;
+                }
+                if( arg0.getState().equals(SubcontractState.PENDING_UPDATE_DELIVERING_DATE)) {
+                      return 1;
+                }
+                return -1;
+            }
+        });
+        return tasks;
     }
 
     @Override
@@ -119,7 +153,14 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
             UnrecoverableErrorServiceException {
         subcontractedTaskDataDAO.save(subcontractedTaskData);
 
-        subcontractedTaskData.setState(SubcontractState.FAILED_SENT);
+        SubcontractState currentState = subcontractedTaskData.getState();
+
+        if (currentState.equals(SubcontractState.PENDING_INITIAL_SEND)) {
+            subcontractedTaskData.setState(SubcontractState.FAILED_SENT);
+        } else if (currentState
+                .equals(SubcontractState.PENDING_UPDATE_DELIVERING_DATE)) {
+            subcontractedTaskData.setState(SubcontractState.FAILED_UPDATE);
+        }
 
         if (!subcontractedTaskData.isSendable()) {
             throw new RuntimeException("Subcontracted task already sent");
@@ -131,13 +172,81 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
                     "External company has not interaction fields filled");
         }
 
-        makeSubcontractRequestRequest(subcontractedTaskData);
+        makeSubcontractRequestRequest(subcontractedTaskData,currentState);
 
-        subcontractedTaskData.setSubcontractCommunicationDate(new Date());
+        Date today = new Date();
+        if (currentState.equals(SubcontractState.PENDING_INITIAL_SEND)) {
+            subcontractedTaskData.setSubcontractCommunicationDate(today);
+        }
+
+        //update the first required deliver date
+        subcontractedTaskData.updateFirstRequiredDeliverDate(today);
+
         subcontractedTaskData.setState(SubcontractState.SUCCESS_SENT);
     }
 
     private void makeSubcontractRequestRequest(
+            SubcontractedTaskData subcontractedTaskData,
+            SubcontractState currentState) throws ConnectionProblemsException,
+            UnrecoverableErrorServiceException {
+        if (subcontractedTaskData.getState() != null) {
+            if ((currentState.equals(SubcontractState.PENDING_INITIAL_SEND) || (currentState
+                    .equals(SubcontractState.FAILED_SENT)))) {
+                makeSubcontractRequestRequest_InitialSent(subcontractedTaskData);
+            } else if ((currentState
+                    .equals(SubcontractState.PENDING_UPDATE_DELIVERING_DATE) || currentState
+                    .equals(SubcontractState.FAILED_UPDATE))) {
+                makeSubcontractRequestRequest_UpdateDeliverDate(subcontractedTaskData);
+            }
+        }
+    }
+
+    private void makeSubcontractRequestRequest_UpdateDeliverDate(SubcontractedTaskData subcontractedTaskData)
+    throws ConnectionProblemsException, UnrecoverableErrorServiceException {
+        UpdateDeliveringDateDTO updateDeliveringDateDTO = SubcontractedTaskDataConverter
+                .toUpdateDeliveringDateDTO(subcontractedTaskData);
+        ExternalCompany externalCompany = subcontractedTaskData
+                .getExternalCompany();
+
+        NaiveTrustProvider.setAlwaysTrust(true);
+
+        try {
+            WebClient client = WebClient.create(externalCompany.getAppURI());
+            client.path("ws/rest/subcontract/update");
+
+            Util.addAuthorizationHeader(client,
+                    externalCompany.getOurCompanyLogin(),
+                    externalCompany.getOurCompanyPassword());
+
+            InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = client
+                    .post(updateDeliveringDateDTO,
+                            InstanceConstraintViolationsListDTO.class);
+
+            List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = instanceConstraintViolationsListDTO.instanceConstraintViolationsList;
+            if ((instanceConstraintViolationsList != null)
+                    && (!instanceConstraintViolationsList.isEmpty())) {
+                String message = "";
+
+                for (ConstraintViolationDTO constraintViolationDTO : instanceConstraintViolationsList
+                        .get(0).constraintViolations) {
+                    message += constraintViolationDTO.toString() + "\n";
+                }
+
+                throw new UnrecoverableErrorServiceException(message);
+            }
+        } catch (WebApplicationException e) {
+            LOG.error("Problems connecting with subcontractor web service", e);
+
+            String message = _("Problems connecting with subcontractor web service");
+            if (e.getMessage() != null) {
+                message += ". " + _("Error: {0}", e.getMessage());
+            }
+
+            throw new ConnectionProblemsException(message, e);
+        }
+    }
+
+    private void makeSubcontractRequestRequest_InitialSent(
             SubcontractedTaskData subcontractedTaskData)
             throws ConnectionProblemsException, UnrecoverableErrorServiceException {
         SubcontractedTaskDataDTO subcontractedTaskDataDTO = getSubcontractedTaskData(subcontractedTaskData);
@@ -150,7 +259,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
         try {
             WebClient client = WebClient.create(externalCompany.getAppURI());
 
-            client.path("ws/rest/subcontract");
+            client.path("ws/rest/subcontract/create");
 
             Util.addAuthorizationHeader(client, externalCompany
                     .getOurCompanyLogin(), externalCompany
@@ -239,6 +348,16 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
     @Override
     @Transactional(readOnly = true)
     public String exportXML(SubcontractedTaskData subcontractedTaskData) {
+        SubcontractState currentState = subcontractedTaskData.getState();
+        if ((currentState.equals(SubcontractState.PENDING_INITIAL_SEND) || (currentState
+                .equals(SubcontractState.FAILED_SENT)))) {
+            return exportXML_CreateSubcontractor(subcontractedTaskData);
+        } else {
+            return exportXML_UpdateSubcontractor(subcontractedTaskData);
+        }
+    }
+
+    public String exportXML_CreateSubcontractor(SubcontractedTaskData subcontractedTaskData){
         SubcontractedTaskDataDTO subcontractedTaskDataDTO = getSubcontractedTaskData(subcontractedTaskData);
 
         StringWriter xml = new StringWriter();
@@ -254,4 +373,21 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
         return xml.toString();
     }
 
+    public String exportXML_UpdateSubcontractor(SubcontractedTaskData subcontractedTaskData){
+        subcontractedTaskDataDAO.reattachUnmodifiedEntity(subcontractedTaskData);
+        UpdateDeliveringDateDTO updateDeliveringDateDTO = SubcontractedTaskDataConverter
+                .toUpdateDeliveringDateDTO(subcontractedTaskData);
+
+        StringWriter xml = new StringWriter();
+        try {
+            JAXBContext jaxbContext = JAXBContext
+                    .newInstance(UpdateDeliveringDateDTO.class);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.marshal(updateDeliveringDateDTO, xml);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return xml.toString();
+    }
 }

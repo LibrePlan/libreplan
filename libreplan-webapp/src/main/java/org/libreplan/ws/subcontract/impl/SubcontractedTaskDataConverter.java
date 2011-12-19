@@ -21,8 +21,14 @@
 
 package org.libreplan.ws.subcontract.impl;
 
+import java.util.Date;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.web.subcontract.UpdateDeliveringDateDTO;
 import org.libreplan.ws.common.api.OrderElementDTO;
+import org.libreplan.ws.common.impl.DateConverter;
 import org.libreplan.ws.subcontract.api.SubcontractedTaskDataDTO;
 
 /**
@@ -38,10 +44,35 @@ public final class SubcontractedTaskDataConverter {
     public final static SubcontractedTaskDataDTO toDTO(String companyCode,
             SubcontractedTaskData subcontractedTaskData,
             OrderElementDTO orderElementDTO) {
-        return new SubcontractedTaskDataDTO(companyCode, subcontractedTaskData
-                .getWorkDescription(), subcontractedTaskData
-                .getSubcontractPrice(), subcontractedTaskData
-                .getSubcontractedCode(), orderElementDTO);
+        return new SubcontractedTaskDataDTO(companyCode,
+                subcontractedTaskData.getWorkDescription(),
+                subcontractedTaskData.getSubcontractPrice(),
+                subcontractedTaskData.getSubcontractedCode(), orderElementDTO,
+                toXmlDate(getDeliverDate(subcontractedTaskData)));
     }
 
+    public final static UpdateDeliveringDateDTO toUpdateDeliveringDateDTO(SubcontractedTaskData subTaskData){
+        String customerReference = subTaskData.getSubcontractedCode();
+        XMLGregorianCalendar deliverDate = toXmlDate(getDeliverDate(subTaskData));
+        if(!subTaskData.getRequiredDeliveringDates().isEmpty()){
+             deliverDate = toXmlDate(subTaskData.getRequiredDeliveringDates().first().getSubcontractorDeliverDate());
+        }
+        String companyNif = subTaskData.getExternalCompany().getNif();
+        String externalCode = subTaskData.getTask().getOrderElement().getCode();
+        return new UpdateDeliveringDateDTO(customerReference, externalCode, companyNif,deliverDate);
+    }
+
+    private final static XMLGregorianCalendar toXmlDate(Date date) {
+        XMLGregorianCalendar xmlDate = (date != null) ? DateConverter
+                .toXMLGregorianCalendar(date) : null;
+        return xmlDate;
+    }
+
+    private final static Date getDeliverDate(SubcontractedTaskData subcontractedTaskData){
+        Date deliverDate = null;
+        if((subcontractedTaskData != null) && (!subcontractedTaskData.getRequiredDeliveringDates().isEmpty())){
+             deliverDate = subcontractedTaskData.getRequiredDeliveringDates().first().getSubcontractorDeliverDate();
+        }
+        return deliverDate;
+    }
 }

@@ -94,7 +94,7 @@ public class SubcontractedTaskData extends BaseEntity {
     private Boolean materialAssignmentsExported;
     private Boolean hoursGroupsExported;
 
-    private SubcontractState state = SubcontractState.PENDING;
+    private SubcontractState state = SubcontractState.PENDING_INITIAL_SEND;
 
     private final SortedSet<SubcontractorDeliverDate> requiredDeliveringDates = new TreeSet<SubcontractorDeliverDate>(
             new DeliverDateComparator());
@@ -279,5 +279,11 @@ public class SubcontractedTaskData extends BaseEntity {
     public void removeRequiredDeliveringDates(
             SubcontractorDeliverDate subcontractorDeliverDate) {
         this.requiredDeliveringDates.remove(subcontractorDeliverDate);
+    }
+
+    public void updateFirstRequiredDeliverDate(Date subcontractCommunicationDate){
+        if(this.requiredDeliveringDates != null && !this.requiredDeliveringDates.isEmpty()){
+            this.requiredDeliveringDates.first().setCommunicationDate(subcontractCommunicationDate);
+        }
     }
 }

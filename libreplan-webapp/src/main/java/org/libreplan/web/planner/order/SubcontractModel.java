@@ -206,6 +206,9 @@ public class SubcontractModel implements ISubcontractModel {
 
             //update the end date of the task
             updateEndDateWithDeliverDate();
+
+            //update the state of the subcontracted task data
+            updateStateToPendingUpdateDeliveringDate();
         }
     }
 
@@ -213,6 +216,15 @@ public class SubcontractModel implements ISubcontractModel {
         SubcontractorDeliverDate lastDeliverDate = this
                 .getSubcontractedTaskData().getRequiredDeliveringDates().last();
         task.setEndDate(lastDeliverDate.getSubcontractorDeliverDate());
+    }
+
+    private void updateStateToPendingUpdateDeliveringDate(){
+        if ((subcontractedTaskData.getState() != null)
+                && (subcontractedTaskData.getState()
+                        .equals(SubcontractState.SUCCESS_SENT))) {
+            subcontractedTaskData
+                    .setState(SubcontractState.PENDING_UPDATE_DELIVERING_DATE);
+        }
     }
 
     @Override
@@ -234,6 +246,19 @@ public class SubcontractModel implements ISubcontractModel {
             SubcontractorDeliverDate subcontractorDeliverDate) {
         if(subcontractedTaskData != null){
             subcontractedTaskData.removeRequiredDeliveringDates(subcontractorDeliverDate);
+            updateStateFromPendingDeliveringDateToSuccessSent();
+        }
+    }
+
+    private void updateStateFromPendingDeliveringDateToSuccessSent(){
+        if (subcontractedTaskData.getState() != null) {
+            switch (subcontractedTaskData.getState()) {
+                case PENDING_UPDATE_DELIVERING_DATE:
+                case FAILED_UPDATE:
+                    subcontractedTaskData
+                            .setState(SubcontractState.SUCCESS_SENT);
+                    break;
+            }
         }
     }
 

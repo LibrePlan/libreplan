@@ -41,6 +41,7 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -273,6 +274,29 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         Criteria c = getSession().createCriteria(OrderElement.class);
         c.add(Restrictions.isNotNull("externalCode"));
         return c.list();
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public OrderElement findByExternalCode(String code) throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(null, getEntityClass()
+                    .getName());
+        }
+
+        Criteria c = getSession().createCriteria(OrderElement.class);
+        c.add(Restrictions.eq("externalCode", code.trim()).ignoreCase());
+        OrderElement entity = (OrderElement) c.uniqueResult();
+
+        if (entity == null) {
+            throw new InstanceNotFoundException(code, getEntityClass()
+                    .getName());
+        } else {
+            return entity;
+        }
+
     }
 
     /**

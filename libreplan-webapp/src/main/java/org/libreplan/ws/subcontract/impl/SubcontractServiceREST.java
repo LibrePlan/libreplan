@@ -51,6 +51,7 @@ import org.libreplan.business.externalcompanies.daos.ICustomerCommunicationDAO;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.CommunicationType;
 import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
+import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -63,6 +64,7 @@ import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.web.subcontract.UpdateDeliveringDateDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsDTOId;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
@@ -70,6 +72,7 @@ import org.libreplan.ws.common.api.OrderDTO;
 import org.libreplan.ws.common.api.OrderElementDTO;
 import org.libreplan.ws.common.impl.ConfigurationOrderElementConverter;
 import org.libreplan.ws.common.impl.ConstraintViolationConverter;
+import org.libreplan.ws.common.impl.DateConverter;
 import org.libreplan.ws.common.impl.OrderElementConverter;
 import org.libreplan.ws.common.impl.Util;
 import org.libreplan.ws.subcontract.api.ISubcontractService;
@@ -135,6 +138,94 @@ public class SubcontractServiceREST implements ISubcontractService {
 
     @Override
     @POST
+    @Path("update/")
+    @Consumes("application/xml")
+    public InstanceConstraintViolationsListDTO updateDeliveringDates(
+            final UpdateDeliveringDateDTO updateDeliveringDateDTO) {
+        try {
+            updateSubcontract(updateDeliveringDateDTO);
+        } catch (ViolationError e) {
+            return e.toViolationList();
+        }
+        return new InstanceConstraintViolationsListDTO();
+    }
+
+
+    private void updateSubcontract(
+            final UpdateDeliveringDateDTO updateDeliveringDateDTO) {
+
+        if (StringUtils.isEmpty(updateDeliveringDateDTO.companyNif)) {
+            throw new ViolationError(updateDeliveringDateDTO.companyNif,
+                    "external company Nif not specified");
+        }
+
+        if (StringUtils.isEmpty(updateDeliveringDateDTO.externalCode)) {
+            throw new ViolationError(updateDeliveringDateDTO.externalCode,
+                    "external order code not specified");
+        }
+
+        if ((updateDeliveringDateDTO.deliverDate) == null) {
+            throw new ViolationError(updateDeliveringDateDTO.deliverDate.toString(),
+                    "deliver date not specified");
+        }
+
+        final ExternalCompany externalCompany = adHocTransactionService
+                .runOnTransaction(new IOnTransaction<ExternalCompany>() {
+                    @Override
+                    public ExternalCompany execute() {
+                        return findExternalCompanyFor(updateDeliveringDateDTO.companyNif);
+                    }
+                });
+        if (!externalCompany.isClient()) {
+            throw new ViolationError(updateDeliveringDateDTO.companyNif,
+                    "external company is not registered as client");
+        }
+        try {
+            adHocTransactionService
+                    .runOnTransaction(new IOnTransaction<Void>() {
+
+                        @Override
+                        public Void execute() {
+                            updateDeliveringDateInOrder(updateDeliveringDateDTO);
+                            return null;
+                        }
+                    });
+        } catch (ValidationException e) {
+            InstanceConstraintViolationsDTO violation = ConstraintViolationConverter
+                    .toDTO(new InstanceConstraintViolationsDTOId(Long.valueOf(1),
+                            updateDeliveringDateDTO.companyNif, OrderDTO.ENTITY_TYPE), e);
+            throw new ViolationError(violation);
+        }
+    }
+
+    private void updateDeliveringDateInOrder(UpdateDeliveringDateDTO updateDeliveringDateDTO){
+        try {
+            OrderElement orderElement = orderElementDAO
+                    .findByExternalCode(updateDeliveringDateDTO.externalCode);
+            if((orderElement != null) && (orderElement instanceof Order)) {
+                Order order = (Order)orderElement;
+
+                DeadlineCommunication deadlineCommunication = DeadlineCommunication
+                        .create(new Date(), DateConverter.toDate(updateDeliveringDateDTO.deliverDate));
+                order.getDeliveringDates().add(deadlineCommunication);
+
+                createCustomerCommunication(order, CommunicationType.UPDATE_DELIVERING_DATE);
+                orderElementDAO.save(order);
+
+            } else {
+                throw new ViolationError(
+                        updateDeliveringDateDTO.customerReference,
+                        "It do not exist any order with this reference");
+            }
+        } catch (InstanceNotFoundException e) {
+            throw new ViolationError(updateDeliveringDateDTO.customerReference,
+                    "It do not exist any order with this reference");
+        }
+    }
+
+    @Override
+    @POST
+    @Path("create/")
     @Consumes("application/xml")
     public InstanceConstraintViolationsListDTO subcontract(
             final SubcontractedTaskDataDTO subcontractedTaskDataDTO) {
@@ -236,6 +327,13 @@ public class SubcontractServiceREST implements ISubcontractService {
                 TaskSource.persistTaskSources(taskSourceDAO));
         order.writeSchedulingDataChanges();
 
+        if (subcontractedTaskDataDTO.deliverDate != null) {
+            DeadlineCommunication deadlineCommunication = DeadlineCommunication
+                    .create(new Date(), DateConverter
+                            .toDate(subcontractedTaskDataDTO.deliverDate));
+            order.getDeliveringDates().add(deadlineCommunication);
+        }
+
         order.validate();
         orderElementDAO.save(order);
 
@@ -243,7 +341,7 @@ public class SubcontractServiceREST implements ISubcontractService {
          * create the customer communication to a new subcontrating project.
          */
         if(!StringUtils.isBlank(order.getExternalCode())){
-            createCustomerCommunication(order);
+            createCustomerCommunication(order, CommunicationType.NEW_PROJECT);
         }
     }
 
@@ -306,13 +404,18 @@ public class SubcontractServiceREST implements ISubcontractService {
     }
 
     private ExternalCompany findExternalCompanyFor(
-            final SubcontractedTaskDataDTO subcontractedTask)
+            final SubcontractedTaskDataDTO subcontractedTask){
+       return findExternalCompanyFor(subcontractedTask.externalCompanyNif);
+    }
+
+    private ExternalCompany findExternalCompanyFor(
+            final String externalCompanyNif)
             throws ViolationError {
         try {
             return externalCompanyDAO
-                    .findUniqueByNif(subcontractedTask.externalCompanyNif);
+                    .findUniqueByNif(externalCompanyNif);
         } catch (InstanceNotFoundException e) {
-            throw new ViolationError(subcontractedTask.externalCompanyNif,
+            throw new ViolationError(externalCompanyNif,
                     "external company not found");
         }
     }
@@ -323,12 +426,17 @@ public class SubcontractServiceREST implements ISubcontractService {
                 Util.generateInstanceId(1, code), message);
     }
 
-    private void createCustomerCommunication(Order order){
-        Date deadline = order.getDeadline();
+    private void createCustomerCommunication(Order order, CommunicationType type){
         Date communicationDate = new Date();
+        Date deadline = null;
+        if(type.equals(CommunicationType.NEW_PROJECT)){
+             deadline = order.getDeadline();
+        }else{
+            deadline = order.getDeliveringDates().first().getDeliverDate();
+        }
         CustomerCommunication customerCommunication = CustomerCommunication
                 .create(deadline, communicationDate,
-                        CommunicationType.NEW_PROJECT, order);
+                        type, order);
         customerCommunicationDAO.save(customerCommunication);
     }
 }
