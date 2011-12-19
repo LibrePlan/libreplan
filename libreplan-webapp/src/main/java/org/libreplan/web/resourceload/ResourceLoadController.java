@@ -230,6 +230,7 @@ public class ResourceLoadController implements Composer {
             } else {
                 resourcesLoadPanel.init(dataToShow.getLoadTimeLines(),
                         timeTracker);
+                listeners.addListeners(resourcesLoadPanel, getListenersToAdd());
             }
 
             resourcesLoadPanel.afterCompose();
