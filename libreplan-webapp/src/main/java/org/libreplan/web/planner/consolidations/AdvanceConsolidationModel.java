@@ -215,11 +215,11 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 .getAllResourceAllocations();
         withDetachOnDayAssignmentRemoval(allResourceAllocations);
 
-        LocalDate endExclusive = LocalDate.fromDateFields(task.getEndDate());
-        if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
+        IntraDayDate end = task.getIntraDayEndDate();
+        if (value.getDate().compareTo(end.getDate().minusDays(1)) >= 0) {
             reassignExpandingTask(allResourceAllocations);
         } else {
-            reassignAll(endExclusive, allResourceAllocations);
+            reassignAll(end, allResourceAllocations);
         }
     }
 
@@ -230,24 +230,24 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         }
     }
 
-    private void reassignAll(LocalDate endExclusive,
+    private void reassignAll(IntraDayDate end,
             Collection<? extends ResourceAllocation<?>> allocations) {
         for (ResourceAllocation<?> each : allocations) {
             EffortDuration pendingEffort = consolidation
                     .getNotConsolidated(each.getIntendedTotalAssigment());
-            reassign(each, endExclusive, pendingEffort);
+            reassign(each, end, pendingEffort);
         }
     }
 
     private void reassign(ResourceAllocation<?> resourceAllocation,
-            LocalDate endExclusive, EffortDuration pendingEffort) {
+            IntraDayDate end, EffortDuration pendingEffort) {
         if (resourceAllocation instanceof SpecificResourceAllocation) {
             ((SpecificResourceAllocation) resourceAllocation)
                     .allocateWholeAllocationKeepingProportions(pendingEffort,
-                            IntraDayDate.startOfDay(endExclusive));
+                            end);
         } else {
             resourceAllocation.withPreviousAssociatedResources()
-                    .fromStartUntil(endExclusive)
+                    .fromStartUntil(end)
                     .allocate(pendingEffort);
         }
     }
@@ -327,7 +327,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 .getAllResourceAllocations();
         withDetachOnDayAssignmentRemoval(allResourceAllocations);
 
-        reassignAll(task.getEndAsLocalDate(), allResourceAllocations);
+        reassignAll(task.getIntraDayEndDate(), allResourceAllocations);
     }
 
     private void updateConsolidationInAdvanceIfIsNeeded() {
