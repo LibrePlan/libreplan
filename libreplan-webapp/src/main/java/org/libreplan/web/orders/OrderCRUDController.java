@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -37,6 +39,8 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
+import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
@@ -1499,4 +1503,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
+    public SortedSet<DeadlineCommunication> getDeliverDates() {
+        if(getOrder() != null){
+               return getOrder().getDeliveringDates();
+        }
+        return new TreeSet<DeadlineCommunication>(new DeliverDateComparator());
+    }
 }

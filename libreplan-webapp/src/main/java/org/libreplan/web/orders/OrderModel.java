@@ -44,6 +44,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
@@ -273,10 +274,15 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         forceLoadCriterionRequirements(order);
         forceLoadCalendar(this.getCalendar());
         forceLoadCustomer(order.getCustomer());
+        forceLoadDeliveringDates(order);
         forceLoadLabels(order);
         forceLoadMaterialAssignments(order);
         forceLoadTaskQualityForms(order);
         initOldCodes();
+    }
+
+    private void forceLoadDeliveringDates(Order order){
+        order.getDeliveringDates().size();
     }
 
     private void forceLoadLabels(OrderElement orderElement) {
