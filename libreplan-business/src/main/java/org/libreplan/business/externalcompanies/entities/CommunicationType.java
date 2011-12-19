@@ -28,7 +28,8 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum CommunicationType {
 
-    NEW_PROJECT(_("New project")), REPORT_PROGRESS(_("Report advance"));
+    NEW_PROJECT(_("New project")), REPORT_PROGRESS(_("Report advance")), UPDATE_DELIVERING_DATE(
+            _("Update Delivering Date"));
 
     private String description;
 
