@@ -279,16 +279,15 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         if (consolidation != null && task != null) {
 
             if (consolidation.isCalculated()) {
-                return CalculatedConsolidatedValue.create(LocalDate
-                        .fromDateFields(dto.getDate()), dto.getPercentage(),
-                        LocalDate.fromDateFields(task.getEndDate()));
+                return CalculatedConsolidatedValue.create(
+                        LocalDate.fromDateFields(dto.getDate()),
+                        dto.getPercentage(), task.getIntraDayEndDate());
             } else {
                 AdvanceMeasurement measure = dto.getAdvanceMeasurement();
                 NonCalculatedConsolidatedValue consolidatedValue = NonCalculatedConsolidatedValue
-                        .create(LocalDate.fromDateFields(dto.getDate()), dto
-                                .getPercentage(), measure, LocalDate
-                                .fromDateFields(task
-                        .getEndDate()));
+                        .create(LocalDate.fromDateFields(dto.getDate()),
+                                dto.getPercentage(), measure,
+                                task.getIntraDayEndDate());
                 measure.getNonCalculatedConsolidatedValues().add(
                         consolidatedValue);
                 return consolidatedValue;
@@ -304,10 +303,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         }
 
         if (!consolidation.getConsolidatedValues().isEmpty()) {
-            LocalDate endExclusive = consolidation.getConsolidatedValues()
-                    .last()
-                    .getTaskEndDate();
-            task.setEndDate(endExclusive.toDateTimeAtStartOfDay().toDate());
+            IntraDayDate endExclusive = consolidation.getConsolidatedValues()
+                    .last().getTaskEndDate();
+            task.setIntraDayEndDate(endExclusive);
         }
         if (!consolidation.isCalculated()) {
             ((NonCalculatedConsolidation) consolidation)

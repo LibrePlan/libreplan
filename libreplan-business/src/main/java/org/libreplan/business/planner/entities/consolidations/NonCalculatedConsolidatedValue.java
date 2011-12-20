@@ -28,6 +28,7 @@ import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.util.deepcopy.DeepCopy;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
+import org.libreplan.business.workingday.IntraDayDate;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -45,26 +46,26 @@ public class NonCalculatedConsolidatedValue extends ConsolidatedValue {
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value, LocalDate taskEndDate) {
+            BigDecimal value, IntraDayDate taskEndDate) {
         return create(new NonCalculatedConsolidatedValue(date, value,
                 taskEndDate));
     }
 
     public static NonCalculatedConsolidatedValue create(LocalDate date,
             BigDecimal value, AdvanceMeasurement advanceMeasurement,
-            LocalDate taskEndDate) {
+            IntraDayDate taskEndDate) {
         return create(new NonCalculatedConsolidatedValue(date, value,
                 advanceMeasurement, taskEndDate));
     }
 
     protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value,
-            AdvanceMeasurement advanceMeasurement, LocalDate taskEndDate) {
+            AdvanceMeasurement advanceMeasurement, IntraDayDate taskEndDate) {
         this(date, value, taskEndDate);
         this.advanceMeasurement = advanceMeasurement;
     }
 
     protected NonCalculatedConsolidatedValue(LocalDate date, BigDecimal value,
-            LocalDate taskEndDate) {
+            IntraDayDate taskEndDate) {
         super(date, value, taskEndDate);
     }
 

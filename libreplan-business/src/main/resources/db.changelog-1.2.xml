@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-task_end_date_effort_duration-to-consolidated_value" author="mrego">
+        <comment>
+            taskEndDate attribute in class ConsolidatedValue has been changed to IntraDayDate.
+            It is needed to add some columns to store EffortDuration in ConsolidatedValue.
+        </comment>
+        <addColumn tableName="consolidated_value">
+            <column name="task_end_date_effort_duration" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="consolidated_value"
+            columnName="task_end_date_effort_duration"
+            defaultValueNumeric="0" />
+    </changeSet>
+
+</databaseChangeLog>

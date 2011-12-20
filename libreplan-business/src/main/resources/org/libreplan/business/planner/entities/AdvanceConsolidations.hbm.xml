@@ -13,8 +13,13 @@
 
         <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
         <property name="value" scale="2" access="field" />
-        <property name="taskEndDate" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate"
-            column="task_end_date" />
+
+        <component name="taskEndDate" class="org.libreplan.business.workingday.IntraDayDate">
+            <property name="date" column="task_end_date"
+                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="effortDuration" column="task_end_date_effort_duration"
+                type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
+        </component>
 
         <subclass name="NonCalculatedConsolidatedValue" discriminator-value="non_calculated">
             <!-- Indexed -->
