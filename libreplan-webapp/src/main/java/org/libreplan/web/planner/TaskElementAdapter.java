@@ -640,7 +640,13 @@ public class TaskElementAdapter {
             private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
                 Integer hours = Integer.valueOf(0);
                 if (taskElement.getOrderElement() != null) {
-                    hours = taskElement.getSumOfHoursAllocated();
+                    if(taskElement.getParent() == null){
+                        //it's an order, we use the cached value
+                        hours = taskElement.getSumOfHoursAllocated();
+                    }
+                    else {
+                        hours = taskElement.getSumOfHoursAllocatedCalculated();
+                    }
                 }
 
                 if (taskElement instanceof TaskGroup) {
