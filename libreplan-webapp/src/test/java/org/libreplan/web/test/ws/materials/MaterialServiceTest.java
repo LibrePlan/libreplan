@@ -87,6 +87,9 @@ public class MaterialServiceTest {
     private IUnitTypeDAO unitTypeDAO;
 
     @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Resource
     private IDataBootstrap materialCategoryBootstrap;
 
     @Resource
@@ -102,6 +105,7 @@ public class MaterialServiceTest {
 
             @Override
             public Void execute() {
+                configurationBootstrap.loadRequiredData();
                 materialCategoryBootstrap.loadRequiredData();
                 unitTypeBootstrap.loadRequiredData();
                 return null;

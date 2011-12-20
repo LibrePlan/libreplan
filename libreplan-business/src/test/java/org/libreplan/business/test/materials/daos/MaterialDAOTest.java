@@ -49,29 +49,31 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        BUSINESS_SPRING_CONFIG_TEST_FILE })
-
 /**
  * Test for {@MaterialDAO}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        BUSINESS_SPRING_CONFIG_TEST_FILE })
 @Transactional
 public class MaterialDAOTest {
 
     @Autowired
-    IMaterialDAO materialDAO;
+    private IMaterialDAO materialDAO;
 
     @Autowired
-    IMaterialCategoryDAO materialCategoryDAO;
+    private IMaterialCategoryDAO materialCategoryDAO;
 
     @Test
     public void testInSpringContainer() {
         assertNotNull(materialDAO);
     }
+
+    @Resource
+    private IDataBootstrap configurationBootstrap;
 
     @Resource
     private IDataBootstrap materialCategoryBootstrap;
@@ -81,6 +83,7 @@ public class MaterialDAOTest {
 
     @Before
     public void loadRequiredaData() {
+        configurationBootstrap.loadRequiredData();
         materialCategoryBootstrap.loadRequiredData();
         unitTypeBootstrap.loadRequiredData();
     }
