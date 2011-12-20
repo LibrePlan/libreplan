@@ -695,6 +695,14 @@ public abstract class TaskElement extends BaseEntity {
         return sumOfHoursAllocated;
     }
 
+    public Integer getSumOfHoursAllocatedCalculated() {
+        int result = 0;
+        for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
+            result += allocation.getAssignedHours();
+        }
+        return result;
+    }
+
     public String toString() {
         return super.toString() + " :: " + getName();
     }
