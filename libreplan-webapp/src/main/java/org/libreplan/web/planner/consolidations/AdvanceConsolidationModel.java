@@ -41,7 +41,6 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.AllocationsSpecified;
 import org.libreplan.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
-import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidatedValue;
@@ -250,15 +249,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private void reassign(ResourceAllocation<?> resourceAllocation,
             IntraDayDate end, EffortDuration pendingEffort) {
-        if (resourceAllocation instanceof SpecificResourceAllocation) {
-            ((SpecificResourceAllocation) resourceAllocation)
-                    .allocateWholeAllocationKeepingProportions(pendingEffort,
-                            end);
-        } else {
-            resourceAllocation.withPreviousAssociatedResources()
-                    .fromStartUntil(end)
-                    .allocate(pendingEffort);
-        }
+        resourceAllocation.withPreviousAssociatedResources()
+                .fromStartUntil(end).allocate(pendingEffort);
     }
 
     private void reassignExpandingTask(
