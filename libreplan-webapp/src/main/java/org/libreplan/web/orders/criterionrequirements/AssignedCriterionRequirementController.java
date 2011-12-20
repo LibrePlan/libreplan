@@ -516,17 +516,19 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
             @Override
             public void validate(Component comp, Object value)
                     throws WrongValueException {
-                Validate.isTrue(value instanceof Integer);
-                int intValue = value == null ? 0 : (Integer) value;
-                if (intValue == 0) {
+                if(value == null) {
                     orderElementTotalHours.setValue(0);
                 }
-                try {
-                    if (getElement() instanceof OrderLine) {
-                        ((OrderLine) getElement()).setWorkHours(intValue);
+                else {
+                    Validate.isTrue(value instanceof Integer);
+                    int intValue = (Integer) value;
+                    try {
+                        if (getElement() instanceof OrderLine) {
+                            ((OrderLine) getElement()).setWorkHours(intValue);
+                        }
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(comp, _(e.getMessage()));
                     }
-                } catch (IllegalArgumentException e) {
-                    throw new WrongValueException(comp, _(e.getMessage()));
                 }
             }
         };
