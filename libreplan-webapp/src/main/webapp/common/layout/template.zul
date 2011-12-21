@@ -130,6 +130,9 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
 <n:table width="100%">
   <n:tr class="footer">
     <n:td  valign="center">
+        <n:div class="footer-messages-area">
+            <n:span>${i18n:_("Remember that this is a demo installation and all data will be periodically deleted")}.</n:span>
+        </n:div>
         <n:div if="${project:passwd_control()}" id="warningDefaultPasswdadmin"
             class="footer-messages-area"
             style="display:${templateCtrl.defaultPasswdAdminVisible}">
