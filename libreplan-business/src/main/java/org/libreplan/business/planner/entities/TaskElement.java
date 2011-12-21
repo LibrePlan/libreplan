@@ -603,7 +603,7 @@ public abstract class TaskElement extends BaseEntity {
             //simplified calculation has only two states:
             //unassigned, when hours allocated is zero, and
             //assigned otherwise
-            if (getSumOfHoursAllocated() == 0) {
+            if (getSumOfAssignedEffort().isZero()) {
                 return "unassigned";
             }
             return "assigned";
@@ -658,24 +658,20 @@ public abstract class TaskElement extends BaseEntity {
         this.advancePercentage = advancePercentage;
     }
 
-    private Integer sumOfHoursAllocated = 0;
+    private EffortDuration sumOfAssignedEffort = EffortDuration.hours(0);
 
-    public void setSumOfHoursAllocated(Integer sumOfHoursAllocated) {
-        this.sumOfHoursAllocated = sumOfHoursAllocated;
+    public void setSumOfAssignedEffort(EffortDuration sumOfAssignedEffort) {
+        this.sumOfAssignedEffort = sumOfAssignedEffort;
     }
 
-    public void addSumOfHoursAllocated(Integer sumOfHoursAllocated) {
-        this.sumOfHoursAllocated += sumOfHoursAllocated;
+    public EffortDuration getSumOfAssignedEffort() {
+        return sumOfAssignedEffort;
     }
 
-    public Integer getSumOfHoursAllocated() {
-        return sumOfHoursAllocated;
-    }
-
-    public Integer getSumOfHoursAllocatedCalculated() {
-        int result = 0;
+    public EffortDuration getSumOfAssignedEffortCalculated() {
+        EffortDuration result = EffortDuration.hours(0);
         for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
-            result += allocation.getAssignedHours();
+            result = result.plus(allocation.getAssignedEffort());
         }
         return result;
     }

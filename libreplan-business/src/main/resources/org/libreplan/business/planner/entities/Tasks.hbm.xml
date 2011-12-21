@@ -27,7 +27,8 @@
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
         <property name="advancePercentage" column="advance_percentage" access="field" scale="4"/>
 
-        <property name="sumOfHoursAllocated" column="sum_of_hours_allocated" />
+        <property name="sumOfAssignedEffort" column="sum_of_assigned_effort" access="field"
+            type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
 
         <!-- Indexed -->
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"
