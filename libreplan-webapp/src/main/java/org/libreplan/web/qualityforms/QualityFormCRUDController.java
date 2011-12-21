@@ -312,7 +312,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     public void validateReportProgress() {
-        if ((getQualityForm().getReportAdvance())
+        if ((getQualityForm().isReportAdvance())
                 && (!hasItemWithTotalPercentage())) {
             Checkbox checkBoxReportProgress = (Checkbox) editWindow
                     .getFellowIfAny("checkBoxReportProgress");
