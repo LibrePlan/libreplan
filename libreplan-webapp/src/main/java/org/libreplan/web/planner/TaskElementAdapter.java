@@ -514,17 +514,15 @@ public class TaskElementAdapter {
                 }
 
                 if (result == null) {
-                    Integer hours = taskElement.getSumOfHoursAllocated();
+                    EffortDuration effort = taskElement.getSumOfAssignedEffort();
 
-                    if (hours == 0) {
-                        hours = orderElement.getWorkHours();
-                        if (hours == 0) {
+                    if (effort.isZero()) {
+                        effort = EffortDuration.hours(orderElement.getWorkHours());
+                        if (effort.isZero()) {
                             return getBeginDate();
                         }
                     }
-                    BigDecimal percentage = assignedEffort
-                            .toHoursAsDecimalWithScale(2).divide(
-                                    new BigDecimal(hours), RoundingMode.DOWN);
+                    BigDecimal percentage = new BigDecimal(assignedEffort.divideBy(effort));
                     result = calculateLimitDateByPercentage(percentage);
 
                 }
@@ -546,17 +544,15 @@ public class TaskElementAdapter {
                 BigDecimal assignedHours = totalChargedEffort
                         .toHoursAsDecimalWithScale(2);
 
-                BigDecimal estimatedHours = new BigDecimal(
-                        taskElement.getSumOfHoursAllocated()).setScale(2);
+                EffortDuration estimatedEffort = taskElement.getSumOfAssignedEffort();
 
-                if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
-                    estimatedHours = new BigDecimal(orderElement.getWorkHours())
-                            .setScale(2);
-                    if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+                if(estimatedEffort.isZero()) {
+                    estimatedEffort = EffortDuration.hours(orderElement.getWorkHours());
+                    if(estimatedEffort.isZero()) {
                         return BigDecimal.ZERO;
                     }
                 }
-                return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
+                return new BigDecimal(totalChargedEffort.divideBy(estimatedEffort));
             }
 
             @Override
@@ -595,14 +591,16 @@ public class TaskElementAdapter {
             }
 
             private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
-                Integer hours = Integer.valueOf(0);
+                BigDecimal hours = BigDecimal.ZERO;
                 if (taskElement.getOrderElement() != null) {
                     if(taskElement.getParent() == null){
                         //it's an order, we use the cached value
-                        hours = taskElement.getSumOfHoursAllocated();
+                        hours = taskElement.getSumOfAssignedEffort()
+                                .toHoursAsDecimalWithScale(2);
                     }
                     else {
-                        hours = taskElement.getSumOfHoursAllocatedCalculated();
+                        hours = taskElement.getSumOfAssignedEffortCalculated()
+                                .toHoursAsDecimalWithScale(2);;
                     }
                 }
 
@@ -612,7 +610,7 @@ public class TaskElementAdapter {
 
                 // Calculate date according to advanceHours or advancePercentage
                 final Integer advanceHours = advancePercentage.multiply(
-                        new BigDecimal(hours)).intValue();
+                        hours).intValue();
                 GanttDate result = calculateLimitDateByHours(advanceHours);
                 if (result == null) {
                     result = calculateLimitDateByPercentage(advancePercentage);
