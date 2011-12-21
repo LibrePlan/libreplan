@@ -490,6 +490,7 @@ public abstract class TaskElement extends BaseEntity {
             }
         }
         for (TaskElement taskElement : tasksToNotify) {
+            this.removeDependenciesWithOrigin(taskElement);
             taskElement.removeDependenciesWithDestination(this);
         }
     }
@@ -503,6 +504,7 @@ public abstract class TaskElement extends BaseEntity {
             }
         }
         for (TaskElement taskElement : tasksToNotify) {
+            this.removeDependenciesWithDestination(taskElement);
             taskElement.removeDependenciesWithOrigin(this);
         }
     }
