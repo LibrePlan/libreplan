@@ -320,7 +320,7 @@ public class Criterion extends IntegrationEntity implements ICriterion,
     }
 
     public String getCompleteName() {
-        return type.getName() + " :: " + name;
+        return name + "(" + type.getName() + ")";
     }
 
     public boolean isActive() {
