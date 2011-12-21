@@ -144,12 +144,6 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
                 RoundingMode.DOWN);
     }
 
-    public void addAdvanceMeasurements(Set<AdvanceMeasurement> measurements) {
-        for (AdvanceMeasurement each: measurements) {
-            addAdvanceMeasurements(each);
-        }
-    }
-
     public boolean addAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
         boolean result = this.advanceMeasurements.add(advanceMeasurement);
         if (result) {
