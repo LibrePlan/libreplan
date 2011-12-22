@@ -57,6 +57,9 @@ import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidation;
+import org.libreplan.business.planner.entities.consolidations.Consolidation;
+import org.libreplan.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
+import org.libreplan.business.planner.entities.consolidations.NonCalculatedConsolidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -216,7 +219,10 @@ public class ManageOrderElementAdvancesModel implements
     private void forceLoadAdvanceConsolidatedValues(
             DirectAdvanceAssignment advance) {
         for (AdvanceMeasurement measurement : advance.getAdvanceMeasurements()) {
-            measurement.getNonCalculatedConsolidatedValues().size();
+            for (NonCalculatedConsolidatedValue each : measurement
+                    .getNonCalculatedConsolidatedValues()) {
+                each.getConsolidation().getConsolidatedUntil();
+            }
         }
     }
 
@@ -787,6 +793,35 @@ public class ManageOrderElementAdvancesModel implements
             }
         }
         return false;
+    }
+
+    @Override
+    public LocalDate getLastConsolidatedMeasurementDate(
+            AdvanceAssignment advance) {
+        List<Consolidation> consolidations = new ArrayList<Consolidation>();
+        if (advance instanceof DirectAdvanceAssignment) {
+            Set<NonCalculatedConsolidation> nonCalculatedConsolidations = ((DirectAdvanceAssignment) advance)
+                    .getNonCalculatedConsolidation();
+            consolidations.addAll(nonCalculatedConsolidations);
+        } else {
+            Set<CalculatedConsolidation> calculatedConsolidations = ((IndirectAdvanceAssignment) advance)
+                    .getCalculatedConsolidation();
+            consolidations.addAll(calculatedConsolidations);
+        }
+
+        if (consolidations.isEmpty()) {
+            return null;
+        }
+
+        Collections.sort(consolidations, new Comparator<Consolidation>() {
+            @Override
+            public int compare(Consolidation o1, Consolidation o2) {
+                return o1.getConsolidatedUntil().compareTo(
+                        o2.getConsolidatedUntil());
+            }
+        });
+        return consolidations.get(consolidations.size() - 1)
+                .getConsolidatedUntil();
     }
 
 }
