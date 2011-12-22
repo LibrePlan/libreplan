@@ -665,10 +665,16 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public EffortDuration getSumOfAssignedEffort() {
-        return sumOfAssignedEffort;
+        if (this.getParent() == null) {
+            //it's an order, we use the cached value
+            return sumOfAssignedEffort;
+        }
+        else {
+            return getSumOfAssignedEffortCalculated();
+        }
     }
 
-    public EffortDuration getSumOfAssignedEffortCalculated() {
+    private EffortDuration getSumOfAssignedEffortCalculated() {
         EffortDuration result = EffortDuration.hours(0);
         for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
             result = result.plus(allocation.getAssignedEffort());
