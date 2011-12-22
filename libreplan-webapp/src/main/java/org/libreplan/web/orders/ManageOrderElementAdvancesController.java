@@ -186,7 +186,8 @@ public class ManageOrderElementAdvancesController extends
 
     private void increaseScreenHeight() {
         if ((tabboxOrderElement != null)
-                && (!tabboxOrderElement.getHeight().equals("680px"))) {
+                && (tabboxOrderElement.getHeight() == null || !tabboxOrderElement
+                        .getHeight().equals("680px"))) {
             tabboxOrderElement.setHeight("680px");
             tabboxOrderElement.invalidate();
         }
