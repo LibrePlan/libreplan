@@ -29,13 +29,13 @@ Debian packages
 ~~~~~~~~~~~~~~~
 
 There are Debian packages for Squeeze (i386 and amd64), you can download them
-from: http://sourceforge.net/projects/navalplan/files/LibrePlan/
+from: http://sourceforge.net/projects/libreplan/files/LibrePlan/
 
 Instructions:
 
 * Download the package::
 
-    $ wget http://downloads.sourceforge.net/project/navalplan/files/LibrePlan/libreplan_1.2.0-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/files/LibrePlan/libreplan_1.2.0-1_amd64.deb
 
 * Install package::
 
@@ -73,7 +73,7 @@ Debian/Ubuntu
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/LibrePlan/install_1.2.0.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/librelplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
@@ -81,7 +81,7 @@ Debian/Ubuntu
 
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/LibrePlan/libreplan_1.2.0.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
@@ -180,7 +180,7 @@ openSUSE
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/LibrePlan/install_1.2.0.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
@@ -188,7 +188,7 @@ openSUSE
 
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/LibrePlan/libreplan_1.2.0.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
