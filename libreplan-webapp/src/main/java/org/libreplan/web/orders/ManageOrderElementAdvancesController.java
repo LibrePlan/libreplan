@@ -719,6 +719,11 @@ public class ManageOrderElementAdvancesController extends
             removeButton.setDisabled(true);
             removeButton
                     .setTooltiptext(_("Calculated progress can not be removed"));
+        } else if (manageOrderElementAdvancesModel
+                .hasConsolidatedAdvances(advance)) {
+            removeButton.setDisabled(true);
+            removeButton
+                    .setTooltiptext(_("Consolidated progress can not be removed"));
         }
 
         hbox.appendChild(removeButton);
@@ -1034,7 +1039,9 @@ public class ManageOrderElementAdvancesController extends
             listitem.appendChild(listcell);
 
             value.setScale(4);
-            value.setDisabled(isReadOnlyAdvanceMeasurements());
+            value.setDisabled(isReadOnlyAdvanceMeasurements()
+                    || manageOrderElementAdvancesModel
+                            .hasConsolidatedAdvances(advanceMeasurement));
             value.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
@@ -1090,7 +1097,9 @@ public class ManageOrderElementAdvancesController extends
             listcell.appendChild(date);
             listitem.appendChild(listcell);
 
-            date.setDisabled(isReadOnlyAdvanceMeasurements());
+            date.setDisabled(isReadOnlyAdvanceMeasurements()
+                    || manageOrderElementAdvancesModel
+                            .hasConsolidatedAdvances(advanceMeasurement));
             date.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
@@ -1166,6 +1175,11 @@ public class ManageOrderElementAdvancesController extends
                 removeButton.setDisabled(true);
                 removeButton
                         .setTooltiptext(_("Calculated progress measurement can not be removed"));
+            } else if (manageOrderElementAdvancesModel
+                    .hasConsolidatedAdvances(measure)) {
+                removeButton.setDisabled(true);
+                removeButton
+                        .setTooltiptext(_("Consolidated progress measurement can not be removed"));
             }
 
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
