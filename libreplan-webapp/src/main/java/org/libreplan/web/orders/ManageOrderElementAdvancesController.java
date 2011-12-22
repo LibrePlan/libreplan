@@ -276,7 +276,8 @@ public class ManageOrderElementAdvancesController extends
                 .addNewLineAdvaceMeasurement();
         if ((newMeasure != null)
                 && (manageOrderElementAdvancesModel
-                        .hasConsolidatedAdvances(newMeasure))) {
+                        .hasConsolidatedAdvances(newMeasure
+                                .getAdvanceAssignment()))) {
             newMeasure.setDate(null);
         }
         reloadAdvances();
@@ -1294,6 +1295,16 @@ public class ManageOrderElementAdvancesController extends
                     return _("Value is not valid, the value must be greater than the value of the previous progress.");
                 }
             }
+
+            LocalDate consolidatedUntil = manageOrderElementAdvancesModel
+                    .getLastConsolidatedMeasurementDate(measurement
+                            .getAdvanceAssignment());
+            if (consolidatedUntil != null) {
+                if (consolidatedUntil.compareTo(measurement.getDate()) >= 0) {
+                    return _("Date is not valid, it must be greater than the last progress consolidation");
+                }
+            }
+
         }
         return null;
     }
