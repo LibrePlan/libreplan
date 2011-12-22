@@ -592,6 +592,13 @@ public class TaskElementAdapter {
 
             private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
                 BigDecimal hours = BigDecimal.ZERO;
+
+                if (taskElement instanceof TaskGroup) {
+                    //progess calculation for TaskGroups is done with
+                    //this method, which is much lighter
+                    return calculateLimitDateByPercentage(advancePercentage);
+                }
+
                 if (taskElement.getOrderElement() != null) {
                     if(taskElement.getParent() == null){
                         //it's an order, we use the cached value
@@ -602,10 +609,6 @@ public class TaskElementAdapter {
                         hours = taskElement.getSumOfAssignedEffortCalculated()
                                 .toHoursAsDecimalWithScale(2);;
                     }
-                }
-
-                if (taskElement instanceof TaskGroup) {
-                    return calculateLimitDateByPercentage(advancePercentage);
                 }
 
                 // Calculate date according to advanceHours or advancePercentage
