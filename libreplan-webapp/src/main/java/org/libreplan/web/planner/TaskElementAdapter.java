@@ -600,15 +600,8 @@ public class TaskElementAdapter {
                 }
 
                 if (taskElement.getOrderElement() != null) {
-                    if(taskElement.getParent() == null){
-                        //it's an order, we use the cached value
-                        hours = taskElement.getSumOfAssignedEffort()
-                                .toHoursAsDecimalWithScale(2);
-                    }
-                    else {
-                        hours = taskElement.getSumOfAssignedEffortCalculated()
-                                .toHoursAsDecimalWithScale(2);;
-                    }
+                    hours = taskElement.getSumOfAssignedEffort()
+                            .toHoursAsDecimalWithScale(2);
                 }
 
                 // Calculate date according to advanceHours or advancePercentage
