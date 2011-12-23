@@ -79,6 +79,15 @@ Debian/Ubuntu
 
     $ psql -h localhost -U libreplan -W libreplan < install.sql
 
+  .. WARNING::
+
+    It is very important to execute the previous command specifiying
+    ``libreplan`` user (as you can see in the ``-U`` option). Otherwise your
+    LibrePlan installation is not going to start properly and you could find in
+    your log files something like that::
+
+      JDBCExceptionReporter  - ERROR: permission denied for relation entity_sequence
+
 * Download ``.war`` file from SourceForge.net::
 
     $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
@@ -185,6 +194,15 @@ openSUSE
 * Create database structure::
 
     $ psql -h localhost -U libreplan -W libreplan < install.sql
+
+  .. WARNING::
+
+    It is very important to execute the previous command specifiying
+    ``libreplan`` user (as you can see in the ``-U`` option). Otherwise your
+    LibrePlan installation is not going to start properly and you could find in
+    your log files something like that::
+
+      JDBCExceptionReporter  - ERROR: permission denied for relation entity_sequence
 
 * Download ``.war`` file from SourceForge.net::
 
