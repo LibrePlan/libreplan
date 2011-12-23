@@ -379,9 +379,7 @@ public class SaveCommandBuilder {
         private void createAdvancePercentagesIfRequired(Order order) {
             List<OrderElement> allChildren = order.getAllChildren();
             for (OrderElement each : allChildren) {
-                if (each.isLeaf()) {
-                    createAdvancePercentageIfRequired(each);
-                }
+                createAdvancePercentageIfRequired(each);
             }
         }
 
