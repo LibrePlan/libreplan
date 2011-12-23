@@ -702,13 +702,8 @@ public class TaskElementAdapter {
                     EffortDuration decrement = min(entry.getValue(), hoursLeft);
                     hoursLeft = hoursLeft.minus(decrement);
                     if (hoursLeft.isZero()) {
-                        if (decrement.equals(entry.getValue())) {
-                            result = IntraDayDate.startOfDay(entry.getKey()
-                                    .plusDays(1));
-                        } else {
-                            result = IntraDayDate.create(entry.getKey(),
-                                    decrement);
-                        }
+                        result = IntraDayDate.create(entry.getKey(),
+                                decrement);
                         break;
                     } else {
                         result = IntraDayDate.startOfDay(entry.getKey()
