@@ -1362,8 +1362,11 @@ public class ManageOrderElementAdvancesController extends
             } else {
                 String errorMessage = validateDateAdvanceMeasurement(
                         new LocalDate(value), advanceMeasurement);
-                ((Datebox) comp).setValue(advanceMeasurement.getDate()
-                        .toDateTimeAtStartOfDay().toDate());
+                LocalDate date = advanceMeasurement.getDate();
+                if (date != null) {
+                    ((Datebox) comp).setValue(date.toDateTimeAtStartOfDay()
+                            .toDate());
+                }
                 if (errorMessage != null) {
                     throw new WrongValueException(comp, errorMessage);
                 }
