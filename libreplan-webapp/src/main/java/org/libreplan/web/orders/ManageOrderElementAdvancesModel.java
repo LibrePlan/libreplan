@@ -736,17 +736,9 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceMeasurement advanceMeasurement) {
         AdvanceAssignment advance = advanceMeasurement.getAdvanceAssignment();
         if ((orderElement != null) && (orderElement.getParent() != null) && (advance instanceof DirectAdvanceAssignment)) {
-
-            List<String> types = new ArrayList<String>();
-
-            types.add(advance.getAdvanceType().getUnitName());
-            if (advance.getReportGlobalAdvance()) {
-                types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
-            }
-
             orderElementDAO.reattach(orderElement);
             Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
-                    orderElement, types);
+                    orderElement, advance);
 
             for (IndirectAdvanceAssignment indirect : indirects) {
                 if (findConsolidatedAdvance(indirect
@@ -759,8 +751,20 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     private Set<IndirectAdvanceAssignment> getSpreadIndirectAdvanceAssignmentWithSameType(
-            OrderElement orderElement, List<String> types) {
+            OrderElement orderElement, AdvanceAssignment advance) {
+        List<String> types = new ArrayList<String>();
 
+        types.add(advance.getAdvanceType().getUnitName());
+        if (advance.getReportGlobalAdvance()) {
+            types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
+        }
+
+        return getSpreadIndirectAdvanceAssignmentWithSameType(orderElement,
+                types);
+    }
+
+    private Set<IndirectAdvanceAssignment> getSpreadIndirectAdvanceAssignmentWithSameType(
+            OrderElement orderElement, List<String> types) {
         Set<IndirectAdvanceAssignment> result = new HashSet<IndirectAdvanceAssignment>();
 
         for (IndirectAdvanceAssignment indirect : orderElement
