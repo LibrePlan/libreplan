@@ -875,13 +875,21 @@ public class ManageOrderElementAdvancesController extends
 
     private void setReportGlobalAdvance(final Listitem item) {
         boolean spread = true;
-        if (!radioSpreadIsConsolidated()) {
-            for (AdvanceAssignment advance : this.getAdvanceAssignments()) {
-                advance.setReportGlobalAdvance(false);
-            }
-        } else {
+
+        if (manageOrderElementAdvancesModel
+                .hasAnyConsolidatedAdvanceCurrentOrderElement()) {
+            showErrorMessage(_("Spread progress cannot be changed if there is a consolidation in any progress assignment from root task"));
             spread = false;
+        } else {
+            if (!radioSpreadIsConsolidated()) {
+                for (AdvanceAssignment advance : this.getAdvanceAssignments()) {
+                    advance.setReportGlobalAdvance(false);
+                }
+            } else {
+                spread = false;
+            }
         }
+
         ((AdvanceAssignment) item.getValue()).setReportGlobalAdvance(spread);
         Util.reloadBindings(editAdvances);
         setSelectedAdvanceLine();

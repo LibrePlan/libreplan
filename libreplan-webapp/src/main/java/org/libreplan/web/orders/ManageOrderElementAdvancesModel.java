@@ -831,4 +831,12 @@ public class ManageOrderElementAdvancesModel implements
                 .getConsolidatedUntil();
     }
 
+    @Override
+    public boolean hasAnyConsolidatedAdvanceCurrentOrderElement() {
+        if (orderElement == null) {
+            return false;
+        }
+        return orderElement.hasAnyConsolidatedAdvance();
+    }
+
 }
