@@ -1296,12 +1296,14 @@ public class ManageOrderElementAdvancesController extends
                 }
             }
 
-            LocalDate consolidatedUntil = manageOrderElementAdvancesModel
-                    .getLastConsolidatedMeasurementDate(measurement
-                            .getAdvanceAssignment());
-            if (consolidatedUntil != null) {
-                if (consolidatedUntil.compareTo(measurement.getDate()) >= 0) {
-                    return _("Date is not valid, it must be greater than the last progress consolidation");
+            if (!isReadOnlyAdvanceMeasurements()) {
+                LocalDate consolidatedUntil = manageOrderElementAdvancesModel
+                        .getLastConsolidatedMeasurementDate(measurement
+                                .getAdvanceAssignment());
+                if (consolidatedUntil != null) {
+                    if (consolidatedUntil.compareTo(measurement.getDate()) >= 0) {
+                        return _("Date is not valid, it must be greater than the last progress consolidation");
+                    }
                 }
             }
 

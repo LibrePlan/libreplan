@@ -803,14 +803,17 @@ public class ManageOrderElementAdvancesModel implements
     public LocalDate getLastConsolidatedMeasurementDate(
             AdvanceAssignment advance) {
         List<Consolidation> consolidations = new ArrayList<Consolidation>();
-        if (advance instanceof DirectAdvanceAssignment) {
-            Set<NonCalculatedConsolidation> nonCalculatedConsolidations = ((DirectAdvanceAssignment) advance)
-                    .getNonCalculatedConsolidation();
-            consolidations.addAll(nonCalculatedConsolidations);
-        } else {
-            Set<CalculatedConsolidation> calculatedConsolidations = ((IndirectAdvanceAssignment) advance)
-                    .getCalculatedConsolidation();
-            consolidations.addAll(calculatedConsolidations);
+
+        Set<NonCalculatedConsolidation> nonCalculatedConsolidations = ((DirectAdvanceAssignment) advance)
+                .getNonCalculatedConsolidation();
+        consolidations.addAll(nonCalculatedConsolidations);
+
+        if (consolidations.isEmpty()) {
+            Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
+                    orderElement, advance);
+            for (IndirectAdvanceAssignment indirect : indirects) {
+                consolidations.addAll(indirect.getCalculatedConsolidation());
+            }
         }
 
         if (consolidations.isEmpty()) {
