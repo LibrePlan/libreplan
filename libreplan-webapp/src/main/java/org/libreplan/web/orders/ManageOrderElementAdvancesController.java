@@ -1050,7 +1050,7 @@ public class ManageOrderElementAdvancesController extends
             listcell.appendChild(value);
             listitem.appendChild(listcell);
 
-            value.setScale(4);
+            value.setScale(calculateScale(advanceMeasurement));
             value.setDisabled(isReadOnlyAdvanceMeasurements()
                     || manageOrderElementAdvancesModel
                             .hasConsolidatedAdvances(advanceMeasurement));
@@ -1214,6 +1214,11 @@ public class ManageOrderElementAdvancesController extends
 
     public XYModel getChartData() {
         return this.manageOrderElementAdvancesModel.getChartData(selectedAdvances);
+    }
+
+    private int calculateScale(AdvanceMeasurement advanceMeasurement) {
+        return advanceMeasurement.getAdvanceAssignment().getAdvanceType()
+                .getUnitPrecision().stripTrailingZeros().scale();
     }
 
     private Button createRemoveButton() {
