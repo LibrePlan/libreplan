@@ -259,4 +259,8 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return copy;
     }
 
+    public boolean hasAnyConsolidationValue() {
+        return !nonCalculatedConsolidations.isEmpty();
+    }
+
 }
