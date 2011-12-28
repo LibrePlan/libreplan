@@ -177,4 +177,9 @@ public class TemplateController extends GenericForwardComposer {
     public String getIdWswriterUser() {
         return templateModel.getIdUser(MandatoryUser.WSWRITER.getLoginName());
     }
+
+    public boolean isUserAdmin() {
+        return templateModel.isUserAdmin();
+    }
+
 }
