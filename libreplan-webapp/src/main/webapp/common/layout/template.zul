@@ -156,6 +156,15 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
                 </n:span>
             </div>
         </n:div>
+        <n:div if="${templateCtrl.newVersionAvailable}" id="warningNewVersion"
+            class="footer-messages-area">
+            <div>
+                <n:span>
+                    ${i18n:_("A new version of LibrePlan is avilable. Please check next link for more information:")}
+                    <n:strong><n:a href="http://www.libreplan.com/download/" target="_blank">http://www.libreplan.com/download/</n:a></n:strong>
+                </n:span>
+            </div>
+        </n:div>
     </n:td>
     <n:td height="40" align="right" valign="bottom">
     </n:td>
