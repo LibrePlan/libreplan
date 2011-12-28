@@ -1279,8 +1279,10 @@ public class ManageOrderElementAdvancesController extends
             return _("Value is not valid, the current value must be less than max value");
         }
         if (!manageOrderElementAdvancesModel.isPrecisionValid(measurement)) {
-            return _("Value is not valid, the Precision value must be exact "
-                    + manageOrderElementAdvancesModel.getUnitPrecision());
+            return _(
+                    "Value must be a multiple of the precission value of the progress type: {0}",
+                    manageOrderElementAdvancesModel.getUnitPrecision()
+                            .stripTrailingZeros().toPlainString());
         }
         if (manageOrderElementAdvancesModel.lessThanPreviousMeasurements()) {
             return _("Value is not valid, the value must be greater than the value of the previous progress.");
