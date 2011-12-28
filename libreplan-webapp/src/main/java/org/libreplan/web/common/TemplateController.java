@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.VersionInformation;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.web.common.ITemplateModel.IOnFinished;
@@ -180,6 +181,10 @@ public class TemplateController extends GenericForwardComposer {
 
     public boolean isUserAdmin() {
         return templateModel.isUserAdmin();
+    }
+
+    public boolean isNewVersionAvailable() {
+        return VersionInformation.isNewVersionAvailable();
     }
 
 }
