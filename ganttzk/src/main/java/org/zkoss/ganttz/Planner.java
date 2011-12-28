@@ -877,7 +877,9 @@ public class Planner extends HtmlMacroComponent  {
         if (taskList != null) {
             taskList.updateCompletion(progressType);
             // FIXME Bug #1270
-            taskList.invalidate();
+            for (TaskComponent each : taskList.getTaskComponents()) {
+                each.invalidate();
+            }
         }
     }
 
