@@ -126,7 +126,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     </borderlayout>
 
 </center>
-<south border="none">
+<south border="none" if="${templateCtrl.userAdmin}">
 <n:table width="100%">
   <n:tr class="footer">
     <n:td  valign="center">
