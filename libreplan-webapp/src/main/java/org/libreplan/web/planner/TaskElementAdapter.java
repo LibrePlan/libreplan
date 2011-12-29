@@ -525,6 +525,9 @@ public class TaskElementAdapter {
                     BigDecimal percentage = new BigDecimal(assignedEffort
                             .divivedBy(effort).doubleValue()).setScale(2,
                             RoundingMode.HALF_UP);
+                    if (percentage.compareTo(BigDecimal.ONE) == 0) {
+                        return getEndDate();
+                    }
 
                     result = calculateLimitDateByPercentage(percentage);
 
@@ -594,6 +597,10 @@ public class TaskElementAdapter {
             }
 
             private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
+                if (advancePercentage.compareTo(BigDecimal.ONE) == 0) {
+                    return getEndDate();
+                }
+
                 BigDecimal hours = BigDecimal.ZERO;
 
                 if (taskElement instanceof TaskGroup) {
