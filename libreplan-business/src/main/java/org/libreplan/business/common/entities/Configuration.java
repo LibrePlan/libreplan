@@ -87,6 +87,8 @@ public class Configuration extends BaseEntity {
 
     private LDAPConfiguration ldapConfiguration;
 
+    private Boolean checkNewVersionEnabled = true;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -340,4 +342,13 @@ public class Configuration extends BaseEntity {
     public void setAutocompleteLogin(Boolean autocompleteLogin) {
         this.autocompleteLogin = autocompleteLogin;
     }
+
+    public boolean isCheckNewVersionEnabled() {
+        return checkNewVersionEnabled != null ? checkNewVersionEnabled : true;
+    }
+
+    public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
+        this.checkNewVersionEnabled = checkNewVersionEnabled;
+    }
+
 }
