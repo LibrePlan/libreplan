@@ -565,7 +565,10 @@ public class TaskElementAdapter {
                             return getBeginDate();
                         }
                     }
-                    BigDecimal percentage = new BigDecimal(assignedEffort.divideBy(effort));
+                    BigDecimal percentage = new BigDecimal(assignedEffort
+                            .divivedBy(effort).doubleValue()).setScale(2,
+                            RoundingMode.HALF_UP);
+
                     result = calculateLimitDateByPercentage(percentage);
 
                 }
@@ -584,8 +587,6 @@ public class TaskElementAdapter {
                         .getSumChargedEffort() != null ? orderElement
                         .getSumChargedEffort().getTotalChargedEffort()
                         : EffortDuration.zero();
-                BigDecimal assignedHours = totalChargedEffort
-                        .toHoursAsDecimalWithScale(2);
 
                 EffortDuration estimatedEffort = taskElement.getSumOfAssignedEffort();
 
@@ -595,7 +596,9 @@ public class TaskElementAdapter {
                         return BigDecimal.ZERO;
                     }
                 }
-                return new BigDecimal(totalChargedEffort.divideBy(estimatedEffort));
+                return new BigDecimal(totalChargedEffort.divivedBy(
+                        estimatedEffort).doubleValue()).setScale(2,
+                        RoundingMode.HALF_UP);
             }
 
             @Override
