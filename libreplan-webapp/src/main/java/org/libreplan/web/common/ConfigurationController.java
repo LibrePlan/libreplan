@@ -839,4 +839,12 @@ public class ConfigurationController extends GenericForwardComposer {
         return !getLdapConfiguration().getLdapGroupStrategy();
     }
 
+    public boolean isCheckNewVersionEnabled() {
+        return configurationModel.isCheckNewVersionEnabled();
+    }
+
+    public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
+        configurationModel.setCheckNewVersionEnabled(checkNewVersionEnabled);
+    }
+
 }

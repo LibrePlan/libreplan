@@ -93,6 +93,13 @@
                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                             </row>
                             <row>
+                                <label value="${i18n:_('Warning new version')}" />
+                                <checkbox
+                                    label="${i18n:_('Enable/Disable')}"
+                                    tooltiptext="${i18n:_('Enable/Disable warning about new LibrePlan versions available')}"
+                                    checked="@{configurationController.checkNewVersionEnabled}" />
+                            </row>
+                            <row>
                                 <label value="${i18n:_('Generate code for')}" />
                                 <grid>
                                     <columns>

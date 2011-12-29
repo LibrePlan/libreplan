@@ -484,4 +484,10 @@ public class TemplateModel implements ITemplateModel {
     public boolean isUserAdmin() {
         return UserUtil.getUserFromSession().isAdministrator();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isCheckNewVersionEnabled() {
+        return configurationDAO.getConfiguration().isCheckNewVersionEnabled();
+    }
 }

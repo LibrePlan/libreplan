@@ -184,6 +184,10 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public boolean isNewVersionAvailable() {
+        if (!templateModel.isCheckNewVersionEnabled()) {
+            return false;
+        }
+
         return VersionInformation.isNewVersionAvailable();
     }
 
