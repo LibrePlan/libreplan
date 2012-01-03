@@ -620,6 +620,13 @@ public class TaskElementAdapter {
                 GanttDate result = calculateLimitDateByHours(advanceHours);
                 if (result == null) {
                     result = calculateLimitDateByPercentage(advancePercentage);
+
+                } else {
+                    GanttDate endDate = toGantt(taskElement.getIntraDayEndDate());
+                    if (result.compareTo(endDate) > 0) {
+                        //don't allow progress bars wider than the task itself
+                        result = endDate;
+                    }
                 }
                 return result;
             }
