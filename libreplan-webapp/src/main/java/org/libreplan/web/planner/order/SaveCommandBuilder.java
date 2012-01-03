@@ -84,6 +84,7 @@ import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
@@ -556,13 +557,13 @@ public class SaveCommandBuilder {
         }
 
         private void updateRootTaskPosition(TaskGroup rootTask) {
-            final Date min = minDate(rootTask.getChildren());
+            final IntraDayDate min = minDate(rootTask.getChildren());
             if (min != null) {
-                rootTask.setStartDate(min);
+                rootTask.setIntraDayStartDate(min);
             }
-            final Date max = maxDate(rootTask.getChildren());
+            final IntraDayDate max = maxDate(rootTask.getChildren());
             if (max != null) {
-                rootTask.setEndDate(max);
+                rootTask.setIntraDayEndDate(max);
             }
         }
 
@@ -788,16 +789,16 @@ public class SaveCommandBuilder {
             taskElement.getDependenciesWithThisDestination().size();
         }
 
-        private Date maxDate(Collection<? extends TaskElement> tasksToSave) {
-            List<Date> endDates = toEndDates(tasksToSave);
+        private IntraDayDate maxDate(Collection<? extends TaskElement> tasksToSave) {
+            List<IntraDayDate> endDates = toEndDates(tasksToSave);
             return endDates.isEmpty() ? null : Collections.max(endDates);
         }
 
-        private List<Date> toEndDates(
+        private List<IntraDayDate> toEndDates(
                 Collection<? extends TaskElement> tasksToSave) {
-            List<Date> result = new ArrayList<Date>();
+            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
             for (TaskElement taskElement : tasksToSave) {
-                Date endDate = taskElement.getEndDate();
+                IntraDayDate endDate = taskElement.getIntraDayEndDate();
                 if (endDate != null) {
                     result.add(endDate);
                 } else {
@@ -807,16 +808,16 @@ public class SaveCommandBuilder {
             return result;
         }
 
-        private Date minDate(Collection<? extends TaskElement> tasksToSave) {
-            List<Date> startDates = toStartDates(tasksToSave);
+        private IntraDayDate minDate(Collection<? extends TaskElement> tasksToSave) {
+            List<IntraDayDate> startDates = toStartDates(tasksToSave);
             return startDates.isEmpty() ? null : Collections.min(startDates);
         }
 
-        private List<Date> toStartDates(
+        private List<IntraDayDate> toStartDates(
                 Collection<? extends TaskElement> tasksToSave) {
-            List<Date> result = new ArrayList<Date>();
+            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
             for (TaskElement taskElement : tasksToSave) {
-                Date startDate = taskElement.getStartDate();
+                IntraDayDate startDate = taskElement.getIntraDayStartDate();
                 if (startDate != null) {
                     result.add(startDate);
                 } else {
