@@ -261,7 +261,7 @@ public class PlanningStateCreator {
         if (rootTask != null) {
             forceLoadOf(rootTask);
             forceLoadDayAssignments(orderReloaded
-                    .getResources(FilterType.WITHOUT_DERIVED));
+                    .getResources(FilterType.KEEP_ALL));
             forceLoadOfDepedenciesCollections(rootTask);
             forceLoadOfLabels(Arrays.asList((TaskElement) rootTask));
         }
