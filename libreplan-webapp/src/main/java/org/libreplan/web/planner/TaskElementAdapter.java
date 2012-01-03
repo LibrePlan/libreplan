@@ -525,9 +525,6 @@ public class TaskElementAdapter {
                     BigDecimal percentage = new BigDecimal(assignedEffort
                             .divivedBy(effort).doubleValue()).setScale(2,
                             RoundingMode.HALF_UP);
-                    if (percentage.compareTo(BigDecimal.ONE) == 0) {
-                        return getEndDate();
-                    }
 
                     result = calculateLimitDateByPercentage(percentage);
 
