@@ -548,13 +548,18 @@ public abstract class TaskElement extends BaseEntity {
         result.put(date, current.plus(duration));
     }
 
-    public List<DayAssignment> getDayAssignments() {
+    public List<DayAssignment> getDayAssignments(DayAssignment.FilterType filter) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             dayAssignments.addAll(resourceAllocation.getAssignments());
+            Set<DerivedAllocation> derivedAllocations = resourceAllocation
+                    .getDerivedAllocations();
+            for (DerivedAllocation each : derivedAllocations) {
+                dayAssignments.addAll(each.getAssignments());
+            }
         }
-        return dayAssignments;
+        return DayAssignment.filter(dayAssignments, filter);
     }
 
     public boolean isSubcontracted() {

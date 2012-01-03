@@ -51,6 +51,7 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
@@ -259,7 +260,8 @@ public class PlanningStateCreator {
         TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
         if (rootTask != null) {
             forceLoadOf(rootTask);
-            forceLoadDayAssignments(orderReloaded.getResources());
+            forceLoadDayAssignments(orderReloaded
+                    .getResources(FilterType.WITHOUT_DERIVED));
             forceLoadOfDepedenciesCollections(rootTask);
             forceLoadOfLabels(Arrays.asList((TaskElement) rootTask));
         }
@@ -396,7 +398,7 @@ public class PlanningStateCreator {
             return new UsingOwnerScenario(currentScenario, orderReloaded);
         }
         final List<DayAssignment> previousAssignments = orderReloaded
-                .getDayAssignments();
+                .getDayAssignments(DayAssignment.FilterType.KEEP_ALL);
 
         OrderVersion newVersion = OrderVersion
                 .createInitialVersion(currentScenario);

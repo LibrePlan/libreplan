@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,8 +107,8 @@ public class HoursCostCalculator implements ICostCalculator {
 
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
-        List<DayAssignment> dayAssignments = task.getDayAssignments();
-
+        List<DayAssignment> dayAssignments = task
+                .getDayAssignments(FilterType.WITHOUT_DERIVED);
         if (dayAssignments.isEmpty()) {
             return result;
         }

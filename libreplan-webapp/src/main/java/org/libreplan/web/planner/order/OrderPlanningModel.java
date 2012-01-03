@@ -62,6 +62,7 @@ import org.libreplan.business.planner.chart.ContiguousDaysLine;
 import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.ICostCalculator;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -1141,7 +1142,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         @Override
         protected Plotinfo[] getPlotInfos(Interval interval) {
-            List<DayAssignment> orderDayAssignments = order.getDayAssignments();
+            List<DayAssignment> orderDayAssignments = order
+                    .getDayAssignments(FilterType.WITHOUT_DERIVED);
             ContiguousDaysLine<List<DayAssignment>> orderAssignments = ContiguousDaysLine
                     .byDay(orderDayAssignments);
             ContiguousDaysLine<List<DayAssignment>> allAssignments = allAssignments(orderAssignments);
@@ -1249,7 +1251,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             AvailabilityTimeLine.Interval interval = AvailabilityTimeLine.Interval
                     .create(startInclusive, endExclusive);
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : order.getResources()) {
+            for (Resource resource : order
+                    .getResources(FilterType.WITHOUT_DERIVED)) {
                 resourcesDayAssignments.addAll(insideInterval(interval,
                         planningState.getAssignmentsCalculator()
                                 .getAssignments(resource)));
