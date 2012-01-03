@@ -347,10 +347,16 @@ public class PlanningStateCreator {
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.getAssociatedResources();
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
-                eachDerived.getResources();
+                forceLoadOfDerivedAllocation(eachDerived);
             }
             forceLoadOfAssignmentFunction(each);
         }
+    }
+
+    private static void forceLoadOfDerivedAllocation(
+            DerivedAllocation derivedAllocation) {
+        derivedAllocation.getResources();
+        derivedAllocation.getConfigurationUnit().getWorkerAssignments().size();
     }
 
     private static void forceLoadOfAssignmentFunction(ResourceAllocation<?> each) {
