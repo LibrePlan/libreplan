@@ -1,0 +1,1 @@
+../doc/src/technical/howto-start-development-with-eclipse.rst
