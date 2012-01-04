@@ -267,6 +267,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private OverAllProgressContent overallProgressContent;
 
+    private String tabSelected = "load_tab";
+
     private static class NullSeparatorCommandOnTask<T> implements
             ICommandOnTask<T> {
 
@@ -362,7 +364,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
-        appendTabs(chartComponent);
+        appendTabs(chartComponent, tabSelected);
 
         configuration.setChartComponent(chartComponent);
         configureModificators(planningState.getOrder(), configuration);
@@ -695,11 +697,48 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return deadlineMarker;
     }
 
-    private void appendTabs(Tabbox chartComponent) {
+    private void selectTab(String tabName) {
+        tabSelected = tabName;
+    }
+
+    private void appendTabs(Tabbox chartComponent, String tabName) {
         Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(new Tab(_("Load")));
-        chartTabs.appendChild(new Tab(_("Earned value")));
-        chartTabs.appendChild(new Tab(_("Overall progress")));
+        Tab load = new Tab(_("Load"));
+        load.setId("load_tab");
+        if (load.getId().equals(tabName))
+            load.setSelected(true);
+        load.addEventListener("onClick", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectTab("load_tab");
+            }
+        });
+        Tab earnedValue = new Tab(_("Earned value"));
+        earnedValue.setId("earnedValue_tab");
+        if (earnedValue.getId().equals(tabName))
+            earnedValue.setSelected(true);
+        earnedValue.addEventListener("onClick", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectTab("earnedValue_tab");
+            }
+        });
+        Tab overallProgress = new Tab(_("Overall progress"));
+        overallProgress.setId("overallProgres_tab");
+        if (overallProgress.getId().equals(tabName))
+            overallProgress.setSelected(true);
+        overallProgress.addEventListener("onClick", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectTab("overallProgress_tab");
+            }
+        });
+        chartTabs.appendChild(load);
+        chartTabs.appendChild(earnedValue);
+        chartTabs.appendChild(overallProgress);
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
