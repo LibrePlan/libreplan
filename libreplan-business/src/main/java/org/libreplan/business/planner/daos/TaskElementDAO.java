@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
@@ -123,6 +124,15 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     public void save(TaskElement taskElement) {
         updateSumOfAllocatedHours(taskElement);
         super.save(taskElement);
+    }
+
+    @Override
+    public List<TaskElement> getTaskElementsNoMilestonesWithoutTaskSource() {
+        String strQuery = "FROM TaskElement "
+                + "WHERE id NOT IN (SELECT id FROM TaskSource) AND "
+                + "id NOT IN (SELECT id FROM TaskMilestone)";
+        Query query = getSession().createQuery(strQuery);
+        return query.list();
     }
 
 }
