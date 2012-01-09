@@ -359,6 +359,22 @@ public class SaveCommandBuilder {
             subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
 
             saveOrderAuthorizations();
+
+            removeTaskElementsWithTaskSourceNull();
+        }
+
+        private void removeTaskElementsWithTaskSourceNull() {
+            List<TaskElement> toRemove = taskElementDAO
+                    .getTaskElementsNoMilestonesWithoutTaskSource();
+            for (TaskElement taskElement : toRemove) {
+                try {
+                    taskElementDAO.remove(taskElement.getId());
+                } catch (InstanceNotFoundException e) {
+                    // Do nothing
+                    // Maybe it was already removed before reaching this point
+                    // so if it's not in the database there isn't any problem
+                }
+            }
         }
 
         private void saveOrderAuthorizations() {
