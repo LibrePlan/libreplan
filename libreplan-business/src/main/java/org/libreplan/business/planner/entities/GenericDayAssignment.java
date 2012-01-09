@@ -202,7 +202,8 @@ public class GenericDayAssignment extends DayAssignment {
 
     @Override
     public String toString() {
-        return super.toString() + " duration: " + getDuration();
+        return super.toString() + " duration: " + getDuration()
+                + ", consolidated: " + isConsolidated();
     }
 
     @Override
