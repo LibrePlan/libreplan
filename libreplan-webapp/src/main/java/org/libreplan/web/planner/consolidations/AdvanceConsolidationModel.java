@@ -218,7 +218,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         if (value.getDate().compareTo(end.getDate().minusDays(1)) >= 0) {
             reassignExpandingTask(allResourceAllocations);
         } else {
-            reassignAll(end, allResourceAllocations);
+            reassignAll(task.getIntraDayStartDate(), end,
+                    allResourceAllocations);
         }
 
         resetIntendedResourcesPerDayWithNonConsolidated(allResourceAllocations);
@@ -238,19 +239,19 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
         }
     }
 
-    private void reassignAll(IntraDayDate end,
+    private void reassignAll(IntraDayDate start, IntraDayDate end,
             Collection<? extends ResourceAllocation<?>> allocations) {
         for (ResourceAllocation<?> each : allocations) {
             EffortDuration pendingEffort = consolidation
                     .getNotConsolidated(each.getIntendedTotalAssigment());
-            reassign(each, end, pendingEffort);
+            reassign(each, start, end, pendingEffort);
         }
     }
 
     private void reassign(ResourceAllocation<?> resourceAllocation,
-            IntraDayDate end, EffortDuration pendingEffort) {
+            IntraDayDate start, IntraDayDate end, EffortDuration pendingEffort) {
         resourceAllocation.withPreviousAssociatedResources()
-                .fromStartUntil(end).allocate(pendingEffort);
+                .onInterval(start, end).allocate(pendingEffort);
     }
 
     private void reassignExpandingTask(
@@ -326,7 +327,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 .getAllResourceAllocations();
         withDetachOnDayAssignmentRemoval(allResourceAllocations);
 
-        reassignAll(task.getIntraDayEndDate(), allResourceAllocations);
+        reassignAll(task.getIntraDayStartDate(), task.getIntraDayEndDate(),
+                allResourceAllocations);
 
         resetIntendedResourcesPerDayWithNonConsolidated(allResourceAllocations);
     }
