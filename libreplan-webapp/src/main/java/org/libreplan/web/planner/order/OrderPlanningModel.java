@@ -365,7 +365,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
-        appendTabs(chartComponent, tabSelected);
+        appendTabs(chartComponent);
 
         configuration.setChartComponent(chartComponent);
         configureModificators(planningState.getOrder(), configuration);
@@ -702,47 +702,31 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         tabSelected = tabName;
     }
 
-    private void appendTabs(Tabbox chartComponent, String tabName) {
+    private void appendTabs(Tabbox chartComponent) {
         Tabs chartTabs = new Tabs();
-        Tab load = new Tab(_("Load"));
-        load.setId("load_tab");
-        if (load.getId().equals(tabName))
-            load.setSelected(true);
-        load.addEventListener("onClick", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                selectTab("load_tab");
-            }
-        });
-        Tab earnedValue = new Tab(_("Earned value"));
-        earnedValue.setId("earnedValue_tab");
-        if (earnedValue.getId().equals(tabName))
-            earnedValue.setSelected(true);
-        earnedValue.addEventListener("onClick", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                selectTab("earnedValue_tab");
-            }
-        });
-        Tab overallProgress = new Tab(_("Overall progress"));
-        overallProgress.setId("overallProgres_tab");
-        if (overallProgress.getId().equals(tabName))
-            overallProgress.setSelected(true);
-        overallProgress.addEventListener("onClick", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                selectTab("overallProgress_tab");
-            }
-        });
-        chartTabs.appendChild(load);
-        chartTabs.appendChild(earnedValue);
-        chartTabs.appendChild(overallProgress);
+        chartTabs.appendChild(createTab(_("Load"), "load_tab"));
+        chartTabs.appendChild(createTab(_("Earned value"), "earned_value_tab"));
+        chartTabs.appendChild(createTab(_("Overall progress"),
+                "overall_progress_tab"));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
+    }
+
+    private Tab createTab(String name, final String id) {
+        Tab tab = new Tab(name);
+        tab.setId(id);
+        if (id.equals(tabSelected)) {
+            tab.setSelected(true);
+        }
+        tab.addEventListener("onClick", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectTab(id);
+            }
+        });
+        return tab;
     }
 
     private org.zkoss.zk.ui.Component getLoadChartLegend() {
