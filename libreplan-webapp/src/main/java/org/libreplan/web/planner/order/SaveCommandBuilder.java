@@ -56,7 +56,9 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.daos.IConsolidationDAO;
+import org.libreplan.business.planner.daos.IDependencyDAO;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
@@ -84,6 +86,7 @@ import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
@@ -136,8 +139,7 @@ public class SaveCommandBuilder {
             for (DayAssignment eachAssignment : each.getAssignments()) {
                 eachAssignment.dontPoseAsTransientObjectAnymore();
             }
-            for (DerivedAllocation eachDerived : each
-                    .getDerivedAllocations()) {
+            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
                 eachDerived.dontPoseAsTransientObjectAnymore();
                 Collection<DerivedDayAssignmentsContainer> containers = eachDerived
                         .getContainers();
@@ -153,8 +155,7 @@ public class SaveCommandBuilder {
         }
     }
 
-    private static void dontPoseAsTransient(
-            LimitingResourceQueueElement element) {
+    private static void dontPoseAsTransient(LimitingResourceQueueElement element) {
         if (element != null) {
             for (LimitingResourceQueueDependency d : element
                     .getDependenciesAsOrigin()) {
@@ -201,6 +202,9 @@ public class SaveCommandBuilder {
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
+    @Autowired
+    private IDependencyDAO dependencyDAO;
+
     private class SaveCommand implements ISaveCommand {
 
         private PlanningState state;
@@ -211,7 +215,7 @@ public class SaveCommandBuilder {
 
         private IAdapterToTaskFundamentalProperties<TaskElement> adapter;
 
-        private List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
+        private final List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
 
         public SaveCommand(PlanningState planningState,
                 PlannerConfiguration<TaskElement> configuration) {
@@ -272,7 +276,7 @@ public class SaveCommandBuilder {
                                     }
                                     doTheSaving();
                                     return null;
-                        }
+                                }
                             });
                     dontPoseAsTransientObjectAnymore(state.getOrder());
                     state.getScenarioInfo().afterCommit();
@@ -288,7 +292,8 @@ public class SaveCommandBuilder {
 
                 try {
                     String message = validationException.getMessage();
-                    for (InvalidValue invalidValue : validationException.getInvalidValues()) {
+                    for (InvalidValue invalidValue : validationException
+                            .getInvalidValues()) {
                         message += "\n" + invalidValue.getPropertyName() + ": "
                                 + invalidValue.getMessage();
                     }
@@ -331,6 +336,7 @@ public class SaveCommandBuilder {
             checkConstraintOrderUniqueCode(order);
             checkConstraintHoursGroupUniqueCode(order);
             state.synchronizeTrees();
+
             TaskGroup rootTask = state.getRootTask();
 
             if (rootTask != null) {
@@ -342,8 +348,10 @@ public class SaveCommandBuilder {
                 taskElementDAO.reattach(rootTask);
             }
             orderDAO.save(order);
+
             saveDerivedScenarios(order);
             deleteOrderElementWithoutParent(order);
+            deleteUnboundedDependencies();
 
             updateTasksRelatedData();
             removeTasksToRemove();
@@ -369,14 +377,13 @@ public class SaveCommandBuilder {
                     throw new RuntimeException(e);
                 }
             }
+            state.cleanOrderAuthorizationsAdditionAndRemoval();
         }
 
         private void createAdvancePercentagesIfRequired(Order order) {
             List<OrderElement> allChildren = order.getAllChildren();
             for (OrderElement each : allChildren) {
-                if (each.isLeaf()) {
-                    createAdvancePercentageIfRequired(each);
-                }
+                createAdvancePercentageIfRequired(each);
             }
         }
 
@@ -494,6 +501,14 @@ public class SaveCommandBuilder {
             }
         }
 
+        private void deleteUnboundedDependencies() {
+            try {
+                dependencyDAO.deleteUnattachedDependencies();
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         private void tryToRemove(OrderElement orderElement) {
             // checking no work reports for that orderElement
             if (orderElementDAO
@@ -545,18 +560,21 @@ public class SaveCommandBuilder {
         }
 
         private void updateRootTaskPosition(TaskGroup rootTask) {
-            final Date min = minDate(rootTask.getChildren());
+            final IntraDayDate min = minDate(rootTask.getChildren());
             if (min != null) {
-                rootTask.setStartDate(min);
+                rootTask.setIntraDayStartDate(min);
             }
-            final Date max = maxDate(rootTask.getChildren());
+            final IntraDayDate max = maxDate(rootTask.getChildren());
             if (max != null) {
-                rootTask.setEndDate(max);
+                rootTask.setIntraDayEndDate(max);
             }
         }
 
         private void saveTaskSources(TaskElement taskElement) {
-            taskSourceDAO.save(taskElement.getTaskSource());
+            TaskSource taskSource = taskElement.getTaskSource();
+            if (taskSource != null) {
+                taskSourceDAO.save(taskSource);
+            }
             if (taskElement.isLeaf()) {
                 return;
             }
@@ -774,16 +792,16 @@ public class SaveCommandBuilder {
             taskElement.getDependenciesWithThisDestination().size();
         }
 
-        private Date maxDate(Collection<? extends TaskElement> tasksToSave) {
-            List<Date> endDates = toEndDates(tasksToSave);
+        private IntraDayDate maxDate(Collection<? extends TaskElement> tasksToSave) {
+            List<IntraDayDate> endDates = toEndDates(tasksToSave);
             return endDates.isEmpty() ? null : Collections.max(endDates);
         }
 
-        private List<Date> toEndDates(
+        private List<IntraDayDate> toEndDates(
                 Collection<? extends TaskElement> tasksToSave) {
-            List<Date> result = new ArrayList<Date>();
+            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
             for (TaskElement taskElement : tasksToSave) {
-                Date endDate = taskElement.getEndDate();
+                IntraDayDate endDate = taskElement.getIntraDayEndDate();
                 if (endDate != null) {
                     result.add(endDate);
                 } else {
@@ -793,16 +811,16 @@ public class SaveCommandBuilder {
             return result;
         }
 
-        private Date minDate(Collection<? extends TaskElement> tasksToSave) {
-            List<Date> startDates = toStartDates(tasksToSave);
+        private IntraDayDate minDate(Collection<? extends TaskElement> tasksToSave) {
+            List<IntraDayDate> startDates = toStartDates(tasksToSave);
             return startDates.isEmpty() ? null : Collections.min(startDates);
         }
 
-        private List<Date> toStartDates(
+        private List<IntraDayDate> toStartDates(
                 Collection<? extends TaskElement> tasksToSave) {
-            List<Date> result = new ArrayList<Date>();
+            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
             for (TaskElement taskElement : tasksToSave) {
-                Date startDate = taskElement.getStartDate();
+                IntraDayDate startDate = taskElement.getIntraDayStartDate();
                 if (startDate != null) {
                     result.add(startDate);
                 } else {
@@ -844,7 +862,6 @@ public class SaveCommandBuilder {
                 throw new RuntimeException(e);
             }
         }
-
 
         private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
             orderElement.dontPoseAsTransientObjectAnymore();

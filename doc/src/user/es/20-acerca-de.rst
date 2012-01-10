@@ -1,4 +1,4 @@
-Acerca de 
+Acerca de
 #################
 
 .. _acercade:
@@ -9,46 +9,76 @@ Licencia
 ================
 
 Este programa es software libre; puede redistribuirlo o modificarlo bajo los
-términos de la Licencia Pública Generala Affero GNU tal como se publica por la 
+términos de la Licencia Pública Generala Affero GNU tal como se publica por la
 Free Software Foundation; ya sea la versión 3 de la Licencia, o (a su elección)
 cualquier versión posterior.
 
-Este programa se distribuye con la esperanza de que le sea útil, pero SIN 
+Este programa se distribuye con la esperanza de que le sea útil, pero SIN
 NINGUNA GARANTÍA; sin incluso la garantía implícita de MERCANTILIDAD o IDONEIDAD
-PARA UN PROPÓSITO PARTICULAR. Vea la Licencia Pública General Affero GNU para 
+PARA UN PROPÓSITO PARTICULAR. Vea la Licencia Pública General Affero GNU para
 más detalles.
 
 Debería haber recibido una copia de la Licencia Pública General Affero GNU junto
 con este programa. Si no es así, visite <http://www.gnu.org/licenses/>.
 
+
 Escrito por
 ================
 
-- Javier Morán <jmoran@igalia.com> 
-- Oscar González <ogonzalez@igalia.com> 
-- Diego Pino <dpino@igalia.com> 
-- Manuel Rego <mrego@igalia.com> 
-- José María Casanova <jmcasanova@igalia.com> 
-- Lorenzo Tilve <ltilve@igalia.com> 
-- Jacobo Aragunde <jaragunde@igalia.com> 
-- Susana Montes <smontes@wirelessgalicia.com> 
-- Xavier Castaño <xcastanho@igalia.com> 
-- Farruco Sanjurjo <fsanjurjo@igalia.com> 
-- Fernando Bellas <fbellas@udc.es> 
+Equipo de LibrePlan
+-------------------
+
+* Cristina Alvariño Pérez <cristina.alvarino@cafedered.es>
+* Jacobo Aragunde Pérez <jaragunde@igalia.com>
+* Nacho Barrientos Arias <nacho@igalia.com>
+* Xavier Castaño García <xcastanho@igalia.com>
+* Ignacio Díaz Teijido <ignacio.diaz@cafedered.es>
+* Susana Montes Pedreira <smontes@wirelessgalicia.com>
+* Francisco Javier Morán Rúa <jmoran@igalia.com>
+* Diego Pino García <dpino@igalia.com>
+* Manuel Rego Casasnovas <rego@igalia.com>
+* Lorenzo Tilve Álvaro <ltilve@igalia.com>
+
+Anteriores miembros del equipo
+------------------------------
+
+* Fernando Bellas Permuy <fbellas@udc.es>
+* José María Casanova Crespo <jmcasanova@igalia.com>
+* Óscar González Fernández <ogonzalez@igalia.com>
+* Pablo Fernández de la Cigoña Nóvoa <pcigonha@igalia.com>
+* Farruco Sanjurjo Arcay <fsanjurjo@igalia.com>
+
+Traductores
+-----------
+
+* [es] Manuel Rego Casasnovas <rego@igalia.com>
+* [gl] Manuel Rego Casasnovas <rego@igalia.com>
+* [pt] Helena Grosso <lenagrosso@gmail.com>
+* [ru] Pavel Rudensky <prudensky@gmail.com>
+
+Contribuidores
+--------------
+
+* Eloy Calatayud <ecalatayud@wirelessgalicia.com>
+* Sergio Carracedo <cto@opsou.com>
+* Pedro Figueras <sales@opsou.com>
+* Dmytro Melanchenko <melanchenko@gmail.com>
+* Adrián Pérez <aperez@igalia.com>
+
 
 Financiación pública
 ========================
 
-Dentro del marco global de LibrePlan y la gestión de la planificación, se desarrolló un proyecto que pretende resolver 
-una serie de problemas comunes de planificación. 
-Este proyecto fue cofinanciado por la Xunta de Galicia, el Ministerio de Industria, Turismo y Comercio, y la 
+Dentro del marco global de LibrePlan y la gestión de la planificación, se desarrolló un proyecto que pretende resolver
+una serie de problemas comunes de planificación.
+Este proyecto fue cofinanciado por la Xunta de Galicia, el Ministerio de Industria, Turismo y Comercio, y la
 Unión Europea, Fondo Europeo de Desarrollo Regional.
 
 
 .. figure:: images/logos.png
    :scale: 100
 
-El proyecto formo parte del Plan Avanza: 
+El proyecto formo parte del Plan Avanza:
 
 .. figure:: images/avanza.gif
    :scale: 100

@@ -70,7 +70,7 @@
         <groupbox closable="false">
             <caption id="materialsCaption" label="${i18n:_('List of materials for all categories (select one to filter)')}"/>
                     <button id="btnAddMaterial"
-                        label="${i18n:_('Add')}"
+                        label="${i18n:_('New')}"
                         onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
                     <separator spacing="15px" orient="horizontal" />
                     <newdatasortablegrid id="gridMaterials"

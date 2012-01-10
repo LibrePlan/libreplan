@@ -33,7 +33,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.libreplan.business.planner.chart.ContiguousDaysLine.ONDay;
+import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.workingday.EffortDuration;
 
@@ -45,15 +45,15 @@ import org.libreplan.business.workingday.EffortDuration;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public class ContiguousDaysLine<T> implements Iterable<ONDay<T>> {
+public class ContiguousDaysLine<T> implements Iterable<OnDay<T>> {
 
-    public static class ONDay<T> {
+    public static class OnDay<T> {
 
         private final LocalDate day;
 
         private final T value;
 
-        private ONDay(LocalDate day, T value) {
+        private OnDay(LocalDate day, T value) {
             Validate.notNull(day);
             this.day = day;
             this.value = value;
@@ -175,7 +175,7 @@ public class ContiguousDaysLine<T> implements Iterable<ONDay<T>> {
     public static SortedMap<LocalDate, EffortDuration> toSortedMap(
             ContiguousDaysLine<EffortDuration> line) {
         SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
-        for (ONDay<EffortDuration> each : line) {
+        for (OnDay<EffortDuration> each : line) {
             result.put(each.getDay(), each.getValue());
         }
         return result;
@@ -266,7 +266,7 @@ public class ContiguousDaysLine<T> implements Iterable<ONDay<T>> {
                 min(getEndExclusive(), endExclusive));
         ContiguousDaysLine<T> result = new ContiguousDaysLine<T>(newStart,
                 days.getDays());
-        for (ONDay<T> each : result) {
+        for (OnDay<T> each : result) {
             result.set(each.getDay(), this.get(each.getDay()));
         }
         return result;
@@ -332,7 +332,7 @@ public class ContiguousDaysLine<T> implements Iterable<ONDay<T>> {
         }
         ContiguousDaysLine<R> result = ContiguousDaysLine.create(
                 startInclusive, getEndExclusive());
-        for (ONDay<T> onDay : this) {
+        for (OnDay<T> onDay : this) {
             LocalDate day = onDay.getDay();
             result.set(day, doubleTransformer.transform(day, onDay.getValue()));
         }
@@ -368,9 +368,9 @@ public class ContiguousDaysLine<T> implements Iterable<ONDay<T>> {
     }
 
     @Override
-    public Iterator<ONDay<T>> iterator() {
+    public Iterator<OnDay<T>> iterator() {
         final Iterator<T> iterator = values.iterator();
-        return new Iterator<ONDay<T>>() {
+        return new Iterator<OnDay<T>>() {
 
             private LocalDate current = startInclusive;
 
@@ -380,9 +380,9 @@ public class ContiguousDaysLine<T> implements Iterable<ONDay<T>> {
             }
 
             @Override
-            public ONDay<T> next() {
+            public OnDay<T> next() {
                 T next = iterator.next();
-                ONDay<T> result = new ONDay<T>(current, next);
+                OnDay<T> result = new OnDay<T>(current, next);
                 current = current.plusDays(1);
                 return result;
             }

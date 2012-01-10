@@ -5,7 +5,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.3</version>
+    <version>1.2.0</version>
     <name>LibrePlan</name>
 
     <!--
@@ -28,8 +28,8 @@
     -->
     <properties>
         <!--  Data source properties -->
-        <dataSource.user>naval</dataSource.user>
-        <dataSource.password>naval</dataSource.password>
+        <dataSource.user>libreplan</dataSource.user>
+        <dataSource.password>libreplan</dataSource.password>
         <dataSource.jndiName>jdbc/libreplan-ds</dataSource.jndiName>
         <testDataSource.user>${dataSource.user}</testDataSource.user>
         <testDataSource.password>${dataSource.password}</testDataSource.password>
@@ -113,7 +113,7 @@
                 <jdbcDriver.version>8.3-603.jdbc4</jdbcDriver.version>
                 <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
-                <dataSource.url>jdbc:postgresql://localhost/naval${libreplan.mode}</dataSource.url>
+                <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
@@ -131,7 +131,7 @@
                 <jdbcDriver.version>5.0.5</jdbcDriver.version>
                 <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
-                <dataSource.url>jdbc:mysql://localhost/naval${libreplan.mode}</dataSource.url>
+                <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}</dataSource.url>
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>

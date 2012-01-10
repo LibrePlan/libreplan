@@ -23,9 +23,9 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <zk>
 
-    <window border="normal" title="${i18n:_('Print configuration')}"
-        closable="true" id="printConfigurationWindow">
-        <groupbox>
+    <window border="none" title="${i18n:_('Print configuration')}"
+        closable="true" id="printConfigurationWindow" width="300px">
+        <groupbox style="padding:10px; margin:10px;">
             <caption label="${i18n:_('Export options')}" />
             <vbox>
                 <checkbox id="print_labels" label="${i18n:_('Show labels')}" checked="true" />
@@ -41,6 +41,9 @@
                     label="${i18n:_('Show all reported hours')}" checked="true"/>
             </vbox>
         </groupbox>
+        <hbox>
+            <label style="color:#CCC;padding:5px;" value="${i18n:_('Please remember that only saved changes will be printed')}" />
+        </hbox>
         <button id="printButton" label="${i18n:_('Print')}" sclass="save-button global-action"></button>
         <button id="cancelPrintButton" label="${i18n:_('Cancel')}" sclass="cancel-button global-action" onClick="printConfigurationWindow.detach()"/>
     </window>

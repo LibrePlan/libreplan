@@ -32,14 +32,29 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public interface ITaskFundamentalProperties {
 
+    public interface IUpdatablePosition {
+
+        public void setBeginDate(GanttDate beginDate);
+
+        public void setEndDate(GanttDate endDate);
+
+        public void resizeTo(GanttDate endDate);
+
+        public void moveTo(GanttDate newStart);
+    }
+
+    /**
+     * The position modifications must be wrapped inside this
+     */
+    public interface IModifications {
+        public void doIt(IUpdatablePosition position);
+    }
+
+    public void doPositionModifications(IModifications modifications);
+
     public String getName();
 
     public void setName(String name);
-
-    /**
-     * Sets the beginDate.
-     */
-    public void setBeginDate(GanttDate beginDate);
 
     public GanttDate getBeginDate();
 
@@ -54,10 +69,6 @@ public interface ITaskFundamentalProperties {
     public GanttDate getConsolidatedline();
 
     public GanttDate getEndDate();
-
-    public void setEndDate(GanttDate endDate);
-
-    public void resizeTo(GanttDate endDate);
 
     public String getNotes();
 
@@ -80,8 +91,6 @@ public interface ITaskFundamentalProperties {
     public List<Constraint<GanttDate>> getStartConstraints();
 
     public List<Constraint<GanttDate>> getEndConstraints();
-
-    public void moveTo(GanttDate newStart);
 
     public boolean isSubcontracted();
 

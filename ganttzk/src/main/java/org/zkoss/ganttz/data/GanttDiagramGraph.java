@@ -46,12 +46,16 @@ import org.apache.commons.logging.LogFactory;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.zkoss.ganttz.data.DependencyType.Point;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues;
 import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.ComparisonType;
 import org.zkoss.ganttz.data.criticalpath.ICriticalPathCalculable;
 import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper;
+import org.zkoss.ganttz.util.ReentranceGuard;
+import org.zkoss.ganttz.util.ReentranceGuard.IReentranceCases;
 
 /**
  * This class contains a graph with the {@link Task tasks} as vertexes and the
@@ -86,6 +90,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
     public interface IAdapter<V, D extends IDependency<V>> {
         List<V> getChildren(V task);
+
+        V getOwner(V task);
 
         boolean isContainer(V task);
 
@@ -129,6 +135,15 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         @Override
         public List<Task> getChildren(Task task) {
             return task.getTasks();
+        }
+
+        @Override
+        public Task getOwner(Task task) {
+            if (task instanceof Milestone) {
+                Milestone milestone = (Milestone) task;
+                return milestone.getOwner();
+            }
+            return null;
         }
 
         @Override
@@ -180,8 +195,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
 
         @Override
-        public void setEndDateFor(Task task, GanttDate newEnd) {
-            task.setEndDate(newEnd);
+        public void setEndDateFor(Task task, final GanttDate newEnd) {
+            task.doPositionModifications(new IModifications() {
+
+                @Override
+                public void doIt(IUpdatablePosition position) {
+                    position.setEndDate(newEnd);
+                }
+            });
         }
 
         @Override
@@ -190,8 +211,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         @Override
-        public void setStartDateFor(Task task, GanttDate newStart) {
-            task.setBeginDate(newStart);
+        public void setStartDateFor(Task task, final GanttDate newStart) {
+            task.doPositionModifications(new IModifications() {
+
+                @Override
+                public void doIt(IUpdatablePosition position) {
+                    position.setBeginDate(newStart);
+                }
+            });
         }
 
         @Override
@@ -512,6 +539,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                             child, task, DependencyType.END_END));
                     dependenciesToAdd.add(adapter.createInvisibleDependency(
                             task, child, DependencyType.START_START));
+                }
+            } else {
+                V owner = adapter.getOwner(task);
+                if(owner != null) {
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            task, owner, DependencyType.END_END));
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            owner, task, DependencyType.START_START));
                 }
             }
         }
@@ -1933,16 +1968,27 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     public boolean hasVisibleIncomingDependencies(V task) {
-        return isSomeVisible(graph.incomingEdgesOf(task));
+        return isSomeVisibleAndNotEndEnd(graph.incomingEdgesOf(task));
+    }
+
+    private boolean isSomeVisibleAndNotEndEnd(Set<D> dependencies) {
+        for (D each : dependencies) {
+            if (!each.getType().equals(DependencyType.END_END)
+                    && adapter.isVisible(each)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean hasVisibleOutcomingDependencies(V task) {
-        return isSomeVisible(graph.outgoingEdgesOf(task));
+        return isSomeVisibleAndNotStartStart(graph.outgoingEdgesOf(task));
     }
 
-    private boolean isSomeVisible(Set<D> dependencies) {
+    private boolean isSomeVisibleAndNotStartStart(Set<D> dependencies) {
         for (D each : dependencies) {
-            if (adapter.isVisible(each)) {
+            if (!each.getType().equals(DependencyType.START_START)
+                    && adapter.isVisible(each)) {
                 return true;
             }
         }
@@ -2273,31 +2319,4 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return adapter.getChildren(task);
     }
 
-}
-
-interface IReentranceCases {
-    public void ifNewEntrance();
-
-    public void ifAlreadyInside();
-}
-
-class ReentranceGuard {
-    private final ThreadLocal<Boolean> inside = new ThreadLocal<Boolean>() {
-        protected Boolean initialValue() {
-            return false;
-        };
-    };
-
-    public void entranceRequested(IReentranceCases reentranceCases) {
-        if (inside.get()) {
-            reentranceCases.ifAlreadyInside();
-            return;
-        }
-        inside.set(true);
-        try {
-            reentranceCases.ifNewEntrance();
-        } finally {
-            inside.set(false);
-        }
-    }
 }

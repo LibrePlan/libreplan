@@ -147,15 +147,13 @@ public class CompanyPlanningController implements Composer {
         cbProgressTypes.setModel(new ListModelList(ProgressType.getAll()));
         cbProgressTypes.setItemRenderer(new ProgressTypeRenderer());
 
-        // FIXME: Select default configuration option
-
         // Update completion of tasks on selecting new progress type
         cbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
             public void onEvent(Event event) {
-                planner.updateCompletion(getSelectedProgressType().toString());
                 planner.forcedShowAdvances();
+                planner.updateCompletion(getSelectedProgressType().toString());
             }
 
             private ProgressType getSelectedProgressType() {
@@ -166,33 +164,27 @@ public class CompanyPlanningController implements Composer {
 
         cbProgressTypes.setVisible(true);
 
-        Comboitem item = findListitemValue(cbProgressTypes,
-                getProgressTypeFromConfiguration());
-
-        if (item != null) {
-            cbProgressTypes.setSelectedItem(item);
+        ProgressType progressType = getProgressTypeFromConfiguration();
+        if (progressType != null) {
+            planner.updateCompletion(progressType.toString());
         }
 
     }
 
-    private static class ProgressTypeRenderer implements ComboitemRenderer {
+    private class ProgressTypeRenderer implements ComboitemRenderer {
 
         @Override
         public void render(Comboitem item, Object data) {
             ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));
-        }
-    }
 
-    private Comboitem findListitemValue(Combobox listbox, ProgressType value) {
-        for (Object each : listbox.getChildren()) {
-            final Comboitem item = (Comboitem) each;
-            if (value.equals(item.getValue())) {
-                return item;
+            ProgressType configuredProgressType = getProgressTypeFromConfiguration();
+            if ((configuredProgressType != null)
+                    && configuredProgressType.equals(progressType)) {
+                cbProgressTypes.setSelectedItem(item);
             }
         }
-        return null;
     }
 
     public ProgressType getProgressTypeFromConfiguration() {

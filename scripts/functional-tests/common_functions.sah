@@ -80,8 +80,8 @@ function commonDeleteProject($name){
 function commonCreateTask($projectName, $name, $hours){
     _click(_link("Projects List"));
     _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($projectName))))));
-    _setValue(_textbox(0, _near(_span("New task:"))), $name);
-    _setValue(_textbox("z-intbox", _near(_span("Hours:"))), $hours);
+    _setValue(_textbox(0, _near(_span("New task"))), $name);
+    _setValue(_textbox("z-intbox", _near(_span("Hours"))), $hours);
     _click(_cell("Add"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
@@ -533,12 +533,12 @@ function commonWorkReportModelCreate($name, $type){
 }
 
 function commonWorkReportModelForm($name, $type){
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _removeFocus(_textbox(0, _near(_div("Name:"))));
-    _setSelected(_select(0, _near(_span("Task:"))), $type);
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name"))));
+    _setSelected(_select(0, _near(_span("Task"))), $type);
     _click(_cell("Add New Complementary Field"));
-    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
-    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _setValue(_textbox(0, _near(_span("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_span("Complementary text fields"))), "12");
     _click(_cell("Save"));
 }
 

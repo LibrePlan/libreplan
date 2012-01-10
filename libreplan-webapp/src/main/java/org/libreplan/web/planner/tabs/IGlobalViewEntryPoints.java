@@ -31,8 +31,10 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 
 /**
  * Entry points for {@link MultipleTabsPlannerController} <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @EntryPoints(page = "/planner/index.zul", registerAs = "globalView")
 public interface IGlobalViewEntryPoints {
@@ -72,4 +74,5 @@ public interface IGlobalViewEntryPoints {
 
     @EntryPoint({"order","task"})
     void goToAdvanceTask(Order order,TaskElement task);
+
 }

@@ -59,10 +59,12 @@ public class HoursWorkedPerWorkerInAMonthScriptlet extends JRAbstractScriptlet {
         HoursWorkedPerWorkerInAMonthDTO dto = (HoursWorkedPerWorkerInAMonthDTO) this
                 .getFieldValue("self");
         if (!dtos.contains(dto)) {
-            EffortDuration effort = EffortDuration.sum(EffortDuration
-                    .parseFromFormattedString((String) this
-                            .getVariableValue("sumNumHours")), current);
-            this.setVariableValue("sumNumHours", effort.toFormattedString());
+            if (current != null) {
+                EffortDuration effort = EffortDuration.sum(EffortDuration
+                        .parseFromFormattedString((String) this
+                                .getVariableValue("sumNumHours")), current);
+                this.setVariableValue("sumNumHours", effort.toFormattedString());
+            }
             dtos.add(dto);
         }
     }

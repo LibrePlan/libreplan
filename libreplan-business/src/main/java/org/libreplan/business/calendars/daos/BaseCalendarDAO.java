@@ -22,12 +22,12 @@
 package org.libreplan.business.calendars.daos;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.CalendarData;
@@ -60,6 +60,7 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
     public List<BaseCalendar> getBaseCalendars() {
         List<BaseCalendar> list = list(BaseCalendar.class);
         removeResourceCalendarInstances(list);
+        Collections.sort(list);
         return list;
     }
 

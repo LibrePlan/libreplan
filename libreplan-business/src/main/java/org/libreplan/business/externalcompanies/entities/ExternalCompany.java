@@ -36,7 +36,8 @@ import org.libreplan.business.users.entities.User;
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public class ExternalCompany extends BaseEntity implements IHumanIdentifiable{
+public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
+        Comparable<ExternalCompany> {
 
     private String name;
 
@@ -193,6 +194,11 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable{
     @Override
     public String getHumanId() {
         return name;
+    }
+
+    @Override
+    public int compareTo(ExternalCompany company) {
+        return this.getName().compareToIgnoreCase(company.getName());
     }
 
 }

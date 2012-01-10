@@ -55,11 +55,11 @@
                      </columns>
                      <rows>
                          <row>
-                             <label value="${i18n:_('Work done from starting date:')}" />
+                             <label value="${i18n:_('Work done from starting date')}" />
                              <datebox id="startingDate" width="200px" constraint = "@{controller.checkConstraintStartingDate}"/>
                          </row>
                          <row>
-                             <label value="${i18n:_('Work done until ending date:')}" />
+                             <label value="${i18n:_('Work done until ending date')}" />
                              <datebox id="endingDate" width="200px" constraint = "@{controller.checkConstraintEndingDate}"/>
                          </row>
                      </rows>
@@ -201,7 +201,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Output format:')}" />
+                            <label value="${i18n:_('Output format')}" />
                             <combobox_output_format id="outputFormat" />
                         </row>
                     </rows>
@@ -215,10 +215,10 @@
     </tabbox>
 
         <hbox style="display: none" id="URItext">
-            <label value="${i18n:_('Click on ')}" />
-            <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
+            <label value="${i18n:_('Click on this')}" />
+            <a id="URIlink" class="z-label"
                     label="${i18n:_('direct link')}" />
-            <label value="${i18n:_(' to go to output directly')}" />
+            <label value="${i18n:_('if the report isn\'t opened automatically')}" />
         </hbox>
 
         <separator spacing="10px" orient="horizontal"/>

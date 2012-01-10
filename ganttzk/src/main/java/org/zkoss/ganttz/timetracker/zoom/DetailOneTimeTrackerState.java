@@ -36,7 +36,7 @@ import org.joda.time.Years;
 public class DetailOneTimeTrackerState extends
         TimeTrackerStateWithSubintervalsFitting {
 
-    public static final Period MINIMUN_PERIOD = PeriodType.YEARS.amount(4);
+    public static final Period MINIMUN_PERIOD = PeriodType.YEARS.amount(6);
 
     private static final int FIRST_LEVEL_ITEM_SIZE = 200;
     private static final int SECOND_LEVEL_ITEM_SIZE = 100;

@@ -34,6 +34,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
@@ -238,9 +240,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (isInPage()) {
-                        updateProperties();
-                    }
+                    updateProperties();
                 }
             };
         }
@@ -306,6 +306,9 @@ public class TaskComponent extends Div implements AfterCompose {
     private transient PropertyChangeListener propertiesListener;
     private IConstraintViolationListener<GanttDate> taskViolationListener;
 
+    // FIXME Bug #1270
+    private String progressType;
+
     public TaskRow getRow() {
         if (getParent() == null) {
             throw new IllegalStateException(
@@ -342,8 +345,14 @@ public class TaskComponent extends Div implements AfterCompose {
 
     void doUpdatePosition(int leftX, int topY) {
         GanttDate startBeforeMoving = this.task.getBeginDate();
-        LocalDate newPosition = getMapper().toDate(leftX);
-        this.task.moveTo(GanttDate.createFrom(newPosition));
+        final LocalDate newPosition = getMapper().toDate(leftX);
+        this.task.doPositionModifications(new IModifications() {
+
+            @Override
+            public void doIt(IUpdatablePosition position) {
+                position.moveTo(GanttDate.createFrom(newPosition));
+            }
+        });
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
@@ -482,7 +491,7 @@ public class TaskComponent extends Div implements AfterCompose {
         updateCompletionAdvance();
     }
 
-    private void updateCompletionReportedHours() {
+    public void updateCompletionReportedHours() {
         if (task.isShowingReportedHours()) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
             String widthHoursAdvancePercentage = pixelsFromStartUntil(
@@ -529,11 +538,13 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateTooltipText() {
-        smartUpdate("taskTooltipText", task.updateTooltipText());
+        // FIXME Bug #1270
+        this.progressType = null;
     }
 
     public void updateTooltipText(String progressType) {
-        smartUpdate("taskTooltipText", task.updateTooltipText(progressType));
+        // FIXME Bug #1270
+        this.progressType = progressType;
     }
 
     private DependencyList getDependencyList() {
@@ -567,7 +578,12 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public String getTooltipText() {
-        return task.getTooltipText();
+        // FIXME Bug #1270
+        if (progressType == null) {
+            return task.getTooltipText();
+        } else {
+            return task.updateTooltipText(progressType);
+        }
     }
 
     public String getLabelsText() {

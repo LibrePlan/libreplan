@@ -26,6 +26,7 @@ import java.util.List;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
@@ -134,6 +135,13 @@ public class GanttPanel extends XulElement implements AfterCompose {
             planner.setTaskListPredicate(planner.getPredicate());
         }
         registerZoomLevelChangedListener();
+    }
+
+    public void updateTooltips() {
+        for (Task task : this.tasksLists.getAllTasks()) {
+            task.updateTooltipText();
+        }
+        invalidate();
     }
 
     public TimeTrackerComponent getTimeTrackerComponent() {

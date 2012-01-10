@@ -64,11 +64,11 @@ Debian/Ubuntu
 
 * Use SQL sentences::
 
-    CREATE DATABASE navaldev;
-    CREATE DATABASE navaldevtest;
-    CREATE USER naval WITH PASSWORD 'naval';
-    GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
-    GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
+    CREATE DATABASE libreplandev;
+    CREATE DATABASE libreplandevtest;
+    CREATE USER libreplan WITH PASSWORD 'libreplan';
+    GRANT ALL PRIVILEGES ON DATABASE libreplandev TO libreplan;
+    GRANT ALL PRIVILEGES ON DATABASE libreplandevtest TO libreplan;
 
 * Download source code::
 
@@ -76,6 +76,7 @@ Debian/Ubuntu
 
 * Compile project::
 
+    $ cd libreplan/
     $ mvn clean install
 
 * Launch application::
@@ -103,11 +104,11 @@ Fedora
 
 * Use SQL sentences::
 
-    CREATE DATABASE navaldev;
-    CREATE DATABASE navaldevtest;
-    CREATE USER naval WITH PASSWORD 'naval';
-    GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
-    GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
+    CREATE DATABASE libreplandev;
+    CREATE DATABASE libreplandevtest;
+    CREATE USER libreplan WITH PASSWORD 'libreplan';
+    GRANT ALL PRIVILEGES ON DATABASE libreplandev TO libreplan;
+    GRANT ALL PRIVILEGES ON DATABASE libreplandevtest TO libreplan;
 
 * Set ``postgres`` user password::
 
@@ -125,6 +126,7 @@ Fedora
 
 * Compile project::
 
+    $ cd libreplan/
     $ mvn clean install
 
 * Launch application::
@@ -163,11 +165,11 @@ openSUSE
 
 * Use SQL sentences::
 
-    CREATE DATABASE navaldev;
-    CREATE DATABASE navaldevtest;
-    CREATE USER naval WITH PASSWORD 'naval';
-    GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
-    GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
+    CREATE DATABASE libreplandev;
+    CREATE DATABASE libreplandevtest;
+    CREATE USER libreplan WITH PASSWORD 'libreplan';
+    GRANT ALL PRIVILEGES ON DATABASE libreplandev TO libreplan;
+    GRANT ALL PRIVILEGES ON DATABASE libreplandevtest TO libreplan;
 
 * Set ``postgres`` user password::
 
@@ -185,6 +187,7 @@ openSUSE
 
 * Compile project::
 
+    $ cd libreplan/
     $ mvn clean install
 
 * Launch application::
@@ -275,11 +278,11 @@ profiles defined in ``pom.xml`` of business and webapp modules).
 
 * *dev* - Development environment (default)
 
-  It uses databases ``navaldev`` and ``navaldevtest``.
+  It uses databases ``libreplandev`` and ``libreplandevtest``.
 
 * *prod* - Production environment
 
-  Unlike *dev* it uses database ``navalprod`` and `navalprodtest``.
+  Unlike *dev* it uses database ``libreplanprod`` and `libreplanprodtest``.
 
   It is needed to use it in combination with *postgresql* or *mysql* profiles.
 
@@ -361,10 +364,10 @@ For MySQL users here are specific instructions.
 
 * SQL sentences to create database::
 
-    CREATE DATABASE navaldev;
-    CREATE DATABASE navaldevtest;
-    GRANT ALL ON navaldev.* to 'naval'@'localhost' identified by 'naval';
-    GRANT ALL ON navaldevtest.* to 'naval'@'localhost' identified by 'naval';
+    CREATE DATABASE libreplandev;
+    CREATE DATABASE libreplandevtest;
+    GRANT ALL ON libreplandev.* to 'libreplan'@'localhost' identified by 'libreplan';
+    GRANT ALL ON libreplandevtest.* to 'libreplan'@'localhost' identified by 'libreplan';
 
 * Compile project::
 

@@ -210,7 +210,6 @@ public class TaskSource extends BaseEntity {
             task.initializeDatesIfNeeded();
         }
         if (!hasSomeAllocationDone(task)) {
-            task.setEndDate(null);
             task.initializeDatesIfNeeded();
         }
         task.updateDeadlineFromOrderElement();
@@ -307,8 +306,7 @@ public class TaskSource extends BaseEntity {
 
         @Override
         public TaskElement apply(IOptionalPersistence optionalPersistence) {
-            taskSource.getTask().detachFromDependencies();
-            taskSource.getTask().detachFromParent();
+            taskSource.getTask().detach();
             optionalPersistence.remove(taskSource);
             return null;
         }

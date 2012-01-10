@@ -137,7 +137,9 @@ function virtualWorkerAssignProjectForm($workerName){
     _click(_div($workerName));
     _click(_cell($workerName));
     _click(_cell("Add"));
-    _click(_cell("z-button-cm[39]"));
+    _click(_row("Accept[2]"));
+    _assertExists(_div("box standard-task assigned"));
+    _log("Task assigned", "custom1");
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
 }

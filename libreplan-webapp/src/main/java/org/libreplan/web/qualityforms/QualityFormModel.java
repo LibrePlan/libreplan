@@ -215,7 +215,7 @@ public class QualityFormModel implements IQualityFormModel {
     @Override
     public Boolean isTotalPercentage(QualityFormItem item) {
         return (item.getPercentage() != null) ? (item.getPercentage()
-                .equals(totalPercentage)) : false;
+                .compareTo(totalPercentage) == 0) : false;
     }
 
     @Override

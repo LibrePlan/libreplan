@@ -109,7 +109,7 @@ public class OrderLineGroup extends OrderElement implements
             TaskGroup group = (TaskGroup) getThis().getTaskSource()
                     .getTask();
             group.remove(childTask);
-            childTask.detachFromDependencies();
+            childTask.detachDependencies();
         }
 
         @Override

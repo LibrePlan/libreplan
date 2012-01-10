@@ -29,7 +29,7 @@
             <newdatasortablecolumn label="${i18n:_('Client')}" />
             <newdatasortablecolumn label="${i18n:_('Subcontractor')}" />
             <newdatasortablecolumn label="${i18n:_('Associated user')}" />
-            <newdatasortablecolumn label="${i18n:_('Actions')}" />
+            <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
             <row self="@{each='company'}" value="@{company}" onClick="controller.goToEditForm(self.value)">

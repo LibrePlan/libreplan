@@ -23,6 +23,7 @@ package org.libreplan.web.reports;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -106,6 +107,7 @@ public class TimeLineRequiredMaterialModel implements
 
     private void loadAllOrders() {
         allOrders = orderDAO.getOrdersByScenario(scenarioManager.getCurrent());
+        Collections.sort(allOrders);
     }
 
     @Override
@@ -201,6 +203,8 @@ public class TimeLineRequiredMaterialModel implements
         for (MaterialAssignment material : listMaterialAssignment) {
             OrderElement order = orderDAO.loadOrderAvoidingProxyFor(material
                     .getOrderElement());
+            // Load scheduling states
+            order.getSchedulingState();
 
             TaskElement task = findTaskBy(material);
             reloadTask(task);

@@ -395,6 +395,12 @@ public abstract class OrderElement extends IntegrationEntity implements
         removeChildrenTaskSource(result);
         if (getOnDBTaskSource() != null) {
             result.add(taskSourceRemoval());
+        } else {
+            TaskSource taskSource = getTaskSource();
+            if (taskSource != null) {
+                taskSource.getTask().detach();
+                getCurrentSchedulingData().taskSourceRemovalRequested();
+            }
         }
     }
 
@@ -1446,6 +1452,34 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public List<OrderVersion> getOrderVersions() {
         return new ArrayList<OrderVersion>(schedulingDatasForVersion.keySet());
+    }
+
+    public String toString() {
+        return super.toString() + " :: " + getName();
+    }
+
+    /**
+     * Checks if it has nay consolidated advance, if not checks if any parent
+     * has it
+     */
+    public boolean hasAnyConsolidatedAdvance() {
+        for (DirectAdvanceAssignment each : directAdvanceAssignments) {
+            if (each.hasAnyConsolidationValue()) {
+                return true;
+            }
+        }
+
+        for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
+            if (each.hasAnyConsolidationValue()) {
+                return true;
+            }
+        }
+
+        if (parent != null) {
+            return parent.hasAnyConsolidatedAdvance();
+        }
+
+        return false;
     }
 
 }

@@ -36,7 +36,7 @@
             onDrop="criterionTreeController.move(self, event.dragged)"
             model="@{criterionTreeController.criterionTreeModel}"
             treeitemRenderer="@{criterionTreeController.renderer}" pageSize="10"
-            sclass="orderTree" fixedLayout="true">
+            sclass="orderTree" fixedLayout="true" mold="paging">
             <treecols sizable="true">
                 <treecol label="${i18n:_('Name')}" />
                 <treecol width="250px" label="${i18n:_('Code')}" />

@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,8 +59,10 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.chart.ContiguousDaysLine;
+import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.ICostCalculator;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -264,6 +267,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private Planner planner;
 
     private OverAllProgressContent overallProgressContent;
+
+    private String tabSelected = "load_tab";
 
     private static class NullSeparatorCommandOnTask<T> implements
             ICommandOnTask<T> {
@@ -493,7 +498,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         vbox.setPack("center");
 
         Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date:")));
+        dateHbox.appendChild(new Label(_("Select date")));
 
         LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
         Datebox datebox = new Datebox(initialDateForIndicatorValues
@@ -693,14 +698,35 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return deadlineMarker;
     }
 
+    private void selectTab(String tabName) {
+        tabSelected = tabName;
+    }
+
     private void appendTabs(Tabbox chartComponent) {
         Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(new Tab(_("Load")));
-        chartTabs.appendChild(new Tab(_("Earned value")));
-        chartTabs.appendChild(new Tab(_("Overall progress")));
+        chartTabs.appendChild(createTab(_("Load"), "load_tab"));
+        chartTabs.appendChild(createTab(_("Earned value"), "earned_value_tab"));
+        chartTabs.appendChild(createTab(_("Overall progress"),
+                "overall_progress_tab"));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
+    }
+
+    private Tab createTab(String name, final String id) {
+        Tab tab = new Tab(name);
+        tab.setId(id);
+        if (id.equals(tabSelected)) {
+            tab.setSelected(true);
+        }
+        tab.addEventListener("onClick", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectTab(id);
+            }
+        });
+        return tab;
     }
 
     private org.zkoss.zk.ui.Component getLoadChartLegend() {
@@ -1018,8 +1044,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
                 try {
                     Messagebox
-                            .show("Are you sure to want to leave? Unsaved changes will be lost.",
-                                    "Confirm exit dialog", Messagebox.OK
+                            .show(_("Unsaved changes will be lost. Are you sure?"),
+                                    _("Confirm exit dialog"), Messagebox.OK
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION,
                             new org.zkoss.zk.ui.event.EventListener() {
@@ -1139,21 +1165,24 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         @Override
         protected Plotinfo[] getPlotInfos(Interval interval) {
-            List<DayAssignment> orderDayAssignments = order.getDayAssignments();
+            List<DayAssignment> orderDayAssignments = order
+                    .getDayAssignments(FilterType.WITHOUT_DERIVED);
             ContiguousDaysLine<List<DayAssignment>> orderAssignments = ContiguousDaysLine
                     .byDay(orderDayAssignments);
             ContiguousDaysLine<List<DayAssignment>> allAssignments = allAssignments(orderAssignments);
+            ContiguousDaysLine<List<DayAssignment>> filteredAssignments = filterAllAssignmentsByOrderResources(
+                    allAssignments, orderAssignments);
 
             ContiguousDaysLine<EffortDuration> maxCapacityOnResources = orderAssignments
                     .transform(ResourceLoadChartData
                             .extractAvailabilityOnAssignedResources());
             ContiguousDaysLine<EffortDuration> orderLoad = orderAssignments
                     .transform(ResourceLoadChartData.extractLoad());
-            ContiguousDaysLine<EffortDuration> allLoad = allAssignments
+            ContiguousDaysLine<EffortDuration> allLoad = filteredAssignments
                     .transform(ResourceLoadChartData.extractLoad());
             ContiguousDaysLine<EffortDuration> orderOverload = orderAssignments
                     .transform(ResourceLoadChartData.extractOverload());
-            ContiguousDaysLine<EffortDuration> allOverload = allAssignments
+            ContiguousDaysLine<EffortDuration> allOverload = filteredAssignments
                     .transform(ResourceLoadChartData.extractOverload());
 
             Plotinfo plotOrderLoad = createPlotinfoFromDurations(
@@ -1196,6 +1225,41 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                     plotMaxCapacity, plotOtherLoad, plotOrderLoad };
         }
 
+        private ContiguousDaysLine<List<DayAssignment>> filterAllAssignmentsByOrderResources(
+                ContiguousDaysLine<List<DayAssignment>> allAssignments,
+                ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
+            List<DayAssignment> filteredAssignments = new ArrayList<DayAssignment>();
+
+            Iterator<OnDay<List<DayAssignment>>> iterator = orderAssignments
+                    .iterator();
+            while (iterator.hasNext()) {
+                OnDay<List<DayAssignment>> onDay = iterator.next();
+                Set<Resource> resources = getResources(onDay.getValue());
+                filteredAssignments.addAll(filterAssignmentsByResource(
+                        allAssignments.get(onDay.getDay()), resources));
+            }
+            return ContiguousDaysLine.byDay(filteredAssignments);
+        }
+
+        private List<DayAssignment> filterAssignmentsByResource(
+                List<DayAssignment> list, Set<Resource> resources) {
+            List<DayAssignment> result = new ArrayList<DayAssignment>();
+            for (DayAssignment each : list) {
+                if (resources.contains(each.getResource())) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        private Set<Resource> getResources(List<DayAssignment> dayAssignments) {
+            Set<Resource> resources = new HashSet<Resource>();
+            for (DayAssignment each : dayAssignments) {
+                resources.add(each.getResource());
+            }
+            return resources;
+        }
+
         private ContiguousDaysLine<List<DayAssignment>> allAssignments(
                 ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
             if (orderAssignments.isNotValid()) {
@@ -1210,7 +1274,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             AvailabilityTimeLine.Interval interval = AvailabilityTimeLine.Interval
                     .create(startInclusive, endExclusive);
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : order.getResources()) {
+            for (Resource resource : order
+                    .getResources(FilterType.WITHOUT_DERIVED)) {
                 resourcesDayAssignments.addAll(insideInterval(interval,
                         planningState.getAssignmentsCalculator()
                                 .getAssignments(resource)));

@@ -21,5 +21,4 @@
 
 <hbox>
         <textbox value="" width="110px" />
-        <datebox  compact="true" visible="${false}"/>
 </hbox>

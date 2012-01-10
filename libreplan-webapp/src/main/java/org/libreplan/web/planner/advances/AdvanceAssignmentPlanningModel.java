@@ -64,11 +64,6 @@ public class AdvanceAssignmentPlanningModel implements
     private OrderElement orderElement;
 
     @Override
-    public void cancel() {
-
-    }
-
-    @Override
     public void accept() {
         getOrderElement().updateAdvancePercentageTaskElement();
     }

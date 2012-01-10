@@ -68,6 +68,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
@@ -112,9 +113,15 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Checkbox scenariosVisible;
 
-    private Component ldapRoles;
-
     private UserRole roles;
+
+    private Textbox ldapGroupPath;
+
+    private Textbox ldapRoleProperty;
+
+    private Textbox ldapSearchQuery;
+
+    private Radiogroup strategy;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -141,7 +148,27 @@ public class ConfigurationController extends GenericForwardComposer {
             scenariosVisible
                     .setTooltiptext(_("Scenarios must be enabled as more elements than master exist"));
         }
-        showLdapRoles();
+        loadRoleStrategyRows();
+    }
+
+    public void changeRoleStrategy() {
+        this.getLdapConfiguration().setLdapGroupStrategy(
+                strategy.getSelectedItem().getValue().equals("group"));
+        loadRoleStrategyRows();
+    }
+
+    private void loadRoleStrategyRows() {
+        if (getLdapConfiguration().getLdapGroupStrategy()) {
+            strategy.setSelectedIndex(0);
+            ldapGroupPath.setDisabled(false);
+            ldapSearchQuery.setDisabled(true);
+            ldapRoleProperty.setDisabled(true);
+        } else {
+            strategy.setSelectedIndex(1);
+            ldapGroupPath.setDisabled(true);
+            ldapSearchQuery.setDisabled(false);
+            ldapRoleProperty.setDisabled(false);
+        }
     }
 
     private void initializeProgressTypeList() {
@@ -765,11 +792,6 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setLdapConfiguration(ldapConfiguration);
     }
 
-    public void showLdapRoles() {
-        ldapRoles.setVisible(configurationModel.getLdapConfiguration()
-                .getLdapSaveRolesDB());
-    }
-
     public RowRenderer getAllUserRolesRenderer() {
         return new RowRenderer() {
             @Override
@@ -815,6 +837,14 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public boolean isChangedDefaultPasswdAdmin() {
         return configurationModel.isChangedDefaultPasswdAdmin();
+    }
+
+    public boolean isLdapGroupStrategy() {
+        return getLdapConfiguration().getLdapGroupStrategy();
+    }
+
+    public boolean isLdapPropertyStrategy() {
+        return !getLdapConfiguration().getLdapGroupStrategy();
     }
 
 }

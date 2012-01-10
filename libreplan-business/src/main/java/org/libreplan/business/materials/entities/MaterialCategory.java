@@ -292,4 +292,9 @@ public class MaterialCategory extends IntegrationEntity {
         return lastMaterialSequenceCode;
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + " :: " + getName();
+    }
+
 }

@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionWithItsType;
 import org.libreplan.business.resources.entities.MachineWorkerAssignment;
@@ -50,7 +49,6 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Bandbox;
 
 
@@ -197,15 +195,10 @@ public class MachineConfigurationController extends GenericForwardComposer {
 
 
     public void deleteRequiredCriterion(Criterion criterion, Rows component) {
-        String unitString = ((Textbox) component.getParent()
-                .getPreviousSibling()).getValue();
-        try {
-            MachineWorkersConfigurationUnit unit = machineModel
-                    .getConfigurationUnitById(Long.valueOf(unitString));
-            unit.removeRequiredCriterion(criterion);
-        } catch (InstanceNotFoundException e) {
-            LOG.error("Configuration unit not found", e);
-        }
+        MachineWorkersConfigurationUnit unit = (MachineWorkersConfigurationUnit) ((Row) component
+                .getParent().getParent().getParent().getParent().getParent())
+                .getValue();
+        unit.removeRequiredCriterion(criterion);
         Util.reloadBindings(component.getParent().getParent());
     }
 

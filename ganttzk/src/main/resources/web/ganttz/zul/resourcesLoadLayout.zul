@@ -40,7 +40,7 @@ resourcesLoadPanel = self;
         <separator/>
         <hbox id="additionalFilterInsertionPoint1" />
         <separator/>
-        ${ganttzk_i18n:_('Filter')}:
+        ${ganttzk_i18n:_('Show')}:
         <listbox id="listFilters" mold="select" rows="1" width="100px"
             model="${resourcesLoadPanel.filters}"
             selectedIndex="0"
@@ -58,11 +58,11 @@ resourcesLoadPanel = self;
         <center border="0">
             <borderlayout sclass="resourcesload">
                 <west size="250px" flex="true" collapsible="true"
-                    splittable="true" autoscroll="false">
-                    <borderlayout >
+                    splittable="true" autoscroll="false" border="0">
+                    <borderlayout>
                         <north border="0" height="35px" flex="true" collapsible="true">
                             <vbox pack="top" align="center">
-                            <tree fixedLayout="true" hflex="true">
+                            <tree fixedLayout="true" hflex="true" sclass="resourceloaddetailsContainer">
                                 <treecols>
                                     <treecol label="${ganttzk_i18n:_('Name')}" height="29px"/>
                                 </treecols>

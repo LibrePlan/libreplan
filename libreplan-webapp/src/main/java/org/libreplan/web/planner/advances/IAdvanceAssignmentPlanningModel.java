@@ -38,11 +38,6 @@ public interface IAdvanceAssignmentPlanningModel {
     }
 
     /**
-     * Cancel operation
-     */
-    void cancel();
-
-    /**
      * Save task
      */
     void accept();

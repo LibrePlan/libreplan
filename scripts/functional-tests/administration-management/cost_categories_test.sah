@@ -60,7 +60,7 @@ function costCategoryForm($name, $hworkName) {
     _click(_cell("Save"));
 }
 */
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function costCategoryNotValid(){
     _assertExists(_div("checkConstraintUniqueName: the cost category name has to be unique. It is already used"));
     _assert(_isVisible(_div("checkConstraintUniqueName: the cost category name has to be unique. It is already used")));

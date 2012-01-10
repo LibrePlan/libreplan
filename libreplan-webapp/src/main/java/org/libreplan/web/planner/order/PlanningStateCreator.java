@@ -21,6 +21,7 @@ package org.libreplan.web.planner.order;
 import static org.libreplan.business.planner.entities.TaskElement.justTasks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -50,6 +51,7 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
@@ -95,6 +97,7 @@ import org.zkoss.zk.ui.Desktop;
  * yet, it creates and initializes a new PlanningState.
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -258,8 +261,10 @@ public class PlanningStateCreator {
         TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
         if (rootTask != null) {
             forceLoadOf(rootTask);
-            forceLoadDayAssignments(orderReloaded.getResources());
+            forceLoadDayAssignments(orderReloaded
+                    .getResources(FilterType.KEEP_ALL));
             forceLoadOfDepedenciesCollections(rootTask);
+            forceLoadOfLabels(Arrays.asList((TaskElement) rootTask));
         }
 
         if (orderReloaded.getCalendar() != null) {
@@ -271,7 +276,6 @@ public class PlanningStateCreator {
                 currentScenario);
 
         forceLoadOfWorkingHours(result.getInitial());
-        forceLoadOfLabels(result.getInitial());
         return result;
     }
 
@@ -347,10 +351,16 @@ public class PlanningStateCreator {
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.getAssociatedResources();
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
-                eachDerived.getResources();
+                forceLoadOfDerivedAllocation(eachDerived);
             }
             forceLoadOfAssignmentFunction(each);
         }
+    }
+
+    private static void forceLoadOfDerivedAllocation(
+            DerivedAllocation derivedAllocation) {
+        derivedAllocation.getResources();
+        derivedAllocation.getConfigurationUnit().getWorkerAssignments().size();
     }
 
     private static void forceLoadOfAssignmentFunction(ResourceAllocation<?> each) {
@@ -402,7 +412,7 @@ public class PlanningStateCreator {
             return new UsingOwnerScenario(currentScenario, orderReloaded);
         }
         final List<DayAssignment> previousAssignments = orderReloaded
-                .getDayAssignments();
+                .getDayAssignments(DayAssignment.FilterType.KEEP_ALL);
 
         OrderVersion newVersion = OrderVersion
                 .createInitialVersion(currentScenario);
@@ -708,6 +718,9 @@ public class PlanningStateCreator {
         }
 
         private List<OrderAuthorization> loadOrderAuthorizations() {
+            if (order.isNewObject()) {
+                return new ArrayList<OrderAuthorization>();
+            }
             List<OrderAuthorization> orderAuthorizations = orderAuthorizationDAO
                     .listByOrder(order);
             for (OrderAuthorization each : orderAuthorizations) {
@@ -794,7 +807,7 @@ public class PlanningStateCreator {
             }
             IAdapterToTaskFundamentalProperties<TaskElement> adapter;
             adapter = taskElementAdapterCreator.createForOrder(
-                    getScenarioInfo().getCurrentScenario(), order);
+                    getScenarioInfo().getCurrentScenario(), order, this);
 
             PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                     adapter, new TaskElementNavigator(), getInitial());
@@ -1058,6 +1071,12 @@ public class PlanningStateCreator {
                 orderAuthorizationsRemoval.add(orderAuthorization);
             }
         }
+
+        public void cleanOrderAuthorizationsAdditionAndRemoval() {
+            orderAuthorizationsAddition.clear();
+            orderAuthorizationsRemoval.clear();
+        }
+
     }
 
     public interface IAllocationCriteria {

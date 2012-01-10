@@ -107,7 +107,7 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
             return _("Progress measurements");
         }
 
-        return _("Progress measurements: ") + infoAdvanceAssignment;
+        return _("Progress measurements") + ": " + infoAdvanceAssignment;
     }
 
     public List<AdvanceConsolidationDTO> getAdvances() {

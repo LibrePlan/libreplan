@@ -27,7 +27,6 @@
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
-<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
 
@@ -193,7 +192,7 @@
                         <panelchildren id="panelEntitySequence">
                             <vbox>
                                 <hbox pack="center">
-                                    <label value="${i18n:_('Select entity:')}" />
+                                    <label value="${i18n:_('Select entity')}" />
                                     <combobox id="entityCombo"
                                         model="@{configurationController.entityNames}">
                                         <comboitem
@@ -202,10 +201,10 @@
                                             value="@{entityName}" />
                                     </combobox>
 
-                                    <label value="${i18n:_('Prefix:')}" />
+                                    <label value="${i18n:_('Prefix')}" />
                                     <textbox id="prefixBox" />
                                     <label
-                                        value="${i18n:_('Number of digits:')}" />
+                                        value="${i18n:_('Number of digits')}" />
                                     <intbox id="numDigitBox" value="5" />
                                     <button label="${i18n:_('add')}"
                                         onClick="configurationController.addNewEntitySequence()" />
@@ -240,8 +239,10 @@
                     <!-- Activation -->
                     <groupbox style="margin-top: 5px" closable="false">
                         <caption label="${i18n:_('Activation')}" />
-                        <label value="${i18n:_('LDAP Authentication enabled')}" />
+                        <label value="${i18n:_('Enable LDAP authentication')}" />
                         <checkbox id="ldapAuthEnabled" checked="@{configurationController.ldapConfiguration.ldapAuthEnabled}" />
+                        <label value="${i18n:_('Use LDAP roles')}" />
+                        <checkbox id="ldapSaveRolesDB" checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" />
                     </groupbox>
 
                     <!-- Configuration -->
@@ -254,35 +255,35 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Host:')}" />
+                                    <label value="${i18n:_('Host')}" />
                                     <hbox>
                                         <textbox id="ldapHost" value="@{configurationController.ldapConfiguration.ldapHost}"  width="300px"/>
                                         <label value="${i18n:__('Example: {0}', 'ldap://localhost')}" />
                                     </hbox>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Port:')}" />
+                                    <label value="${i18n:_('Port')}" />
                                     <hbox>
                                         <textbox id="ldapPort" value="@{configurationController.ldapConfiguration.ldapPort}"  width="300px"/>
                                         <label value="${i18n:__('Example: {0}', '389')}" />
                                     </hbox>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Base:')}" />
+                                    <label value="${i18n:_('Base')}" />
                                     <hbox>
                                         <textbox id="ldapBase" value="@{configurationController.ldapConfiguration.ldapBase}"  width="300px"/>
                                         <label value="${i18n:__('Example: {0}', 'dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('UserDn:')}" />
+                                    <label value="${i18n:_('UserDn')}" />
                                     <hbox>
                                         <textbox id="ldapUserDn" value="@{configurationController.ldapConfiguration.ldapUserDn}"  width="300px"/>
                                         <label value="${i18n:__('Example: {0}', 'cn=admin,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Password:')}" />
+                                    <label value="${i18n:_('Password')}" />
                                     <textbox id="ldapPassword" value="@{configurationController.ldapConfiguration.ldapPassword}" type="password"  width="300px"/>
                                 </row>
                             </rows>
@@ -303,7 +304,7 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('UserId:')}" />
+                                    <label value="${i18n:_('UserId')}" />
                                     <hbox>
                                         <textbox id="ldapUserId" value="@{configurationController.ldapConfiguration.ldapUserId}"  width="300px"/>
                                         <label value="${i18n:__('Example: {0}', 'uid')}" />
@@ -330,27 +331,33 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Import LDAP roles')}" />
-                                    <checkbox id="ldapSaveRolesDB" checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" onCheck="configurationController.showLdapRoles()"/>
+                                    <label value="${i18n:_('Role search strategy')}" />
+                                    <radiogroup id="strategy" onCheck="configurationController.changeRoleStrategy()">
+                                        <radio label="${i18n:_('Group strategy')}" value="group" />
+                                        <radio label="${i18n:_('Property strategy')}" value="property" />
+                                    </radiogroup>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Group path:')}" />
+                                    <label value="${i18n:_('Group path')}" />
                                     <hbox>
-                                        <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'ou=groups (If it is empty, a node strategy is used.)')}" />
+                                        <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"
+                                            disabled="@{configurationController.ldapPropertyStrategy}" />
+                                        <label value="${i18n:__('Example: {0}', 'ou=groups')}" /><label value="${i18n:_('(If it is empty, a node strategy is used)')}" />
                                     </hbox>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Role property:')}" />
+                                    <label value="${i18n:_('Role property')}" />
                                     <hbox>
-                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"/>
+                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"
+                                            disabled="@{configurationController.ldapGroupStrategy}" />
                                         <label value="${i18n:__('Example: {0}', 'member')}" />
                                     </hbox>
                                 </row>
                                 <row>
-                                    <label value="${i18n:_('Role search query:')}" />
+                                    <label value="${i18n:_('Role search query')}" />
                                     <hbox>
-                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"/>
+                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"
+                                            disabled="@{configurationController.ldapGroupStrategy}" />
                                         <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
@@ -358,7 +365,7 @@
                         </grid>
                         <separator />
                         <separator />
-                        <vbox id="ldapRoles" visible="false">
+                        <vbox id="ldapRoles">
                             <grid id="configurationRoles"
                                 model="@{configurationController.roles}"
                                 rowRenderer="@{configurationController.allUserRolesRenderer}"

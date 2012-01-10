@@ -38,13 +38,13 @@ function profileCreateEmpty() {
 }
 
 function profileForm($name) {
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _click(_italic(0, _near(_div("Association with roles"))));
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _click(_italic(0, _near(_span("Association with roles"))));
     _click(_cell("Administration"));
     _click(_cell("Save"));
 }
 
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function profileNotValid($profile){
     _assertExists(_span("checkConstraintUniqueLoginName: profile name is already being used by another profile"));
     _assert(_isVisible(_span("checkConstraintUniqueLoginName: profile name is already being used by another profile")));
@@ -58,7 +58,7 @@ function profileEdit($oldName, $newName, $cell) {
 }
 
 function profileEditForm($name) {
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
     _click(_cell("Save & Continue"));
 }
 
@@ -71,9 +71,9 @@ function profileAssign($account, $password, $profile){
 }
 
 function accountsForm($name, $password, $profile) {
-    _setValue(_textbox(0, _near(_span("Login name:"))), $name);
-    _setValue(_password(0, _near(_span("Password:"))), $password);
-    _setValue(_password(0, _near(_span("Password confirmation:"))), $password);
+    _setValue(_textbox(0, _near(_span("Login name"))), $name);
+    _setValue(_password(0, _near(_span("Password"))), $password);
+    _setValue(_password(0, _near(_span("Password confirmation"))), $password);
     _click(_textbox(0, _near(_cell("Add role"))));
     _click(_cell("Administration"));
     _click(_cell("Add role"));

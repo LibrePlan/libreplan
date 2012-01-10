@@ -37,4 +37,6 @@ public interface ILabelDAO extends IIntegrationEntityDAO<Label> {
     Label findByNameAndType(String labelName, LabelType labelType);
 
     List<Label> findByType(LabelType labelType);
+
+    boolean existsByName(String labelName);
 }

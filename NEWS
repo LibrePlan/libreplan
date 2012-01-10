@@ -1,6 +1,1365 @@
 NEWS
 ====
 
+Version 1.2.0 (01 Dec 2011)
+---------------------------
+
+Summary
+~~~~~~~
+
+In the current 1.2.0 version the project has been renamed to LibrePlan and this
+will be the official name for the project from now on. With the new name,
+decided by the community, we are remarking that LibrePlan is a generic purpose
+planning tool, suitable to many sectors.
+
+Besides, with this new version, the project has a new image and a revamped
+website that you can visit at http://www.libreplan.com/
+
+This new major version comes with important new features apart from all the
+bugfixing done since the 1.1 major release. Among the new features, these are
+the most relevant ones:
+
+* Migration to ZK 5 Community Edition.
+
+  LibrePlan uses ZK framework as UI toolkit and in this release has been
+  migrated the interface from ZK 3.6 to ZK 5.0.
+
+  ZK 5 was incompatible with version version 3.6 and this movement have implied:
+
+  * Reimplementing LibrePlan custom UI widgets in ZK 5.0 architecture
+
+  * Providing an implementation in ZK 5.0 for widgets in 3.6 version which
+    changed their license and which are not open source anymore.
+
+  * Reviewing all the application windows and to do small configuration and
+    formatting changes.
+
+  This allows us to get advantage of the latest innovations in rich web
+  interfaces and enjoy both the performance and architectural enhancements of
+  this new ZK version.
+
+* Resource allocation engine enhancements.
+
+  The planner engine has been improved with three new functionalities regarding
+  to allocation engine:
+
+  * Task movements in Gantt view keeps the configured allocation function.
+    Before this, if you configured a stretches function or sigmoid function in
+    a resource allocation and the task was moved because a dependency or
+    constraint set by the user, the allocation function applied in the new
+    point was the flat function. Now, the configured stretches or sigmoid
+    function is used.
+
+  * Manual allocation automatic detection in advanced allocation. Now if the
+    user changes the allocation of a task in advanced allocation window, the
+    type of allocation is automatically tracked as manual.
+
+  * Manual allocation locking support in Gantt view. So far if a task had a
+    manual allocation and was moved in the Gantt, the custom allocation was
+    lost and a flat function was applied. In this version, a keep manual
+    allocation strategy has been implemented. It consists of disabling the
+    automatic movement of those allocated tasks in the Gantt by being
+    configured with a START IN FIXED DATE constraint after the manual
+    allocation. If the user wants to move these tasks, he has to change in
+    first place the allocation function used and, in second place, has to
+    remove the constraint. In this way, the manual allocation configured is not
+    lost by accident.
+
+* Sharing state between perspectives.
+
+  The project planning in LibrePlan is achieved by using several perspectives:
+
+  * Project scheduling (Gantt).
+  * Project details (WBS).
+  * Resource load
+  * Advanced allocation.
+
+  Until this version, the user had to save before abandoning a perspective to
+  avoid losing the changes on going to another. To improve this, in this
+  release, the planning data has been shared among all the project perspectives
+  and on saving in one of them, all the planning data is stored.
+
+  This a more natural way of creating the project plan. Now the user can move
+  freely among the project views configuring different things and, on reaching
+  a desired state, he can ask to persist changes.
+
+  Besides, with this new feature, the loss of changes by accident is prevented
+  on a perspective change without saving first.
+
+* LDAP authentication and authorization module.
+
+  In this version the possibility of using LDAP as backend for users has been
+  implemented.
+
+  An LDAP authentication and authorization module has been developed. With
+  this, it is possible to use the users configured in the company directory
+  without the need to create them in LibrePlan manually.
+
+  The main features of this module are:
+
+  * User passwords saving in LibrePlan database after right authentication
+    option. This allows the LDAP users enter the application if the LDAP is
+    off-line.
+
+  * Role matching support. It is possible to map LDAP roles to LibrePlan
+    permissions. Two strategies are provided: Group strategy (all the users
+    under a node) and property strategy (property of the node user with all the
+    role values).
+
+* My account area.
+
+  It has been developed a new top level menu entry called *My account* with
+  several options with a per user scope. This means that they are operations
+  that concern only to the connected user which is configuring them.
+
+  The operations included in this zone are:
+
+  * Personal data. User can manage his contact information
+
+  * Application preferences. User can select the language of the application
+    and if if the load charts of the planning windows appear folded or
+    unfolded  by default.
+
+  * Password administration. User can change his own password.
+
+* Functional tests.
+
+  One of the maxims of LibrePlan is to create a project with good quality. For
+  this reason in this version functional tests to the project have been
+  incorporated into the project.
+
+  Functional tests are black-box tests in which the interface of the program is
+  tested. The tool which has been chosen is Sahi and it allows verifying that
+  all functionalities keep working successfully.
+
+  An initial set of Sahi tests have been developed and they will be increased
+  as time passes.
+
+* Other minor tasks implemented:
+
+  * Internationalization. Some strings were not being translated accordingly to
+    the language used under certain conditions.
+
+  * Default login auto-completion is now configurable, you can disable it from
+    the configuration window.
+
+  * Now when editing contents, information identifiying the element being
+    edited is always displayed on the page heading.
+
+  * Work reports minute detail level support has been added. This allows users
+    to specify how many hours and minutes they have devoted to each task.
+    Reports have been updated accordingly to include the work time in minutes
+    too.
+
+  * LibrePlan web services have now a new method to export only one entity by
+    specifying its code.
+
+  * Russian and Portuguese translations. Apart from English, Spanish and
+    Galician now LibrePlan is also available in Russian and Portuguese.
+
+Notes
+~~~~~
+
+If you are upgrading from any 1.1.x version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.2.0.sql``
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Cristina Alvariño
+* Jacobo Aragunde Pérez
+* Nacho Barrientos
+* Ignacio Díaz Teijido
+* Pablo Fernández de la Cigoña Nóvoa
+* Óscar González Fernández
+* Dmytro Melanchenko
+* Susana Montes Pedreira
+* Javier Morán Rúa
+* Diego Pino García
+* Manuel Rego Casasnovas
+* Farruco Sanjurjo
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators for their hard work:
+
+* [es] Manuel Rego Casasnovas
+* [gl] Manuel Rego Casasnovas
+* [pt] Helena Grosso
+* [ru] Pavel Rudensky
+
+Changes
+~~~~~~~
+
+* Release new version LibrePlan 1.2.0
+* [doc] Update some links in INSTALL file
+* Fixed width issue in Workreport models edition
+* Fixed width issue in ffox with materials category selection
+* [Bug #1279] Fix problem with Decimalbox in Spanish
+* [Bug #1278] Fix NPE going to project details after Gantt without read permissions
+* [Bug #1277] Generating exception days code before checking if they are null
+* Add postinst script
+* [doc] Fix wrong styles in LDAP documentation
+* doc/en: Make direct links to reports only shown in HTML
+* doc/en: Re-flow text to avoid excessive nesting in TeX output
+* doc/en: Convert Avanza logo to PNG
+* doctool: Support translation of underlines for sub-pages
+* doctool: Sort input filenames when generating indexes
+* doctool: Use spaces only for indentation
+* [doc] Added LDAP configuration help in Galician.
+* [doc] Added LDAP configuration help in Spanish
+* [doc] Links the help of 'LibrePlan Configuration' to the help icon.
+* [doc] Added LDAP configuration help in English
+* Mark libreplan as Pre-Depends
+* Updated Debian control files for different distributions
+* Dump database
+* Add a transitional package
+* Remove unneeded dependencies in Debian control files
+* [doc] Fix several wrong URLs in documents
+* [doc] Fix several wrong URLs in documents
+* Update README and Debian package info
+* [Bug #1249] Calendar names sorted in several screens
+* [Bug #1246] Added sorting for Customer field
+* Corrected typo in authors list.
+* [Bug #1276] Fix problem with START_START and END_END dependencies in critical path
+* [Bug #1273] Reimplement coerceToString as a workaround for the bug in Decimalbox.
+* [Bug #1274] Do decimal separator replacement in the correct way in ZK5.
+* Revert "[Bug #1274] Remove LenientDecimalBox."
+* [Bug #1274] Remove LenientDecimalBox.
+* Update Debian package configuration files
+* Generate SQL script to upgrade from version 1.1.0 to 1.2.0
+* Revert "Revert "[Bug #1253] Constraint for EffortDuration in advanced allocation""
+* Revert "[Bug #1253] Constraint for EffortDuration in advanced allocation"
+* [i18n] Update keys.pot and Spanish and Galician translations
+* Rename database to use LibrePlan in its name
+* Fix typo in comments in Sahi tests
+* Added vertical alignment in WBS tree buttons
+* Renamed operations column in external companies grid
+* [Bug #1247] Fixed issue with checkbox validation in Quality Form edition
+* Added not empty constraints for WBS task names
+* Added hflex property to WBS tree
+* Fix possible issue if configured progress type is null
+* Prevent NullPointerException filling progress type combo
+* Fix OrderElementServiceTest to pass tests in MySQL
+* Removed fixed height in WBS task edition popup
+* Removed extra border in resources load
+* [Bug #1235] Added scrollbar to perspective icons area when needed
+* [Bug #1235] Changed height calculations affecting project edition scollbar
+* Mark first menu entry as active when user goes to /
+* Add link to first subpage in "My account" menu entry
+* [Bug #1253] Constraint for EffortDuration in advanced allocation
+* Fixed Sahi test data-types/exception_days_test.sah in chromium
+* Removed jsession parameter in EntryPoints matching conditions
+* Fix pending issues in previous commit
+* Inserted empty conditions for default data
+* Fix several functional tests due to problems with accept button in resource allocation pop-up
+* Fix materials functional test
+* Fix work reports functional test
+* Fix work hours types functional test
+* [Bug #1267] Add reloadBindings of material tree after saving
+* [Bug #1270] Fix issue invalidating TaskComponent
+* [Bug #1270] Fix problem the first time you choose a progress type
+* [Bug #1269] Mark as selected the configured progress
+* Added a message in print modal window to remind saving
+* [Bug #1260] Fixed resizing of task information table in allocation popup
+* [Bug #1268] Removed display property causing progress-types combobox issues
+* Fixed Sahi test : data-types/unit_measures_test.sah
+* Fixed Sahi test : scheduling/templates_test.sah
+* [Bug #1272] Set progress in TaskElement when its created
+* [Bug #1269] Fix tooltip text using now configured progress type
+* [Bug #1269] Fix previous commit as it was not working properly
+* [Bug #1269] Now configured progress is used by default in company view
+* [Bug #1266] Fix issue reloading bindings of allocation grid
+* Mark some strings to translate in configuration.zul
+* Fix some issues pending in previous commit
+* Changes on LDAP configuration screen
+* [Bug #1260] Improved horizontal scaling of assigned materials
+* Replaced legacy NavalPlan logo versions
+* Fixed styles for selected listitem and comboitem elements in ZK5
+* [Bug #1264] Checked that we are accessing a planning tab with creation button enabled
+* Fixed textbox and datebox style issues in leftTasksTreeRow component
+* Changed Textbox automatic width calculation in LeftTasksTree
+* Removed problematic left and right listeners on TaskDetails treeRows
+* [Bug #1260] Fixed width issues in Task hours group
+* [Bug #1244] Only create dateboxes for treerow textboxes when needed
+* Removed unnnecesary elements from DynamicDatebox component
+* [Bug #1248] Added extra validators when saving order
+* [Bug #1248] Project general data tab now validates if project or code exists
+* Removed ambiguous arrow in mouse-selected tree row
+* Fixed horizontal scaling issues in criterion requirements
+* [Bug #1244] Fixed DynamicDatebox component behaviour in zk5
+* [Bug #1262] Remove option to cancel progress assignments in Gantt view
+* [Bug #1262] Fix wrong method names in ManageOrderElementAdvancesModel
+* Disable login name and disabled checkbox in user edition for LDAP users
+* Rename User::getAuthenticationMethod() to User::getAuthenticationType
+* Authentication type not editable
+* Changed the way in which authentication type is shown
+* [Bug #719] Fix problem in WBS when you modify tasks hours with parents in previous pages
+* Fix warning in the JavaScript code when trying to access a method of a null object.
+* [Bug #1257] Prevent saving null TaskSource
+* [Bug #1239] Updates text of tooltips when changing name or progress
+* [Bug #1254] Keep zoom level in advanced allocatin perspective
+* [doc] Update authors info in user guide
+* Updated AUTHORS file adding Helena Grosso as Portuguese translator
+* [Bug #1252] Fix issue avoiding reset TaskElement endDate
+* [i18n] Added Portuguese language to enum and modified pom.xml to use English userguide
+* [i18n] Add Portuguese translation
+* Fix some extra ":" in Sahi tests
+* Update AUTHORS file
+* [i18n] Fix small typo in Spanish translation
+* [i18n] Mark string to be translated
+* [i18n] Mark string to be translated
+* [i18n] Update Spanish and Galician translations due to last changes
+* [i18] Update keys.pot due to last issues fixed in past commit
+* [i18n] Fixing several issues in project strings
+* [i18n] Updated Spanish and Galician translations
+* [i18n] Update keys.pot files
+* [Bug #1141] Remove Task.reloadResourcesTextIfChange().
+* [Bug #1141] Added setter for left attribute of TaskComponent which updates the dependencies.
+* [Bug #1250] Fix issue removing TaskSource of unscheduled element
+* Add toString to OrderElement to make easier debug process
+* [Bug #1245] Fix issue when moving task to an un-direct descendant
+* [Bug #1238] Fix concurrent modification exception
+* [Bug #1243] Labels of root task were not properly loaded
+* Fix tests due to changes in 3bd402d5baaaee3f90c6885be1d8b041d3ae989c
+* Reduced unnecesary vertical minimum height in orderElement advances
+* Fixed horizontal scaling and other layout issues in WBS
+* Moved draggable property from WBS rows to inner schedulling cell
+* Removed unused attribute
+* Applying days from start to deadline when selecting template
+* Added validation when creating new project that the same name is not being used
+* Increased minimum number of columns to display in timetracker
+* Replaced obsolete separator between project name and project id
+* Removed specific button for creating projects from templates
+* Moving code that enables global buttons out from the perspectives
+* Merged creation of new projects from templates into main creation window
+* Fixed hibernate issues when creating new projects from templates
+* [Bug #1224] Added constraints in effort textbox
+* [Bug #1237] Fix problem with progress bar size
+* Default work report model has all attributes at line level
+* Fix wrong string in templates functional test
+* Fix planning criteria functional test
+* Fix functional tests related with my account menu
+* Fix subcontract functional test
+* Fix functional tests related to work reports
+* Fix functional tests related to workers, virtual workers and machines
+* Remove links to non-existent resource.css file
+* Fix configuration functional test when running all tests together
+* Added default data for WorkReportType
+* Added default data for TypeOfWorkHours
+* Added default data for Labels
+* Added predefined calendar exceptions
+* Configured default data for Criteria
+* Change wrong string "Extra Effort" for "Overtime Effort"
+* [Bug #1236] Sorting orders in some combos of reports
+* Fix configuration functional test
+* Fix users and profiles functional tests
+* Fix work hours functional test
+* Fix work report model functional test
+* [Bug #1215] Store the resources tooltip hidden/shown state in the TaskRow widget and use that state when redrawing the TaskComponents.
+* [Bug #1221] Shows orders sorted in project finder
+* [Bug #1215] Store the labels hidden/shown state in the TaskRow widget and use that state when redrawing the TaskComponents.
+* [Bug #1162] Fix issues in stretches function dedication chart
+* Make simple code to remove perspective buttons
+* [Bug #1228] Fix issue creating default write authorization
+* Set mold paging in criteria tree to show the pager
+* [Bug #1231] Fix issue avoiding call EffortDuration.sum with null values
+* Skipping some tests in ScenariosBootstrapTest failing in MySQL
+* Fix name of OnDay class inside ContiguousDaysLine
+* [Bug #1232] Fix problem in load chart filtering all assignments taking into account order resources
+* Corrected .gitignore to match the new directory names.
+* Unskip tests in ScenariosBootstrapTest
+* Fix BaseCalendarModelTest needed to load configuration
+* Rename pending file to libreplan
+* Rename column navalplan_user to libreplan_user in user_table
+* Skipping some test due to rename to libreplan
+* Rename NavalPlan to LibrePlan
+* Removed unnecesary code for showing/hiding labels
+* [Bug #1097] Fixed issue with container corners when showing labels
+* [Bug #1120] Fixed appearance of labels on tasks when its parent is expanded
+* Fixed issue when the splitter is resized the legend area was not aligned
+* Removed access to ResourcesLoad and AdvancedAllocation from company view context menu
+* [Bug #1207] Fix templates historical statistics messages
+* Removed unused lines in ConfigurationController
+* [Bug #1199] Fix issue setting Listitem value in renderer
+* Fix small issue in INSTALL file
+* [Bug #1230] Fix issue updating OrderElement name when it's changed in TaskElement
+* Remove ZK repository as it's not needed anymore
+* Change dependency to ZK CE
+* [Bug #906] Remove some pending comments
+* Upgrade ZK version to 5.0.9
+* Revert "Look for new resources when moving a task"
+* [Bug #1225] Fix issue in OrderDAO.loadOrdersAvoidingProxyFor with new OrderElements
+* [Bug #1227] Order authorizations are saved now in SaveCommand
+* Replace the component Detail from ZK EE with our free replacement in the Java code too.
+* [Bug #1227] Fix problem with percentage advances not being created
+* [Bug #1223] Catch ValidationException in SaveCommandBuilder
+* Renamed 'Accept' for 'Apply' commands in advanced allocation
+* Removed 'Up' command in resources load view of a project
+* Added a 'Cancel' button to common area with modal window to ask for confirmation
+* Moved 'Reassing' icon out of common area over perspectives
+* Fix lazy mapping to be lazy="false".
+* Fix lazy exception chaging to resources load view after moving a task in Gantt
+* Remove some unneeded reattachments in ResourceAllocationModel
+* [Bug #1214] Fix problem reattaching HoursGroup in allocation pop-up
+* [Bug #1214] Fix issue changing Hibernate mapping for map inside CalendarData
+* Replaced component master-detail with a GPL alternative based on the code of the ZK3 version.
+* Use LocalDate instead of Date in LoadTimeLine.getIntervalFrom.
+* Changed planner save command message
+* Injected planner global commands in common area over perspectives
+* Created an empty area for positioning all planner global commands
+* Merge branch 'bugs'
+* [Bug #1217] Fix issue avoiding reattach of criteria
+* [Bug #1219] Shows labels and/or resources when the buttons are pressed after changing perspective
+* Added a fixed height for resourcesload watermark
+* Added listener to recalculate height on window resizing
+* [Bug #820] Added minimum vertical heigth for timetracker watermark
+* Avoided dual scrollbar inside resourcesload worker details table
+* [Bug #820] Several changes in watermark height calculations
+* Removed unnecesary scroll in login window
+* Fixed issue in resourceload_row width calculations in Resources Load view
+* Remove unused param in LimitingResourcesTabCreator::create
+* [Bug #1216] Fix issue chaning code to check allocation resource radio
+* [Bug #1216] Removed unused code as Radiogroup at that point never has elements
+* [Bug #1216] Remove unused argument in method related with radio buttons in resource allocation
+* [Bug #1218] Fixing issue avoiding load order from database
+* [Bug #1183] Implement the replacement of decimal comma with dot in the client side.
+* [Bug #1213] Use String.CASE_INSENSITIVE_ORDER comparator instead of String.compareTo() function to compare resource names.
+* [Bug #1186] Show all the resources in the list on resources usage page, even the empty ones.
+* [Bug #1205] Fix issue going to edition of a task in WBS directly
+* [Bug #1196] Assign task to the first valid queue in case that all of them are empty.
+* Fix wrong string, now using project instead of order
+* Applied interface conventions in settings UI
+* [Bug #1173] Application language must be user language
+* [Bug #1187] Add filter by resources in TaskGroup filter in company Gantt view
+* [Bug #1187] Fix issue filtering TaskGroup by criteria in company Gantt view
+* [Bug #1187] Move TaskElementPredicate to a proper package
+* [Bug #1187] Add filter by resources in TaskElement filter in project Gantt view
+* [Bug #1187] Fix issue filtering TaskElements by criteria in project Gantt view
+* Fix 2 wrong comments in SigmoidFunction
+* Fixed zk5 migration issue in advanced assignment search
+* Fixed regression introduced with icons positioning in WBS
+* Applied interface conventions in user edition and advance consolidation
+* [Bug #1200] Add dependency from ganttz in the definition of limitingresources package.
+* [Bug #1206] Add event listeners for checkboxes in the legend of the earned value chart.
+* Remove unused method in SigmoidFunction
+* [Bug #1204] Do not round hours in Sigmoide allocation
+* Fixed issue with positioning of buttons and icons to manipulate WBS
+* Removed logos from application footer
+* Applied interface conventions to workreport window
+* Increased standard height for listbox in bandbox search component
+* Applied interface conventions to WorkReport Type edition
+* Improved comboboxes spacing on workreports edition
+* Labels are displayed ordered in label type edition
+* Applied interface conventions to workreport query
+* Added textbox to set description value in template edition
+* Fixed project name width issue in projects list using reduced resolutions
+* Grouped visually the same entity sequences in cofiguration window
+* Removed Group component dependency
+* Revert "[Bug #1173] Application language must be user language"
+* [doc] Add note in web services README about HTTP Basic Authentication
+* Prevent moving task with manual allocation
+* Disable start constraint combo and date in task properties if it has manual allocations
+* Set tasks as START_IN_FIXED_DATE when manual allocation is applied
+* Remove unneeded cast and rename variable
+* [Bug #1209] Fix NullPointerException in WorkReportCRUDController::updateEffort
+* [Bug #1208] Remove some generic catchs that was preventing to detect previous issue
+* [Bug #1208] Fix issue with imputed hours view in company view
+* [Bug #1208] Rename calculateLimitDate functions to prevent future confusions
+* [Bug #1208] Fix problem with imputed hours in project view
+* [Bug #1173] Application language must be user language
+* [Bug #1202] Managed division by zero calculating template averages
+* Revert "[Bug #1202] Managed division by zero calculating template averages"
+* [Bug #1203] Added event on client side to send the data of the zoom change and listener on the server to store them.
+* [Bug #1198] Implemented missing JS operation QueueListComponent.adjustScrollHorizontalPosition.
+* [Bug #1202] Managed division by zero calculating template averages
+* Look for new resources when moving a task
+* Internationalize UI string.
+* [Bug #1190] Limiting resources not translated properly
+* [Bug #1160] Show footer in "Work and progress per project" report
+* Fix problem in interpolation function it was doubling the assignments
+* Fix issue in interpolation function because of new default stretches 0 and 100
+* Fix size problem with new Listbox of assignment function in resource allocation pop-up
+* Add ON_SELECT event to Listbox, reseting assignment function to flat
+* Added flat function always as first option in resource allocation pop-up
+* Change assignment function information from Label for Listbox in resource allocation pop-up
+* Disable inputs in AllocationRow if there is any manual allocation
+* [Bug #953] Simulated click on progress button when changing type
+* [Bug #1185] Fixed combobox problems with selector for progress types
+* Added more space for perspective button labels
+* [Bug #1127] Fixed dependencies in limiting resources
+* [Bug #1188] Fixed graphical issues in Montecarlo modal window
+* Remove last deprecated methods related to EffortDuration
+* Fix issues in Ubuntu with REST scripts
+* Move advanced allocation command controller out of EditTaskController
+* [Bug #1193] Fix bug
+* [Bug #1191] Avoid NullPointerException in "Hours Worked Per Resource" report
+* Revert "[Bug #1191] avoid null pointer exception"
+* [Bug #1161] Fix comparison in BigDecimal in previous patch
+* [Bug #1161] The value of progress is at maximum 1
+* [Bug #1197] Fix bug
+* Ensure retrieved OrderVersions are not proxies
+* [Bug #1195] Fix bug
+* Fix another functional test due to removal of "Go to advanced allocation" button
+* [Bug #1194] Fix bug
+* [Bug #1191] avoid null pointer exception
+* Include search_resources_test.sah in all_test.suite and in all_resources_test.suite
+* Fix another functional test due to removal of "Go to advanced allocation" button
+* Make new dependencies to be rendered in the correct position of the DOM.
+* Added synchronization for property dependencyType in LimitingDependencyComponent widget.
+* Reimplemented the onclick event in QueueTask elements that existed in the ZK 3.x version.
+* Reimplemented the onmouseover and onmouseout events in QueueTask elements that existed in the ZK 3.x version.
+* [Bug #1193] Fix bug
+* [Bug #1192] Fix bug
+* [Bug #1157] Sorted input fields
+* Fix functional test due to removal of "Go to advanced allocation" button
+* Add "Advanced allocation" option in secondary menu of a task
+* Remove "Go to advanced allocation" button in resource allocation pop-up
+* Disabling fields in ResourceAllocation pop-up if any allocation is manual
+* Now Monte Carlo simulation tab shares the state with the rest of the tabs
+* [Bug #1178] Fixed calculation of sum hours with EffortDuration in report HoursWorkedPerResource
+* [Bug #1178] Fixed calculation of sum hours on a report
+* [Bug #1178] Showing EffortDuration in reports instead of BigDecimal
+* [Bug #1159] Fixed end date position
+* Now project's details view shares the state with gantt and resource load
+* Improve toString method
+* Add verstion to PlanningData
+* The cause must be thrown
+* ConcurrenetModificationException shouldn't happen
+* Now the save command should be able to save orders
+* Do the don't pose as transients outside of the transaction
+* Synchronize in memory on retrieval of the PlanningState
+* Allow to provide several strategies for saving TaskSources
+* The tasks to save and so on are recreated each time a screen is entered.
+* PlanningState is now responsible of creating the SaveCommand and the PlannerConfiguration
+* Use a singleton for creating a SaveCommand
+* Make TaskElementAdapter a singleton
+* Written the client-side code to draw dependencies in limiting resources screen.
+* Added properties idTaskOrig and idTaskEnd to LimitingDependencyComponent.
+* Create widget QueueTask with an empty structure, removing wrong event listeners from it.
+* [Bug #1172] Fixed search
+* [Bug #1151] Fixed layout problems in report "Hours worked by resource in a month"
+* Include some changes to solve a error on criteria_test.sah and include scheduling tests on all_test.suite
+* Fix problems in the tests, created for some changes in work report form
+* Use some functions from common_functions.sah, in planning_labels_test.sah
+* [Bug #1149] Fixed ClassCastException on ResourceDAO
+* Added options on label filtering
+* Changed query to filter by labels
+* [Bug #1177] Allows to insert EffortDuration instead of hours in webservices
+* Fix issue in work reports services
+* Upgrade ZK version to 5.0.8
+* [Bug #1179 & #1182] Fixes UI for WorkReport edition
+* Remove unused method in ResourceAllocationController
+* Added new file which includes tests for all the search fields of resources
+* Include some functions from virtual_worker_test.sah in common_functions.sah
+* Improve commonCriteriaCreate to allow create a criterion type with different criteria names
+* [Bug #1189] Added auto horizontal scroll in templates WBS to fix bug
+* Fix issue with size of font in combos in advanced allocation window
+* [Bug #1184] Fix issue avoiding reset verticalPage to zero
+* Load required data in MaterialAssignmentDAOTest
+* [Bug #1180] Change method names in order to make explicit that work with root templates
+* [Bug #1180] Fix bug. checkConstraintUniqueTemplateName is only checked in root elements
+* Include new test in planning_criteria_test.sah to check the filter of project planning and move some elements to common_functions.sah
+* Added new test file with include some tests for project planning and assign a labels in a task
+* Added new test file with include some tests for project planning and assign a criterion in a task
+* [Bug #1148] Intializes pulldown for year and month properly
+* [Bug #1155] Changed selected items to items for showing name of projects in report
+* Change dialect to MySQL5InnoDBDialect in order to fix issues with MySQL 5.5
+* Drop and restore foreign key in database due to change in to sum_charged_effort_id
+* [Bug #1154] Sorts the report by order name.
+* [Bug #1156] Fix bug force loading of HoursGroup entities
+* [Bug #1178] Showing EffortDuration in reports instead of BigDecimal
+* Include some functions of workers in common_functions.sah and use them
+* Include some functions about labels in common_functions.sah and use them
+* Include new test for templates in a new folder scheduling
+* [Bug #1147] Fix issues in Hours Worked Per Resource report
+* Small fix in HoursWorkedPerWorkerController to avoid NullPointerException
+* [Bug #1146] Fixed model setting hasChangeLabels to true after a label remove
+* [Bug #1175] Fix bug
+* [Bug #1175] Fix bug
+* Avoid unnecessary calculations
+* Add method to extract the interval of a ContiguousDaysLine
+* Fixed problems width problems in chrome
+* Fixed issue with hidden elements in print view
+* Fix intermittent test failures
+* [Bug #1176] changed controller to allow a search in only one day (from 00:00:00 to 23:59:59)
+* Use some commonProgress functions included in common_functions.sah in progress_test.sah
+* Include a new test in calendar_test.sah and modify a function in configuration_test.sah
+* Include some new tests in machines_test.sah
+* Added new file all_account_test.suite which allow run all the account tests and include account tests in all_test.suite
+* Added new file password_test.sah
+* Added new test file settings_test.sah in a new folder account
+* Fix issues in with StretchesFunction after removing date field
+* Remove date attribute from Stretch
+* Fix Liquibase changes in MySQL
+* Merge branch 'work-reports-effort-duration'
+* Include some new tests in virtual_worker_test.sah
+* Include some new tests in worker_test.sah
+* Include a new function on common_functions.sah
+* Fix some mistakes in the resource descriptions
+* Merge branch 'master' into work-reports-effort-duration
+* Fix issue with logo in reports
+* Fixed Reports to work with sumEffort instead of sumHours
+* Merge branch 'master' into work-reports-effort-duration
+* Change EffortDuration toString and toFormattedString to show always 2 digits in minutes and seconds
+* Change repository URI to make it point to the new Nexus location
+* Removed method getTotalChargedHours in SumChargedEffort class
+* Avoid change login from settings screen
+* Include some new tests in material_test.sah
+* Change test to remove more old hours methods in SumChargedEffort
+* Remove unused methods in SumChargedEffort
+* Saves work reports with efforts instead of hours
+* [Bug #1171] Prevent delete companies already in use
+* Do some changes in files which include materials tests because they didn't work correctly after a bug fixing
+* Add a suite for all the resources and include resources in all_test.suite
+* Added tests for subcontracting
+* Added tests for companies
+* Added tests for work report
+* Added tests for virtual workers groups
+* Add tests for machines
+* Add tests for workers
+* Include some functions in common_functions.sah
+* Updated 'Projects List' entry in functional tests
+* Renamed 'Projects' with 'Projects List' in breadcrumbs menu
+* [Bug #1169] Fixed regression in z-indexing which made impossible to expand containers
+* [Bug #1153] Set empty code if code is not autogenerated for new calendars
+* [Bug #1152] Use ConstraintChecker to show error messages before saving
+* [Bug #1152] Fix error message in wrong language in calendars
+* [Bug #1144] Fix now Material needs a description
+* Added support for custom logos in reports
+* Avoided hidden horizontal scroll effect in taskdetails
+* Renamed entry 'Projects' for 'Projects List' in main menu
+* [Bug #1099] Fixed several issues in print styles
+* Replacing application logos with new LibrePlan image
+* Fixed styles problem in apply and cancel buttons in advanced allocation
+* Merged redundant logo images and removed its i18n file paths
+* Removing toolbar button styles in advanced allocation
+* Changed paginator size in projects and workers lists
+* Change custom logo position
+* [Bug #1150] Material categories tree is reloaded after adding new elements
+* Fixed chromium width problem in materials window
+* [Bug #1142] Fix returning false when needed in beforeDeleting method
+* [Bug #1170] Fix bug
+* [Bug #1137] Fix bug. Project name is now unique
+* [Bug #1131] Fix adding message for user when work report is removed
+* Add some functions to common_functions and improve work_hours_test.sah using common functions
+* Allow to look for the set of OrderElement associated with a WorkReportElement
+* [Bug #1125] Disable remove button if unit type is assigned to any material
+* Fix imputed hours tab UI now using EffortDuration
+* Rename attribute sumChargedHours to sumChargedEffort in OrderElement
+* Change to effort SumChargedHours now called SumChargedEffort
+* Remove FlatFunction class as it is not used anymore
+* Uncomment configuration_test.sah in suite files
+* Adds navalplan configuration tests and include some new functions in common_functions.sah
+* Fix issue when changing to Flat assignment function
+* Enable again resource allocation inputs for any assignment function
+* Added a new suite to run all the administration tests and include the new tests on all_test.suite
+* Added calendar test file
+* Add material tests file
+* Added Quality forms tests
+* Add new folder for administration-management elements and include a new test file cost_categories.sah
+* Change some functions from work_hour_test.sah for functions included in common_function.sah
+* Include some functions from criteria, worker, calendar and cost category in common_functions.sah
+* Using EffortDurationPicker for work reports interface
+* Remove unused methods in WorkReportLine
+* Change numHours to effort in WorkReportLine
+* [Bug #1166] Check if advanceType is null
+* Show languages sorted in settings page
+* [i18n] Add Russian value to Language enum
+* Increased width of selected day details grid
+* Changed styles for selected day and out of current month
+* Hide seconds granularity in calendar exception types
+* [Bug #1132] Adding more selectable colours for calendar exception types
+* Displaying color samples in Calendar Exception Type edition
+* Solved z-index problems in gantt listdetails
+* [i18n] Fix some pending strings in Russian translation
+* [i18n] Add command in pom.xml to copy English help to Russian folder too
+* [i18n] Add images folder needed for Russian translation
+* [i18n] Add Russian translation
+* [Bug #1123] Added condition to avoid max value equals zero
+* [Bug #1123] Add test to check that maxValue is greater than zero
+* Update information about assignment function in allocation row
+* Rename setWithoutApply to setAssignmentFunctionWithoutApply in ResourceAllocation
+* Apply assignment function if any from resource allocation pop-up
+* Use already existent method with more descriptive name
+* Avoid FormBinder.getCurrentRows
+* Disable resource allocation inputs when assignment function is not flat
+* Remove unneeded URL in data types tests suite
+* Added two new suites
+* [Bug #1143] A quality form cannot be deleted if it is associated to any task
+* Only show assignment function if any is not flat
+* Show information about assignment function in resource allocation popup
+* Fix bug now it is possible to come back to flat allocation from any assignment function
+* Apply assignment function if any when user modify total hours of an allocation
+* Remove warning messages when user modifies assignments in advanced allocation
+* Disable configuration button for assignment functions not configurable.
+* Added profile_test.sah into user folder
+* Include file all_data_type_test.suite which allow run all data type test
+* Added work report model data type tests
+* If a task has manual allocation and is moved then reset to flat
+* Add function isSigmoid in IAssignmentFunctionConfiguration
+* Rename assignment function name enum
+* AssignmentFunction is now an abstract class.
+* Add ManualFunction for advanced allocation
+* [Bug #1163] Included .js file in component for scroll synchronization with timetracker
+* [Bug #1163] Fixed visibility of allocation panel scroll bars
+* Fixed transparency problems in stretches function configuration window
+* Fixed width issues in reassignment popup
+* [Bug #1165] Fix bug
+* [Bug #1165] Fix bug
+* Fix exception when going to the resource load directly
+* Use Listbox instead of Combobox in functions column of advanced allocation window
+* Reduce width for efforts column in advanced allocation
+* Fix wrong message in configuration button of functions
+* Create a new folder which includes user tests and include user_test.sah
+* Rename None function to Flat in resource allocation
+* Reattach the planning state if exists
+* Fix percentage calculation
+* [Bug #1164] Fix bug
+* Added check Code label functions in all data type tests
+* [doc] Links the help of report 'Work and progress per project' to the help icon.
+* [doc] Added help for report 'Work and progress per project' in Galician
+* [doc] Added help for report 'Work and progress per project' in Spanish.
+* [doc] Added help for report 'Work and progress per project' in English.
+* Removed unused variable in loops.
+* Fix issue when moving a task with an assignment function.
+* Fix typo
+* Include logs in all the data type tests.
+* Added new test to criteria_test.sah file and include respective functions on the common_function.sah file
+* Adds work hours data type test
+* [Bug #1139] Fix several tests due to new constraint in defaultPrice
+* [Bug #1139] Add constraint on UI to show warning in work hours without default price
+* [Bug #1139] Do not save work hour without default price
+* Unify state of resource load's chart
+* [doc] Links the help of report 'Total worked hours per resource in a month' to the help icon.
+* [doc] Added help for report 'Total worked hours per resource in a month' in Galician
+* [doc] Added help for report 'Total worked hours per resource in a month' in Spanish
+* [doc] Added help for report 'Total worked hours by resource in month' in English
+* [doc] Links the help of report 'Hours Worked per resource' to the help icon.
+* [doc] Added help for report 'Hours worked by resource' in Galician.
+* [doc] Added help for report 'Hours worked by resource' in Spanish.
+* [doc] Added help for report 'Hours worked by resource' in English.
+* Ignore log files
+* [doc] Updated development documentation to new BaseCRUDController class
+* Fixed alignment problems in gantt taskdetails cells
+* Fixed dependency arrows
+* Improved alignment in assignment columns
+* Release new version NavalPlan 1.1.3
+* [Bug #1138] Fix bug
+* [Bug #1136] Fix bug
+* Add class to distribute an EffortDuration considering the capacities
+* Improved appearance of tasks filter
+* Removed unused methods
+* Modified positioning of filtering options popup
+* Adds Unit measures data type test
+* Delete trailing whitespaces from scripts/functional-tests/README
+* Applied previous color to selected grid row
+* Removed draggable properties from progress type list
+* Fixed header filter widths
+* Fixed styles issues in progress advance management
+* Fixed chrome width problems in work hour types edition
+* Fixed limiting resources planning header issue in chrome
+* Fixed horizontal width fill in WorkReports list
+* [Bug #1128] Fixed bug
+* Adds label data type test
+* Adds several changes in the README to increase in quality of the text
+* Add logging category for authentication attempts
+* Fix NullPointerException in highlightDaysOnCalendar method
+* [Bug #1126] Fix issue in Chromium/Google Chrome
+* Refactor ResourceLoadController
+* Refactorize setupNameFilter
+* Create fields instead of implicitly passing the data
+* Group data in class
+* Extract another super class for load charts
+* Adds a warning about the need to configure the browser in english
+* Add Exception days data type test
+* Fix some probles with the method BaseCRUDController:updateWindowTitle and also add new test to comprobate the correct working of precission and Max Value.
+* [i18n] Update Spanish and Galician translations
+* [i18n] Update keys.pot files
+* Add criteria data type test
+* Change one line in progress_test.sah because it produced an error in some machines
+* Add some exclusions to avoid conflicts in runtime
+* Add script to start Sahi from command line
+* Create a new folder to introduce all data type tests called data-types and include the first of them progress_test.sah
+* Add some files needed to run sahi in <navalplan-root>/scripts/functional-tests and include some explanations in REAME file
+* ConstraintChecker does not return boolean now
+* Fix highlighted days on datebox widget in limiting resources
+* Added popup in filters to use or not labels inheritance
+* [Bug #1134] Add checks for empty username or password
+* [doc] Fix some style format in functional tests documentation
+* Create new directory scripts/functional-tests
+* Fix typo in database username
+* Fix typo: s/Ban/Bank
+* [Bug #1132] Fix web service example for CalendarExceptionTypeSample
+* [Bug #1132] Remove DayType enum in BaseCalendar
+* [Bug #1132] Updated calendar interface to use different colors
+* [Bug #1132] Using a renderer in CalendarExceptionType listing
+* [Bug #1132] Modify CalendarExceptionType edition form
+* [Bug #1132] Create new enum CalendarExceptionTypeColor
+* [Bug #1133] Fix bug
+* Fix issue in ConstraintChecker now error messages was not being shown
+* [Bug #1132] Fix problem with CalendarExceptionType without name
+* Fix problem in ConstraintChecker
+* [Bug #1121] Fix issue adding @AssertTrue on AdvanceType entity
+* [Bug #1119] DataIntegrityViolationException saving a new Process
+* Fix highlighted days on calendar widget
+* Use ContiguousDaysLine at OrderPlanningModel
+* Implement ResourceLoadChartData using ContiguousDaysLine
+* Add ContiguousDaysLine class
+* Fix problem with chart colors
+* Extract class for filling load charts
+* Fix wrong label in "Work And Progress Per Task" report
+* [Bug #1130] Fix issue changing text size and moving box
+* [Bug #1107] Fix issue preventing NullPointerException
+* [Bug #1113] Fix issue marking as not transient all allocations
+* [Bug #1129] Fix bug setting scale for progress value
+* [Bug #1111] Fix name and code of tasks in report
+* Define CompanyPlanningModel using annotations
+* Define OrderPlanningModel using annotations
+* Remove not in effect annotations
+* [Bug # 1111] Fix several issues in report: Task Scheduling Status In Project
+* Show the precise efforts instead of the rounded amount in hours
+* Use a valid url-pattern
+* Switch to GanttDates
+* [Bug #1124] Fix problem when calculating assigned duration
+* Unify advanced allocation state
+* Return empty list instead of throwing an exception
+* Take into account the scenario
+* Create mechanism for reusing common parts of the queries
+* Remove unused methods
+* Fix the check for checking if an allocation belongs to the order
+* [Bug #1122] Fix bug
+* [Bug #1117] Fix issue changing I18nHelper in business.
+* Avoid workaround to not allow select rows in calendars tree.
+* Upgrade ZK version to 5.0.7
+* Port client enhacements of BandboxMultipleSearch to ZK5
+* [Bug #1115] Fix bug and add new ProgressType for spread progress
+* Change the way to update advances in parent elements.
+* Not allow select rows in calendar tree.
+* Don't use the returned by queries allocations belonging to the order
+* Remove spurious annotation
+* Reattach the order
+* Provide PlanningState to ResourceLoadModel
+* Move PlanningState to within PlanningStateCreator
+* Reuse PlanningState
+* [Bug #1088] Fixed issue in earned value chart
+* Revert "[Bug #1088] fix the representation of the chart of earned value month and upper zoom"
+* [Bug #1115] DataIntegrityViolationException saving a Cost Category with repeated name
+* [Bug #1111] Change label in filter by project section
+* [Bug #1111] Task status combo internationalized
+* Modify CSS to show labels in containers when are expanded
+* Improved getHumanId for worker entities.
+* Adapted WorkReportTypeCRUDController in order to extend BaseCRUDController
+* Adapted CriterionAdminController to extend BaseCRUDController.
+* it changes the labels in the columns of the calendar list, fixes the error messages.
+* Modify calendars controllers to show information about edited entity
+* Use only editWindow and remove createWindow for BaseCalendarCRUDController
+* Manually modified workers to show information about edited entity
+* It retrieves the complete description of the type filtered object to show it in the results.
+* Change the format of the matching results of a search in the gantt view and the resource allocation view.
+* Change the format of the matching results of a search in the projects view.
+* Change the format of the matching results of a search in the workers list and in the machine list.
+* it adds the property description in the class FilterPair.
+* add method in ResourceEnum to retrieve the lowercase value.
+* it changes the order of the columns in the bandbox finders.
+* Adapted ScenarioCRUDController to extend BaseCRUDController.
+* Fixed NPE in tests due to changes in I18nHelper.
+* Updated some entity types strings
+* Adapted UnitTypeCRUDController in order to extend BaseCRUDController
+* Adapted AdvanceTypesCRUDController in order to extend BaseCRUDController
+* Revert "Adapted AdvanceTypesCRUDController in order to extend BaseCRUDController"
+* Uses default browser locale when user has no language in settings
+* Adapted CostCategoryCRUDController in order to extend BaseCRUDController
+* Adapted QualityFormCRUDController in order to extend BaseCRUDController
+* Adapted UserCRUDController in order to extend BaseCRUDController
+* Adapted AdvanceTypesCRUDController in order to extend BaseCRUDController
+* Adapted TypeofWorkHoursCRUDController in order to extend BaseCRUDController
+* Adapted ProfileCRUDController in order to extend BaseCRUDController
+* Released 1.1.2 version.
+* Updated Spanish and Galician translations.
+* [i18n] Update keys.pot files.
+* [Bug #1108] Fixed problem if label is created by another user
+* [Bug #1108] Fix bug
+* [Bug #1106] Fix bug
+* updates the work weeks table when the hours of a day are changed.
+* Add "throws InstanceNotFoundException" to delete method and catch the exception into confirmDelete method
+* [i18n] Fixed typo in Spanish translation.
+* fix the layout in exceptions and work weeks table.
+* fix returned values when the configuration is not loaded in BaseCalendarModel and in the EntitySequenceDao.
+* Adds constraint to check the validation of the dates of the work weeks when these one are empty.
+* it set a fixed width to the column headers in the exceptions table.
+* On creating a work week derived from a calendar all the days are created as "Inherited", properly internationalized.
+* Fill the combo to create a new work week with the first calendar in alphabetic order and changes the name columns and labels to the edition calendar view.
+* It set a fixed width to the columns and changes its names.
+* fix some errors when a new work week is added.
+* Corrections in calendars test
+* the parent from which a new work week derives, must be specified.
+* the column parent is not shown if the calendar is not derived.
+* shows the current parent from which it derives, in the description calendar
+* shows the validation messages and constraint messages.
+* it permits delete any work week except the last one
+* It does not must permit overwrite another whole work week when a new work week is created.
+* Corrections in calendars listing
+* create default work week of non-derived calendar
+* change how create and edit the work week in the calendars view.
+* Refactorized PasswordUtil and used JavaScript to default password warnings in "Change Password" page.
+* Add onBlur event calling to updateWindowTitle method in _editExternalCompany
+* [Bug #1105] Fix bug
+* Removed more controller interfaces related to entry points not being used.
+* Removed ItEr75S13GenericCRUDController as it was not being used.
+* Adapted ExternalCompanyCRUDController in order to extend BaseCRUDController
+* Workaround for maven 3
+* [doc] Updated web services documentation with info about new methods.
+* Added missing @XmlRootElement annotations.
+* Implementation of method which returns one entity
+* Remove unused constants and lines in WorkReportLine.
+* Add Eclipse m2e settings to pom.xml files
+* Merge branch 'master' into ldap
+* [Bug #1104] Allow remove profile if it's only used in order authorizations
+* Option to delete a user pending in the interface of user list
+* Catches NamingException when a role in LDAP does not exist
+* Modified export script to test new get methods by code in web services.
+* Returning 404 status code if entity is not found in web service method.
+* Generic getter for IntegrationEntities via webservice
+* Fixed issue in LabelType controller with validation of labels.
+* Adapted machines controller to MachineCRUDController.
+* Adapted exception days controller to BaseCRUDController.
+* Minor fixes in configuration.zul.
+* Merge branch 'master' into ldap
+* Fixed issue with wrong password in login window (error not shown).
+* New option "Change password" in tab "Settings"
+* Added default implementation for cancel method in BaseCRUDController.
+* Added new beforeSaving method to BaseCRUDController
+* Improved info about entities in messages for user.
+* Fixed issue if user sets duplicated LDAP roles for the same LibrePlan role.
+* Sorted ConfigurationRolesLDAP set in order to show information to user.
+* Update window title dynamically for LabelType while user is editing.
+* In edition mode show entity being edited in window title.
+* Created IHumanIdentifiable interface and used in LabelType.
+* Using a set for ConfigurationRolesLDAP instead of a List in order to fix issue.
+* Removing unnecesary loop in matching roles
+* Used ConstraintChecker in BaseCRUDController.
+* Marked some methods in BaseCRUDController as final as they are not intended to be overridden.
+* Moved more stuff to BaseCRUDController.
+* Added more generic methods to BaseCRUDController.
+* Created basic BaseCRUDController and used in LabelTypeCRUDController.
+* Removed unneeded lines in worker edition zuls.
+* Ensure that the mouseover event for TaskComponent is executed
+* Fix end of the dependency was a little above than the pointer
+* [Bug #1102]
+* Small fixes related with some unneeded variables.
+* Refactorization of method getMatchedRoles
+* Fixed issue with combo style in Firefox and Epiphany.
+* Fixed issue with getMatchingRoles
+* Refactorized retrieveUser method in LDAPCustomAuthenticationProvider.
+* Removed unneeded usernameInserted variable.
+* Changed arguments of authenticateInDatabase.
+* Added more responsibilities to authenticateInDatabase method.
+* Use authenticateInDatabase in more places.
+* Small fixes (groupbox not closable, remove not needed space)
+* Move entity Language to package org.navalplanner.business.settings.entities
+* Incorporate password and mail to settings window for each user
+* Moved Spring LDAP dependencies to root pom.xml.
+* Refactorization. Exceptions and generics.
+* Add some profilling information for loading a project
+* No feedback when loading a project from URL directly
+* Refactorization of method retrieveUser
+* Replaced tabs for 4-spaces in more files (.css and .js).
+* Replaced tabs for 4-spaces in several files.
+* Lets the user authenticate when LDAP role search is not properly configured
+* [Bug #1103] Fix bug
+* Remove unnecessary files
+* Merge branch 'master' into ldap
+* Fixing issue adding autoscroll to main area in template.zul.
+* Move classes and settings.zul to new package
+* Incorporate new fields to the user
+* Avoid duplicating visual effect on arrows
+* Merge branch 'master' into ldap
+* [doc] Updated installation instructions due to new "cutycapt" command.
+* [Bug #1094] Made changes to fix the issue and use "cutycapt" command.
+* Added Nacho and Cristina to AUTHORS file.
+* Added an extra grid in settings to format the page like others.
+* Refactoring options about planning charts expanded to value per user
+* [Bug #1100] Fix bug
+* Fixed issue adding constructor without parameters for Hibernate.
+* Changed [@user_id] by [USER_ID] in replacement for search query
+* Matching-roles with dynamic query.
+* Added column LDAP role search query in LDAPConfiguration
+* Merge branch 'migration-to-ZK5' into master
+* Fix ClassCastException on EffortDurationBox
+* Remove still present spurious throws clauses
+* ScriptsComponent and associated clases no longer needed
+* Remove no longer necessary throws clauses
+* Don't pollute throws clauses
+* Fixed translation issue with language combo.
+* Changed language como for listbox with mold select.
+* Fixed copyright header of configuration.zul file.
+* Create language configuration option for user
+* [doc] Fixed small things in web services basic documentation.
+* Created constructor for LDAPConfiguration component and added some doc.
+* [Bug #1088] fix the representation of the chart of earned value month and upper zoom levels.
+* Changed roles matching renderer code
+* LibrePlan - LDAP role matching
+* Remove no longer needed js files
+* Mixin position restorer into QueueListComponent
+* Add missing function adjustTimeTrackerSize
+* Extract mixin for copied and pasted code
+* Rename memoize to throttle
+* Remove zk-Timeplot-1.0_2 project
+* Delete no longer needed js files
+* Throttle the drawing of the dependencies
+* Reimplement moving dependencies when moving task
+* Fix the key of the response
+* The elements must be queried again otherwise the offset is calculated badly
+* Remove unncessary calls to redraw
+* Avoid error when moving a task
+* [Bug #1096] Fix bug
+* [Bug #1095] Fixed issue using header parameter of CutyCapt to set Accept-Language.
+* [doc] Improved info about web services.
+* [doc] Updated development doc to new REST scripts.
+* Tidy not mandatory for example REST scripts.
+* [doc] Get rid of Ruby.
+* Updated script to get REST XML schema to new variables for environments.
+* Remove needed to use Ruby for REST example scripts.
+* Use method in SecurityUtils to get current user
+* Added method getLoggedUser() in SecurityUtils class
+* [Bug #1090] Added JavaScript removed in one of the previous patches.
+* [Bug #1090] Removed unused variables in UserModel.
+* [Bug #1090] Avoid pass Configuration to MandatoryUser.
+* [Bug #1090] Fixed hidden warnings if user is disabled.
+* [Bug #971] Fixed reseting Tree model to null.
+* [doc] Created UPDATE file.
+* [doc] Fixed small typo in INSTALL file.
+* Sometimes a double was returned
+* Fix error when changing zoom
+* [doc] Updated INSTALL file.
+* [doc] Improved HACKING file.
+* Removed HSQLDB profile as it's not working anymore since we use Liquibase.
+* [Bug #1091] Fix bug
+* [Bug #1091] Be more lenient if the end date is before start date
+* Extract validation checks and fix exception message
+* [Bug #975] Cannot apply Sigmoid function is resource allocation has consolidated days
+* Now rest clients use demo deployment by default and have 2 new options --prod and --dev.
+* [Bug #1084] Fix bug
+* Released 1.1.1 version.
+* Captured generic exceptions.
+* Updated TODO file with roadmap for 1.2 version.
+* Changed OpenJDK dependency in Debian package for default-jdk or default-jre.
+* [i18n] Fixed wrong translation of project in some reports.
+* [i18n] Fixed uppercase/lowercases incoherences.
+* [Bug #1084] Fix bug
+* Avoid where possible to mark a method as throws Exception
+* Avoid creation of array by reflection
+* Review methods that provide variables that are known to be null
+* Implement missing equals or add warning to classes that have a natural ordering
+* Remove unnecessary null checks
+* Mark classes as static when not referencing outer class
+* Avoid the use of Number constructors
+* [Bug #789] Script for parsing ZUL files should look for 'ganttzk_i18n' tag too
+* [Bug #789] Renamed 'i18n' prefix in ganttzk to 'ganttzk_i18n'
+* Fix possible NPE
+* Fix NPE if provided allocation is null
+* Avoid NPE if editedValue is null
+* [Bug #1086] Fix bug
+* [doc] Added explanation about different scopes development documentation.
+* [doc] Fixed wrong dependency in training exercises.
+* [doc] Fixed small issue in reports guide.
+* [doc] Fixed typo in development documentation.
+* Changed test to avoid it fails if it's launched on Saturday.
+* Merge branch 'master' into migration-to-ZK5-merging
+* [i18n] Fixed typo in progress with all tasks.
+* [i18n] Fixed typo in "criterions" using "criteria".
+* [i18n] Updated Spanish and Galician translations.
+* [i18n] Fixed issue in keys generator and updated keys.pot files.
+* [i18n] Updated Spanish and Galician translations.
+* [i18n] Fixed translation of "progress" to Galician and Spanish.
+* [i18n] Marked "Choosing template" for translate.
+* [i18n] Changed "order sequence" for "entity sequence"
+* [i18n] Updated keys.pot files
+* Fixed two translation issues.
+* Fixed problem when LDAP host is reachable but LDAP is out-of-service
+* Fixed bug in button Test LDAP connection
+* [Bug #1083] Fix bug
+* Added log messages for "Test LDAP connection" button.
+* Corrections of previous patch
+* [Bug #1014] add borders in the table of the report of worked hours per each resource.
+* [Bug #1014]
+* [Bug #1014]
+* [Bug #1081] validate and action stop if something fails while saving data in progress type view.
+* [Bug #1013] increase the width in filter search box.
+* LDAP Authentication
+* [Bug #1082] Fix bug
+* Revert "Fix bug"
+* improve the view of autocomplete property of the login form.
+* Fixed problem with last LiquiBase change in PostgreSQL.
+* [Bug #1075] Fix the some features in the autocomplete property configuration.
+* Add isNavalPlanUser column to users list.
+* Composite Handler LDAP-Database. Import of users from LDAP. Support of two types of users (LDAP and Database).
+* Adding LDAP configuration properties to Configuration and User
+* [Bug #1075] disables the autocomplete login form property if the admin password is not on default.
+* [Bug #1075] adds compiling option to disable/enable the autocomplete login.
+* [Bug #954] Fix bug
+* Revert "[Bug #954] Handle concurrency support in Configuration window"
+* The new support for parametrizing the clearing of handlers is used
+* Now the clearing behaviour can be parametrized
+* More aggresive discarding of sessions and desktops
+* Basic LDAP Authentication added on login form.
+* [Bug #1080] Fixed issue with Montecarlo method when critical path has more than 10 tasks.
+* [Bug #1079] Fixed lazy exception initializing parent calendar too.
+* Improve toString message
+* Fix bug
+* [Bug #984] Add ON_OK event on project name textbox in creation project wizard.
+* [Bug #1074] check if exists indicators of the earned value for that date.
+* [Bug #1076] Fixed NullPointerException going to Gantt view when project is not scheduled.
+* Reduce the time that request handlers are kept around in CallbackServlet
+* Fix memory leak in TemplateController
+* Refactor password not changed controller code
+* Allow to GC the page before the desktop is discarded
+* Don't let the thread local hang forever in the threads local map
+* Fix leak
+* Remove unnecessary timers.
+* [Bug #1022] Include filtering criteria information in the hearders of the reports.
+* Reduce the live time of desktops
+* Fix memory leak
+* Determine the log directory dinamically
+* Use asynchronous appender
+* Move default log4j.properties to application
+* Added new Liquibase changelog file for new developments on stable branch.
+* Added dependencies
+* Configured our JfreeChartEngine as the chart engine
+* Deleted JFreeChartEngine class
+* GPL implementation of JFreeChartEngine
+* Deleted files related with JasperreportComponent
+* Fixed shrinked rows on Montercarlo chart
+* Fixed shrinked rows on grids at Montecarlo view
+* Deleted ExtendedJasperreport
+* Deleted forgotten references to ExtendedJasperreport
+* Added a temporary fix for Chrome bug
+* Added missing files for JasperreportComponent
+* Changed report component on all report controllers
+* Adapted NavalplannerReportController to make use of JasperreportComponent
+* Created JasperreportComponent a free implementation of ZK Jasperreport
+* Fixed bug related with the model used with a combobox
+* Changed some css to fix some errors
+* Merge commit 'navalplan-1.0.1' into HEAD
+* Fixed invalid timetracker's width for days
+* Changed timeplotz version
+* Renamed TimeTrackerComponent#afterCompose method
+* Made tabs to use all avaliable width
+* Fixed bug regarding timetrackergap
+* Fixed shrikend boxes on calendars/_edition.zul
+* Fixes shrinked boxes on Work Reports
+* Fixed shrinked boxes in Resources>Companies>Edit company
+* Fixed shrinked boxes in Resources>WorkReports>Edit Work Report
+* Fixed shrinked boxes in Resources>Machines>Edit machine
+* Fixed shrinked boxes on Resources>Worker>Edit Worker
+* FEA: ItEr02S03MigracionZK5  Fixed tree header visualization problems on Chrome
+* Fixed bug with watermkars on secondlevel timetracker
+* Changed fixedByLayout by sizedByContent
+* Released 1.0.1 version.
+* Updated TODO file with decisions from roadmap meeting.
+* [Bug #803] Remove unused code
+* [Bug #803] Change Zoom level in LimitingResources launches Validation exception
+* [Bug #804] Fix bug
+* [Bug #788] changes the structure and labels in resource load view.
+* [Bug #808] Fix bug when a resource field in Resource search is selected for the first time, set 'Current selection' as name of that resource
+* [Bug #785] fixes translations in company list.
+* Added dependency with ttf-freefont on debian/control.
+* [Bug #801] Fixed typo in Spanish translation.
+* [Bug #785] Add improvements in companies list.
+* [Bug #784] Sort results of add criterion combo in resource edition
+* Reset the progressmeter to zero when the MonteCarlo chart is closed
+* [Bug #800] Fix closable button in 'Calendar allocation' window
+* [Bug #800] Fix closable button in 'Progress consolidation' window
+* [Bug #800] Add closable button to 'Progress assignment' window
+* [Bug #800] Add closable button to 'Project details' window
+* Added a default "left" value for timetrackergap
+* [Bug #782] Fix bug
+* Fix asyncNotifications
+* Fix the type parameter
+* [Bug #779] Fix bug
+* Avoid LazyInitializationException accessing template's labels
+* [Bug #798] Refactor 'Remove Criterion' window, change it for a MessageBox window
+* Changed the order Plotinfos are appended
+* [Bug #795] Refactor calendar remove dialog box and change it to a MessageBox
+* Deleted method used to adapt callbacks for older versions on Timelinez
+* Fixed some bugs on DependencyComponent's widget-class
+* Deleted native namespace
+* Missing commit
+* Added configuration property for using trendy molds
+* Added a comment to explain why we are not using XulElement#setContext
+* Replaced EventListener by XulElement#setContext
+* Upgraded to ZK 5.0.5
+* Changed base widget-class for DependencyComponent
+* Fixed bug on TaskComponent widget
+* Adding a dependency is cancelled if you click anywhere that's not a task
+* ESC keypress event is now handled
+* Added initial implementation for Milestone widget
+* Added missing ">" symbol at task-list mold
+* Fixed bug on TaskComponent widget-class
+* Added if-check to avoid exception caused by Milestone
+* Fixed shrinked treecol on resource load view
+* Changed the given id for TimeTracker at AdvancedAllocationController
+* Recoded advanceAllocation Javascript file
+* Added method to retrieve the TimeTracker's real width
+* Added scrolling functionallity to TimeTracker's widget-class
+* Added code to make TimeTracker's widget-class singleton
+* Skeletal code for TimeTracker widget-class
+* Explicitly set width to solve shrinking problems with chrome
+* Fixed shrinked tables on labels tab
+* Added missing closing symbol
+* FEA: ItEr02S03MigracionZK5  Avoid uses of Mode#goToOrderMode that cause unnecessary repaintings
+* Changed valing attribute to pack
+* Replaced DOM methods with jQuery
+* Fixed bug that caused Duplicated ID exception
+* Fixed onflicts: 	ganttzk/src/main/java/org/zkoss/ganttz/TaskComponent.java 	navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java
+* Missing commit
+* Revert comments that prevented the use of timeplot
+* Polished version of previous commit (load chart on demand)
+* First approach for loading charts on demand
+* Added named parameters for TaskComponent widget-events
+* Added resize capabilities to tasks
+* Fixed bug regarding Widget.addAft() function
+* Merge branch 'master' into migration-to-ZK5-dev
+* Added missing setClass method for TaskComponent widget-class
+* Deleted deprecated code
+* Ganttpanel changed to scroll on zoomlevel change
+* Sent timetracker's scroll_left value when planner's zoom level changes
+* Added a token for referencing elements on event data
+* Replaced listener on zul code with listener on widget
+* Delay the construction and data retrieval for the charts below the company view until they are actually shown.
+* Updated timelinez version to 2.3.1_50
+* Added a scroll listener for LimitingResourcesPanel
+* Overwritten getWidgetClass method for LimitingResourcesPanel
+* Created LimitingResourcesPanel widget-class
+* Explicitely added width attr for vbox at _orderElementTree
+* Deleted useless Javascript dependencies
+* Changed how the CSS class of a class is set
+* Overwrote default setLeft method
+* Added drag&drop functionallity
+* Added missing methods for adding depencies
+* Changed how we retrieve the DependencyList widget
+* Added a z-index property to .box class
+* Modified UnlinkedDependencyComponent and how it's inserted on the DOM
+* Added singleton-like structure for DependencyList
+* Added behaviour for consolidating a new depedency
+* New isOverTask method
+* Fixed method call at DependencyComponentBase
+* Fixed typo on variable name
+* Converted jQuery-Array-like to proper Array
+* Test code for using UnlinkedDependencyComponent
+* Done some changes to improve performance while adding dependencies
+* Behaviour for UnlinkedDependencyComponent
+* Added missing Math.abs(...)
+* Added missing constant for DependencyComponentBase
+* Moved setupArrow method to top class
+* Basic implementation for UnlinkedDependencyComponent
+* Created a base widget-class for dependency elements
+* Added missing $supers call at overwrote method
+* Fixed bug that caused and exception on empty Strings
+* Adapted retrieveData to use JSONArray objects
+* Added addRelatedDependency method for TaskComponent widget-class
+* Added methods for drawing dependency arrows
+* Added required constants for TaskComponent widget-class
+* Added common.Common as a dependency for ganttz package
+* Created a Common widget-class
+* Overwrote appendChild method for DependencyList widget-class
+* Fixed bug on TaskContainer mold
+* Added a method for initializing commonly used properties at DependencyComponent widget-objecs
+* Added missing mold content for DependencyList component
+* Content for DependencyComponent mold
+* Added $define property for DependencyComponent widget-class
+* Added renderProperties method for DependencyComponent
+* Added skeletal mold and widget-class for DependencyComponent
+* Avoid adding Timeplot because it is failing.
+* Replaced deprecated valign property
+* Replaced deprecated valign property
+* Added show/hideResourceTooltips methods
+* Added hide/showAllTaskLabels methods
+* Renamed method at TaskComponent widget-class
+* Replaced deprecated LayoutRegion import
+* Replaced deprecated propertie: valign
+* Changed super-widget-class for TaskContainerComponent
+* Mold content for TaskContainerComponent
+* Skeletal mold and widget class for TaskContainerComponent
+* Adapted css classes
+* Added adjustResourceLoadRows for QueueListComponent
+* QueueListComponent now extends XulElement
+* Fixed typos
+* Mold content for QueueListComponent
+* Skeletal mold and widget-class for QueueListComponent
+* Mold content for LimitingDependencyComponent
+* Mold content for LimitingDependencyList
+* Mold content for QueueComponent
+* Basic widget-clasess and molds for Limitin Resources perspective
+* Added adjustScrollableDimensions to Planner widget-class
+* Refactored event listener from TaskList to GanttPannel
+* Added method to ResourceLoadList
+* Added event handler for scrolling
+* Fixed bug on overwritted method
+* Event handler for resize event
+* Replaced Clients.evalJavascript argument
+* Added recalculateTimeTrackerHeight
+* Fixed typos
+* Added class-methods setInstance and getIntance
+* Added ResourceLoadList to WPD file for resourceload package
+* Basic widget-class and mold for ResourceLoadList
+* Changed inherited class for ResourceLoadList
+* Mold content for ResourceLoadCompononent
+* GanttPanel static-widget-instance is updated on each instantiation
+* Replaced setStyle with render(...,"style",...)
+* Replaced deprecated method
+* Fix compiler error.
+* Proper setup of zkforge dependencies
+* Replaced deprecated interface import
+* Basic widget-class and mold for ResourceLoadComponent
+* Added widget and mold config for ResourceLoadComponent
+* zk.wpd file for ganttz.resourceload package
+* Fixed width for modal window
+* Fixed typo on method name
+* Enabled event thread
+* Added <?component...?> directive
+* Replaced Javascript sent to client
+* Replaced jQuery by jq
+* Fixed scroll handling for GanttPanel
+* Added mold attribute to button component
+* Added <?component...?> directive
+* Added methods to TaskComponent widget-class
+* Added method to TaskComponent widget-class
+* Fixed bug on attribute setting
+* Added method for displaying deadlines
+* Set "trendy" mold for main buttons
+* Added a trim method to adapt callback uri
+* remove contextpath from callback uri
+* Conf. maven for sources.jar
+* Created widget-class for TaskComponent
+* Created GanttPanel widget-class
+* Added javascript dependencies for Ganttz
+* Modified how Javascript dependencies are loaded
+* Minor bug fixing
+* Mold for TaskComponent
+* Mold for TaskRow component
+* Bugfix at TaskList mold
+* Mold for GanttPanel comp.
+* Mold for TaskList comp.
+* Skeletal widgets for ganttz
+* Upgraded timelinez version
+* Conf. Maven for sources.jar
+* Upgraded timeplot package
+* Changed South import
+* Added throws statements
+* Added throws statement
+* Added throws statement
+* Removed deprecated method getRealStyle
+* Upgrading TaskComponent to ZK 5
+* Upgraded TimeTrackerComponent to ZK 5
+* Upgrade ZK version to 5.0.3
+
 
 Version 1.1.3 (12 Aug 2011)
 ---------------------------
@@ -11,12 +1370,18 @@ screen for big projects using labels. Under some special conditions not all the
 labels were loaded and the persistence to disk failed.
 
 Other minor fixes included in this version:
+
 * Task Scheduling Status In Project report has been reviewed and fixed.
-* Now LibrePlan does not depend on server language for translations of strings
+
+* Now NavalPlan does not depend on server language for translations of strings
   in the business module.
+
 * Resource load chart is fixed for tasks finishing in the middle of a day.
+
 * Solved issue on Gantt saving due to transient resource allocations.
+
 * Added some basic constraints checkers to exception days and progress type.
+
 * New log file to register login attempts.
 
 Changes
@@ -185,7 +1550,7 @@ Changes
 Version 1.1.0 (19 May 2011)
 ---------------------------
 
-New major version of LibrePlan. Apart from a lot of bugfixing the main features
+New major version of NavalPlan. Apart from a lot of bugfixing the main features
 included in this version are:
 
 * Fixed problem with WebKit based browsers.
@@ -217,7 +1582,7 @@ included in this version are:
 
 * Hierarchical criteria enforced.
 
-  Criteria in LibrePlan are like dynamic roles that resources can satisfy and
+  Criteria in NavalPlan are like dynamic roles that resources can satisfy and
   can be hierarchical. This means that one general criterion can include other
   more specific criteria inside. For instance, it is possible to configure the
   general criterion Engineer with two children like Electric Engineer and
@@ -230,7 +1595,7 @@ included in this version are:
 
   Generic allocation is the assignment based on criteria. You specify the set
   of criteria which must be satisfied by the workers who are able to do the
-  task and, after this, LibrePlan looks for them and selects the ones less
+  task and, after this, NavalPlan looks for them and selects the ones less
   loaded to be planned.
 
   The algorithm which selects the workers to be assigned to a task when
@@ -268,7 +1633,7 @@ included in this version are:
   * admin/admin. This user is the user with administration privileges.
   * user/user. This is a common user without administration privileges.
   * wswriter/wswriter. This user has write permissions to use then web
-    services operations which require modify or insert data in LibrePlan.
+    services operations which require modify or insert data in NavalPlan.
   * wsreader/wsreader. This user has read permissions to the use web services
     operations which only require read permissions.
 
@@ -309,7 +1674,7 @@ Notes
 
 If you are upgrading from any 1.0.x verion, you will need to manually execute on
 your database the SQL sentences from file:
-``/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.1.0``
+``/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.1.0``
 
 To get database access information review ``/etc/tomcat6/context.xml`` file.
 
@@ -816,7 +2181,7 @@ Changes
 * [Bug #898] Add column criterion type (worker or machine) in criterion types
   list.
 * [Bug #924] Call method useSchedulingDataFor for each order.
-* LibrePlan exercises for formation course in Spanish in reStructuredText.
+* NavalPlan exercises for formation course in Spanish in reStructuredText.
 * [doc] Added more sections to use case development guide.
 * [Bug #884] Show progress measurements list in reverse order.
 * [Bug #884] Sort progress measurements list in reverse order.
@@ -837,7 +2202,7 @@ Changes
 * [i18n] Updated translations.
 * [Bug #910] Change string 'Type resource assignation' to 'Resource allocation
   type'
-* LibrePlan formation manual in spanish in reStructuredText.
+* NavalPlan formation manual in spanish in reStructuredText.
 * [doc] Added information about interface in use case development guide.
 * [Bug #892] Rename labels in 'Overall progress'
 * [doc] Use case development guide.
@@ -883,7 +2248,7 @@ Changes
   hoursWorkedPerWorkerReport.jrxml.
 * Training material update
 * [doc] Added info about model and extract database data to report guide.
-* [doc] First version of basic tutorial to create a new report on LibrePlan.
+* [doc] First version of basic tutorial to create a new report on NavalPlan.
 * Added comment in main pom.xml to mark the point where bundle folders for
   reports are specified.
 * Give more priority to the resources already picked
@@ -922,7 +2287,7 @@ Changes
 * Apply validation annotation to the field
 * [Bug #871] The problem is due to receiving an empty list of tasks
 * [Bug #865] Fix bug
-* [Bug #870] LibrePlan appears in English if browser is configured with es-es
+* [Bug #870] NavalPlan appears in English if browser is configured with es-es
 * Fix bug create or edit resource should start on first tab
 * [Bug #864] S-curve changes the end date of a task
 * [Bug #868] It does not update the row of the order element correctly
@@ -1064,7 +2429,7 @@ Changes
 * Make canWork rely on Capacity data
 * Use Capacity in BaseCalendar
 * Make consufing method private
-* Updated LibrePlan license headers to 2011.
+* Updated NavalPlan license headers to 2011.
 * Refactored components allocation_search and allocation_search_component
 * Added Resource.getCaptionFor()
 * Replaced method IResourceSearchModel.byLimiting(boolean) with .byResourceType
@@ -1217,7 +2582,7 @@ Changes
 Version 1.0.5 (8 Apr 2011)
 --------------------------
 
-Last bugfixing version of LibrePlan for 1.0.x cycle, like in previous releases
+Last bugfixing version of NavalPlan for 1.0.x cycle, like in previous releases
 it includes all the fixes done in the stable branch since 1.0.4. Among them we
 would like to highlight:
 
@@ -1305,7 +2670,7 @@ Changes
 Version 1.0.4 (17 Mar 2011)
 ---------------------------
 
-A new bugfixing version of LibrePlan, including a lot of bugs fixed during this
+A new bugfixing version of NavalPlan, including a lot of bugs fixed during this
 month.
 
 * Resolved some stability problems appearing under certain circumstances.
@@ -1368,7 +2733,7 @@ Changes
 * [Bug #898] Add column criterion type (worker or machine) in criterion types
   list.
 * [Bug #924] Call method useSchedulingDataFor for each order.
-* LibrePlan exercises for formation course in Spanish in reStructuredText.
+* NavalPlan exercises for formation course in Spanish in reStructuredText.
 * [Bug #884] Show progress measurements list in reverse order.
 * [Bug #884] Sort progress measurements list in reverse order.
 * [Bug #854] fix the labels in workingProgressPerTask report
@@ -1388,7 +2753,7 @@ Changes
 * [i18n] Updated translations.
 * [Bug #910] Change string 'Type resource assignation' to 'Resource allocation
   type'
-* LibrePlan formation manual in spanish in reStructuredText.
+* NavalPlan formation manual in spanish in reStructuredText.
 * [Bug #892] Rename labels in 'Overall progress'
 * [Bug #903] Fix regression: creating a gap out of a LocalDate caused tasks may
   overlap due to loose of information about hour
@@ -1444,7 +2809,7 @@ Changes
 * [Bug #855] Fix bug
 * Apply validation annotation to the field
 * [Bug #871] The problem is due to receiving an empty list of tasks
-* [Bug #870] LibrePlan appears in English if browser is configured with es-es
+* [Bug #870] NavalPlan appears in English if browser is configured with es-es
 * Fix bug create or edit resource should start on first tab
 * [Bug #864] S-curve changes the end date of a task
 * [Bug #868] It does not update the row of the order element correctly
@@ -1568,7 +2933,7 @@ Notes
 
 If you are upgrading from any 1.0.x verion, you will need to manually execute on
 your database the SQL sentences from file:
-``/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.0.0``
+``/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.0.0``
 
 To get database access information review ``/etc/tomcat6/context.xml`` file.
 
@@ -1638,7 +3003,7 @@ Changes
 Version 1.0.0 (07 Jan 2011)
 ---------------------------
 
-This is the first stable release of *LibrePlan*, a free software web
+This is the first stable release of *NavalPlan*, a free software web
 application for project management.
 
 Main features
@@ -1653,7 +3018,7 @@ Main features
 * Overload resource allocation control.
 * Earned Value Management (EVM).
 * Cost analysis based on work reports.
-* Integration with other *LibrePlan* instances and third-parties.
+* Integration with other *NavalPlan* instances and third-parties.
 * Other functionalities: materials, quality forms, project templates, planning
   scenarios, multiple task progress measurement ...
 

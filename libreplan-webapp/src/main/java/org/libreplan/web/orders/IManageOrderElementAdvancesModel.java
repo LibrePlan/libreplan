@@ -116,6 +116,9 @@ public interface IManageOrderElementAdvancesModel {
 
     AdvanceAssignment getSpreadAdvance();
 
-    void cancel();
+    LocalDate getLastConsolidatedMeasurementDate(
+            AdvanceAssignment advanceAssignment);
+
+    boolean hasAnyConsolidatedAdvanceCurrentOrderElement();
 
 }

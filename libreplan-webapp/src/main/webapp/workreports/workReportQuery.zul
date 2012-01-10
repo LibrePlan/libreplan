@@ -24,7 +24,6 @@
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
-<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
     <window self="@{define(content)}"
@@ -32,24 +31,24 @@
         <vbox id="messagesContainer"></vbox>
 
     <window id="listQueryWindow" title="${i18n:_('Work Report Lines List')}">
-       <panel title="${i18n:_('Filter work report by :')}" border="normal"
+       <panel title="${i18n:_('Filter work report by')}" border="normal"
                     style="overflow:auto">
         <panelchildren>
         <separator bar="false" spacing="5px" orient="horizontal"/>
         <div align="center">
         <hbox id="hboxFilter" align="end">
           <!-- Filter work report lines -->
-          <label value="${i18n:_('Resource :')}"/>
+          <label value="${i18n:_('Resource')}"/>
           <autocomplete id="filterResource" buttonVisible="true"
                finder="ResourceFinder"/>
-          <label value="${i18n:_('task :')}"/>
+          <label value="${i18n:_('task')}"/>
           <bandboxSearch id="bandboxFilterOrderElement" widthBandbox="285px" widthListbox="700px"
               finder="OrderElementBandboxFinder" model="@{controller.orderElements}"/>
           <label value="${i18n:_('from')}"/>
           <datebox id="filterStartDateLine" constraint = "@{controller.checkConstraintStartDateLine}"/>
           <label value="${i18n:_('to')}"/>
           <datebox id="filterFinishDateLine" constraint = "@{controller.checkConstraintFinishDateLine}"/>
-          <label value="${i18n:_('hours type :')}"/>
+          <label value="${i18n:_('hours type')}"/>
           <autocomplete id="filterHoursType" buttonVisible="true"
                finder="TypeOfWorkHoursFinder" width="100px"/>
           <button label="${i18n:_('Filter')}" style="margin-top: -4px"

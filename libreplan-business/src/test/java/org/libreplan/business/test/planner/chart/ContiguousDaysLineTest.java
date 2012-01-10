@@ -17,7 +17,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.libreplan.business.planner.chart.ContiguousDaysLine;
 import org.libreplan.business.planner.chart.ContiguousDaysLine.IValueTransformer;
-import org.libreplan.business.planner.chart.ContiguousDaysLine.ONDay;
+import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
 
 public class ContiguousDaysLineTest {
 
@@ -50,7 +50,7 @@ public class ContiguousDaysLineTest {
 
     @Test
     public void initiallyTheValuesAreNull() {
-        for (ONDay<String> onDay : ContiguousDaysLine.create(someDate,
+        for (OnDay<String> onDay : ContiguousDaysLine.create(someDate,
                 someDate.plusDays(2), String.class)) {
             assertThat(onDay.getValue(), nullValue());
         }
@@ -71,7 +71,7 @@ public class ContiguousDaysLineTest {
             public boolean matches(Object object) {
                 if (object instanceof ContiguousDaysLine) {
                     ContiguousDaysLine<?> line = (ContiguousDaysLine) object;
-                    for (ONDay<?> each : line) {
+                    for (OnDay<?> each : line) {
                         if(! ObjectUtils.equals(value, each.getValue())){
                             return false;
                         }
@@ -178,7 +178,7 @@ public class ContiguousDaysLineTest {
             public boolean matches(Object object) {
                 if (object instanceof ContiguousDaysLine) {
                     ContiguousDaysLine<?> another = (ContiguousDaysLine<?>) object;
-                    for (ONDay<?> each : line) {
+                    for (OnDay<?> each : line) {
                         if (!ObjectUtils.equals(each.getValue(),
                                 another.get(each.getDay()))) {
                             return false;
@@ -192,7 +192,7 @@ public class ContiguousDaysLineTest {
             @Override
             public void describeTo(Description description) {
                 List<Object> values = new ArrayList<Object>();
-                for (ONDay<?> each : line) {
+                for (OnDay<?> each : line) {
                     values.add(each.getValue());
                 }
                 description.appendText("the line has values: " + values);

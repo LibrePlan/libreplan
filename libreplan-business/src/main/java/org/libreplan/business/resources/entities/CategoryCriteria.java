@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 CafédeRed Solutions, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,18 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Predefined leave criterions<br />
- * @author Lorenzo Tilve <ltilve@igalia.com>
- * @author Diego Pino García <dpino@igalia.com>
+ * Predefined categories<br />
+ *
+ * @author Ignacio Díaz Teijido <ignacio.diaz@cafedered.com>
  */
-public enum LeaveCriterions {
-    MEDICAL_LEAVE("medicalLeave"),
-    PATERNITY_LEAVE("paternityLeave");
+public enum CategoryCriteria {
+    MANAGER("Manager"), SENIOR_WORKER("Senior worker"), JUNIOR_WORKER(
+            "Junior worker");
 
     public static List<String> getCriterionNames() {
         ArrayList<String> result = new ArrayList<String>();
-        for (LeaveCriterions leaveCriterions: values()) {
-            result.add(leaveCriterions.criterionName);
+        for (CategoryCriteria category : values()) {
+            result.add(category.criterionName);
         }
         return result;
     }
@@ -44,10 +42,11 @@ public enum LeaveCriterions {
     private final String criterionName;
 
     public Criterion criterion() {
-        return Criterion.create(criterionName, CriterionType.asCriterionType(PredefinedCriterionTypes.LEAVE));
+        return Criterion.create(criterionName, CriterionType
+                .asCriterionType(PredefinedCriterionTypes.CATEGORY));
     }
 
-    private LeaveCriterions(String name) {
+    private CategoryCriteria(String name) {
         this.criterionName = name;
     }
 }

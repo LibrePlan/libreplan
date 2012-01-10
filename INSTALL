@@ -35,15 +35,20 @@ Instructions:
 
 * Download the package::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/files/LibrePlan/libreplan_1.2.0-1_amd64.deb
 
 * Install package::
 
-    # dpkg -i libreplan_1.1.1-1_amd64.deb
+    # dpkg -i libreplan_1.2.0-1_amd64.deb
 
 * Install dependencies::
 
     # apt-get install -f
+
+.. WARNING::
+
+  If you have problems with printing support review the last section `Fix
+  printing in Debian Squeeze`_.
 
 
 LibrePlan manual installation
@@ -68,15 +73,24 @@ Debian/Ubuntu
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.1.1.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/librelplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
     $ psql -h localhost -U libreplan -W libreplan < install.sql
 
+  .. WARNING::
+
+    It is very important to execute the previous command specifiying
+    ``libreplan`` user (as you can see in the ``-U`` option). Otherwise your
+    LibrePlan installation is not going to start properly and you could find in
+    your log files something like that::
+
+      JDBCExceptionReporter  - ERROR: permission denied for relation entity_sequence
+
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
@@ -128,6 +142,11 @@ Debian/Ubuntu
 
 * Go to http://localhost:8080/libreplan/
 
+.. WARNING::
+
+  If you have problems with printing support review the last section `Fix
+  printing in Debian Squeeze`_.
+
 
 openSUSE
 ~~~~~~~~
@@ -170,15 +189,24 @@ openSUSE
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.1.1.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
     $ psql -h localhost -U libreplan -W libreplan < install.sql
 
+  .. WARNING::
+
+    It is very important to execute the previous command specifiying
+    ``libreplan`` user (as you can see in the ``-U`` option). Otherwise your
+    LibrePlan installation is not going to start properly and you could find in
+    your log files something like that::
+
+      JDBCExceptionReporter  - ERROR: permission denied for relation entity_sequence
+
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.1.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
@@ -215,7 +243,33 @@ Logs
 
 Since *LibrePlan 1.1.1* log system is configured automatically creating a new
 folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
-``/var/log/tomcat6/libreplan.war``.
+``/var/log/tomcat6/libreplan/``.
 
 Inside this new directory there will be two files (``libreplan.log`` and
 ``libreplan-error.log``) that will be rotated every day.
+
+
+Fix printing in Debian Squeeze
+------------------------------
+
+Since LibrePlan 1.2 printing support is not working properly in Debian Squeeze.
+To fix this issue, basically, you have to get a newer version of CutyCapt and
+WebKit dependencies from Debian testing.
+
+Instructions:
+
+* Make sure stable remains the default distribution to pull packages from::
+
+  # echo 'APT::Default-Release "stable";' >> /etc/apt/apt.conf
+
+* Add a new repository to make testing packages available to ``apt-get``::
+
+  # echo "deb http://ftp.debian.org/debian testing main" >> /etc/apt/sources.list
+
+* Refresh package index::
+
+  # apt-get update
+
+* Fetch and install ``cutycapt`` (and its dependencies) from testing::
+
+  # apt-get -t testing install cutycapt

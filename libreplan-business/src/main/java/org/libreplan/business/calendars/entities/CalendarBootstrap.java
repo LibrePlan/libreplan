@@ -47,11 +47,11 @@ public class CalendarBootstrap implements ICalendarBootstrap {
     @Override
     @Transactional
     public void loadRequiredData() {
-        for (PredefinedCalendarExceptionTypes type : PredefinedCalendarExceptionTypes
-                .values()) {
+        if (calendarExceptionTypeDAO.getAll().size() == 0) {
+            for (PredefinedCalendarExceptionTypes type : PredefinedCalendarExceptionTypes
+                    .values()) {
                 CalendarExceptionType calendarExceptionType = type
-                    .getCalendarExceptionType();
-            if (!calendarExceptionTypeDAO.existsByName(calendarExceptionType)) {
+                        .getCalendarExceptionType();
                 calendarExceptionType
                         .setCode(entitySequenceDAO
                                 .getNextEntityCodeWithoutTransaction(EntityNameEnum.CALENDAR_EXCEPTION_TYPE));

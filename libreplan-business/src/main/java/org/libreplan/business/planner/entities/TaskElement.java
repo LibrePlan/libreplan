@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -134,6 +133,7 @@ public abstract class TaskElement extends BaseEntity {
         taskElement.taskSource = taskSource;
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
+        taskElement.updateAdvancePercentageFromOrderElement();
         Order order = taskElement.getOrderElement().getOrder();
         if (order.isScheduleBackwards()) {
             taskElement.setEndDate(order.getDeadline());
@@ -476,7 +476,7 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
-    private void detachDependencies() {
+    public void detachDependencies() {
         detachOutcomingDependencies();
         detachIncomingDependencies();
     }
@@ -484,9 +484,13 @@ public abstract class TaskElement extends BaseEntity {
     private void detachIncomingDependencies() {
         Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
         for (Dependency dependency : dependenciesWithThisDestination) {
-            tasksToNotify.add(dependency.getOrigin());
+            TaskElement origin = dependency.getOrigin();
+            if (origin != null) {
+                tasksToNotify.add(origin);
+            }
         }
         for (TaskElement taskElement : tasksToNotify) {
+            this.removeDependenciesWithOrigin(taskElement);
             taskElement.removeDependenciesWithDestination(this);
         }
     }
@@ -494,9 +498,13 @@ public abstract class TaskElement extends BaseEntity {
     private void detachOutcomingDependencies() {
         Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
         for (Dependency dependency : dependenciesWithThisOrigin) {
-            tasksToNotify.add(dependency.getDestination());
+            TaskElement destination = dependency.getDestination();
+            if (destination != null) {
+                tasksToNotify.add(destination);
+            }
         }
         for (TaskElement taskElement : tasksToNotify) {
+            this.removeDependenciesWithDestination(taskElement);
             taskElement.removeDependenciesWithOrigin(this);
         }
     }
@@ -540,13 +548,18 @@ public abstract class TaskElement extends BaseEntity {
         result.put(date, current.plus(duration));
     }
 
-    public List<DayAssignment> getDayAssignments() {
+    public List<DayAssignment> getDayAssignments(DayAssignment.FilterType filter) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             dayAssignments.addAll(resourceAllocation.getAssignments());
+            Set<DerivedAllocation> derivedAllocations = resourceAllocation
+                    .getDerivedAllocations();
+            for (DerivedAllocation each : derivedAllocations) {
+                dayAssignments.addAll(each.getAssignments());
+            }
         }
-        return dayAssignments;
+        return DayAssignment.filter(dayAssignments, filter);
     }
 
     public boolean isSubcontracted() {
@@ -595,7 +608,7 @@ public abstract class TaskElement extends BaseEntity {
             //simplified calculation has only two states:
             //unassigned, when hours allocated is zero, and
             //assigned otherwise
-            if (getSumOfHoursAllocated() == 0) {
+            if (getSumOfAssignedEffort().isZero()) {
                 return "unassigned";
             }
             return "assigned";
@@ -639,7 +652,8 @@ public abstract class TaskElement extends BaseEntity {
      * depending on parameter
      */
     public BigDecimal getAdvancePercentage(ProgressType progressType) {
-        if (progressType.equals(ProgressType.SPREAD_PROGRESS)) {
+        if (progressType != null
+                && progressType.equals(ProgressType.SPREAD_PROGRESS)) {
             return advancePercentage;
         }
         return BigDecimal.ZERO;
@@ -649,40 +663,28 @@ public abstract class TaskElement extends BaseEntity {
         this.advancePercentage = advancePercentage;
     }
 
-    public void detachFromDependencies() {
-        for (Dependency each : copy(getDependenciesWithThisDestination())) {
-            detachDependency(each);
+    private EffortDuration sumOfAssignedEffort = EffortDuration.hours(0);
+
+    public void setSumOfAssignedEffort(EffortDuration sumOfAssignedEffort) {
+        this.sumOfAssignedEffort = sumOfAssignedEffort;
+    }
+
+    public EffortDuration getSumOfAssignedEffort() {
+        if (this.getParent() == null) {
+            //it's an order, we use the cached value
+            return sumOfAssignedEffort;
         }
-        for (Dependency each : copy(getDependenciesWithThisOrigin())) {
-            detachDependency(each);
+        else {
+            return getSumOfAssignedEffortCalculated();
         }
     }
 
-    /**
-     * Copy the dependencies to a list in order to avoid
-     * {@link ConcurrentModificationException}
-     */
-    private List<Dependency> copy(Set<Dependency> dependencies) {
-        return new ArrayList<Dependency>(dependencies);
-    }
-
-    private void detachDependency(Dependency each) {
-        each.getOrigin().removeDependencyWithDestination(each.getDestination(),
-                each.getType());
-    }
-
-    private Integer sumOfHoursAllocated = 0;
-
-    public void setSumOfHoursAllocated(Integer sumOfHoursAllocated) {
-        this.sumOfHoursAllocated = sumOfHoursAllocated;
-    }
-
-    public void addSumOfHoursAllocated(Integer sumOfHoursAllocated) {
-        this.sumOfHoursAllocated += sumOfHoursAllocated;
-    }
-
-    public Integer getSumOfHoursAllocated() {
-        return sumOfHoursAllocated;
+    private EffortDuration getSumOfAssignedEffortCalculated() {
+        EffortDuration result = EffortDuration.hours(0);
+        for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
+            result = result.plus(allocation.getAssignedEffort());
+        }
+        return result;
     }
 
     public String toString() {
@@ -699,6 +701,10 @@ public abstract class TaskElement extends BaseEntity {
             result.addAll(child.getAllChildren());
         }
         return result;
+    }
+
+    public void updateAdvancePercentageFromOrderElement() {
+        setAdvancePercentage(getOrderElement().getAdvancePercentage());
     }
 
 }

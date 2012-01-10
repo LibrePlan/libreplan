@@ -56,4 +56,6 @@ public interface ITemplateModel {
 
     String getIdUser(String login);
 
+    boolean isUserAdmin();
+
 }

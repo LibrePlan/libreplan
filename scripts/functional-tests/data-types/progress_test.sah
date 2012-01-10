@@ -54,7 +54,7 @@ function progressCreateEmpty() {
     _log("Do not allow create a progress without name", "custom1");
 }
 
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function progressNotValid(){
     _assertExists(_div("The name is not valid, there is another progress type with the same name."));
     _assert(_isVisible(_div("The name is not valid, there is another progress type with the same name.")));

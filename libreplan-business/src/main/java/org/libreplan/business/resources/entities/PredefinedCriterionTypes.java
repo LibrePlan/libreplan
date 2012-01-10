@@ -29,51 +29,29 @@ import org.libreplan.business.common.Registry;
 
 /**
  * This class defines some criterion types known a priori<br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Ignacio Díaz Teijido <ignacio.diaz@cafedered.com>
  */
 public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
-   WORK_RELATIONSHIP(_("WORK_RELATIONSHIP"), "Relationship of the resource with the enterprise ",false, false,true, ResourceEnum.WORKER) {
-        @Override
-        public List<String> getPredefined() {
-            return WorkingRelationship.getCriterionNames();
-        }
-    },
-    LOCATION_GROUP(_("LOCATION_GROUP"), "Location where the workers work",
+    LOCATION(_("LOCATION"), "Worker location",
             false, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
-            return Arrays.asList();
+            return LocationCriteria.getCriterionNames();
         }
     },
-    MACHINE_LOCATION_GROUP(_("MACHINE LOCATION_GROUP"),
-            "Location where there are machines", false, true, true,
-            ResourceEnum.MACHINE) {
+    CATEGORY(_("CATEGORY"), "Professional category", true, true, true,
+            ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
-            return Arrays.asList();
+            return CategoryCriteria.getCriterionNames();
         }
     },
-    LEAVE(_("LEAVE"), "Leave",false, false, true, ResourceEnum.WORKER) {
-        @Override
-        public List<String> getPredefined() {
-            return LeaveCriterions.getCriterionNames();
-        }
-    },
-    TRAINING(_("TRAINING"), "Training courses and labor training",true, true, true, ResourceEnum.WORKER) {
-        @Override
-        public List<String> getPredefined() {
-            return Arrays.asList();
-        }
-    },
-    JOB(_("JOB"),"Job",true, true, true, ResourceEnum.WORKER) {
-        @Override
-        public List<String> getPredefined() {
-            return Arrays.asList();
-        }
-    },
-    CATEGORY(_("CATEGORY"),"Professional category",true, true, true, ResourceEnum.WORKER) {
+    SKILL(_("SKILL"), "Worker skill", true, true, true,
+            ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return Arrays.asList();

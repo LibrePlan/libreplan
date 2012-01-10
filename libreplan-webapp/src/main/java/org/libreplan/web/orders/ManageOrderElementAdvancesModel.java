@@ -29,11 +29,9 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -60,6 +58,9 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidation;
+import org.libreplan.business.planner.entities.consolidations.Consolidation;
+import org.libreplan.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
+import org.libreplan.business.planner.entities.consolidations.NonCalculatedConsolidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -97,8 +98,6 @@ public class ManageOrderElementAdvancesModel implements
     private List<AdvanceAssignment> listAdvanceAssignments;
 
     private List<AdvanceType> listAdvanceTypes;
-
-    private CancelOperation cancelOperation = new CancelOperation();
 
     @Autowired
     public ManageOrderElementAdvancesModel(
@@ -221,7 +220,10 @@ public class ManageOrderElementAdvancesModel implements
     private void forceLoadAdvanceConsolidatedValues(
             DirectAdvanceAssignment advance) {
         for (AdvanceMeasurement measurement : advance.getAdvanceMeasurements()) {
-            measurement.getNonCalculatedConsolidatedValues().size();
+            for (NonCalculatedConsolidatedValue each : measurement
+                    .getNonCalculatedConsolidatedValues()) {
+                each.getConsolidation().getConsolidatedUntil();
+            }
         }
     }
 
@@ -240,11 +242,6 @@ public class ManageOrderElementAdvancesModel implements
                 .getIndirectAdvanceAssignments()) {
             listAdvanceAssignments.add(each);
         }
-    }
-
-    @Override
-    public void cancel() {
-        cancelOperation.restoreOriginalState();
     }
 
     @Override
@@ -312,7 +309,6 @@ public class ManageOrderElementAdvancesModel implements
             measurement.setDate(null);
             advanceAssignment.addAdvanceMeasurements(measurement);
         }
-        cancelOperation.markAsAdded(measurement);
     }
 
     @Override
@@ -325,7 +321,6 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void removeLineAdvanceMeasurement(AdvanceMeasurement measurement) {
-        cancelOperation.markAsRemoved(measurement);
         this.advanceAssignment.removeAdvanceMeasurement(measurement);
     }
 
@@ -444,7 +439,6 @@ public class ManageOrderElementAdvancesModel implements
         reattachmentOrderElement();
         orderElement.updateAdvancePercentageTaskElement();
         validateBasicData();
-        cancelOperation.clear();
     }
 
     private void validateBasicData()  throws InstanceNotFoundException,
@@ -755,17 +749,9 @@ public class ManageOrderElementAdvancesModel implements
             AdvanceMeasurement advanceMeasurement) {
         AdvanceAssignment advance = advanceMeasurement.getAdvanceAssignment();
         if ((orderElement != null) && (orderElement.getParent() != null) && (advance instanceof DirectAdvanceAssignment)) {
-
-            List<String> types = new ArrayList<String>();
-
-            types.add(advance.getAdvanceType().getUnitName());
-            if (advance.getReportGlobalAdvance()) {
-                types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
-            }
-
             orderElementDAO.reattach(orderElement);
             Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
-                    orderElement, types);
+                    orderElement, advance);
 
             for (IndirectAdvanceAssignment indirect : indirects) {
                 if (findConsolidatedAdvance(indirect
@@ -778,8 +764,20 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     private Set<IndirectAdvanceAssignment> getSpreadIndirectAdvanceAssignmentWithSameType(
-            OrderElement orderElement, List<String> types) {
+            OrderElement orderElement, AdvanceAssignment advance) {
+        List<String> types = new ArrayList<String>();
 
+        types.add(advance.getAdvanceType().getUnitName());
+        if (advance.getReportGlobalAdvance()) {
+            types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
+        }
+
+        return getSpreadIndirectAdvanceAssignmentWithSameType(orderElement,
+                types);
+    }
+
+    private Set<IndirectAdvanceAssignment> getSpreadIndirectAdvanceAssignmentWithSameType(
+            OrderElement orderElement, List<String> types) {
         Set<IndirectAdvanceAssignment> result = new HashSet<IndirectAdvanceAssignment>();
 
         for (IndirectAdvanceAssignment indirect : orderElement
@@ -814,78 +812,44 @@ public class ManageOrderElementAdvancesModel implements
         return false;
     }
 
-    /**
-     * @author Diego Pino García <dpino@igalia.com>
-     *
-     *      Keeps track of added and removed measurements. When the cancel button is
-     *      pressed, restores the original state of the advance assignments
-     *
-     */
-    private static class CancelOperation {
+    @Override
+    public LocalDate getLastConsolidatedMeasurementDate(
+            AdvanceAssignment advance) {
+        List<Consolidation> consolidations = new ArrayList<Consolidation>();
 
-        private Set<AdvanceMeasurement> addedMeasurements = new HashSet<AdvanceMeasurement>();
+        Set<NonCalculatedConsolidation> nonCalculatedConsolidations = ((DirectAdvanceAssignment) advance)
+                .getNonCalculatedConsolidation();
+        consolidations.addAll(nonCalculatedConsolidations);
 
-        private Map<AdvanceAssignment, Set<AdvanceMeasurement>> removedMeasurements = new HashMap<AdvanceAssignment, Set<AdvanceMeasurement>>();
-
-        public void restoreOriginalState() {
-            removeAddedMeasurements();
-            addRemovedMeasurements();
-            clear();
-        }
-
-        private void clear() {
-            addedMeasurements.clear();
-            removedMeasurements.clear();
-        }
-
-        private void removeAddedMeasurements() {
-            for (AdvanceAssignment each : removedMeasurements.keySet()) {
-                if (each instanceof DirectAdvanceAssignment) {
-                    DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) each;
-                    directAdvanceAssignment
-                            .addAdvanceMeasurements(removedMeasurements
-                                    .get(each));
-                }
+        if (consolidations.isEmpty()) {
+            Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
+                    orderElement, advance);
+            for (IndirectAdvanceAssignment indirect : indirects) {
+                consolidations.addAll(indirect.getCalculatedConsolidation());
             }
-            removedMeasurements.clear();
         }
 
-        private void addRemovedMeasurements() {
-            for (AdvanceMeasurement each : addedMeasurements) {
-                AdvanceAssignment assignment = each.getAdvanceAssignment();
-                if (assignment instanceof DirectAdvanceAssignment) {
-                    DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) assignment;
-                    directAdvanceAssignment.removeAdvanceMeasurement(each);
-                }
+        if (consolidations.isEmpty()) {
+            return null;
+        }
+
+        Collections.sort(consolidations, new Comparator<Consolidation>() {
+            @Override
+            public int compare(Consolidation o1, Consolidation o2) {
+                return o1.getConsolidatedUntil().compareTo(
+                        o2.getConsolidatedUntil());
             }
-            addedMeasurements.clear();
-        }
+        });
+        return consolidations.get(consolidations.size() - 1)
+                .getConsolidatedUntil();
+    }
 
-        /**
-         * Keeps track of new measurement added to {@link AdvanceAssignment}. If
-         * the user later clicks cancel these elements will be removed
-         *
-         * @param measurement
-         */
-        public void markAsAdded(AdvanceMeasurement measurement) {
-            addedMeasurements.add(measurement);
+    @Override
+    public boolean hasAnyConsolidatedAdvanceCurrentOrderElement() {
+        if (orderElement == null) {
+            return false;
         }
-
-        /**
-         * Keeps track of measurement removed from {@link AdvanceAssignment}. If
-         * the user later clicks cancel these elements will be added back again
-         *
-         * @param measurement
-         */
-        public void markAsRemoved(AdvanceMeasurement measurement) {
-            AdvanceAssignment assignment = measurement.getAdvanceAssignment();
-            if (!removedMeasurements.containsKey(assignment)) {
-                removedMeasurements.put(assignment, new HashSet<AdvanceMeasurement>());
-            }
-            Set<AdvanceMeasurement> measurements = removedMeasurements.get(assignment);
-            measurements.add(measurement);
-        }
-
+        return orderElement.hasAnyConsolidatedAdvance();
     }
 
     public boolean hasAnySubcontratedTaskOnChildren() {

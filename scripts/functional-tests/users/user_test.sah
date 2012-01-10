@@ -76,9 +76,9 @@ function accountsCreateTwoUserSamePass($name, $password) {
 
 function accountsCreateTwoPass($name, $password, $newPassword){
     commonCreate("Accounts");
-    _setValue(_textbox(0, _near(_span("Login name:"))), $name);
-    _setValue(_password(0, _near(_span("Password:"))), $password);
-    _setValue(_password(0, _near(_span("Password confirmation:"))), $newPassword);
+    _setValue(_textbox(0, _near(_span("Login name"))), $name);
+    _setValue(_password(0, _near(_span("Password"))), $password);
+    _setValue(_password(0, _near(_span("Password confirmation"))), $newPassword);
     _click(_cell("Save"));
     _assertExists(_div("passwords don't match"));
     _assert(_isVisible(_div("passwords don't match")));
@@ -86,13 +86,13 @@ function accountsCreateTwoPass($name, $password, $newPassword){
 }
 
 function accountsForm($name, $password) {
-    _setValue(_textbox(0, _near(_span("Login name:"))), $name);
-    _setValue(_password(0, _near(_span("Password:"))), $password);
-    _setValue(_password(0, _near(_span("Password confirmation:"))), $password);
+    _setValue(_textbox(0, _near(_span("Login name"))), $name);
+    _setValue(_password(0, _near(_span("Password"))), $password);
+    _setValue(_password(0, _near(_span("Password confirmation"))), $password);
     _click(_cell("Save"));
 }
 
-/* test to check a that naval plan give us a error */
+/* test to check a that LibrePlan give us a error */
 function accountsNotValid(){
     _assertExists(_span("checkConstraintUniqueLoginName: login name is already being used by another user"));
     _assert(_isVisible(_span("checkConstraintUniqueLoginName: login name is already being used by another user")));
@@ -106,9 +106,9 @@ function accountsComprobateUser($name, $Password) {
 function accountsEdit($oldName, $newName, $newPassword, $cell) {
     _click(_link("Accounts"));
     commonEdit($oldName, $cell);
-    _setValue(_textbox(0, _near(_span("Login name:"))), $newName);
-    _setValue(_password(0, _near(_span("Password:"))), $newPassword);
-    _setValue(_password(0, _near(_span("Password confirmation:"))), $newPassword);
+    _setValue(_textbox(0, _near(_span("Login name"))), $newName);
+    _setValue(_password(0, _near(_span("Password"))), $newPassword);
+    _setValue(_password(0, _near(_span("Password confirmation"))), $newPassword);
     _click(_textbox(0, _near(_cell("Add role"))));
     _click(_cell("Administration"));
     _click(_cell("Add role"));

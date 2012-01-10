@@ -60,7 +60,13 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     $define :{
         resourcesText    : null,
         labelsText    : null,
-        tooltipText : null
+        tooltipText : null,
+        left: function() {
+            this.$supers('setLeft', arguments);
+            this._getRelatedDependencies().forEach(function(dependency) {
+                dependency.draw();
+            });
+        }
     },
     $init : function(){
         this.$supers('$init', arguments);
@@ -113,6 +119,14 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     },
     consolidateNewDependency : function(task){
         zAu.send(new zk.Event(this, 'onAddDependency', {dependencyId : task.id}));
+    },
+    _getRelatedDependencies: function() {
+        return jq('.dependency[idtaskorig='+ this.uuid + ']')
+                .add('.dependency[idtaskend='+ this.uuid + ']')
+                .get()
+                .map(function(dep) {
+                    return ganttz.DependencyComponentBase.$(dep);
+                });
     },
     _addDragDrop : function(){
         var dragdropregion = this._getDragDropRegion();
@@ -177,7 +191,7 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
         this.mouseOverTask = true;
         this._tooltipTimeout = setTimeout(jq.proxy(function(offset) {
             var element = jq("#tasktooltip" + this.uuid);
-            if (element!=null) {
+            if (element.length > 0) {
                 element.show();
                 offset = ganttz.GanttPanel.getInstance().getXMouse()
                         - element.parent().offset().left
@@ -202,16 +216,22 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
         jq('#consolidatedline' + this.parent.uuid).css('left', width);
     },
     resizeCompletionAdvance : function(width){
-        jq('#' + this.uuid + ' > .completion:first').css('width', width);
+        jq('#' + this.uuid + ' .completion:first').css('width', width);
     },
     resizeCompletion2Advance : function(width){
-        jq('#' + this.uuid + ' > .completion2:first').css('width', width);
+        jq('#' + this.uuid + ' .completion2:first').css('width', width);
     },
     showResourceTooltip : function(){
         jq('#'+ this.uuid + ' .task-resources').show();
     },
     hideResourceTooltip : function(){
         jq('#'+ this.uuid + ' .task-resources').hide();
+    },
+    showLabels : function(){
+        jq('.task-labels',this.$n()).show();
+    },
+    hideLabels : function(){
+        jq('.task-labels',this.$n()).hide();
     },
     setClass : function(cssClass){
         jq(this.$n()).addClass(cssClass);

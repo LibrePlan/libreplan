@@ -34,6 +34,7 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
@@ -177,7 +178,8 @@ realHours
     }
 
     public Integer calculatePlannedHours(Task task, LocalDate date) {
-        final List<DayAssignment> dayAssignments = task.getDayAssignments();
+        final List<DayAssignment> dayAssignments = task
+                .getDayAssignments(FilterType.WITHOUT_DERIVED);
         return DayAssignment.sum(removeAfterDate(dayAssignments, date))
                 .roundToHours();
     }

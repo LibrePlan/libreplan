@@ -46,6 +46,8 @@ public interface ITypeOfWorkHoursDAO extends
 
     boolean existsByCode(TypeOfWorkHours typeOfWorkHours);
 
+    boolean existsByName(TypeOfWorkHours typeOfWorkHours);
+
     boolean existsTypeWithCodeInAnotherTransaction(String code);
 
     List<TypeOfWorkHours> findActive();

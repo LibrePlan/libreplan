@@ -49,8 +49,6 @@ public interface ICompanyPlanningModel {
 
     LocalDate getFilterFinishDate();
 
-    void goToCreateOtherOrderFromTemplate(OrderTemplate template);
-
     ProgressType getProgressTypeFromConfiguration();
 
 }

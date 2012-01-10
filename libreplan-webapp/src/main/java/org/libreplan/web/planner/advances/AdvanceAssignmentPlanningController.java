@@ -105,14 +105,8 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
     }
 
     public void onClose(Event event) {
-        cancel();
+        accept();
         event.stopPropagation();
-    }
-
-    public void cancel() {
-        manageOrderElementAdvancesController.cancel();
-        advanceAssignmentPlanningModel.cancel();
-        close();
     }
 
     public void accept() {
@@ -152,6 +146,7 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
     private void updateTaskComponent(TaskComponent taskComponent) {
         taskComponent.updateCompletionIfPossible();
         taskComponent.updateTooltipText();
+        taskComponent.invalidate();
     }
 
     private void close() {

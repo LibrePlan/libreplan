@@ -33,9 +33,13 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.CalendarData.Days;
@@ -73,6 +77,21 @@ public class BaseCalendarModelTest {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Before
+    public void loadRequiredaData() {
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                configurationBootstrap.loadRequiredData();
+                return null;
+            }
+        });
+    }
 
     @Test
     public void testCreateAndSave() {
@@ -227,12 +246,14 @@ public class BaseCalendarModelTest {
                 .getPossibleParentCalendars();
 
         assertThat(possibleParentCalendars.size(), equalTo(previous + 1));
-        assertThat(possibleParentCalendars.get(previous).getId(),
+        BaseCalendar calendarComparison = null;
+        for (BaseCalendar calendar : possibleParentCalendars)
+            if (calendar.getId().equals(parentNewVersion.getId()))
+                calendarComparison = calendar;
+        assertThat(calendarComparison.getId(),
                 equalTo(parentNewVersion.getId()));
-        assertThat(
-                possibleParentCalendars.get(previous)
-                .getCalendarDataVersions()
-                .size(), equalTo(2));
+        assertThat(calendarComparison.getCalendarDataVersions().size(),
+                equalTo(2));
     }
 
 }

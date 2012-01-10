@@ -168,7 +168,7 @@ public class CutyPrint {
 
         // Add capture destination callback URL
         String hostName = resolveLocalHost(request);
-        captureString += " --url=http://" + hostName + ":"
+        captureString += " --url="+ request.getScheme() + "://" + hostName + ":"
                 + request.getLocalPort() + url;
         if (parameters != null) {
             captureString += "?";

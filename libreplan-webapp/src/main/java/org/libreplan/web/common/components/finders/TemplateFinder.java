@@ -79,7 +79,7 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
     }
 
     protected String extractStringFor(T template) {
-        return template.getCode() + " :: " + template.getName();
+        return template.getName() + " (" + template.getCode() + ")";
     }
 
     @Override

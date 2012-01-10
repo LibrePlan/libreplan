@@ -537,6 +537,8 @@ public abstract class BaseCalendarEditionController extends
     public void highlightDaysOnCalendar() {
         Calendar calendar = (Calendar) window.getFellow("calendarWidget");
 
+        Clients.response(new AuInvoke(calendar, "resetHighlightedDates"));
+
         Map<String, List<Integer>> daysByColor = getDaysCurrentMonthByColor();
         for (String color : daysByColor.keySet()) {
             Clients.response(new AuInvoke(calendar, "highlightDates",
@@ -1048,8 +1050,7 @@ public abstract class BaseCalendarEditionController extends
     }
 
     public List<BaseCalendar> getParentCalendars() {
-        return baseCalendarModel.getSortedBaseCalendars(baseCalendarModel
-                .getPossibleParentCalendars());
+        return baseCalendarModel.getPossibleParentCalendars();
     }
 
     public List<CalendarException> getCalendarExceptions() {

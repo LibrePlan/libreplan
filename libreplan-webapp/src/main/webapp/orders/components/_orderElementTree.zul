@@ -28,12 +28,12 @@
     <vbox width="100%">
         <hbox style="margin-bottom:4px;" width="100%" hflex="true">
 
-        <hbox pack="center">
+        <hbox align="center" pack="center">
             <templateFinderPopup id="templateFinderPopupAtTree" acceptButtonLabel="${i18n:_('Create Task')}" caption="${i18n:_('Choosing Template')}" />
-            <label value="${i18n:_('New task:')}" />
+            <label value="${i18n:_('New task')}" />
             <textbox value="" id="newOrderElementName" width="150px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
-            <label value="${i18n:_('Hours:')}" />
+            <label value="${i18n:_('Hours')}" />
             <intbox value="0" id="newOrderElementHours" width="40px"
                 onOK="treeController.addElement(self.parent);"
                 constraint="no negative" disabled="true" />
@@ -45,7 +45,7 @@
         </hbox>
 
         <hbox width="100%" style="float:right" hflex="1" align="right" pack="right">
-            <label value="${i18n:_('Selected node:')}" />
+            <label value="${i18n:_('Selected node')}:" />
             <button id="editOrderElementButton" sclass="icono" image="/common/img/ico_editar1.png"
                 tooltiptext="${i18n:_('Edit selected task')}"
                 onClick="treeController.editSelectedElement();" />
@@ -79,7 +79,7 @@
 
     </vbox>
     <vbox width="100%">
-        <tree id="tree" height="440px" multiple="false" droppable="true"
+        <tree id="tree" hflex="1" multiple="false" droppable="true"
             onDrop="treeController.move(self, event.dragged)"
             onSelect="treeController.updateControlButtons(event)"
             mold="paging" pageSize="25"
@@ -87,7 +87,7 @@
             zclass="z-dottree">
             <treecols sizable="true">
                 <treecol label="${each.label}" class="${each.cssClass}" tooltiptext="${each.tooltip}"
-                    forEach="${treeComponent.columns}"/>
+                    forEach="${treeComponent.columns}" hflex="${each.hflex}" />
             </treecols>
         </tree>
     </vbox>

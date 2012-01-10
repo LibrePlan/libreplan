@@ -27,7 +27,8 @@
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
         <property name="advancePercentage" column="advance_percentage" access="field" scale="4"/>
 
-        <property name="sumOfHoursAllocated" column="sum_of_hours_allocated" />
+        <property name="sumOfAssignedEffort" column="sum_of_assigned_effort" access="field"
+            type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
 
         <!-- Indexed -->
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"
@@ -36,13 +37,13 @@
         <one-to-one name="taskSource" cascade="delete" />
 
         <!-- Indexed on the other side -->
-        <set name="dependenciesWithThisOrigin" cascade="all-delete-orphan">
+        <set name="dependenciesWithThisOrigin" cascade="all">
             <key column="origin"></key>
             <one-to-many class="Dependency" />
         </set>
 
         <!-- Not indexed -->
-        <set name="dependenciesWithThisDestination" cascade="all-delete-orphan">
+        <set name="dependenciesWithThisDestination" cascade="all">
             <key column="destination"></key>
             <one-to-many class="Dependency" />
         </set>

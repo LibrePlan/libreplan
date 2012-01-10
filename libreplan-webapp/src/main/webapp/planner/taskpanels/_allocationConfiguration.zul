@@ -28,17 +28,17 @@
 
         <hbox>
             <!-- Planned Task Start -->
-            <label style="font-weight: bold" value="${i18n:_('Planned start :')}" />
+            <label style="font-weight: bold" value="${i18n:_('Planned start')}:" />
             <label id="lbTaskStart" />
 
             <!-- Planned Task End -->
-            <label style="font-weight: bold" value="${i18n:_('Planned end :')}" />
+            <label style="font-weight: bold" value="${i18n:_('Planned end')}:" />
             <label id="lbTaskEnd" />
         </hbox>
 
         <hbox>
             <!-- Planned Workable Days -->
-            <label style="font-weight: bold" value="${i18n:_('Planned workable days :')}" />
+            <label style="font-weight: bold" value="${i18n:_('Planned workable days')}:" />
             <intbox id="taskWorkableDays" width="90px" />
         </hbox>
 

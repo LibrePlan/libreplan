@@ -35,12 +35,11 @@
     title="@{i18n:_('Edit task')}"
     width="950px"
     left="50px"
-    top="50px"
     visible="false"
     closable="true"
     onClose="orderElementController.close(event)" >
 
-    <tabbox height="620px" id="tabboxOrderElement">
+    <tabbox id="tabboxOrderElement">
         <tabs>
             <tab id="tabDetails" label="${i18n:_('Details')}" selected="true"
                 onSelect="orderElementController.clearAll();"/>

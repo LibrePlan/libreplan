@@ -45,6 +45,8 @@ public class LeftPane extends HtmlMacroComponent {
 
     private FilterAndParentExpandedPredicates predicate;
 
+    private Planner planner;
+
     public void setGoingDownInLastArrowCommand(
             CommandContextualized<?> goingDownInLastArrowCommand) {
         this.leftTasksTree
@@ -52,18 +54,19 @@ public class LeftPane extends HtmlMacroComponent {
     }
 
     public LeftPane(IDisabilityConfiguration disabilityConfiguration,
-            List<Task> topLevelTasks,
+            Planner planner,
             FilterAndParentExpandedPredicates predicate) {
-        this.topLevelTasks = topLevelTasks;
+        this.topLevelTasks = planner.getDiagramGraph().getTopLevelTasks();
         this.disabilityConfiguration = disabilityConfiguration;
         this.predicate = predicate;
+        this.planner = planner;
     }
 
     @Override
     public void afterCompose() {
         super.afterCompose();
-        leftTasksTree = new LeftTasksTree(disabilityConfiguration,
-                topLevelTasks, predicate);
+        leftTasksTree = new LeftTasksTree(disabilityConfiguration, planner,
+                predicate);
         getContainer().appendChild(leftTasksTree);
         leftTasksTree.afterCompose();
     }

@@ -22,6 +22,7 @@
 package org.libreplan.web.reports;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -105,6 +106,7 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     public List<Order> getOrders() {
         List<Order> result = orderDAO.getOrdersByScenario(scenarioManager
                 .getCurrent());
+        Collections.sort(result);
         return result;
     }
 

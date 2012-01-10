@@ -100,6 +100,11 @@ body .advancedallocationlayout .icono .z-button-cm {
     border-right:0;
 }
 
+
+.perspectives-column .global-commands {
+    margin-bottom: 0;
+}
+
 .toolbar-box {
     border:0;
 }
@@ -466,10 +471,16 @@ div.z-row-cnt {
     padding-left: 2px;
 }
 
-.leftpanelgap .z-textbox,.leftpanelgap .z-decimalbox,.leftpanelgap .z-intbox,
-.leftpanelgap .z-longbox,.leftpanelgap .z-doublebox,.leftpanelgap .z-datebox,
-.leftpanelgap .z-datebox-inp,.leftpanelgap .z-datebox-focus .z-datebox-inp {
+.leftpanelgap .z-textbox, .leftpanelgap .z-decimalbox, .leftpanelgap .z-intbox,
+.leftpanelgap .z-longbox, .leftpanelgap .z-doublebox, .leftpanelgap .z-datebox,
+.leftpanelgap .z-datebox-inp, .leftpanelgap .z-datebox-focus .z-datebox-inp,
+.leftpanelgap .z-datebox-inp {
     font-size: 11px;
+}
+
+
+tr.z-treerow td.z-treerow-focus {
+    background-image: none;
 }
 
 div.z-footer-cnt,div.z-row-cnt,div.z-group-cnt,div.z-group-foot-cnt,div.z-column-cnt,div.z-tree-col-cnt {
@@ -565,16 +576,21 @@ div.z-grid {
 
 .orderTree .z-textbox,.orderTree .z-decimalbox,
 .orderTree .z-intbox,.orderTree .z-longbox,
-.orderTree .z-doublebox {
-    height: 23px;
+.orderTree .z-doublebox, .orderTree .z-datebox {
+    height: 21px;
     width: 100%;
 }
 
 .listdetails .z-textbox, .listdetails .z-decimalbox,
 .listdetails .z-intbox, .listdetails .z-longbox,
-.listdetails .z-doublebox {
+.listdetails .z-doublebox, .listdetails .z-tree .z-datebox-inp {
     height: 15px;
 }
+
+.listdetails .z-tree .z-datebox-inp {
+padding-top: 3px;
+}
+
 .listdetails input {
     padding-top: 5px;
 }
@@ -583,19 +599,20 @@ div.z-grid {
     height:25px;
 }
 .orderTree .operations {
-    width:80px;
+    width: 50px;
 }
 .orderTree .name {
-    min-width:120px;
+    min-width: 120px;
 }
 .orderTree .hours {
-    width:40px;
+    width: 50px;
 }
 .orderTree .code {
-    min-width:100px;
+    min-width: 100px;
 }
+
 .orderTree .scheduling_state {
-    min-width:160px;
+    min-width:140px;
 }
 .orderTree .estimated_init,
 .orderTree .estimated_end {
@@ -612,6 +629,10 @@ div.z-grid {
 
 .orderTree td {
     border-bottom: 1px dotted #7EAAC6;
+}
+
+.orderTree td td {
+    border-bottom: 0;
 }
 
 .orderTree .icono td {
@@ -823,6 +844,12 @@ div.z-listbox-pgi-b {
     float:left;
 }
 
+.orderTree .not-scheduled span.z-button,
+.orderTree .partially-scheduled span.z-button,
+.orderTree .completely-scheduled span.z-button {
+    margin: 4px 1px 0 0;
+}
+
 .orderTree .not-scheduled span.scheduling-state,
 .orderTree .partially-scheduled span.scheduling-state,
 .orderTree .completely-scheduled span.scheduling-state {
@@ -859,7 +886,7 @@ span.completely-scheduled {
 span.z-dottree-tee-open,
 span.z-dottree-tee-close,
 span.z-dottree-line {
-    min-height: 28px;
+    min-height: 25px;
 }
 
 
@@ -919,6 +946,7 @@ span.z-dottree-line {
 
 .migas_linea {
     border: 0px;
+    cursor: default;
 }
 
 /* ---- Perspectives ------ */
@@ -986,7 +1014,8 @@ span.perspective, span.perspective-active {
     display: none;
 }
 
-.taskdetailsContainer {
+.taskdetailsContainer,
+.resourceloaddetailsContainer {
     border-left:0;
     border-top:0;
 }
@@ -1112,15 +1141,34 @@ span.perspective, span.perspective-active {
     border-bottom:1px solid #9ECAD8;
 }
 
+.orderslayout-area > .z-center-body {
+    height: auto !important;
+}
+
 .orderelements-tab {
     overflow-x: auto;
 }
 
-tr.z-tree-row-seld, tr.z-list-item-seld,
-.z-combobox-pp .z-combo-item-seld,
+tr.z-tree-row-seld, tr.z-listitem-seld,
+.z-combobox-pp .z-comboitem-seld,
 tr.z-treerow-seld {
-    background-color: #fdd772;
+    background-color: #fdd772; /* Dark orange */
     color: #000000;
+}
+
+tr.z-treerow-seld input {
+    background-color: #fdf3da; /* Soft orange */
+    background-image: none;
+}
+
+tr.z-treerow-over input {
+    background-color: #eff2f6; /* Soft blue */
+        background-image: none;
+}
+
+tr.z-treerow-over input {
+    background-color: #eff2f6; /* Soft blue */
+        background-image: none;
 }
 
 .timeplot-canvas {
@@ -1407,6 +1455,16 @@ display:none;
     height: 99999px;
 }
 
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .timetracker_column {
+    border-right: solid 1px #F2F2F2 !important;
+}
+
+#ganttpanel .second_level_ #watermark .bankHoliday {
+border-right: solid 1px #F2D8D8 !important;
+}
+
+
 .calendar-exceptions div.z-grid-body {
     overflow: hidden;
 }
@@ -1436,7 +1494,7 @@ display:none;
 }
 
 .progress-types {
-    margin-left:-10px;
+    margin-left:-12px;
 }
 
 .progress-types.z-combobox .z-combobox-inp {
@@ -1448,11 +1506,11 @@ display:none;
     border: 0;
     border-width: 0;
     outline: none;
-    text-indent: -200px;
+    width: 0;
 }
 
 .progress-types.z-combobox input {
-    display: none;
+    font-size: 0;
 }
 
 .show-advances img  {

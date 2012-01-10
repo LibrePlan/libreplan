@@ -64,15 +64,18 @@ import org.libreplan.business.materials.entities.MaterialAssignment;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
-import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
+import org.libreplan.business.resources.daos.ICriterionTypeDAO;
+import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.PredefinedCriterionTypes;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.web.orders.OrderElementTreeModelTest;
 import org.libreplan.ws.common.api.AdvanceMeasurementDTO;
 import org.libreplan.ws.common.api.ConstraintViolationDTO;
 import org.libreplan.ws.common.api.CriterionRequirementDTO;
@@ -130,8 +133,25 @@ public class OrderElementServiceTest {
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
+
     @Before
     public void loadRequiredaData() {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                OrderElementTreeModelTest.cleanCriteria(workReportDAO,
+                        resourceDAO, criterionTypeDAO);
+                return null;
+            }
+        });
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
@@ -424,12 +444,7 @@ public class OrderElementServiceTest {
                 .addOrders(orderListDTO).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        try {
-            orderElementDAO.findByCode(code);
-            assertTrue(true);
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+        checkIfExistsByCodeInAnotherTransaction(code);
     }
 
     @Test
@@ -549,12 +564,7 @@ public class OrderElementServiceTest {
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
 
-        try {
-            orderElementDAO.findByCode(code);
-            assertTrue(true);
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+        checkIfExistsByCodeInAnotherTransaction(code);
     }
 
     @Test
@@ -637,12 +647,7 @@ public class OrderElementServiceTest {
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
 
-        try {
-            orderElementDAO.findByCode(code);
-            assertTrue(true);
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+        checkIfExistsByCodeInAnotherTransaction(code);
     }
 
     @Test
@@ -696,7 +701,11 @@ public class OrderElementServiceTest {
                 .addOrders(orderListDTO).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+        checkIfExistsByCodeInAnotherTransaction(code);
+    }
+
+    private void checkIfExistsByCodeInAnotherTransaction(final String code) {
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
                 try {
@@ -1073,10 +1082,10 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
         // Mandatory fields: date
-        assertThat(constraintViolations.size(), equalTo(1));
+        assertThat(constraintViolations.size(), equalTo(2));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            System.out.println("### constraintViolationDTO.fieldName: " + constraintViolationDTO.fieldName);
-            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("date")));
+            assertThat(constraintViolationDTO.fieldName,
+                    anyOf(mustEnd("value"), mustEnd("date")));
         }
 
         try {
@@ -1311,8 +1320,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);
@@ -1364,8 +1373,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);
@@ -1451,8 +1460,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);
@@ -1480,7 +1489,7 @@ public class OrderElementServiceTest {
         assertNotNull(orderElement);
         assertThat(orderElement.getCriterionRequirements().size(), equalTo(1));
 
-        String name2 = PredefinedCriterionTypes.LEAVE.getPredefined().get(1);
+        String name2 = PredefinedCriterionTypes.LOCATION.getPredefined().get(1);
 
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
@@ -1554,8 +1563,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);
@@ -1705,8 +1714,8 @@ public class OrderElementServiceTest {
         orderDTO.code = code;
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
-        String name = PredefinedCriterionTypes.LEAVE.getPredefined().get(0);
-        String type = PredefinedCriterionTypes.LEAVE.getName();
+        String name = PredefinedCriterionTypes.LOCATION.getPredefined().get(0);
+        String type = PredefinedCriterionTypes.LOCATION.getName();
 
         CriterionRequirementDTO criterionRequirementDTO = new DirectCriterionRequirementDTO(
                 name, type);

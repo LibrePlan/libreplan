@@ -81,6 +81,14 @@
                         });
                     }
                 </attribute>
+                <attribute w:name="resetHighlightedDates">
+                    function () {
+                        var nodes = $('td', this).not('.z-outside');
+                        nodes.each(function () {
+                            $(this).css({color: "black", backgroundColor: "white"});
+                        });
+                    }
+                </attribute>
             </calendar>
 
             <grid width="180px" sclass="day-details">
@@ -148,7 +156,7 @@
                         <hbox align="middle">
                           <label value="${i18n:_('Normal Effort')}:" />
                           <hbox id="exceptionDayNormalEffortRow" />
-                          <label value="${i18n:_('Extra Effort')}:" />
+                          <label value="${i18n:_('Overtime Effort')}:" />
                           <hbox id="exceptionDayExtraEffortBox"
                             sclass="exceptionDayExtraEffortBox" />
                         </hbox>

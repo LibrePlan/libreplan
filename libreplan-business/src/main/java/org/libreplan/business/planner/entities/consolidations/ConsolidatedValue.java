@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.workingday.IntraDayDate;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -35,7 +36,7 @@ public abstract class ConsolidatedValue extends BaseEntity {
 
     private LocalDate date;
     private BigDecimal value;
-    private LocalDate taskEndDate;
+    private IntraDayDate taskEndDate;
 
     public abstract boolean isCalculated();
 
@@ -44,7 +45,7 @@ public abstract class ConsolidatedValue extends BaseEntity {
     }
 
     protected ConsolidatedValue(LocalDate date, BigDecimal value,
-            LocalDate taskEndDate) {
+            IntraDayDate taskEndDate) {
         this.date = date;
         this.value = value;
         this.taskEndDate = taskEndDate;
@@ -67,7 +68,7 @@ public abstract class ConsolidatedValue extends BaseEntity {
     }
 
     @NotNull(message = "task end date not specified")
-    public LocalDate getTaskEndDate() {
+    public IntraDayDate getTaskEndDate() {
         return taskEndDate;
     }
 

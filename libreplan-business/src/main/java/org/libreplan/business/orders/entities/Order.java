@@ -52,6 +52,7 @@ import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -362,22 +363,23 @@ public class Order extends OrderLineGroup implements Comparable {
         return true;
     }
 
-    public List<DayAssignment> getDayAssignments() {
+    public List<DayAssignment> getDayAssignments(FilterType filter) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
         for (OrderElement orderElement : getAllOrderElements()) {
             Set<TaskElement> taskElements = orderElement.getTaskElements();
             for (TaskElement taskElement : taskElements) {
                 if (taskElement instanceof Task) {
-                    dayAssignments.addAll(taskElement.getDayAssignments());
+                    dayAssignments
+                            .addAll(taskElement.getDayAssignments(filter));
                 }
             }
         }
-        return dayAssignments;
+        return DayAssignment.filter(dayAssignments, filter);
     }
 
-    public Set<Resource> getResources() {
+    public Set<Resource> getResources(FilterType filter) {
         Set<Resource> resources = new HashSet<Resource>();
-        for (DayAssignment dayAssignment : getDayAssignments()) {
+        for (DayAssignment dayAssignment : getDayAssignments(filter)) {
             resources.add(dayAssignment.getResource());
         }
         return resources;

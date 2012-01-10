@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.ClassValidator;
@@ -49,6 +50,7 @@ import org.libreplan.web.common.Util.Setter;
 import org.libreplan.web.orders.DynamicDatebox;
 import org.libreplan.web.orders.SchedulingStateToggler;
 import org.libreplan.web.tree.TreeComponent.Column;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -72,6 +74,14 @@ import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.impl.api.InputElement;
 
+/**
+ * Tree controller for project WBS structures
+ *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
+ */
 public abstract class TreeController<T extends ITreeNode<T>> extends
         GenericForwardComposer {
 
@@ -164,7 +174,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     public void move(Component dropedIn, Component dragged) {
-        if (isPredicateApplied()) {
+        if ((isPredicateApplied())
+                || (dropedIn.getUuid().equals(dragged.getUuid()))) {
             return;
         }
 
@@ -204,6 +215,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
         Intbox hours = (Intbox) cmp.getFellow("newOrderElementHours");
+
+        if (StringUtils.isEmpty(name.getValue())) {
+            throw new WrongValueException(name, _("cannot be empty"));
+        }
 
         if (hours.getValue() == null) {
             hours.setValue(0);
@@ -647,7 +662,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
             Treerow result = createOrRetrieveFor(item);
             // Attach treecells to treerow
-            result.setDraggable("true");
             result.setDroppable("true");
             result.getChildren().clear();
             return result;
@@ -680,7 +694,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 public void onEvent(org.zkoss.zk.ui.event.Event event) {
                     DropEvent dropEvent = (DropEvent) event;
                     move((Component) dropEvent.getTarget(),
-                            (Component) dropEvent.getDragged());
+                            (Component) dropEvent.getDragged().getParent());
                 }
             });
         }
@@ -719,6 +733,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                         }
                     });
             schedulingStateToggler.afterCompose();
+            cell.setDraggable("true");
         }
 
         protected abstract SchedulingState getSchedulingStateFrom(
@@ -756,7 +771,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         private Intbox buildHoursIntboxFor(final T element) {
-            Intbox result = new Intbox();
+            Intbox result = new IntboxDirectValue();
             if (isLine(element)) {
                 Util.bind(result, getHoursGetterFor(element),
                         getHoursSetterFor(element));
@@ -787,9 +802,31 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     // Order node, not an OrderElement
                     parentNodes.remove(parentNodes.size() - 1);
                     for (T node : parentNodes) {
-                        Intbox intbox = hoursIntBoxByElement.get(node);
-                        intbox.setValue(getHoursGroupHandler().getWorkHoursFor(node));
+                        IntboxDirectValue intbox = (IntboxDirectValue) hoursIntBoxByElement
+                                .get(node);
+                        Integer hours = getHoursGroupHandler()
+                                .getWorkHoursFor(node);
+                        if (isInCurrentPage(intbox)) {
+                            intbox.setValue(hours);
+                        } else {
+                            intbox.setValueDirectly(hours);
+                        }
                     }
+                }
+
+                private boolean isInCurrentPage(IntboxDirectValue intbox) {
+                    Treeitem treeItem = (Treeitem) intbox.getParent().getParent().getParent();
+                    List<Treeitem> treeItems = new ArrayList<Treeitem>(
+                            tree.getItems());
+                    int position = treeItems.indexOf(treeItem);
+
+                    if (position < 0) {
+                        throw new RuntimeException("Treeitem " + treeItem
+                                + " has to belong to tree.getItems() list");
+                    }
+
+                    return (position / tree.getPageSize()) == tree
+                            .getActivePage();
                 }
             };
         }
@@ -1058,6 +1095,26 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     public void setTreeComponent(TreeComponent orderElementsTree) {
         this.orderElementTreeComponent = orderElementsTree;
+    }
+
+    /**
+     * This class is to give visibility to method
+     * {@link Intbox#setValueDirectly} which is marked as protected in
+     * {@link Intbox} class.
+     *
+     * <br />
+     *
+     * This is needed to prevent calling {@link AbstractComponent#smartUpdate}
+     * when the {@link Intbox} is not in current page. <tt>smartUpdate</tt> is
+     * called by {@link Intbox#setValue(Integer)}. This call causes a JavaScript
+     * error when trying to update {@link Intbox} that are not in current page
+     * in the tree.
+     */
+    private class IntboxDirectValue extends Intbox {
+        @Override
+        public void setValueDirectly(Object value) {
+            super.setValueDirectly(value);
+        }
     }
 
 }

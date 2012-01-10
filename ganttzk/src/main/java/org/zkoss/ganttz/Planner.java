@@ -71,7 +71,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.South;
 
@@ -468,8 +467,7 @@ public class Planner extends HtmlMacroComponent  {
                 return true;
             }
         };
-        this.leftPane = new LeftPane(disabilityConfiguration, this.diagramGraph
-                .getTopLevelTasks(), predicate);
+        this.leftPane = new LeftPane(disabilityConfiguration, this, predicate);
         this.ganttPanel = new GanttPanel(this,
                 commandsOnTasksContextualized, doubleClickCommand,
                 disabilityConfiguration, predicate);
@@ -478,11 +476,21 @@ public class Planner extends HtmlMacroComponent  {
         button.setDisabled(!context.isPrintEnabled());
     }
 
+    public GanttZKDiagramGraph getDiagramGraph() {
+        return this.diagramGraph;
+    }
+
+    public void updateTooltips() {
+        this.ganttPanel.updateTooltips();
+    }
+
     @SuppressWarnings("unchecked")
     private void insertGlobalCommands() {
         Component commontoolbar = getCommonCommandsInsertionPoint();
         Component plannerToolbar = getSpecificCommandsInsertionPoint();
-        commontoolbar.getChildren().removeAll(commontoolbar.getChildren());
+        if (!contextualizedGlobalCommands.isEmpty()) {
+            commontoolbar.getChildren().removeAll(commontoolbar.getChildren());
+        }
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
             // Comparison through icon as name is internationalized
             if (c.getCommand().getImage()
@@ -865,7 +873,14 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void updateCompletion(String progressType) {
-        getTaskList().updateCompletion(progressType);
+        TaskList taskList = getTaskList();
+        if (taskList != null) {
+            taskList.updateCompletion(progressType);
+            // FIXME Bug #1270
+            for (TaskComponent each : taskList.getTaskComponents()) {
+                each.invalidate();
+            }
+        }
     }
 
 }

@@ -38,10 +38,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
+import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
@@ -57,8 +59,6 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
 import org.libreplan.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.libreplan.web.orders.labels.LabelsAssignmentToOrderElementComponent;
@@ -109,7 +109,9 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -168,19 +170,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
-    private TemplateFinderPopup templateFinderPopup;
-
-    public void createOrderFromTemplate() {
-        templateFinderPopup.openForOrderCreation(createOrderFromTemplateButton,
-                "after_start", new IOnResult<OrderTemplate>() {
-
-                    @Override
-                    public void found(OrderTemplate template) {
-                        showCreateFormFromTemplate(template);
-                    }
-                });
-    }
-
     public void showCreateFormFromTemplate(OrderTemplate template) {
         showOrderElementFilter();
         showCreateButtons(false);
@@ -209,7 +198,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Vbox orderElementFilter;
 
     private Button createOrderButton;
-    private Button createOrderFromTemplateButton;
     private Button saveOrderAndContinueButton;
     private Button cancelEditionButton;
 
@@ -234,6 +222,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OrderElementTreeController orderElementTreeController;
 
     private ProjectDetailsController projectDetailsController;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -261,34 +252,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void setupGlobalButtons() {
-
         Hbox perspectiveButtonsInsertionPoint = (Hbox) page
                 .getFellow("perspectiveButtonsInsertionPoint");
 
-        List<Component> children = perspectiveButtonsInsertionPoint
-                .getChildren();
-        perspectiveButtonsInsertionPoint.getChildren().removeAll(children);
-
-        createOrderButton.setParent(perspectiveButtonsInsertionPoint);
-        createOrderButton.addEventListener(Events.ON_CLICK,
-                new EventListener() {
-            @Override
-                    public void onEvent(Event event) throws Exception {
-                goToCreateForm();
-                    }
-                });
-
-        createOrderFromTemplateButton
-                .setParent(perspectiveButtonsInsertionPoint);
-        createOrderFromTemplateButton.addEventListener(Events.ON_CLICK,
-                new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        createOrderFromTemplate();
-            }
-        });
-
-        saveOrderAndContinueButton.setParent(perspectiveButtonsInsertionPoint);
         saveOrderAndContinueButton.addEventListener(Events.ON_CLICK,
                 new EventListener() {
                     @Override
@@ -297,7 +263,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                     }
                 });
 
-        cancelEditionButton.setParent(perspectiveButtonsInsertionPoint);
         cancelEditionButton.addEventListener(Events.ON_CLICK,
                 new EventListener() {
                     @Override
@@ -952,6 +917,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderTemplates.goToCreateTemplateFrom(order);
     }
 
+    public void createFromTemplate(OrderTemplate template) {
+        orderModel.prepareCreationFrom(template, getDesktop());
+    }
+
     private Runnable onUp;
 
     public void goToEditForm(Order order) {
@@ -1096,17 +1065,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.prepareForCreate(desktop);
     }
 
-    private void editNewCreatedOrder() {
+    public void editNewCreatedOrder(Window detailsWindow) {
         showOrderElementFilter();
         hideCreateButtons();
         prepareEditWindow();
         showEditWindow(_("Create project"));
-    }
-
-    public void editNewCreatedOrder(Window detailsWindow) {
-        editNewCreatedOrder();
-        // close project details window
         detailsWindow.setVisible(false);
+        setupOrderAuthorizationController();
+        detailsWindow.getAttributes();
         saveAndContinue(false);
     }
 
@@ -1423,10 +1389,24 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void showCreateButtons(boolean showCreate) {
-        createOrderButton.setVisible(showCreate);
-        createOrderFromTemplateButton.setVisible(showCreate);
-        saveOrderAndContinueButton.setVisible(!showCreate);
-        cancelEditionButton.setVisible(!showCreate);
+        if (!showCreate) {
+            Hbox perspectiveButtonsInsertionPoint = (Hbox) page
+                    .getFellow("perspectiveButtonsInsertionPoint");
+            perspectiveButtonsInsertionPoint.getChildren().clear();
+            saveOrderAndContinueButton
+                    .setParent(perspectiveButtonsInsertionPoint);
+            cancelEditionButton.setParent(perspectiveButtonsInsertionPoint);
+        }
+        if (createOrderButton != null) {
+            createOrderButton.setVisible(showCreate);
+        }
+        if (saveOrderAndContinueButton != null) {
+            saveOrderAndContinueButton.setVisible(!showCreate);
+        }
+        if (cancelEditionButton != null) {
+            cancelEditionButton.setVisible(!showCreate);
+        }
+
     }
 
     public void highLight(final OrderElement orderElement) {
@@ -1461,8 +1441,9 @@ public class OrderCRUDController extends GenericForwardComposer {
      */
     private void checkCreationPermissions() {
         if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            createOrderButton.setDisabled(true);
-            createOrderFromTemplateButton.setDisabled(true);
+            if (createOrderButton != null) {
+                createOrderButton.setDisabled(true);
+            }
         }
     }
 
@@ -1508,5 +1489,53 @@ public class OrderCRUDController extends GenericForwardComposer {
                return getOrder().getDeliveringDates();
         }
         return new TreeSet<DeadlineCommunication>(new DeliverDateComparator());
+    }
+
+    public Constraint chekValidProjectName() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+
+                if (StringUtils.isBlank((String) value)) {
+                    throw new WrongValueException(comp,
+                            _("cannot be null or empty"));
+                }
+                try {
+                    Order found = orderDAO
+                            .findByNameAnotherTransaction((String) value);
+                    if (!found.getId().equals(getOrder().getId())) {
+                        throw new WrongValueException(comp,
+                                _("project name already being used"));
+                    }
+                } catch (InstanceNotFoundException e) {
+                    return;
+                }
+            }
+        };
+    }
+
+    public Constraint chekValidProjectCode() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+
+                if (StringUtils.isBlank((String) value)) {
+                    throw new WrongValueException(comp,
+                            _("cannot be null or empty"));
+                }
+                try {
+                    Order found = orderDAO
+                            .findByCodeAnotherTransaction((String) value);
+                    if (!found.getId().equals(getOrder().getId())) {
+                        throw new WrongValueException(comp,
+                                _("project code already being used"));
+                    }
+                } catch (InstanceNotFoundException e) {
+                    return;
+                }
+            }
+        };
     }
 }

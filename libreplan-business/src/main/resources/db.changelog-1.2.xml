@@ -130,4 +130,33 @@
 			<column name="subcontracted_task_data_id" type="BIGINT"/>
 		</addColumn>
 	</changeSet>
+
+    <changeSet id="add-task_end_date_effort_duration-to-consolidated_value" author="mrego">
+        <comment>
+            taskEndDate attribute in class ConsolidatedValue has been changed to IntraDayDate.
+            It is needed to add some columns to store EffortDuration in ConsolidatedValue.
+        </comment>
+        <addColumn tableName="consolidated_value">
+            <column name="task_end_date_effort_duration" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="consolidated_value"
+            columnName="task_end_date_effort_duration"
+            defaultValueNumeric="0" />
+    </changeSet>
+
+    <changeSet id="change-sum_of_hours_allocated-to-sum_of_assigned_effort" author="jaragunde">
+        <comment>Changing sum_of_hours_allocated to sum_of_assigned_effort</comment>
+        <renameColumn tableName="task_element"
+            oldColumnName="sum_of_hours_allocated"
+            newColumnName="sum_of_assigned_effort"
+            columnDataType="INTEGER" />
+    </changeSet>
+    <changeSet id="update-effort-values-in-sum_charged_effort" author="jaragunde">
+        <comment>Updating effort values (hours to seconds) in task_element table</comment>
+        <sql>
+            UPDATE task_element
+            SET sum_of_assigned_effort = sum_of_assigned_effort*3600
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
