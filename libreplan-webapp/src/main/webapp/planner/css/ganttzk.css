@@ -1318,3 +1318,23 @@ div.z-grid-header .second_level_ tr {
 .taskspanelgap #listlimitingdependencies {
     top: -2px;
 }
+
+.plannergraph {
+    overflow: hidden;
+}
+
+.plannergraph .timeplot-valueflag,
+.plannergraph .timeplot-timeflag {
+    font-size: 12px;
+    font-weight: normal;
+    background-color: #f7f7bf;
+    border: solid 1px #CCCCCC;
+    -moz-box-shadow: 1px 1px 3px #999;
+    -webkit-box-shadow: 1px 1px 3px #999;
+    border-radius: 3px;
+}
+
+.plannergraph .timeplot-timeflag {
+    opacity: 1 !important;
+    font-size: 12px;
+}
