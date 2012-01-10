@@ -631,6 +631,7 @@ public abstract class ChartFiller implements IChartFiller {
             ValueGeometry valueGeometry, TimeGeometry timeGeometry) {
         plotinfo.setValueGeometry(valueGeometry);
         plotinfo.setTimeGeometry(timeGeometry);
+        plotinfo.setShowValues(true);
         chart.appendChild(plotinfo);
     }
 
