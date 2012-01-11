@@ -1922,7 +1922,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return null;
         }
         DayAssignment lastAssignment = assignments.get(assignments.size() - 1);
-        return lastAssignment.getDay().plusDays(1);
+        return IntraDayDate.create(lastAssignment.getDay(),
+                lastAssignment.getDuration()).asExclusiveEnd();
     }
 
     public boolean isAlreadyFinishedBy(LocalDate date) {
