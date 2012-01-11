@@ -22,6 +22,7 @@
 package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -46,16 +47,17 @@ public class Stretch {
     public static LocalDate getDateByLengthProportion(
             ResourceAllocation<?> allocation, BigDecimal lengthProportion) {
         int allocationDuration = Days.daysBetween(allocation.getStartDate(),
-                allocation.getEndDate()).getDays();
-        int days = lengthProportion.multiply(
-                BigDecimal.valueOf(allocationDuration)).intValue();
+                allocation.getIntraDayEndDate().asExclusiveEnd()).getDays();
+        int days = lengthProportion
+                .multiply(BigDecimal.valueOf(allocationDuration))
+                .setScale(0, RoundingMode.HALF_UP).intValue();
         return allocation.getStartDate().plusDays(days);
     }
 
     public static BigDecimal getLengthProportionByDate(
             ResourceAllocation<?> allocation, LocalDate date) {
         int allocationDuration = Days.daysBetween(allocation.getStartDate(),
-                allocation.getEndDate()).getDays();
+                allocation.getIntraDayEndDate().asExclusiveEnd()).getDays();
         int days = Days.daysBetween(allocation.getStartDate(), date).getDays();
         return daysProportion(days, allocationDuration);
     }
