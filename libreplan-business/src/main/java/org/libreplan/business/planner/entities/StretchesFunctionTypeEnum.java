@@ -216,7 +216,8 @@ public enum StretchesFunctionTypeEnum {
         intervals.addAll(stretchesFunction.getIntervalsDefinedByStreches());
 
         LocalDate startInclusive = resourceAllocation.getFirstNonConsolidatedDate();
-        LocalDate endExclusive = resourceAllocation.getEndDate();
+        LocalDate endExclusive = resourceAllocation.getIntraDayEndDate()
+                .asExclusiveEnd();
         int totalHours = resourceAllocation.getNonConsolidatedHours();
         apply(resourceAllocation, intervals, startInclusive, endExclusive, totalHours);
     }

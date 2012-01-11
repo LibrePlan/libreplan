@@ -131,14 +131,8 @@ public class StretchesFunction extends AssignmentFunction {
                 LocalDate startInclusive, LocalDate taskEnd,
                 int intervalHours) {
             Validate.isTrue(!isConsolidated());
-
-            // End has to be exclusive on last Stretch
-            LocalDate endDate = getEnd();
-            if (endDate.equals(taskEnd)) {
-                endDate = endDate.plusDays(1);
-            }
             resourceAllocation.withPreviousAssociatedResources()
-                    .onInterval(getStartFor(startInclusive), endDate)
+                    .onInterval(getStartFor(startInclusive), getEnd())
                     .allocateHours(intervalHours);
         }
 
