@@ -146,30 +146,10 @@ public class Configuration extends BaseEntity {
         return true;
     }
 
-    @AssertTrue(message = "userDn not specified")
-    public boolean checkConstraintLdapUserDnWithoutWhiteSpaces() {
-        if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if (StringUtils.isBlank(getLdapConfiguration().getLdapUserDn())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @AssertTrue(message = "userId not specified")
     public boolean checkConstraintLdapUserIdWithoutWhiteSpaces() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
             if (StringUtils.isBlank(getLdapConfiguration().getLdapUserId())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @AssertTrue(message = "password not specified")
-    public boolean checkConstraintLdapPasswordWithoutWhiteSpaces() {
-        if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if (StringUtils.isBlank(getLdapConfiguration().getLdapPassword())) {
                 return false;
             }
         }
