@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -49,6 +49,9 @@ public final class DetailItem {
 
     private boolean currentPeriod;
     private int currentDayOffset;
+
+    private boolean projectStart = false;
+    private int projectStartOffset = 0;
 
     private boolean deadlinePeriod;
     private int deadlineOffset;
@@ -103,6 +106,17 @@ public final class DetailItem {
         }
     }
 
+    public void markProjectStart(DateTime projectStart) {
+        if (!this.startDate.isAfter(projectStart)
+                && projectStart.isBefore(endDate)) {
+            int offsetInPx = Math.round((((float) Days.daysBetween(
+                    this.startDate, projectStart).getDays()) / ((float) Days
+                    .daysBetween(this.startDate, this.endDate).getDays()))
+                    * this.size);
+            this.markprojectStart(Math.min(this.size - 1, offsetInPx));
+        }
+    }
+
     public void markDeadlineDay(DateTime deadline) {
         if (!this.startDate.isAfter(deadline) && deadline.isBefore(endDate)) {
             int offsetInPx = Math.round((((float) Days.daysBetween(
@@ -144,6 +158,11 @@ public final class DetailItem {
         this.deadlineOffset = offset;
     }
 
+    public void markprojectStart(int offset) {
+        this.projectStart = true;
+        this.projectStartOffset = offset;
+    }
+
     public boolean isEven() {
         return even;
     }
@@ -162,6 +181,14 @@ public final class DetailItem {
 
     public int getCurrentDayOffset() {
         return currentDayOffset;
+    }
+
+    public boolean isProjectStart() {
+        return projectStart;
+    }
+
+    public int getProjectStartOffset() {
+        return projectStartOffset;
     }
 
     public boolean isDeadlinePeriod() {

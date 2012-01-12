@@ -151,6 +151,7 @@ import org.zkoss.zul.Vbox;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -709,24 +710,26 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             configuration.setSecondLevelModificators(SeveralModificators
                             .create(BankHolidaysMarker.create(orderReloaded
                                     .getCalendar()),
-                            createDeadlineShower(orderReloaded.getDeadline())));
+                            createStartAndDeadlineMarker(orderReloaded)));
         } else {
             configuration.setSecondLevelModificators(BankHolidaysMarker.create(orderReloaded.getCalendar()));
         }
     }
 
-    private IDetailItemModificator createDeadlineShower(Date orderDeadline) {
-        final DateTime deadline = new DateTime(orderDeadline);
-        IDetailItemModificator deadlineMarker = new IDetailItemModificator() {
+    private IDetailItemModificator createStartAndDeadlineMarker(Order order) {
+        final DateTime deadline = new DateTime(order.getDeadline());
+        final DateTime projectStart = new DateTime(order.getInitDate());
+        IDetailItemModificator startAndDeadlineMarker = new IDetailItemModificator() {
 
             @Override
             public DetailItem applyModificationsTo(DetailItem item,
                     ZoomLevel zoomlevel) {
                 item.markDeadlineDay(deadline);
+                item.markProjectStart(projectStart);
                 return item;
             }
         };
-        return deadlineMarker;
+        return startAndDeadlineMarker;
     }
 
     private void selectTab(String tabName) {
