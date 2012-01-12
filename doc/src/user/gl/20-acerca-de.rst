@@ -53,6 +53,7 @@ Traductores
 
 * [es] Manuel Rego Casasnovas <rego@igalia.com>
 * [gl] Manuel Rego Casasnovas <rego@igalia.com>
+* [it] Giuseppe Zizza <gzizza@gmail.com>
 * [pt] Helena Grosso <lenagrosso@gmail.com>
 * [ru] Pavel Rudensky <prudensky@gmail.com>
 
