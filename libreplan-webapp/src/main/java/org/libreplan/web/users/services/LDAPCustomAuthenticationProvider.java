@@ -341,14 +341,13 @@ public class LDAPCustomAuthenticationProvider extends
 
         String queryRoles = configuration.getLdapSearchQuery().replace(
                 USER_ID_SUBSTITUTION, username);
-        String groupsPath = configuration.getLdapGroupPath();
 
         Set<ConfigurationRolesLDAP> rolesLdap = configuration
                 .getConfigurationRolesLdap();
 
         try {
 
-            if (null == groupsPath || groupsPath.isEmpty()) {
+            if (!configuration.getLdapGroupStrategy()) {
                 // The LDAP has a node strategy for groups,
                 // we must check the roleProperty in user node.
                 return getRolesUsingNodeStrategy(rolesLdap, queryRoles,
