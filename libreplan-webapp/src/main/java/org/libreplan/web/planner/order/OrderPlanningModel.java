@@ -1356,7 +1356,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 }
             }
 
-            advanceCost = accumulateResult(advanceCost);
             addZeroBeforeTheFirstValue(advanceCost);
             indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
                     advanceCost, interval.getStart(), interval.getFinish()));
