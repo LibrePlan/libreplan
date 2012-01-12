@@ -420,6 +420,15 @@ div.box.limiting-unassigned {
     background-repeat: repeat-y;
 }
 
+#watermark .timetracker_column_start {
+    background-image: url("../img/watermark_start.png");
+    background-repeat: repeat-y;
+    width: 100%;
+    height: 100%;
+    float: left;
+}
+
+
 #watermark .timetracker_column_deadline {
     background-image:
         url("../../zkau/web/ganttz/img/pixel.gif");
