@@ -305,9 +305,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                Clients.response("aa",
-                        new AuInsertAfter(chartComponent.getTabpanels()
-                                .getFirstChild(), asList(out.toString())));
+
                 return null;
             }
         });
