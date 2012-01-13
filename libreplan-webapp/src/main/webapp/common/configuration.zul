@@ -93,15 +93,15 @@
                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Warning new version')}" />
+                                <label value="${i18n:_('Check for updates')}" />
                                 <vbox>
                                     <checkbox
-                                        label="${i18n:_('Show a warning when new LibrePlan versions are released')}"
+                                        label="${i18n:_('Show a notification when new LibrePlan versions are released')}"
                                         tooltiptext="${i18n:_('Enable/Disable warning about new LibrePlan versions available')}"
                                         checked="@{configurationController.checkNewVersionEnabled}" />
                                     <checkbox
-                                        label="${i18n:_('Help project developers to collect information about LibrePlan usage thanks to this feature')}"
-                                        tooltiptext="${i18n:_('If you ask us to do so, we will not use your requests to generate usage statistics')}"
+                                        label="${i18n:_('Help project developers to collect information about which LibrePlan version you are using')}"
+                                        tooltiptext="${i18n:_('Check this option to send this information to LibrePlan developers in order to generate usage statistics')}"
                                         checked="@{configurationController.allowToGatherUsageStatsEnabled}" />
                                 </vbox>
                             </row>
