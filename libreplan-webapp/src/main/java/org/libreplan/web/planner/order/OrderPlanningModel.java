@@ -434,6 +434,25 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 });
             }
         });
+        advanceAssignmentPlanningController.setReloadEarnedValueListener(new IReloadChartListener() {
+
+            @Override
+            public void reloadChart() {
+                Registry.getTransactionService().runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+
+                    @Override
+                    public Void execute() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return null;
+                        }
+                        if (planner.isVisibleChart()) {
+                            earnedValueChart.fillChart(); //update earned value chart
+                        }
+                        return null;
+                    }
+                });
+            }
+        });
     }
 
     private Tabpanel createOverallProgressTab(
@@ -534,10 +553,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         refillLoadChartWhenNeeded(changeHooker, planner, loadChart);
     }
 
+    private Chart earnedValueChart;
+
     private void setupEarnedValueChart(Timeplot chartEarnedValueTimeplot,
             OrderEarnedValueChartFiller earnedValueChartFiller,
             Planner planner, ChangeHooker changeHooker) {
-        Chart earnedValueChart = setupChart(planningState.getOrder(),
+        earnedValueChart = setupChart(planningState.getOrder(),
                 earnedValueChartFiller, chartEarnedValueTimeplot, planner);
         refillLoadChartWhenNeeded(changeHooker, planner, earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
