@@ -60,4 +60,6 @@ public interface ITemplateModel {
 
     boolean isCheckNewVersionEnabled();
 
+    boolean isAllowToGatherUsageStatsEnabled();
+
 }

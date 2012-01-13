@@ -46,6 +46,8 @@ public class VersionInformation {
      */
     private static final String LIBREPLAN_VERSION_URL = "http://libreplan.org/VERSION";
 
+    private static final String LIBREPLAN_USAGE_STATS_PARAM = "?stats=1";
+
     /**
      * Delay to wait till we check the URL again
      */
@@ -60,25 +62,30 @@ public class VersionInformation {
     private Date lastVersionCachedDate = new Date();
 
     private VersionInformation() {
-        loadNewVersionFromURL();
     }
 
-    private void loadNewVersionFromURL() {
+    private void loadNewVersionFromURL(boolean allowToGatherUsageStatsEnabled) {
         lastVersionCachedDate = new Date();
         try {
-            URL url = new URL(LIBREPLAN_VERSION_URL);
+            URL url = getURL(allowToGatherUsageStatsEnabled);
             String lastVersion = (new BufferedReader(new InputStreamReader(
                     url.openStream()))).readLine();
             if (projectVersion != null && lastVersion != null) {
                 newVersionCached = !projectVersion.equals(lastVersion);
             }
-        } catch (MalformedURLException e) {
-            LOG.warn("Problems reading LibrePlan version from "
-                    + LIBREPLAN_VERSION_URL, e);
         } catch (IOException e) {
             LOG.warn("Problems reading LibrePlan version from "
                     + LIBREPLAN_VERSION_URL, e);
         }
+    }
+
+    private URL getURL(boolean allowToGatherUsageStatsEnabled)
+            throws MalformedURLException {
+        String url = LIBREPLAN_VERSION_URL;
+        if (allowToGatherUsageStatsEnabled) {
+            url += LIBREPLAN_USAGE_STATS_PARAM;
+        }
+        return new URL(url);
     }
 
     public static VersionInformation getInstance() {
@@ -98,13 +105,20 @@ public class VersionInformation {
 
     public void setProjectVersion(String argVersion) {
         projectVersion = argVersion;
+        loadNewVersionFromURL(false);
     }
 
     /**
      * Returns true if a new version of the project is published.
+     *
+     * @param allowToGatherUsageStatsEnabled
+     *            If true LibrePlan developers will process the requests to check
+     *            the new versions to generate usages statistics
      */
-    public static boolean isNewVersionAvailable() {
-        return singleton.checkIsNewVersionAvailable();
+    public static boolean isNewVersionAvailable(
+            boolean allowToGatherUsageStatsEnabled) {
+        return singleton
+                .checkIsNewVersionAvailable(allowToGatherUsageStatsEnabled);
     }
 
     /**
@@ -112,12 +126,13 @@ public class VersionInformation {
      * Otherwise, during one day it returns the cached value. And it checks it
      * again after that time.
      */
-    private boolean checkIsNewVersionAvailable() {
+    private boolean checkIsNewVersionAvailable(
+            boolean allowToGatherUsageStatsEnabled) {
         if (!newVersionCached) {
             long oneDayLater = lastVersionCachedDate.getTime()
                     + DELAY_TO_CHECK_URL;
             if (oneDayLater < new Date().getTime()) {
-                loadNewVersionFromURL();
+                loadNewVersionFromURL(allowToGatherUsageStatsEnabled);
             }
         }
         return newVersionCached;

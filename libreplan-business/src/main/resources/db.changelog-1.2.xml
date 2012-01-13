@@ -45,4 +45,17 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="add-new-column-allow_to_gather_usage_stats_enabled" author="mrego">
+        <comment>Add new column allow_to_gather_usage_stats_enabled with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="allow_to_gather_usage_stats_enabled" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="allow_to_gather_usage_stats_enabled"
+           defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="allow_to_gather_usage_stats_enabled"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>

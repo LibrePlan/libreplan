@@ -847,4 +847,14 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setCheckNewVersionEnabled(checkNewVersionEnabled);
     }
 
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return configurationModel.isAllowToGatherUsageStatsEnabled();
+    }
+
+    public void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled) {
+        configurationModel
+                .setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
+    }
+
 }
