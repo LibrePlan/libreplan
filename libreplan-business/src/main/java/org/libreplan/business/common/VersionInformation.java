@@ -46,7 +46,9 @@ public class VersionInformation {
      */
     private static final String LIBREPLAN_VERSION_URL = "http://libreplan.org/VERSION";
 
-    private static final String LIBREPLAN_USAGE_STATS_PARAM = "?stats=1";
+    private static final String LIBREPLAN_USAGE_STATS_PARAM = "stats";
+    private static final String LIBREPLAN_VERSION_PARAM = "version";
+
 
     /**
      * Delay to wait till we check the URL again
@@ -83,7 +85,8 @@ public class VersionInformation {
             throws MalformedURLException {
         String url = LIBREPLAN_VERSION_URL;
         if (allowToGatherUsageStatsEnabled) {
-            url += LIBREPLAN_USAGE_STATS_PARAM;
+            url += "?" + LIBREPLAN_USAGE_STATS_PARAM + "=1";
+            url += "&version=" + projectVersion;
         }
         return new URL(url);
     }
