@@ -564,4 +564,17 @@ public class ConfigurationModel implements IConfigurationModel {
     public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
         configuration.setCheckNewVersionEnabled(checkNewVersionEnabled);
     }
+
+    @Override
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return configuration.isAllowToGatherUsageStatsEnabled();
+    }
+
+    @Override
+    public void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled) {
+        configuration
+                .setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
+    }
+
 }

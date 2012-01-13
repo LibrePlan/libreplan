@@ -154,4 +154,9 @@ public interface IConfigurationModel {
     boolean isCheckNewVersionEnabled();
 
     void setCheckNewVersionEnabled(boolean checkNewVersionEnabled);
+
+    boolean isAllowToGatherUsageStatsEnabled();
+
+    void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled);
 }

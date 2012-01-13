@@ -53,6 +53,8 @@
             column="enabled_autocomplete_login" />
         <property name="checkNewVersionEnabled" not-null="true"
             column="check_new_version_enabled" />
+        <property name="allowToGatherUsageStatsEnabled" not-null="true"
+            column="allow_to_gather_usage_stats_enabled" />
         <property name="progressType" column="progress_type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.libreplan.business.common.entities.ProgressType</param>

@@ -89,6 +89,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean checkNewVersionEnabled = true;
 
+    private Boolean allowToGatherUsageStatsEnabled = false;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -349,6 +351,16 @@ public class Configuration extends BaseEntity {
 
     public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
         this.checkNewVersionEnabled = checkNewVersionEnabled;
+    }
+
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return allowToGatherUsageStatsEnabled != null ? allowToGatherUsageStatsEnabled
+                : false;
+    }
+
+    public void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled) {
+        this.allowToGatherUsageStatsEnabled = allowToGatherUsageStatsEnabled;
     }
 
 }

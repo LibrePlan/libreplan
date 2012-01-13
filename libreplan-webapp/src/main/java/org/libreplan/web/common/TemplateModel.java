@@ -490,4 +490,11 @@ public class TemplateModel implements ITemplateModel {
     public boolean isCheckNewVersionEnabled() {
         return configurationDAO.getConfiguration().isCheckNewVersionEnabled();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return configurationDAO.getConfiguration().isCheckNewVersionEnabled();
+    }
+
 }

@@ -188,7 +188,8 @@ public class TemplateController extends GenericForwardComposer {
             return false;
         }
 
-        return VersionInformation.isNewVersionAvailable();
+        return VersionInformation.isNewVersionAvailable(templateModel
+                .isAllowToGatherUsageStatsEnabled());
     }
 
 }
