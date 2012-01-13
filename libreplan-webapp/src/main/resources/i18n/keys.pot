@@ -2786,7 +2786,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1283
 msgid ""
-"Value must be a multiple of the precission value of the progress type: {0}"
+"Value must be a multiple of the precision value of the progress type: {0}"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/components/_orderElementTree.zul:75
