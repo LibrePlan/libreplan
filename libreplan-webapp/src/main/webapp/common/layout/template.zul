@@ -160,7 +160,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
             class="footer-messages-area">
             <div>
                 <n:span>
-                    ${i18n:_("A new version of LibrePlan is avilable. Please check next link for more information:")}
+                    ${i18n:_("A new version of LibrePlan is available. Please check next link for more information:")}
                     <n:strong><n:a href="http://www.libreplan.com/download/" target="_blank">http://www.libreplan.com/download/</n:a></n:strong>
                 </n:span>
             </div>
