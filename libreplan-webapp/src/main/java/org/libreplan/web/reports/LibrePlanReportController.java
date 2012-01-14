@@ -32,7 +32,6 @@ import net.sf.jasperreports.engine.JRParameter;
 
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.common.Registry;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.au.out.AuDownload;
 import org.zkoss.zk.ui.Executions;
@@ -64,9 +63,10 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
     protected A URIlink;
 
     private static Set<String> supportedLanguages = new HashSet<String>() {{
-        add("es");
         add("en");
+        add("es");
         add("gl");
+        add("it");
     }};
 
     private final String DEFAULT_LANG = "en";
@@ -122,14 +122,7 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
     }
 
     private Locale getCurrentLocale() {
-        String lang = getLanguage();
-        if (lang.equals("es")) {
-            return new Locale("es", "ES");
-        }
-        if (lang.equals("gl")) {
-            return new Locale("gl", "ES");
-        }
-        return new Locale("en", "US");
+        return new Locale(getLanguage());
     }
 
     protected abstract JRDataSource getDataSource();
