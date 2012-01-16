@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -65,6 +65,7 @@ import org.zkoss.zul.Messagebox;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -367,6 +368,11 @@ public class ReassignCommand implements IReassignCommand {
 
     private Desktop getDesktop(final IContext<TaskElement> context) {
         return context.getRelativeTo().getDesktop();
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return false;
     }
 
 }
