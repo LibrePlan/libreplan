@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,11 +42,13 @@ import com.igalia.java.zk.components.JasperreportComponent;
  *
  * Handles the basic behaviour of a Controller for showing reports
  *
- * All reports consists of several input components and a show button which retrieves the necessary data to
- * build resulting report. The method showReport takes care of this behaviour. In addition, when a new report
- * is shown, a link to the report shows up as well.
+ * All reports consists of several input components and a show button which
+ * retrieves the necessary data to build resulting report. The method showReport
+ * takes care of this behaviour. In addition, when a new report is shown, a link
+ * to the report shows up as well.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  *
  */
 public abstract class LibrePlanReportController extends GenericForwardComposer {
@@ -62,17 +64,10 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
     public void showReport(JasperreportComponent jasperreport){
         final String type = outputFormat.getOutputFormat();
 
-//        LibrePlanReport report = new LibrePlanReport(jasperreport,
-//                getReportName());
-//        report.setDatasource(getDataSource());
-//        report.setParameters(getParameters());
-//        report.show(type);
-
         jasperreport.setSrc(getReportName());
         jasperreport.setDatasource(getDataSource());
         jasperreport.setParameters(getParameters());
         jasperreport.setType(type);
-
 
         if (type.equals(HTML)) {
             URItext.setStyle("display: none");
