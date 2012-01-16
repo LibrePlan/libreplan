@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,7 +25,9 @@ package org.zkoss.ganttz.extensions;
 /**
  * An action that can be applied to the planner and it's wanted to be available
  * to the user <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public interface ICommand<T> {
 
@@ -34,5 +36,7 @@ public interface ICommand<T> {
     public void doAction(IContext<T> context);
 
     public String getImage();
+
+    boolean isDisabled();
 
 }

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -149,6 +149,7 @@ import org.zkoss.zul.Vbox;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -1006,10 +1007,10 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private ISaveCommand setupSaveCommand(
             PlannerConfiguration<TaskElement> configuration,
             boolean writingAllowed) {
-        if (!writingAllowed) {
-            return null;
-        }
         ISaveCommand result = planningState.getSaveCommand();
+        if (!writingAllowed) {
+            result.setDisabled(true);
+        }
         configuration.addGlobalCommand(result);
         return result;
     }
@@ -1106,6 +1107,11 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             @Override
             public String getImage() {
                 return "/common/img/ico_back.png";
+            }
+
+            @Override
+            public boolean isDisabled() {
+                return false;
             }
 
         };
