@@ -267,6 +267,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private OverAllProgressContent overallProgressContent;
 
+    private String tabSelected = "load_tab";
+
     private static class NullSeparatorCommandOnTask<T> implements
             ICommandOnTask<T> {
 
@@ -432,6 +434,25 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 });
             }
         });
+        advanceAssignmentPlanningController.setReloadEarnedValueListener(new IReloadChartListener() {
+
+            @Override
+            public void reloadChart() {
+                Registry.getTransactionService().runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+
+                    @Override
+                    public Void execute() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return null;
+                        }
+                        if (planner.isVisibleChart()) {
+                            earnedValueChart.fillChart(); //update earned value chart
+                        }
+                        return null;
+                    }
+                });
+            }
+        });
     }
 
     private Tabpanel createOverallProgressTab(
@@ -532,10 +553,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         refillLoadChartWhenNeeded(changeHooker, planner, loadChart);
     }
 
+    private Chart earnedValueChart;
+
     private void setupEarnedValueChart(Timeplot chartEarnedValueTimeplot,
             OrderEarnedValueChartFiller earnedValueChartFiller,
             Planner planner, ChangeHooker changeHooker) {
-        Chart earnedValueChart = setupChart(planningState.getOrder(),
+        earnedValueChart = setupChart(planningState.getOrder(),
                 earnedValueChartFiller, chartEarnedValueTimeplot, planner);
         refillLoadChartWhenNeeded(changeHooker, planner, earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
@@ -695,14 +718,35 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return deadlineMarker;
     }
 
+    private void selectTab(String tabName) {
+        tabSelected = tabName;
+    }
+
     private void appendTabs(Tabbox chartComponent) {
         Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(new Tab(_("Load")));
-        chartTabs.appendChild(new Tab(_("Earned value")));
-        chartTabs.appendChild(new Tab(_("Overall progress")));
+        chartTabs.appendChild(createTab(_("Load"), "load_tab"));
+        chartTabs.appendChild(createTab(_("Earned value"), "earned_value_tab"));
+        chartTabs.appendChild(createTab(_("Overall progress"),
+                "overall_progress_tab"));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
+    }
+
+    private Tab createTab(String name, final String id) {
+        Tab tab = new Tab(name);
+        tab.setId(id);
+        if (id.equals(tabSelected)) {
+            tab.setSelected(true);
+        }
+        tab.addEventListener("onClick", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectTab(id);
+            }
+        });
+        return tab;
     }
 
     private org.zkoss.zk.ui.Component getLoadChartLegend() {
@@ -1333,7 +1377,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 }
             }
 
-            advanceCost = accumulateResult(advanceCost);
             addZeroBeforeTheFirstValue(advanceCost);
             indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
                     advanceCost, interval.getStart(), interval.getFinish()));

@@ -97,6 +97,12 @@ public class LDAPCustomAuthenticationProvider extends
     private static final Log LOG = LogFactory
             .getLog(LDAPCustomAuthenticationProvider.class);
 
+    /**
+     * LDAP role matching could be configured using an asterix (*) to specify
+     * all users or groups
+     */
+    private static final String WILDCHAR_ALL = "*";
+
     @Override
     protected void additionalAuthenticationChecks(UserDetails arg0,
             UsernamePasswordAuthenticationToken arg1)
@@ -287,6 +293,11 @@ public class LDAPCustomAuthenticationProvider extends
 
         List<String> rolesReturn = new ArrayList<String>();
         for (ConfigurationRolesLDAP roleLDAP : rolesLdap) {
+            if (roleLDAP.getRoleLdap().equals(WILDCHAR_ALL)) {
+                rolesReturn.add(roleLDAP.getRoleLibreplan());
+                continue;
+            }
+
             // We must make a search for each role-matching in nodes
             List<Attribute> resultsSearch = new ArrayList<Attribute>();
             resultsSearch.addAll(ldapTemplate.search(
@@ -317,6 +328,11 @@ public class LDAPCustomAuthenticationProvider extends
 
         List<String> rolesReturn = new ArrayList<String>();
         for (ConfigurationRolesLDAP roleLdap : rolesLdap) {
+            if (roleLdap.getRoleLdap().equals(WILDCHAR_ALL)) {
+                rolesReturn.add(roleLdap.getRoleLibreplan());
+                continue;
+            }
+
             // We must make a search for each role matching
             DirContextAdapter adapter = null;
             try {
@@ -341,14 +357,13 @@ public class LDAPCustomAuthenticationProvider extends
 
         String queryRoles = configuration.getLdapSearchQuery().replace(
                 USER_ID_SUBSTITUTION, username);
-        String groupsPath = configuration.getLdapGroupPath();
 
         Set<ConfigurationRolesLDAP> rolesLdap = configuration
                 .getConfigurationRolesLdap();
 
         try {
 
-            if (null == groupsPath || groupsPath.isEmpty()) {
+            if (!configuration.getLdapGroupStrategy()) {
                 // The LDAP has a node strategy for groups,
                 // we must check the roleProperty in user node.
                 return getRolesUsingNodeStrategy(rolesLdap, queryRoles,

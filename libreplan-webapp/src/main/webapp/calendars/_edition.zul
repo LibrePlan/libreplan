@@ -81,6 +81,14 @@
                         });
                     }
                 </attribute>
+                <attribute w:name="resetHighlightedDates">
+                    function () {
+                        var nodes = $('td', this).not('.z-outside');
+                        nodes.each(function () {
+                            $(this).css({color: "black", backgroundColor: "white"});
+                        });
+                    }
+                </attribute>
             </calendar>
 
             <grid width="180px" sclass="day-details">

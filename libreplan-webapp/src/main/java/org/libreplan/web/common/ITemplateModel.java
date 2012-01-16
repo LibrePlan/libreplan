@@ -56,4 +56,10 @@ public interface ITemplateModel {
 
     String getIdUser(String login);
 
+    boolean isUserAdmin();
+
+    boolean isCheckNewVersionEnabled();
+
+    boolean isAllowToGatherUsageStatsEnabled();
+
 }

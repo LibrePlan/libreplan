@@ -305,9 +305,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                Clients.response("aa",
-                        new AuInsertAfter(chartComponent.getTabpanels()
-                                .getFirstChild(), asList(out.toString())));
+
                 return null;
             }
         });
@@ -834,7 +832,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 addCost(advanceCost, advanceCostPerTask.get(taskElement));
             }
 
-            advanceCost = accumulateResult(advanceCost);
             addZeroBeforeTheFirstValue(advanceCost);
             indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
                     advanceCost, interval.getStart(), interval.getFinish()));

@@ -1272,23 +1272,28 @@ div.z-grid-header .second_level_ tr {
 }
 
 
-.violated-dependency .start, .violated-dependency .end {
+#ganttpanel .violated-dependency .start, #ganttpanel .violated-dependency .end {
     background-image: url("../../zkau/web/ganttz/img/solid-red-hor.png");
 }
-.violated-dependency .mid {
+#ganttpanel .violated-dependency .mid {
     background-image: url("../../zkau/web/ganttz/img/solid-red-ver.png");
 }
-.violated-dependency .arrow {
+#ganttpanel .violated-dependency .arrow {
     background-image: url("../../zkau/web/ganttz/img/solid-red-arrows.png");
 }
 
-.resources-dependency .start, .resources-dependency .end {
+#ganttpanel .violated-dependency .point-west {
+    background-position: 0 2px;
+    margin-left: -10px;
+}
+
+#ganttpanel .resources-dependency .start, #ganttpanel .resources-dependency .end {
     background-image: url("../../zkau/web/ganttz/img/dashed-black-hor.png");
 }
-.resources-dependency .mid {
+#ganttpanel .resources-dependency .mid {
     background-image: url("../../zkau/web/ganttz/img/dashed-black-ver.png");
 }
-.resources-dependency .arrow {
+#ganttpanel .resources-dependency .arrow {
     background-image: url("../../zkau/web/ganttz/img/dashed-black-arrows.png");
 }
 
@@ -1317,4 +1322,24 @@ div.z-grid-header .second_level_ tr {
 
 .taskspanelgap #listlimitingdependencies {
     top: -2px;
+}
+
+.plannergraph {
+    overflow: hidden;
+}
+
+.plannergraph .timeplot-valueflag,
+.plannergraph .timeplot-timeflag {
+    font-size: 12px;
+    font-weight: normal;
+    background-color: #f7f7bf;
+    border: solid 1px #CCCCCC;
+    -moz-box-shadow: 1px 1px 3px #999;
+    -webkit-box-shadow: 1px 1px 3px #999;
+    border-radius: 3px;
+}
+
+.plannergraph .timeplot-timeflag {
+    opacity: 1 !important;
+    font-size: 12px;
 }

@@ -108,6 +108,7 @@ a.sub_menu:hover {
     padding-right: 15px;
     color: #3195D7;
     font-weight: bold;
+    cursor: default;
 }
 
 .cerrar_sesion {
@@ -174,6 +175,10 @@ a.sub_menu:hover {
     color: #0068B1;
     font-weight: bold;
     text-decoration: none;
+}
+
+.help-link a:hover span {
+    text-decoration: underline;
 }
 
 .help-link a span {

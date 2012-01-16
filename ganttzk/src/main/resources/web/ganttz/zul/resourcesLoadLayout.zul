@@ -40,7 +40,7 @@ resourcesLoadPanel = self;
         <separator/>
         <hbox id="additionalFilterInsertionPoint1" />
         <separator/>
-        ${ganttzk_i18n:_('Filter')}:
+        ${ganttzk_i18n:_('Show')}:
         <listbox id="listFilters" mold="select" rows="1" width="100px"
             model="${resourcesLoadPanel.filters}"
             selectedIndex="0"

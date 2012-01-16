@@ -34,7 +34,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.libreplan.business.common.Registry;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
@@ -117,12 +116,6 @@ public class CurrentUserScenarioAwareManagerTest {
         expect(result.getPrincipal()).andReturn(customUser).anyTimes();
         replay(result);
         return result;
-    }
-
-    @Test
-    public void registryHoldsCurrentUserScenarioAwareTest() {
-        IScenarioManager fromRegistry = Registry.getScenarioManager();
-        assertEquals(scenarioManager, fromRegistry);
     }
 
 }

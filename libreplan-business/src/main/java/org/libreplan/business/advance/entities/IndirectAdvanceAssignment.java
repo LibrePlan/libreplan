@@ -81,4 +81,8 @@ public class IndirectAdvanceAssignment extends AdvanceAssignment {
         return calculatedConsolidations;
     }
 
+    public boolean hasAnyConsolidationValue() {
+        return !calculatedConsolidations.isEmpty();
+    }
+
 }

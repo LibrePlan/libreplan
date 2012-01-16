@@ -1459,4 +1459,28 @@ public abstract class OrderElement extends IntegrationEntity implements
         return super.toString() + " :: " + getName();
     }
 
+    /**
+     * Checks if it has nay consolidated advance, if not checks if any parent
+     * has it
+     */
+    public boolean hasAnyConsolidatedAdvance() {
+        for (DirectAdvanceAssignment each : directAdvanceAssignments) {
+            if (each.hasAnyConsolidationValue()) {
+                return true;
+            }
+        }
+
+        for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
+            if (each.hasAnyConsolidationValue()) {
+                return true;
+            }
+        }
+
+        if (parent != null) {
+            return parent.hasAnyConsolidatedAdvance();
+        }
+
+        return false;
+    }
+
 }

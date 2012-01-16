@@ -514,17 +514,18 @@ public class TaskElementAdapter {
                 }
 
                 if (result == null) {
-                    Integer hours = taskElement.getSumOfHoursAllocated();
+                    EffortDuration effort = taskElement.getSumOfAssignedEffort();
 
-                    if (hours == 0) {
-                        hours = orderElement.getWorkHours();
-                        if (hours == 0) {
+                    if (effort.isZero()) {
+                        effort = EffortDuration.hours(orderElement.getWorkHours());
+                        if (effort.isZero()) {
                             return getBeginDate();
                         }
                     }
-                    BigDecimal percentage = assignedEffort
-                            .toHoursAsDecimalWithScale(2).divide(
-                                    new BigDecimal(hours), RoundingMode.DOWN);
+                    BigDecimal percentage = new BigDecimal(assignedEffort
+                            .divivedBy(effort).doubleValue()).setScale(2,
+                            RoundingMode.HALF_UP);
+
                     result = calculateLimitDateByPercentage(percentage);
 
                 }
@@ -543,20 +544,18 @@ public class TaskElementAdapter {
                         .getSumChargedEffort() != null ? orderElement
                         .getSumChargedEffort().getTotalChargedEffort()
                         : EffortDuration.zero();
-                BigDecimal assignedHours = totalChargedEffort
-                        .toHoursAsDecimalWithScale(2);
 
-                BigDecimal estimatedHours = new BigDecimal(
-                        taskElement.getSumOfHoursAllocated()).setScale(2);
+                EffortDuration estimatedEffort = taskElement.getSumOfAssignedEffort();
 
-                if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
-                    estimatedHours = new BigDecimal(orderElement.getWorkHours())
-                            .setScale(2);
-                    if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+                if(estimatedEffort.isZero()) {
+                    estimatedEffort = EffortDuration.hours(orderElement.getWorkHours());
+                    if(estimatedEffort.isZero()) {
                         return BigDecimal.ZERO;
                     }
                 }
-                return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
+                return new BigDecimal(totalChargedEffort.divivedBy(
+                        estimatedEffort).doubleValue()).setScale(2,
+                        RoundingMode.HALF_UP);
             }
 
             @Override
@@ -595,21 +594,36 @@ public class TaskElementAdapter {
             }
 
             private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
-                Integer hours = Integer.valueOf(0);
-                if (taskElement.getOrderElement() != null) {
-                    hours = taskElement.getSumOfHoursAllocated();
+                if (advancePercentage.compareTo(BigDecimal.ONE) == 0) {
+                    return getEndDate();
                 }
 
+                BigDecimal hours = BigDecimal.ZERO;
+
                 if (taskElement instanceof TaskGroup) {
+                    //progess calculation for TaskGroups is done with
+                    //this method, which is much lighter
                     return calculateLimitDateByPercentage(advancePercentage);
+                }
+
+                if (taskElement.getOrderElement() != null) {
+                    hours = taskElement.getSumOfAssignedEffort()
+                            .toHoursAsDecimalWithScale(2);
                 }
 
                 // Calculate date according to advanceHours or advancePercentage
                 final Integer advanceHours = advancePercentage.multiply(
-                        new BigDecimal(hours)).intValue();
+                        hours).intValue();
                 GanttDate result = calculateLimitDateByHours(advanceHours);
                 if (result == null) {
                     result = calculateLimitDateByPercentage(advancePercentage);
+
+                } else {
+                    GanttDate endDate = toGantt(taskElement.getIntraDayEndDate());
+                    if (result.compareTo(endDate) > 0) {
+                        //don't allow progress bars wider than the task itself
+                        result = endDate;
+                    }
                 }
                 return result;
             }
@@ -699,13 +713,8 @@ public class TaskElementAdapter {
                     EffortDuration decrement = min(entry.getValue(), hoursLeft);
                     hoursLeft = hoursLeft.minus(decrement);
                     if (hoursLeft.isZero()) {
-                        if (decrement.equals(entry.getValue())) {
-                            result = IntraDayDate.startOfDay(entry.getKey()
-                                    .plusDays(1));
-                        } else {
-                            result = IntraDayDate.create(entry.getKey(),
-                                    decrement);
-                        }
+                        result = IntraDayDate.create(entry.getKey(),
+                                decrement);
                         break;
                     } else {
                         result = IntraDayDate.startOfDay(entry.getKey()
@@ -730,7 +739,8 @@ public class TaskElementAdapter {
 
             @Override
             public String getTooltipText() {
-                if (taskElement.isMilestone()) {
+                if (taskElement.isMilestone()
+                        || taskElement.getOrderElement() == null) {
                     return "";
                 }
                 return transactionService
@@ -747,7 +757,8 @@ public class TaskElementAdapter {
 
             @Override
             public String getLabelsText() {
-                if (taskElement.isMilestone()) {
+                if (taskElement.isMilestone()
+                        || taskElement.getOrderElement() == null) {
                     return "";
                 }
                 return transactionService

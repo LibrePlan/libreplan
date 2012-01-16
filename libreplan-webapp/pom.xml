@@ -117,6 +117,9 @@
                             <copy todir="src/main/webapp/help/pt" failonerror="false">
                                 <fileset dir="../doc/src/user/en/html"/>
                             </copy>
+                            <copy todir="src/main/webapp/help/it" failonerror="false">
+                                <fileset dir="../doc/src/user/en/html"/>
+                            </copy>
                           </tasks>
                          </configuration>
                         </execution>

@@ -1,18 +1,15 @@
 # LibrePlan - GanttZK module.
 # Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 #                         Desenvolvemento Tecnolóxico de Galicia
-# Copyright (C) 2010-2011 Igalia, S.L.
+# Copyright (C) 2010-2012 Igalia, S.L.
 # This file is distributed under the same license as the LibrePlan package.
-# Diego Pino García <dpino@igalia.com>, 2009.
-# Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2009, 2010.
-# Manuel Rego Casasnovas <rego@igalia.com>, 2010, 2011.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.2.0\n"
+"Project-Id-Version: 1.2.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-10 20:11+0100\n"
+"POT-Creation-Date: 2012-01-13 16:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +23,7 @@ msgstr ""
 msgid "Erase"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:299
+#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:300
 msgid "Add Dependency"
 msgstr ""
 
@@ -38,7 +35,7 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:629
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:635
 msgid "Show reported hours"
 msgstr ""
 
@@ -71,16 +68,16 @@ msgstr ""
 msgid "Show/Hide progress"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
-msgid "available effort: {0}, assigned effort: {1}"
+#: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
+msgid "Task"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
 msgid "by resources"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
-msgid "Task"
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
+msgid "available effort: {0}, assigned effort: {1}"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:64
@@ -103,6 +100,10 @@ msgstr ""
 msgid "See scheduling"
 msgstr ""
 
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
+msgid "Show"
+msgstr ""
+
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
 msgid "End"
 msgstr ""
@@ -123,10 +124,6 @@ msgstr ""
 msgid "Flatten/Unflatten tree"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
-msgid "Filter"
-msgstr ""
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "Project"
 msgstr ""
@@ -140,7 +137,7 @@ msgstr ""
 msgid "Name filter"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:609
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:615
 msgid "Show progress"
 msgstr ""
 
@@ -172,11 +169,11 @@ msgstr ""
 msgid "Set End-Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:298
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:297
 msgid "decreasing zoom"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:590
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:596
 msgid "Hide critical path"
 msgstr ""
 
@@ -184,7 +181,7 @@ msgstr ""
 msgid "Day"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:636
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:642
 msgid "Hide reported hours"
 msgstr ""
 
@@ -217,7 +214,7 @@ msgstr ""
 msgid "See resource allocation"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:281
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:280
 msgid "increasing zoom"
 msgstr ""
 
@@ -233,10 +230,10 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:585
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:591
 msgid "Show critical path"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:614
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:620
 msgid "Hide progress"
 msgstr ""

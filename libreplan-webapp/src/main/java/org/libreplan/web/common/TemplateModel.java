@@ -51,6 +51,7 @@ import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.web.UserUtil;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.bootstrap.MandatoryUser;
 import org.libreplan.web.users.services.CustomUser;
@@ -477,4 +478,23 @@ public class TemplateModel implements ITemplateModel {
             return null;
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isUserAdmin() {
+        return UserUtil.getUserFromSession().isAdministrator();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isCheckNewVersionEnabled() {
+        return configurationDAO.getConfiguration().isCheckNewVersionEnabled();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return configurationDAO.getConfiguration().isCheckNewVersionEnabled();
+    }
+
 }

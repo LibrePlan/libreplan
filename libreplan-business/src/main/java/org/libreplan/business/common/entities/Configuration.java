@@ -87,6 +87,10 @@ public class Configuration extends BaseEntity {
 
     private LDAPConfiguration ldapConfiguration;
 
+    private Boolean checkNewVersionEnabled = true;
+
+    private Boolean allowToGatherUsageStatsEnabled = false;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -146,30 +150,10 @@ public class Configuration extends BaseEntity {
         return true;
     }
 
-    @AssertTrue(message = "userDn not specified")
-    public boolean checkConstraintLdapUserDnWithoutWhiteSpaces() {
-        if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if (StringUtils.isBlank(getLdapConfiguration().getLdapUserDn())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @AssertTrue(message = "userId not specified")
     public boolean checkConstraintLdapUserIdWithoutWhiteSpaces() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
             if (StringUtils.isBlank(getLdapConfiguration().getLdapUserId())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @AssertTrue(message = "password not specified")
-    public boolean checkConstraintLdapPasswordWithoutWhiteSpaces() {
-        if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if (StringUtils.isBlank(getLdapConfiguration().getLdapPassword())) {
                 return false;
             }
         }
@@ -360,4 +344,23 @@ public class Configuration extends BaseEntity {
     public void setAutocompleteLogin(Boolean autocompleteLogin) {
         this.autocompleteLogin = autocompleteLogin;
     }
+
+    public boolean isCheckNewVersionEnabled() {
+        return checkNewVersionEnabled != null ? checkNewVersionEnabled : true;
+    }
+
+    public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
+        this.checkNewVersionEnabled = checkNewVersionEnabled;
+    }
+
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return allowToGatherUsageStatsEnabled != null ? allowToGatherUsageStatsEnabled
+                : false;
+    }
+
+    public void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled) {
+        this.allowToGatherUsageStatsEnabled = allowToGatherUsageStatsEnabled;
+    }
+
 }

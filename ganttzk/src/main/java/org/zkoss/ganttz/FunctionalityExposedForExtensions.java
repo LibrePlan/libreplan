@@ -221,6 +221,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                         accumulatedDependencies, child));
                 i++;
             }
+        } else if (navigator.isMilestone(data)) {
+            Milestone milestone = (Milestone) result;
+            milestone.setOwner(position.getParent());
         }
 
         result.setShowingReportedHours(planner.showReportedHoursRightNow());

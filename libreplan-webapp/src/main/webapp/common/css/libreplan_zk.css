@@ -946,6 +946,7 @@ span.z-dottree-line {
 
 .migas_linea {
     border: 0px;
+    cursor: default;
 }
 
 /* ---- Perspectives ------ */
@@ -1158,6 +1159,16 @@ tr.z-treerow-seld {
 tr.z-treerow-seld input {
     background-color: #fdf3da; /* Soft orange */
     background-image: none;
+}
+
+tr.z-treerow-over input {
+    background-color: #eff2f6; /* Soft blue */
+        background-image: none;
+}
+
+tr.z-treerow-over input {
+    background-color: #eff2f6; /* Soft blue */
+        background-image: none;
 }
 
 .timeplot-canvas {
@@ -1443,6 +1454,16 @@ display:none;
 .second_level_ #watermark .bankHoliday {
     height: 99999px;
 }
+
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .timetracker_column {
+    border-right: solid 1px #F2F2F2 !important;
+}
+
+#ganttpanel .second_level_ #watermark .bankHoliday {
+border-right: solid 1px #F2D8D8 !important;
+}
+
 
 .calendar-exceptions div.z-grid-body {
     overflow: hidden;

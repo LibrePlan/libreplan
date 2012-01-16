@@ -216,10 +216,10 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
         jq('#consolidatedline' + this.parent.uuid).css('left', width);
     },
     resizeCompletionAdvance : function(width){
-        jq('#' + this.uuid + ' > .completion:first').css('width', width);
+        jq('#' + this.uuid + ' .completion:first').css('width', width);
     },
     resizeCompletion2Advance : function(width){
-        jq('#' + this.uuid + ' > .completion2:first').css('width', width);
+        jq('#' + this.uuid + ' .completion2:first').css('width', width);
     },
     showResourceTooltip : function(){
         jq('#'+ this.uuid + ' .task-resources').show();

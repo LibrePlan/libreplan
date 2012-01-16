@@ -150,4 +150,13 @@ public interface IConfigurationModel {
     Boolean isChangedDefaultPasswdAdmin();
 
     void setAutocompleteLogin(Boolean autocompleteLogin);
+
+    boolean isCheckNewVersionEnabled();
+
+    void setCheckNewVersionEnabled(boolean checkNewVersionEnabled);
+
+    boolean isAllowToGatherUsageStatsEnabled();
+
+    void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled);
 }

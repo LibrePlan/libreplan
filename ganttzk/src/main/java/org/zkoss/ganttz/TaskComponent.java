@@ -238,9 +238,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (isInPage()) {
-                        updateProperties();
-                    }
+                    updateProperties();
                 }
             };
         }
@@ -485,7 +483,7 @@ public class TaskComponent extends Div implements AfterCompose {
         updateCompletionAdvance();
     }
 
-    private void updateCompletionReportedHours() {
+    public void updateCompletionReportedHours() {
         if (task.isShowingReportedHours()) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
             String widthHoursAdvancePercentage = pixelsFromStartUntil(

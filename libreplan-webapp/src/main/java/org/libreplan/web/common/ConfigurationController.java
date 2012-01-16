@@ -117,10 +117,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Textbox ldapGroupPath;
 
-    private Textbox ldapRoleProperty;
-
-    private Textbox ldapSearchQuery;
-
     private Radiogroup strategy;
 
     @Override
@@ -161,13 +157,9 @@ public class ConfigurationController extends GenericForwardComposer {
         if (getLdapConfiguration().getLdapGroupStrategy()) {
             strategy.setSelectedIndex(0);
             ldapGroupPath.setDisabled(false);
-            ldapSearchQuery.setDisabled(true);
-            ldapRoleProperty.setDisabled(true);
         } else {
             strategy.setSelectedIndex(1);
             ldapGroupPath.setDisabled(true);
-            ldapSearchQuery.setDisabled(false);
-            ldapRoleProperty.setDisabled(false);
         }
     }
 
@@ -845,6 +837,24 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public boolean isLdapPropertyStrategy() {
         return !getLdapConfiguration().getLdapGroupStrategy();
+    }
+
+    public boolean isCheckNewVersionEnabled() {
+        return configurationModel.isCheckNewVersionEnabled();
+    }
+
+    public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
+        configurationModel.setCheckNewVersionEnabled(checkNewVersionEnabled);
+    }
+
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return configurationModel.isAllowToGatherUsageStatsEnabled();
+    }
+
+    public void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled) {
+        configurationModel
+                .setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
     }
 
 }

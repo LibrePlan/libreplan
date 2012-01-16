@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,23 +22,19 @@
 package org.libreplan.web.reports;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRParameter;
 
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.common.Registry;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.au.out.AuDownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Toolbarbutton;
 
 import com.igalia.java.zk.components.JasperreportComponent;
 
@@ -46,11 +42,13 @@ import com.igalia.java.zk.components.JasperreportComponent;
  *
  * Handles the basic behaviour of a Controller for showing reports
  *
- * All reports consists of several input components and a show button which retrieves the necessary data to
- * build resulting report. The method showReport takes care of this behaviour. In addition, when a new report
- * is shown, a link to the report shows up as well.
+ * All reports consists of several input components and a show button which
+ * retrieves the necessary data to build resulting report. The method showReport
+ * takes care of this behaviour. In addition, when a new report is shown, a link
+ * to the report shows up as well.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  *
  */
 public abstract class LibrePlanReportController extends GenericForwardComposer {
@@ -61,30 +59,15 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
 
     protected Hbox URItext;
 
-    protected Toolbarbutton URIlink;
-
-    private static Set<String> supportedLanguages = new HashSet<String>() {{
-        add("es");
-        add("en");
-        add("gl");
-    }};
-
-    private final String DEFAULT_LANG = "en";
+    protected A URIlink;
 
     public void showReport(JasperreportComponent jasperreport){
         final String type = outputFormat.getOutputFormat();
-
-//        LibrePlanReport report = new LibrePlanReport(jasperreport,
-//                getReportName());
-//        report.setDatasource(getDataSource());
-//        report.setParameters(getParameters());
-//        report.show(type);
 
         jasperreport.setSrc(getReportName());
         jasperreport.setDatasource(getDataSource());
         jasperreport.setParameters(getParameters());
         jasperreport.setType(type);
-
 
         if (type.equals(HTML)) {
             URItext.setStyle("display: none");
@@ -109,27 +92,8 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
             companyLogo = "/logos/logo.png";
         }
         parameters.put("logo", companyLogo);
-        parameters.put(JRParameter.REPORT_LOCALE, getCurrentLocale());
+        parameters.put(JRParameter.REPORT_LOCALE, Locales.getCurrent());
         return parameters;
-    }
-
-    private String getLanguage() {
-        String lang = Locales.getCurrent().getLanguage();
-        if (!supportedLanguages.contains(lang)) {
-            lang = DEFAULT_LANG;
-        }
-        return lang;
-    }
-
-    private Locale getCurrentLocale() {
-        String lang = getLanguage();
-        if (lang.equals("es")) {
-            return new Locale("es", "ES");
-        }
-        if (lang.equals("gl")) {
-            return new Locale("gl", "ES");
-        }
-        return new Locale("en", "US");
     }
 
     protected abstract JRDataSource getDataSource();

@@ -32,10 +32,12 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -43,6 +45,7 @@ import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.web.servlet.dsp.action.Page;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -134,6 +137,23 @@ public class CompanyPlanningController implements Composer {
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
+
+        checkCreationPermissions();
+
+    }
+
+    /**
+     * Checks the creation permissions of the current user and enables/disables
+     * the create buttons accordingly.
+     */
+    private void checkCreationPermissions() {
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            Button createOrderButton = (Button) planner.getPage().getFellow(
+                    "createOrderButton");
+            if (createOrderButton != null) {
+                createOrderButton.setDisabled(true);
+            }
+        }
     }
 
     private void initializeListboxProgressTypes() {
