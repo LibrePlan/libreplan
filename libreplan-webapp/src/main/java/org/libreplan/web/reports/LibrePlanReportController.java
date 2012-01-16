@@ -22,10 +22,7 @@
 package org.libreplan.web.reports;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRParameter;
@@ -61,15 +58,6 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
     protected Hbox URItext;
 
     protected A URIlink;
-
-    private static Set<String> supportedLanguages = new HashSet<String>() {{
-        add("en");
-        add("es");
-        add("gl");
-        add("it");
-    }};
-
-    private final String DEFAULT_LANG = "en";
 
     public void showReport(JasperreportComponent jasperreport){
         final String type = outputFormat.getOutputFormat();
@@ -109,20 +97,8 @@ public abstract class LibrePlanReportController extends GenericForwardComposer {
             companyLogo = "/logos/logo.png";
         }
         parameters.put("logo", companyLogo);
-        parameters.put(JRParameter.REPORT_LOCALE, getCurrentLocale());
+        parameters.put(JRParameter.REPORT_LOCALE, Locales.getCurrent());
         return parameters;
-    }
-
-    private String getLanguage() {
-        String lang = Locales.getCurrent().getLanguage();
-        if (!supportedLanguages.contains(lang)) {
-            lang = DEFAULT_LANG;
-        }
-        return lang;
-    }
-
-    private Locale getCurrentLocale() {
-        return new Locale(getLanguage());
     }
 
     protected abstract JRDataSource getDataSource();
