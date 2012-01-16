@@ -168,7 +168,7 @@ the name of the group to which it belongs:
 
 .. WARNING::
 
-   This strategy has a restriction, each user can belongs only to one group.
+   This strategy has a restriction, each user can belong only to one group.
 
 The configuration for this case is the following:
 
@@ -193,7 +193,7 @@ You can even have a workaround to specify LibrePlan roles directly to users,
 without having an attribute in each LDAP user.
 
 In this case, you will specify which users have the different LibrePlan roles
-by uid.
+by ``uid``.
 
 The configuration for this case is the following:
 
