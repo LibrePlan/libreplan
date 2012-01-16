@@ -127,6 +127,20 @@ public enum MandatoryUser {
             return Language.RUSSIAN_LANGUAGE;
         }
     },
+    ADMIN_IT(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.ITALIAN_LANGUAGE;
+        }
+    },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)) {
         @Override
         public boolean hasChangedDefaultPassword() {
