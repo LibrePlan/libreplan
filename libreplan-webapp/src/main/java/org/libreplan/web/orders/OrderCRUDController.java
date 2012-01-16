@@ -703,6 +703,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (orderElementTreeController != null) {
             orderElementTreeController.resetCellsMarkedAsModified();
         }
+        initialStatus = ((Order) orderModel.getOrder()).getState();
         updateDisabilitiesOnInterface();
         refreshCodeTextboxesOnly();
         getVisibility().showOnly(editWindow);
@@ -964,6 +965,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void prepareEditWindow() {
         addEditWindowIfNecessary();
+        initialStatus = ((Order) orderModel.getOrder()).getState();
         updateDisabilitiesOnInterface();
         setupOrderElementTreeController();
         selectDefaultTab();
@@ -1449,8 +1451,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void updateDisabilitiesOnInterface() {
         Order order = (Order) orderModel.getOrder();
-
-        initialStatus = order.getState();
 
         boolean permissionForWriting = orderModel.userCanWrite(order,
                 SecurityUtils.getSessionUserLoginName());
