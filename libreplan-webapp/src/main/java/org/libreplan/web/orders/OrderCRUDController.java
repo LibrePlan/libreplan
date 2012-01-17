@@ -703,7 +703,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (orderElementTreeController != null) {
             orderElementTreeController.resetCellsMarkedAsModified();
         }
-        initialStatus = ((Order) orderModel.getOrder()).getState();
         updateDisabilitiesOnInterface();
         refreshCodeTextboxesOnly();
         getVisibility().showOnly(editWindow);
@@ -965,7 +964,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void prepareEditWindow() {
         addEditWindowIfNecessary();
-        initialStatus = ((Order) orderModel.getOrder()).getState();
         updateDisabilitiesOnInterface();
         setupOrderElementTreeController();
         selectDefaultTab();
@@ -1447,15 +1445,14 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private boolean readOnly = true;
 
-    private OrderStatusEnum initialStatus;
-
     private void updateDisabilitiesOnInterface() {
         Order order = (Order) orderModel.getOrder();
 
         boolean permissionForWriting = orderModel.userCanWrite(order,
                 SecurityUtils.getSessionUserLoginName());
         boolean isInStoredState = order.getState() == OrderStatusEnum.STORED;
-        boolean isInitiallyStored = initialStatus == OrderStatusEnum.STORED;
+        boolean isInitiallyStored = orderModel.getPlanningState()
+                .getSavedOrderState() == OrderStatusEnum.STORED;
 
         readOnly = !permissionForWriting || isInStoredState;
 

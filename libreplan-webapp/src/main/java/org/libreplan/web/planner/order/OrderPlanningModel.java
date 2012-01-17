@@ -328,8 +328,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 .calculateDefaultLevel(configuration);
         configureInitialZoomLevelFor(planner, defaultZoomLevel);
 
-        final boolean writingAllowed = isWritingAllowedOn(planningState
-                .getOrder());
+        final boolean writingAllowed = isWritingAllowedOnOrder();
         ISaveCommand saveCommand = setupSaveCommand(configuration,
                 writingAllowed);
         setupEditingCapabilities(configuration, writingAllowed);
@@ -976,15 +975,16 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private boolean isWritingAllowedOn(Order order) {
-        if (order.getState() == OrderStatusEnum.STORED) {
-            //STORED orders can't be saved, independently of user permissions
+    private boolean isWritingAllowedOnOrder() {
+        if (planningState.getSavedOrderState() == OrderStatusEnum.STORED
+                && planningState.getOrder().getState() == OrderStatusEnum.STORED) {
+            // STORED orders can't be saved, independently of user permissions
             return false;
         }
         if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             return true;
         }
-        return thereIsWriteAuthorizationFor(order);
+        return thereIsWriteAuthorizationFor(planningState.getOrder());
     }
 
     private boolean thereIsWriteAuthorizationFor(Order order) {

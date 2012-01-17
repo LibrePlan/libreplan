@@ -367,6 +367,8 @@ public class SaveCommandBuilder {
             saveOrderAuthorizations();
 
             removeTaskElementsWithTaskSourceNull();
+
+            state.updateSavedOrderState();
         }
 
         private void removeTaskElementsWithTaskSourceNull() {
