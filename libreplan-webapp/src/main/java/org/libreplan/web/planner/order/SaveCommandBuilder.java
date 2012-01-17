@@ -375,6 +375,15 @@ public class SaveCommandBuilder {
             for (TaskElement taskElement : toRemove) {
                 try {
                     taskElementDAO.remove(taskElement.getId());
+
+                    TaskGroup parent = taskElement.getParent();
+                    if (parent != null) {
+                        parent.remove(taskElement);
+                        taskElementDAO.save(parent);
+                    }
+
+                    LOG.info("TaskElement removed because of TaskSource was null. "
+                            + taskElement);
                 } catch (InstanceNotFoundException e) {
                     // Do nothing
                     // Maybe it was already removed before reaching this point
