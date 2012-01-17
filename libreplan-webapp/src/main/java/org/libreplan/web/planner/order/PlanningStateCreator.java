@@ -44,6 +44,7 @@ import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.orders.entities.TaskSource.IOptionalPersistence;
 import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
@@ -687,6 +688,8 @@ public class PlanningStateCreator {
         private List<OrderAuthorization> orderAuthorizationsAddition = new ArrayList<OrderAuthorization>();
         private List<OrderAuthorization> orderAuthorizationsRemoval = new ArrayList<OrderAuthorization>();
 
+        private OrderStatusEnum savedOrderState;
+
         public PlanningState(Order order,
                 Collection<? extends Resource> initialResources,
                 Scenario currentScenario) {
@@ -699,6 +702,7 @@ public class PlanningStateCreator {
                     .loadRequiredDataFor(new HashSet<Resource>(initialResources));
             associateWithScenario(this.resources);
             this.orderAuthorizations = loadOrderAuthorizations();
+            this.savedOrderState = order.getState();
         }
 
         private List<OrderAuthorization> loadOrderAuthorizations() {
@@ -1059,6 +1063,14 @@ public class PlanningStateCreator {
         public void cleanOrderAuthorizationsAdditionAndRemoval() {
             orderAuthorizationsAddition.clear();
             orderAuthorizationsRemoval.clear();
+        }
+
+        public OrderStatusEnum getSavedOrderState() {
+            return savedOrderState;
+        }
+
+        public void updateSavedOrderState() {
+            savedOrderState = order.getState();
         }
 
     }
