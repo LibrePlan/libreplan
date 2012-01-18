@@ -75,9 +75,13 @@ public class VersionInformation {
             if (projectVersion != null && lastVersion != null) {
                 newVersionCached = !projectVersion.equals(lastVersion);
             }
+        } catch (MalformedURLException e) {
+            LOG.warn("Problems generating URL to check LibrePlan version. MalformedURLException: "
+                    + e.getMessage());
         } catch (IOException e) {
-            LOG.warn("Problems reading LibrePlan version from "
-                    + LIBREPLAN_VERSION_URL, e);
+            LOG.info("Could not check LibrePlan version information from "
+                    + LIBREPLAN_VERSION_URL + ". IOException: "
+                    + e.getMessage());
         }
     }
 
@@ -86,7 +90,7 @@ public class VersionInformation {
         String url = LIBREPLAN_VERSION_URL;
         if (allowToGatherUsageStatsEnabled) {
             url += "?" + LIBREPLAN_USAGE_STATS_PARAM + "=1";
-            url += "&version=" + projectVersion;
+            url += "&" + LIBREPLAN_VERSION_PARAM + "=" + projectVersion;
         }
         return new URL(url);
     }
