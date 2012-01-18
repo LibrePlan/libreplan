@@ -452,7 +452,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                             earnedValueChart.fillChart();
                             //update earned value legend
                             updateEarnedValueChartLegend(new LocalDate(
-                                    earnedValueChartLegendDatebox.getValue()));
+                                    earnedValueChartLegendDatebox.getRawValue()));
                         }
                         return null;
                     }
@@ -956,7 +956,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                             loadChart.fillChart();
                             if(updateEarnedValueChartLegend) {
                                 updateEarnedValueChartLegend(new LocalDate(
-                                        earnedValueChartLegendDatebox.getValue()));
+                                        earnedValueChartLegendDatebox.getRawValue()));
                             }
                         }
                     }
@@ -1168,7 +1168,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                     loadChart.fillChart();
                                     if (updateEarnedValueChartLegend) {
                                         updateEarnedValueChartLegend(new LocalDate(
-                                                earnedValueChartLegendDatebox.getValue()));
+                                                earnedValueChartLegendDatebox.getRawValue()));
                                     }
                                 }
                                 return null;
