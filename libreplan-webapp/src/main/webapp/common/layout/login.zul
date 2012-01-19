@@ -101,6 +101,7 @@
                     <n:option title="admin_en">English</n:option>
                     <n:option title="admin_es">Español</n:option>
                     <n:option title="admin_gl">Galego</n:option>
+                    <n:option title="admin_it">Italiano</n:option>
                     <n:option title="admin_pt">Português</n:option>
                     <n:option title="admin_ru">русский</n:option>
                 </n:select>
