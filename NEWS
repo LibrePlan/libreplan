@@ -1,6 +1,183 @@
 NEWS
 ====
 
+Version 1.2.1 (19 Jan 2011)
+---------------------------
+
+Summary
+~~~~~~~
+
+This is a minor release including all the fixes done since LibrePlan 1.2.0 was
+published at the beginning of past December.
+
+Apart from all the bugs fixed, we would like to highlight the following changes:
+
+* LibrePlan is now fully translated into Italian thanks to the work done by
+  Giuseppe Zizza.
+* When a new release of LibrePlan is published, administrators will be notified
+  with a small warning inside LibrePlan.
+* Timeplot graph values are displayed when hovering the chart.
+
+Notes
+~~~~~
+
+If you are upgrading from any 1.1.x version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.0.sql`` and
+``scripts/database/upgrade_1.2.1.sql``
+
+If you are upgrading from 1.2.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.2.1.sql``
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jacobo Aragunde Pérez
+* Nacho Barrientos
+* Ignacio Díaz Teijido
+* Lucía García Fernández
+* Manuel Rego Casasnovas
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [es] Manuel Rego Casasnovas
+* [gl] Manuel Rego Casasnovas
+* [it] Giuseppe Zizza
+* [pt] Joaquim Rocha
+
+Changes
+~~~~~~~
+
+* i18n: Update Portuguese translation
+* Bug #1335: Don't force the check of the earned value legend date box every time the gantt is reloaded.
+* Improve logging of possible exceptions checking version information
+* Bug #1342: Move initial order state to PlanningState and use it from Gantt view too
+* Bug #1346: Fix the cause of the bug removing TaskElement from parent if it is removed
+* Bug #1342: Show save button in Gantt view when it is disabled
+* Bug #1342: Now it's possible to mark a project like STORED
+* Bug #1335: Update the earned value chart legend every time the chart is reloaded.
+* doc: Update LDAP configuration translations
+* Remove unused code in LibrePlanReportController
+* i18: Remove unneeded code to manage languages in reports
+* i18n: Add support to Italian language in reports
+* i18n: Update Italian translation and add missing files for reports
+* i18n: Update Spanish and Galician translations
+* Bug #1340: Add a listener to refresh the earned value chart in AdvanceAssignmentPlanningController.
+* Bug #1334: Prevent the accumulation of the values when building the BCWP chart.
+* Fix typo precision is just with 1 s
+* i18n: Update keys.pot files
+* Fix typo in open reports string
+* Fix typo in new version string
+* Add information about current version in GET requests
+* Add VERSION file just with version number in a text file
+* Add configuration option to allow LibrePlan developers collect usage stats
+* Add configuration option to disable warning about new LibrePlan versions
+* Show a warning if there is a new project version published.
+* Bug #1336: Checked permissions to enable project creation button
+* Fixed chart tooltips scroll problem on resources load window
+* Bug #1338: Fix some wrong strings in timeLineRequiredMaterial report
+* Bug 1295: Remove TaskElements (except milestones) with TaskSource null when saving
+* Fixed wrong criteria string format
+* Bug #1337: Removed unnecesary response when redrawing earned value
+* Bug #1324: Modified behaviour of west end arrow on violated dependencies
+* Display timeplot graph values when pointing over the chart
+* doc: Update LDAP configuration doc
+* Bug #1333: Allow specify * in role matching
+* i18n: Add Italian language language to enum and modify pom.xml to use English userguide
+* i18n: Add Giuseppe Zizza as Italian translator in AUTHORS file
+* i18n: Add Italian translation
+* Bug #1333: Fix issue as property and search query are needed for group strategy too
+* Bug #1332: Fix problem allowing to set empty values for userDn and password
+* Bug #1329: Fix problem in StretchesFunctionTest due to changes in previous test
+* Bug #1329: Fix issue calculating properly end date of stretches
+* Bug #1329: Now tasks are not enlarged and nothing breaks just after selecting a stretches function
+* Bug #1329: Update advanced allocation row after applying default stretches function
+* Bug #1328: Fix issue calling onClose method on controller
+* Bug #1261: Extract method createTab with common functionality for each tab
+* Bug #1261: Allows tabs to be memorized when changing perspective
+* Bug #1327: Fix issue changing method to do reassignments in consolidation process
+* www: Folder and script for libreplan.org documentation
+* [Bug #1326] Fix issue calculating properly hours to allocate
+* [Bug #1325] Fix issue remove criteria from configuration unit
+* Allow reported hours bar in gantt diagram to be wider than the task.
+* [Bug #1242] Don't allow progress end dates superior to the corresponding task end date.
+* [Bug #1311] Replace Date objects with IntraDayDate objects in SaveCommandBuilder.
+* [Bug #1321] Reseting highlighted days in calendar to prevent issue
+* [Bug #1323] Fix lazy loading properly derived allocations
+* [Bug #1242] Return end date directly when calculating advance and percentage is 100%.
+* [Bug #1242] Use IntraDayDate to draw the progress bar in leaf Tasks.
+* [Bug #1319] Change division method of EffortDuration
+* [Bug #1304] Make sumOfAssignedEffort return the cached value only for orders.
+* [Bug #1304] Reorder the code to improve the performance with TaskGroups.
+* Replace attribute TaskElement.sumOfHoursAllocated with an equivalent attribute measured in EffortDuration.
+* [Bug #1304] Don't use the cached value sumOfHoursAllocated when drawing the progress bars of tasks.
+* Revert "[Bug #1319] Change division method of EffortDuration"
+* [Bug #1309] Fix problem with reported hours bar when progress type is changed
+* [Bug #1319] Change division method of EffortDuration
+* [Bug #1309] Invalidate each TaskComponent instead of the whole TaskList when progress type is changed
+* Hide warning messages on bottom when user is not admin
+* [Bug #1288] Return null instead of zero in a just created AdvanceMeasurement
+* [Bug #1288] Fix message regarding progress type precision
+* [Bug #1288] Set Decimalbox scale according to progress type precision
+* [Bug #1307] Prevent changing spread progress in children when parents are consolidated
+* [Bug #1307] Prevent add progress measurement before consolidated day in any parent
+* Refactor method getSpreadIndirectAdvanceAssignmentWithSameType to be used in more places
+* Prevent NPE editing progress measurements
+* [doc] Add warning on INSTALL file about how to create database structure
+* [Bug #1308] Remove unneeded preventing create default progress in containers
+* [Bug #1305] Prevent adding progress measurement before last consolidated date
+* Fix messages related with progress management and consolidations
+* Disable some options in progress management if there is a consolidated progress
+* [doc] Update SourceForge.net URLs due to rename to LibrePlan
+* [Bug #1316] Use correct JS selectors to work both with leaf tasks and task groups.
+* Fix NPE removed advance measurement
+* Remove unused method
+* [Bug #1301] Fix issue creating a container in a task with dependencies
+* Remove duplicated method in QualityForm
+* [Bug #1314] Fix problem in materials report
+* Skipping some tests in ScenarioModelTest because they were causing problems in Debian Wheezy
+* Remove uneeded test as it was causing problems in Debian Wheezy
+* Fix problems in MaterialDAOTest and MaterialServiceTest
+* Fix problem with consolidation and specific assignments
+* [Bug #1300] Updated intended resources per day after consolidation is added or removed
+* [Bug #1312] Fix issue with printing in HTTPs is enabled
+* [Bug #1303] Fix issue removing consolidation using IntraDayDate for task end
+* [Bug #1303] Fix issue adding consolidation using IntraDayDate for task end
+* [Bug #1310] Reorder the code to fix the two exceptions happening here.
+* [Bug #1299] Enable scrollbars in the tasks input buffer grid.
+* [Bug #1297] Add listeners to 'See schedule allocation' buttons every time the panel is redrawn.
+* [Bug #1297] Replaced the misleading word "Filter" with "Show".
+* [Bug #1297] Reset the list listenersToAdd when changing perspectives.
+* [Bug #1073] Fix issue introduced by me while reviewing the previous patch
+* [Bug #1294] Revert "Update i18n files with the new translations for the replaced string."
+* [Bug #1073] Add dependencies with its parent when a milestone is added.
+* [Bug #1294] Update i18n files with the new translations for the replaced string.
+* [Bug #1294] Replace the sentence 'Click on direct link to go to output directly' with a better alternative.
+* [doc] Add warning about printing issues in Debian Squeeze
+* [doc] Add instructions to install Cutycapt from testing
+* [Bug #1296] Rename Spanish and Galician .properties files as country was not needed
+* [Bug #1296] Remove duplicated \*_en_US.properties files after updating \*.properties when required
+* [Bug #1292] Replace Toolbarbutton object for the link to the PDF with an A object.
+* Remove an unnecessary check.
+* [Bug #1287] Fix NPE opening a project from Gantt view
+* [Bug #1290] Fix NPE issue launching LibrePlan
+* [Bug #1291] Fix NPE when a task with a dependency is removed
+* [Bug #1285] Avoided NPE when dropping a treerow in the same component
+* Add vertical borders in watermarks to improve differentiation between days
+* Added transparency effect to hover treerow
+* [Bug #1256] Removed inner padding on help tooltip
+* Made more explicit links styles in headers
+* Changed treerow input style for over elements
+* [i18n] Update Portuguese translation
+
+
 Version 1.2.0 (01 Dec 2011)
 ---------------------------
 
