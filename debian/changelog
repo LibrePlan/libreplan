@@ -1,3 +1,9 @@
+libreplan (1.2.1-1) squeeze; urgency=low
+
+  * Released LibrePlan 1.2.1
+
+ -- Manuel Rego Casasnovas <rego@igalia.com>  Thu, 19 Jan 2012 11:47:00 +0100
+
 libreplan (1.2.0-1) maverick; urgency=low
 
   * Released LibrePlan 1.2.0
