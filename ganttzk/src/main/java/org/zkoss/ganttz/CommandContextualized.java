@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -62,13 +62,17 @@ class CommandContextualized<T> {
             result.setImage(command.getImage());
             result.setTooltiptext(command.getName());
         }
-        result.addEventListener(Events.ON_CLICK, new EventListener() {
+        if (command.isDisabled()) {
+            result.setDisabled(true);
+        } else {
+            result.addEventListener(Events.ON_CLICK, new EventListener() {
 
-            @Override
-            public void onEvent(Event event) {
-                doAction();
-            }
-        });
+                @Override
+                public void onEvent(Event event) {
+                    doAction();
+                }
+            });
+        }
         button = result;
         return result;
     }

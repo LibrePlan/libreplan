@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.libreplan</groupId>
         <artifactId>libreplan</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
     </parent>
     <artifactId>libreplan-webapp</artifactId>
     <packaging>war</packaging>
