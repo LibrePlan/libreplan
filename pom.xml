@@ -572,17 +572,17 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>5.0.9</version>
+                <version>5.0.10</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>5.0.9</version>
+                <version>5.0.10</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>5.0.9</version>
+                <version>5.0.10</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jruby</groupId>
