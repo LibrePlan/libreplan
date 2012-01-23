@@ -110,8 +110,41 @@ public class TaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
+    private static TaskPositionConstraint getLeftMostFixedDateConstraintAmongChildren(
+            TaskGroup container) {
+
+        TaskPositionConstraint constraint = null;
+        for(TaskElement child : ((TaskGroup)container).getChildren()) {
+            TaskPositionConstraint currentConstraint = null;
+            if (child instanceof ITaskPositionConstrained) {
+                ITaskPositionConstrained task = (ITaskPositionConstrained) child;
+                currentConstraint = task.getPositionConstraint();
+            }
+            else if (child instanceof TaskGroup) {
+                currentConstraint = getLeftMostFixedDateConstraintAmongChildren(
+                        (TaskGroup) child);
+            }
+            if(currentConstraint != null &&
+                    currentConstraint.getConstraintType().equals(
+                            PositionConstraintType.START_IN_FIXED_DATE) &&
+                    (constraint == null || currentConstraint.getConstraintDate().
+                            compareTo(constraint.getConstraintDate()) < 0)) {
+                constraint = currentConstraint;
+            }
+        }
+        return constraint;
+    }
     public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement, LocalDate orderInitDate) {
+        if (taskElement instanceof TaskGroup) {
+            TaskPositionConstraint constraint =
+                    getLeftMostFixedDateConstraintAmongChildren((TaskGroup) taskElement);
+            if(constraint == null) {
+                return Collections.emptyList();
+            }
+            return Collections.singletonList(equalTo(toGantt(
+                    constraint.getConstraintDate())));
+        }
         if (taskElement instanceof ITaskPositionConstrained) {
             ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint startConstraint = task
