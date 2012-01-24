@@ -379,7 +379,7 @@ public class SaveCommandBuilder {
                     taskElementDAO.remove(taskElement.getId());
 
                     TaskGroup parent = taskElement.getParent();
-                    if (parent != null) {
+                    if (parent != null && !toRemove.contains(parent)) {
                         parent.remove(taskElement);
                         taskElementDAO.save(parent);
                     }
