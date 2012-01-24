@@ -58,4 +58,9 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="change-column-description-in-order_element-to-text" author="mrego">
+        <comment>Change column description in order_element to TEXT</comment>
+        <modifyDataType tableName="order_element" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
 </databaseChangeLog>
