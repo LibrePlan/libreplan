@@ -520,13 +520,21 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     }
 
     private void updateIndirectChargedEffortWithMap(
-            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort)
+            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort,
+            boolean sum)
             throws InstanceNotFoundException {
 
         for (Long id : relationOrderElementIdAndIndirectChargedEffort.keySet()) {
             OrderElement orderElement = find(id);
-            orderElement.getSumChargedEffort().addIndirectChargedEffort(
-                    relationOrderElementIdAndIndirectChargedEffort.get(id));
+            if (sum) {
+                orderElement.getSumChargedEffort().addIndirectChargedEffort(
+                        relationOrderElementIdAndIndirectChargedEffort.get(id));
+            } else {
+                orderElement.getSumChargedEffort()
+                        .subtractIndirectChargedEffort(
+                                relationOrderElementIdAndIndirectChargedEffort
+                                        .get(id));
+            }
             save(orderElement);
         }
     }
@@ -540,7 +548,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             updateRelatedSumChargedEffortWithDeletedWorkReportLine(line,
                     relationOrderElementIdAndIndirectChargedEffort);
         }
-        updateIndirectChargedEffortWithMap(relationOrderElementIdAndIndirectChargedEffort);
+        updateIndirectChargedEffortWithMap(
+                relationOrderElementIdAndIndirectChargedEffort, false);
     }
 
     @Override
@@ -552,7 +561,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             updateRelatedSumChargedEffortWithWorkReportLine(line,
                     relationOrderElementIdAndIndirectChargedEffort);
         }
-        updateIndirectChargedEffortWithMap(relationOrderElementIdAndIndirectChargedEffort);
+        updateIndirectChargedEffortWithMap(
+                relationOrderElementIdAndIndirectChargedEffort, true);
     }
 
     @SuppressWarnings("unchecked")
