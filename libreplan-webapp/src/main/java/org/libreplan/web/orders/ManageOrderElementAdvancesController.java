@@ -1087,6 +1087,7 @@ public class ManageOrderElementAdvancesController extends
                     }
                 }
             });
+            value.focus();
         }
 
         private void appendLabelPercentage(final Listitem listitem) {
