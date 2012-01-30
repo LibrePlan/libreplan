@@ -451,8 +451,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                             //update earned value chart
                             earnedValueChart.fillChart();
                             //update earned value legend
-                            updateEarnedValueChartLegend(new LocalDate(
-                                    earnedValueChartLegendDatebox.getRawValue()));
+                            updateEarnedValueChartLegend();
                         }
                         return null;
                     }
@@ -528,15 +527,15 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Hbox dateHbox = new Hbox();
         dateHbox.appendChild(new Label(_("Select date")));
 
-        LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
-        Datebox datebox = new Datebox(initialDateForIndicatorValues
+        LocalDate initialDateForIndicatorValues =
+                earnedValueChartFiller.initialDateForIndicatorValues();
+        this.earnedValueChartLegendDatebox = new Datebox(initialDateForIndicatorValues
                 .toDateTimeAtStartOfDay().toDate());
-        this.earnedValueChartLegendDatebox = datebox;
-        datebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
-        dateHbox.appendChild(datebox);
+        this.earnedValueChartLegendDatebox.setConstraint(
+                dateMustBeInsideVisualizationArea(earnedValueChartFiller));
+        dateHbox.appendChild(this.earnedValueChartLegendDatebox);
 
-        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
-                datebox);
+        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox);
         vbox.appendChild(dateHbox);
 
         vbox.appendChild(getEarnedValueChartConfigurableLegend(
@@ -803,20 +802,21 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void appendEventListenerToDateboxIndicators(
             final OrderEarnedValueChartFiller earnedValueChartFiller,
-            final Vbox vbox, final Datebox datebox) {
-        datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
+            final Vbox vbox) {
+        earnedValueChartLegendDatebox.addEventListener(Events.ON_CHANGE,
+                new EventListener() {
 
             @Override
             public void onEvent(Event event) {
-                LocalDate date = new LocalDate(datebox.getValue());
-                updateEarnedValueChartLegend(date);
-                dateInfutureMessage(datebox);
+                updateEarnedValueChartLegend();
+                dateInfutureMessage(earnedValueChartLegendDatebox);
             }
 
         });
     }
 
-    private void updateEarnedValueChartLegend(LocalDate date) {
+    private void updateEarnedValueChartLegend() {
+        LocalDate date = new LocalDate(earnedValueChartLegendDatebox.getRawValue());
         org.zkoss.zk.ui.Component child = earnedValueChartLegendContainer
                 .getFellow("indicatorsTable");
         earnedValueChartLegendContainer.removeChild(child);
@@ -955,8 +955,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                         if (planner.isVisibleChart()) {
                             loadChart.fillChart();
                             if(updateEarnedValueChartLegend) {
-                                updateEarnedValueChartLegend(new LocalDate(
-                                        earnedValueChartLegendDatebox.getRawValue()));
+                                updateEarnedValueChartLegend();
                             }
                         }
                     }
@@ -1167,8 +1166,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                 if (planner.isVisibleChart()) {
                                     loadChart.fillChart();
                                     if (updateEarnedValueChartLegend) {
-                                        updateEarnedValueChartLegend(new LocalDate(
-                                                earnedValueChartLegendDatebox.getRawValue()));
+                                        updateEarnedValueChartLegend();
                                     }
                                 }
                                 return null;
