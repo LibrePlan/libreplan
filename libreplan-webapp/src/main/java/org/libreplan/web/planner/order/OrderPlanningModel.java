@@ -816,6 +816,19 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void updateEarnedValueChartLegend() {
+        try {
+            //force the validation again (getValue alone doesn't work because
+            //the result of the validation is cached)
+            earnedValueChartLegendDatebox.setValue(
+                    earnedValueChartLegendDatebox.getValue());
+        }
+        catch (WrongValueException e) {
+            //the user moved the gantt and the legend became out of the
+            //visualization area, reset to a correct date
+            earnedValueChartLegendDatebox.setValue(earnedValueChartFiller.
+                    initialDateForIndicatorValues().toDateTimeAtStartOfDay()
+                    .toDate());
+        }
         LocalDate date = new LocalDate(earnedValueChartLegendDatebox.getRawValue());
         org.zkoss.zk.ui.Component child = earnedValueChartLegendContainer
                 .getFellow("indicatorsTable");
