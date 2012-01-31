@@ -219,6 +219,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
         appendTabs(chartComponent);
+        appendTabpanels(chartComponent);
 
         configuration.setChartComponent(chartComponent);
         if (doubleClickCommand != null) {
@@ -271,7 +272,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
            final Tabbox chartComponent) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
 
-        appendTabpanels(chartComponent);
         appendTab(chartComponent, appendLoadChartAndLegend(new Tabpanel(), chartLoadTimeplot));
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner);
