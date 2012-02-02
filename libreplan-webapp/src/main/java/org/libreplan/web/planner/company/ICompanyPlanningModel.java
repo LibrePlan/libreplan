@@ -51,4 +51,6 @@ public interface ICompanyPlanningModel {
 
     ProgressType getProgressTypeFromConfiguration();
 
+    public IPredicate getDefaultPredicate(Boolean includeOrderElements);
+
 }

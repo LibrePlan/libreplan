@@ -65,6 +65,7 @@ import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.web.planner.TaskElementAdapter;
+import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.chart.Chart;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
@@ -673,7 +674,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         User user;
-        List<Order> ordersToShow = new ArrayList<Order>();
 
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
@@ -695,7 +695,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                             .accepts(associatedTaskElement))) {
                 associatedTaskElement.setSimplifiedAssignedStatusCalculationEnabled(true);
                 result.add(associatedTaskElement);
-                ordersToShow.add(order);
             }
         }
         Collections.sort(result,new Comparator<TaskElement>(){
@@ -704,24 +703,44 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 return arg0.getStartDate().compareTo(arg1.getStartDate());
             }
         });
-        setDefaultFilterValues(ordersToShow);
         return result;
     }
 
-    private void setDefaultFilterValues(List<? extends Order> list) {
+    @Override
+    public IPredicate getDefaultPredicate(Boolean includeOrderElements) {
+        User user;
+        if (currentScenario == null) {
+            currentScenario = scenarioManager.getCurrent();
+        }
+        try {
+            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
+        }
+        catch(InstanceNotFoundException e) {
+            //this case shouldn't happen, because it would mean that there isn't a logged user
+            //anyway, if it happened we return an empty list
+            return null;
+        }
+        List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
+                user, currentScenario);
         Date startDate = null;
         Date endDate = null;
         for (Order each : list) {
+            each.useSchedulingDataFor(currentScenario, false);
             TaskGroup associatedTaskElement = each.getAssociatedTaskElement();
-            startDate = Collections.min(notNull(startDate, each.getInitDate(),
-                    associatedTaskElement.getStartDate()));
-            endDate = Collections.max(notNull(endDate, each.getDeadline(),
-                    associatedTaskElement.getEndDate()));
+            if (associatedTaskElement != null
+                    && STATUS_VISUALIZED.contains(each.getState())) {
+                startDate = Collections.min(notNull(startDate, each.getInitDate(),
+                        associatedTaskElement.getStartDate()));
+                endDate = Collections.max(notNull(endDate, each.getDeadline(),
+                        associatedTaskElement.getEndDate()));
+            }
         }
         filterStartDate = startDate != null ? LocalDate
                 .fromDateFields(startDate) : null;
         filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate)
                 : null;
+        return new TaskGroupPredicate(null, startDate, endDate,
+                includeOrderElements);
     }
 
     private static <T> List<T> notNull(T... values) {

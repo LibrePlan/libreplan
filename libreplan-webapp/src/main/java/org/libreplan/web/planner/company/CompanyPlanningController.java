@@ -286,7 +286,7 @@ public class CompanyPlanningController implements Composer {
         Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
 
         if (listFilters.isEmpty() && startDate == null && finishDate == null) {
-            return null;
+            return model.getDefaultPredicate(includeOrderElements);
         }
         return new TaskGroupPredicate(listFilters, startDate, finishDate,
                 includeOrderElements);
