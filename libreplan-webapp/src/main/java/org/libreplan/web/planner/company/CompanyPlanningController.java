@@ -247,8 +247,9 @@ public class CompanyPlanningController implements Composer {
                     throws WrongValueException {
                 Date finishDate = (Date) value;
                 if ((finishDate != null)
-                        && (filterStartDate.getValue() != null)
-                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
+                        && (filterStartDate.getRawValue() != null)
+                        && (finishDate.compareTo((Date)
+                                filterStartDate.getRawValue()) < 0)) {
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp,
                             _("must be greater than start date"));
@@ -264,8 +265,9 @@ public class CompanyPlanningController implements Composer {
                     throws WrongValueException {
                 Date startDate = (Date) value;
                 if ((startDate != null)
-                        && (filterFinishDate.getValue() != null)
-                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
+                        && (filterFinishDate.getRawValue() != null)
+                        && (startDate.compareTo((Date)
+                                filterFinishDate.getRawValue()) > 0)) {
                     filterStartDate.setValue(null);
                     throw new WrongValueException(comp,
                             _("must be lower than finish date"));
