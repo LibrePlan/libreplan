@@ -488,4 +488,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.isManualAnyAllocation();
     }
 
+    public boolean belongsClosedProject() {
+        return fundamentalProperties.belongsClosedProject();
+    }
+
 }
