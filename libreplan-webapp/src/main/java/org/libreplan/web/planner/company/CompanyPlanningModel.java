@@ -706,6 +706,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public IPredicate getDefaultPredicate(Boolean includeOrderElements) {
         User user;
         if (currentScenario == null) {
