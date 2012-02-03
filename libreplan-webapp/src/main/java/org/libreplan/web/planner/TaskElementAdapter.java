@@ -1107,6 +1107,11 @@ public class TaskElementAdapter {
                         && ((Task) taskElement).isManualAnyAllocation();
             }
 
+            @Override
+            public boolean belongsClosedProject() {
+                return taskElement.belongsClosedProject();
+            }
+
         }
 
         @Override

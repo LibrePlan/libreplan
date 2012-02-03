@@ -220,6 +220,9 @@ public class TaskComponent extends Div implements AfterCompose {
             cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned "
                     : " limiting-unassigned ";
         }
+        if (task.belongsClosedProject()) {
+            cssClass += " project-closed ";
+        }
         return cssClass;
     }
 
