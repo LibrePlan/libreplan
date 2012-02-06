@@ -1445,17 +1445,14 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private boolean readOnly = true;
 
-    private OrderStatusEnum initialStatus;
-
     private void updateDisabilitiesOnInterface() {
         Order order = (Order) orderModel.getOrder();
-
-        initialStatus = order.getState();
 
         boolean permissionForWriting = orderModel.userCanWrite(order,
                 SecurityUtils.getSessionUserLoginName());
         boolean isInStoredState = order.getState() == OrderStatusEnum.STORED;
-        boolean isInitiallyStored = initialStatus == OrderStatusEnum.STORED;
+        boolean isInitiallyStored = orderModel.getPlanningState()
+                .getSavedOrderState() == OrderStatusEnum.STORED;
 
         readOnly = !permissionForWriting || isInStoredState;
 

@@ -65,6 +65,8 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
 
     private IReloadChartListener reloadOverallProgressListener;
 
+    private IReloadChartListener reloadEarnedValueListener;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -114,6 +116,7 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
             advanceAssignmentPlanningModel.accept();
             updateTaskComponents();
             close();
+            reloadEarnedValueProgress();
             reloadOverallProgress();
         }
     }
@@ -121,6 +124,12 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
     private void reloadOverallProgress() {
         if (reloadOverallProgressListener != null) {
             reloadOverallProgressListener.reloadChart();
+        }
+    }
+
+    private void reloadEarnedValueProgress() {
+        if (reloadEarnedValueListener != null) {
+            reloadEarnedValueListener.reloadChart();
         }
     }
 
@@ -163,6 +172,10 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
 
     public void reloadOverallProgressListener(IReloadChartListener reloadChartListener) {
         reloadOverallProgressListener = reloadChartListener;
+    }
+
+    public void setReloadEarnedValueListener(IReloadChartListener reloadEarnedValueListener) {
+        this.reloadEarnedValueListener = reloadEarnedValueListener;
     }
 
 }

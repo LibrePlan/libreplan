@@ -1,0 +1,1 @@
+../doc/src/technical/howto-develop-a-use-case-in-libreplan.rst

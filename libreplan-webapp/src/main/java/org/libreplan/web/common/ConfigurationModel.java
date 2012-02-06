@@ -554,4 +554,27 @@ public class ConfigurationModel implements IConfigurationModel {
     public LDAPConfiguration getLdapConfiguration() {
         return configuration.getLdapConfiguration();
     }
+
+    @Override
+    public boolean isCheckNewVersionEnabled() {
+        return configuration.isCheckNewVersionEnabled();
+    }
+
+    @Override
+    public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
+        configuration.setCheckNewVersionEnabled(checkNewVersionEnabled);
+    }
+
+    @Override
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return configuration.isAllowToGatherUsageStatsEnabled();
+    }
+
+    @Override
+    public void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled) {
+        configuration
+                .setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
+    }
+
 }

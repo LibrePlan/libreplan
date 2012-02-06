@@ -490,6 +490,7 @@ public abstract class TaskElement extends BaseEntity {
             }
         }
         for (TaskElement taskElement : tasksToNotify) {
+            this.removeDependenciesWithOrigin(taskElement);
             taskElement.removeDependenciesWithDestination(this);
         }
     }
@@ -503,6 +504,7 @@ public abstract class TaskElement extends BaseEntity {
             }
         }
         for (TaskElement taskElement : tasksToNotify) {
+            this.removeDependenciesWithDestination(taskElement);
             taskElement.removeDependenciesWithOrigin(this);
         }
     }
@@ -601,7 +603,7 @@ public abstract class TaskElement extends BaseEntity {
             //simplified calculation has only two states:
             //unassigned, when hours allocated is zero, and
             //assigned otherwise
-            if (getSumOfHoursAllocated() == 0) {
+            if (getSumOfAssignedEffort().isZero()) {
                 return "unassigned";
             }
             return "assigned";
@@ -656,18 +658,50 @@ public abstract class TaskElement extends BaseEntity {
         this.advancePercentage = advancePercentage;
     }
 
-    private Integer sumOfHoursAllocated = 0;
-
-    public void setSumOfHoursAllocated(Integer sumOfHoursAllocated) {
-        this.sumOfHoursAllocated = sumOfHoursAllocated;
+    public void detachFromDependencies() {
+        for (Dependency each : copy(getDependenciesWithThisDestination())) {
+            detachDependency(each);
+        }
+        for (Dependency each : copy(getDependenciesWithThisOrigin())) {
+            detachDependency(each);
+        }
     }
 
-    public void addSumOfHoursAllocated(Integer sumOfHoursAllocated) {
-        this.sumOfHoursAllocated += sumOfHoursAllocated;
+    /**
+     * Copy the dependencies to a list in order to avoid
+     * {@link ConcurrentModificationException}
+     */
+    private List<Dependency> copy(Set<Dependency> dependencies) {
+        return new ArrayList<Dependency>(dependencies);
     }
 
-    public Integer getSumOfHoursAllocated() {
-        return sumOfHoursAllocated;
+    private void detachDependency(Dependency each) {
+        each.getOrigin().removeDependencyWithDestination(each.getDestination(),
+                each.getType());
+    }
+
+    private EffortDuration sumOfAssignedEffort = EffortDuration.hours(0);
+
+    public void setSumOfAssignedEffort(EffortDuration sumOfAssignedEffort) {
+        this.sumOfAssignedEffort = sumOfAssignedEffort;
+    }
+
+    public EffortDuration getSumOfAssignedEffort() {
+        if (this.getParent() == null) {
+            //it's an order, we use the cached value
+            return sumOfAssignedEffort;
+        }
+        else {
+            return getSumOfAssignedEffortCalculated();
+        }
+    }
+
+    private EffortDuration getSumOfAssignedEffortCalculated() {
+        EffortDuration result = EffortDuration.hours(0);
+        for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
+            result = result.plus(allocation.getAssignedEffort());
+        }
+        return result;
     }
 
     public String toString() {

@@ -25,11 +25,11 @@ options:
 
 a) Clone Git repository (recommended)::
 
-    $ git clone git://navalplan.git.sourceforge.net/gitroot/navalplan/navalplan libreplan
+    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan libreplan
 
 b) Download last version source code::
 
-    $ wget http://downloads.sourceforge.net/project/navalplan/files/LibrePlan/libreplan_1.2.0.tar.gz
+    $ wget http://downloads.sourceforge.net/project/libreplan/files/LibrePlan/libreplan_1.2.0.tar.gz
     $ tar -xzvf libreplan_1.2.0.tar.gz
 
 You should review ``HACKING`` file to check that you have installed all the

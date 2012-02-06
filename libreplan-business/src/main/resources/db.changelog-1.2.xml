@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-task_end_date_effort_duration-to-consolidated_value" author="mrego">
+        <comment>
+            taskEndDate attribute in class ConsolidatedValue has been changed to IntraDayDate.
+            It is needed to add some columns to store EffortDuration in ConsolidatedValue.
+        </comment>
+        <addColumn tableName="consolidated_value">
+            <column name="task_end_date_effort_duration" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="consolidated_value"
+            columnName="task_end_date_effort_duration"
+            defaultValueNumeric="0" />
+    </changeSet>
+
+    <changeSet id="change-sum_of_hours_allocated-to-sum_of_assigned_effort" author="jaragunde">
+        <comment>Changing sum_of_hours_allocated to sum_of_assigned_effort</comment>
+        <renameColumn tableName="task_element"
+            oldColumnName="sum_of_hours_allocated"
+            newColumnName="sum_of_assigned_effort"
+            columnDataType="INTEGER" />
+    </changeSet>
+    <changeSet id="update-effort-values-in-sum_charged_effort" author="jaragunde">
+        <comment>Updating effort values (hours to seconds) in task_element table</comment>
+        <sql>
+            UPDATE task_element
+            SET sum_of_assigned_effort = sum_of_assigned_effort*3600
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-new-column-check_new_version_enabled" author="mrego">
+        <comment>Add new column check_new_version_enabled with default value TRUE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="check_new_version_enabled" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="check_new_version_enabled"
+           defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="check_new_version_enabled"
+            defaultNullValue="TRUE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-allow_to_gather_usage_stats_enabled" author="mrego">
+        <comment>Add new column allow_to_gather_usage_stats_enabled with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="allow_to_gather_usage_stats_enabled" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="allow_to_gather_usage_stats_enabled"
+           defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="allow_to_gather_usage_stats_enabled"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+</databaseChangeLog>

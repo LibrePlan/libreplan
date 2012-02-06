@@ -192,6 +192,7 @@ public class ResourceLoadController implements Composer {
             resourcesLoadPanel = null;
             listeners = new ListenerTracker();
             visualizationModifiers = null;
+            listenersToAdd = null;
         }
 
         public IOnTransaction<Void> reload() {
@@ -229,6 +230,7 @@ public class ResourceLoadController implements Composer {
             } else {
                 resourcesLoadPanel.init(dataToShow.getLoadTimeLines(),
                         timeTracker);
+                listeners.addListeners(resourcesLoadPanel, getListenersToAdd());
             }
 
             resourcesLoadPanel.afterCompose();

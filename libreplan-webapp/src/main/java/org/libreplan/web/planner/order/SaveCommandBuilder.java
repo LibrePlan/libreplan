@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,6 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -84,6 +83,7 @@ import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
@@ -105,13 +105,14 @@ import org.zkoss.zul.Messagebox;
 /**
  * Builds a command that saves the changes in the taskElements. It can be
  * considered the final step in the conversation <br />
- * 
+ *
  * In the save operation it is also kept the consistency of the
  * LimitingResourceQueueDependencies with the Dependecies between the task of
  * the planning gantt.
- * 
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -214,6 +215,8 @@ public class SaveCommandBuilder {
 
         private final List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
 
+        private boolean disabled = false;
+
         public SaveCommand(PlanningState planningState,
                 PlannerConfiguration<TaskElement> configuration) {
             this.state = planningState;
@@ -238,6 +241,10 @@ public class SaveCommandBuilder {
 
         @Override
         public void doAction(IContext<TaskElement> context) {
+            if (disabled) {
+                return;
+            }
+
             save(null, new IAfterSaveActions() {
 
                 @Override
@@ -358,6 +365,33 @@ public class SaveCommandBuilder {
             subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
 
             saveOrderAuthorizations();
+
+            removeTaskElementsWithTaskSourceNull();
+
+            state.updateSavedOrderState();
+        }
+
+        private void removeTaskElementsWithTaskSourceNull() {
+            List<TaskElement> toRemove = taskElementDAO
+                    .getTaskElementsNoMilestonesWithoutTaskSource();
+            for (TaskElement taskElement : toRemove) {
+                try {
+                    taskElementDAO.remove(taskElement.getId());
+
+                    TaskGroup parent = taskElement.getParent();
+                    if (parent != null) {
+                        parent.remove(taskElement);
+                        taskElementDAO.save(parent);
+                    }
+
+                    LOG.info("TaskElement removed because of TaskSource was null. "
+                            + taskElement);
+                } catch (InstanceNotFoundException e) {
+                    // Do nothing
+                    // Maybe it was already removed before reaching this point
+                    // so if it's not in the database there isn't any problem
+                }
+            }
         }
 
         private void saveOrderAuthorizations() {
@@ -379,9 +413,7 @@ public class SaveCommandBuilder {
         private void createAdvancePercentagesIfRequired(Order order) {
             List<OrderElement> allChildren = order.getAllChildren();
             for (OrderElement each : allChildren) {
-                if (each.isLeaf()) {
-                    createAdvancePercentageIfRequired(each);
-                }
+                createAdvancePercentageIfRequired(each);
             }
         }
 
@@ -558,13 +590,13 @@ public class SaveCommandBuilder {
         }
 
         private void updateRootTaskPosition(TaskGroup rootTask) {
-            final Date min = minDate(rootTask.getChildren());
+            final IntraDayDate min = minDate(rootTask.getChildren());
             if (min != null) {
-                rootTask.setStartDate(min);
+                rootTask.setIntraDayStartDate(min);
             }
-            final Date max = maxDate(rootTask.getChildren());
+            final IntraDayDate max = maxDate(rootTask.getChildren());
             if (max != null) {
-                rootTask.setEndDate(max);
+                rootTask.setIntraDayEndDate(max);
             }
         }
 
@@ -790,16 +822,16 @@ public class SaveCommandBuilder {
             taskElement.getDependenciesWithThisDestination().size();
         }
 
-        private Date maxDate(Collection<? extends TaskElement> tasksToSave) {
-            List<Date> endDates = toEndDates(tasksToSave);
+        private IntraDayDate maxDate(Collection<? extends TaskElement> tasksToSave) {
+            List<IntraDayDate> endDates = toEndDates(tasksToSave);
             return endDates.isEmpty() ? null : Collections.max(endDates);
         }
 
-        private List<Date> toEndDates(
+        private List<IntraDayDate> toEndDates(
                 Collection<? extends TaskElement> tasksToSave) {
-            List<Date> result = new ArrayList<Date>();
+            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
             for (TaskElement taskElement : tasksToSave) {
-                Date endDate = taskElement.getEndDate();
+                IntraDayDate endDate = taskElement.getIntraDayEndDate();
                 if (endDate != null) {
                     result.add(endDate);
                 } else {
@@ -809,16 +841,16 @@ public class SaveCommandBuilder {
             return result;
         }
 
-        private Date minDate(Collection<? extends TaskElement> tasksToSave) {
-            List<Date> startDates = toStartDates(tasksToSave);
+        private IntraDayDate minDate(Collection<? extends TaskElement> tasksToSave) {
+            List<IntraDayDate> startDates = toStartDates(tasksToSave);
             return startDates.isEmpty() ? null : Collections.min(startDates);
         }
 
-        private List<Date> toStartDates(
+        private List<IntraDayDate> toStartDates(
                 Collection<? extends TaskElement> tasksToSave) {
-            List<Date> result = new ArrayList<Date>();
+            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
             for (TaskElement taskElement : tasksToSave) {
-                Date startDate = taskElement.getStartDate();
+                IntraDayDate startDate = taskElement.getIntraDayStartDate();
                 if (startDate != null) {
                     result.add(startDate);
                 } else {
@@ -973,5 +1005,16 @@ public class SaveCommandBuilder {
                 }
             }
         }
+
+        @Override
+        public void setDisabled(boolean disabled) {
+            this.disabled = disabled;
+        }
+
+        @Override
+        public boolean isDisabled() {
+            return disabled;
+        }
+
     }
 }

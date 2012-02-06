@@ -97,6 +97,7 @@ public class TaskList extends XulElement implements AfterCompose {
     public void updateCompletion(String progressType) {
         for (TaskComponent task: getTaskComponents()) {
             task.updateCompletion(progressType);
+            task.updateCompletionReportedHours();
             task.updateTooltipText(progressType);
         }
     }
@@ -198,7 +199,7 @@ public class TaskList extends XulElement implements AfterCompose {
         return getTimeTrackerComponent().getTimeTracker();
     }
 
-    private List<TaskComponent> getTaskComponents() {
+    protected List<TaskComponent> getTaskComponents() {
         ArrayList<TaskComponent> result = new ArrayList<TaskComponent>();
         for (Object child : getChildren()) {
             if (child instanceof TaskRow) {

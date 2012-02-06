@@ -85,11 +85,20 @@ public enum StretchesFunctionTypeEnum {
             // must be distributed.
             int[] assignedHours = getAssignedHours(allocation, startInclusive, newEndDate);
             int[] remindingHours = distributeRemainder(allocation, startInclusive, totalHours, assignedHours);
-            allocateDaysFrom(allocation, asEffortDuration(remindingHours),
+            int[] hoursToAllocate = sum(assignedHours, remindingHours);
+            allocateDaysFrom(allocation, asEffortDuration(hoursToAllocate),
                     startInclusive);
 
             assignedHours = getAssignedHours(allocation, startInclusive, newEndDate);
             Validate.isTrue(sum(assignedHours) == totalHours);
+        }
+
+        private int[] sum(int[] assignedHours, int[] remindingHours) {
+            Validate.isTrue(assignedHours.length == remindingHours.length);
+            for (int i = 0; i < assignedHours.length; i++) {
+                assignedHours[i] += remindingHours[i];
+            }
+            return assignedHours;
         }
 
         private int[] getAssignedHours(ResourceAllocation<?> allocation,
@@ -127,7 +136,7 @@ public enum StretchesFunctionTypeEnum {
                 int[] reallyAssigned) {
             final int remainder = totalHours - sum(reallyAssigned);
             if (remainder == 0) {
-                return reallyAssigned;
+                return new int[reallyAssigned.length];
             }
             return distributeRemainder(reallyAssigned, remainder);
         }
@@ -207,7 +216,8 @@ public enum StretchesFunctionTypeEnum {
         intervals.addAll(stretchesFunction.getIntervalsDefinedByStreches());
 
         LocalDate startInclusive = resourceAllocation.getFirstNonConsolidatedDate();
-        LocalDate endExclusive = resourceAllocation.getEndDate();
+        LocalDate endExclusive = resourceAllocation.getIntraDayEndDate()
+                .asExclusiveEnd();
         int totalHours = resourceAllocation.getNonConsolidatedHours();
         apply(resourceAllocation, intervals, startInclusive, endExclusive, totalHours);
     }

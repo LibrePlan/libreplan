@@ -1,0 +1,1 @@
+../doc/src/technical/howto-create-a-new-report-in-libreplan.rst

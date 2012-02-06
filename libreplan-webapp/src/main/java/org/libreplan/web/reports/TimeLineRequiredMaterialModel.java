@@ -203,6 +203,8 @@ public class TimeLineRequiredMaterialModel implements
         for (MaterialAssignment material : listMaterialAssignment) {
             OrderElement order = orderDAO.loadOrderAvoidingProxyFor(material
                     .getOrderElement());
+            // Load scheduling states
+            order.getSchedulingState();
 
             TaskElement task = findTaskBy(material);
             reloadTask(task);
