@@ -80,3 +80,12 @@ Así mesmo o proxecto formou parte do Plan Avanza:
 .. figure:: images/avanza.gif
    :scale: 100
 
+LibrePlan Audiovisual
+----------------------
+
+A evolución da ferramenta para adaptarse ás necesidades do sector audiovisual, así como creación específica da versión do producto LibrePlan Audiovisual participou de financiación pública segundo o programa rexido pola norma reguladora "Procedemento administrativo PR519A 2011", correspondente ó proxecto:
+   * LibrePlan Audiovisual: Sistema de planificación e control de desvíos de producións audiovisuais.
+   * Organo concedente: Secretaría Xeral de Modernización e Innovación Tecnolóxica da Xunta de Galicia.
+
+.. figure:: images/logos_funding_audiovisual_about.png
+   :scale: 100
