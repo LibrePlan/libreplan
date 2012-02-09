@@ -290,10 +290,14 @@ public class CompanyPlanningController implements Composer {
         if (listFilters.isEmpty() && startDate == null && finishDate == null) {
             IPredicate predicate = model.getDefaultPredicate(includeOrderElements);
             //show filter dates calculated by default on screen
-            filterStartDate.setValue(model.getFilterStartDate().
-                    toDateMidnight().toDate());
-            filterFinishDate.setValue(model.getFilterFinishDate().
-                    toDateMidnight().toDate());
+            if(model.getFilterStartDate() != null) {
+                filterStartDate.setValue(model.getFilterStartDate().
+                        toDateMidnight().toDate());
+            }
+            if(model.getFilterFinishDate() != null) {
+                filterFinishDate.setValue(model.getFilterFinishDate().
+                        toDateMidnight().toDate());
+            }
             return predicate;
         }
         return new TaskGroupPredicate(listFilters, startDate, finishDate,
