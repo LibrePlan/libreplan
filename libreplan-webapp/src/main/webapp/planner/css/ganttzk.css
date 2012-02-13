@@ -264,8 +264,8 @@ div.box.limiting-unassigned {
     margin-top: 4px;
 }
 
-.taskgroup_start,.taskgroup_end {
-    top: -12px; /* zkTasklist.HEIGHT_PER_TASK */
+.taskcontainer_completion {
+    margin-top: -16px;
 }
 
 .row span {
