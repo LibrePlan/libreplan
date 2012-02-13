@@ -172,8 +172,19 @@
 
 .standard-task {
     background-color: #abcde1; /* NOT_ALLOCATED_TASK_BLUE */
+}
 
+.box.standard-task.project-closed {
+    background-color: #CCC; /* CLEAR_GREY */
+    border: 1px dotted;
+}
 
+.project-closed + .deadline {
+    opacity: 0.2;
+}
+
+.project-closed .completion2 {
+    background-color: #999;
 }
 
 .subcontracted-task {
