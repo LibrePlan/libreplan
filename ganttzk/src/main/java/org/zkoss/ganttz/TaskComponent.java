@@ -550,10 +550,6 @@ public class TaskComponent extends Div implements AfterCompose {
         this.progressType = progressType;
     }
 
-    private DependencyList getDependencyList() {
-        return getGanntPanel().getDependencyList();
-    }
-
     private GanttPanel getGanntPanel() {
         return getTaskList().getGanttPanel();
     }
