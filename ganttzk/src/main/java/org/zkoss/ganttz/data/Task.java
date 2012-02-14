@@ -309,6 +309,11 @@ public abstract class Task implements ITaskFundamentalProperties {
                 .removePropertyChangeListener(listener);
     }
 
+    public void removeVisibilityPropertiesChangeListener(
+            PropertyChangeListener listener) {
+        this.visibilityProperties.removePropertyChangeListener(listener);
+    }
+
     @Override
     public GanttDate getEndDate() {
         return fundamentalProperties.getEndDate();

@@ -56,6 +56,8 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private IConstraintViolationListener<GanttDate> violationListener;
 
+    private PropertyChangeListener visibilityChangeListener;
+
     private boolean violated = false;
 
     public DependencyComponent(TaskComponent source, TaskComponent destination,
@@ -190,6 +192,14 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     public boolean hasLimitingTasks() {
         return (source.isLimiting() || destination.isLimiting());
+    }
+
+    public PropertyChangeListener getVisibilityChangeListener() {
+        return visibilityChangeListener;
+    }
+
+    public void setVisibilityChangeListener(PropertyChangeListener visibilityChangeListener) {
+        this.visibilityChangeListener = visibilityChangeListener;
     }
 
 }
