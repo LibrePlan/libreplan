@@ -304,6 +304,9 @@ public class DependencyList extends XulElement implements AfterCompose {
         source.getTask().removeVisibilityPropertiesChangeListener(listener);
         destination.getTask().removeVisibilityPropertiesChangeListener(listener);
 
+        //remove other change listeners
+        dependencyComponent.removeChangeListeners();
+
         //remove the dependency itself
         this.removeChild(dependencyComponent);
     }
