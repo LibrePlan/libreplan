@@ -142,7 +142,6 @@ public class TaskList extends XulElement implements AfterCompose {
         taskComponent.afterCompose();
         if (relocate) {
             getGanttPanel().adjustZoomColumnsHeight();
-            getGanttPanel().getDependencyList().redrawDependencies();
         }
     }
 
