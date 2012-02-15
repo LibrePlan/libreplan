@@ -23,6 +23,7 @@ package org.libreplan.business.planner.entities;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,8 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workingday.IntraDayDate;
@@ -178,6 +181,19 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
 
     @Override
     public boolean isTask() {
+        return false;
+    }
+
+    @Override
+    public Boolean belongsClosedProject() {
+        EnumSet<OrderStatusEnum> CLOSED = EnumSet.of(OrderStatusEnum.CANCELLED,
+                OrderStatusEnum.FINISHED, OrderStatusEnum.STORED);
+
+        Order order = getParent().getOrderElement().getOrder();
+        if(CLOSED.contains(order.getState())) {
+            return true;
+        }
+
         return false;
     }
 
