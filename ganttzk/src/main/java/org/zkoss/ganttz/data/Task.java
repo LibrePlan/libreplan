@@ -497,4 +497,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.belongsClosedProject();
     }
 
+    public boolean isRoot() {
+        return fundamentalProperties.isRoot();
+    }
+
 }
