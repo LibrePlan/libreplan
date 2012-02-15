@@ -1112,6 +1112,11 @@ public class TaskElementAdapter {
                 return taskElement.belongsClosedProject();
             }
 
+            @Override
+            public boolean isRoot() {
+                return taskElement.isRoot();
+            }
+
         }
 
         @Override

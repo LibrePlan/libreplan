@@ -739,4 +739,8 @@ public abstract class TaskElement extends BaseEntity {
         setAdvancePercentage(getOrderElement().getAdvancePercentage());
     }
 
+    public Boolean isRoot() {
+        return (this.getParent() == null);
+    }
+
 }

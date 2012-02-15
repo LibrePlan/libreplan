@@ -109,4 +109,6 @@ public interface ITaskFundamentalProperties {
 
     public boolean belongsClosedProject();
 
+    public boolean isRoot();
+
 }
