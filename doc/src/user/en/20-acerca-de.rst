@@ -54,10 +54,18 @@ Previous Team Members
 Translators
 -----------
 
-* [es] Manuel Rego Casasnovas <rego@igalia.com>
-* [gl] Manuel Rego Casasnovas <rego@igalia.com>
+* [es] Jacobo Aragunde Pérez <jaragunde@igalia.com>,
+  Manuel Rego Casasnovas <rego@igalia.com>,
+  Diego Pino García <dpino@igalia.com>
+* [fr] Stephane Ayache <ayache.stephane@gmail.com>,
+  Guillaume Postaire <gpostaire@gmail.com>,
+  Philippe Poumaroux <philippe.poumaroux@free.fr>
+* [gl] Jacobo Aragunde Pérez <jaragunde@igalia.com>,
+  Manuel Rego Casasnovas <rego@igalia.com>,
+  Diego Pino García <dpino@igalia.com>
 * [it] Giuseppe Zizza <gzizza@gmail.com>
-* [pt] Helena Grosso <lenagrosso@gmail.com>
+* [pt] Helena Grosso <lenagrosso@gmail.com>,
+  Joaquim Rocha <jrocha@igalia.com>
 * [ru] Pavel Rudensky <prudensky@gmail.com>
 
 Contributors
