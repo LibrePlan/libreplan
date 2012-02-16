@@ -306,11 +306,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public Position remove(T domainObject) {
         Task task = mapper.findAssociatedBean(domainObject);
         Position position = mapper.findPositionFor(task);
+        adapter.doRemovalOf(mapper.findAssociatedDomainObject(task));
+        mapper.remove(domainObject);
         diagramGraph.remove(task);
         task.removed();
         planner.removeTask(task);
-        adapter.doRemovalOf(mapper.findAssociatedDomainObject(task));
-        mapper.remove(domainObject);
         return position;
     }
 
