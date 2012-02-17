@@ -23,6 +23,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.web.UserUtil;
 import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -79,6 +80,10 @@ public class PasswordController extends GenericForwardComposer {
      */
     public void setPassword(String password) {
         passwordModel.setPassword(password);
+    }
+
+    public boolean getLdapUser() {
+        return !UserUtil.getUserFromSession().isLibrePlanUser();
     }
 
     public Constraint validatePasswordConfirmation() {
