@@ -113,7 +113,7 @@
                                     <button sclass="icono" image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
                                         tooltiptext="${i18n:_('Delete')}"
-                                        onClick="controller.removeRole(self.parent.parent.value);">
+                                        onClick="controller.removeRole(self.parent.parent.value);" disabled="@{controller.ldapUserRolesLdapConfiguration}">
                                     </button>
                                 </hbox>
                             </row>
@@ -146,7 +146,7 @@
                                     <button sclass="icono" image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
                                         tooltiptext="${i18n:_('Delete')}"
-                                        onClick="controller.removeProfile(self.parent.parent.value);">
+                                        onClick="controller.removeProfile(self.parent.parent.value);" disabled="@{controller.ldapUserRolesLdapConfiguration}">
                                     </button>
                                 </hbox>
                             </row>
