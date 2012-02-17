@@ -125,4 +125,6 @@ public interface IUserModel {
 
     void confirmRemove(User user) throws InstanceNotFoundException;
 
+    boolean isLDAPBeingUsed();
+
 }

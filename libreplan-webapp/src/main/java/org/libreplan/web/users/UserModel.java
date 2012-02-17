@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.common.Configuration;
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
@@ -54,6 +55,9 @@ public class UserModel implements IUserModel {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
@@ -235,6 +239,13 @@ public class UserModel implements IUserModel {
     @Transactional(readOnly = true)
     public List<OrderAuthorization> getReferencedByOtherEntities(User user){
        return userDAO.getOrderAuthorizationsByUser(user);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isLDAPBeingUsed() {
+        return configurationDAO.getConfiguration().getLdapConfiguration()
+                .getLdapAuthEnabled();
     }
 
 }
