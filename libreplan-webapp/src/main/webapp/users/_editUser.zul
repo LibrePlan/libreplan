@@ -93,10 +93,13 @@
                     <!-- Associated UserRoles -->
                     <groupbox closable="false">
                     <caption label="${i18n:_('Association with roles')}" />
+                    <vbox>
+                        <label value="${i18n:_('Roles of LDAP users cannot be managed because LDAP roles are being used.')}" visible="@{controller.ldapUserRolesLdapConfiguration}" />
+                    </vbox>
                     <hbox align="center">
                         <combobox id="userRolesCombo" autodrop="true" />
                         <button label="${i18n:_('Add role')}"
-                            onClick="controller.addSelectedRole()"/>
+                            onClick="controller.addSelectedRole()" disabled="@{controller.ldapUserRolesLdapConfiguration}"/>
                     </hbox>
                     <grid id="listing" model="@{controller.roles}">
                         <columns sizable="true">
@@ -121,12 +124,15 @@
                     <!-- Associated Profiles -->
                     <groupbox closable="false">
                     <caption label="${i18n:_('Association with profiles')}" />
+                    <vbox>
+                        <label value="${i18n:_('Profiles of LDAP users cannot be managed because LDAP roles are being used.')}" visible="@{controller.ldapUserRolesLdapConfiguration}" />
+                    </vbox>
                     <hbox align="center">
                         <autocomplete id="profileAutocomplete"
                             autodrop="true" constraint=""
                             finder="ProfileFinder" />
                         <button label="${i18n:_('Add profile')}"
-                            onClick="controller.addSelectedProfile()" />
+                            onClick="controller.addSelectedProfile()" disabled="@{controller.ldapUserRolesLdapConfiguration}"/>
                     </hbox>
                     <grid id="profilesListing" model="@{controller.profiles}">
                         <columns sizable="true">

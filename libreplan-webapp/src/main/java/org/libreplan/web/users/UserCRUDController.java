@@ -228,4 +228,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return (isLdapUser() && userModel.isLDAPBeingUsed());
     }
 
+    public boolean getLdapUserRolesLdapConfiguration() {
+        return (isLdapUser() && userModel.isLDAPRolesBeingUsed());
+    }
+
 }
