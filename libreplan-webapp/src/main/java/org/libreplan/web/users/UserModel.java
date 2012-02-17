@@ -248,4 +248,11 @@ public class UserModel implements IUserModel {
                 .getLdapAuthEnabled();
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isLDAPRolesBeingUsed() {
+        return configurationDAO.getConfiguration().getLdapConfiguration()
+                .getLdapSaveRolesDB();
+    }
+
 }

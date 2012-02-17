@@ -127,4 +127,6 @@ public interface IUserModel {
 
     boolean isLDAPBeingUsed();
 
+    boolean isLDAPRolesBeingUsed();
+
 }
