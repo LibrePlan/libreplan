@@ -224,4 +224,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return !user.isLibrePlanUser();
     }
 
+    public boolean isLdapUserLdapConfiguration() {
+        return (isLdapUser() && userModel.isLDAPBeingUsed());
+    }
+
 }

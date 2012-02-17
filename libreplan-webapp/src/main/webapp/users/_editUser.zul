@@ -31,6 +31,9 @@
                 <vbox>
 
                     <!-- User details  -->
+                    <vbox>
+                        <label value="${i18n:_('Password cannot be managed for LDAP users because LDAP authentication is being used')}" visible="@{controller.ldapUserLdapConfiguration}" />
+                    </vbox>
                     <groupbox closable="false">
                     <caption label="${i18n:_('General user data')}" />
                     <grid fixedLayout="false" span="true">
@@ -60,13 +63,13 @@
                             <row>
                                 <label value="${i18n:_('Password')}" />
                                 <textbox id="password" type="password"
-                                    onChange="controller.setPassword(self.value);" width="300px"/>
+                                    onChange="controller.setPassword(self.value);" width="300px" disabled="@{controller.ldapUserLdapConfiguration}"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Password confirmation')}" />
                                 <textbox id="passwordConfirmation" type="password"
                                     constraint="@{controller.validatePasswordConfirmation}"
-                                    width="300px"/>
+                                    width="300px" disabled="@{controller.ldapUserLdapConfiguration}"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Disabled')}" />
