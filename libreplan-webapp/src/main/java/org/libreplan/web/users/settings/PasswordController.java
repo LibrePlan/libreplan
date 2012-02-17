@@ -82,8 +82,9 @@ public class PasswordController extends GenericForwardComposer {
         passwordModel.setPassword(password);
     }
 
-    public boolean getLdapUser() {
-        return !UserUtil.getUserFromSession().isLibrePlanUser();
+    public boolean isLdapUser() {
+        return (!UserUtil.getUserFromSession().isLibrePlanUser() && passwordModel
+                .isLdapAuthEnabled());
     }
 
     public Constraint validatePasswordConfirmation() {
