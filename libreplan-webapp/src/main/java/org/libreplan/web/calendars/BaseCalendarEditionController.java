@@ -181,6 +181,7 @@ public abstract class BaseCalendarEditionController extends
         Component extraEffortRow = comp.getFellow("exceptionDayExtraEffortBox");
 
         EffortDurationPicker normalDuration = findOrCreateDurationPicker(normalEffortRow);
+        normalDuration.initializeFor24HoursAnd0Minutes();
         EffortDurationPicker extraDuration = findOrCreateDurationPicker(extraEffortRow);
         Checkbox checkbox = findOrCreateUnlimitedCheckbox(extraEffortRow);
         return CapacityPicker.workWith(checkbox, normalDuration, extraDuration,
@@ -347,6 +348,7 @@ public abstract class BaseCalendarEditionController extends
             addLabelCell(item, day);
 
             EffortDurationPicker normalDurationPicker = new EffortDurationPicker();
+            normalDurationPicker.initializeFor24HoursAnd0Minutes();
             EffortDurationPicker extraDurationPicker = new EffortDurationPicker();
             Checkbox unlimitedCheckbox = createUnlimitedCheckbox();
 
