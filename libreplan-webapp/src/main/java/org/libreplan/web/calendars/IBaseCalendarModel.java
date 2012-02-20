@@ -220,4 +220,10 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     boolean isOwnExceptionDay();
 
+    boolean isVirtualWorker();
+
+    Integer getCapacity();
+
+    void setCapacity(Integer capacity);
+
 }

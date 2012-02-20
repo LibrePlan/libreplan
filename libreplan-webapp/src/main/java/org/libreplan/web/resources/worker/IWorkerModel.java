@@ -132,10 +132,6 @@ public interface IWorkerModel extends IIntegrationEntityModel {
 
     BaseCalendar getDefaultCalendar();
 
-    Integer getCapacity();
-
-    void setCapacity(Integer capacity);
-
     public List<Worker> getFilteredWorker(ResourcePredicate predicate);
 
     public List<Worker> getAllCurrentWorkers();
