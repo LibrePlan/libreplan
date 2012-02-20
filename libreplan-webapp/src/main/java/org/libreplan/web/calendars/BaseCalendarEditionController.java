@@ -1550,4 +1550,16 @@ public abstract class BaseCalendarEditionController extends
         }
     }
 
+    public boolean isVirtualWorker() {
+        return baseCalendarModel.isVirtualWorker();
+    }
+
+    public Integer getCapacity() {
+        return baseCalendarModel.getCapacity();
+    }
+
+    public void setCapacity(Integer capacity) {
+        baseCalendarModel.setCapacity(capacity);
+    }
+
 }

@@ -856,4 +856,34 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         return false;
     }
 
+    @Override
+    public boolean isVirtualWorker() {
+        if (baseCalendar == null) {
+            return false;
+        }
+        if (baseCalendar instanceof ResourceCalendar) {
+            ResourceCalendar resourceCalendar = (ResourceCalendar) baseCalendar;
+            return (resourceCalendar.getResource() != null)
+                    && resourceCalendar.getResource().isVirtual();
+        }
+        return false;
+    }
+
+    @Override
+    public Integer getCapacity() {
+        if (isVirtualWorker()) {
+            ResourceCalendar resourceCalendar = (ResourceCalendar) baseCalendar;
+            return resourceCalendar.getCapacity();
+        }
+        return 1;
+    }
+
+    @Override
+    public void setCapacity(Integer capacity) {
+        if (isVirtualWorker()) {
+            ResourceCalendar resourceCalendar = (ResourceCalendar) baseCalendar;
+            resourceCalendar.setCapacity(capacity);
+        }
+    }
+
 }
