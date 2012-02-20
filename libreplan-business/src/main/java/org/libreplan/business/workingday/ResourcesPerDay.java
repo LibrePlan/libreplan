@@ -74,13 +74,13 @@ public class ResourcesPerDay {
     }
 
     private static ResourcesPerDay backToResourcePerDay(int integerFormat) {
-        return amount(new BigDecimal(integerFormat).movePointLeft(2));
+        return amount(new BigDecimal(integerFormat).movePointLeft(4));
     }
 
     public static ResourcesPerDay calculateFrom(EffortDuration durationWorking,
             EffortDuration durationWorkable) {
         return amount(new BigDecimal(durationWorking.getSeconds()).divide(
-                new BigDecimal(durationWorkable.getSeconds()), 2,
+                new BigDecimal(durationWorkable.getSeconds()), 4,
                 RoundingMode.HALF_UP));
     }
 
@@ -96,7 +96,7 @@ public class ResourcesPerDay {
 
     private ResourcesPerDay(BigDecimal amount) {
         Validate.isTrue(amount.intValue() >= 0);
-        this.amount = amount.setScale(2, RoundingMode.HALF_UP);
+        this.amount = amount.setScale(4, RoundingMode.HALF_UP);
     }
 
     public BigDecimal getAmount() {
@@ -134,7 +134,7 @@ public class ResourcesPerDay {
     }
 
     public boolean isZero() {
-        BigDecimal withoutDecimalpart = amount.movePointRight(2);
+        BigDecimal withoutDecimalpart = amount.movePointRight(4);
         return withoutDecimalpart.intValue() == 0;
     }
 

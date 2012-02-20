@@ -941,8 +941,9 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         EffortDuration amountRequestedDuration = amount
                 .asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
 
-        return multiplyByCalendarUnits(capacity).limitDuration(
-                amountRequestedDuration);
+        EffortDuration duration = multiplyByCalendarUnits(capacity)
+                .limitDuration(amountRequestedDuration);
+        return duration.atNearestMinute();
     }
 
     /**
