@@ -54,7 +54,7 @@ public enum PositionConstraintType {
 
         @Override
         public PositionConstraintType newTypeAfterMoved() {
-            return START_NOT_EARLIER_THAN;
+            return START_IN_FIXED_DATE;
         }
 
         @Override
