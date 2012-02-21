@@ -63,6 +63,8 @@ public interface IOrderTemplatesModel {
 
     void validateTemplateName(String name) throws IllegalArgumentException;
 
+    void validateTemplateCode(String code) throws IllegalArgumentException;
+
     List<Criterion> getCriterionsFor(CriterionType criterionType);
 
     Map<CriterionType, List<Criterion>> getMapCriterions();

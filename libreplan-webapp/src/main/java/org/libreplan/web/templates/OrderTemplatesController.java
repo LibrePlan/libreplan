@@ -236,6 +236,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private boolean isAllValid() {
         // validate template name
         name = (Textbox) editWindow.getFellowIfAny("name");
+
         if ((name != null) && (!name.isValid())) {
             selectTab("tabGeneralData");
             showInvalidWorkReportTypeName();
