@@ -1045,6 +1045,11 @@ span.perspective, span.perspective-active {
 .perspective-active.order-load .z-button-cm {
     background-image: url(../img/ico_order-load.png);
 }
+
+.perspective.order-load, .perspective.company-load {
+    display: none;
+}
+
 .perspective.limiting-resources .z-button-cm,
 .perspective-active.limiting-resources .z-button-cm {
     background-image: url(../img/ico_limiting-resources.png);
