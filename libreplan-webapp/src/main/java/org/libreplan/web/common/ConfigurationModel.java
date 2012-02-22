@@ -43,8 +43,6 @@ import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.scenarios.daos.IScenarioDAO;
-import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -76,9 +74,6 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
-
-    @Autowired
-    private IScenarioDAO scenarioDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -524,26 +519,6 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public void setCompanyLogoURL(String companyLogoURL) {
         configuration.setCompanyLogoURL(companyLogoURL);
-    }
-
-    @Override
-    public Boolean isScenariosVisible() {
-        return configuration.isScenariosVisible();
-    }
-
-    @Override
-    public void setScenariosVisible(Boolean scenariosVisible) {
-        configuration.setScenariosVisible(scenariosVisible);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Boolean moreScenariosThanMasterCreated() {
-        List<Scenario> scenarios = scenarioDAO.getAll();
-        if (scenarios != null) {
-            return scenarios.size() > 1;
-        }
-        return false;
     }
 
     @Override

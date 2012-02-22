@@ -57,7 +57,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
@@ -111,8 +110,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Textbox prefixBox;
 
-    private Checkbox scenariosVisible;
-
     private UserRole roles;
 
     private Textbox ldapGroupPath;
@@ -138,12 +135,6 @@ public class ConfigurationController extends GenericForwardComposer {
         initializeProgressTypeList();
         messages = new MessagesForUser(messagesContainer);
         reloadEntitySequences();
-        if (moreScenariosThanMasterCreated()) {
-            scenariosVisible.setChecked(true);
-            scenariosVisible.setDisabled(true);
-            scenariosVisible
-                    .setTooltiptext(_("Scenarios must be enabled as more elements than master exist"));
-        }
         loadRoleStrategyRows();
     }
 
@@ -461,14 +452,6 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.isMonteCarloMethodTabVisible();
     }
 
-    public void setScenariosVisible(Boolean scenariosVisible) {
-        configurationModel.setScenariosVisible(scenariosVisible);
-    }
-
-    public Boolean isScenariosVisible() {
-        return configurationModel.isScenariosVisible();
-    }
-
     public ProgressTypeRenderer getProgressTypeRenderer() {
         return progressTypeRenderer;
     }
@@ -769,10 +752,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public EntityNameEnum[] getEntityNames() {
         return EntityNameEnum.values();
-    }
-
-    public boolean moreScenariosThanMasterCreated() {
-        return configurationModel.moreScenariosThanMasterCreated();
     }
 
     // Tab ldap properties
