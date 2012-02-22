@@ -176,25 +176,9 @@
                             <row>
                                 <label
                                     value="${i18n:_('Perspectives')}" />
-                                <grid>
-                                    <columns>
-                                        <column width="50%" />
-                                        <column />
-                                    </columns>
-                                    <rows>
-                                        <row>
-                                            <checkbox
-                                                label="${i18n:_('MonteCarlo method')}"
-                                                checked="@{configurationController.monteCarloMethodTabVisible}" />
-                                        </row>
-                                        <row>
-                                            <checkbox
-                                                id="scenariosVisible"
-                                                label="${i18n:_('Enable scenarios module')}"
-                                                checked="@{configurationController.scenariosVisible}" />
-                                        </row>
-                                    </rows>
-                                </grid>
+                                <checkbox
+                                    label="${i18n:_('MonteCarlo method')}"
+                                    checked="@{configurationController.monteCarloMethodTabVisible}" />
                             </row>
                         </rows>
                     </grid>
