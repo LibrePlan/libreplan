@@ -144,7 +144,11 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLineGroup toContainer() {
         OrderLineGroup result = OrderLineGroup.create();
-        result.setName("new container");
+        String name = "new container";
+        if (isEmptyLeaf()) {
+            name = getName();
+        }
+        result.setName(name);
         return result;
     }
 
