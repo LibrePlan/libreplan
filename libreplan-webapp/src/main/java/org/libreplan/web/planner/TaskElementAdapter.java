@@ -525,7 +525,8 @@ public class TaskElementAdapter {
                             .compareTo(PositionConstraintType.FINISH_NOT_LATER_THAN) == 0
                             || constraintType
                                     .compareTo(PositionConstraintType.AS_LATE_AS_POSSIBLE) == 0) {
-                        task.explicityMoved(toIntraDay(endDate));
+                        task.explicityMoved(taskElement.getIntraDayStartDate(),
+                                toIntraDay(endDate));
                     }
                 }
             }
@@ -1013,15 +1014,14 @@ public class TaskElementAdapter {
             public void moveTo(GanttDate newStart) {
                 if (taskElement instanceof ITaskPositionConstrained) {
                     ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
+                    GanttDate newEnd = inferEndFrom(newStart);
                     if (task.getPositionConstraint()
                             .isConstraintAppliedToStart()) {
                         setBeginDate(newStart);
-                        task.explicityMoved(toIntraDay(newStart));
                     } else {
-                        GanttDate newEnd = inferEndFrom(newStart);
                         setEndDate(newEnd);
-                        task.explicityMoved(toIntraDay(newEnd));
                     }
+                    task.explicityMoved(toIntraDay(newStart), toIntraDay(newEnd));
                 }
             }
 
