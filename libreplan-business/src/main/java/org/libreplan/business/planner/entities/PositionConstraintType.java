@@ -20,6 +20,8 @@
  */
 package org.libreplan.business.planner.entities;
 
+import org.libreplan.business.orders.entities.Order.SchedulingMode;
+
 
 /**
  * Enum with all possible ways of calculating the start of a task <br />
@@ -29,7 +31,7 @@ public enum PositionConstraintType {
     AS_SOON_AS_POSSIBLE(false, _("as soon as possible")) {
 
         @Override
-        public PositionConstraintType newTypeAfterMoved() {
+        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
             return START_NOT_EARLIER_THAN;
         }
 
@@ -41,8 +43,11 @@ public enum PositionConstraintType {
     START_NOT_EARLIER_THAN(true, _("start not earlier than")) {
 
         @Override
-        public PositionConstraintType newTypeAfterMoved() {
-            return START_NOT_EARLIER_THAN;
+        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
+            if(mode == SchedulingMode.FORWARD)
+                return START_NOT_EARLIER_THAN;
+            else
+                return FINISH_NOT_LATER_THAN;
         }
 
         @Override
@@ -53,7 +58,7 @@ public enum PositionConstraintType {
     START_IN_FIXED_DATE(true, _("start in fixed date")) {
 
         @Override
-        public PositionConstraintType newTypeAfterMoved() {
+        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
             return START_IN_FIXED_DATE;
         }
 
@@ -65,7 +70,7 @@ public enum PositionConstraintType {
     AS_LATE_AS_POSSIBLE(false, _("as late as possible")) {
 
         @Override
-        public PositionConstraintType newTypeAfterMoved() {
+        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
             return FINISH_NOT_LATER_THAN;
         }
 
@@ -77,8 +82,11 @@ public enum PositionConstraintType {
     FINISH_NOT_LATER_THAN(true, _("finish not later than")) {
 
         @Override
-        public PositionConstraintType newTypeAfterMoved() {
-            return FINISH_NOT_LATER_THAN;
+        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
+            if(mode == SchedulingMode.FORWARD)
+                return START_NOT_EARLIER_THAN;
+            else
+                return FINISH_NOT_LATER_THAN;
         }
 
         @Override
@@ -102,7 +110,7 @@ public enum PositionConstraintType {
         this.name = name;
     }
 
-    public abstract PositionConstraintType newTypeAfterMoved();
+    public abstract PositionConstraintType newTypeAfterMoved(SchedulingMode mode);
 
     public boolean isAssociatedDateRequired() {
         return dateRequired;

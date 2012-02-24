@@ -419,8 +419,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    public void explicityMoved(IntraDayDate date) {
-        getPositionConstraint().explicityMovedTo(date);
+    public void explicityMoved(IntraDayDate startDate, IntraDayDate endDate) {
+        getPositionConstraint().explicityMovedTo(startDate, endDate,
+                getOrderElement().getOrder().getSchedulingMode());
     }
 
     public TaskPositionConstraint getPositionConstraint() {

@@ -31,5 +31,5 @@ public interface ITaskPositionConstrained {
 
     TaskPositionConstraint getPositionConstraint();
 
-    void explicityMoved(IntraDayDate date);
+    void explicityMoved(IntraDayDate startDate, IntraDayDate endDate);
 }
