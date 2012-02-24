@@ -31,24 +31,11 @@ public enum PositionConstraintType {
     AS_SOON_AS_POSSIBLE(false, _("as soon as possible")) {
 
         @Override
-        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
-            return START_NOT_EARLIER_THAN;
-        }
-
-        @Override
         public boolean appliesToTheStart() {
             return true;
         }
     },
     START_NOT_EARLIER_THAN(true, _("start not earlier than")) {
-
-        @Override
-        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
-            if(mode == SchedulingMode.FORWARD)
-                return START_NOT_EARLIER_THAN;
-            else
-                return FINISH_NOT_LATER_THAN;
-        }
 
         @Override
         public boolean appliesToTheStart() {
@@ -70,24 +57,11 @@ public enum PositionConstraintType {
     AS_LATE_AS_POSSIBLE(false, _("as late as possible")) {
 
         @Override
-        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
-            return FINISH_NOT_LATER_THAN;
-        }
-
-        @Override
         public boolean appliesToTheStart() {
             return false;
         }
     },
     FINISH_NOT_LATER_THAN(true, _("finish not later than")) {
-
-        @Override
-        public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
-            if(mode == SchedulingMode.FORWARD)
-                return START_NOT_EARLIER_THAN;
-            else
-                return FINISH_NOT_LATER_THAN;
-        }
 
         @Override
         public boolean appliesToTheStart() {
@@ -110,7 +84,12 @@ public enum PositionConstraintType {
         this.name = name;
     }
 
-    public abstract PositionConstraintType newTypeAfterMoved(SchedulingMode mode);
+    public PositionConstraintType newTypeAfterMoved(SchedulingMode mode) {
+        if(mode == SchedulingMode.FORWARD)
+            return START_NOT_EARLIER_THAN;
+        else
+            return FINISH_NOT_LATER_THAN;
+    }
 
     public boolean isAssociatedDateRequired() {
         return dateRequired;
