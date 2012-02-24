@@ -131,6 +131,17 @@ public class OrderLineGroup extends OrderElement implements
         public OrderLineGroup getThis() {
             return OrderLineGroup.this;
         }
+
+        @Override
+        public boolean isLeaf() {
+            return false;
+        }
+
+        @Override
+        public boolean isEmptyLeaf() {
+            return false;
+        }
+
     }
 
     public static OrderLineGroup create() {
@@ -222,6 +233,11 @@ public class OrderLineGroup extends OrderElement implements
 
     @Override
     public boolean isLeaf() {
+        return false;
+    }
+
+    @Override
+    public boolean isEmptyLeaf() {
         return false;
     }
 

@@ -228,9 +228,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         try {
             if (tree.getSelectedCount() == 1) {
                 T node = getSelectedNode();
-                getModel().addElementAt(node, name.getValue(),
+                T newNode = getModel().addElementAt(node, name.getValue(),
                         hours.getValue());
-                getRenderer().refreshHoursValueForThisNodeAndParents(node);
+                getRenderer().refreshHoursValueForThisNodeAndParents(newNode);
             } else {
                 getModel().addElement(name.getValue(), hours.getValue());
             }
@@ -759,7 +759,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private void setReadOnlyHoursCell(T element,
                 Intbox boxHours, Treecell tc) {
-            if (!readOnly && isLine(element)) {
+            if (!readOnly && element.isLeaf()) {
                 if (getHoursGroupHandler().hasMoreThanOneHoursGroup(element)) {
                     boxHours.setReadonly(true);
                     tc.setTooltiptext(_("Not editable for containing more that an hours group."));
@@ -772,7 +772,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private Intbox buildHoursIntboxFor(final T element) {
             Intbox result = new IntboxDirectValue();
-            if (isLine(element)) {
+            if (element.isLeaf()) {
                 Util.bind(result, getHoursGetterFor(element),
                         getHoursSetterFor(element));
                 result.setConstraint(getHoursConstraintFor(element));
@@ -832,7 +832,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public void updateHoursFor(T element) {
-            if (!readOnly && isLine(element)) {
+            if (!readOnly && element.isLeaf()) {
                 Intbox boxHours = (Intbox) hoursIntBoxByElement.get(element);
                 Treecell tc = (Treecell) boxHours.getParent();
                 setReadOnlyHoursCell(element, boxHours, tc);
@@ -872,10 +872,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
 
             };
-        }
-
-        private boolean isLine(T element) {
-            return element.getChildren().isEmpty();
         }
 
         protected abstract void addOperationsCell(final Treeitem item,

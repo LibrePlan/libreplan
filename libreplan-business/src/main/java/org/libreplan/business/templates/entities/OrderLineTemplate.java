@@ -109,6 +109,30 @@ public class OrderLineTemplate extends OrderElementTemplate {
     }
 
     @Override
+    public boolean isEmptyLeaf() {
+        if (getWorkHours() != 0) {
+            return false;
+        }
+        if (!getDirectCriterionRequirements().isEmpty()) {
+            return false;
+        }
+        if (!getAdvanceAssignmentTemplates().isEmpty()) {
+            return false;
+        }
+        if (!getQualityForms().isEmpty()) {
+            return false;
+        }
+        if (!getLabels().isEmpty()) {
+            return false;
+        }
+        if (!getMaterialAssignments().isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
     public OrderElement createElement(OrderLineGroup parent) {
         OrderLine line = setupSchedulingStateType(setupVersioningInfo(parent,
                 OrderLine.createOrderLineWithUnfixedPercentage(getWorkHours())));
