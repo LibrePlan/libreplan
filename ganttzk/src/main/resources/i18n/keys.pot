@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.2.1\n"
+"Project-Id-Version: 1.2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-13 16:49+0100\n"
+"POT-Creation-Date: 2012-02-24 09:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,12 +18,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:215
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:234
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:216
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:235
 msgid "Erase"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:300
+#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:299
 msgid "Add Dependency"
 msgstr ""
 
@@ -60,7 +60,7 @@ msgstr ""
 msgid "The specified dependency is not allowed"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:254
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:255
 msgid "Set End-End"
 msgstr ""
 
@@ -165,7 +165,7 @@ msgstr ""
 msgid "Show/Hide resources"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:246
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:247
 msgid "Set End-Start"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgstr ""
 msgid "Graphics"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:250
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:251
 msgid "Set Start-Start"
 msgstr ""
 
