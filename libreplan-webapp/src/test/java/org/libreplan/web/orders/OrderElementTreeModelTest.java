@@ -476,7 +476,7 @@ public class OrderElementTreeModelTest {
 
         assertThat(container.getChildren().size(), equalTo(2));
         for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
+            if (each.getName().equals("")) {
                 assertThat(each.getCriterionRequirements().size(), equalTo(2));
                 assertThat(each.getDirectAdvanceAssignments().size(),
                         equalTo(1));
@@ -815,7 +815,7 @@ public class OrderElementTreeModelTest {
         OrderLineGroup container = null;
         OrderLine element3 = null;
         for (OrderElement each : order.getChildren()) {
-            if (each.getName().equals("new container")) {
+            if (each.getName().equals("element")) {
                 container = (OrderLineGroup) each;
             } else if (each.getName().equals("element3")) {
                 element3 = (OrderLine) each;
@@ -1020,7 +1020,7 @@ public class OrderElementTreeModelTest {
         OrderLine element = null;
         OrderLine element2 = null;
         for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
+            if (each.getName().equals("")) {
                 element = (OrderLine) each;
             } else if (each.getName().equals("element2")) {
                 element2 = (OrderLine) each;
@@ -1130,7 +1130,7 @@ public class OrderElementTreeModelTest {
         element = null;
         element2 = null;
         for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
+            if (each.getName().equals("")) {
                 element = (OrderLine) each;
             } else if (each.getName().equals("element2")) {
                 element2 = (OrderLine) each;
