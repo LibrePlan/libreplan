@@ -224,10 +224,18 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             hours.setValue(0);
         }
 
+        Textbox nameTextbox = null;
+
         // Parse hours
         try {
             if (tree.getSelectedCount() == 1) {
                 T node = getSelectedNode();
+
+                if (!node.isEmptyLeaf()) {
+                    // Then a new container will be created
+                    nameTextbox = getRenderer().getNameTextbox(node);
+                }
+
                 T newNode = getModel().addElementAt(node, name.getValue(),
                         hours.getValue());
                 getRenderer().refreshHoursValueForThisNodeAndParents(newNode);
@@ -239,9 +247,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             LOG.warn("exception ocurred adding element", e);
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
+
         name.setValue("");
         hours.setValue(0);
         name.focus();
+
+        if (nameTextbox != null) {
+            nameTextbox.focus();
+        }
     }
 
     protected abstract void filterByPredicateIfAny();
@@ -560,6 +573,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         }
 
+        private Map<T, Textbox> nameTextboxByElement = new HashMap<T, Textbox>();
+
         private Map<T, Intbox> hoursIntBoxByElement = new HashMap<T, Intbox>();
 
         private KeyboardNavigationHandler navigationHandler = new KeyboardNavigationHandler();
@@ -571,6 +586,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public Renderer() {
+        }
+
+        protected Textbox getNameTextbox(T key) {
+            return nameTextboxByElement.get(key);
+        }
+
+        protected void putNameTextbox(T key, Textbox textbox) {
+            nameTextboxByElement.put(key, textbox);
         }
 
         protected void registerFocusEvent(final InputElement inputElement) {
