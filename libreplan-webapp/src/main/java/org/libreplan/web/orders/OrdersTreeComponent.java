@@ -67,7 +67,7 @@ public class OrdersTreeComponent extends TreeComponent {
         columns.add(schedulingStateColumn);
         columns.add(codeColumn);
         columns.add(nameAndDescriptionColumn);
-        columns.add(new OrdersTreeColumn(_("Hours"), "hours",
+        columns.add(new OrdersTreeColumn(_("TOTAL"), "hours",
                 _("Total task hours")) {
 
             @Override
@@ -78,41 +78,70 @@ public class OrdersTreeComponent extends TreeComponent {
 
         });
 
-columns.add(new OrdersTreeColumn(_("Salary"),
+        columns.add(new OrdersTreeColumn(_("Unit Type"), "costtype",
+                _("costtype")) {
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addHoursCell(currentElement);
+            }
+        });
+
+        columns.add(new OrdersTreeColumn(_("Cost/Salary"),
                 "salary",
                 _("salary")) {
-
-    @Override
-    protected void doCell(OrderElementTreeitemRenderer treeRenderer,
-            OrderElement currentElement) {
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
                 treeRenderer.addHoursCell(currentElement);
-    }
-
+            }
 });
 
 columns.add(new OrdersTreeColumn(_("Units"),
         "units",
         _("units")) {
-
-@Override
-protected void doCell(OrderElementTreeitemRenderer treeRenderer,
-    OrderElement currentElement) {
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
                 treeRenderer.addHoursCell(currentElement);
-}
+            }
 });
 
-columns.add(new OrdersTreeColumn(_("costtype"),
-        "costtype",
-        _("costtype")) {
-
-@Override
-protected void doCell(OrderElementTreeitemRenderer treeRenderer,
-    OrderElement currentElement) {
+        columns.add(new OrdersTreeColumn(_("Nº"), "costtype",
+                _("costtype")) {
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
                 treeRenderer.addHoursCell(currentElement);
-}
+            }
+        });
 
+        columns.add(new OrdersTreeColumn(_("Social Security"), "costtype",
+                _("costtype")) {
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addHoursCell(currentElement);
+            }
+        });
+
+        columns.add(new OrdersTreeColumn(_("Gross salary"), "costtype",
+                _("costtype")) {
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addHoursCell(currentElement);
+            }
 });
 
+        columns.add(new OrdersTreeColumn(_("Vac/Ind"), "costtype",
+                _("costtype")) {
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addHoursCell(currentElement);
+            }
+        });
 
 
         columns.add(new OrdersTreeColumn(_("Start"),

@@ -1025,6 +1025,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         protected abstract void addCostTypeCell(final T element);
 
+        protected abstract void addSocialSecurityCell(final T element);
+
+        protected abstract void addVacationsCell(final T element);
+
+        protected abstract void addNumberCell(final T element);
+
+        protected abstract void addGrossSalaryCell(final T element);
+
     }
 
     public void setColumns(List<Column> columns) {

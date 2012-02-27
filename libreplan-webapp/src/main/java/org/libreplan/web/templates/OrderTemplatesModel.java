@@ -338,4 +338,11 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         getOrderElementsOnConversation().initialize(template);
         return getOrderElementsOnConversation().getOrderElements().isEmpty();
     }
+
+    @Override
+    public void validateTemplateCode(String code)
+            throws IllegalArgumentException {
+        System.out.println("validate template code");
+
+    }
 }
