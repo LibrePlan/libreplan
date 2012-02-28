@@ -327,6 +327,10 @@ div.box.limiting-unassigned {
     top: -5px;
 }
 
+.border-container + .task-labels + .task-resources {
+    top: -14px;
+}
+
 .milestone_end {
     background-image:
         url("../../zkau/web/ganttz/img/milestone.png");
