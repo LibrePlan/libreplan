@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -57,8 +57,10 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.daos.OrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
@@ -268,6 +270,9 @@ public class TaskElementAdapter {
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
+
+    @Autowired
+    private IExternalCompanyDAO externalCompanyDAO;
 
     @Autowired
     private IResourcesSearcher searcher;
@@ -821,6 +826,10 @@ public class TaskElementAdapter {
                                 public String execute() {
                                     orderElementDAO.reattach(taskElement
                                             .getOrderElement());
+                                    if (taskElement.isSubcontracted()) {
+                                    externalCompanyDAO.reattach(taskElement
+                                                .getSubcontractedCompany());
+                                    }
                                     return buildResourcesText();
                                 }
                             });
@@ -882,6 +891,9 @@ public class TaskElementAdapter {
                             result.add(representation);
                         }
                     }
+                }
+                if (taskElement.isSubcontracted()) {
+                    result.add(taskElement.getSubcontractionName());
                 }
                 Collections.sort(result);
                 return StringUtils.join(result, ", ");
