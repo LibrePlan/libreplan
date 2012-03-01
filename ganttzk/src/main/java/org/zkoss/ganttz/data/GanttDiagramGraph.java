@@ -1177,14 +1177,15 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         private boolean haveToDoCalculation() {
-            return (recalculationsCouldAffectThis.isEmpty() || parentsHaveBeenModified());
+            return recalculationsCouldAffectThis.isEmpty()
+                    || predecessorsHaveBeenModified();
         }
 
-        private boolean parentsHaveBeenModified() {
+        private boolean predecessorsHaveBeenModified() {
             for (Recalculation each : recalculationsCouldAffectThis) {
                 if (!each.recalculationCalled) {
                     throw new RuntimeException(
-                            "the parent must be called first");
+                            "the predecessor must be called first");
                 }
                 if (each.dataPointModified
                         || each.couldHaveBeenModifiedBeforehand) {
