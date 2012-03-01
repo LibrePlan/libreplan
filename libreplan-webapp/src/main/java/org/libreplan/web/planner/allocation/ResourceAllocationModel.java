@@ -188,12 +188,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private <V, T extends Flagged<V, ?>> T applyDateChangesNotificationIfNoFlags(
             IOnTransaction<T> allocationDoer) {
         org.zkoss.ganttz.data.Task ganttTask = context.getTask();
-        GanttDate previousStartDate = ganttTask.getBeginDate();
-        GanttDate previousEnd = ganttTask.getEndDate();
         T result = transactionService.runOnReadOnlyTransaction(allocationDoer);
         if (!result.isFlagged()) {
-            ganttTask.fireChangesForPreviousValues(previousStartDate,
-                    previousEnd);
+            ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
         }
         return result;
     }
