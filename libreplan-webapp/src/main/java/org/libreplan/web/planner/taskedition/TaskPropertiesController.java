@@ -269,9 +269,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
                         .getValue())) : null;
         if (taskConstraint.isValid(type, inputDate)) {
             taskConstraint.update(type, inputDate);
-            if (currentContext != null) {
-                currentContext.recalculatePosition(currentTaskElement);
-            }
+            //at this point we could call currentContext.recalculatePosition(currentTaskElement)
+            //to trigger the scheduling algorithm, but we don't do it because
+            //the ResourceAllocationController, which is attached to the other
+            //tab of the same window, will do it anyway.
             return true;
         } else {
             return false;
