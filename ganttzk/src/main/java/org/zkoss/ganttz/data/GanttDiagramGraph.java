@@ -1730,15 +1730,17 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                         .withConstraints(restrictions.getStartConstraints())
                         .withConstraints(getStartConstraints())
                         .applyWithoutFinalCheck();
-                if (result != null && !result.equals(getStartDate(task))) {
-                    return enforceRestrictions(result);
+                if (result != null) {
+                    enforceRestrictions(result);
+                    return biggerThan(result, adapter.getEndDateFor(task));
                 }
                 return restrictions;
             }
 
-            private PositionRestrictions enforceRestrictions(GanttDate result) {
-                adapter.setStartDateFor(task, result);
-                return biggerThan(result, adapter.getEndDateFor(task));
+            private void enforceRestrictions(GanttDate result) {
+                if (!result.equals(getStartDate(task))) {
+                    adapter.setStartDateFor(task, result);
+                }
             }
 
         }
@@ -1752,8 +1754,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                         .withConstraints(restrictions.getEndConstraints())
                         .withConstraints(getEndConstraints())
                         .applyWithoutFinalCheck();
-                if (result != null && !result.equals(getEndDateFor(task))) {
-                    return enforceRestrictions(result);
+                if (result != null) {
+                    enforceRestrictions(result);
+                    return lessThan(adapter.getStartDate(task), result);
                 }
                 return restrictions;
             }
@@ -1768,11 +1771,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 return adapter.getEndConstraintsFor(task);
             }
 
-            private PositionRestrictions enforceRestrictions(GanttDate newEnd) {
-                adapter.setEndDateFor(task, newEnd);
-                return lessThan(adapter.getStartDate(task), newEnd);
+            private void enforceRestrictions(GanttDate newEnd) {
+                if (!newEnd.equals(getEndDateFor(task))) {
+                    adapter.setEndDateFor(task, newEnd);
+                }
             }
-
         }
 
         @Override
