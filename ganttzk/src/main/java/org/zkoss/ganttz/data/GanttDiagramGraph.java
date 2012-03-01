@@ -75,6 +75,10 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             public void setStartDate(GanttDate previousStart,
                     GanttDate previousEnd, GanttDate newStart) {
             }
+
+            @Override
+            public void positionPotentiallyModified() {
+            }
         };
     }
 
@@ -539,11 +543,15 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
     }
 
-    public interface IDependenciesEnforcerHook {
+    private interface IDependenciesEnforcer {
         public void setStartDate(GanttDate previousStart,
                 GanttDate previousEnd, GanttDate newStart);
 
         public void setNewEnd(GanttDate previousEnd, GanttDate newEnd);
+    }
+
+    public interface IDependenciesEnforcerHook extends IDependenciesEnforcer {
+        public void positionPotentiallyModified();
     }
 
     public interface IDependenciesEnforcerHookFactory<T> {
@@ -692,8 +700,10 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         @Override
         public IDependenciesEnforcerHook create(V task,
                 INotificationAfterDependenciesEnforcement notificator) {
-            return onlyEnforceDependenciesOnEntrance(onEntrance(task),
-                    onNotification(task, notificator));
+            return withPositionPotentiallyModified(
+                    task,
+                    onlyEnforceDependenciesOnEntrance(onEntrance(task),
+                            onNotification(task, notificator)));
         }
 
         @Override
@@ -701,8 +711,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             return create(task, EMPTY_NOTIFICATOR);
         }
 
-        private IDependenciesEnforcerHook onEntrance(final V task) {
-            return new IDependenciesEnforcerHook() {
+        private IDependenciesEnforcer onEntrance(final V task) {
+            return new IDependenciesEnforcer() {
 
                 public void setStartDate(GanttDate previousStart,
                         GanttDate previousEnd, GanttDate newStart) {
@@ -717,9 +727,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             };
         }
 
-        private IDependenciesEnforcerHook onNotification(final V task,
+        private IDependenciesEnforcer onNotification(final V task,
                 final INotificationAfterDependenciesEnforcement notification) {
-            return new IDependenciesEnforcerHook() {
+            return new IDependenciesEnforcer() {
 
                 @Override
                 public void setStartDate(GanttDate previousStart,
@@ -741,10 +751,32 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         }
 
-        private IDependenciesEnforcerHook onlyEnforceDependenciesOnEntrance(
-                final IDependenciesEnforcerHook onEntrance,
-                final IDependenciesEnforcerHook notification) {
+        private IDependenciesEnforcerHook withPositionPotentiallyModified(
+                final V task, final IDependenciesEnforcer enforcer) {
             return new IDependenciesEnforcerHook() {
+
+                @Override
+                public void setStartDate(GanttDate previousStart,
+                        GanttDate previousEnd, GanttDate newStart) {
+                    enforcer.setStartDate(previousStart, previousEnd, newStart);
+                }
+
+                @Override
+                public void setNewEnd(GanttDate previousEnd, GanttDate newEnd) {
+                    enforcer.setNewEnd(previousEnd, newEnd);
+                }
+
+                @Override
+                public void positionPotentiallyModified() {
+                    taskPositionModified(task);
+                }
+            };
+        }
+
+        private IDependenciesEnforcer onlyEnforceDependenciesOnEntrance(
+                final IDependenciesEnforcer onEntrance,
+                final IDependenciesEnforcer notification) {
+            return new IDependenciesEnforcer() {
 
                 @Override
                 public void setStartDate(final GanttDate previousStart,

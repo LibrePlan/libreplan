@@ -383,11 +383,8 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
             IOnTransaction<?> allocationDoer) {
         if (context != null) {
             org.zkoss.ganttz.data.Task ganttTask = context.getTask();
-            GanttDate previousStartDate = ganttTask.getBeginDate();
-            GanttDate previousEnd = ganttTask.getEndDate();
             transactionService.runOnReadOnlyTransaction(allocationDoer);
-            ganttTask.fireChangesForPreviousValues(previousStartDate,
-                    previousEnd);
+            ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
         } else {
             // Update hours of a Task from Limiting Resource view
             transactionService.runOnReadOnlyTransaction(allocationDoer);
