@@ -73,23 +73,6 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         this.source = source;
         this.destination = destination;
         this.dependency = dependency;
-        violationListener = Constraint
-                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
-
-            @Override
-            public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
-                violated = true;
-                sendCSSUpdate();
-            }
-
-            @Override
-            public void constraintSatisfied(Constraint<GanttDate> constraint, GanttDate value) {
-                violated = false;
-                sendCSSUpdate();
-            }
-        });
-        this.dependency.addConstraintViolationListener(violationListener,
-                Mode.RECEIVE_PENDING);
     }
 
     private void sendCSSUpdate() {
@@ -117,6 +100,25 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         };
         this.source.getTask().addFundamentalPropertiesChangeListener(listener);
         this.destination.getTask().addFundamentalPropertiesChangeListener(listener);
+
+        violationListener = Constraint
+                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
+
+            @Override
+            public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
+                violated = true;
+                sendCSSUpdate();
+            }
+
+            @Override
+            public void constraintSatisfied(Constraint<GanttDate> constraint, GanttDate value) {
+                violated = false;
+                sendCSSUpdate();
+            }
+        });
+        this.dependency.addConstraintViolationListener(violationListener,
+                Mode.RECEIVE_PENDING);
+
         listenerAdded = true;
     }
 
