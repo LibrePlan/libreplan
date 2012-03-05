@@ -395,6 +395,11 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+        if (taskSource != null && taskSource.getOrderElement() != null) {
+            Date newDeadline = this.taskSource.getOrderElement().getDeadline();
+            taskSource.getOrderElement().setDeadline(
+                    (newDeadline == null)? null : deadline.toDateMidnight().toDate());
+        }
     }
 
     void add(Dependency dependency) {
