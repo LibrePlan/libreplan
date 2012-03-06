@@ -61,6 +61,7 @@ Traductores
   Manuel Rego Casasnovas <rego@igalia.com>,
   Diego Pino García <dpino@igalia.com>
 * [it] Giuseppe Zizza <gzizza@gmail.com>
+* [nl] Jeroen Baten <jeroen@jeroenbaten.nl>
 * [pt] Helena Grosso <lenagrosso@gmail.com>,
   Joaquim Rocha <jrocha@igalia.com>
 * [ru] Pavel Rudensky <prudensky@gmail.com>
