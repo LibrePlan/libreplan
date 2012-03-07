@@ -37,7 +37,8 @@ import org.libreplan.business.util.deepcopy.Strategy;
  * Machine Workers Configuration Unit<br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class MachineWorkersConfigurationUnit extends BaseEntity {
+public class MachineWorkersConfigurationUnit extends BaseEntity implements
+        Comparable {
 
     @OnCopy(Strategy.SHARE)
     private Machine machine;
@@ -201,6 +202,13 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
             }
         }
         return unique;
+    }
+
+    @Override
+    public int compareTo(Object configurationUnit) {
+        return this.name
+                .compareToIgnoreCase(((MachineWorkersConfigurationUnit) configurationUnit)
+                        .getName());
     }
 
 }

@@ -22,6 +22,7 @@
 package org.libreplan.web.resources.machine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -226,6 +227,7 @@ public class MachineModel extends IntegrationEntityModel implements
         if (machine != null) {
             elements.addAll(machine.getConfigurationUnits());
         }
+        Collections.sort(elements);
         return elements;
     }
 
