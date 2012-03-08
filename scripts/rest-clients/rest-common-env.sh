@@ -1,4 +1,4 @@
-DEMO_BASE_SERVICE_URL=http://demo.libreplan.org/libreplan-demo/ws/rest
+DEMO_BASE_SERVICE_URL=http://demo.libreplan.org/libreplan/ws/rest
 DEVELOPMENT_BASE_SERVICE_URL=http://localhost:8080/libreplan-webapp/ws/rest
 PRODUCTION_BASE_SERVICE_URL=http://localhost:8080/libreplan/ws/rest
 
