@@ -88,7 +88,9 @@
                                     value="${i18n:_('Company logo URL')}" />
                                 <textbox id="companyLogoURL"
                                     value="@{configurationController.companyLogoURL}"
-                                    width="300px" />
+                                    width="300px"
+                                    disabled="true"
+                                    tooltiptext="${i18n:_('Not permitted in demo installation')}" />
                             </row>
                             <row>
                                 <label
