@@ -1,7 +1,7 @@
 <!--
     This file is part of LibrePlan
 
-    Copyright (C) 2010-2011 Igalia, S.L.
+    Copyright (C) 2010-2012 Igalia, S.L.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -20,61 +20,102 @@
     <zscript><![CDATA[
     dsController = arg.get("dashboardController");
 ]]>
+        import java.awt.Font;
+        String fontname = "Verdana";
+        Font tfont = new Font(fontname, Font.BOLD, 14); //for title
+        Font lbfont = new Font(fontname, Font.PLAIN, 12); //for label
     </zscript>
-    <div self="@{define(content)}">
-        <window id="dashboardWindow" apply="${dsController}"
-            style="height:auto">
-            <div id="projectDashboardChartsDiv" visible="true">
-                <vbox>
+    <div self="@{define(content)}" height="100%" style="overflow:visible">
+    <div height="30px" sclass="toolbar-box" />
+        <window id="dashboardWindow" apply="${dsController}" vflex="1" style="margin:0;overflow:auto">
+
+            <div id="projectDashboardChartsDiv" sclass="dashboards-container" visible="true" height="100%">
+
+                <groupbox closable="false">
+                    <caption label="${i18n:_('Progress')}" />
                     <hbox>
-                        <chart id="timeKPIEstimationAccuracyChart"
-                            height="200px" width="1200px" type="bar"
-                            xAxis="deviation class [i, i+1) (%)"
-                            threeD="false" yAxis="probability"
-                            orient="vertical"
-                            title="${i18n:_('Estimation Accuracy')}"
-                            paneColor="#FFFFFF" showLegend="false" />
-                    </hbox>
-                    <hbox>
-                        <chart id="timeKPILagInTaskCompletionChart"
-                            height="200px" width="1200px" type="bar"
-                            xAxis="deviation class [i, i+1) (days)"
-                            threeD="false" yAxis="probability"
-                            orient="vertical"
-                            title="${i18n:_('Lead/Lag in task completion')}"
-                            paneColor="#FFFFFF" showLegend="false" />
-                    </hbox>
-                    <hbox>
+
                         <chart id="progressKPIglobalProgressChart"
-                            height="400px" width="600px" type="bar"
+                            height="200px" width="700px" type="bar"
                             threeD="true" yAxis="%" orient="horizontal"
+                            titleFont="${tfont}" xAxisFont="${lbfont}"
+                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
+                            yAxisTickFont="${lbfont}"
                             title="${i18n:_('Global progress of the project')}"
                             paneColor="#FFFFFF" showLegend="true" />
+
                         <separator bar="false" spacing="40px"
                             orient="vertical" />
+
                         <chart id="progressKPItaskStatusChart"
-                            height="400px" width="600px" type="pie"
-                            threeD="true"
-                            title="${i18n:_('Task status')}"
-                            paneColor="#FFFFFF" bgColor="#FFFFFF"
-                            showLegend="true" showTooltiptext="true" />
+                            height="200px" width="300px" type="pie"
+                            threeD="true" title="${i18n:_('Task status')}"
+                            titleFont="${tfont}" xAxisFont="${lbfont}"
+                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
+                            yAxisTickFont="${lbfont}" paneColor="#FFFFFF"
+                            bgColor="#FFFFFF" showLegend="true"
+                            showTooltiptext="true" />
+
                     </hbox>
+                </groupbox>
+
+                <groupbox closable="false">
+                    <caption label="${i18n:_('Time')}" />
                     <hbox>
+
+                        <chart id="timeKPILagInTaskCompletionChart"
+                            height="200px" width="500px" type="bar"
+                            xAxis="deviation class [i, i+1) (days)"
+                            threeD="false" yAxis="probability" orient="vertical"
+                            titleFont="${tfont}" xAxisFont="${lbfont}"
+                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
+                            yAxisTickFont="${lbfont}"
+                            title="${i18n:_('Lead/Lag in task completion')}"
+                            paneColor="#FFFFFF" showLegend="false" />
+
+                        <separator bar="false" spacing="40px"
+                            orient="vertical" />
+
                         <chart
                             id="progressKPItaskDeadlineViolationStatusChart"
-                            height="400px" width="600px" type="pie"
-                            threeD="true"
-                            title="${i18n:_('Deadline violation')}"
-                            paneColor="#FFFFFF" bgColor="#FFFFFF"
-                            showLegend="true" showTooltiptext="true" />
+                            height="200px" width="300px" type="pie"
+                            threeD="true" title="${i18n:_('Deadline violation')}"
+                            titleFont="${tfont}" xAxisFont="${lbfont}"
+                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
+                            yAxisTickFont="${lbfont}" paneColor="#FFFFFF"
+                            bgColor="#FFFFFF" showLegend="true"
+                            showTooltiptext="true" />
+
                         <chart id="timeKPImarginWithDeadlineChart"
                             height="400px" width="250px" type="bar"
-                            threeD="true" yAxis="x D days"
-                            orient="vertical"
+                            threeD="true" yAxis="x D days" orient="vertical"
+                            titleFont="${tfont}" xAxisFont="${lbfont}"
+                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
+                            yAxisTickFont="${lbfont}"
                             title="${i18n:_('Margin with deadline')}"
                             paneColor="#FFFFFF" showLegend="false" />
+
                     </hbox>
-                </vbox>
+                </groupbox>
+
+                <groupbox closable="false">
+                    <caption label="Resources" />
+                    <hbox>
+
+                        <chart id="timeKPIEstimationAccuracyChart"
+                                height="200px" width="500px" type="bar"
+                                xAxis="deviation class [i, i+1) (%)" threeD="false"
+                                yAxis="probability" orient="vertical"
+                                titleFont="${tfont}" xAxisFont="${lbfont}"
+                                xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
+                                yAxisTickFont="${lbfont}"
+                                title="${i18n:_('Estimation Accuracy')}"
+                                paneColor="#FFFFFF" showLegend="false" />
+
+                    </hbox>
+                </groupbox>
+
+
             </div>
             <div id="projectDashboardNoTasksWarningDiv" visible="false">
                 <n:h4 class="message_WARNING">
