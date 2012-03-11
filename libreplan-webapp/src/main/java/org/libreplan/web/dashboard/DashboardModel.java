@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,7 +45,9 @@ import org.springframework.stereotype.Component;
 
 /**
  * Model for UI operations related to Order Dashboard View
+ *
  * @author Nacho Barrientos <nacho@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -243,8 +245,13 @@ public class DashboardModel implements IDashboardModel {
         rootTask.acceptVisitor(visitor);
         List<Double> deviations = visitor.getDeviations();
 
-        LTC_STRETCHES_MIN_VALUE = Collections.min(deviations);
-        LTC_STRETCHES_MAX_VALUE = Collections.max(deviations);
+        if (deviations.isEmpty()) {
+            LTC_STRETCHES_MIN_VALUE = 0;
+            LTC_STRETCHES_MAX_VALUE = 0;
+        } else {
+            LTC_STRETCHES_MIN_VALUE = Collections.min(deviations);
+            LTC_STRETCHES_MAX_VALUE = Collections.max(deviations);
+        }
         LTC_STRETCHES_STEP = (LTC_STRETCHES_MAX_VALUE - LTC_STRETCHES_MIN_VALUE)
                 /LTC_NUMBER_OF_INTERVALS;
         this.lagInTaskCompletionHistogram = createHistogram(
