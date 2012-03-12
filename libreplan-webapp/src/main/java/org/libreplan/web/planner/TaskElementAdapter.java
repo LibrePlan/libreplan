@@ -884,7 +884,7 @@ public class TaskElementAdapter {
 
             private String buildTooltipText(BigDecimal progressPercentage) {
                 StringBuilder result = new StringBuilder();
-                result.append(_("Name: {0}", getName()) + "<br/>");
+                result.append("<strong>" + getName() + "</strong><br/>");
                 result.append(_("Progress") + ": ").append(progressPercentage)
                         .append("% , ");
 
