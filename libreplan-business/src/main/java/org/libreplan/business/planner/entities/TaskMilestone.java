@@ -170,7 +170,7 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
 
     public void explicityMoved(IntraDayDate startDate, IntraDayDate endDate) {
         getPositionConstraint().explicityMovedTo(startDate, endDate,
-                getOrderElement().getOrder().getSchedulingMode());
+                getParent().getOrderElement().getOrder().getSchedulingMode());
     }
 
     public TaskPositionConstraint getPositionConstraint() {
