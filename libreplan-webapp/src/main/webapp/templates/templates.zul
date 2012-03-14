@@ -106,7 +106,8 @@
                                     <label value="${i18n:_('Budget')}" />
                                     <decimalbox
                                         value="@{templatesForOrdersController.template.budget}"
-                                        disabled="@{templatesForOrdersController.container}" />
+                                        disabled="@{templatesForOrdersController.container}"
+                                        constraint="no negative:${i18n:_('Budget value cannot be negative')}" />
                                 </row>
                             </rows>
                         </grid>
