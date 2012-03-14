@@ -22,6 +22,7 @@ package org.libreplan.business.templates.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -66,6 +68,8 @@ public class OrderLineTemplate extends OrderElementTemplate {
     public static OrderLineTemplate createNew() {
         return createNew(new OrderLineTemplate());
     }
+
+    private BigDecimal budget = BigDecimal.ZERO.setScale(2);
 
     protected <T extends OrderElement> T setupElementParts(T orderElement) {
         super.setupElementParts(orderElement);
@@ -189,6 +193,18 @@ public class OrderLineTemplate extends OrderElementTemplate {
 
     public void recalculateHoursGroups() {
         hoursGroupOrderLineTemplateHandler.recalculateHoursGroups(this);
+    }
+
+    public void setBudget(BigDecimal budget) {
+        Validate.isTrue(budget.compareTo(BigDecimal.ZERO) >= 0,
+                "budget cannot be negative");
+        this.budget = budget.setScale(2);
+    }
+
+    @Override
+    @NotNull(message = "budget not specified")
+    public BigDecimal getBudget() {
+        return budget;
     }
 
 }

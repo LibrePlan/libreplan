@@ -74,4 +74,15 @@
             columnName="budget" defaultValueNumeric="0" />
     </changeSet>
 
+    <changeSet id="add-budget-column-to-order_line_template" author="mrego">
+        <comment>add budget column to order_line_template</comment>
+        <addColumn tableName="order_line_template">
+            <column name="budget" type="DECIMAL(19,2)" />
+        </addColumn>
+        <addNotNullConstraint tableName="order_line_template"
+            columnName="budget" defaultNullValue="0" />
+        <addDefaultValue tableName="order_line_template"
+            columnName="budget" defaultValueNumeric="0" />
+    </changeSet>
+
 </databaseChangeLog>
