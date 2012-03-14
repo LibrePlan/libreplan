@@ -42,19 +42,7 @@ public interface IGenericDAO <E, PK extends Serializable>{
 
     public Class<E> getEntityClass();
 
-    public enum Mode {
-        FLUSH_BEFORE_VALIDATION, AUTOMATIC_FLUSH;
-    }
-
     /**
-     * It saves with automatic flush
-     *
-     * @see #save(Object, Mode)
-     */
-    public void save(E entity) throws ValidationException;
-
-    /**
-     * <p>
      * It inserts the object passed as a parameter in the ORM session, planning
      * it for updating (even though it is not modified before or after the call
      * to this method) or insertion, depending if it is was detached or
@@ -63,15 +51,11 @@ public interface IGenericDAO <E, PK extends Serializable>{
      * executed (if the entity has version control enabled) with the possible
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
      * being thrown.
-     * </p>
-     * <p>
-     *
-     * </p>
      *
      * @throws ValidationException
      *             if the entity has some invalid values
      */
-    public void save(E entity, Mode mode) throws ValidationException;
+    public void save(E entity) throws ValidationException;
 
     /**
      * Unlike <code>save</code>, it does not execute validations.
