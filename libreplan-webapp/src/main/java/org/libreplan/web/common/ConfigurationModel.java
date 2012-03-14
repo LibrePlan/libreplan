@@ -35,7 +35,6 @@ import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
-import org.libreplan.business.common.daos.IGenericDAO.Mode;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -49,6 +48,7 @@ import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,8 +149,13 @@ public class ConfigurationModel implements IConfigurationModel {
     @Transactional
     public void confirm() {
         checkEntitySequences();
-        configurationDAO.save(configuration, Mode.FLUSH_BEFORE_VALIDATION);
-        storeAndRemoveEntitySequences();
+        configurationDAO.save(configuration);
+        try {
+            storeAndRemoveEntitySequences();
+        } catch (IllegalStateException e) {
+            throw new OptimisticLockingFailureException(
+                    "concurrency problem in entity sequences");
+        }
     }
 
     private void checkEntitySequences() {
