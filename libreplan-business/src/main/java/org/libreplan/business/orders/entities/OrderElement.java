@@ -1494,4 +1494,6 @@ public abstract class OrderElement extends IntegrationEntity implements
         return false;
     }
 
+    public abstract BigDecimal getBudget();
+
 }

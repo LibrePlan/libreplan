@@ -63,4 +63,15 @@
         <modifyDataType tableName="order_element" columnName="description" newDataType="TEXT" />
     </changeSet>
 
+    <changeSet id="add-budget-column-to-order_line" author="mrego">
+        <comment>add budget column to order_line</comment>
+        <addColumn tableName="order_line">
+            <column name="budget" type="DECIMAL(19,2)" />
+        </addColumn>
+        <addNotNullConstraint tableName="order_line"
+            columnName="budget" defaultNullValue="0" />
+        <addDefaultValue tableName="order_line"
+            columnName="budget" defaultValueNumeric="0" />
+    </changeSet>
+
 </databaseChangeLog>
