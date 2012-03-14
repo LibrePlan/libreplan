@@ -137,9 +137,9 @@ Configure project to run
   * Name: LibrePlan
   * Base directory: Choose ``libreplan-webapp`` folder in your workspace
   * Goals: ``jetty:stop jetty:run``
-  * Profiles (optional): ``-userguide,-reports`` (to disable userguide and
-    reports profiles to save compilation time as they are not mandatory to run
-    LibrePlan)
+  * Profiles (optional): ``-userguide,-reports,-i18n`` (to disable userguide,
+    reports and i18n profiles to save compilation time as they are not
+    mandatory to run LibrePlan)
   * Mark the following checkboxes (recommended):
 
     * Resolve Workspace artifacts
