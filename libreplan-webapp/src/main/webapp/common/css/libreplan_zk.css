@@ -1065,7 +1065,7 @@ span.perspective, span.perspective-active {
 }
 .perspective.order-dashboard .z-button-cm,
 .perspective-active.order-dashboard .z-button-cm {
-    background-image: url(../img/ico_order-data.png);
+    background-image: url(../img/ico_order-dashboard.png);
 }
 
 
