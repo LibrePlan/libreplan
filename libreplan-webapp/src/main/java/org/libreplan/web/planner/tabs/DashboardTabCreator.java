@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -44,6 +44,7 @@ import org.zkoss.zul.Label;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Nacho Barrientos <nacho@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  *
  */
 public class DashboardTabCreator {
@@ -92,7 +93,7 @@ public class DashboardTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Order Dashboard"), "order-dashboard",
+        return new CreatedOnDemandTab(_("Dashboard"), "order-dashboard",
                 componentCreator) {
 
             @Override
@@ -104,7 +105,7 @@ public class DashboardTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Order Dashboard")));
+                breadcrumbs.appendChild(new Label(_("Dashboard")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(currentOrder.getName()));
             }
