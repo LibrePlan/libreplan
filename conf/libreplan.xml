@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context antiJARLocking="true" path="">
+    <Resource name="jdbc/libreplan-ds" auth="Container"
+        type="javax.sql.DataSource"
+        maxActive="100" maxIdle="30" maxWait="10000"
+        username="libreplan" password="libreplan"
+        driverClassName="org.postgresql.Driver"
+        url="jdbc:postgresql://localhost/libreplan" />
+</Context>
