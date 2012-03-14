@@ -35,8 +35,8 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
+import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
 import org.libreplan.web.templates.advances.AdvancesAssignmentComponent;
 import org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent;
@@ -374,4 +374,12 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         }
 
     }
+
+    public boolean isContainer() {
+        if (model.getTemplate() == null) {
+            return false;
+        }
+        return !model.getTemplate().isLeaf();
+    }
+
 }

@@ -102,6 +102,12 @@
                                     <textbox width="500px"
                                         value="@{templatesForOrdersController.template.description}" />
                                 </row>
+                                <row>
+                                    <label value="${i18n:_('Budget')}" />
+                                    <decimalbox
+                                        value="@{templatesForOrdersController.template.budget}"
+                                        disabled="@{templatesForOrdersController.container}" />
+                                </row>
                             </rows>
                         </grid>
                     </tabpanel>
