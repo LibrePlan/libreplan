@@ -53,6 +53,7 @@ public class OrderLineTemplate extends OrderElementTemplate {
     public static OrderLineTemplate create(OrderLine orderLine) {
         OrderLineTemplate beingBuilt = new OrderLineTemplate();
         copyHoursGroup(orderLine.getHoursGroups(), beingBuilt);
+        beingBuilt.setBudget(orderLine.getBudget());
         return create(beingBuilt, orderLine);
     }
 
@@ -74,6 +75,7 @@ public class OrderLineTemplate extends OrderElementTemplate {
     protected <T extends OrderElement> T setupElementParts(T orderElement) {
         super.setupElementParts(orderElement);
         setupHoursGroups((OrderLine) orderElement);
+        setupBudget((OrderLine) orderElement);
         return orderElement;
     }
 
@@ -83,6 +85,10 @@ public class OrderLineTemplate extends OrderElementTemplate {
             result.add(HoursGroup.copyFrom(each, orderLine));
         }
         orderLine.setHoursGroups(result);
+    }
+
+    private void setupBudget(OrderLine orderLine) {
+        orderLine.setBudget(getBudget());
     }
 
     @Override
