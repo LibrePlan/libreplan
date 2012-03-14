@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +22,7 @@ package org.libreplan.web.tree;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,6 +63,7 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Textbox;
@@ -231,6 +233,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 getModel().addElementAt(node, name.getValue(),
                         hours.getValue());
                 getRenderer().refreshHoursValueForThisNodeAndParents(node);
+                getRenderer().refreshBudgetValueForThisNodeAndParents(node);
             } else {
                 getModel().addElement(name.getValue(), hours.getValue());
             }
@@ -311,6 +314,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         List<T> parentNodes = getModel().getParents(element);
         getModel().removeNode(element);
         getRenderer().refreshHoursValueForNodes(parentNodes);
+        getRenderer().refreshBudgetValueForNodes(parentNodes);
     }
 
     @Override
@@ -562,6 +566,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private Map<T, Intbox> hoursIntBoxByElement = new HashMap<T, Intbox>();
 
+        private Map<T, Decimalbox> budgetDecimalboxByElement = new HashMap<T, Decimalbox>();
+
         private KeyboardNavigationHandler navigationHandler = new KeyboardNavigationHandler();
 
         private Treerow currentTreeRow;
@@ -746,6 +752,117 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         protected abstract void addCodeCell(final T element);
 
         protected abstract void addDescriptionCell(final T element);
+
+        public void addBudgetCell(final T currentElement) {
+            Decimalbox decimalboxBudget = buildBudgetDecimalboxFor(currentElement);
+            budgetDecimalboxByElement.put(currentElement, decimalboxBudget);
+            if (readOnly) {
+                decimalboxBudget.setDisabled(true);
+            }
+            addCell(decimalboxBudget);
+        }
+
+        private Decimalbox buildBudgetDecimalboxFor(final T element) {
+            Decimalbox result = new DecimalboxDirectValue();
+            if (isLine(element)) {
+                Util.bind(result, getBudgetGetterFor(element),
+                        getBudgetSetterFor(element));
+                result.setConstraint(getBudgetConstraintFor(element));
+            } else {
+                // If it's a container budget cell is not editable
+                Util.bind(result, getBudgetGetterFor(element));
+            }
+            return result;
+        }
+
+        private Getter<BigDecimal> getBudgetGetterFor(final T element) {
+            return new Util.Getter<BigDecimal>() {
+                @Override
+                public BigDecimal get() {
+                    return getBudgetHandler().getBudgetFor(element);
+                }
+            };
+        }
+
+        private Setter<BigDecimal> getBudgetSetterFor(final T element) {
+            return new Util.Setter<BigDecimal>() {
+                @Override
+                public void set(BigDecimal value) {
+                    getBudgetHandler().setBudgetHours(element, value);
+                    List<T> parentNodes = getModel().getParents(element);
+                    // Remove the last element because it's an
+                    // Order node, not an OrderElement
+                    parentNodes.remove(parentNodes.size() - 1);
+                    for (T node : parentNodes) {
+                        DecimalboxDirectValue decimalbox = (DecimalboxDirectValue) budgetDecimalboxByElement
+                                .get(node);
+                        BigDecimal budget = getBudgetHandler().getBudgetFor(
+                                node);
+                        if (isInCurrentPage(decimalbox)) {
+                            decimalbox.setValue(budget);
+                        } else {
+                            decimalbox.setValueDirectly(budget);
+                        }
+                    }
+                }
+
+                private boolean isInCurrentPage(DecimalboxDirectValue intbox) {
+                    Treeitem treeItem = (Treeitem) intbox.getParent()
+                            .getParent().getParent();
+                    List<Treeitem> treeItems = new ArrayList<Treeitem>(
+                            tree.getItems());
+                    int position = treeItems.indexOf(treeItem);
+
+                    if (position < 0) {
+                        throw new RuntimeException("Treeitem " + treeItem
+                                + " has to belong to tree.getItems() list");
+                    }
+
+                    return (position / tree.getPageSize()) == tree
+                            .getActivePage();
+                }
+            };
+        }
+
+        public void updateBudgetFor(T element) {
+            if (!readOnly && isLine(element)) {
+                Decimalbox decimalbox = budgetDecimalboxByElement.get(element);
+                Treecell tc = (Treecell) decimalbox.getParent();
+                decimalbox.invalidate();
+                refreshBudgetValueForThisNodeAndParents(element);
+            }
+        }
+
+        public void refreshBudgetValueForThisNodeAndParents(T node) {
+            List<T> nodeAndItsParents = getModel().getParents(node);
+            nodeAndItsParents.add(node);
+            refreshBudgetValueForNodes(nodeAndItsParents);
+        }
+
+        public void refreshBudgetValueForNodes(List<T> nodes) {
+            for (T node : nodes) {
+                Decimalbox decimalbox = budgetDecimalboxByElement.get(node);
+                // For the Order node there is no associated decimalbox
+                if (decimalbox != null) {
+                    BigDecimal currentBudget = getBudgetHandler().getBudgetFor(node);
+                    decimalbox.setValue(currentBudget);
+                }
+            }
+        }
+
+        private Constraint getBudgetConstraintFor(final T line) {
+            return new Constraint() {
+                @Override
+                public void validate(Component comp, Object value)
+                        throws WrongValueException {
+                    if (((BigDecimal) value).compareTo(BigDecimal.ZERO) < 0) {
+                        throw new WrongValueException(comp,
+                                _("Budget value cannot be negative"));
+                    }
+                }
+
+            };
+        }
 
         public void addHoursCell(final T currentElement) {
             Intbox intboxHours = buildHoursIntboxFor(currentElement);
@@ -1037,6 +1154,15 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     protected abstract IHoursGroupHandler<T> getHoursGroupHandler();
 
+    public interface IBudgetHandler<T> {
+
+        BigDecimal getBudgetFor(T element);
+
+        void setBudgetHours(T element, BigDecimal budget);
+    }
+
+    protected abstract IBudgetHandler<T> getBudgetHandler();
+
     /**
      * Disable control buttons (new, up, down, indent, unindent, delete)
      */
@@ -1111,6 +1237,26 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
      * in the tree.
      */
     private class IntboxDirectValue extends Intbox {
+        @Override
+        public void setValueDirectly(Object value) {
+            super.setValueDirectly(value);
+        }
+    }
+
+    /**
+     * This class is to give visibility to method
+     * {@link Decimalbox#setValueDirectly} which is marked as protected in
+     * {@link Decimalbox} class.
+     *
+     * <br />
+     *
+     * This is needed to prevent calling {@link AbstractComponent#smartUpdate}
+     * when the {@link Decimalbox} is not in current page. <tt>smartUpdate</tt>
+     * is called by {@link Decimalbox#setValue(Integer)}. This call causes a
+     * JavaScript error when trying to update {@link Decimalbox} that are not in
+     * current page in the tree.
+     */
+    private class DecimalboxDirectValue extends Decimalbox {
         @Override
         public void setValueDirectly(Object value) {
             super.setValueDirectly(value);
