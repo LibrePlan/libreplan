@@ -14,13 +14,13 @@ authentication method", at the end of this document.
 1) Create libreplan database
 ----------------------------
 
-# psql -h localhost -U postgres < /usr/share/libreplan/pgsql/createdb.sql
+# psql -h localhost -U postgres < /usr/share/libreplan/pgsql/create_db.sql
 
 
 2) Create libreplan user
 ------------------------
 
-# psql -h localhost -U postgres < /usr/share/libreplan/pgsql/createuser.sql
+# psql -h localhost -U postgres < /usr/share/libreplan/pgsql/create_user_postgresql.sql
 
 
 3) Install LibrePlan database
