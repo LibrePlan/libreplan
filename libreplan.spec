@@ -7,11 +7,6 @@ License:        AGPLv3
 Source0:        http://downloads.sourceforge.net/project/libreplan/LibrePlan/%{name}_%{version}.tar.gz
 Source1:        http://downloads.sourceforge.net/project/libreplan/LibrePlan/%{name}_%{version}.war
 
-Patch0:         0001-Add-scripts-to-create-database-and-user-libreplan.patch
-Patch1:         0002-Add-Tomcat6-configuration-file.patch
-Patch2:         0003-Add-instructions-to-configure-LibrePlan-in-Fedora.patch
-Patch3:         0004-Add-instructions-to-configure-LibrePlan-in-openSUSE.patch
-
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
