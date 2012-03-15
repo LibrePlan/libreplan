@@ -77,8 +77,8 @@ install -Dm0644 %{SOURCE1} ${RPM_BUILD_ROOT}%{_datadir}/%{name}/webapps/librepla
 
 # Copy SQL installation files
 mkdir -p ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
-cp ${CURDIR}/scripts/database/createdb.sql      ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
-cp ${CURDIR}/scripts/database/createuser.sql    ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
+cp ${CURDIR}/scripts/database/create_db.sql      ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
+cp ${CURDIR}/scripts/database/create_user_postgresql.sql    ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
 cp ${CURDIR}/scripts/database/install.sql       ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
 
 # Copy SQL upgrade script for version 1.0.0
