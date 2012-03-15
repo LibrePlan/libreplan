@@ -1,7 +1,215 @@
 NEWS
 ====
 
-Version 1.2.1 (19 Jan 2011)
+Version 1.2.2 (15 Mar 2012)
+---------------------------
+
+Summary
+~~~~~~~
+
+Minor release of LibrePlan including all the maintanance work and small
+enhancements done since 1.2.1.
+
+The major developments which come with this new version are the next ones:
+
+* We are going to provide for the first time RPM packages for the main
+  GNU/Linux distributions based on this package format. This has been a
+  contribution of Juan A. Suárez Romero.
+
+* LibrePlan interface is available in two new languages thanks to our growing
+  translators community:
+
+  * French. Thanks to Stephane Ayache, Guillaume Postaire and
+    Philippe Poumaroux.
+  * Dutch. Thanks to Jeroen Baten.
+
+* Two new planning features have been added:
+
+  * The Gantt chart has been improved to include a graphic representation of the
+    start date of a project through a dashed black vertical line. This is very
+    useful to have always visible when a project starts.
+  * If there are violated dependencies in the Gantt charts because of the higher
+    precendence of the task constraints, the dependencies are painted in red.
+
+* Some small user experience enhancements:
+
+  * The project status is displayed in the Gantt chart next to the breadcrumb.
+  * States that represent a closed project (finished, canceled, stored) are
+    represented in the projects planning view (home page of the application)
+    with a grey color. So, from now on the code color is the next one:
+
+    * Light blue. For projects without any allocated task and not closed.
+    * Dark blue. For project with any allocated task and not closed.
+    * Grey. For closed projects.
+
+  * To measure progress is now a bit faster. The focus is automatically set in
+    the textbox of the row just created for the new progress value.
+
+* LDAP authentication system has been improved:
+
+  * LDAP users cannot change the password in the LibrePlan interface.
+  * Managers cannot manage LDAP user roles if they are being imported from the
+    configured directory.
+
+Apart from this, the new versions come with fixes of many issues detected by
+our users and that can be read in the Changes section.
+
+Notes
+~~~~~
+
+If you are upgrading from any 1.1.x version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.0.sql``, ``scripts/database/upgrade_1.2.1.sql``
+and ``scripts/database/upgrade_1.2.2.sql``.
+
+If you are upgrading from 1.2.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.1.sql`` and
+``scripts/database/upgrade_1.2.2.sql``.
+
+If you are upgrading from 1.2.1 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.2.2.sql``.
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jacobo Aragunde Pérez
+* Nacho Barrientos
+* Ignacio Díaz Teijido
+* Lucía García Fernández
+* Óscar González Fernández
+* Manuel Rego Casasnovas
+* Juan A. Suárez Romero
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [es] Manuel Rego Casasnovas
+* [fr] Stephane Ayache, Guillaume Postaire, Philippe Poumaroux
+* [gl] Manuel Rego Casasnovas
+* [it] Giuseppe Zizza
+* [nl] Jeroen Baten
+* [pt] Joaquim Rocha
+
+Changes
+~~~~~~~
+
+* Update RPM package for LibrePlan 1.2.2
+* Update Debian package for LibrePlan 1.2.2
+* Update database scripts for LibrePlan 1.2.2
+* Remove some unneeded lines in libreplan.spec
+* www: Add new README files for Fedora and openSUSE in libreplan.org
+* Rename database scripts to create database and user
+* Prepare libreplan spec file for the release 1.2.2.
+* Add LibrePlan RPM spec file
+* Add instructions to configure LibrePlan in openSUSE
+* Add instructions to configure LibrePlan in Fedora
+* Add Tomcat6 configuration file
+* Add scripts to create database and user libreplan
+* Add CutyCapt RPM spec file
+* Updated documentation about the new i18n profile
+* Wrap gettext plugin inside a new profile i18n to save time while developing
+* Bug #1362: Specify type of property in Templates.hbm.xml to avoid problems with MySQL
+* doc: Removed legacy project logos from documentation screenshots
+* Make bigger the description field in templates edition
+* Bug #1398: Fix problem with long descriptions in templates
+* Bug #1397: Revert a previous commit to avoid the problem
+* Bug #1393: Fix NPE moving milestone
+* Bug #1394: Fix problem because of deletedWorkReportLinesSet set was not reseted
+* Change URL to demo in REST services example scripts
+* Bug #1387: Reset the TaskSource when an OrderGroup changes to scheduling point.
+* Bug #1390: correct method TaskComponent.setClass to overwrite the classes instead of adding them.
+* doc: Update AUTHORS file info about new Dutch translator
+* i18n: Add Dutch language to enum and modify pom.xml to use English userguide
+* i18n: Add Dutch translation
+* Bug #1382: Fix the bug in all cases.
+* Bug #1382: Synchronize deadline dates between the WBS and the Gantt views.
+* Bug 1383: Fixed corner case of deadline and current day right position
+* Displayed project start vertical line with independency of project deadline
+* Added vertical line in scheduling perspective to display project start date
+* Bug #1344: Fix bug moving the addition of ConstraintViolationListeners to doAfterCompose instead of constructor.
+* Remove redundant call to scheduling algorithm from TaskPropertiesController.
+* Some API docs for the entering/reentering part
+* Remove uneeded parameters to prevent redundant invocations to scheduling algorithm.
+* Use more accurate name
+* Bug #1354: Fix bug
+* i18n: Update Portuguese translation
+* i18n: Update Italian translation
+* Update French translation
+* Bug #1355: transform AS SOON AS POSSIBLE and AS LATE AS POSSIBLE constraints to the correct constraint based on the scheduling mode.
+* Bug #1355: transform NOT EARLIER THAN and NOT LATER THAN constraints to the correct constraint based on the scheduling mode.
+* Bug #1380: Don't allow ASAP constraint for tasks in projects where init date is not set.
+* i18n: Update Spanish and Galician translations
+* i18n: Update keys.pot files
+* Bug #1374: Move capacity field to calendar tab in order to be edited together
+* i18n: Avoid to translate language names and use the original ones
+* Bug #1355: START IN FIXED DATE constraints don't change to NOT EARLIER THAN after drag & drop.
+* Bug #1281: Remove unneeded checkVersion when editing progresses
+* Bug #1375: Added a constraint for 24 hours and 0 minutes
+* Disables the button save in change password window and remove role and profile button on edit user
+* Added condition to method isLdapUser to check configuration
+* Disallow to change roles and profiles in admin panel for LDAP users when roles are imported from LDAP
+* Disallow managing passwords in admin users panel for LDAP users when LDAP is being used for authentication
+* Disallow to change passwords to LDAP users
+* Mark "Group by weeks" by default in MonteCarlo as it returns better results
+* Bug #1379: Disable "Go" button in MonteCarlo if there is no tasks in a project
+* Bug #1348: Added effort to predefined calendar exception types
+* Bug #1282, #1376: Prevent exception when deleting a milestone inside a container.
+* Correct a typo in an English string.
+* Bug #1362: Specify type of property in hbm.xml to avoid problems with MySQL
+* Bug #1343: Only closed projects in company view perspective are displayed in grey
+* Bug #1343: Made graphically less relevant component showing project state
+* Bug #1345: Added project state to name string in breadcrumbs line
+* Bug #1343: Styled in grey all closed/finished/cancelled projects in company view
+* Bug #1370: Fixed progress bars not being properly placed inside containers
+* Bug #1373: When creating new projects from template the explicitly filled start date and deadline values are used
+* Bug #1369: Moved the template combobox over autogenerated code checkbox in new project popup
+* Bug #1369: Improved behaviour of project creation popup when using templates
+* Bug #1343: Added method isRoot() to gantt tasks.
+* doc: Update translators info in documentation
+* Update AUTHORS file info about translators
+* i18n: Add French language to enum and modify pom.xml to use English userguide
+* i18n: Add French translation
+* Bug #1343: Prevent NullPointerException when creating a new milestone.
+* Remove redraw listeners for dependencies once these dependencies are removed.
+* Prevent unnecessary redraws of dependencies when opening a container.
+* Bug #1363: Remove visibility listeners corresponding to deleted tasks.
+* Bug #1343: Prevent NullPointerException when showing default filtering dates on company view.
+* Bug #1368: Allows to create users with null password when LDAP is used.
+* Removed two warnings in the build process, which can cause problems with newer versions of maven.
+* Bug #1343: Ensure that getDefaultPredicate is run in a transactional context.
+* Bug #1343: Mark closed projects with a special class in the gantt.
+* Bug #1343: Use getRawValue instead of getValue in date constraint checkers.
+* Bug #1343: Allow showing closed projects in the company view, if they are inside the filter dates.
+* Bug #1343: Show default filtering dates on company view.
+* Bug #1343: Rewrite part of the code for company view initialization.
+* Bug #1353: Create Tabpanels object for load/earned value Tabbox when the screen is loaded, not in the open event.
+* Bug #1359: Initialize the resources when the page is loaded, independently from the hidden/shown property of the load chart.
+* Bug #1357: Use end date minus one day as default date for earned value chart.
+* Bug #1351: Replaced by a label the disabled listbox to display material unit type
+* Bug #1351: fixed space for elements
+* Bug #1330: Setted focus on new progress measurement after pressing on *Add measure*
+* Bug #1357: Check if the date is out of the visualization area, and in that case set a new date before updating the legend.
+* Bug #1357: Small code rewrite to simplify the fix of the bug
+* Update TODO file with roadmap to LibrePlan 1.3
+* Bug #1366: Fix issue subtracting the value when you are removing work report lines
+* Bug #1360: Refresh work report line from database before subtracting it from order elements
+* Bug #1364: Milestones are filtered now like any other task
+* Bug #1362: Fix problem with long descriptions in projects
+* Bug #1352: Fix issue not saving tasks without order element
+* Bug #1320: When asking a container for start constraints, return the leftmost of children's start-in-fixed-date constraints.
+* Revert "[Bug #1273] Reimplement coerceToString as a workaround for the bug in Decimalbox."
+* Upgrade ZK version to 5.0.10
+* doc: Update information in UPDATE file
+
+
+Version 1.2.1 (19 Jan 2012)
 ---------------------------
 
 Summary
