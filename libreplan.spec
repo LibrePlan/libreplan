@@ -56,10 +56,6 @@ See README.%{distro} for more information.
 %prep
 #export CURDIR=${RPM_BUILD_DIR}/%{name}
 %setup -q -n %{name}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 #export CURDIR=${RPM_BUILD_DIR}/%{name}
