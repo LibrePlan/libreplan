@@ -141,6 +141,34 @@ public enum MandatoryUser {
             return Language.ITALIAN_LANGUAGE;
         }
     },
+    ADMIN_FR(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.FRENCH_LANGUAGE;
+        }
+    },
+    ADMIN_NL(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.DUTCH_LANGUAGE;
+        }
+    },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)) {
         @Override
         public boolean hasChangedDefaultPassword() {
