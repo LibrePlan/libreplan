@@ -5,7 +5,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>LibrePlan</name>
 
     <!--
@@ -572,17 +572,17 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>5.0.9</version>
+                <version>5.0.10</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>5.0.9</version>
+                <version>5.0.10</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>5.0.9</version>
+                <version>5.0.10</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jruby</groupId>
@@ -852,6 +852,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
                     <verbose>true</verbose>
                     <source>1.6</source>
@@ -874,6 +875,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
                     <webResources>
                         <resource>

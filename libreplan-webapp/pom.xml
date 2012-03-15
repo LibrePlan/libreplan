@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.libreplan</groupId>
         <artifactId>libreplan</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
     <artifactId>libreplan-webapp</artifactId>
     <packaging>war</packaging>
@@ -120,6 +120,12 @@
                             <copy todir="src/main/webapp/help/it" failonerror="false">
                                 <fileset dir="../doc/src/user/en/html"/>
                             </copy>
+                            <copy todir="src/main/webapp/help/fr" failonerror="false">
+                                <fileset dir="../doc/src/user/en/html"/>
+                            </copy>
+                            <copy todir="src/main/webapp/help/nl" failonerror="false">
+                                <fileset dir="../doc/src/user/en/html"/>
+                            </copy>
                           </tasks>
                          </configuration>
                         </execution>
@@ -156,36 +162,44 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>i18n</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <!--
+                    Gettext Commons plugin
+                       goals:
+                            merge: parses source code and generates keys.pot
+                            dist: generates binary Resoruce Bundle (Messages_XX.class)
+                -->
+                <plugins>
+                    <plugin>
+                        <groupId>org.xnap.commons</groupId>
+                        <artifactId>maven-gettext-plugin</artifactId>
+                        <configuration>
+                            <targetBundle>i18n.Messages</targetBundle>
+                            <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
+                            <keywords>-k_</keywords>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>dist</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <build>
         <finalName>libreplan-webapp</finalName>
 
-        <!--
-            Gettext Commons plugin
-               goals:
-                    merge: parses source code and generates keys.pot
-                    dist: generates binary Resoruce Bundle (Messages_XX.class)
-        -->
-        <plugins>
-            <plugin>
-                <groupId>org.xnap.commons</groupId>
-                <artifactId>maven-gettext-plugin</artifactId>
-                <configuration>
-                    <targetBundle>i18n.Messages</targetBundle>
-                    <poDirectory>${project.build.sourceDirectory}/../resources/i18n</poDirectory>
-                    <keywords>-k_</keywords>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>dist</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
         <pluginManagement>
             <plugins>
               <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->

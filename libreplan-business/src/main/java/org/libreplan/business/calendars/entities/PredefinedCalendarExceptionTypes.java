@@ -21,6 +21,7 @@
 
 package org.libreplan.business.calendars.entities;
 
+import org.libreplan.business.workingday.EffortDuration;
 
 /**
  * Defines the default {@link CalendarExceptionType}.
@@ -29,19 +30,26 @@ package org.libreplan.business.calendars.entities;
  */
 public enum PredefinedCalendarExceptionTypes {
 
-    RESOURCE_HOLIDAY("RESOURCE_HOLIDAY", CalendarExceptionTypeColor.YELLOW, true),
-    LEAVE("LEAVE", CalendarExceptionTypeColor.MAGENTA, true),
-    STRIKE("STRIKE", CalendarExceptionTypeColor.PURPLE, true),
-    BANK_HOLIDAY("BANK_HOLIDAY", CalendarExceptionTypeColor.DEFAULT, true),
-    HALF_DAY_HOLIDAY("HALF_DAY_HOLIDAY", CalendarExceptionTypeColor.ORANGE, false);
+    RESOURCE_HOLIDAY("RESOURCE_HOLIDAY", CalendarExceptionTypeColor.YELLOW, true,
+            EffortDuration.zero()),
+    LEAVE("LEAVE", CalendarExceptionTypeColor.MAGENTA, true,
+            EffortDuration.zero()),
+    STRIKE("STRIKE", CalendarExceptionTypeColor.PURPLE, true,
+            EffortDuration.zero()),
+    BANK_HOLIDAY("BANK_HOLIDAY", CalendarExceptionTypeColor.DEFAULT, true,
+            EffortDuration.zero()),
+    HALF_DAY_HOLIDAY("HALF_DAY_HOLIDAY", CalendarExceptionTypeColor.ORANGE, false,
+            EffortDuration.hours(4));
 
     private CalendarExceptionType calendarExceptionType;
 
     private PredefinedCalendarExceptionTypes(String name,
-            CalendarExceptionTypeColor color, Boolean notAssignable) {
+            CalendarExceptionTypeColor color, Boolean notAssignable,
+            EffortDuration duration) {
         // Using the name as code in order to be more human friendly
         calendarExceptionType = CalendarExceptionType.create(name, name, color,
                 notAssignable);
+        calendarExceptionType.setDuration(duration);
     }
 
     public CalendarExceptionType getCalendarExceptionType() {

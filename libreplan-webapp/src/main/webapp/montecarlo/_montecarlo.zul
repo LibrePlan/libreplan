@@ -86,7 +86,7 @@
                     <rows>
                         <row spans="1,3">
                             <label value="${i18n:_('Group by weeks')}" />
-                            <checkbox id="cbGroupByWeeks"
+                            <checkbox id="cbGroupByWeeks" checked="true"
                                 width="200px" />
                         </row>
                         <row>

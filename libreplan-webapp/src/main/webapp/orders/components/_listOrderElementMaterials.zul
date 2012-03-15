@@ -47,9 +47,9 @@
                     width="280px" rows="10" vflex="true" multiple="false"
                     onSelect="assignedMaterialsController.refreshMaterialAssigments()">
                     <treecols>
-                      <treecol label="Name" />
-                      <treecol label="Units" width="50px" />
-                      <treecol label="Price" width="50px" />
+                      <treecol label="Name" hflex="1"/>
+                      <treecol label="Units" width="50" />
+                      <treecol label="Price" width="50" />
                     </treecols>
                   </tree>
                 </panelchildren>
@@ -59,10 +59,8 @@
             <groupbox style="margin-top: 5px" closable="false">
               <caption label="${i18n:_('Required materials')}" />
 
-
               <button label="${i18n:_('Add materials')}" style="margin-bottom: 5px"
                 onClick="materialsAccordion.setSelectedIndex(1);" />
-
 
               <!-- Materials -->
               <vbox id="assignmentsBox" width="100%">
@@ -74,66 +72,56 @@
 
             <tabpanel>
                 <!-- Material search -->
-                <hbox width="100%" hflex="1">
+                <hbox>
                     <!-- Categories  -->
-                    <vbox hflex="1">
-                        <panel title="${i18n:_('Categories')}" border="normal">
-                            <panelchildren>
-                                <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}"
-                                    onClick="assignedMaterialsController.clearSelectionAllCategoriesTree()" />
-                                <tree id="allCategoriesTree" width="100%" rows="10" sizedByContent="true" vflex="true" hflex="true" multiple="false">
-                                    <treecols>
-                                        <treecol label="Name" hflex="true"/>
-                                    </treecols>
-                                </tree>
-                            </panelchildren>
-                        </panel>
-                    </vbox>
+                    <panel title="${i18n:_('Categories')}" border="normal" width="280px">
+                        <panelchildren>
+                            <toolbarbutton style="text-decoration: none" label="${i18n:_('Unselect')}"
+                                onClick="assignedMaterialsController.clearSelectionAllCategoriesTree()" />
+                            <tree id="allCategoriesTree" rows="10" vflex="true" multiple="false"
+                                sizedByContent="false">
+                                <treecols>
+                                    <treecol label="Name" hflex="1" />
+                                </treecols>
+                            </tree>
+                        </panelchildren>
+                    </panel>
 
-                    <vbox hflex="1">
+                    <!-- Found materials -->
+                    <panel title="${i18n:_('Available materials')}" border="normal" hflex="1">
+                        <panelchildren>
 
-                        <!-- Found materials -->
-                        <panel title="${i18n:_('Materials')}" border="normal">
-                            <panelchildren>
+                            <!-- Search textbox -->
+                            <hbox>
+                                <textbox id="txtSearchMaterial" width="250px" style="margin-top: 2px" />
+                                <button label="${i18n:_('Search')}"
+                                    onClick="assignedMaterialsController.searchMaterials()"/>
+                                <button label="${i18n:_('Assign')}"
+                                    onClick="assignedMaterialsController.assignSelectedMaterials()" />
+                            </hbox>
 
-                                <!-- Search textbox -->
-                                <hbox>
-                                    <textbox id="txtSearchMaterial" width="250px" style="margin-top: 2px" />
-                                    <button label="${i18n:_('Search')}"
-                                        onClick="assignedMaterialsController.searchMaterials()"/>
-                                    <button label="${i18n:_('Assign')}"
-                                        onClick="assignedMaterialsController.assignSelectedMaterials()" />
-                                </hbox>
+                            <separator spacing="10px" orient="horizontal" />
 
-                                <separator spacing="10px" orient="horizontal" />
-
-                                <listbox id="lbFoundMaterials"
-                                    multiple="true"
-                                    sizedByContent="true"
-                                    model="@{assignedMaterialsController.matchingMaterials}" >
-                                    <listhead sizable="true" >
-                                        <listheader label="${i18n:_('Code')}" />
-                                        <listheader label="${i18n:_('Name')}" hflex="1"/>
-                                        <listheader label="${i18n:_('Unit type')}" />
-                                        <listheader label="${i18n:_('Unit price')}" />
-                                        <listheader label="${i18n:_('Category')}" />
-                                    </listhead>
-                                    <listitem self="@{each='material'}" value="@{material}">
-                                        <listcell label="@{material.code}" />
-                                        <listcell label="@{material.description}" />
-                                        <listcell>
-                                            <listbox mold="select"  model="@{assignedMaterialsController.unitTypes}"
-                                                    onSelect = "assignedMaterialsController.selectUnitType(self)"
-                                                    itemRenderer="@{assignedMaterialsController.renderer}"
-                                                    disabled="true"/>
-                                        </listcell>
-                                        <listcell label="@{material.defaultUnitPrice}" />
-                                        <listcell label="@{material.category.name}" />
-                                    </listitem>
-                                </listbox>
-                            </panelchildren>
-                        </panel>
-                    </vbox>
+                            <listbox id="lbFoundMaterials"
+                                multiple="true"
+                                model="@{assignedMaterialsController.matchingMaterials}" >
+                                <listhead sizable="false" >
+                                    <listheader label="${i18n:_('Code')}" width="230px"/>
+                                    <listheader label="${i18n:_('Name')}" width="100px" hflex="1"/>
+                                    <listheader label="${i18n:_('Unit type')}" width="70px" />
+                                    <listheader label="${i18n:_('Unit price')}" width="70px"/>
+                                    <listheader label="${i18n:_('Category')}" width="120px"/>
+                                </listhead>
+                                <listitem self="@{each='material'}" value="@{material}">
+                                    <listcell label="@{material.code}" />
+                                    <listcell label="@{material.description}" />
+                                    <listcell label="@{material.unitType.measure}" />
+                                    <listcell label="@{material.defaultUnitPrice}" />
+                                    <listcell label="@{material.category.name}" />
+                                </listitem>
+                            </listbox>
+                        </panelchildren>
+                    </panel>
                 </hbox>
 
           <button label="${i18n:_('Assign materials')}" sclass="global-action"

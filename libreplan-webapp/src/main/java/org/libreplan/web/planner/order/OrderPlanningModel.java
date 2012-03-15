@@ -150,6 +150,7 @@ import org.zkoss.zul.Vbox;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -451,8 +452,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                             //update earned value chart
                             earnedValueChart.fillChart();
                             //update earned value legend
-                            updateEarnedValueChartLegend(new LocalDate(
-                                    earnedValueChartLegendDatebox.getRawValue()));
+                            updateEarnedValueChartLegend();
                         }
                         return null;
                     }
@@ -528,15 +528,15 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Hbox dateHbox = new Hbox();
         dateHbox.appendChild(new Label(_("Select date")));
 
-        LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
-        Datebox datebox = new Datebox(initialDateForIndicatorValues
+        LocalDate initialDateForIndicatorValues =
+                earnedValueChartFiller.initialDateForIndicatorValues();
+        this.earnedValueChartLegendDatebox = new Datebox(initialDateForIndicatorValues
                 .toDateTimeAtStartOfDay().toDate());
-        this.earnedValueChartLegendDatebox = datebox;
-        datebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
-        dateHbox.appendChild(datebox);
+        this.earnedValueChartLegendDatebox.setConstraint(
+                dateMustBeInsideVisualizationArea(earnedValueChartFiller));
+        dateHbox.appendChild(this.earnedValueChartLegendDatebox);
 
-        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
-                datebox);
+        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox);
         vbox.appendChild(dateHbox);
 
         vbox.appendChild(getEarnedValueChartConfigurableLegend(
@@ -705,28 +705,53 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void configureModificators(Order orderReloaded,
             PlannerConfiguration<TaskElement> configuration) {
-        if (orderReloaded.getDeadline() != null) {
-            configuration.setSecondLevelModificators(SeveralModificators
-                            .create(BankHolidaysMarker.create(orderReloaded
-                                    .getCalendar()),
-                            createDeadlineShower(orderReloaded.getDeadline())));
-        } else {
-            configuration.setSecondLevelModificators(BankHolidaysMarker.create(orderReloaded.getCalendar()));
-        }
+        // Either InitDate or DeadLine must be set, depending on forwards or
+        // backwards planning
+        configuration.setSecondLevelModificators(SeveralModificators.create(
+                BankHolidaysMarker.create(orderReloaded.getCalendar()),
+                createStartDeadlineMarker(orderReloaded)));
     }
 
-    private IDetailItemModificator createDeadlineShower(Date orderDeadline) {
-        final DateTime deadline = new DateTime(orderDeadline);
-        IDetailItemModificator deadlineMarker = new IDetailItemModificator() {
+    private IDetailItemModificator createStartDeadlineMarker(Order order) {
+        final DateTime projectStart = new DateTime(order.getInitDate());
+        final DateTime deadline = new DateTime(order.getDeadline());
+        IDetailItemModificator detailItemModificator;
 
-            @Override
-            public DetailItem applyModificationsTo(DetailItem item,
-                    ZoomLevel zoomlevel) {
-                item.markDeadlineDay(deadline);
-                return item;
+        if (order.getInitDate() != null) {
+            if (order.getDeadline() != null) {
+                // Both project Start and deadline markers
+                detailItemModificator = new IDetailItemModificator() {
+                    @Override
+                    public DetailItem applyModificationsTo(DetailItem item,
+                            ZoomLevel z) {
+                        item.markDeadlineDay(deadline);
+                        item.markProjectStart(projectStart);
+                        return item;
+                    }
+                };
+            } else {
+                // Project Start without deadline
+                detailItemModificator = new IDetailItemModificator() {
+                    @Override
+                    public DetailItem applyModificationsTo(DetailItem item,
+                            ZoomLevel z) {
+                        item.markProjectStart(projectStart);
+                        return item;
+                    }
+                };
             }
-        };
-        return deadlineMarker;
+        } else {
+            // Only project deadline marker
+            detailItemModificator = new IDetailItemModificator() {
+                @Override
+                public DetailItem applyModificationsTo(DetailItem item,
+                        ZoomLevel z) {
+                    item.markDeadlineDay(deadline);
+                    return item;
+                }
+            };
+        }
+        return detailItemModificator;
     }
 
     private void selectTab(String tabName) {
@@ -803,20 +828,34 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void appendEventListenerToDateboxIndicators(
             final OrderEarnedValueChartFiller earnedValueChartFiller,
-            final Vbox vbox, final Datebox datebox) {
-        datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
+            final Vbox vbox) {
+        earnedValueChartLegendDatebox.addEventListener(Events.ON_CHANGE,
+                new EventListener() {
 
             @Override
             public void onEvent(Event event) {
-                LocalDate date = new LocalDate(datebox.getValue());
-                updateEarnedValueChartLegend(date);
-                dateInfutureMessage(datebox);
+                updateEarnedValueChartLegend();
+                dateInfutureMessage(earnedValueChartLegendDatebox);
             }
 
         });
     }
 
-    private void updateEarnedValueChartLegend(LocalDate date) {
+    private void updateEarnedValueChartLegend() {
+        try {
+            //force the validation again (getValue alone doesn't work because
+            //the result of the validation is cached)
+            earnedValueChartLegendDatebox.setValue(
+                    earnedValueChartLegendDatebox.getValue());
+        }
+        catch (WrongValueException e) {
+            //the user moved the gantt and the legend became out of the
+            //visualization area, reset to a correct date
+            earnedValueChartLegendDatebox.setValue(earnedValueChartFiller.
+                    initialDateForIndicatorValues().toDateTimeAtStartOfDay()
+                    .toDate());
+        }
+        LocalDate date = new LocalDate(earnedValueChartLegendDatebox.getRawValue());
         org.zkoss.zk.ui.Component child = earnedValueChartLegendContainer
                 .getFellow("indicatorsTable");
         earnedValueChartLegendContainer.removeChild(child);
@@ -955,8 +994,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                         if (planner.isVisibleChart()) {
                             loadChart.fillChart();
                             if(updateEarnedValueChartLegend) {
-                                updateEarnedValueChartLegend(new LocalDate(
-                                        earnedValueChartLegendDatebox.getRawValue()));
+                                updateEarnedValueChartLegend();
                             }
                         }
                     }
@@ -1167,8 +1205,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                 if (planner.isVisibleChart()) {
                                     loadChart.fillChart();
                                     if (updateEarnedValueChartLegend) {
-                                        updateEarnedValueChartLegend(new LocalDate(
-                                                earnedValueChartLegendDatebox.getRawValue()));
+                                        updateEarnedValueChartLegend();
                                     }
                                 }
                                 return null;

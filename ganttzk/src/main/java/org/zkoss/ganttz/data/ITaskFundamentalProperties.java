@@ -107,4 +107,8 @@ public interface ITaskFundamentalProperties {
 
     boolean isManualAnyAllocation();
 
+    public boolean belongsClosedProject();
+
+    public boolean isRoot();
+
 }

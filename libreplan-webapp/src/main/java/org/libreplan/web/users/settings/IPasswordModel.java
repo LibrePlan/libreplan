@@ -42,4 +42,6 @@ public interface IPasswordModel {
 
     boolean validateCurrentPassword(String value);
 
+    boolean isLdapAuthEnabled();
+
 }

@@ -62,6 +62,12 @@ public class SumChargedEffort extends BaseEntity {
                 .plus(indirectChargedEffort);
     }
 
+    public void subtractIndirectChargedEffort(
+            EffortDuration indirectChargedEffort) {
+        this.indirectChargedEffort = this.indirectChargedEffort
+                .minus(indirectChargedEffort);
+    }
+
     public EffortDuration getIndirectChargedEffort() {
         return indirectChargedEffort;
     }

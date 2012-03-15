@@ -57,6 +57,7 @@ import org.libreplan.business.orders.entities.SchedulingState.Type;
 import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskPositionConstraint;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.TaskQualityForm;
@@ -290,6 +291,11 @@ public abstract class OrderElement extends IntegrationEntity implements
             SchedulingDataForVersion schedulingDataForVersion) {
         List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
         if (isSchedulingPoint()) {
+            if(isSchedulingPointButItWasNot()) {
+                //this element was a container but now it's a scheduling point
+                //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
+                removeTaskSource(result);
+            }
             result
                     .addAll(synchronizationForSchedulingPoint(schedulingDataForVersion));
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
@@ -321,6 +327,11 @@ public abstract class OrderElement extends IntegrationEntity implements
     private boolean wasASchedulingPoint() {
         return getTaskSource() != null
                 && getTaskSource().getTask() instanceof Task;
+    }
+
+    private boolean isSchedulingPointButItWasNot() {
+        return getTaskSource() != null
+                && getTaskSource().getTask() instanceof TaskGroup;
     }
 
     private List<TaskSourceSynchronization> childrenSynchronizations() {

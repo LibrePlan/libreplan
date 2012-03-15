@@ -328,6 +328,13 @@ profiles defined in ``pom.xml`` of business and webapp modules).
 
   This is used to generate upgrade files in releases.
 
+* *i18n* - Internationalization (default)
+
+  It uses gettext to process language files in order to be used in *LibrePlan*.
+
+  Like for *reports* and *userguide*, it is useful deactivate this profile
+  during development to save compilation time.
+
 How to use profiles
 ~~~~~~~~~~~~~~~~~~~
 
@@ -335,9 +342,9 @@ Profiles active by default are used always if not deactivated. In order to
 activate or deactivate a profile you should use parameter ``-P`` for Maven
 command. For example:
 
-* Deactivate *reports* and *userguide* to save compilation time::
+* Deactivate *reports*, *userguide* and *i18n* to save compilation time::
 
-    mvn -P-reports,-userguide clean install
+    mvn -P-reports,-userguide,-i18n clean install
 
 * Use production environment::
 
