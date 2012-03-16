@@ -148,6 +148,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean reportedHoursEnabled = true;
 
+    private boolean moneyCostBarEnabled = true;
+
     private boolean expandAllEnabled = true;
 
     private boolean flattenTreeEnabled = true;
@@ -343,6 +345,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isReportedHoursEnabled() {
         return reportedHoursEnabled;
+    }
+
+    public void setMoneyCostBarEnabled(boolean moneyCostBarEnabled) {
+        this.moneyCostBarEnabled = moneyCostBarEnabled;
+    }
+
+    @Override
+    public boolean isMoneyCostBarEnabled() {
+        return moneyCostBarEnabled;
     }
 
     public void setExpandAllEnabled(boolean expandAllEnabled) {

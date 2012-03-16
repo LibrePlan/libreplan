@@ -5,6 +5,7 @@ function(out){
                 'z.autoz="true"',
                 'class="milestone"',
                 '>');
+            out.push('<div class="completionMoneyCostBar"></div>');
             out.push('<div class="completion"></div>');
             out.push('<div class="completion2"></div>');
             out.push('<div class="milestone_end"></div>');

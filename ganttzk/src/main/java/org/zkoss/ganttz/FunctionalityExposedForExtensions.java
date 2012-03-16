@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -227,6 +227,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
 
         result.setShowingReportedHours(planner.showReportedHoursRightNow());
+        result.setShowingMoneyCostBar(planner.showMoneyCostBarRightNow());
         result.setShowingAdvances(planner.showAdvancesRightNow());
 
         mapper.register(position, result, data);
@@ -462,6 +463,20 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public void hideReportedHours() {
         for (Task task : diagramGraph.getTasks()) {
             task.setShowingReportedHours(false);
+        }
+    }
+
+    @Override
+    public void showMoneyCostBar() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingMoneyCostBar(true);
+        }
+    }
+
+    @Override
+    public void hideMoneyCostBar() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingMoneyCostBar(false);
         }
     }
 

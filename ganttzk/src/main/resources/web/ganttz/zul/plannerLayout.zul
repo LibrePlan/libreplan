@@ -3,7 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
-  Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2010-2012 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -83,6 +83,13 @@ planner = self;
         <button id="showReportedHours" onClick="planner.showReportedHours();"
             image="/common/img/ico_costs.png"
             tooltiptext="${ganttzk_i18n:_('Show/Hide reported hours')}"
+            sclass="planner-command"/>
+        <separator />
+
+        <!-- TODO change icon -->
+        <button id="showMoneyCostBar" onClick="planner.showMoneyCostBar();"
+            image="/common/img/ico_costs.png"
+            tooltiptext="${ganttzk_i18n:_('Show/Hide money cost bar')}"
             sclass="planner-command"/>
         <separator />
 

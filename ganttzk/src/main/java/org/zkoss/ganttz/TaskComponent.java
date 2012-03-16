@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,6 +58,7 @@ import org.zkoss.zul.Div;
  * Graphical component which represents a {@link Task}.
  *
  * @author Javier Morán Rúa <jmoran@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class TaskComponent extends Div implements AfterCompose {
 
@@ -75,6 +76,8 @@ public class TaskComponent extends Div implements AfterCompose {
     private PropertyChangeListener showingAdvancePropertyListener;
 
     private PropertyChangeListener showingReportedHoursPropertyListener;
+
+    private PropertyChangeListener showingMoneyCostBarPropertyListener;
 
     public static TaskComponent asTaskComponent(Task task,
             IDisabilityConfiguration disabilityConfiguration,
@@ -275,6 +278,20 @@ public class TaskComponent extends Div implements AfterCompose {
         }
         this.task
                 .addReportedHoursPropertyChangeListener(showingReportedHoursPropertyListener);
+
+        if (showingMoneyCostBarPropertyListener == null) {
+            showingMoneyCostBarPropertyListener = new PropertyChangeListener() {
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (isInPage() && !(task instanceof Milestone)) {
+                        updateCompletionMoneyCostBar();
+                    }
+                }
+            };
+        }
+        this.task
+                .addMoneyCostBarPropertyChangeListener(showingMoneyCostBarPropertyListener);
 
         if (criticalPathPropertyListener == null) {
             criticalPathPropertyListener = new PropertyChangeListener() {
@@ -483,6 +500,7 @@ public class TaskComponent extends Div implements AfterCompose {
             return;
         }
         updateCompletionReportedHours();
+        updateCompletionMoneyCostBar();
         updateCompletionAdvance();
     }
 
@@ -496,6 +514,20 @@ public class TaskComponent extends Div implements AfterCompose {
                 widthHoursAdvancePercentage));
         } else {
             response(null, new AuInvoke(this, "resizeCompletionAdvance", "0px"));
+        }
+    }
+
+    public void updateCompletionMoneyCostBar() {
+        if (task.isShowingMoneyCostBar()) {
+            int startPixels = this.task.getBeginDate().toPixels(getMapper());
+            // TODO change method, for the moment using getHoursAdvanceEndDate()
+            String widthMoneyCostBar = pixelsFromStartUntil(
+                    startPixels, this.task.getHoursAdvanceEndDate()) + "px";
+            response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar",
+                    widthMoneyCostBar));
+        } else {
+            response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar",
+                    "0px"));
         }
     }
 

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -48,7 +47,9 @@ import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 /**
  * This class contains the information of a task. It can be modified and
  * notifies of the changes to the interested parties. <br/>
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public abstract class Task implements ITaskFundamentalProperties {
 
@@ -73,6 +74,9 @@ public abstract class Task implements ITaskFundamentalProperties {
     private PropertyChangeSupport reportedHoursProperty = new PropertyChangeSupport(
             this);
 
+    private PropertyChangeSupport moneyCostBarProperty = new PropertyChangeSupport(
+            this);
+
     private final ITaskFundamentalProperties fundamentalProperties;
 
     private boolean visible = true;
@@ -82,6 +86,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     private boolean showingAdvances = false;
 
     private boolean showingReportedHours = false;
+
+    private boolean showingMoneyCostBar = false;
 
     private ConstraintViolationNotificator<GanttDate> violationNotificator = ConstraintViolationNotificator
             .create();
@@ -178,6 +184,17 @@ public abstract class Task implements ITaskFundamentalProperties {
         return showingReportedHours;
     }
 
+    public void setShowingMoneyCostBar(boolean showingMoneyCostBar) {
+        boolean previousValue = this.showingMoneyCostBar;
+        this.showingMoneyCostBar = showingMoneyCostBar;
+        moneyCostBarProperty.firePropertyChange("showingMoneyCostBar",
+                previousValue, this.showingMoneyCostBar);
+    }
+
+    public boolean isShowingMoneyCostBar() {
+        return showingMoneyCostBar;
+    }
+
     public String getName() {
         return fundamentalProperties.getName();
     }
@@ -240,6 +257,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void addReportedHoursPropertyChangeListener(
             PropertyChangeListener listener) {
         this.reportedHoursProperty.addPropertyChangeListener(listener);
+    }
+
+    public void addMoneyCostBarPropertyChangeListener(
+            PropertyChangeListener listener) {
+        this.moneyCostBarProperty.addPropertyChangeListener(listener);
     }
 
     public void addFundamentalPropertiesChangeListener(
