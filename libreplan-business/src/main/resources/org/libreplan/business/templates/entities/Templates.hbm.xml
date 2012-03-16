@@ -11,7 +11,7 @@
         <version name="version" access="property" type="long" />
         <component name="infoComponent" class="org.libreplan.business.orders.entities.InfoComponent">
             <property name="name" access="field" />
-            <property name="description" access="field" />
+            <property name="description" access="field" type="text" />
             <property name="code" access="field"/>
         </component>
         <property name="startAsDaysFromBeginning"

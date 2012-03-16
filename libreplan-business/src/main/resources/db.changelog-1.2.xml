@@ -63,6 +63,11 @@
         <modifyDataType tableName="order_element" columnName="description" newDataType="TEXT" />
     </changeSet>
 
+    <changeSet id="change-column-description-in-order_element_template-to-text" author="mrego">
+        <comment>Change column description in order_element_template to TEXT</comment>
+        <modifyDataType tableName="order_element_template" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
     <changeSet id="add-budget-column-to-order_line" author="mrego">
         <comment>add budget column to order_line</comment>
         <addColumn tableName="order_line">

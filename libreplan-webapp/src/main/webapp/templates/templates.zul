@@ -99,7 +99,7 @@
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Description')}" />
-                                    <textbox width="500px"
+                                    <textbox rows="3" width="600px"
                                         value="@{templatesForOrdersController.template.description}" />
                                 </row>
                                 <row>
