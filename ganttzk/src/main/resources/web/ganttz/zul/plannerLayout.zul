@@ -86,9 +86,8 @@ planner = self;
             sclass="planner-command"/>
         <separator />
 
-        <!-- TODO change icon -->
         <button id="showMoneyCostBar" onClick="planner.showMoneyCostBar();"
-            image="/common/img/ico_costs.png"
+            image="/common/img/ico_money_cost_bar.png"
             tooltiptext="${ganttzk_i18n:_('Show/Hide money cost bar')}"
             sclass="planner-command"/>
         <separator />
