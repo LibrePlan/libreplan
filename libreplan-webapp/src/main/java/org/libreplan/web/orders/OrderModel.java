@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
@@ -95,9 +95,11 @@ import org.zkoss.zk.ui.Desktop;
 
 /**
  * Model for UI operations related to {@link Order}. <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -677,7 +679,11 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         StringBuilder result = new StringBuilder();
         result.append(_("Progress") + ": ").append(getEstimatedAdvance(order)).append("% , ");
         result.append(_("Hours invested") + ": ").append(
-                getHoursAdvancePercentage(order)).append("% \n");
+                getHoursAdvancePercentage(order)).append("% , ");
+        // TODO change method and message, for the moment using
+        // getHoursAdvancePercentage(order)
+        result.append(_("Cost") + ": ")
+                .append(getHoursAdvancePercentage(order)).append("% \n");
 
         if (!getDescription(order).equals("")) {
             result.append(" , " + _("Description") + ": "

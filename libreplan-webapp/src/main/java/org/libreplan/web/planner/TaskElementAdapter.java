@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -103,6 +103,7 @@ import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -951,6 +952,13 @@ public class TaskElementAdapter {
                 result.append(_("Hours invested") + ": ")
                         .append(getHoursAdvancePercentage().multiply(
                                 new BigDecimal(100))).append("% <br/>");
+
+                // TODO change method and message, for the moment using
+                // getHoursAdvancePercentage()
+                result.append(_("Cost") + ": ")
+                        .append(getHoursAdvancePercentage().multiply(
+                                new BigDecimal(100))).append("% <br/>");
+
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 }
