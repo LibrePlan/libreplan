@@ -2964,8 +2964,8 @@ Changes
 * [Bug #] Fix division by zero in Gantt
 
 
-Version 1.0.5 (8 Apr 2011)
---------------------------
+Version 1.0.5 (08 Apr 2011)
+---------------------------
 
 Last bugfixing version of NavalPlan for 1.0.x cycle, like in previous releases
 it includes all the fixes done in the stable branch since 1.0.4. Among them we
