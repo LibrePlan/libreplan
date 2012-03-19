@@ -61,6 +61,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
@@ -380,6 +381,12 @@ public class OrderTemplatesController extends GenericForwardComposer implements
             return false;
         }
         return !model.getTemplate().isLeaf();
+    }
+
+    public void reloadBudget() {
+        Tabpanel tabPanel = (Tabpanel) editWindow
+                .getFellow("tabPanelGeneralData");
+        Util.reloadBindings(tabPanel);
     }
 
 }
