@@ -94,7 +94,7 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
         if (budget.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
-        return moneyCost.divide(budget);
+        return moneyCost.divide(budget, 2, RoundingMode.HALF_UP);
     }
 
 }
