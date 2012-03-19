@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,20 +21,24 @@
 
 package org.libreplan.business.costcategories.daos;
 
-import java.util.Collection;
+import java.math.BigDecimal;
 
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.Query;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.HourCost;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -51,6 +55,27 @@ public class HourCostDAO extends IntegrationEntityDAO<HourCost> implements
             //we do nothing
         }
         super.remove(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getPriceCostFromResourceDateAndType(Resource resource,
+            LocalDate date, TypeOfWorkHours type) {
+        String strQuery = "SELECT hc.priceCost "
+                + "FROM ResourcesCostCategoryAssignment rcca, HourCost hc "
+                + "WHERE rcca.costCategory = hc.category "
+                + "AND rcca.resource = :resource " + "AND hc.type = :type "
+                + "AND rcca.initDate <= :date "
+                + "AND (rcca.endDate >= :date OR rcca.endDate IS NULL) "
+                + "AND hc.initDate <= :date "
+                + "AND (hc.endDate >= :date OR hc.endDate IS NULL)";
+
+        Query query = getSession().createQuery(strQuery);
+        query.setParameter("resource", resource);
+        query.setParameter("date", date);
+        query.setParameter("type", type);
+
+        return (BigDecimal) query.uniqueResult();
     }
 
 }
