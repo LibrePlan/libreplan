@@ -609,10 +609,18 @@ public class TaskElementAdapter {
             }
 
             private BigDecimal getBudget() {
+                if ((taskElement == null)
+                        || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
                 return taskElement.getOrderElement().getBudget();
             }
 
             private BigDecimal getMoneyCost() {
+                if ((taskElement == null)
+                        || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
                 return transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
 
