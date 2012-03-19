@@ -343,11 +343,6 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public BigDecimal getMoneyCostBarPercentage() {
-        return fundamentalProperties.getMoneyCostBarPercentage();
-    }
-
-    @Override
     public BigDecimal getAdvancePercentage() {
         return fundamentalProperties.getAdvancePercentage();
     }

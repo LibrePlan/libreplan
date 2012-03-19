@@ -178,11 +178,6 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public BigDecimal getMoneyCostBarPercentage() {
-        return moneyCostBarPercentage;
-    }
-
-    @Override
     public BigDecimal getAdvancePercentage() {
         return advancePercentage;
     }

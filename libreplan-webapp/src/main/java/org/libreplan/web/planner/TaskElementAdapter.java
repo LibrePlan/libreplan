@@ -603,8 +603,7 @@ public class TaskElementAdapter {
                 return calculateLimitDateByPercentage(getMoneyCostBarPercentage());
             }
 
-            @Override
-            public BigDecimal getMoneyCostBarPercentage() {
+            private BigDecimal getMoneyCostBarPercentage() {
                 return MoneyCostCalculator.getMoneyCostProportion(
                         getMoneyCost(), getBudget());
             }

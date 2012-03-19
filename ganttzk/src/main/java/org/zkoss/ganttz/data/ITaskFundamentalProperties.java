@@ -72,8 +72,6 @@ public interface ITaskFundamentalProperties {
 
     public BigDecimal getHoursAdvancePercentage();
 
-    public BigDecimal getMoneyCostBarPercentage();
-
     public BigDecimal getAdvancePercentage();
 
     public String getTooltipText();
