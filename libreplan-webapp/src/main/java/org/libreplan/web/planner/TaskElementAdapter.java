@@ -606,8 +606,11 @@ public class TaskElementAdapter {
             @Override
             public BigDecimal getMoneyCostBarPercentage() {
                 return MoneyCostCalculator.getMoneyCostProportion(
-                        getMoneyCost(), taskElement.getOrderElement()
-                                .getBudget());
+                        getMoneyCost(), getBudget());
+            }
+
+            private BigDecimal getBudget() {
+                return taskElement.getOrderElement().getBudget();
             }
 
             private BigDecimal getMoneyCost() {
@@ -983,9 +986,12 @@ public class TaskElementAdapter {
                         .append(getHoursAdvancePercentage().multiply(
                                 new BigDecimal(100))).append("% <br/>");
 
-                result.append(_("Cost") + ": ")
-                        .append(getMoneyCostBarPercentage().multiply(
-                                new BigDecimal(100))).append("% <br/>");
+                result.append(
+                        _("Budget: {0}€, Consumed: {1}€ ({2}%)",
+                                getBudget(),
+                                getMoneyCost(),
+                                getMoneyCostBarPercentage().multiply(
+                                        new BigDecimal(100)))).append("<br/>");
 
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());

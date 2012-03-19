@@ -683,10 +683,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         orderDAO.reattachUnmodifiedEntity(order);
         StringBuilder result = new StringBuilder();
         result.append(_("Progress") + ": ").append(getEstimatedAdvance(order)).append("% , ");
-        result.append(_("Hours invested") + ": ").append(
-                getHoursAdvancePercentage(order)).append("% , ");
-        result.append(_("Cost") + ": ")
-                .append(getMoneyCostBarPercentage(order)).append("% \n");
+        result.append(_("Hours invested") + ": ")
+                .append(getHoursAdvancePercentage(order)).append("%\n");
+        result.append(
+                _("Budget: {0}€, Consumed: {1}€ ({2}%)", getBudget(order),
+                        getMoneyCost(order), getMoneyCostBarPercentage(order)
+                                .multiply(new BigDecimal(100)))).append("\n");
 
         if (!getDescription(order).equals("")) {
             result.append(" , " + _("Description") + ": "
@@ -723,9 +725,16 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     private BigDecimal getMoneyCostBarPercentage(Order order) {
-        return MoneyCostCalculator.getMoneyCostProportion(
-                moneyCostCalculator.getMoneyCost(order), order.getBudget());
+        return MoneyCostCalculator.getMoneyCostProportion(getMoneyCost(order),
+                getBudget(order));
+    }
 
+    private BigDecimal getBudget(Order order) {
+        return order.getBudget();
+    }
+
+    private BigDecimal getMoneyCost(Order order) {
+        return moneyCostCalculator.getMoneyCost(order);
     }
 
     private String buildLabelsText(Order order) {
