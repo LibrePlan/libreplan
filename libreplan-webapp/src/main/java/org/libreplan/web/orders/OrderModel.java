@@ -55,6 +55,8 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.planner.entities.IMoneyCostCalculator;
+import org.libreplan.business.planner.entities.MoneyCostCalculator;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
@@ -166,6 +168,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IMoneyCostCalculator moneyCostCalculator;
 
     @Override
     @Transactional(readOnly = true)
@@ -680,10 +685,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         result.append(_("Progress") + ": ").append(getEstimatedAdvance(order)).append("% , ");
         result.append(_("Hours invested") + ": ").append(
                 getHoursAdvancePercentage(order)).append("% , ");
-        // TODO change method and message, for the moment using
-        // getHoursAdvancePercentage(order)
         result.append(_("Cost") + ": ")
-                .append(getHoursAdvancePercentage(order)).append("% \n");
+                .append(getMoneyCostBarPercentage(order)).append("% \n");
 
         if (!getDescription(order).equals("")) {
             result.append(" , " + _("Description") + ": "
@@ -717,6 +720,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             result = new BigDecimal(0);
         }
         return result.multiply(new BigDecimal(100));
+    }
+
+    private BigDecimal getMoneyCostBarPercentage(Order order) {
+        return MoneyCostCalculator.getMoneyCostProportion(
+                moneyCostCalculator.getMoneyCost(order), order.getBudget());
+
     }
 
     private String buildLabelsText(Order order) {

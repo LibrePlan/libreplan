@@ -40,6 +40,10 @@ import org.springframework.stereotype.Component;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
+/**
+ * @author mrego
+ *
+ */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class MoneyCostCalculator implements IMoneyCostCalculator {
@@ -51,9 +55,7 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
     private IHourCostDAO hourCostDAO;
 
     @Override
-    public BigDecimal getMoneyCost(TaskElement taskElement) {
-        OrderElement orderElement = taskElement.getOrderElement();
-
+    public BigDecimal getMoneyCost(OrderElement orderElement) {
         List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(orderElement, false);
 
@@ -70,6 +72,22 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
         }
 
         return result.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Divides {@code moneyCost} by {@code budget} if {@code budget} is
+     * different from 0. Otherwise, returns 0.
+     *
+     * @param moneyCost
+     * @param budget
+     * @return A BigDecimal from 0 to 1 with the proportion
+     */
+    public static BigDecimal getMoneyCostProportion(BigDecimal moneyCost,
+            BigDecimal budget) {
+        if (budget.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
+        return moneyCost.divide(budget);
     }
 
 }

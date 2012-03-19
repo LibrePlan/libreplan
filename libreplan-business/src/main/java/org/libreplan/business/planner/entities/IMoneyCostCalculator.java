@@ -31,19 +31,19 @@ import org.libreplan.business.orders.entities.OrderElement;
 public interface IMoneyCostCalculator {
 
     /**
-     * Returns the money cost of a {@link TaskElement}.<br />
+     * Returns the money cost of a {@link OrderElement} taking into account all
+     * its children.<br />
      *
-     * It uses the {@link OrderElement} (or OrderElements) associated to the
-     * {@link TaskElement} in order to calculate the cost using the following
-     * formula:<br />
+     * It uses the {@link OrderElement} in order to calculate the cost using the
+     * following formula:<br />
      * <tt>Sum of all the hours devoted to a task multiplied by the cost of
      * each hour according to these parameters (type of hour, cost category of
      * the resource, date of the work report)</tt>
      *
      * @param The
-     *            {@link TaskElement} to calculate the money cost
-     * @return Money cost of the task
+     *            {@link OrderElement} to calculate the money cost
+     * @return Money cost of the order element and all its children
      */
-    BigDecimal getMoneyCost(TaskElement taskElement);
+    BigDecimal getMoneyCost(OrderElement orderElement);
 
 }

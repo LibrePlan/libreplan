@@ -67,7 +67,9 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
+import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ITaskPositionConstrained;
+import org.libreplan.business.planner.entities.MoneyCostCalculator;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
@@ -275,6 +277,9 @@ public class TaskElementAdapter {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IMoneyCostCalculator moneyCostCalculator;
 
     static class GanttDateAdapter extends CustomDate {
 
@@ -591,6 +596,31 @@ public class TaskElementAdapter {
                 return new BigDecimal(totalChargedEffort.divivedBy(
                         estimatedEffort).doubleValue()).setScale(2,
                         RoundingMode.HALF_UP);
+            }
+
+            @Override
+            public GanttDate getMoneyCostBarEndDate() {
+                return calculateLimitDateByPercentage(getMoneyCostBarPercentage());
+            }
+
+            @Override
+            public BigDecimal getMoneyCostBarPercentage() {
+                return MoneyCostCalculator.getMoneyCostProportion(
+                        getMoneyCost(), taskElement.getOrderElement()
+                                .getBudget());
+            }
+
+            private BigDecimal getMoneyCost() {
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
+
+                            @Override
+                            public BigDecimal execute() {
+                                return moneyCostCalculator
+                                        .getMoneyCost(taskElement
+                                                .getOrderElement());
+                            }
+                        });
             }
 
             @Override
@@ -953,10 +983,8 @@ public class TaskElementAdapter {
                         .append(getHoursAdvancePercentage().multiply(
                                 new BigDecimal(100))).append("% <br/>");
 
-                // TODO change method and message, for the moment using
-                // getHoursAdvancePercentage()
                 result.append(_("Cost") + ": ")
-                        .append(getHoursAdvancePercentage().multiply(
+                        .append(getMoneyCostBarPercentage().multiply(
                                 new BigDecimal(100))).append("% <br/>");
 
                 if (taskElement.getOrderElement() instanceof Order) {

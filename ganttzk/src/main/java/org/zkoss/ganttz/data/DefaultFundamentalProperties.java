@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +34,7 @@ import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class DefaultFundamentalProperties implements ITaskFundamentalProperties {
 
@@ -47,9 +48,13 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private long hoursAdvanceEndDate;
 
+    private long moneyCostBarEndDate;
+
     private Date advanceEndDate;
 
     private BigDecimal hoursAdvancePercentage;
+
+    private BigDecimal moneyCostBarPercentage;
 
     private BigDecimal advancePercentage;
 
@@ -65,15 +70,19 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     public DefaultFundamentalProperties(String name, Date beginDate,
             long lengthMilliseconds, String notes,
             Date hoursAdvanceEndDate,
+            Date moneyCostBarEndDate,
             Date advanceEndDate,
-            BigDecimal hoursAdvancePercentage, BigDecimal advancePercentage) {
+            BigDecimal hoursAdvancePercentage,
+            BigDecimal moneyCostBarPercentage, BigDecimal advancePercentage) {
         this.name = name;
         this.beginDate = beginDate.getTime();
         this.lengthMilliseconds = lengthMilliseconds;
         this.notes = notes;
         this.hoursAdvanceEndDate = hoursAdvanceEndDate.getTime();
+        this.moneyCostBarEndDate = moneyCostBarEndDate.getTime();
         this.advanceEndDate = advanceEndDate;
         this.hoursAdvancePercentage = hoursAdvancePercentage;
+        this.moneyCostBarPercentage = moneyCostBarPercentage;
         this.advancePercentage = advancePercentage;
         this.tooltipText = "Default tooltip";
         this.labelsText = "";
@@ -153,6 +162,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
+    public GanttDate getMoneyCostBarEndDate() {
+        return GanttDate.createFrom(new Date(moneyCostBarEndDate));
+    }
+
+    @Override
     public GanttDate getAdvanceEndDate() {
         return advanceEndDate != null ? GanttDate.createFrom(new Date(
                 advanceEndDate.getTime()))
@@ -161,6 +175,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public BigDecimal getHoursAdvancePercentage() {
         return hoursAdvancePercentage;
+    }
+
+    @Override
+    public BigDecimal getMoneyCostBarPercentage() {
+        return moneyCostBarPercentage;
     }
 
     @Override

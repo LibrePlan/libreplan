@@ -18,9 +18,6 @@
  */
 package org.libreplan.business.test.planner.entities;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createNiceMock;
-import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
@@ -44,7 +41,6 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.MoneyCostCalculator;
-import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
@@ -97,7 +93,6 @@ public class MoneyCostCalculatorTest {
     private OrderElement orderElement;
     private WorkReportType workReportType;
     private WorkReport workReport;
-    private TaskElement taskElement;
 
     private void givenTypeOfWorkHours() {
         typeOfWorkHours = TypeOfWorkHours.createUnvalidated(
@@ -162,13 +157,6 @@ public class MoneyCostCalculatorTest {
         workReportDAO.save(workReport);
     }
 
-    private void givenTask() {
-        taskElement = createNiceMock(TaskElement.class);
-        expect(taskElement.getOrderElement()).andReturn(orderElement)
-                .anyTimes();
-        replay(taskElement);
-    }
-
     private void givenBasicExample() {
         givenTypeOfWorkHours();
         givenCostCategory();
@@ -176,13 +164,12 @@ public class MoneyCostCalculatorTest {
         givenOrderElement();
         giveWorkReportType();
         givenWorkReport();
-        givenTask();
     }
 
     @Test
     public void basicTest() throws InstanceNotFoundException {
         givenBasicExample();
-        assertThat(moneyCostCalculator.getMoneyCost(taskElement),
+        assertThat(moneyCostCalculator.getMoneyCost(orderElement),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
 
