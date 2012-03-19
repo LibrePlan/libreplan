@@ -38,7 +38,11 @@ public interface IMoneyCostCalculator {
      * following formula:<br />
      * <tt>Sum of all the hours devoted to a task multiplied by the cost of
      * each hour according to these parameters (type of hour, cost category of
-     * the resource, date of the work report)</tt>
+     * the resource, date of the work report)</tt><br />
+     *
+     * If there is not relationship between resource and type of hour through
+     * the cost categories, the price used is the default one for the type of
+     * hour.
      *
      * @param The
      *            {@link OrderElement} to calculate the money cost

@@ -66,6 +66,13 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
                             workReportLine.getResource(),
                             workReportLine.getLocalDate(),
                             workReportLine.getTypeOfWorkHours());
+
+            // If cost undefined via CostCategory get it from type
+            if (priceCost == null) {
+                priceCost = workReportLine.getTypeOfWorkHours()
+                        .getDefaultPrice();
+            }
+
             BigDecimal cost = priceCost.multiply(workReportLine.getEffort()
                     .toHoursAsDecimalWithScale(2));
             result = result.add(cost);
