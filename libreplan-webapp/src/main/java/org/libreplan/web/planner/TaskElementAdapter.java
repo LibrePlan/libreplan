@@ -600,7 +600,24 @@ public class TaskElementAdapter {
 
             @Override
             public GanttDate getMoneyCostBarEndDate() {
-                return calculateLimitDateByPercentage(getMoneyCostBarPercentage());
+                return calculateLimitDateProportionalToTaskElementSize(getMoneyCostBarPercentage());
+            }
+
+            private GanttDate calculateLimitDateProportionalToTaskElementSize(
+                    BigDecimal proportion) {
+                if (proportion.compareTo(BigDecimal.ZERO) == 0) {
+                    return getBeginDate();
+                }
+
+                IntraDayDate start = taskElement.getIntraDayStartDate();
+                IntraDayDate end = taskElement.getIntraDayEndDate();
+
+                EffortDuration effortBetween = start.effortUntil(end);
+                int seconds = new BigDecimal(effortBetween.getSeconds())
+                        .multiply(proportion).toBigInteger().intValue();
+                return TaskElementAdapter.toGantt(
+                        start.addEffort(EffortDuration.seconds(seconds)),
+                        EffortDuration.hours(8));
             }
 
             private BigDecimal getMoneyCostBarPercentage() {
