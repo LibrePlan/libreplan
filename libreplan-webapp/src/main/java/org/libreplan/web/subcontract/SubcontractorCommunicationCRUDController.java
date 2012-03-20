@@ -109,7 +109,10 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
 
     public void setCurrentFilterItem(FilterCommunicationEnum selected) {
         subcontractorCommunicationModel.setCurrentFilter(selected);
+        refreshSubcontractorCommunicationsList();
+    }
 
+    private void refreshSubcontractorCommunicationsList() {
         // update the subcontractor communication list
         listing.setModel(new SimpleListModel(getSubcontractorCommunications()));
         listing.invalidate();
@@ -233,4 +236,12 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
         }
     }
 
+    /**
+     * Apply filter to subcontractors communications
+     *
+     * @param event
+     */
+    public void onApplyFilter(Event event) {
+        refreshSubcontractorCommunicationsList();
+    }
 }

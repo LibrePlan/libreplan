@@ -98,7 +98,10 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
 
     public void setCurrentFilterItem(FilterCommunicationEnum selected) {
         customerCommunicationModel.setCurrentFilter(selected);
+        refreshCustomerCommunicationsList();
+    }
 
+    private void refreshCustomerCommunicationsList(){
         // update the customer communication list
         listing.setModel(new SimpleListModel(getCustomerCommunications()));
         listing.invalidate();
@@ -198,4 +201,11 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
         }
     }
 
+    /**
+     * Apply filter to customers communications
+     * @param event
+     */
+    public void onApplyFilter(Event event) {
+        refreshCustomerCommunicationsList();
+    }
 }
