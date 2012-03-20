@@ -36,6 +36,7 @@ import org.libreplan.business.advance.entities.AdvanceAssignment;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.entities.IndirectAdvanceAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
 
@@ -99,6 +100,43 @@ public class OrderLine extends OrderElement {
     }
 
     @Override
+    public boolean isEmptyLeaf() {
+        if (getWorkHours() != 0) {
+            return false;
+        }
+        if (!getDirectCriterionRequirement().isEmpty()) {
+            return false;
+        }
+        if (!getDirectAdvanceAssignments().isEmpty()) {
+            for (DirectAdvanceAssignment each : getDirectAdvanceAssignments()) {
+                if (!each.getAdvanceMeasurements().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        if (!getQualityForms().isEmpty()) {
+            return false;
+        }
+        if (!getLabels().isEmpty()) {
+            return false;
+        }
+        if (!getMaterialAssignments().isEmpty()) {
+            return false;
+        }
+        if (!getSumChargedEffort().getDirectChargedEffort().isZero()) {
+            return false;
+        }
+        if (!getTaskElements().isEmpty()) {
+            if (!getTaskElements().iterator().next()
+                    .getDayAssignments(FilterType.KEEP_ALL).isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public OrderLine toLeaf() {
         return this;
     }
@@ -106,7 +144,8 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLineGroup toContainer() {
         OrderLineGroup result = OrderLineGroup.create();
-        result.setName("new container");
+        result.setName(getName());
+        setName("");
         return result;
     }
 

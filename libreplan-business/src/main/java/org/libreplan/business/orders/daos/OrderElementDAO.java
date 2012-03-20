@@ -36,6 +36,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
@@ -86,6 +87,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
     public List<OrderElement> findWithoutParent() {
@@ -503,6 +507,11 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             //if the line hadn't been saved, we have nothing to update
             return;
         }
+
+        // Refresh data from database, because of changes not saved are not
+        // useful for the following operations
+        sessionFactory.getCurrentSession().refresh(workReportLine);
+
         OrderElement orderElement = find(workReportLine.getOrderElement().getId());
         EffortDuration effort = workReportLine.getEffort();
 
@@ -535,13 +544,21 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     }
 
     private void updateIndirectChargedEffortWithMap(
-            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort)
+            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort,
+            boolean sum)
             throws InstanceNotFoundException {
 
         for (Long id : relationOrderElementIdAndIndirectChargedEffort.keySet()) {
             OrderElement orderElement = find(id);
-            orderElement.getSumChargedEffort().addIndirectChargedEffort(
-                    relationOrderElementIdAndIndirectChargedEffort.get(id));
+            if (sum) {
+                orderElement.getSumChargedEffort().addIndirectChargedEffort(
+                        relationOrderElementIdAndIndirectChargedEffort.get(id));
+            } else {
+                orderElement.getSumChargedEffort()
+                        .subtractIndirectChargedEffort(
+                                relationOrderElementIdAndIndirectChargedEffort
+                                        .get(id));
+            }
             save(orderElement);
         }
     }
@@ -555,7 +572,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             updateRelatedSumChargedEffortWithDeletedWorkReportLine(line,
                     relationOrderElementIdAndIndirectChargedEffort);
         }
-        updateIndirectChargedEffortWithMap(relationOrderElementIdAndIndirectChargedEffort);
+        updateIndirectChargedEffortWithMap(
+                relationOrderElementIdAndIndirectChargedEffort, false);
     }
 
     @Override
@@ -567,7 +585,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             updateRelatedSumChargedEffortWithWorkReportLine(line,
                     relationOrderElementIdAndIndirectChargedEffort);
         }
-        updateIndirectChargedEffortWithMap(relationOrderElementIdAndIndirectChargedEffort);
+        updateIndirectChargedEffortWithMap(
+                relationOrderElementIdAndIndirectChargedEffort, true);
     }
 
     @SuppressWarnings("unchecked")

@@ -56,6 +56,10 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private IConstraintViolationListener<GanttDate> violationListener;
 
+    private PropertyChangeListener visibilityChangeListener;
+
+    private PropertyChangeListener listener;
+
     private boolean violated = false;
 
     public DependencyComponent(TaskComponent source, TaskComponent destination,
@@ -69,23 +73,6 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         this.source = source;
         this.destination = destination;
         this.dependency = dependency;
-        violationListener = Constraint
-                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
-
-            @Override
-            public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
-                violated = true;
-                sendCSSUpdate();
-            }
-
-            @Override
-            public void constraintSatisfied(Constraint<GanttDate> constraint, GanttDate value) {
-                violated = false;
-                sendCSSUpdate();
-            }
-        });
-        this.dependency.addConstraintViolationListener(violationListener,
-                Mode.RECEIVE_PENDING);
     }
 
     private void sendCSSUpdate() {
@@ -104,7 +91,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         if (listenerAdded) {
             return;
         }
-        PropertyChangeListener listener = new PropertyChangeListener() {
+        listener = new PropertyChangeListener() {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
@@ -113,7 +100,35 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         };
         this.source.getTask().addFundamentalPropertiesChangeListener(listener);
         this.destination.getTask().addFundamentalPropertiesChangeListener(listener);
+
+        violationListener = Constraint
+                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
+
+            @Override
+            public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
+                violated = true;
+                sendCSSUpdate();
+            }
+
+            @Override
+            public void constraintSatisfied(Constraint<GanttDate> constraint, GanttDate value) {
+                violated = false;
+                sendCSSUpdate();
+            }
+        });
+        this.dependency.addConstraintViolationListener(violationListener,
+                Mode.RECEIVE_PENDING);
+
         listenerAdded = true;
+    }
+
+    public void removeChangeListeners() {
+        if (!listenerAdded) {
+            return;
+        }
+        this.source.getTask().removePropertyChangeListener(listener);
+        this.destination.getTask().removePropertyChangeListener(listener);
+        listenerAdded = false;
     }
 
     /**
@@ -190,6 +205,14 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     public boolean hasLimitingTasks() {
         return (source.isLimiting() || destination.isLimiting());
+    }
+
+    public PropertyChangeListener getVisibilityChangeListener() {
+        return visibilityChangeListener;
+    }
+
+    public void setVisibilityChangeListener(PropertyChangeListener visibilityChangeListener) {
+        this.visibilityChangeListener = visibilityChangeListener;
     }
 
 }

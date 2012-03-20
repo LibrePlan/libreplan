@@ -85,7 +85,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     private ConstraintViolationNotificator<GanttDate> violationNotificator = ConstraintViolationNotificator
             .create();
 
-    private IDependenciesEnforcerHook dependenciesEnforcerHook = GanttDiagramGraph.doNothingHook();
+    private IDependenciesEnforcerHook dependenciesEnforcerHook = GanttDiagramGraph
+            .doNothingHook();
 
     private final INotificationAfterDependenciesEnforcement notifyDates = new INotificationAfterDependenciesEnforcement() {
 
@@ -258,11 +259,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         Validate.notNull(dependenciesEnforcerHook);
     }
 
-    public void fireChangesForPreviousValues(GanttDate previousStart,
-            GanttDate previousEnd) {
-        dependenciesEnforcerHook.setStartDate(previousStart, previousStart,
-                fundamentalProperties.getBeginDate());
-        dependenciesEnforcerHook.setNewEnd(previousEnd, getEndDate());
+    public void enforceDependenciesDueToPositionPotentiallyModified() {
+        dependenciesEnforcerHook.positionPotentiallyModified();
     }
 
     public GanttDate getBeginDate() {
@@ -307,6 +305,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         this.fundamentalPropertiesListeners
                 .removePropertyChangeListener(listener);
+    }
+
+    public void removeVisibilityPropertiesChangeListener(
+            PropertyChangeListener listener) {
+        this.visibilityProperties.removePropertyChangeListener(listener);
     }
 
     @Override
@@ -486,6 +489,14 @@ public abstract class Task implements ITaskFundamentalProperties {
     @Override
     public boolean isManualAnyAllocation() {
         return fundamentalProperties.isManualAnyAllocation();
+    }
+
+    public boolean belongsClosedProject() {
+        return fundamentalProperties.belongsClosedProject();
+    }
+
+    public boolean isRoot() {
+        return fundamentalProperties.isRoot();
     }
 
 }

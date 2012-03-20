@@ -113,8 +113,41 @@ public class TaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
+    private static TaskPositionConstraint getLeftMostFixedDateConstraintAmongChildren(
+            TaskGroup container) {
+
+        TaskPositionConstraint constraint = null;
+        for(TaskElement child : ((TaskGroup)container).getChildren()) {
+            TaskPositionConstraint currentConstraint = null;
+            if (child instanceof ITaskPositionConstrained) {
+                ITaskPositionConstrained task = (ITaskPositionConstrained) child;
+                currentConstraint = task.getPositionConstraint();
+            }
+            else if (child instanceof TaskGroup) {
+                currentConstraint = getLeftMostFixedDateConstraintAmongChildren(
+                        (TaskGroup) child);
+            }
+            if(currentConstraint != null &&
+                    currentConstraint.getConstraintType().equals(
+                            PositionConstraintType.START_IN_FIXED_DATE) &&
+                    (constraint == null || currentConstraint.getConstraintDate().
+                            compareTo(constraint.getConstraintDate()) < 0)) {
+                constraint = currentConstraint;
+            }
+        }
+        return constraint;
+    }
     public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement, LocalDate orderInitDate) {
+        if (taskElement instanceof TaskGroup) {
+            TaskPositionConstraint constraint =
+                    getLeftMostFixedDateConstraintAmongChildren((TaskGroup) taskElement);
+            if(constraint == null) {
+                return Collections.emptyList();
+            }
+            return Collections.singletonList(equalTo(toGantt(
+                    constraint.getConstraintDate())));
+        }
         if (taskElement instanceof ITaskPositionConstrained) {
             ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint startConstraint = task
@@ -436,15 +469,14 @@ public class TaskElementAdapter {
                 public void moveTo(GanttDate newStart) {
                     if (taskElement instanceof ITaskPositionConstrained) {
                         ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
+                        GanttDate newEnd = inferEndFrom(newStart);
                         if (task.getPositionConstraint()
                                 .isConstraintAppliedToStart()) {
                             setBeginDate(newStart);
-                            task.explicityMoved(toIntraDay(newStart));
                         } else {
-                            GanttDate newEnd = inferEndFrom(newStart);
                             setEndDate(newEnd);
-                            task.explicityMoved(toIntraDay(newEnd));
                         }
+                        task.explicityMoved(toIntraDay(newStart), toIntraDay(newEnd));
                     }
                 }
             };
@@ -535,7 +567,8 @@ public class TaskElementAdapter {
                             .compareTo(PositionConstraintType.FINISH_NOT_LATER_THAN) == 0
                             || constraintType
                                     .compareTo(PositionConstraintType.AS_LATE_AS_POSSIBLE) == 0) {
-                        task.explicityMoved(toIntraDay(endDate));
+                        task.explicityMoved(taskElement.getIntraDayStartDate(),
+                                toIntraDay(endDate));
                     }
                 }
             }
@@ -1095,6 +1128,16 @@ public class TaskElementAdapter {
             public boolean isManualAnyAllocation() {
                 return taskElement.isTask()
                         && ((Task) taskElement).isManualAnyAllocation();
+            }
+
+            @Override
+            public boolean belongsClosedProject() {
+                return taskElement.belongsClosedProject();
+            }
+
+            @Override
+            public boolean isRoot() {
+                return taskElement.isRoot();
             }
 
         }

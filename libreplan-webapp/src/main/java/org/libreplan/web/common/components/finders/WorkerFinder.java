@@ -21,6 +21,7 @@
 
 package org.libreplan.web.common.components.finders;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.libreplan.business.resources.daos.IWorkerDAO;
@@ -45,7 +46,9 @@ public class WorkerFinder extends Finder implements IFinder {
 
     @Transactional(readOnly = true)
     public List<Worker> getAll() {
-        return workerDAO.getWorkers();
+        List<Worker> result = workerDAO.getWorkers();
+        Collections.sort(result);
+        return result;
     }
 
     @Override

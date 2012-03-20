@@ -71,7 +71,7 @@ public class ResourcesPerDayTest {
             private int getDecimalPart(ResourcesPerDay r) {
                 BigDecimal onlyDecimal = r.getAmount().subtract(
                         new BigDecimal(r.getAmount().intValue()));
-                BigDecimal decimalPartAsInt = onlyDecimal.movePointRight(2);
+                BigDecimal decimalPartAsInt = onlyDecimal.movePointRight(4);
                 int result = decimalPartAsInt.intValue();
                 return result;
             }
@@ -90,25 +90,25 @@ public class ResourcesPerDayTest {
     public void theUnitsAmountCanBeADecimalValue() {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay
                 .amount(new BigDecimal(2.2));
-        assertThat(resourcesPerDay, readsAs(2, 20));
+        assertThat(resourcesPerDay, readsAs(2, 2000));
     }
 
     @Test
-    public void theAmountIsConvertedToABigDecimalOfScale2() {
+    public void theAmountIsConvertedToABigDecimalOfScale4() {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay
                 .amount(new BigDecimal(2.2));
-        assertThat(resourcesPerDay.getAmount().scale(), equalTo(2));
+        assertThat(resourcesPerDay.getAmount().scale(), equalTo(4));
     }
 
     @Test
-    public void ifTheAmountSpecifiedHasBiggerScaleThan2ItIsRoundedHalfUp() {
-        BigDecimal[] examples = { new BigDecimal(2.236),
-                new BigDecimal(2235).movePointLeft(3), new BigDecimal(2.24),
-                new BigDecimal(2.2449) };
+    public void ifTheAmountSpecifiedHasBiggerScaleThan4ItIsRoundedHalfUp() {
+        BigDecimal[] examples = { new BigDecimal(2.11236),
+                new BigDecimal(211235).movePointLeft(5),
+                new BigDecimal(2.1124), new BigDecimal(2.112449) };
         for (BigDecimal example : examples) {
             ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(example);
-            assertThat(resourcesPerDay.getAmount().scale(), equalTo(2));
-            assertThat(resourcesPerDay, readsAs(2, 24));
+            assertThat(resourcesPerDay.getAmount().scale(), equalTo(4));
+            assertThat(resourcesPerDay, readsAs(2, 1124));
         }
     }
 
@@ -154,7 +154,7 @@ public class ResourcesPerDayTest {
 
     @Test
     public void twoResourcesPerDayAreEqualsIfNormalizeToTheSameAmount() {
-        ResourcesPerDay a = ResourcesPerDay.amount(new BigDecimal(2.001));
+        ResourcesPerDay a = ResourcesPerDay.amount(new BigDecimal(2.00001));
         ResourcesPerDay b = ResourcesPerDay.amount(2);
         assertEquals(a.hashCode(), b.hashCode());
         assertEquals(a, b);
@@ -169,7 +169,7 @@ public class ResourcesPerDayTest {
 
     @Test
     public void isZeroIfHaveZeroValue() {
-        BigDecimal[] examples = { new BigDecimal(0.0001), new BigDecimal(0),
+        BigDecimal[] examples = { new BigDecimal(0.00001), new BigDecimal(0),
                 new BigDecimal(00), new BigDecimal(0.00) };
         for (BigDecimal example : examples) {
             assertTrue(ResourcesPerDay.amount(example).isZero());
@@ -178,8 +178,9 @@ public class ResourcesPerDayTest {
 
     @Test
     public void notZeroIfNoZeroValue() {
-        BigDecimal[] examples = { new BigDecimal(0.01), new BigDecimal(0.009),
-                new BigDecimal(1), new BigDecimal(0.10) };
+        BigDecimal[] examples = { new BigDecimal(0.0001),
+                new BigDecimal(0.00009), new BigDecimal(1),
+                new BigDecimal(0.1000) };
         for (BigDecimal example : examples) {
             assertFalse(ResourcesPerDay.amount(example).isZero());
         }
@@ -190,18 +191,18 @@ public class ResourcesPerDayTest {
     public void canCalculateTheResourcesPerDayFromTheWorkingEffortAndTheWorkableEffort() {
         Object[] periodicalNumber = {
                 ResourcesPerDay.calculateFrom(seconds(10), seconds(3)),
-                readsAs(3, 33) };
+                readsAs(3, 3333) };
         Object[][] examples = {
                 { ResourcesPerDay.calculateFrom(seconds(1000), seconds(1000)),
-                        readsAs(1, 00) },
+                        readsAs(1, 0000) },
                 { ResourcesPerDay.calculateFrom(seconds(2000), seconds(1000)),
-                        readsAs(2, 00) },
+                        readsAs(2, 0000) },
                 { ResourcesPerDay.calculateFrom(seconds(500), seconds(1000)),
-                        readsAs(0, 50) },
+                        readsAs(0, 5000) },
                 { ResourcesPerDay.calculateFrom(seconds(651), seconds(1000)),
-                        readsAs(0, 65) },
+                        readsAs(0, 6510) },
                 { ResourcesPerDay.calculateFrom(seconds(1986), seconds(1000)),
-                        readsAs(1, 99) },
+                        readsAs(1, 9860) },
                 periodicalNumber };
         for (Object[] pair : examples) {
             ResourcesPerDay first = (ResourcesPerDay) pair[0];
@@ -220,9 +221,9 @@ public class ResourcesPerDayTest {
                 { ResourcesPerDay.amount(10),
                     readsAs(8, 0), readsAs(2, 0) },
                 { ResourcesPerDay.amount(1),
-                    readsAs(0, 80), readsAs(0, 20) },
+                    readsAs(0, 8000), readsAs(0, 2000) },
                 { ResourcesPerDay.amount(new BigDecimal(0.5)),
-                    readsAs(0, 40),readsAs(0, 10) } };
+                    readsAs(0, 4000),readsAs(0, 1000) } };
         for (Object[] eachExample : examples) {
             ResourcesPerDay toDistribute = (ResourcesPerDay) eachExample[0];
             Matcher<ResourcesPerDay> firstMatcher = (Matcher<ResourcesPerDay>) eachExample[1];

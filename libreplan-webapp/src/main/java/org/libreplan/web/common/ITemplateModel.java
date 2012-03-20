@@ -58,4 +58,8 @@ public interface ITemplateModel {
 
     boolean isUserAdmin();
 
+    boolean isCheckNewVersionEnabled();
+
+    boolean isAllowToGatherUsageStatsEnabled();
+
 }

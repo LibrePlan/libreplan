@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,6 @@ import static org.libreplan.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -115,6 +114,7 @@ import org.zkoss.zul.Messagebox;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -217,6 +217,8 @@ public class SaveCommandBuilder {
 
         private final List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
 
+        private boolean disabled = false;
+
         public SaveCommand(PlanningState planningState,
                 PlannerConfiguration<TaskElement> configuration) {
             this.state = planningState;
@@ -241,6 +243,10 @@ public class SaveCommandBuilder {
 
         @Override
         public void doAction(IContext<TaskElement> context) {
+            if (disabled) {
+                return;
+            }
+
             save(null, new IAfterSaveActions() {
 
                 @Override
@@ -362,6 +368,33 @@ public class SaveCommandBuilder {
             subcontractedTaskDataDAO.removeOrphanedSubcontractedTaskData();
 
             saveOrderAuthorizations();
+
+            removeTaskElementsWithTaskSourceNull();
+
+            state.updateSavedOrderState();
+        }
+
+        private void removeTaskElementsWithTaskSourceNull() {
+            List<TaskElement> toRemove = taskElementDAO
+                    .getTaskElementsNoMilestonesWithoutTaskSource();
+            for (TaskElement taskElement : toRemove) {
+                try {
+                    taskElementDAO.remove(taskElement.getId());
+
+                    TaskGroup parent = taskElement.getParent();
+                    if (parent != null && !toRemove.contains(parent)) {
+                        parent.remove(taskElement);
+                        taskElementDAO.save(parent);
+                    }
+
+                    LOG.info("TaskElement removed because of TaskSource was null. "
+                            + taskElement);
+                } catch (InstanceNotFoundException e) {
+                    // Do nothing
+                    // Maybe it was already removed before reaching this point
+                    // so if it's not in the database there isn't any problem
+                }
+            }
         }
 
         private void saveOrderAuthorizations() {
@@ -989,5 +1022,16 @@ public class SaveCommandBuilder {
                 }
             }
         }
+
+        @Override
+        public void setDisabled(boolean disabled) {
+            this.disabled = disabled;
+        }
+
+        @Override
+        public boolean isDisabled() {
+            return disabled;
+        }
+
     }
 }

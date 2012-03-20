@@ -1087,6 +1087,7 @@ public class ManageOrderElementAdvancesController extends
                     }
                 }
             });
+            value.focus();
         }
 
         private void appendLabelPercentage(final Listitem listitem) {
@@ -1280,7 +1281,7 @@ public class ManageOrderElementAdvancesController extends
         }
         if (!manageOrderElementAdvancesModel.isPrecisionValid(measurement)) {
             return _(
-                    "Value must be a multiple of the precission value of the progress type: {0}",
+                    "Value must be a multiple of the precision value of the progress type: {0}",
                     manageOrderElementAdvancesModel.getUnitPrecision()
                             .stripTrailingZeros().toPlainString());
         }

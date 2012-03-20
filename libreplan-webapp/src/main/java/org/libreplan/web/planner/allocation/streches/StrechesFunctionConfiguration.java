@@ -95,6 +95,7 @@ public abstract class StrechesFunctionConfiguration implements
     @Override
     public void applyOn(ResourceAllocation<?> resourceAllocation) {
         resourceAllocation.setAssignmentFunctionAndApplyIfNotFlat(StretchesFunction.create());
+        assignmentFunctionChanged();
     }
 
     @Override

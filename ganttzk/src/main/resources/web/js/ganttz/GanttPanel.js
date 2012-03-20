@@ -51,7 +51,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
      * it's not available right now. It is queried instead. Using throttle
      * to not re-query it constantly */
     _getTimeplotContainer: common.Common.throttle(500, function() {
-        return jq('canvas.timeplot-canvas');
+        return jq('canvas.timeplot-canvas').parent();
     }),
     _initializeProperties : function(){
         this._timetrackergap    = jq('.timetrackergap');

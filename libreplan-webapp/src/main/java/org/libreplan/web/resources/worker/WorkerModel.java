@@ -203,7 +203,6 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
 
         if (virtual) {
             worker = VirtualWorker.create("");
-            setCapacity(1);
         } else {
             worker = Worker.create("");
         }
@@ -545,21 +544,6 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             return worker.getCalendar();
         }
         return null;
-    }
-
-    @Override
-    public Integer getCapacity() {
-        if (getCalendar() != null) {
-            return getCalendar().getCapacity();
-        }
-        return null;
-    }
-
-    @Override
-    public void setCapacity(Integer capacity) {
-        if (getCalendar() != null) {
-            getCalendar().setCapacity(capacity);
-        }
     }
 
     public IAssignedCriterionsModel getAssignedCriterionsModel() {

@@ -159,4 +159,40 @@
         </sql>
     </changeSet>
 
+    <changeSet id="add-new-column-check_new_version_enabled" author="mrego">
+        <comment>Add new column check_new_version_enabled with default value TRUE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="check_new_version_enabled" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="check_new_version_enabled"
+           defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="check_new_version_enabled"
+            defaultNullValue="TRUE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-allow_to_gather_usage_stats_enabled" author="mrego">
+        <comment>Add new column allow_to_gather_usage_stats_enabled with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="allow_to_gather_usage_stats_enabled" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="allow_to_gather_usage_stats_enabled"
+           defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="allow_to_gather_usage_stats_enabled"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="change-column-description-in-order_element-to-text" author="mrego">
+        <comment>Change column description in order_element to TEXT</comment>
+        <modifyDataType tableName="order_element" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
+    <changeSet id="change-column-description-in-order_element_template-to-text" author="mrego">
+        <comment>Change column description in order_element_template to TEXT</comment>
+        <modifyDataType tableName="order_element_template" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
 </databaseChangeLog>

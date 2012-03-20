@@ -89,4 +89,8 @@ td.migas_linea {
     width: 100% !important;
 }
 
+.migas_linea span.scheduling-state {
+    display: none;
+}
+
 /* ------ Calculated body width and height added via CutyPrint CSS generator ------ */

@@ -150,6 +150,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
             setDefaultCode();
         }
         loadMaps();
+        deletedWorkReportLinesSet = new HashSet<WorkReportLine>();
     }
 
     @Override
@@ -161,6 +162,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
         forceLoadWorkReportTypeFromDB(workReport.getWorkReportType());
         loadMaps();
         initOldCodes();
+        deletedWorkReportLinesSet = new HashSet<WorkReportLine>();
     }
 
     @Transactional(readOnly = true)

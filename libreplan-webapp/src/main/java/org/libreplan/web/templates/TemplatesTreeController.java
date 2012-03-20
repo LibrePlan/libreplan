@@ -107,6 +107,7 @@ public class TemplatesTreeController extends
                     });
 
             addCell(textBox);
+            putNameTextbox(element, textBox);
         }
 
         @Override

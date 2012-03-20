@@ -390,7 +390,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
         }
     }
 
-    private EffortDuration atNearestMinute() {
+    public EffortDuration atNearestMinute() {
         EnumMap<Granularity, Integer> decompose = this.decompose();
         int seconds = decompose.get(Granularity.SECONDS);
         if (seconds >= 30) {

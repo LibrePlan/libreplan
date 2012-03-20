@@ -93,6 +93,19 @@
                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                             </row>
                             <row>
+                                <label value="${i18n:_('Check for updates')}" />
+                                <vbox>
+                                    <checkbox
+                                        label="${i18n:_('Show a notification when new LibrePlan versions are released')}"
+                                        tooltiptext="${i18n:_('Enable/Disable warning about new LibrePlan versions available')}"
+                                        checked="@{configurationController.checkNewVersionEnabled}" />
+                                    <checkbox
+                                        label="${i18n:_('Help project developers to collect information about which LibrePlan version you are using')}"
+                                        tooltiptext="${i18n:_('Check this option to send this information to LibrePlan developers in order to generate usage statistics')}"
+                                        checked="@{configurationController.allowToGatherUsageStatsEnabled}" />
+                                </vbox>
+                            </row>
+                            <row>
                                 <label value="${i18n:_('Generate code for')}" />
                                 <grid>
                                     <columns>
@@ -163,25 +176,9 @@
                             <row>
                                 <label
                                     value="${i18n:_('Perspectives')}" />
-                                <grid>
-                                    <columns>
-                                        <column width="50%" />
-                                        <column />
-                                    </columns>
-                                    <rows>
-                                        <row>
-                                            <checkbox
-                                                label="${i18n:_('MonteCarlo method')}"
-                                                checked="@{configurationController.monteCarloMethodTabVisible}" />
-                                        </row>
-                                        <row>
-                                            <checkbox
-                                                id="scenariosVisible"
-                                                label="${i18n:_('Enable scenarios module')}"
-                                                checked="@{configurationController.scenariosVisible}" />
-                                        </row>
-                                    </rows>
-                                </grid>
+                                <checkbox
+                                    label="${i18n:_('MonteCarlo method')}"
+                                    checked="@{configurationController.monteCarloMethodTabVisible}" />
                             </row>
                         </rows>
                     </grid>
@@ -348,16 +345,14 @@
                                 <row>
                                     <label value="${i18n:_('Role property')}" />
                                     <hbox>
-                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"
-                                            disabled="@{configurationController.ldapGroupStrategy}" />
+                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px" />
                                         <label value="${i18n:__('Example: {0}', 'member')}" />
                                     </hbox>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Role search query')}" />
                                     <hbox>
-                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"
-                                            disabled="@{configurationController.ldapGroupStrategy}" />
+                                        <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px" />
                                         <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>

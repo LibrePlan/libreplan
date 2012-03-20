@@ -81,8 +81,7 @@ public class CriterionBandboxFinder extends BandboxFinder implements IBandboxFin
     @Transactional(readOnly = true)
     public String objectToString(Object obj) {
         Criterion criterion = (Criterion) obj;
-        return criterion.getType().getName() + " :: "
-                + getNamesHierarchy(criterion, new String());
+        return criterion.getCompleteName();
     }
 
     @Override
@@ -117,7 +116,7 @@ public class CriterionBandboxFinder extends BandboxFinder implements IBandboxFin
         Criterion parent = criterion.getParent();
         if(parent != null){
             etiqueta = getNamesHierarchy(parent,etiqueta);
-            etiqueta = etiqueta.concat(" -> ");
+            etiqueta = etiqueta.concat(" > ");
         }
         return etiqueta.concat(criterion.getName());
     }

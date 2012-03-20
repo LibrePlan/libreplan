@@ -134,7 +134,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
             class="footer-messages-area"
             style="display:${templateCtrl.defaultPasswdAdminVisible}">
             <div>
-                <n:span>${i18n:_("The admin's account password remains the default one. This is unsecure")}.</n:span>
+                <n:span>${i18n:_("The admin's account password remains the default one. This is insecure")}.</n:span>
                 <n:a class="command" href="${contextPath}/users/users.zul#edit%3D${idAdminUser}">[${i18n:_('Change the password')}]</n:a>
             </div>
         </n:div>
@@ -153,6 +153,15 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
                     style="display:${templateCtrl.defaultPasswdWswriterVisible}">[wswriter]</n:a>
                 <n:span class="footer-messages-area">
                     ${i18n:_('default password were not changed')}.
+                </n:span>
+            </div>
+        </n:div>
+        <n:div if="${templateCtrl.newVersionAvailable}" id="warningNewVersion"
+            class="footer-messages-area">
+            <div>
+                <n:span>
+                    ${i18n:_("A new version of LibrePlan is available. Please check next link for more information:")}
+                    <n:strong><n:a href="http://www.libreplan.com/download/" target="_blank">http://www.libreplan.com/download/</n:a></n:strong>
                 </n:span>
             </div>
         </n:div>

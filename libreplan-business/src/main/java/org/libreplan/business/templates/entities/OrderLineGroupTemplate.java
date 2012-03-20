@@ -89,6 +89,16 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
             getThis().getSchedulingState().add(newChildState);
         }
 
+        @Override
+        public boolean isLeaf() {
+            return false;
+        }
+
+        @Override
+        public boolean isEmptyLeaf() {
+            return false;
+        }
+
     }
 
     public static OrderLineGroupTemplate createNew() {
@@ -215,6 +225,11 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
 
     @Override
     public boolean isLeaf() {
+        return false;
+    }
+
+    @Override
+    public boolean isEmptyLeaf() {
         return false;
     }
 

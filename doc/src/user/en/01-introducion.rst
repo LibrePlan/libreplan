@@ -36,7 +36,7 @@ As can be seen in the program's main screen (shot given previously) and the comp
 .. figure:: images/order_list.png
    :scale: 50
 
-   Order list
+   Work Breakdown Structure
 
 
 The view management commented on previously for the company overview is very similar to the management planned for a single project. A project can be accessed in several ways:

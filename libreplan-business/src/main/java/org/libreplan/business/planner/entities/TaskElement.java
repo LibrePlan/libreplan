@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +47,7 @@ import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
@@ -393,6 +395,10 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+        if (taskSource != null && taskSource.getOrderElement() != null) {
+            taskSource.getOrderElement().setDeadline(
+                    (deadline == null)? null : deadline.toDateMidnight().toDate());
+        }
     }
 
     void add(Dependency dependency) {
@@ -626,6 +632,18 @@ public abstract class TaskElement extends BaseEntity {
         return "assigned";
     }
 
+    public Boolean belongsClosedProject() {
+        EnumSet<OrderStatusEnum> CLOSED = EnumSet.of(OrderStatusEnum.CANCELLED,
+                OrderStatusEnum.FINISHED, OrderStatusEnum.STORED);
+
+        Order order = getOrderElement().getOrder();
+        if(CLOSED.contains(order.getState())) {
+            return true;
+        }
+
+        return false;
+    }
+
     public abstract boolean hasLimitedResourceAllocation();
 
     public void removePredecessorsDayAssignmentsFor(Scenario scenario) {
@@ -705,6 +723,10 @@ public abstract class TaskElement extends BaseEntity {
 
     public void updateAdvancePercentageFromOrderElement() {
         setAdvancePercentage(getOrderElement().getAdvancePercentage());
+    }
+
+    public Boolean isRoot() {
+        return (this.getParent() == null);
     }
 
 }

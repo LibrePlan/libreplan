@@ -57,7 +57,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
@@ -111,15 +110,9 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Textbox prefixBox;
 
-    private Checkbox scenariosVisible;
-
     private UserRole roles;
 
     private Textbox ldapGroupPath;
-
-    private Textbox ldapRoleProperty;
-
-    private Textbox ldapSearchQuery;
 
     private Radiogroup strategy;
 
@@ -142,12 +135,6 @@ public class ConfigurationController extends GenericForwardComposer {
         initializeProgressTypeList();
         messages = new MessagesForUser(messagesContainer);
         reloadEntitySequences();
-        if (moreScenariosThanMasterCreated()) {
-            scenariosVisible.setChecked(true);
-            scenariosVisible.setDisabled(true);
-            scenariosVisible
-                    .setTooltiptext(_("Scenarios must be enabled as more elements than master exist"));
-        }
         loadRoleStrategyRows();
     }
 
@@ -161,13 +148,9 @@ public class ConfigurationController extends GenericForwardComposer {
         if (getLdapConfiguration().getLdapGroupStrategy()) {
             strategy.setSelectedIndex(0);
             ldapGroupPath.setDisabled(false);
-            ldapSearchQuery.setDisabled(true);
-            ldapRoleProperty.setDisabled(true);
         } else {
             strategy.setSelectedIndex(1);
             ldapGroupPath.setDisabled(true);
-            ldapSearchQuery.setDisabled(false);
-            ldapRoleProperty.setDisabled(false);
         }
     }
 
@@ -467,14 +450,6 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public Boolean isMonteCarloMethodTabVisible() {
         return configurationModel.isMonteCarloMethodTabVisible();
-    }
-
-    public void setScenariosVisible(Boolean scenariosVisible) {
-        configurationModel.setScenariosVisible(scenariosVisible);
-    }
-
-    public Boolean isScenariosVisible() {
-        return configurationModel.isScenariosVisible();
     }
 
     public ProgressTypeRenderer getProgressTypeRenderer() {
@@ -779,10 +754,6 @@ public class ConfigurationController extends GenericForwardComposer {
         return EntityNameEnum.values();
     }
 
-    public boolean moreScenariosThanMasterCreated() {
-        return configurationModel.moreScenariosThanMasterCreated();
-    }
-
     // Tab ldap properties
     public LDAPConfiguration getLdapConfiguration() {
         return configurationModel.getLdapConfiguration();
@@ -845,6 +816,24 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public boolean isLdapPropertyStrategy() {
         return !getLdapConfiguration().getLdapGroupStrategy();
+    }
+
+    public boolean isCheckNewVersionEnabled() {
+        return configurationModel.isCheckNewVersionEnabled();
+    }
+
+    public void setCheckNewVersionEnabled(boolean checkNewVersionEnabled) {
+        configurationModel.setCheckNewVersionEnabled(checkNewVersionEnabled);
+    }
+
+    public boolean isAllowToGatherUsageStatsEnabled() {
+        return configurationModel.isAllowToGatherUsageStatsEnabled();
+    }
+
+    public void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled) {
+        configurationModel
+                .setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
     }
 
 }

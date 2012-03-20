@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -224,13 +224,21 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             hours.setValue(0);
         }
 
+        Textbox nameTextbox = null;
+
         // Parse hours
         try {
             if (tree.getSelectedCount() == 1) {
                 T node = getSelectedNode();
-                getModel().addElementAt(node, name.getValue(),
+
+                T newNode = getModel().addElementAt(node, name.getValue(),
                         hours.getValue());
-                getRenderer().refreshHoursValueForThisNodeAndParents(node);
+                getRenderer().refreshHoursValueForThisNodeAndParents(newNode);
+
+                if (node.isLeaf() && !node.isEmptyLeaf()) {
+                    // Then a new container will be created
+                    nameTextbox = getRenderer().getNameTextbox(node);
+                }
             } else {
                 getModel().addElement(name.getValue(), hours.getValue());
             }
@@ -239,9 +247,15 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             LOG.warn("exception ocurred adding element", e);
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
+
         name.setValue("");
         hours.setValue(0);
-        name.focus();
+
+        if (nameTextbox != null) {
+            nameTextbox.focus();
+        } else {
+            name.focus();
+        }
     }
 
     protected abstract void filterByPredicateIfAny();
@@ -560,6 +574,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         }
 
+        private Map<T, Textbox> nameTextboxByElement = new HashMap<T, Textbox>();
+
         private Map<T, Intbox> hoursIntBoxByElement = new HashMap<T, Intbox>();
 
         private KeyboardNavigationHandler navigationHandler = new KeyboardNavigationHandler();
@@ -571,6 +587,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public Renderer() {
+        }
+
+        protected Textbox getNameTextbox(T key) {
+            return nameTextboxByElement.get(key);
+        }
+
+        protected void putNameTextbox(T key, Textbox textbox) {
+            nameTextboxByElement.put(key, textbox);
         }
 
         protected void registerFocusEvent(final InputElement inputElement) {
@@ -759,7 +783,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private void setReadOnlyHoursCell(T element,
                 Intbox boxHours, Treecell tc) {
-            if (!readOnly && isLine(element)) {
+            if (!readOnly && element.isLeaf()) {
                 if (getHoursGroupHandler().hasMoreThanOneHoursGroup(element)) {
                     boxHours.setReadonly(true);
                     tc.setTooltiptext(_("Not editable for containing more that an hours group."));
@@ -772,7 +796,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private Intbox buildHoursIntboxFor(final T element) {
             Intbox result = new IntboxDirectValue();
-            if (isLine(element)) {
+            if (element.isLeaf()) {
                 Util.bind(result, getHoursGetterFor(element),
                         getHoursSetterFor(element));
                 result.setConstraint(getHoursConstraintFor(element));
@@ -832,7 +856,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public void updateHoursFor(T element) {
-            if (!readOnly && isLine(element)) {
+            if (!readOnly && element.isLeaf()) {
                 Intbox boxHours = (Intbox) hoursIntBoxByElement.get(element);
                 Treecell tc = (Treecell) boxHours.getParent();
                 setReadOnlyHoursCell(element, boxHours, tc);
@@ -872,10 +896,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
 
             };
-        }
-
-        private boolean isLine(T element) {
-            return element.getChildren().isEmpty();
         }
 
         protected abstract void addOperationsCell(final Treeitem item,

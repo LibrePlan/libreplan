@@ -222,6 +222,9 @@ public class TaskComponent extends Div implements AfterCompose {
             cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned "
                     : " limiting-unassigned ";
         }
+        if (task.isRoot() && task.belongsClosedProject()) {
+            cssClass += " project-closed ";
+        }
         return cssClass;
     }
 
@@ -545,10 +548,6 @@ public class TaskComponent extends Div implements AfterCompose {
     public void updateTooltipText(String progressType) {
         // FIXME Bug #1270
         this.progressType = progressType;
-    }
-
-    private DependencyList getDependencyList() {
-        return getGanntPanel().getDependencyList();
     }
 
     private GanttPanel getGanntPanel() {

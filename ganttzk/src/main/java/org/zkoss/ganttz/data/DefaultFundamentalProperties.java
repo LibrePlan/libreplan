@@ -279,4 +279,14 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return false;
     }
 
+    @Override
+    public boolean belongsClosedProject() {
+        return false;
+    }
+
+    @Override
+    public boolean isRoot() {
+        return false;
+    }
+
 }

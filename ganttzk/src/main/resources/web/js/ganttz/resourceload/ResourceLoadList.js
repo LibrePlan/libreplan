@@ -53,7 +53,7 @@ ganttz.resourceload.ResourceLoadList = zk.$extends(zk.Widget,{
         var scrolledPannelScrollLeft = jq('.rightpanellayout div:first').scrollLeft();
         var scrolledPannelScrollTop = jq('.rightpanellayout div:first').scrollTop();
 
-        jq('canvas.timeplot-canvas').css("left", "-" + scrolledPannelScrollLeft + "px");
+        jq('canvas.timeplot-canvas').parent().css("left", "-" + scrolledPannelScrollLeft + "px");
         jq('.timetrackergap').css("left", "-" + scrolledPannelScrollLeft + "px");
         jq('.leftpanelgap .z-tree-body').css("top", "-" + scrolledPannelScrollTop + "px");
         jq('.resourcesloadgraph div').scrollLeft(scrolledPannelScrollLeft + "px");

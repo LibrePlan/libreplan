@@ -19,6 +19,21 @@
 package org.zkoss.ganttz.util;
 
 /**
+ * <p>
+ * It marks the start and the end part of a potentially reentering execution
+ * using a {@link ThreadLocal} variable. For example, some method execution can
+ * eventually be called again. When that methods is called we want to know if
+ * it's called within the execution of itself or from the outside. I.e., it's
+ * useful to do different things depending if the execution is already being
+ * done or entering in it.
+ * </p>
+ *
+ * <p>
+ * It can detect if it's already executing or not. If it is,
+ * {@link IReentranceCases#ifAlreadyInside()} is called, otherwise
+ * {@link IReentranceCases#ifNewEntrance()} is called.
+ * </p>
+ *
  * @author Óscar González Fernández <ogfernandez@gmail.com>
  */
 public class ReentranceGuard {

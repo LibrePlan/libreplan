@@ -134,13 +134,10 @@ public class SubcontractModel implements ISubcontractModel {
     }
 
     private void recalculateTaskLength() {
-        GanttDate previousStartDate = ganttTask.getBeginDate();
-        GanttDate previousEnd = ganttTask.getEndDate();
-
         task.setStartDate(startDate);
         task.setEndDate(endDate);
 
-        ganttTask.fireChangesForPreviousValues(previousStartDate, previousEnd);
+        ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
     }
 
     @Override

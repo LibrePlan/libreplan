@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,9 @@ import org.zkoss.ganttz.extensions.ICommand;
 
 /**
  * Contract for {@link SaveCommandBuilder} <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public interface ISaveCommand extends ICommand<TaskElement> {
 
@@ -53,5 +55,10 @@ public interface ISaveCommand extends ICommand<TaskElement> {
 
     void save(IBeforeSaveActions beforeSaveActions,
             IAfterSaveActions afterSaveActions) throws ValidationException;
+
+    void setDisabled(boolean disabled);
+
+    @Override
+    boolean isDisabled();
 
 }
