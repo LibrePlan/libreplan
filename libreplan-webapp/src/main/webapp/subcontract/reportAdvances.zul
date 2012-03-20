@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Progress Report')}"?>
+<?page title="${i18n:_('LibrePlan: Send to customers')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
@@ -31,7 +31,7 @@
 <div self="@{define(content)}">
 
 <window apply="${reportAdvancesController}"
-    title="${i18n:_('Progress Report')}">
+    title="${i18n:_('Communications to customers')}">
 
     <vbox id="messagesContainer" />
 

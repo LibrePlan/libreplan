@@ -303,11 +303,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             resourcesItems.add(subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""));
         }
-        resourcesItems.add(subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
-                subItem(_("Subcontracted Tasks"), "/subcontract/subcontractedTasks.zul", ""),
-                subItem(_("Incoming communications from subcontractors"), "/subcontract/subcontractorCommunications.zul",""),
-                subItem(_("Report Progress"), "/subcontract/reportAdvances.zul", ""),
-                subItem(_("Customer subcontracted projects communications"), "/subcontract/customerCommunications.zul","")));
+        resourcesItems.add(subItem(_("Communications"), "/subcontract/subcontractedTasks.zul", "",
+                subItem(_("Send to subcontractors"), "/subcontract/subcontractedTasks.zul", ""),
+                subItem(_("Received from subcontractors"), "/subcontract/subcontractorCommunications.zul",""),
+                subItem(_("Send to customers"), "/subcontract/reportAdvances.zul", ""),
+                subItem(_("Received from customers"), "/subcontract/customerCommunications.zul","")));
         topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
 
         if (isScenariosVisible()) {
