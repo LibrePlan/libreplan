@@ -498,6 +498,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Checkbox advances = (Checkbox) parent.getFellow("print_advances");
         Checkbox reportedHours = (Checkbox) parent
                 .getFellow("print_reported_hours");
+        Checkbox moneyCostBar = (Checkbox) parent
+                .getFellow("print_money_cost_bar");
 
         parameters.put("extension", ".png");
         if (expanded.isChecked() == true) {
@@ -511,6 +513,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
         if (reportedHours.isChecked() == true) {
             parameters.put("reportedHours", "all");
+        }
+        if (moneyCostBar.isChecked() == true) {
+            parameters.put("moneyCostBar", "all");
         }
         if (resources.isChecked() == true) {
             parameters.put("resources", "all");
