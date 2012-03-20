@@ -21,6 +21,7 @@ package org.libreplan.web.subcontract;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -146,8 +148,7 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
             if (date == null) {
                 return "";
             }
-
-            return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
+            return new SimpleDateFormat("dd/MM/yyyy", Locales.getCurrent()).format(date);
         }
 
         private String toString(Object object) {
