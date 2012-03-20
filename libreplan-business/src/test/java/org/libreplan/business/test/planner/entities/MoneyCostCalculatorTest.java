@@ -111,18 +111,20 @@ public class MoneyCostCalculatorTest {
         costCategoryDAO.save(costCategory);
     }
 
-    private void givenResource() {
+    private void givenResource(boolean relatedWithCostCategory) {
         resource = Worker.createUnvalidated("default-resource",
                 "default-resource", "default-resource", "default-resource");
 
-        ResourcesCostCategoryAssignment resourcesCostCategoryAssignment = ResourcesCostCategoryAssignment
-                .create();
-        resourcesCostCategoryAssignment
-                .setCode("resources-cost-category-assignment");
-        resourcesCostCategoryAssignment.setCostCategory(costCategory);
-        resourcesCostCategoryAssignment.setInitDate(new LocalDate());
+        if (relatedWithCostCategory) {
+            ResourcesCostCategoryAssignment resourcesCostCategoryAssignment = ResourcesCostCategoryAssignment
+                    .create();
+            resourcesCostCategoryAssignment
+                    .setCode("resources-cost-category-assignment");
+            resourcesCostCategoryAssignment.setCostCategory(costCategory);
+            resourcesCostCategoryAssignment.setInitDate(new LocalDate());
 
-        resource.addResourcesCostCategoryAssignment(resourcesCostCategoryAssignment);
+            resource.addResourcesCostCategoryAssignment(resourcesCostCategoryAssignment);
+        }
         resourceDAO.save(resource);
     }
 
@@ -160,7 +162,15 @@ public class MoneyCostCalculatorTest {
     private void givenBasicExample() {
         givenTypeOfWorkHours();
         givenCostCategory();
-        givenResource();
+        givenResource(true);
+        givenOrderElement();
+        giveWorkReportType();
+        givenWorkReport();
+    }
+
+    private void givenBasicExampleWithoutCostCategoryRelationship() {
+        givenTypeOfWorkHours();
+        givenResource(false);
         givenOrderElement();
         giveWorkReportType();
         givenWorkReport();
@@ -171,6 +181,14 @@ public class MoneyCostCalculatorTest {
         givenBasicExample();
         assertThat(moneyCostCalculator.getMoneyCost(orderElement),
                 equalTo(new BigDecimal(500).setScale(2)));
+    }
+
+    @Test
+    public void basicTestWithoutCostCategoryRelationship()
+            throws InstanceNotFoundException {
+        givenBasicExampleWithoutCostCategoryRelationship();
+        assertThat(moneyCostCalculator.getMoneyCost(orderElement),
+                equalTo(new BigDecimal(300).setScale(2)));
     }
 
 }
