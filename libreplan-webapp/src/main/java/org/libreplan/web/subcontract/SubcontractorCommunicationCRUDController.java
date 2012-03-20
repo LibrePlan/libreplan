@@ -46,6 +46,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
@@ -217,14 +218,16 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
 
         private void appendOperations(Row row,
                 final SubcontractorCommunication subcontractorCommunication) {
-            Button buttonEdit = new Button(_("edit"));
+            Button buttonEdit = new Button();
+            buttonEdit.setSclass("icono");
+            buttonEdit.setImage("/common/img/ico_editar1.png");
+            buttonEdit.setHoverImage("/common/img/ico_editar.png");
+            buttonEdit.setTooltiptext(_("Edit"));
             buttonEdit.addEventListener(Events.ON_CLICK, new EventListener() {
-
                 @Override
                 public void onEvent(Event arg0) throws Exception {
                     goToEdit(subcontractorCommunication);
                 }
-
             });
             row.appendChild(buttonEdit);
         }

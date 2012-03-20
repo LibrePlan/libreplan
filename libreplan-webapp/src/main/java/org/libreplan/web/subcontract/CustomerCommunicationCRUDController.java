@@ -183,14 +183,16 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
 
         private void appendOperations(Row row,
                 final CustomerCommunication customerCommunication) {
-            Button buttonEdit = new Button(_("edit"));
+            Button buttonEdit = new Button();
+            buttonEdit.setSclass("icono");
+            buttonEdit.setImage("/common/img/ico_editar1.png");
+            buttonEdit.setHoverImage("/common/img/ico_editar.png");
+            buttonEdit.setTooltiptext(_("Edit"));
             buttonEdit.addEventListener(Events.ON_CLICK, new EventListener() {
-
                 @Override
                 public void onEvent(Event arg0) throws Exception {
                     goToEdit(customerCommunication);
                 }
-
             });
             row.appendChild(buttonEdit);
         }
