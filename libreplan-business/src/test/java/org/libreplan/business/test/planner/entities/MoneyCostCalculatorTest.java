@@ -24,11 +24,17 @@ import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
@@ -39,11 +45,15 @@ import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
+import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.MoneyCostCalculator;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.scenarios.daos.IOrderVersionDAO;
+import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
@@ -66,6 +76,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MoneyCostCalculatorTest {
 
+    // @javax.annotation.Resource
+    // private IDataBootstrap defaultAdvanceTypesBootstrapListener;
+    //
+    // @javax.annotation.Resource
+    // private IDataBootstrap configurationBootstrap;
+
+    @javax.annotation.Resource
+    private IDataBootstrap scenariosBootstrap;
+
+    @Before
+    public void loadRequiredaData() {
+        // defaultAdvanceTypesBootstrapListener.loadRequiredData();
+        // configurationBootstrap.loadRequiredData();
+        scenariosBootstrap.loadRequiredData();
+    }
+
     @Autowired
     private IMoneyCostCalculator moneyCostCalculator;
 
@@ -87,10 +113,16 @@ public class MoneyCostCalculatorTest {
     @Autowired
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
+    @Autowired
+    private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     private TypeOfWorkHours typeOfWorkHours;
     private CostCategory costCategory;
     private Resource resource;
-    private OrderElement orderElement;
+    private List<OrderElement> orderElements = new ArrayList<OrderElement>();
     private WorkReportType workReportType;
     private WorkReport workReport;
 
@@ -129,12 +161,47 @@ public class MoneyCostCalculatorTest {
     }
 
     private void givenOrderElement() {
-        orderElement = OrderLine
-                .createOrderLineWithUnfixedPercentage(100);
-        orderElement.setCode("default-order-element");
-        orderElement.setName("default-order-element");
-        orderElement.getHoursGroups().get(0).setCode("default-hours-group");
+        OrderElement orderElement = OrderLine.createOrderLineWithUnfixedPercentage(100);
+        orderElement.setCode("default-order-element-" + UUID.randomUUID());
+        orderElement.setName("default-order-element-" + UUID.randomUUID());
+        orderElement.getHoursGroups().get(0)
+                .setCode("default-hours-group-" + UUID.randomUUID());
         orderElementDAO.save(orderElement);
+
+        orderElements.add(orderElement);
+    }
+
+    private void givenOrderLineGroupWithTwoLines() {
+        OrderLineGroup orderLineGroup = OrderLineGroup.create();
+        orderLineGroup.setCode("default-order-line-group-" + UUID.randomUUID());
+        orderLineGroup.setName("default-order-line-group-" + UUID.randomUUID());
+
+        OrderVersion orderVersion = OrderVersion
+                .createInitialVersion(scenarioManager.getCurrent());
+        orderVersionDAO.save(orderVersion);
+        orderLineGroup.useSchedulingDataFor(orderVersion);
+
+        OrderLine orderLine1 = OrderLine
+                .createOrderLineWithUnfixedPercentage(100);
+        orderLine1.setCode("order-line-1-" + UUID.randomUUID());
+        orderLine1.setName("order-line-1-" + UUID.randomUUID());
+        orderLine1.getHoursGroups().get(0)
+                .setCode("hours-group-1-" + UUID.randomUUID());
+        orderLineGroup.add(orderLine1);
+
+        OrderLine orderLine2 = OrderLine
+                .createOrderLineWithUnfixedPercentage(100);
+        orderLine2.setCode("order-line-2-" + UUID.randomUUID());
+        orderLine2.setName("order-line-2-" + UUID.randomUUID());
+        orderLine2.getHoursGroups().get(0)
+                .setCode("hours-group-2-" + UUID.randomUUID());
+        orderLineGroup.add(orderLine2);
+
+        orderElementDAO.save(orderLineGroup);
+
+        orderElements.add(orderLineGroup);
+        orderElements.add(orderLine1);
+        orderElements.add(orderLine2);
     }
 
     private void giveWorkReportType() {
@@ -144,19 +211,34 @@ public class MoneyCostCalculatorTest {
     }
 
     private void givenWorkReport() {
+        givenWorkReport(null);
+    }
+
+    private void givenWorkReport(List<Integer> hoursList) {
         workReport = WorkReport.create(workReportType);
         workReport.setCode("default-work-report");
 
+        for (OrderElement each : orderElements) {
+            int hours = 10;
+            if (hoursList != null) {
+                hours = hoursList.get(orderElements.indexOf(each));
+            }
+            workReport.addWorkReportLine(createWorkReportLine(each, hours));
+        }
+
+        workReportDAO.save(workReport);
+    }
+
+    private WorkReportLine createWorkReportLine(OrderElement orderElement,
+            Integer hours) {
         WorkReportLine workReportLine = WorkReportLine.create(workReport);
-        workReportLine.setCode("default-work-report-line");
+        workReportLine.setCode("default-work-report-line-" + UUID.randomUUID());
         workReportLine.setDate(new Date());
         workReportLine.setResource(resource);
         workReportLine.setOrderElement(orderElement);
         workReportLine.setTypeOfWorkHours(typeOfWorkHours);
-        workReportLine.setEffort(EffortDuration.hours(10));
-
-        workReport.addWorkReportLine(workReportLine);
-        workReportDAO.save(workReport);
+        workReportLine.setEffort(EffortDuration.hours(hours));
+        return workReportLine;
     }
 
     private void givenBasicExample() {
@@ -176,10 +258,29 @@ public class MoneyCostCalculatorTest {
         givenWorkReport();
     }
 
+    private void givenExampleOrderLineGroup() {
+        givenTypeOfWorkHours();
+        givenCostCategory();
+        givenResource(true);
+        givenOrderLineGroupWithTwoLines();
+        giveWorkReportType();
+        givenWorkReport();
+    }
+
+    private void givenExampleOrderLineGroupWithDifferentHours(
+            List<Integer> hoursList) {
+        givenTypeOfWorkHours();
+        givenCostCategory();
+        givenResource(true);
+        givenOrderLineGroupWithTwoLines();
+        giveWorkReportType();
+        givenWorkReport(hoursList);
+    }
+
     @Test
     public void basicTest() throws InstanceNotFoundException {
         givenBasicExample();
-        assertThat(moneyCostCalculator.getMoneyCost(orderElement),
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
 
@@ -187,8 +288,55 @@ public class MoneyCostCalculatorTest {
     public void basicTestWithoutCostCategoryRelationship()
             throws InstanceNotFoundException {
         givenBasicExampleWithoutCostCategoryRelationship();
-        assertThat(moneyCostCalculator.getMoneyCost(orderElement),
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(300).setScale(2)));
+    }
+
+    @Test
+    public void exampleOrderLineGroup() throws InstanceNotFoundException {
+        givenExampleOrderLineGroup();
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
+                equalTo(new BigDecimal(1500).setScale(2)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(1)),
+                equalTo(new BigDecimal(500).setScale(2)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(2)),
+                equalTo(new BigDecimal(500).setScale(2)));
+    }
+
+    @Test
+    public void exampleOrderLineGroupWithDifferentHours1()
+            throws InstanceNotFoundException {
+        givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(0, 10, 5));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
+                equalTo(new BigDecimal(750).setScale(2)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(1)),
+                equalTo(new BigDecimal(500).setScale(2)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(2)),
+                equalTo(new BigDecimal(250).setScale(2)));
+    }
+
+    @Test
+    public void exampleOrderLineGroupWithDifferentHours2()
+            throws InstanceNotFoundException {
+        givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(6, 0, 0));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
+                equalTo(new BigDecimal(300).setScale(2)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(1)),
+                equalTo(new BigDecimal(0).setScale(2)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(2)),
+                equalTo(new BigDecimal(0).setScale(2)));
+    }
+
+    @Test
+    public void exampleOrderLineGroupWithDifferentHours3()
+            throws InstanceNotFoundException {
+        givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(6, 5, 10));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
+                equalTo(new BigDecimal(1050).setScale(2)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(1)),
+                equalTo(new BigDecimal(250).setScale(2)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(2)),
+                equalTo(new BigDecimal(500).setScale(2)));
     }
 
 }
