@@ -253,7 +253,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
             if (subcontractedTaskData != null) {
                 SubcontractorCommunication subcontractorCommunication = SubcontractorCommunication
                         .create(subcontractedTaskData,
-                                CommunicationType.REPORT_PROGRESS, new Date(),
+                                CommunicationType.PROGRESS_UPDATE, new Date(),
                                 false);
 
                 for (AdvanceMeasurementDTO advanceMeasurementDTO : advanceMeasurementDTOs) {
