@@ -1890,3 +1890,5 @@ select {
 .bandbox-workreport-task input {
     width: 250px;
 }
+
+.communication-not-reviewed div.z-row-cnt .z-label{ font-weight: bold; }

@@ -134,8 +134,12 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
             row.setValue(customerCommunication);
 
             final CommunicationType type = customerCommunication.getCommunicationType();
-            appendLabel(row, toString(type));
+            final boolean reviewed = customerCommunication.getReviewed();
+            if(!customerCommunication.getReviewed()){
+                row.setSclass("communication-not-reviewed");
+            }
 
+            appendLabel(row, toString(type));
             appendLabel(row, customerCommunication.getOrder().getName());
             appendLabel(row, toString(customerCommunication.getDeadline()));
             appendLabel(row, customerCommunication.getOrder().getCode());
@@ -165,7 +169,7 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
             row.appendChild(new Label(label));
         }
 
-        private void appendCheckbox(Row row,
+        private void appendCheckbox(final Row row,
                 final CustomerCommunication customerCommunication) {
             final Checkbox checkBoxReviewed = new Checkbox();
             checkBoxReviewed.setChecked(customerCommunication.getReviewed());
@@ -177,11 +181,19 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
                         public void onEvent(Event arg0) throws Exception {
                             customerCommunication.setReviewed(checkBoxReviewed.isChecked());
                             save(customerCommunication);
+                            updateRowClass(row,checkBoxReviewed.isChecked());
                         }
 
                     });
 
             row.appendChild(checkBoxReviewed);
+        }
+
+        private void updateRowClass(final Row row, Boolean reviewed){
+            row.setSclass("");
+            if(!reviewed){
+                row.setSclass("communication-not-reviewed");
+            }
         }
 
         private void appendOperations(Row row,

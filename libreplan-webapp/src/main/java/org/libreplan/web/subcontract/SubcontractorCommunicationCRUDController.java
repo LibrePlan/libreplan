@@ -144,6 +144,10 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
             SubcontractorCommunication subcontractorCommunication = (SubcontractorCommunication) data;
             row.setValue(subcontractorCommunication);
 
+            final boolean reviewed = subcontractorCommunication.getReviewed();
+            if(!reviewed){
+                row.setSclass("communication-not-reviewed");
+            }
             appendLabel(row, subcontractorCommunication.getCommunicationType().toString());
             appendLabel(row, subcontractorCommunication.getSubcontractedTaskData().getTask().getName());
             appendLabel(row,  getOrderName(subcontractorCommunication.getSubcontractedTaskData()));
@@ -200,7 +204,7 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
             row.appendChild(compLabel);
         }
 
-        private void appendCheckbox(Row row,
+        private void appendCheckbox(final Row row,
                 final SubcontractorCommunication subcontractorCommunication) {
             final Checkbox checkBoxReviewed = new Checkbox();
             checkBoxReviewed.setChecked(subcontractorCommunication.getReviewed());
@@ -212,11 +216,19 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
                         public void onEvent(Event arg0) throws Exception {
                             subcontractorCommunication.setReviewed(checkBoxReviewed.isChecked());
                             save(subcontractorCommunication);
+                            updateRowClass(row, checkBoxReviewed.isChecked());
                         }
 
                     });
 
             row.appendChild(checkBoxReviewed);
+        }
+
+        private void updateRowClass(final Row row, Boolean reviewed){
+            row.setSclass("");
+            if(!reviewed){
+                row.setSclass("communication-not-reviewed");
+            }
         }
 
         private void appendOperations(Row row,
