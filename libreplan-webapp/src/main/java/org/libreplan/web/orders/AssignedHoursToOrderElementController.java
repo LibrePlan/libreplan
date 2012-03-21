@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,7 @@
 
 package org.libreplan.web.orders;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.libreplan.business.orders.entities.OrderElement;
@@ -33,7 +34,9 @@ import org.zkoss.zul.Vbox;
 
 /**
  * Controller for show the asigned hours of the selected order element<br />
+ *
  * @author Susana Montes Pedreria <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class AssignedHoursToOrderElementController extends
         GenericForwardComposer {
@@ -41,6 +44,14 @@ public class AssignedHoursToOrderElementController extends
     private IAssignedHoursToOrderElementModel assignedHoursToOrderElementModel;
 
     private Vbox orderElementHours;
+
+    private Progressmeter hoursProgressBar;
+
+    private Progressmeter exceedHoursProgressBar;
+
+    private Progressmeter moneyCostProgressBar;
+
+    private Progressmeter exceedMoneyCostProgressBar;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -76,6 +87,18 @@ public class AssignedHoursToOrderElementController extends
         return assignedHoursToOrderElementModel.getProgressWork();
     }
 
+    public BigDecimal getBudget() {
+        return assignedHoursToOrderElementModel.getBudget();
+    }
+
+    public BigDecimal getMoneyCost() {
+        return assignedHoursToOrderElementModel.getMoneyCost();
+    }
+
+    public BigDecimal getMoneyCostPercentage() {
+        return assignedHoursToOrderElementModel.getMoneyCostPercentage();
+    }
+
     private IOrderElementModel orderElementModel;
 
     public void openWindow(IOrderElementModel orderElementModel) {
@@ -87,7 +110,12 @@ public class AssignedHoursToOrderElementController extends
             Util.reloadBindings(orderElementHours);
         }
 
+        paintProgressBars();
+    }
+
+    public void paintProgressBars() {
         viewPercentage();
+        showMoneyCostPercentageBars();
     }
 
     public void setOrderElementModel(IOrderElementModel orderElementModel) {
@@ -98,10 +126,6 @@ public class AssignedHoursToOrderElementController extends
         return orderElementModel.getOrderElement();
     }
 
-    private Progressmeter hoursProgressBar;
-
-    private Progressmeter exceedHoursProgressBar;
-
     /**
      * This method shows the percentage of the imputed hours with respect to the
      * estimated hours.If the hours imputed is greater that the hours estimated
@@ -110,16 +134,28 @@ public class AssignedHoursToOrderElementController extends
     private void viewPercentage() {
         if (this.getProgressWork() > 100) {
             hoursProgressBar.setValue(100);
+
             exceedHoursProgressBar.setVisible(true);
-            exceedHoursProgressBar.setValue(0);
             String exceedValue = String.valueOf(getProgressWork() - 100);
             exceedHoursProgressBar.setWidth(exceedValue + "px");
-            exceedHoursProgressBar.setLeft("left");
-            exceedHoursProgressBar
-                    .setStyle("background:red ; border:1px solid red");
         } else {
             hoursProgressBar.setValue(getProgressWork());
             exceedHoursProgressBar.setVisible(false);
+        }
+    }
+
+    private void showMoneyCostPercentageBars() {
+        BigDecimal moneyCostPercentage = getMoneyCostPercentage();
+        if (moneyCostPercentage.compareTo(new BigDecimal(100)) > 0) {
+            moneyCostProgressBar.setValue(100);
+
+            exceedMoneyCostProgressBar.setVisible(true);
+            exceedMoneyCostProgressBar.setWidth(moneyCostPercentage.subtract(
+                    new BigDecimal(100)).intValue()
+                    + "px");
+        } else {
+            moneyCostProgressBar.setValue(moneyCostPercentage.intValue());
+            exceedMoneyCostProgressBar.setVisible(false);
         }
     }
 

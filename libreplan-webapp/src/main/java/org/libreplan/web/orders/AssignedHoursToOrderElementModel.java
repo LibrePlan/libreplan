@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +32,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.planner.entities.MoneyCostCalculator;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
@@ -46,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Ignacio Díaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -57,6 +59,9 @@ public class AssignedHoursToOrderElementModel implements
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private MoneyCostCalculator moneyCostCalculator;
 
     private EffortDuration assignedDirectEffort;
 
@@ -195,6 +200,34 @@ public class AssignedHoursToOrderElementModel implements
         }
         return orderElementDAO.getHoursAdvancePercentage(orderElement)
                 .multiply(new BigDecimal(100)).intValue();
+    }
+
+    @Override
+    public BigDecimal getBudget() {
+        if (orderElement == null) {
+            return BigDecimal.ZERO;
+        }
+        return orderElement.getBudget();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getMoneyCost() {
+        if (orderElement == null) {
+            return BigDecimal.ZERO;
+        }
+        return moneyCostCalculator.getMoneyCost(orderElement);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getMoneyCostPercentage() {
+        if (orderElement == null) {
+            return BigDecimal.ZERO;
+        }
+        return MoneyCostCalculator.getMoneyCostProportion(
+                moneyCostCalculator.getMoneyCost(orderElement),
+                orderElement.getBudget()).multiply(new BigDecimal(100));
     }
 
 }
