@@ -64,13 +64,13 @@
     <popup id="pp">
         <grid id="listingValues" width="300px" fixedLayout="true">
 			<columns>
-                <column label="${i18n:_('Date')}" width="150px" sort="auto(date)" sortDirection="descending"/>
-                <column label="${i18n:_('Progress')}" width="150px" sort="auto(progress)" sortDirection="descending"/>
+                <column label="${i18n:_('Progress %')}" width="150px"/>
+                <column label="${i18n:_('Date')}" width="150px"/>
             </columns>
             <rows>
                 <row self="@{each='value'}" value="@{value}">
-                    <label value="@{value.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
                     <label value="@{value.progress}"/>
+                    <label value="@{value.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
                 </row>
             </rows>
         </grid>
