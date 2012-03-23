@@ -40,8 +40,8 @@
         rowRenderer="@{controller.subcontractedTasksRenderer}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Subcontratation')}"
-                    tooltiptext="${i18n:_('Subcontratation date')}" sort="auto(subcontratationdate)" />
+            <column label="${i18n:_('Subcontracting date')}"
+                    tooltiptext="${i18n:_('Subcontracting date')}" sort="auto(subcontratationDate)" />
             <column label="${i18n:_('Communication')}" sort="auto(communicationdate)"
                 tooltiptext="${i18n:_('Communication date')}" />
             <column label="${i18n:_('Company')}" tooltiptext="${i18n:_('External company')}" sort="auto(externalcompany)" />

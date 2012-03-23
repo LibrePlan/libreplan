@@ -5,7 +5,7 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
- * Copyright (C) 2011 WirelessGalicia, S.L.
+ * Copyright (C) 2011-2012 WirelessGalicia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -62,8 +62,8 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for operations related with subcontracted tasks.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)

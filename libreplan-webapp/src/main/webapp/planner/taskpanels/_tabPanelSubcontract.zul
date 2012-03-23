@@ -41,24 +41,16 @@
             </row>
 
             <row>
-                <label value="${i18n:_('Subcontratation date')}" />
-                <hbox>
-                    <datebox value="@{subController.subcontractedTaskData.subcontratationDate}"
-                        disabled="true" visible="@{subController.notSent}"/>
-                    <label value="@{subController.subcontractedTaskData.subcontratationDate,
-                       converter='org.libreplan.web.common.typeconverters.DateConverter'}"
-                       visible="@{subController.sent}"/>
-                </hbox>
+                <label value="${i18n:_('Subcontracting date')}" />
+                <label value="@{subController.subcontractedTaskData.subcontratationDate,
+                   converter='org.libreplan.web.common.typeconverters.DateConverter'}"
+                   visible="@{subController.sent}"/>
             </row>
             <row>
-                <label value="${i18n:_('Subcontract communication date')}" />
-                <hbox>
-                    <datebox value="@{subController.subcontractedTaskData.subcontractCommunicationDate}"
-                        disabled="true" visible="@{subController.notSent}"/>
-                    <label value="@{subController.subcontractedTaskData.subcontractCommunicationDate,
-                       converter='org.libreplan.web.common.typeconverters.DateConverter'}"
-                       visible="@{subController.sent}"/>
-                </hbox>
+                <label value="${i18n:_('Subcontracting communication date')}" />
+                <label value="@{subController.subcontractedTaskData.subcontractCommunicationDate,
+                   converter='org.libreplan.web.common.typeconverters.DateConverter'}"
+                   visible="@{subController.sent}"/>
             </row>
             <row>
                 <label value="${i18n:_('Work description')}" />
