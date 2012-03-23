@@ -224,6 +224,7 @@ public class ManageOrderElementAdvancesController extends
             AdvanceAssignment advance = (AdvanceAssignment) selectedItem
                     .getValue();
             indexSelectedItem = editAdvances.getIndexOfItem(selectedItem);
+            showInfoAbout(advance);
             prepareEditAdvanceMeasurements(advance);
             reloadAdvances();
         }
@@ -244,11 +245,19 @@ public class ManageOrderElementAdvancesController extends
                 .getSpreadAdvance();
         if (advance != null) {
             indexSelectedItem = getAdvanceAssignments().indexOf(advance);
+            showInfoAbout(advance);
             prepareEditAdvanceMeasurements(advance);
         } else {
             selectAdvanceLine(getAdvanceAssignments().size() - 1);
         }
         reloadAdvances();
+    }
+
+    private void showInfoAbout(AdvanceAssignment advance) {
+        if (manageOrderElementAdvancesModel
+                .isSubcontratedAdvanceTypeAndSubcontratedTask(advance)) {
+            showErrorMessage(_("Subcontractor values are read only because they were reported by the subcontractor company."));
+        }
     }
 
     public void prepareEditAdvanceMeasurements(AdvanceAssignment advance) {
@@ -351,10 +360,16 @@ public class ManageOrderElementAdvancesController extends
             final AdvanceAssignment advance = (AdvanceAssignment) data;
             listItem.setValue(advance);
 
+            Boolean readOnlyAdvance = false;
             boolean isQualityForm = false;
+
             if (advance.getAdvanceType() != null) {
                 isQualityForm = manageOrderElementAdvancesModel
                         .isQualityForm(advance);
+                if (manageOrderElementAdvancesModel
+                        .isSubcontratedAdvanceTypeAndSubcontratedTask(advance)) {
+                    readOnlyAdvance = true;
+                }
             }
 
             if ((advance instanceof DirectAdvanceAssignment)
@@ -372,7 +387,7 @@ public class ManageOrderElementAdvancesController extends
             appendRadioSpread(listItem);
             appendCalculatedCheckbox(listItem);
             appendChartCheckbox(listItem);
-            appendOperations(listItem);
+            appendOperations(listItem, readOnlyAdvance);
         }
     }
 
@@ -661,17 +676,18 @@ public class ManageOrderElementAdvancesController extends
         listItem.appendChild(listCell);
     }
 
-    private void appendOperations(final Listitem listItem) {
+    private void appendOperations(final Listitem listItem, Boolean readOnly) {
         Hbox hbox = new Hbox();
-        appendAddMeasurement(hbox, listItem);
-        appendRemoveButton(hbox, listItem);
+        appendAddMeasurement(hbox, listItem, readOnly);
+        appendRemoveButton(hbox, listItem, readOnly);
 
         Listcell listCell = new Listcell();
         listCell.appendChild(hbox);
         listItem.appendChild(listCell);
     }
 
-    private void appendAddMeasurement(final Hbox hbox, final Listitem listItem) {
+    private void appendAddMeasurement(final Hbox hbox, final Listitem listItem,
+            Boolean readOnly) {
         final AdvanceAssignment advance = (AdvanceAssignment) listItem
                 .getValue();
         final Button addMeasurementButton = createAddMeasurementButton();
@@ -696,13 +712,17 @@ public class ManageOrderElementAdvancesController extends
             addMeasurementButton.setDisabled(true);
             addMeasurementButton
                     .setTooltiptext(_("Calculated progress can not be modified"));
+        } else if (readOnly) {
+            addMeasurementButton.setDisabled(true);
+            addMeasurementButton
+                    .setTooltiptext(_("Subcontractor values are read only because they were reported by the subcontractor company."));
         }
-
         hbox.appendChild(addMeasurementButton);
 
     }
 
-    private void appendRemoveButton(final Hbox hbox, final Listitem listItem) {
+    private void appendRemoveButton(final Hbox hbox, final Listitem listItem,
+            Boolean readOnly) {
         final AdvanceAssignment advance = (AdvanceAssignment) listItem
                 .getValue();
         final Button removeButton = createRemoveButton();
@@ -728,6 +748,10 @@ public class ManageOrderElementAdvancesController extends
             removeButton.setDisabled(true);
             removeButton
                     .setTooltiptext(_("Consolidated progress can not be removed"));
+        } else if (readOnly) {
+            removeButton.setDisabled(true);
+            removeButton
+                    .setTooltiptext(_("Subcontractor values are read only because they were reported by the subcontractor company."));
         }
 
         hbox.appendChild(removeButton);
@@ -1033,7 +1057,6 @@ public class ManageOrderElementAdvancesController extends
         @Override
         public void render(Listitem item, Object data) {
             AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) data;
-
             item.setValue(advanceMeasurement);
 
             appendDecimalBoxValue(item);
@@ -1197,6 +1220,10 @@ public class ManageOrderElementAdvancesController extends
                 removeButton.setDisabled(true);
                 removeButton
                         .setTooltiptext(_("Consolidated progress measurement can not be removed"));
+            } else {
+                removeButton.setDisabled(isReadOnlyAdvanceMeasurements());
+                removeButton
+                        .setTooltiptext(_("Subcontractor values are read only because they were reported by the subcontractor company."));
             }
 
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {

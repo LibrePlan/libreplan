@@ -121,4 +121,11 @@ public interface IManageOrderElementAdvancesModel {
 
     boolean hasAnyConsolidatedAdvanceCurrentOrderElement();
 
+    boolean hasAnySubcontratedTaskOnChildren();
+
+    boolean isSubcontratedAdvanceType(AdvanceAssignment advance);
+
+    boolean isSubcontratedAdvanceTypeAndSubcontratedTask(
+            AdvanceAssignment advance);
+
 }

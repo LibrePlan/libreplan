@@ -415,7 +415,26 @@ public class ManageOrderElementAdvancesModel implements
             return true;
         }
 
-        return this.hasSubcontractedAssociatedTask(this.orderElement);
+        return isSubcontratedAdvanceTypeAndSubcontratedTask(advanceAssignment);
+    }
+
+    @Override
+    public boolean isSubcontratedAdvanceTypeAndSubcontratedTask(
+            AdvanceAssignment advance) {
+        return (isSubcontratedAdvanceType(advance) && hasSubcontractedAssociatedTask(advance
+                .getOrderElement()));
+    }
+
+    @Override
+    public boolean isSubcontratedAdvanceType(AdvanceAssignment advance) {
+        AdvanceType advanceType = advance.getAdvanceType();
+        if (advanceType != null) {
+            if (advanceType.getUnitName().equals(
+                    PredefinedAdvancedTypes.SUBCONTRACTOR.getTypeName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -851,6 +870,7 @@ public class ManageOrderElementAdvancesModel implements
         return orderElement.hasAnyConsolidatedAdvance();
     }
 
+    @Override
     public boolean hasAnySubcontratedTaskOnChildren() {
         List<OrderElement> list = new ArrayList<OrderElement>();
         list.add(orderElement);
