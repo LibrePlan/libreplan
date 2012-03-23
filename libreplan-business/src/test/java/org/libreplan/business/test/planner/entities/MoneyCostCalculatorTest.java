@@ -35,7 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.CostCategory;
@@ -309,22 +308,21 @@ public class MoneyCostCalculatorTest {
     }
 
     @Test
-    public void basicTest() throws InstanceNotFoundException {
+    public void basicTest() {
         givenBasicExample();
         assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
 
     @Test
-    public void basicTestWithoutCostCategoryRelationship()
-            throws InstanceNotFoundException {
+    public void basicTestWithoutCostCategoryRelationship() {
         givenBasicExampleWithoutCostCategoryRelationship();
         assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(300).setScale(2)));
     }
 
     @Test
-    public void exampleOrderLineGroup() throws InstanceNotFoundException {
+    public void exampleOrderLineGroup() {
         givenExampleOrderLineGroup();
         assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(1500).setScale(2)));
@@ -335,8 +333,7 @@ public class MoneyCostCalculatorTest {
     }
 
     @Test
-    public void exampleOrderLineGroupWithDifferentHours1()
-            throws InstanceNotFoundException {
+    public void exampleOrderLineGroupWithDifferentHours1() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(0, 10, 5));
         assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(750).setScale(2)));
@@ -347,8 +344,7 @@ public class MoneyCostCalculatorTest {
     }
 
     @Test
-    public void exampleOrderLineGroupWithDifferentHours2()
-            throws InstanceNotFoundException {
+    public void exampleOrderLineGroupWithDifferentHours2() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(6, 0, 0));
         assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(300).setScale(2)));
@@ -359,8 +355,7 @@ public class MoneyCostCalculatorTest {
     }
 
     @Test
-    public void exampleOrderLineGroupWithDifferentHours3()
-            throws InstanceNotFoundException {
+    public void exampleOrderLineGroupWithDifferentHours3() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(6, 5, 10));
         assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(1050).setScale(2)));
