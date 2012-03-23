@@ -111,18 +111,20 @@ public class MoneyCostCalculatorTest {
     @Autowired
     private IScenarioManager scenarioManager;
 
-    private TypeOfWorkHours typeOfWorkHours;
+    private List<TypeOfWorkHours> typesOfWorkHours = new ArrayList<TypeOfWorkHours>();
     private CostCategory costCategory;
     private Resource resource;
     private List<OrderElement> orderElements = new ArrayList<OrderElement>();
     private WorkReportType workReportType;
     private WorkReport workReport;
 
-    private void givenTypeOfWorkHours() {
-        typeOfWorkHours = TypeOfWorkHours.createUnvalidated(
-                "default-type-of-work-hours", "default-type-of-work-hours",
-                true, new BigDecimal(30));
+    private void givenTypeOfWorkHours(BigDecimal defaultPrice) {
+        TypeOfWorkHours typeOfWorkHours = TypeOfWorkHours.createUnvalidated(
+                "default-type-of-work-hours-" + UUID.randomUUID(),
+                "default-type-of-work-hours-" + UUID.randomUUID(), true,
+                defaultPrice);
         typeOfWorkHoursDAO.save(typeOfWorkHours);
+        typesOfWorkHours.add(typeOfWorkHours);
     }
 
     private void givenCostCategory() {
@@ -130,7 +132,7 @@ public class MoneyCostCalculatorTest {
                 "default-cost-category", true);
         HourCost hourCost = HourCost.createUnvalidated(
                 "default-hour-cost", new BigDecimal(50), new LocalDate());
-        hourCost.setType(typeOfWorkHours);
+        hourCost.setType(typesOfWorkHours.get(0));
         costCategory.addHourCost(hourCost);
         costCategoryDAO.save(costCategory);
     }
@@ -221,6 +223,19 @@ public class MoneyCostCalculatorTest {
         workReportDAO.save(workReport);
     }
 
+    private void givenWorkReportWithSeveralLines(List<Integer> hoursList,
+            List<TypeOfWorkHours> types) {
+        workReport = WorkReport.create(workReportType);
+        workReport.setCode("default-work-report");
+
+        for (Integer hour : hoursList) {
+            workReport.addWorkReportLine(createWorkReportLine(hour,
+                    types.get(hoursList.indexOf(hour))));
+        }
+
+        workReportDAO.save(workReport);
+    }
+
     private WorkReportLine createWorkReportLine(OrderElement orderElement,
             Integer hours) {
         WorkReportLine workReportLine = WorkReportLine.create(workReport);
@@ -228,13 +243,25 @@ public class MoneyCostCalculatorTest {
         workReportLine.setDate(new Date());
         workReportLine.setResource(resource);
         workReportLine.setOrderElement(orderElement);
-        workReportLine.setTypeOfWorkHours(typeOfWorkHours);
+        workReportLine.setTypeOfWorkHours(typesOfWorkHours.get(0));
+        workReportLine.setEffort(EffortDuration.hours(hours));
+        return workReportLine;
+    }
+
+    private WorkReportLine createWorkReportLine(Integer hours,
+            TypeOfWorkHours type) {
+        WorkReportLine workReportLine = WorkReportLine.create(workReport);
+        workReportLine.setCode("default-work-report-line-" + UUID.randomUUID());
+        workReportLine.setDate(new Date());
+        workReportLine.setResource(resource);
+        workReportLine.setOrderElement(orderElements.get(0));
+        workReportLine.setTypeOfWorkHours(type);
         workReportLine.setEffort(EffortDuration.hours(hours));
         return workReportLine;
     }
 
     private void givenBasicExample() {
-        givenTypeOfWorkHours();
+        givenTypeOfWorkHours(new BigDecimal(30));
         givenCostCategory();
         givenResource(true);
         givenOrderElement();
@@ -243,7 +270,7 @@ public class MoneyCostCalculatorTest {
     }
 
     private void givenBasicExampleWithoutCostCategoryRelationship() {
-        givenTypeOfWorkHours();
+        givenTypeOfWorkHours(new BigDecimal(30));
         givenResource(false);
         givenOrderElement();
         giveWorkReportType();
@@ -251,7 +278,7 @@ public class MoneyCostCalculatorTest {
     }
 
     private void givenExampleOrderLineGroup() {
-        givenTypeOfWorkHours();
+        givenTypeOfWorkHours(new BigDecimal(30));
         givenCostCategory();
         givenResource(true);
         givenOrderLineGroupWithTwoLines();
@@ -261,12 +288,24 @@ public class MoneyCostCalculatorTest {
 
     private void givenExampleOrderLineGroupWithDifferentHours(
             List<Integer> hoursList) {
-        givenTypeOfWorkHours();
+        givenTypeOfWorkHours(new BigDecimal(30));
         givenCostCategory();
         givenResource(true);
         givenOrderLineGroupWithTwoLines();
         giveWorkReportType();
         givenWorkReport(hoursList);
+    }
+
+    private void givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(
+            List<Integer> hoursList, List<BigDecimal> pricesList) {
+        for (BigDecimal price : pricesList) {
+            givenTypeOfWorkHours(price);
+        }
+        givenResource(false);
+        givenOrderElement();
+        giveWorkReportType();
+
+        givenWorkReportWithSeveralLines(hoursList, typesOfWorkHours);
     }
 
     @Test
@@ -329,6 +368,24 @@ public class MoneyCostCalculatorTest {
                 equalTo(new BigDecimal(250).setScale(2)));
         assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(2)),
                 equalTo(new BigDecimal(500).setScale(2)));
+    }
+
+    @Test
+    public void exampleWithoutCostCategoryRelationshipButDifferentTypeOfHours1() {
+        givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(
+                Arrays.asList(10, 5),
+                Arrays.asList(new BigDecimal(30), new BigDecimal(50)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
+                equalTo(new BigDecimal(550).setScale(2)));
+    }
+
+    @Test
+    public void exampleWithoutCostCategoryRelationshipButDifferentTypeOfHours2() {
+        givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(
+                Arrays.asList(10, 5, 8), Arrays.asList(new BigDecimal(30),
+                        new BigDecimal(50), new BigDecimal(40)));
+        assertThat(moneyCostCalculator.getMoneyCost(orderElements.get(0)),
+                equalTo(new BigDecimal(870).setScale(2)));
     }
 
 }
