@@ -213,13 +213,13 @@ public class SubcontractController extends GenericForwardComposer {
 
         private Button getDeleteButton(
                 final SubcontractorDeliverDate subcontractorDeliverDate) {
+
             Button deleteButton = new Button();
             deleteButton.setDisabled(isNotUpdate(subcontractorDeliverDate));
-
-            deleteButton.setImage("/common/img/ico_borrar_out.png");
-            deleteButton.setHoverImage("/common/img/ico_borrar_out.png");
-            deleteButton.setTooltiptext("");
-
+            deleteButton.setSclass("icono");
+            deleteButton.setImage("/common/img/ico_borrar1.png");
+            deleteButton.setHoverImage("/common/img/ico_borrar.png");
+            deleteButton.setTooltiptext(_("Delete"));
             deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) {
