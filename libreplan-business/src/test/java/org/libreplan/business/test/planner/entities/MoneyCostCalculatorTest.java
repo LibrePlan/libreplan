@@ -76,19 +76,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MoneyCostCalculatorTest {
 
-    // @javax.annotation.Resource
-    // private IDataBootstrap defaultAdvanceTypesBootstrapListener;
-    //
-    // @javax.annotation.Resource
-    // private IDataBootstrap configurationBootstrap;
-
     @javax.annotation.Resource
     private IDataBootstrap scenariosBootstrap;
 
     @Before
     public void loadRequiredaData() {
-        // defaultAdvanceTypesBootstrapListener.loadRequiredData();
-        // configurationBootstrap.loadRequiredData();
         scenariosBootstrap.loadRequiredData();
     }
 
