@@ -246,14 +246,16 @@ public class SubcontractController extends GenericForwardComposer {
     }
 
     public boolean isSent(){
-        if (this.getSubcontractedTaskData() != null && this.getSubcontractedTaskData().getState() != null) {
-            return this.getSubcontractedTaskData().getState()
-                    .equals(SubcontractState.SUCCESS_SENT);
-        }
-        return false;
+        return !isNotSent();
     }
 
-    public boolean isNotSent(){
-        return !isSent();
+    public boolean isNotSent() {
+        if (this.getSubcontractedTaskData() != null && this.getSubcontractedTaskData().getState() != null) {
+            return ((this.getSubcontractedTaskData().getState()
+                    .equals(SubcontractState.PENDING_INITIAL_SEND)) || (this
+                    .getSubcontractedTaskData().getState()
+                    .equals(SubcontractState.FAILED_SENT)));
+        }
+        return false;
     }
 }
