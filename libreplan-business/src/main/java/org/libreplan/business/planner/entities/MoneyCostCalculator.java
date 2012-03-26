@@ -21,7 +21,9 @@ package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.libreplan.business.costcategories.daos.IHourCostDAO;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -33,16 +35,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * Class to calculate the money cost of a {@link TaskElement}.
+ * Class to calculate the money cost of a {@link TaskElement}.<br />
  *
  * Money cost is calculated checking the hours reported for that task and using
- * the cost category of each resource in the different dates.
+ * the cost category of each resource in the different dates.<br />
+ *
+ * Money cost is stored in a map that will be cached in memeroy. This map could
+ * be reseted when needed with method {@code resetMoneyCostMap}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
- */
-/**
- * @author mrego
- *
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -54,10 +55,35 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
     @Autowired
     private IHourCostDAO hourCostDAO;
 
+    private Map<OrderElement, BigDecimal> moneyCostMap = new HashMap<OrderElement, BigDecimal>();
+
+    @Override
+    public void resetMoneyCostMap() {
+        moneyCostMap = new HashMap<OrderElement, BigDecimal>();
+    }
+
     @Override
     public BigDecimal getMoneyCost(OrderElement orderElement) {
+        BigDecimal result = moneyCostMap.get(orderElement);
+        if (result != null) {
+            return result;
+        }
+
+        result = BigDecimal.ZERO.setScale(2);
+        for (OrderElement each : orderElement.getChildren()) {
+            result = result.add(getMoneyCost(each));
+        }
+
+        result = result.add(getMoneyCostFromOwnWorkReportLines(orderElement))
+                .setScale(2, RoundingMode.HALF_UP);
+
+        moneyCostMap.put(orderElement, result);
+        return result;
+    }
+
+    private BigDecimal getMoneyCostFromOwnWorkReportLines(OrderElement orderElement) {
         List<WorkReportLine> workReportLines = workReportLineDAO
-                .findByOrderElementAndChildren(orderElement, false);
+                .findByOrderElement(orderElement);
 
         BigDecimal result = BigDecimal.ZERO.setScale(2);
         for (WorkReportLine workReportLine : workReportLines) {
@@ -78,7 +104,7 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
             result = result.add(cost);
         }
 
-        return result.setScale(2, RoundingMode.HALF_UP);
+        return result;
     }
 
     /**

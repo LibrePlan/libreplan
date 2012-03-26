@@ -50,4 +50,10 @@ public interface IMoneyCostCalculator {
      */
     BigDecimal getMoneyCost(OrderElement orderElement);
 
+    /**
+     * Resets the map used to save cached values of money cost for each
+     * {@link OrderElement}
+     */
+    void resetMoneyCostMap();
+
 }

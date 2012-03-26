@@ -55,6 +55,7 @@ import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
+import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.IVisitor;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
@@ -171,6 +172,9 @@ public class PlanningStateCreator {
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
+    @Autowired
+    private IMoneyCostCalculator moneyCostCalculator;
+
     void synchronizeWithSchedule(Order order, IOptionalPersistence persistence) {
         List<TaskSourceSynchronization> synchronizationsNeeded = order
                 .calculateSynchronizationsNeeded();
@@ -274,6 +278,9 @@ public class PlanningStateCreator {
                 currentScenario);
 
         forceLoadOfWorkingHours(result.getInitial());
+
+        moneyCostCalculator.resetMoneyCostMap();
+
         return result;
     }
 
