@@ -12,7 +12,7 @@
 
         <!-- Configure second level cache -->
         <property name="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</property>
-        <property name="hibernate.cache.use_second_level_cache">false</property>
+        <property name="hibernate.cache.use_second_level_cache">true</property>
         <property name="hibernate.cache.use_query_cache">false</property>
         <property name="hibernate.cache.provider_configuration_file_resource_path">classpath:ehcache.xml</property>
 
