@@ -82,6 +82,20 @@
     <appender-ref ref="ASYNC-logins" />
   </logger>
 
+  <appender name="second-level-cache-file" class="org.apache.log4j.RollingFileAppender">
+      <param name="file" value="/tmp/libreplan-second-level-cache.log"/>
+      <param name="MaxFileSize" value="5000KB"/>
+      <param name="MaxBackupIndex" value="4"/>
+      <layout class="org.apache.log4j.PatternLayout">
+          <param name="ConversionPattern" value="%d [%t] %-5p %l - %m%n"/>
+      </layout>
+  </appender>
+
+  <logger name="org.hibernate.cache">
+      <level value="ALL"/>
+      <appender-ref ref="second-level-cache-file" />
+  </logger>
+  
   <root>
     <priority value="info" />
     <appender-ref ref="ASYNC" />
