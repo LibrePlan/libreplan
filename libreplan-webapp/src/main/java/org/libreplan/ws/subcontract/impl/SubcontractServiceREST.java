@@ -37,6 +37,7 @@ import javax.ws.rs.Produces;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.NonUniqueResultException;
+import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
@@ -202,13 +203,23 @@ public class SubcontractServiceREST implements ISubcontractService {
         try {
             OrderElement orderElement = orderElementDAO
                     .findByExternalCode(updateDeliveringDateDTO.externalCode);
+
             if((orderElement != null) && (orderElement instanceof Order)) {
                 Order order = (Order)orderElement;
 
+                Date newDeliverDate = DateConverter.toDate(updateDeliveringDateDTO.deliverDate);
                 DeadlineCommunication deadlineCommunication = DeadlineCommunication
-                        .create(new Date(), DateConverter.toDate(updateDeliveringDateDTO.deliverDate));
+                        .create(new Date(), newDeliverDate);
                 order.getDeliveringDates().add(deadlineCommunication);
 
+                LocalDate newLocalDeliverDate = new LocalDate(newDeliverDate);
+                OrderVersion orderVersion = order.getOrderVersionFor(Registry
+                        .getScenarioManager().getCurrent());
+                order.useSchedulingDataFor(orderVersion);
+                if (order.getAssociatedTaskElement() != null) {
+                    order.getAssociatedTaskElement().setDeadline(
+                            newLocalDeliverDate);
+                }
                 createCustomerCommunication(order, CommunicationType.UPDATE_DELIVERING_DATE);
                 orderElementDAO.save(order);
 
