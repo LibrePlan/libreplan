@@ -1010,16 +1010,18 @@ public class TaskElementAdapter {
                         .append(getHoursAdvancePercentage().multiply(
                                 new BigDecimal(100))).append("% <br/>");
 
-                result.append(
-                        _("Budget: {0}€, Consumed: {1}€ ({2}%)",
-                                getBudget(),
-                                getMoneyCost(),
-                                getMoneyCostBarPercentage().multiply(
-                                        new BigDecimal(100)))).append("<br/>");
-
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
+                } else {
+                    result.append(
+                            _("Budget: {0}€, Consumed: {1}€ ({2}%)",
+                                    getBudget(),
+                                    getMoneyCost(),
+                                    getMoneyCostBarPercentage().multiply(
+                                            new BigDecimal(100)))).append(
+                            "<br/>");
                 }
+
                 String labels = buildLabelsText();
                 if (!labels.equals("")) {
                     result.append("<div class='tooltip-labels'>" + _("Labels")

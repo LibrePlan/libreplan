@@ -56,7 +56,6 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
-import org.libreplan.business.planner.entities.MoneyCostCalculator;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
@@ -685,10 +684,6 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         result.append(_("Progress") + ": ").append(getEstimatedAdvance(order)).append("% , ");
         result.append(_("Hours invested") + ": ")
                 .append(getHoursAdvancePercentage(order)).append("%\n");
-        result.append(
-                _("Budget: {0}€, Consumed: {1}€ ({2}%)", getBudget(order),
-                        getMoneyCost(order), getMoneyCostBarPercentage(order)
-                                .multiply(new BigDecimal(100)))).append("\n");
 
         if (!getDescription(order).equals("")) {
             result.append(" , " + _("Description") + ": "
@@ -722,19 +717,6 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             result = new BigDecimal(0);
         }
         return result.multiply(new BigDecimal(100));
-    }
-
-    private BigDecimal getMoneyCostBarPercentage(Order order) {
-        return MoneyCostCalculator.getMoneyCostProportion(getMoneyCost(order),
-                getBudget(order));
-    }
-
-    private BigDecimal getBudget(Order order) {
-        return order.getBudget();
-    }
-
-    private BigDecimal getMoneyCost(Order order) {
-        return moneyCostCalculator.getMoneyCost(order);
     }
 
     private String buildLabelsText(Order order) {

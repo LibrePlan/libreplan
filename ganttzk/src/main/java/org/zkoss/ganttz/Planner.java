@@ -383,6 +383,11 @@ public class Planner extends HtmlMacroComponent  {
             Button showAllResources = (Button) getFellow("showAllResources");
             showAllResources.setVisible(false);
         }
+        if (!configuration.isMoneyCostBarEnabled()) {
+            Button showMoneyCostBarButton = (Button) getFellow("showMoneyCostBar");
+            showMoneyCostBarButton.setVisible(false);
+        }
+
         listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
 
         this.visibleChart = configuration.isExpandPlanningViewCharts();
