@@ -177,7 +177,8 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
         makeSubcontractRequestRequest(subcontractedTaskData,currentState);
 
         Date today = new Date();
-        if (currentState.equals(SubcontractState.PENDING_INITIAL_SEND)) {
+        if ((currentState.equals(SubcontractState.PENDING_INITIAL_SEND))
+                || (currentState.equals(SubcontractState.FAILED_SENT))) {
             subcontractedTaskData.setSubcontractCommunicationDate(today);
         }
 
