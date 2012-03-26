@@ -47,6 +47,7 @@ import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.libreplan.business.planner.entities.SubcontractState;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.libreplan.web.subcontract.exceptions.ConnectionProblemsException;
 import org.libreplan.web.subcontract.exceptions.UnrecoverableErrorServiceException;
 import org.libreplan.ws.cert.NaiveTrustProvider;
@@ -74,6 +75,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/subcontract/subcontractedTasks.zul")
 public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
     private static Log LOG = LogFactory.getLog(SubcontractedTasksModel.class);
