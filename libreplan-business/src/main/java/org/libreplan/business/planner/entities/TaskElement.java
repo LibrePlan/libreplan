@@ -747,4 +747,11 @@ public abstract class TaskElement extends BaseEntity {
         return (this.getParent() == null);
     }
 
+    public BigDecimal getBudget() {
+        if ((taskSource != null) && (taskSource.getOrderElement() != null)) {
+            return taskSource.getOrderElement().getBudget();
+        }
+        return null;
+    }
+
 }
