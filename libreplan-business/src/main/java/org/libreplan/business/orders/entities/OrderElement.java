@@ -324,8 +324,9 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     private boolean wasASchedulingPoint() {
-        return getTaskSource() != null
-                && getTaskSource().getTask() instanceof Task;
+        SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
+        return SchedulingState.Type.SCHEDULING_POINT == currentVersionOnDB
+                .getSchedulingStateType();
     }
 
     private boolean itWasntSchedulingPoint() {
