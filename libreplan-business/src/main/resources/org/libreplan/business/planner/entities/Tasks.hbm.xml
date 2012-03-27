@@ -219,6 +219,10 @@
 	        <one-to-many class="org.libreplan.business.planner.entities.SubcontractorDeliverDate" />
 		</set>
 
+		<set name="subcontractorCommunications" inverse="true" cascade="delete" access="field">
+	        <key column="subcontracted_task_data" />
+	        <one-to-many class="org.libreplan.business.planner.entities.SubcontractorCommunication" />
+		</set>
     </class>
 
 </hibernate-mapping>

@@ -19,34 +19,27 @@
 
 package org.libreplan.business.test.planner.daos;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.SessionFactory;
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.externalcompanies.daos.ICustomerCommunicationDAO;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.CommunicationType;
-import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -67,12 +60,10 @@ import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.test.calendars.entities.BaseCalendarTest;
 import org.libreplan.business.test.externalcompanies.daos.ExternalCompanyDAOTest;
-import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link SubcontractorCommunication}
@@ -219,24 +210,25 @@ public class SubcontractorCommunicationDAOTest {
     }
 
     @Test
-    public void testSaveCustomerCommunication() {
+    public void testSaveSubcontractorCommunication() {
         SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
         subcontractorCommunicationDAO.save(subcontractorCommunication);
         assertTrue(subcontractorCommunication.getId() != null);
     }
 
     @Test
-    public void testRemoveCustomerCommunication()
+    public void testRemoveSubcontractorCommunication()
             throws InstanceNotFoundException {
-        SubcontractorCommunication customerCommunication = createValidSubcontractorCommunication();
-        subcontractorCommunicationDAO.save(customerCommunication);
+        SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
+        subcontractorCommunicationDAO.save(subcontractorCommunication);
 
-        assertTrue(customerCommunication.getId() != null);
-        Long idSubcontratecTaskData = customerCommunication.getSubcontractedTaskData().getId();
-        Long idCommunication = customerCommunication.getId();
+        assertTrue(subcontractorCommunication.getId() != null);
+        Long idSubcontratecTaskData = subcontractorCommunication
+                .getSubcontractedTaskData().getId();
+        Long idCommunication = subcontractorCommunication.getId();
 
-        subcontractorCommunicationDAO.remove(customerCommunication.getId());
-
+        subcontractorCommunicationDAO
+                .remove(subcontractorCommunication.getId());
         try{
             subcontractorCommunicationDAO.findExistingEntity(idCommunication);
             fail("error");
@@ -251,7 +243,7 @@ public class SubcontractorCommunicationDAOTest {
     }
 
     @Test
-    public void testSaveCustomerCommunicationWithoutSubcontratedTaskData()
+    public void testSaveSubcontractorCommunicationWithoutSubcontratedTaskData()
             throws InstanceNotFoundException {
         SubcontractorCommunication subcontractorCommunication = createValidSubcontractorCommunication();
         subcontractorCommunication.setSubcontractedTaskData(null);

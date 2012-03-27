@@ -22,15 +22,15 @@
 package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
-import org.hibernate.validator.Valid;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
@@ -98,6 +98,8 @@ public class SubcontractedTaskData extends BaseEntity {
 
     private final SortedSet<SubcontractorDeliverDate> requiredDeliveringDates = new TreeSet<SubcontractorDeliverDate>(
             new DeliverDateComparator());
+
+    private Set<SubcontractorCommunication> subcontractorCommunications = new HashSet<SubcontractorCommunication>();
 
     /**
      * Constructor for hibernate. Do not use!
