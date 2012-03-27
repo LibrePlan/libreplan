@@ -756,6 +756,7 @@ public abstract class TaskElement extends BaseEntity {
         if ((taskSource != null) && (taskSource.getOrderElement() != null)) {
             return taskSource.getOrderElement().getBudget();
         }
+        return null;
     }
 
     public ExternalCompany getSubcontractedCompany() {
