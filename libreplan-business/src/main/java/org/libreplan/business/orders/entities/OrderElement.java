@@ -290,7 +290,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             SchedulingDataForVersion schedulingDataForVersion) {
         List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
         if (isSchedulingPoint()) {
-            if (itWasntSchedulingPoint()) {
+            if (!wasASchedulingPoint()) {
                 //this element was a container but now it's a scheduling point
                 //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
                 removeTaskSource(result);
@@ -326,12 +326,6 @@ public abstract class OrderElement extends IntegrationEntity implements
     private boolean wasASchedulingPoint() {
         SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
         return SchedulingState.Type.SCHEDULING_POINT == currentVersionOnDB
-                .getSchedulingStateType();
-    }
-
-    private boolean itWasntSchedulingPoint() {
-        SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
-        return SchedulingState.Type.SCHEDULING_POINT != currentVersionOnDB
                 .getSchedulingStateType();
     }
 
