@@ -69,7 +69,9 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
+import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ITaskPositionConstrained;
+import org.libreplan.business.planner.entities.MoneyCostCalculator;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
@@ -108,6 +110,7 @@ import org.zkoss.ganttz.util.ReentranceGuard.IReentranceCases;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -284,6 +287,9 @@ public class TaskElementAdapter {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IMoneyCostCalculator moneyCostCalculator;
 
     static class GanttDateAdapter extends CustomDate {
 
@@ -637,6 +643,58 @@ public class TaskElementAdapter {
                 return new BigDecimal(totalChargedEffort.divivedBy(
                         estimatedEffort).doubleValue()).setScale(2,
                         RoundingMode.HALF_UP);
+            }
+
+            @Override
+            public GanttDate getMoneyCostBarEndDate() {
+                return calculateLimitDateProportionalToTaskElementSize(getMoneyCostBarPercentage());
+            }
+
+            private GanttDate calculateLimitDateProportionalToTaskElementSize(
+                    BigDecimal proportion) {
+                if (proportion.compareTo(BigDecimal.ZERO) == 0) {
+                    return getBeginDate();
+                }
+
+                IntraDayDate start = taskElement.getIntraDayStartDate();
+                IntraDayDate end = taskElement.getIntraDayEndDate();
+
+                EffortDuration effortBetween = start.effortUntil(end);
+                int seconds = new BigDecimal(effortBetween.getSeconds())
+                        .multiply(proportion).toBigInteger().intValue();
+                return TaskElementAdapter.toGantt(
+                        start.addEffort(EffortDuration.seconds(seconds)),
+                        EffortDuration.hours(8));
+            }
+
+            private BigDecimal getMoneyCostBarPercentage() {
+                return MoneyCostCalculator.getMoneyCostProportion(
+                        getMoneyCost(), getBudget());
+            }
+
+            private BigDecimal getBudget() {
+                if ((taskElement == null)
+                        || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
+                return taskElement.getOrderElement().getBudget();
+            }
+
+            private BigDecimal getMoneyCost() {
+                if ((taskElement == null)
+                        || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
+
+                            @Override
+                            public BigDecimal execute() {
+                                return moneyCostCalculator
+                                        .getMoneyCost(taskElement
+                                                .getOrderElement());
+                            }
+                        });
             }
 
             @Override
@@ -1005,9 +1063,19 @@ public class TaskElementAdapter {
                 result.append(_("Hours invested") + ": ")
                         .append(getHoursAdvancePercentage().multiply(
                                 new BigDecimal(100))).append("% <br/>");
+
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
+                } else {
+                    result.append(
+                            _("Budget: {0}€, Consumed: {1}€ ({2}%)",
+                                    getBudget(),
+                                    getMoneyCost(),
+                                    getMoneyCostBarPercentage().multiply(
+                                            new BigDecimal(100)))).append(
+                            "<br/>");
                 }
+
                 String labels = buildLabelsText();
                 if (!labels.equals("")) {
                     result.append("<div class='tooltip-labels'>" + _("Labels")

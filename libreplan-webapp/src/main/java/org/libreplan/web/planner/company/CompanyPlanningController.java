@@ -120,6 +120,8 @@ public class CompanyPlanningController implements Composer {
 
         planner.setAreShownReportedHoursByDefault(Planner
                 .guessShowReportedHoursByDefault(parameters));
+        planner.setAreShownMoneyCostBarByDefault(Planner
+                .guessShowMoneyCostBarByDefault(parameters));
 
         orderFilter = (Vbox) planner.getFellow("orderFilter");
         // Configuration of the order filter

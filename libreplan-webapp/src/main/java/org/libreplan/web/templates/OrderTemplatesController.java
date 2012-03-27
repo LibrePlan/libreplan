@@ -35,8 +35,8 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
+import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
 import org.libreplan.web.templates.advances.AdvancesAssignmentComponent;
 import org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent;
@@ -61,6 +61,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
@@ -374,4 +375,18 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         }
 
     }
+
+    public boolean isContainer() {
+        if (model.getTemplate() == null) {
+            return false;
+        }
+        return !model.getTemplate().isLeaf();
+    }
+
+    public void reloadBudget() {
+        Tabpanel tabPanel = (Tabpanel) editWindow
+                .getFellow("tabPanelGeneralData");
+        Util.reloadBindings(tabPanel);
+    }
+
 }

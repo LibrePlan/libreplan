@@ -22,6 +22,7 @@ function(out){
                 '</div>');
 
         out.push('<div class="taskcontainer_completion">',
+                    '<div class="completionMoneyCostBar"></div>',
                     '<div class="completion"></div>',
                     '<div class="completion2"></div>',
                 '</div>');

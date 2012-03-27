@@ -160,6 +160,8 @@
 
             <property name="lastHoursGroupSequenceCode"
                 column="last_hours_group_sequence_code" access="field" />
+
+            <property name="budget" scale="2" access="field" />
         </joined-subclass>
     </class>
 

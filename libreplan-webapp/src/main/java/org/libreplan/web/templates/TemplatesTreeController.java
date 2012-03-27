@@ -22,6 +22,8 @@ package org.libreplan.web.templates;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.ClassValidator;
 import org.libreplan.business.orders.entities.SchedulingState;
@@ -272,11 +274,33 @@ public class TemplatesTreeController extends
         };
     }
 
+    @Override
+    protected IBudgetHandler<OrderElementTemplate> getBudgetHandler() {
+        return new IBudgetHandler<OrderElementTemplate>() {
+
+            @Override
+            public BigDecimal getBudgetFor(OrderElementTemplate element) {
+                return element.getBudget();
+            }
+
+            @Override
+            public void setBudgetHours(OrderElementTemplate element,
+                    BigDecimal budget) {
+                if (element instanceof OrderLineTemplate) {
+                    OrderLineTemplate line = (OrderLineTemplate) element;
+                    line.setBudget(budget);
+                }
+            }
+
+        };
+    }
+
     public void refreshRow(Treeitem item) {
         try {
             OrderElementTemplate orderElement = (OrderElementTemplate) item
                     .getValue();
             getRenderer().updateHoursFor(orderElement);
+            getRenderer().updateBudgetFor(orderElement);
             getRenderer().render(item, orderElement);
         } catch (Exception e) {
             e.printStackTrace();

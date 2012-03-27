@@ -61,6 +61,13 @@
                     value="@{detailsController.orderElement.description}"
                     width="600px" />
             </row>
+            <row>
+                <label value="${i18n:_('Budget')}" />
+                <decimalbox id="budget"
+                    value="@{detailsController.orderElement.budget}"
+                    disabled="@{detailsController.container}"
+                    constraint="no negative:${i18n:_('Budget value cannot be negative')}" />
+            </row>
         </rows>
     </grid>
 </vbox>
