@@ -261,7 +261,7 @@ div.box.limiting-unassigned {
 .completionMoneyCostBar {
     width: 0%;
     height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
-    background-color: #1CFF81;
+    background-color: #009900;
     border: 0px;
     margin-top: -9px;
 }
