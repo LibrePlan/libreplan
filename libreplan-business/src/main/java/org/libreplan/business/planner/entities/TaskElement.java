@@ -46,6 +46,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
@@ -569,6 +570,10 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public String getSubcontractionName() {
+        return "";
+    }
+
     public boolean isSubcontractedAndWasAlreadySent() {
         // Just Task could be subcontracted
         return false;
@@ -751,6 +756,9 @@ public abstract class TaskElement extends BaseEntity {
         if ((taskSource != null) && (taskSource.getOrderElement() != null)) {
             return taskSource.getOrderElement().getBudget();
         }
+    }
+
+    public ExternalCompany getSubcontractedCompany() {
         return null;
     }
 

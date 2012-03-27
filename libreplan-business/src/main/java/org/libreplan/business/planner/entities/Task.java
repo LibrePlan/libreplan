@@ -42,6 +42,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.ICalendar;
 import org.libreplan.business.calendars.entities.SameWorkHoursEveryDay;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -888,6 +889,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return subcontractedTaskData;
     }
 
+    public ExternalCompany getSubcontractedCompany() {
+        return subcontractedTaskData.getExternalCompany();
+    }
+
     public void removeAllSatisfiedResourceAllocations() {
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
@@ -905,6 +910,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public boolean isSubcontracted() {
         return (subcontractedTaskData != null);
+    }
+
+    public String getSubcontractionName() {
+        return subcontractedTaskData.getExternalCompany().getName();
     }
 
     public boolean isSubcontractedAndWasAlreadySent() {

@@ -59,7 +59,7 @@
                         </row>
                         <row>
                             <label
-                                value="${i18n:_('Sum of all task leafs imputed hours')}" />
+                                value="${i18n:_('Sum of imputed hours in children tasks')}" />
                             <label id="totalIDC"
                                 value="@{assignedHoursToOrderElementController.effortChildren}" />
                         </row>

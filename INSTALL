@@ -24,6 +24,14 @@ Instructions::
   $ sudo apt-get update
   $ sudo apt-get install libreplan
 
+.. TIP::
+
+  If you do not have ``add-apt-repository`` command, you will need to install
+  ``python-software-properties`` package before running the previous commands.
+  You can do it with the following line::
+
+    sudo apt-get install python-software-properties
+
 
 Debian packages
 ~~~~~~~~~~~~~~~
