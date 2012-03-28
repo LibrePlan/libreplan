@@ -74,7 +74,8 @@
             <column name="budget" type="DECIMAL(19,2)" />
         </addColumn>
         <addNotNullConstraint tableName="order_line"
-            columnName="budget" defaultNullValue="0" />
+            columnName="budget" defaultNullValue="0"
+            columnDataType="DECIMAL(19,2)" />
         <addDefaultValue tableName="order_line"
             columnName="budget" defaultValueNumeric="0" />
     </changeSet>
@@ -85,7 +86,8 @@
             <column name="budget" type="DECIMAL(19,2)" />
         </addColumn>
         <addNotNullConstraint tableName="order_line_template"
-            columnName="budget" defaultNullValue="0" />
+            columnName="budget" defaultNullValue="0"
+            columnDataType="DECIMAL(19,2)" />
         <addDefaultValue tableName="order_line_template"
             columnName="budget" defaultValueNumeric="0" />
     </changeSet>
