@@ -20,6 +20,7 @@
 -->
 
 <?page title="${i18n:_('LibrePlan: Scheduling')}"?>
+
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
@@ -28,21 +29,9 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="schedulingStateToggler" class="org.libreplan.web.orders.SchedulingStateToggler" macroURI="/common/components/schedulingStateToggler.zul"?>
-<?component name="list" inline="true" macroURI="_list.zul"?>
-<?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
-    class="org.libreplan.web.templates.TemplatesTreeComponent"?>
-<?component name="listOrderElementCriterionRequirements"
-    class="org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent"
-    macroURI="/orders/_listOrderElementCriterionRequirements.zul"?>
-<?component name="listOrderElementMaterials"
-    class="org.libreplan.web.templates.materials.MaterialAssignmentTemplateComponent"
-    macroURI="/orders/components/_listOrderElementMaterials.zul"?>
-<?component name="listOrderElementLabels" class="org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
-<?component name="assignedQualityForms" class="org.libreplan.web.templates.quality.QualityFormAssignerComponent" macroURI="/templates/_assignedQualityForms.zul" ?>
-<?component name="advancesAssignment" class="org.libreplan.web.templates.advances.AdvancesAssignmentComponent" macroURI="/templates/_advances.zul"?>
-<?component name="editTemplateWindow" macroURI="_editTemplateWindow.zul" inline="true"?>
-<?component name="historicalAssignment" class="org.libreplan.web.templates.historicalAssignment.OrderElementHistoricalAssignmentComponent" macroURI="/templates/_historicalAssignment.zul" ?>
-<?component name="historicalStatistics" class="org.libreplan.web.templates.historicalStatistics.OrderElementHistoricalStatisticsComponent" macroURI="/templates/_historicalStatistics.zul" ?>
+
+<?component name="list" inline="true" macroURI="_listTemplates.zul"?>
+<?component name="edit" inline="true" macroURI="_editTemplate.zul"?>
 
 <zk>
     <zscript><![CDATA[
@@ -52,101 +41,7 @@
     <div self="@{define(content)}" apply="${templatesForOrdersController}">
         <vbox id="messagesContainer" />
         <list top_id="listWindow" />
-        <window id="editWindow" title="${i18n:_('Edit Template')}">
-            <editTemplateWindow />
-            <tabbox>
-                <tabs>
-                    <tab id="tabGeneralData" label="${i18n:_('General data')}"
-                        onSelect="templatesForOrdersController.reloadBudget()" />
-                    <tab label="${i18n:_('Template Tree')}"
-                        disabled="@{templatesForOrdersController.templateTreeDisabled}"
-                        onSelect="templatesForOrdersController.openTemplateTree()" />
-                    <tab label="${i18n:_('Progress')}" />
-                    <tab label="${i18n:_('Labels')}" />
-                    <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />
-                    <tab label="${i18n:_('Materials')}" />
-                    <tab label="${i18n:_('Quality Forms')}" />
-                    <tab label="${i18n:_('Assignment log')}" />
-                    <tab label="${i18n:_('Statistics log')}" />
-                </tabs>
-                <tabpanels>
-                    <tabpanel id="tabPanelGeneralData">
-                        <grid fixedLayout="true">
-                            <columns>
-                                <column width="200px" />
-                                <column  />
-                            </columns>
-                            <rows>
-                                <row>
-                                    <label value="${i18n:_('Name')}" />
-                                    <textbox id="name" value="@{templatesForOrdersController.template.name}" width="500px"
-                                        constraint = "@{templatesForOrdersController.validateTemplateName}"/>
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Code')}" />
-                                    <hbox>
-                                        <textbox value="@{templatesForOrdersController.template.code}" width="250px" />
-                                    </hbox>
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Delay from beginning (days)')}" />
-                                    <intbox
-                                        value="@{templatesForOrdersController.template.startAsDaysFromBeginning}" constraint="no negative"/>
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Days from Beginning to Deadline')}" />
-                                    <intbox
-                                        value="@{templatesForOrdersController.template.deadlineAsDaysFromBeginning}" constraint="no negative"/>
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Description')}" />
-                                    <textbox rows="3" width="600px"
-                                        value="@{templatesForOrdersController.template.description}" />
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Budget')}" />
-                                    <decimalbox
-                                        value="@{templatesForOrdersController.template.budget}"
-                                        disabled="@{templatesForOrdersController.container}"
-                                        constraint="no negative:${i18n:_('Budget value cannot be negative')}" />
-                                </row>
-                            </rows>
-                        </grid>
-                    </tabpanel>
-                    <tabpanel sclass="template-tree-tabpanel">
-                        <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
-                    </tabpanel>
-                    <tabpanel>
-                        <advancesAssignment id="advancesAssignment" />
-                    </tabpanel>
-                    <tabpanel>
-                        <listOrderElementLabels id="listOrderElementLabels"/>
-                    </tabpanel>
-                    <tabpanel>
-                        <listOrderElementCriterionRequirements id="listOrderElementCriterionRequirements"/>
-                    </tabpanel>
-                    <tabpanel>
-                        <listOrderElementMaterials id="listOrderElementMaterials"/>
-                    </tabpanel>
-                    <tabpanel>
-                        <assignedQualityForms id="assignedQualityForms"/>
-                    </tabpanel>
-                    <tabpanel>
-                        <historicalAssignment id="historicalAssignment"/>
-                    </tabpanel>
-                    <tabpanel>
-                        <historicalStatistics id="historicalStatistics"/>
-                    </tabpanel>
-                </tabpanels>
-            </tabbox>
-            <hbox>
-                <button label="${i18n:_('Save')}" onClick="templatesForOrdersController.saveAndExit()"
-                    sclass="save-button global-action" />
-                <button label="${i18n:_('Save &amp; Continue')}" onClick="templatesForOrdersController.saveAndContinue()"
-                    sclass="saveandcontinue-button global-action" />
-                <button label="${i18n:_('Cancel')}" onClick="templatesForOrdersController.cancel()"
-                    sclass="cancel-button global-action" />
-            </hbox>
-    </window>
+        <edit top_id="editWindow" />
+
     </div>
 </zk>
