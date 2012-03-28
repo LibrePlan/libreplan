@@ -74,12 +74,8 @@
                 column="scheduling_state_for_version_id" />
         </map>
 
-       <many-to-one name="sumChargedEffort"
-           class="SumChargedEffort"
-           column="sum_charged_effort_id"
-           cascade="save-update, delete"
-           unique="true"
-           lazy="false" />
+        <one-to-one name="sumChargedEffort" class="SumChargedEffort"
+            cascade="delete" property-ref="orderElement" />
 
         <joined-subclass name="OrderLineGroup"  table="order_line_group">
             <key column="order_element_id"></key>
@@ -245,6 +241,9 @@
             </generator>
         </id>
         <version name="version" access="property" type="long" />
+
+        <many-to-one name="orderElement" column="order_element"
+            class="OrderElement" cascade="none" unique="true" />
 
         <property name="directChargedEffort" access="field"
             column="direct_charged_effort"

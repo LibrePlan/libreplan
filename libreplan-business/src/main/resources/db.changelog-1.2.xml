@@ -92,4 +92,81 @@
             columnName="budget" defaultValueNumeric="0" />
     </changeSet>
 
+    <changeSet id="change-mapping-order-element-and-sum-charged-effort-postgresql"
+        author="mrego">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="postgresql" />
+        </preConditions>
+        <comment>Change mapping between OrderElement and SumChargedEffort in MySQL</comment>
+
+        <addColumn tableName="sum_charged_effort">
+            <column name="order_element" type="BIGINT" />
+        </addColumn>
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION chageMappingBetweenOrderElementAndSumChargedEffort() RETURNS VOID AS $$
+            DECLARE
+                sce RECORD;
+            BEGIN
+                FOR sce IN SELECT sum_charged_effort_id AS id FROM order_element
+                LOOP
+                    EXECUTE 'UPDATE sum_charged_effort '
+                        || 'SET order_element '
+                        || ' = (SELECT id FROM order_element '
+                            || 'WHERE sum_charged_effort_id '
+                            || ' = '
+                            || quote_literal(sce.id)
+                            || ') '
+                        || 'WHERE id '
+                        || ' = '
+                        || quote_literal(sce.id);
+                END LOOP;
+            END;
+            $$ LANGUAGE plpgsql;
+        </createProcedure>
+        <sql>SELECT chageMappingBetweenOrderElementAndSumChargedEffort()</sql>
+        <addForeignKeyConstraint constraintName="sum_charged_effort_order_element_fkey"
+            baseTableName="sum_charged_effort" baseColumnNames="order_element"
+            referencedTableName="order_element" referencedColumnNames="id" />
+        <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
+    </changeSet>
+
+    <changeSet id="change-mapping-order-element-and-sum-charged-effort-mysql"
+        author="mrego">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="mysql" />
+        </preConditions>
+        <comment>Change mapping between OrderElement and SumChargedEffort in PostgreSQL</comment>
+
+        <addColumn tableName="sum_charged_effort">
+            <column name="order_element" type="BIGINT" />
+        </addColumn>
+        <sql>DROP PROCEDURE IF EXISTS chageMappingBetweenOrderElementAndSumChargedEffort</sql>
+        <sql splitStatements="false">
+            CREATE PROCEDURE chageMappingBetweenOrderElementAndSumChargedEffort()
+            BEGIN
+                DECLARE done INT DEFAULT FALSE;
+                DECLARE sce_id INT;
+                DECLARE cursor_sce_ids CURSOR FOR SELECT sum_charged_effort_id AS id FROM order_element;
+                DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+                OPEN cursor_sce_ids;
+
+                ids_loop: LOOP
+                    FETCH cursor_sce_ids INTO sce_id;
+                    IF done THEN
+                        LEAVE ids_loop;
+                    END IF;
+                    UPDATE sum_charged_effort SET order_element = (SELECT id FROM order_element WHERE sum_charged_effort_id = sce_id) WHERE id = sce_id;
+                END LOOP;
+
+                CLOSE cursor_sce_ids;
+            END;
+        </sql>
+        <sql>CALL chageMappingBetweenOrderElementAndSumChargedEffort()</sql>
+        <addForeignKeyConstraint constraintName="sum_charged_effort_order_element_fkey"
+            baseTableName="sum_charged_effort" baseColumnNames="order_element"
+            referencedTableName="order_element" referencedColumnNames="id" />
+        <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
+    </changeSet>
+
 </databaseChangeLog>

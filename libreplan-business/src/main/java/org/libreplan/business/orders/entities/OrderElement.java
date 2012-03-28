@@ -108,7 +108,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private Boolean dirtyLastAdvanceMeasurementForSpreading = true;
 
-    private SumChargedEffort sumChargedEffort = SumChargedEffort.create();
+    private SumChargedEffort sumChargedEffort;
 
     public OrderElementTemplate getTemplate() {
         return template;
