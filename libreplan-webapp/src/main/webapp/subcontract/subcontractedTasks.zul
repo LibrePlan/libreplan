@@ -38,10 +38,11 @@
     <grid id="listing"
         model="@{controller.subcontractedTasks}"
         rowRenderer="@{controller.subcontractedTasksRenderer}"
-        mold="paging" pageSize="10" fixedLayout="true">
+        mold="paging" pageSize="10" fixedLayout="true"
+        onInitRender="controller.initRender();">
         <columns>
             <column label="${i18n:_('Subcontracting date')}"
-                    tooltiptext="${i18n:_('Subcontracting date')}" sort="auto(subcontratationDate)" />
+                    tooltiptext="${i18n:_('Subcontracting date')}" sort="auto(subcontratationDate)" width="150px"/>
             <column label="${i18n:_('Communication')}" sort="auto(communicationdate)"
                 tooltiptext="${i18n:_('Communication date')}" />
             <column label="${i18n:_('Company')}" tooltiptext="${i18n:_('External company')}" sort="auto(externalcompany)" />
@@ -50,8 +51,8 @@
             <column label="${i18n:_('Task name')}" tooltiptext="${i18n:_('Task name')}" />
             <column label="${i18n:_('Description')}" tooltiptext="${i18n:_('Work description')}" />
             <column label="${i18n:_('Budget')}" tooltiptext="${i18n:_('Budget')}" />
-            <column label="${i18n:_('State')}" tooltiptext="${i18n:_('State')}" />
-            <column label="${i18n:_('Operations')}" tooltiptext="${i18n:_('Operations')}" width="150px"/>
+            <column id="columnBySort" label="${i18n:_('State')}" tooltiptext="${i18n:_('State')}" sort="auto(state)" sortDirection="ascending"/>
+            <column label="${i18n:_('Operations')}" tooltiptext="${i18n:_('Operations')}" width="100px"/>
         </columns>
     </grid>
 

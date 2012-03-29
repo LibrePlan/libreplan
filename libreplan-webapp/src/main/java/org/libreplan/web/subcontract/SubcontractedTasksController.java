@@ -54,8 +54,11 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.api.Window;
@@ -70,6 +73,10 @@ import org.zkoss.zul.api.Window;
 public class SubcontractedTasksController extends GenericForwardComposer {
 
     private Window window;
+
+    private Column columnBySort;
+
+    private Grid listing;
 
     private Component messagesContainer;
     private IMessagesForUser messagesForUser;
@@ -213,7 +220,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
                     } catch (ValidationException e) {
                         messagesForUser.showInvalidValues(e);
                     }
-                    Util.reloadBindings(window);
+                    reload();
                 }
 
             });
@@ -225,4 +232,23 @@ public class SubcontractedTasksController extends GenericForwardComposer {
 
     }
 
+    public void reload() {
+        Util.reloadBindings(window);
+        forceSortGridSatisfaction();
+    }
+
+    public void forceSortGridSatisfaction() {
+        Column column = (Column) columnBySort;
+        ListModelExt model = (ListModelExt) listing.getModel();
+        if ("ascending".equals(column.getSortDirection())) {
+            model.sort(column.getSortAscending(), true);
+        }
+        if ("descending".equals(column.getSortDirection())) {
+            model.sort(column.getSortDescending(), false);
+        }
+    }
+
+    public void initRender() {
+        forceSortGridSatisfaction();
+    }
 }
