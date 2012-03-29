@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -96,6 +97,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -248,7 +250,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         checkCreationPermissions();
         setupGlobalButtons();
-
     }
 
     private void setupGlobalButtons() {
@@ -1535,4 +1536,36 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         };
     }
+
+    public boolean isSubcontractedProject() {
+        return (getOrder() != null) ? (getOrder().getExternalCode() != null)
+                : false;
+    }
+
+    public String getProjectType() {
+        return (isSubcontractedProject()) ? "Subcontracted by client"
+                : "Regular project";
+    }
+
+    public void setCurrentDeliveryDate(Grid listDeliveryDates) {
+        if (getOrder() != null && getOrder().getDeliveringDates() != null
+                && !getOrder().getDeliveringDates().isEmpty()) {
+            DeadlineCommunication lastDeliveryDate = getOrder()
+                    .getDeliveringDates().first();
+            if (listDeliveryDates != null) {
+                listDeliveryDates.renderAll();
+                final Rows rows = listDeliveryDates.getRows();
+                for (Iterator i = rows.getChildren().iterator(); i.hasNext();) {
+                    final Row row = (Row) i.next();
+                    final DeadlineCommunication deliveryDate = (DeadlineCommunication) row
+                            .getValue();
+                    if (deliveryDate.equals(lastDeliveryDate)) {
+                        row.setSclass("current-delivery-date");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
 }

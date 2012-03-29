@@ -128,7 +128,8 @@
                             <row>
                                 <label value="${i18n:_('Deadline')}" />
                                 <datebox id="deadline"
-                                    value="@{controller.order.deadline}" />
+                                    value="@{controller.order.deadline}"
+                                    disabled="@{controller.subcontractedProject}"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Calendar')}" />
@@ -199,31 +200,38 @@
                            </columns>
                            <rows>
 			                   <row>
+                                  <label value="${i18n:_('Project type')}" />
+                                  <label value="@{controller.projectType}" width="350px"/>
+                               </row>
+			                   <row>
                                   <label value="${i18n:_('External code')}" />
                                   <textbox value="@{controller.order.externalCode}"
                                       width="350px" disabled="true"/>
                                </row>
 			                   <row>
-                                 <label value="${i18n:_('Customer')}" />
-                                 <bandboxSearch id="bdExternalCompanies" widthBandbox="465px" widthListbox="480px"
-                                   finder="ExternalCompanyBandboxFinder"
-                                   model="@{controller.externalCompaniesAreClient}"
-                                   selectedElement="@{controller.order.customer}"/>
+                                   <label value="${i18n:_('Customer')}" />
+                                   <bandboxSearch id="bdExternalCompanies" widthBandbox="465px" widthListbox="480px"
+                                       finder="ExternalCompanyBandboxFinder"
+                                       model="@{controller.externalCompaniesAreClient}"
+                                       selectedElement="@{controller.order.customer}"
+                                       disabled="@{controller.subcontractedProject}"/>
                                </row>
                                <row>
                                    <label value="${i18n:_('Customer reference')}" />
-                                   <textbox value="@{controller.order.customerReference}" width="465px"/>
+                                   <textbox value="@{controller.order.customerReference}" width="465px"
+                                       disabled="@{controller.subcontractedProject}"/>
                                </row>
                            </rows>
                        </grid>
 
                        <separator spacing="20px"/>
 
-                       <grid id="gridDeliverDate"
+                       <grid id="gridDeliveryDates"
                             model="@{controller.deliverDates}"
-	                        mold="paging" pageSize="4" fixedLayout="true" width="400px">
+	                        mold="paging" pageSize="4" fixedLayout="true" width="400px"
+	                        onInitRender="controller.setCurrentDeliveryDate(self);">
                             <columns>
-                                <column label="${i18n:_('Deliver date')}" align="center" width="200px"/>
+                                <column label="${i18n:_('Delivery date')}" align="center" width="200px"/>
                                 <column label="${i18n:_('Communication date')}" align="center"/>
                             </columns>
                             <rows>

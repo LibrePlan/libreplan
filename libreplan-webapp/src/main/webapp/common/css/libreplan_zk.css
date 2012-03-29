@@ -1892,3 +1892,5 @@ select {
 }
 
 .communication-not-reviewed div.z-row-cnt .z-label{ font-weight: bold; }
+
+.current-delivery-date div.z-row-cnt .z-label{ font-weight: bold; }
