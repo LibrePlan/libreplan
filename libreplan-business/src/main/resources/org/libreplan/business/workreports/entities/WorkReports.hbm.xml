@@ -30,13 +30,13 @@
     </property>
 
     <!-- Not indexed -->
-    <set name="workReportLabelTypeAssigments" cascade="all-delete-orphan">
+    <set name="workReportLabelTypeAssigments" cascade="all-delete-orphan" batch-size="10">
         <key column="work_report_type_id"/>
         <one-to-many class="WorkReportLabelTypeAssigment"/>
     </set>
 
     <!-- Not indexed -->
-    <set name="headingFields" table="heading_field">
+    <set name="headingFields" table="heading_field" batch-size="10">
         <key column="heading_id"/>
         <composite-element class="org.libreplan.business.workreports.valueobjects.DescriptionField">
                 <property name="fieldName"/>
@@ -46,7 +46,7 @@
     </set>
 
     <!-- Not indexed -->
-    <set name="lineFields" table="line_field">
+    <set name="lineFields" table="line_field" batch-size="10">
         <key column="heading_id"/>
         <composite-element class="org.libreplan.business.workreports.valueobjects.DescriptionField">
                 <property name="fieldName"/>
@@ -86,20 +86,20 @@
         column="order_element_id" index="idx_order_element_on_work_report" />
 
     <!-- Not indexed -->
-    <set name="labels" table="workreports_labels">
+    <set name="labels" table="workreports_labels" batch-size="10">
         <key column="work_report_id"/>
         <many-to-many column="label_id"
             class="org.libreplan.business.labels.entities.Label"/>
     </set>
 
     <!-- Indexed on the other side -->
-    <set name="workReportLines" cascade="all-delete-orphan" inverse="true">
+    <set name="workReportLines" cascade="all-delete-orphan" inverse="true" batch-size="10">
         <key column="work_report_id"/>
         <one-to-many class="WorkReportLine"/>
     </set>
 
     <!-- Not indexed -->
-    <set name="descriptionValues" table="description_values">
+    <set name="descriptionValues" table="description_values" batch-size="10">
         <key column="description_value_id"/>
         <composite-element class="org.libreplan.business.workreports.valueobjects.DescriptionValue">
                 <property name="fieldName"/>
@@ -147,14 +147,14 @@
         index="idx_type_of_work_hours_on_work_report_line" />
 
     <!-- Not indexed -->
-    <set name="labels" table="workreportslines_labels">
+    <set name="labels" table="workreportslines_labels" batch-size="10">
         <key column="work_report_line_id"/>
         <many-to-many column="label_id"
             class="org.libreplan.business.labels.entities.Label"/>
     </set>
 
     <!-- Not indexed -->
-    <set name="descriptionValues" table="description_values_in_line">
+    <set name="descriptionValues" table="description_values_in_line" batch-size="10">
         <key column="description_value_id"/>
         <composite-element class="org.libreplan.business.workreports.valueobjects.DescriptionValue">
                 <property name="fieldName" column="field_name" />
