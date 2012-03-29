@@ -40,15 +40,15 @@
         rowRenderer="@{controller.reportAdvancesOrderRenderer}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Project code')}"/>
-            <column label="${i18n:_('Customer reference code')}"/>
-            <column label="${i18n:_('Name')}"/>
-            <column label="${i18n:_('Date last progress reported')}"/>
-            <column label="${i18n:_('Value last progress reported')}"/>
-            <column label="${i18n:_('Date last progress measurement')}"/>
-            <column label="${i18n:_('Value last progress measurement')}"/>
-            <column label="${i18n:_('State')}"/>
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_('Project code')}" width="110px"/>
+            <column label="${i18n:_('Customer reference code')}" width="145px"/>
+            <column label="${i18n:_('Name')}" width="126px"/>
+            <column label="${i18n:_('Date last progress reported')}" width="160px"/>
+            <column label="${i18n:_('Value last progress reported')}" width="160px"/>
+            <column label="${i18n:_('Date last progress measurement')}" width="180px"/>
+            <column label="${i18n:_('Value last progress measurement')}" width="190px"/>
+            <column label="${i18n:_('State')}" width="80px"/>
+            <column label="${i18n:_('Operations')}" width="95px"/>
         </columns>
     </grid>
 
