@@ -21,7 +21,6 @@ package org.libreplan.web.subcontract;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -141,21 +140,24 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
 
             appendLabel(row, toString(type));
             appendLabel(row, customerCommunication.getOrder().getName());
-            appendLabel(row, toString(customerCommunication.getDeadline()));
+            appendLabel(row,
+                    toString(customerCommunication.getDeadline(), "dd/MM/yyyy"));
             appendLabel(row, customerCommunication.getOrder().getCode());
             appendLabel(row, customerCommunication.getOrder()
                     .getCustomerReference());
             appendLabel(row,
-                    toString(customerCommunication.getCommunicationDate()));
+                    toString(customerCommunication.getCommunicationDate(),
+                            "dd/MM/yyyy HH:mm"));
             appendCheckbox(row, customerCommunication);
             appendOperations(row, customerCommunication);
         }
 
-        private String toString(Date date) {
+        private String toString(Date date, String precision) {
             if (date == null) {
                 return "";
             }
-            return new SimpleDateFormat("dd/MM/yyyy", Locales.getCurrent()).format(date);
+            return new SimpleDateFormat(precision, Locales.getCurrent())
+                    .format(date);
         }
 
         private String toString(Object object) {

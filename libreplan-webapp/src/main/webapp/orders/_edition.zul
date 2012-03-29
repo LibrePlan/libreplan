@@ -229,7 +229,7 @@
                             <rows>
                                 <row self="@{each='deliverDate'}" value="@{deliverDate}">
                                     <label value="@{deliverDate.deliverDate, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
-                                    <label value="@{deliverDate.saveDate, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
+                                    <label value="@{deliverDate.saveDate, converter='org.libreplan.web.common.typeconverters.DateTimeConverter'}" />
                                 </row>
                             </rows>
                         </grid>
