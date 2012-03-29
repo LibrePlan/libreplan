@@ -37,7 +37,7 @@
     <many-to-one class="org.libreplan.business.resources.entities.Criterion" column="criterion_id" name="criterion"/>
 
     <subclass discriminator-value="direct" name="DirectCriterionRequirement">
-      <set access="field" name="children" cascade="delete-orphan" inverse="true">
+      <set access="field" name="children" cascade="delete-orphan" inverse="true" batch-size="10">
 
         <key column="parent"/>
         <one-to-many class="IndirectCriterionRequirement"/>

@@ -57,7 +57,7 @@
              cascade="all,delete-orphan"
              inverse="true"
              access="field"
-             sort="org.libreplan.business.advance.entities.AdvanceMeasurementComparator">
+             sort="org.libreplan.business.advance.entities.AdvanceMeasurementComparator" >
                 <key column="advance_assignment_id" />
                 <one-to-many class="org.libreplan.business.advance.entities.AdvanceMeasurement"></one-to-many>
         </set>
@@ -112,7 +112,7 @@
         column="communication_date" />
 
     <!-- Not indexed -->
-    <set name="nonCalculatedConsolidatedValues" access="field" cascade="none" inverse="true">
+    <set name="nonCalculatedConsolidatedValues" access="field" cascade="none" inverse="true" batch-size="10">
         <key column="advance_measurement_id" />
         <one-to-many class="org.libreplan.business.planner.entities.consolidations.NonCalculatedConsolidatedValue" />
     </set>

@@ -81,7 +81,7 @@
             <property name="ldapSearchQuery" column="ldap_search_query"/>
             <property name="ldapGroupStrategy" column="ldap_group_strategy"/>
 
-            <set name="configurationRolesLdap" table="configuration_roles_ldap" lazy="false">
+            <set name="configurationRolesLdap" table="configuration_roles_ldap" lazy="false" batch-size="10">
                 <key column="id_configuration" />
                 <composite-element class="ConfigurationRolesLDAP">
                     <property name="roleLdap" column="role_ldap"
