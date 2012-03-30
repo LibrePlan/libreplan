@@ -184,7 +184,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
         //update the first required deliver date
         subcontractedTaskData.updateFirstRequiredDeliverDate(today);
-
+        subcontractedTaskData.setSubcontractCommunicationDate(today);
         subcontractedTaskData.setState(SubcontractState.SUCCESS_SENT);
     }
 
