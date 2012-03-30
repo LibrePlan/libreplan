@@ -41,8 +41,12 @@ public class SumChargedEffort extends BaseEntity {
 
     protected SumChargedEffort() {}
 
-    public static SumChargedEffort create() {
-        return create(new SumChargedEffort());
+    private SumChargedEffort(OrderElement orderElement) {
+        this.orderElement = orderElement;
+    }
+
+    public static SumChargedEffort create(OrderElement orderElement) {
+        return create(new SumChargedEffort(orderElement));
     }
 
     public OrderElement getOrderElement() {
