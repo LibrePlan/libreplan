@@ -83,7 +83,6 @@ public class EditTemplateWindowController extends GenericForwardComposer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        bindAdvancesAssignment(template);
         bindOrderElementLabels(template);
         bindCriterionRequirements(template);
         bindOrderElementMaterials(template);
@@ -93,12 +92,6 @@ public class EditTemplateWindowController extends GenericForwardComposer {
 
     private <T extends Component> T find(String id, Class<T> type) {
         return type.cast(editTemplateWindow.getFellow(id));
-    }
-
-    private void bindAdvancesAssignment(OrderElementTemplate template) {
-        AdvancesAssignmentComponent component = find(
-                "advancesAssignment", AdvancesAssignmentComponent.class);
-        component.useModel(model, template);
     }
 
     private void bindOrderElementLabels(OrderElementTemplate template) {

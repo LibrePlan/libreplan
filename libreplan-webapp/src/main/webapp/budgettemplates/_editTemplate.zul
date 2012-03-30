@@ -27,7 +27,6 @@
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementLabels" class="org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
 <?component name="assignedQualityForms" class="org.libreplan.web.templates.quality.QualityFormAssignerComponent" macroURI="/templates/_assignedQualityForms.zul" ?>
-<?component name="advancesAssignment" class="org.libreplan.web.templates.advances.AdvancesAssignmentComponent" macroURI="/templates/_advances.zul"?>
 <?component name="editTemplateWindow" macroURI="_editTemplateWindow.zul" inline="true"?>
 <?component name="historicalAssignment" class="org.libreplan.web.templates.historicalAssignment.OrderElementHistoricalAssignmentComponent" macroURI="/templates/_historicalAssignment.zul" ?>
 <?component name="historicalStatistics" class="org.libreplan.web.templates.historicalStatistics.OrderElementHistoricalStatisticsComponent" macroURI="/templates/_historicalStatistics.zul" ?>
@@ -42,7 +41,6 @@
             <tab label="${i18n:_('Template Tree')}"
                 disabled="@{controller.templateTreeDisabled}"
                 onSelect="controller.openTemplateTree()" />
-            <tab label="${i18n:_('Progress')}" />
             <tab label="${i18n:_('Labels')}" />
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />
             <tab label="${i18n:_('Materials')}" />
@@ -97,9 +95,6 @@
             </tabpanel>
             <tabpanel sclass="template-tree-tabpanel">
                 <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
-            </tabpanel>
-            <tabpanel>
-                <advancesAssignment id="advancesAssignment" />
             </tabpanel>
             <tabpanel>
                 <listOrderElementLabels id="listOrderElementLabels"/>
