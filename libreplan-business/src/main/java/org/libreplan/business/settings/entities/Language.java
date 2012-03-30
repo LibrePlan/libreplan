@@ -32,12 +32,14 @@ import java.util.Locale;
 public enum Language {
 
     BROWSER_LANGUAGE(_("Use browser language configuration"), null),
-    GALICIAN_LANGUAGE(_("Galician"), new Locale("gl")),
-    SPANISH_LANGUAGE(_("Spanish"), new Locale("es")),
-    ENGLISH_LANGUAGE(_("English"), Locale.ENGLISH),
-    RUSSIAN_LANGUAGE(_("Russian"), new Locale("ru")),
-    PORTUGUESE_LANGUAGE(_("Portuguese"), new Locale("pt")),
-    ITALIAN_LANGUAGE(_("Italian"), new Locale("it"));
+    GALICIAN_LANGUAGE("Galego", new Locale("gl")),
+    SPANISH_LANGUAGE("Español", new Locale("es")),
+    ENGLISH_LANGUAGE("English", Locale.ENGLISH),
+    RUSSIAN_LANGUAGE("Pусский", new Locale("ru")),
+    PORTUGUESE_LANGUAGE("Português", new Locale("pt")),
+    ITALIAN_LANGUAGE("Italiano", new Locale("it")),
+    FRENCH_LANGUAGE("Français", new Locale("fr")),
+    DUTCH_LANGUAGE("Nederlands", new Locale("nl"));
 
     private final String displayName;
 

@@ -58,14 +58,9 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         order.setVersionForScenario(currentScenario, OrderVersion
                 .createInitialVersion(currentScenario));
         order.useSchedulingDataFor(currentScenario);
-        order.setInitDate(today());
         order.setCalendar(calendar);
         order.initializeTemplate(this);
         return setupGroupParts(setupSchedulingStateType(order));
-    }
-
-    private Date today() {
-        return new LocalDate().toDateTimeAtStartOfDay().toDate();
     }
 
     @Override

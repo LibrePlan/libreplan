@@ -86,10 +86,6 @@
                                 disabled="@{controller.isEditing}" />
                         </row>
                         <row visible="@{controller.isVirtualWorker}">
-                            <label value="${i18n:_('Capacity')}" />
-                            <intbox value="@{controller.virtualWorkerCapacity}" width="100px" constraint="no negative,no zero,no empty" />
-                        </row>
-                        <row visible="@{controller.isVirtualWorker}">
                             <label value="${i18n:_('Observations')}" />
                             <textbox value="@{controller.virtualWorkerObservations}" width="500px" multiline="true" />
                         </row>

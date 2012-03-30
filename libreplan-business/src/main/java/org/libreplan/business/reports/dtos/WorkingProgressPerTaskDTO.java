@@ -28,6 +28,7 @@ import java.util.List;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
@@ -109,7 +110,7 @@ realHours
     public Integer calculatePlannedHours(Task task, LocalDate date) {
         Integer result = new Integer(0);
 
-        final List<DayAssignment> dayAssignments = task.getDayAssignments();
+        final List<DayAssignment> dayAssignments = task.getDayAssignments(FilterType.WITHOUT_DERIVED);
         if (dayAssignments.isEmpty()) {
             return result;
         }

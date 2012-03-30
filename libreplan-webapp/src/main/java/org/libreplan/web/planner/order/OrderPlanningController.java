@@ -178,6 +178,8 @@ public class OrderPlanningController implements Composer {
 
         planner.setAreShownReportedHoursByDefault(Planner
                 .guessShowReportedHoursByDefault(parameters));
+        planner.setAreShownMoneyCostBarByDefault(Planner
+                .guessShowMoneyCostBarByDefault(parameters));
 
         orderElementFilter = (Vbox) planner.getFellow("orderElementFilter");
         // Configuration of the order filter
@@ -285,8 +287,7 @@ public class OrderPlanningController implements Composer {
                         TaskElement taskElement = (TaskElement) context
                                 .getMapper()
                                 .findAssociatedDomainObject(task);
-                        return taskElement.isMilestone()
-                                || predicate.accepts(taskElement);
+                        return predicate.accepts(taskElement);
                     }
 
                 };

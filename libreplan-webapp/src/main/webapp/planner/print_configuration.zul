@@ -39,6 +39,8 @@
                     label="${i18n:_('Show progress')}" checked="true"/>
                 <checkbox id="print_reported_hours"
                     label="${i18n:_('Show all reported hours')}" checked="true"/>
+                <checkbox id="print_money_cost_bar"
+                    label="${i18n:_('Show money cost bar')}" checked="true"/>
             </vbox>
         </groupbox>
         <hbox>

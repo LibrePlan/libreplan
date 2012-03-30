@@ -53,6 +53,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -86,6 +87,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private Intbox hours;
 
     private Intbox duration;
+
+    private Decimalbox budget;
 
     private Datebox startDateBox;
 
@@ -143,8 +146,12 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private void setItemsStartConstraintTypesCombo(Order order) {
         startConstraintTypes.getChildren().clear();
         for (PositionConstraintType type : PositionConstraintType.values()) {
-            if (type != PositionConstraintType.AS_LATE_AS_POSSIBLE
-                    || order.getDeadline() != null) {
+            if ((type != PositionConstraintType.AS_LATE_AS_POSSIBLE &&
+                        type != PositionConstraintType.AS_SOON_AS_POSSIBLE) ||
+                    (type == PositionConstraintType.AS_LATE_AS_POSSIBLE &&
+                        order.getDeadline() != null) ||
+                    (type == PositionConstraintType.AS_SOON_AS_POSSIBLE &&
+                        order.getInitDate() != null)) {
                 Comboitem comboitem = new Comboitem(_(type.getName()));
                 comboitem.setValue(type);
                 startConstraintTypes.appendChild(comboitem);
@@ -205,6 +212,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
             hideResourceAllocationTypeRow();
         }
         hours.setValue(currentTaskElement.getWorkHours());
+        budget.setValue(currentTaskElement.getBudget());
         Util.reloadBindings(tabpanel);
     }
 
@@ -265,9 +273,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
                         .getValue())) : null;
         if (taskConstraint.isValid(type, inputDate)) {
             taskConstraint.update(type, inputDate);
-            if (currentContext != null) {
-                currentContext.recalculatePosition(currentTaskElement);
-            }
+            //at this point we could call currentContext.recalculatePosition(currentTaskElement)
+            //to trigger the scheduling algorithm, but we don't do it because
+            //the ResourceAllocationController, which is attached to the other
+            //tab of the same window, will do it anyway.
             return true;
         } else {
             return false;

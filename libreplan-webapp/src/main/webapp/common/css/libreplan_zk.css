@@ -1231,15 +1231,18 @@ tr.z-treerow-over input {
     font-weight:bold;
 }
 
-.migas_linea .scheduling-state {
-    -moz-border-radius: 0 6px 0 6px;
-    -webkit-border-radius: 0 6px 0 6px;
+.migas_linea span.scheduling-state {
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
     border: 1px solid #888888;
     color: #888888;
-    font-weight: bold;
-    margin: 4px 3px 2px 5px;
+    font-weight: normal;
+    margin: 4px 3px 2px 10px;
     padding: 1px 5px;
     cursor: default;
+    text-transform: lowercase;
+    opacity: 0.7;
+    background-color: transparent;
 }
 
 .submenu .z-menu-popup-cnt .z-menu-item-over .z-menu-item-img {

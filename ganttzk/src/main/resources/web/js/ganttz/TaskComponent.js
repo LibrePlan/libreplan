@@ -215,6 +215,9 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     moveConsolidatedline : function(width){
         jq('#consolidatedline' + this.parent.uuid).css('left', width);
     },
+    resizeCompletionMoneyCostBar : function(width){
+        jq('#' + this.uuid + ' .completionMoneyCostBar:first').css('width', width);
+    },
     resizeCompletionAdvance : function(width){
         jq('#' + this.uuid + ' .completion:first').css('width', width);
     },
@@ -234,7 +237,7 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
         jq('.task-labels',this.$n()).hide();
     },
     setClass : function(cssClass){
-        jq(this.$n()).addClass(cssClass);
+        jq(this.$n()).removeClass().addClass(cssClass);
     }
 },{
     //"Class" methods and properties

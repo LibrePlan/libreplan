@@ -409,7 +409,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         Interval chartInterval = getIndicatorsDefinitionInterval();
         LocalDate today = new LocalDate();
         return includes(chartInterval, today) ? today : chartInterval
-                .getFinish();
+                .getFinish().minusDays(1);
     }
     protected void addZeroBeforeTheFirstValue(
             SortedMap<LocalDate, BigDecimal> map) {

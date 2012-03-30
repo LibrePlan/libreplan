@@ -20,6 +20,7 @@
 package org.libreplan.web.users.settings;
 
 import org.libreplan.business.common.Configuration;
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -49,6 +50,9 @@ public class PasswordModel implements IPasswordModel {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     private User user;
 
@@ -143,4 +147,12 @@ public class PasswordModel implements IPasswordModel {
         }
         return true;
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isLdapAuthEnabled() {
+        return configurationDAO.getConfiguration().getLdapConfiguration()
+                .getLdapAuthEnabled();
+    }
+
 }

@@ -52,9 +52,11 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
+import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.IVisitor;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
@@ -171,6 +173,9 @@ public class PlanningStateCreator {
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
+    @Autowired
+    private IMoneyCostCalculator moneyCostCalculator;
+
     void synchronizeWithSchedule(Order order, IOptionalPersistence persistence) {
         List<TaskSourceSynchronization> synchronizationsNeeded = order
                 .calculateSynchronizationsNeeded();
@@ -260,7 +265,8 @@ public class PlanningStateCreator {
         TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
         if (rootTask != null) {
             forceLoadOf(rootTask);
-            forceLoadDayAssignments(orderReloaded.getResources());
+            forceLoadDayAssignments(orderReloaded
+                    .getResources(FilterType.KEEP_ALL));
             forceLoadOfDepedenciesCollections(rootTask);
             forceLoadOfLabels(Arrays.asList((TaskElement) rootTask));
         }
@@ -274,6 +280,9 @@ public class PlanningStateCreator {
                 currentScenario);
 
         forceLoadOfWorkingHours(result.getInitial());
+
+        moneyCostCalculator.resetMoneyCostMap();
+
         return result;
     }
 
@@ -397,7 +406,7 @@ public class PlanningStateCreator {
             return new UsingOwnerScenario(currentScenario, orderReloaded);
         }
         final List<DayAssignment> previousAssignments = orderReloaded
-                .getDayAssignments();
+                .getDayAssignments(DayAssignment.FilterType.KEEP_ALL);
 
         OrderVersion newVersion = OrderVersion
                 .createInitialVersion(currentScenario);

@@ -54,9 +54,13 @@
                 <label value="${i18n:_('Hours')}" />
                 <intbox id="hours" disabled="true" />
             </row>
-                <row id="durationRow">
+            <row id="durationRow">
                 <label value="${i18n:_('Duration (days)')}" />
                 <intbox id="duration" disabled="true"/>
+            </row>
+            <row>
+                <label value="${i18n:_('Budget')}" />
+                <decimalbox id="budget" disabled="true" />
             </row>
             <row id="startConstraint">
                 <label value="${i18n:_('Constraint')}" />

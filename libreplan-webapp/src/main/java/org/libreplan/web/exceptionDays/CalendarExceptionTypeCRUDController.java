@@ -152,6 +152,7 @@ public class CalendarExceptionTypeCRUDController extends
         tbName = (Textbox) editWindow.getFellowIfAny("tbName");
         overAssignable = Util.findComponentAt(editWindow, "overAssignable");
         standardEffort = Util.findComponentAt(editWindow, "standardEffort");
+        standardEffort.initializeFor24HoursAnd0Minutes();
         extraEffort = Util.findComponentAt(editWindow, "extraEffort");
     }
 

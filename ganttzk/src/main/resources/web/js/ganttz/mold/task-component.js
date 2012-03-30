@@ -11,6 +11,7 @@ function(out){
             out.push('<div class="task-resources-inner">', this.getResourcesText(),'</div>');
         out.push('</div>');
 
+        out.push('<div class="completionMoneyCostBar"></div>');
         out.push('<div class="completion"></div>');
         out.push('<div class="completion2"></div>');
 

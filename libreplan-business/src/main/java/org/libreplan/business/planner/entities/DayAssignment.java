@@ -49,6 +49,38 @@ import org.libreplan.business.workingday.EffortDuration;
 
 public abstract class DayAssignment extends BaseEntity {
 
+    public enum FilterType {
+        KEEP_ALL {
+            @Override
+            public boolean accepts(DayAssignment each) {
+                return true;
+            }
+        },
+        WITHOUT_DERIVED {
+            @Override
+            public boolean accepts(DayAssignment each) {
+                return !(each instanceof DerivedDayAssignment);
+            }
+        };
+
+        public abstract boolean accepts(DayAssignment each);
+    }
+
+    public static List<DayAssignment> filter(
+            Collection<? extends DayAssignment> assignments,
+            FilterType filter) {
+        if (filter == null || filter.equals(FilterType.KEEP_ALL)) {
+            return new ArrayList<DayAssignment>(assignments);
+        }
+        List<DayAssignment> result = new ArrayList<DayAssignment>();
+        for (DayAssignment each : assignments) {
+            if (filter.accepts(each)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
     public static <T extends DayAssignment> List<T> getAtInterval(
             List<T> orderedAssignments, LocalDate startInclusive,
             LocalDate endExclusive) {

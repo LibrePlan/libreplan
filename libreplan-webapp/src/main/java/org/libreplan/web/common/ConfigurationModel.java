@@ -35,7 +35,6 @@ import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
-import org.libreplan.business.common.daos.IGenericDAO.Mode;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -43,12 +42,11 @@ import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.scenarios.daos.IScenarioDAO;
-import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,9 +74,6 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
-
-    @Autowired
-    private IScenarioDAO scenarioDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -149,8 +144,13 @@ public class ConfigurationModel implements IConfigurationModel {
     @Transactional
     public void confirm() {
         checkEntitySequences();
-        configurationDAO.save(configuration, Mode.FLUSH_BEFORE_VALIDATION);
-        storeAndRemoveEntitySequences();
+        configurationDAO.save(configuration);
+        try {
+            storeAndRemoveEntitySequences();
+        } catch (IllegalStateException e) {
+            throw new OptimisticLockingFailureException(
+                    "concurrency problem in entity sequences");
+        }
     }
 
     private void checkEntitySequences() {
@@ -524,26 +524,6 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public void setCompanyLogoURL(String companyLogoURL) {
         configuration.setCompanyLogoURL(companyLogoURL);
-    }
-
-    @Override
-    public Boolean isScenariosVisible() {
-        return configuration.isScenariosVisible();
-    }
-
-    @Override
-    public void setScenariosVisible(Boolean scenariosVisible) {
-        configuration.setScenariosVisible(scenariosVisible);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Boolean moreScenariosThanMasterCreated() {
-        List<Scenario> scenarios = scenarioDAO.getAll();
-        if (scenarios != null) {
-            return scenarios.size() > 1;
-        }
-        return false;
     }
 
     @Override

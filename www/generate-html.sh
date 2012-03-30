@@ -6,6 +6,8 @@ FILES="\
     INSTALL \
     NEWS \
     README \
+    README.Fedora \
+    README.openSUSE \
     TODO \
     UPDATE \
     howto-create-a-new-report-in-libreplan.rst \

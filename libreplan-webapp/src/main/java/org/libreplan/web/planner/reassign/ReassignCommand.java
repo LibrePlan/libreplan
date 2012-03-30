@@ -167,15 +167,11 @@ public class ReassignCommand implements IReassignCommand {
                 final int total = reassignations.size();
                 for (final WithAssociatedEntity each : reassignations) {
                     Task ganttTask = each.ganntTask;
-                    final GanttDate previousBeginDate = ganttTask
-                            .getBeginDate();
-                    final GanttDate previousEnd = ganttTask.getEndDate();
 
                     transactionService
                             .runOnReadOnlyTransaction(reassignmentTransaction(each));
                     diagramGraph.enforceRestrictions(each.ganntTask);
-                    ganttTask.fireChangesForPreviousValues(previousBeginDate,
-                            previousEnd);
+                    ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
                     updater.doUpdate(showCompleted(i, total));
                     i++;
                 }

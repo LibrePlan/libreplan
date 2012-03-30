@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,8 +45,10 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
@@ -393,6 +396,10 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+        if (taskSource != null && taskSource.getOrderElement() != null) {
+            taskSource.getOrderElement().setDeadline(
+                    (deadline == null)? null : deadline.toDateMidnight().toDate());
+        }
     }
 
     void add(Dependency dependency) {
@@ -548,18 +555,27 @@ public abstract class TaskElement extends BaseEntity {
         result.put(date, current.plus(duration));
     }
 
-    public List<DayAssignment> getDayAssignments() {
+    public List<DayAssignment> getDayAssignments(DayAssignment.FilterType filter) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             dayAssignments.addAll(resourceAllocation.getAssignments());
+            Set<DerivedAllocation> derivedAllocations = resourceAllocation
+                    .getDerivedAllocations();
+            for (DerivedAllocation each : derivedAllocations) {
+                dayAssignments.addAll(each.getAssignments());
+            }
         }
-        return dayAssignments;
+        return DayAssignment.filter(dayAssignments, filter);
     }
 
     public boolean isSubcontracted() {
         // Just Task could be subcontracted
         return false;
+    }
+
+    public String getSubcontractionName() {
+        return "";
     }
 
     public boolean isSubcontractedAndWasAlreadySent() {
@@ -619,6 +635,18 @@ public abstract class TaskElement extends BaseEntity {
             }
         }
         return "assigned";
+    }
+
+    public Boolean belongsClosedProject() {
+        EnumSet<OrderStatusEnum> CLOSED = EnumSet.of(OrderStatusEnum.CANCELLED,
+                OrderStatusEnum.FINISHED, OrderStatusEnum.STORED);
+
+        Order order = getOrderElement().getOrder();
+        if(CLOSED.contains(order.getState())) {
+            return true;
+        }
+
+        return false;
     }
 
     public abstract boolean hasLimitedResourceAllocation();
@@ -722,6 +750,21 @@ public abstract class TaskElement extends BaseEntity {
 
     public void updateAdvancePercentageFromOrderElement() {
         setAdvancePercentage(getOrderElement().getAdvancePercentage());
+    }
+
+    public Boolean isRoot() {
+        return (this.getParent() == null);
+    }
+
+    public BigDecimal getBudget() {
+        if ((taskSource != null) && (taskSource.getOrderElement() != null)) {
+            return taskSource.getOrderElement().getBudget();
+        }
+        return null;
+    }
+
+    public ExternalCompany getSubcontractedCompany() {
+        return null;
     }
 
 }

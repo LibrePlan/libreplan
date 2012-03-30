@@ -23,6 +23,7 @@ package org.libreplan.business.planner.entities;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
+import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.workingday.IntraDayDate;
 
 /**
@@ -57,10 +58,16 @@ public class TaskPositionConstraint {
                 .toDate() : null;
     }
 
-    public void explicityMovedTo(IntraDayDate date) {
-        Validate.notNull(date);
-        constraintType = constraintType.newTypeAfterMoved();
-        constraintDate = date;
+    public void explicityMovedTo(IntraDayDate startDate, IntraDayDate endDate,
+            SchedulingMode mode) {
+        Validate.notNull(startDate);
+        Validate.notNull(endDate);
+        constraintType = constraintType.newTypeAfterMoved(mode);
+        if (isConstraintAppliedToStart()) {
+            constraintDate = startDate;
+        } else {
+            constraintDate = endDate;
+        }
     }
 
     public IntraDayDate getConstraintDate() {

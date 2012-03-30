@@ -422,7 +422,6 @@ public class ManageOrderElementAdvancesModel implements
     public void confirmSave() throws InstanceNotFoundException,
             DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException {
-        orderElementDAO.checkVersion(orderElement);
         reattachmentOrderElement();
         orderElement.updateAdvancePercentageTaskElement();
         validateBasicData();
