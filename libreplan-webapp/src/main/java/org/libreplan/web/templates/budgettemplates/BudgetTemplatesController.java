@@ -132,7 +132,6 @@ public class BudgetTemplatesController extends GenericForwardComposer implements
     private void showEditWindow() {
         // openTemplateTree is not called if it's the first tab shown
         bindTemplatesTreeWithModel();
-        bindMaterialsControllerWithCurrentTemplate();
         bindLabelsControllerWithCurrentTemplate();
         bindQualityFormWithCurrentTemplate();
         bindEditTemplateWindowWithController();
@@ -143,13 +142,6 @@ public class BudgetTemplatesController extends GenericForwardComposer implements
 
     private <T extends Component> T findAtEditWindow(String id, Class<T> type) {
         return type.cast(editWindow.getFellow(id));
-    }
-
-    private void bindMaterialsControllerWithCurrentTemplate() {
-        MaterialAssignmentTemplateComponent c = findAtEditWindow(
-                "listOrderElementMaterials",
-                MaterialAssignmentTemplateComponent.class);
-        c.getController().openWindow(model.getTemplate());
     }
 
     private void bindLabelsControllerWithCurrentTemplate() {

@@ -19,9 +19,6 @@
 
 <?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
     class="org.libreplan.web.templates.budgettemplates.TemplatesTreeComponent"?>
-<?component name="listOrderElementMaterials"
-    class="org.libreplan.web.templates.materials.MaterialAssignmentTemplateComponent"
-    macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementLabels" class="org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
 <?component name="assignedQualityForms" class="org.libreplan.web.templates.quality.QualityFormAssignerComponent" macroURI="/templates/_assignedQualityForms.zul" ?>
 <?component name="editTemplateWindow" macroURI="_editTemplateWindow.zul" inline="true"?>
@@ -39,7 +36,6 @@
                 disabled="@{controller.templateTreeDisabled}"
                 onSelect="controller.openTemplateTree()" />
             <tab label="${i18n:_('Labels')}" />
-            <tab label="${i18n:_('Materials')}" />
             <tab label="${i18n:_('Quality Forms')}" />
             <tab label="${i18n:_('Assignment log')}" />
             <tab label="${i18n:_('Statistics log')}" />
@@ -94,9 +90,6 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementLabels id="listOrderElementLabels"/>
-            </tabpanel>
-            <tabpanel>
-                <listOrderElementMaterials id="listOrderElementMaterials"/>
             </tabpanel>
             <tabpanel>
                 <assignedQualityForms id="assignedQualityForms"/>
