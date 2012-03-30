@@ -1,0 +1,72 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<zk>
+<zscript><![CDATA[
+    assignedQualityForms = self;
+]]>
+</zscript>
+<vbox>
+    <!-- Quality Forms-->
+    <vbox>
+        <vbox id="messagesContainerQualityForms" />
+        <panel title="${i18n:_('Quality forms')}" border="normal">
+            <panelchildren>
+                <!-- Assign quality form -->
+                <vbox>
+                    <label value="${i18n:_('Assign quality form')}" />
+                    <hbox>
+                        <bandboxSearch id="qualityFormFinder" finder="QualityFormBandboxFinder"
+                            model="@{assignedQualityForms.notAssignedQualityForms}" widthBandbox="200px" widthListbox="600px" />
+                        <button label="${i18n:_('Assign')}"
+                            onClick="assignedQualityForms.onAssignTaskQualityForm()"
+                            style="margin-top: -4px" />
+                    </hbox>
+                </vbox>
+                <separator bar="false" spacing="40px" orient="vertical"/>
+                <grid height="300px" fixedLayout="true"
+                    model="@{assignedQualityForms.assigned}">
+                    <columns>
+                        <column width="25px"/>
+                        <column label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="descending"/>
+                        <column label="${i18n:_('Type')}" />
+                        <column label="${i18n:_('Operations')}" />
+                    </columns>
+                    <rows>
+                         <row self="@{each='qualityForm'}" value="@{qualityForm}">
+                            <label />
+                            <label value="@{qualityForm.name}"/>
+                            <label value="@{qualityForm.qualityFormType}"/>
+                            <hbox>
+                                <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                        hoverImage="/common/img/ico_borrar.png"
+                                        onClick="assignedQualityForms.remove(self.parent.parent.value);"
+                                />
+                            </hbox>
+                         </row>
+                    </rows>
+                </grid>
+
+                <separator bar="false" spacing="40px" orient="vertical"/>
+            </panelchildren>
+        </panel>
+    </vbox>
+</vbox>
+</zk>
