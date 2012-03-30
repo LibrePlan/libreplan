@@ -156,7 +156,7 @@ public class AssignedHoursToOrderElementModel implements
 
     @Override
     public EffortDuration getTotalAssignedEffort() {
-        if (orderElement == null) {
+        if (orderElement == null || orderElement.getSumChargedEffort() == null) {
             return EffortDuration.zero();
         }
         return this.orderElement.getSumChargedEffort().getTotalChargedEffort();

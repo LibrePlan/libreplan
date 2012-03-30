@@ -126,7 +126,8 @@ public class OrderLine extends OrderElement {
         if (!getMaterialAssignments().isEmpty()) {
             return false;
         }
-        if (!getSumChargedEffort().getDirectChargedEffort().isZero()) {
+        if (getSumChargedEffort() != null
+                && !getSumChargedEffort().getDirectChargedEffort().isZero()) {
             return false;
         }
         if (!getTaskElements().isEmpty()) {
