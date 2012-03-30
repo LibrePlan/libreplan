@@ -491,48 +491,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             return editbutton;
         }
 
-        @Override
-        protected void addSalaryCell(OrderElement element) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        protected void addUnitsCell(OrderElement element) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        protected void addCostTypeCell(OrderElement element) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        protected void addSocialSecurityCell(OrderElement element) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        protected void addVacationsCell(OrderElement element) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        protected void addNumberCell(OrderElement element) {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        protected void addGrossSalaryCell(OrderElement element) {
-            // TODO Auto-generated method stub
-
-        }
-
     }
 
     @Override

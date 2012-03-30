@@ -179,24 +179,25 @@ public class TemplatesTreeController extends
             return currentElement.getSchedulingState();
         }
 
-        /* ----------------------------------------- */
-
         @Override
         protected void addSalaryCell(final OrderElementTemplate element) {
-            Textbox textBox = new Textbox();
-            Util.bind(textBox, new Util.Getter<String>() {
+            Textbox textBoxCode = new Textbox();
+            Util.bind(textBoxCode, new Util.Getter<String>() {
                 @Override
                 public String get() {
                     // Replace by salary
-                    return element.getHoursGroups().toString();
+                    return element.getCode();
                 }
             }, new Util.Setter<String>() {
 
                 @Override
                 public void set(String value) {
+                    // Replace by salary
+                    element.setCode(value);
                 }
             });
-            addCell(textBox);
+            addCell(textBoxCode);
+            // TODO Auto-generated method stub
         }
 
         @Override
@@ -205,7 +206,7 @@ public class TemplatesTreeController extends
             Util.bind(textBoxCode, new Util.Getter<String>() {
                 @Override
                 public String get() {
-                    return element.getHoursGroups().toString();
+                    return element.getCode();
                 }
             }, new Util.Setter<String>() {
 
@@ -234,79 +235,6 @@ public class TemplatesTreeController extends
             });
             addCell(textBoxCode);
         }
-
-        @Override
-        protected void addNumberCell(final OrderElementTemplate element) {
-            Textbox textBox = new Textbox();
-            Util.bind(textBox, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    // Replace by salary
-                    return element.getHoursGroups().toString();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                }
-            });
-            addCell(textBox);
-        }
-
-        @Override
-        protected void addSocialSecurityCell(final OrderElementTemplate element) {
-            Textbox textBox = new Textbox();
-            Util.bind(textBox, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    // Replace by salary
-                    return element.getHoursGroups().toString();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                }
-            });
-            addCell(textBox);
-        }
-
-        @Override
-        protected void addVacationsCell(final OrderElementTemplate element) {
-            Textbox textBox = new Textbox();
-            Util.bind(textBox, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    // Replace by salary
-                    return element.getHoursGroups().toString();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                }
-            });
-            addCell(textBox);
-        }
-
-        @Override
-        protected void addGrossSalaryCell(final OrderElementTemplate element) {
-            Textbox textBox = new Textbox();
-            Util.bind(textBox, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    // Replace by salary
-                    return element.getHoursGroups().toString();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                }
-            });
-            addCell(textBox);
-        }
-
     }
 
     public TemplatesTreeController(IOrderTemplatesModel model,

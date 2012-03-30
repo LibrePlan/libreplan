@@ -111,66 +111,30 @@ public class TemplatesTreeComponent extends TreeComponent {
         //
         // });
 
-        result.add(new TemplatesTreeColumn(_("Unit Type"), "salary") {
+        result.add(new TemplatesTreeColumn(_("salary"), "salary") {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
                     Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
+                renderer.addSalaryCell(currentElement);
             }
 
         });
-        result.add(new TemplatesTreeColumn(_("Cost/Salary"), "units") {
+        result.add(new TemplatesTreeColumn(_("units"), "units") {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
                     Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
+                renderer.addUnitsCell(currentElement);
             }
 
         });
-        result.add(new TemplatesTreeColumn(_("Units"), "cost-type") {
+        result.add(new TemplatesTreeColumn(_("cost type"), "cost-type") {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
                     Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
-            }
-
-        });
-
-        result.add(new TemplatesTreeColumn(_("Nº"), "cost-type") {
-
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
-            }
-
-        });
-        result.add(new TemplatesTreeColumn(_("Social Security"), "cost-type") {
-
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
-            }
-
-        });
-        result.add(new TemplatesTreeColumn(_("Gross Salary"), "cost-type") {
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
-            }
-
-        });
-
-        result.add(new TemplatesTreeColumn(_("Vac/Ind"), "cost-type") {
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
+                renderer.addCostTypeCell(currentElement);
             }
 
         });
