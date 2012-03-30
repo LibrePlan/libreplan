@@ -19,6 +19,8 @@
 
 package org.libreplan.business.orders.daos;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.SessionFactory;
@@ -57,9 +59,13 @@ public class SumChargedEffortDAO extends
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    private Map<OrderElement, SumChargedEffort> mapSumChargedEfforts;
+
     @Override
     public void updateRelatedSumChargedEffortWithWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) {
+        mapSumChargedEfforts = new HashMap<OrderElement, SumChargedEffort>();
+
         for (WorkReportLine workReportLine : workReportLineSet) {
             updateRelatedSumChargedEffortWithAddedOrModifiedWorkReportLine(workReportLine);
         }
@@ -104,7 +110,7 @@ public class SumChargedEffortDAO extends
 
     private void addDirectChargedEffort(OrderElement orderElement,
             EffortDuration effort) {
-        SumChargedEffort sumChargedEffort = findByOrderElement(orderElement);
+        SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
         if (sumChargedEffort == null) {
             sumChargedEffort = SumChargedEffort.create(orderElement);
         }
@@ -118,7 +124,7 @@ public class SumChargedEffortDAO extends
     private void addInirectChargedEffortRecursively(OrderElement orderElement,
             EffortDuration effort) {
         if (orderElement != null) {
-            SumChargedEffort sumChargedEffort = findByOrderElement(orderElement);
+            SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
             if (sumChargedEffort == null) {
                 sumChargedEffort = SumChargedEffort.create(orderElement);
             }
@@ -133,6 +139,8 @@ public class SumChargedEffortDAO extends
     @Override
     public void updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) {
+        mapSumChargedEfforts = new HashMap<OrderElement, SumChargedEffort>();
+
         for (WorkReportLine workReportLine : workReportLineSet) {
             updateRelatedSumChargedEffortWithDeletedWorkReportLine(workReportLine);
         }
@@ -155,7 +163,7 @@ public class SumChargedEffortDAO extends
 
     private void substractDirectChargedEffort(OrderElement orderElement,
             EffortDuration effort) {
-        SumChargedEffort sumChargedEffort = findByOrderElement(orderElement);
+        SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
 
         sumChargedEffort.subtractDirectChargedEffort(effort);
         save(sumChargedEffort);
@@ -167,13 +175,23 @@ public class SumChargedEffortDAO extends
     private void substractInirectChargedEffortRecursively(OrderElement orderElement,
             EffortDuration effort) {
         if (orderElement != null) {
-            SumChargedEffort sumChargedEffort = findByOrderElement(orderElement);
+            SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
 
             sumChargedEffort.subtractIndirectChargedEffort(effort);
             save(sumChargedEffort);
 
             substractInirectChargedEffortRecursively(orderElement.getParent(), effort);
         }
+    }
+
+    private SumChargedEffort getByOrderElement(OrderElement orderElement) {
+        SumChargedEffort sumChargedEffort = mapSumChargedEfforts
+                .get(orderElement);
+        if (sumChargedEffort == null) {
+            sumChargedEffort = findByOrderElement(orderElement);
+            mapSumChargedEfforts.put(orderElement, sumChargedEffort);
+        }
+        return sumChargedEffort;
     }
 
     @Override
