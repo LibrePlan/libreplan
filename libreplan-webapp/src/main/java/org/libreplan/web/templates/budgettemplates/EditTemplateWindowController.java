@@ -84,7 +84,6 @@ public class EditTemplateWindowController extends GenericForwardComposer {
             throw new RuntimeException(e);
         }
         bindOrderElementLabels(template);
-        bindCriterionRequirements(template);
         bindOrderElementMaterials(template);
         bindAssignedQualityForms(template);
         Util.reloadBindings(editTemplateWindow);
@@ -100,13 +99,6 @@ public class EditTemplateWindowController extends GenericForwardComposer {
                 LabelsAssignmentToTemplateComponent.class);
         component.getController().setTemplate(template);
         component.getController().openWindow(model);
-    }
-
-    private void bindCriterionRequirements(OrderElementTemplate template) {
-        CriterionRequirementTemplateComponent component = find(
-                "listOrderElementCriterionRequirements",
-                CriterionRequirementTemplateComponent.class);
-        component.getController().openWindow(model, template);
     }
 
     private void bindOrderElementMaterials(OrderElementTemplate template) {

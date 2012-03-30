@@ -19,9 +19,6 @@
 
 <?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
     class="org.libreplan.web.templates.budgettemplates.TemplatesTreeComponent"?>
-<?component name="listOrderElementCriterionRequirements"
-    class="org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent"
-    macroURI="/orders/_listOrderElementCriterionRequirements.zul"?>
 <?component name="listOrderElementMaterials"
     class="org.libreplan.web.templates.materials.MaterialAssignmentTemplateComponent"
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
@@ -42,7 +39,6 @@
                 disabled="@{controller.templateTreeDisabled}"
                 onSelect="controller.openTemplateTree()" />
             <tab label="${i18n:_('Labels')}" />
-            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />
             <tab label="${i18n:_('Materials')}" />
             <tab label="${i18n:_('Quality Forms')}" />
             <tab label="${i18n:_('Assignment log')}" />
@@ -98,9 +94,6 @@
             </tabpanel>
             <tabpanel>
                 <listOrderElementLabels id="listOrderElementLabels"/>
-            </tabpanel>
-            <tabpanel>
-                <listOrderElementCriterionRequirements id="listOrderElementCriterionRequirements"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementMaterials id="listOrderElementMaterials"/>

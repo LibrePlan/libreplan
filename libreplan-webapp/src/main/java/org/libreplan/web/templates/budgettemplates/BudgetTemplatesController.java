@@ -133,7 +133,6 @@ public class BudgetTemplatesController extends GenericForwardComposer implements
         // openTemplateTree is not called if it's the first tab shown
         bindTemplatesTreeWithModel();
         bindMaterialsControllerWithCurrentTemplate();
-        bindCriterionRequirementControllerWithCurrentTemplate();
         bindLabelsControllerWithCurrentTemplate();
         bindQualityFormWithCurrentTemplate();
         bindEditTemplateWindowWithController();
@@ -151,13 +150,6 @@ public class BudgetTemplatesController extends GenericForwardComposer implements
                 "listOrderElementMaterials",
                 MaterialAssignmentTemplateComponent.class);
         c.getController().openWindow(model.getTemplate());
-    }
-
-    private void bindCriterionRequirementControllerWithCurrentTemplate() {
-        CriterionRequirementTemplateComponent c = findAtEditWindow(
-                "listOrderElementCriterionRequirements",
-                CriterionRequirementTemplateComponent.class);
-        c.getController().openWindow(model);
     }
 
     private void bindLabelsControllerWithCurrentTemplate() {
