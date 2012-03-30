@@ -32,6 +32,9 @@ Instructions::
 
     sudo apt-get install python-software-properties
 
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory problems`_.
 
 Debian packages
 ~~~~~~~~~~~~~~~
@@ -55,8 +58,57 @@ Instructions:
 
 .. WARNING::
 
-  If you have problems with printing support review the last section `Fix
+  If you have problems with printing support review the section `Fix
   printing in Debian Squeeze`_.
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory problems`_.
+
+Fedora and openSUSE OBS (openSUSE Build Service)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions depending on the distribution:
+
+* Fedora 16::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_16/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
+
+* Fedora 15::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_15/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
+
+* openSUSE 12.1::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_12.1/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
+
+* openSUSE 11.4::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_11.4/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory problems`_.
+
+RPM Packages
+~~~~~~~~~~~~
+
+There are several LibrePlan RPM packages available in the following URL:
+http://download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory problems`_.
 
 
 LibrePlan manual installation
