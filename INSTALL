@@ -34,7 +34,7 @@ Instructions::
 
 .. WARNING::
 
-  If you have memory problems review the section `Fix memory problems`_.
+  If you have memory problems review the section `Fix memory errors`_.
 
 Debian packages
 ~~~~~~~~~~~~~~~
@@ -63,7 +63,7 @@ Instructions:
 
 .. WARNING::
 
-  If you have memory problems review the section `Fix memory problems`_.
+  If you have memory problems review the section `Fix memory errors`_.
 
 Fedora and openSUSE OBS (openSUSE Build Service)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,7 +98,7 @@ Instructions depending on the distribution:
 
 .. WARNING::
 
-  If you have memory problems review the section `Fix memory problems`_.
+  If you have memory problems review the section `Fix memory errors`_.
 
 RPM Packages
 ~~~~~~~~~~~~
@@ -108,7 +108,7 @@ http://download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/
 
 .. WARNING::
 
-  If you have memory problems review the section `Fix memory problems`_.
+  If you have memory problems review the section `Fix memory errors`_.
 
 
 LibrePlan manual installation
