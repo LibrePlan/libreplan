@@ -77,45 +77,7 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
-
-columns.add(new OrdersTreeColumn(_("Salary"),
-                "salary",
-                _("salary")) {
-
-    @Override
-    protected void doCell(OrderElementTreeitemRenderer treeRenderer,
-            OrderElement currentElement) {
-                treeRenderer.addHoursCell(currentElement);
-    }
-
-});
-
-columns.add(new OrdersTreeColumn(_("Units"),
-        "units",
-        _("units")) {
-
-@Override
-protected void doCell(OrderElementTreeitemRenderer treeRenderer,
-    OrderElement currentElement) {
-                treeRenderer.addHoursCell(currentElement);
-}
-});
-
-columns.add(new OrdersTreeColumn(_("costtype"),
-        "costtype",
-        _("costtype")) {
-
-@Override
-protected void doCell(OrderElementTreeitemRenderer treeRenderer,
-    OrderElement currentElement) {
-                treeRenderer.addHoursCell(currentElement);
-}
-
-});
-
-
-
-        columns.add(new OrdersTreeColumn(_("Start"),
+        columns.add(new OrdersTreeColumn(_("Must start after"),
                         "estimated_init",
                         _("Date which the task must start after (press enter in textbox to open calendar popup or type in date directly)")) {
 
@@ -128,7 +90,7 @@ protected void doCell(OrderElementTreeitemRenderer treeRenderer,
         });
         columns
                 .add(new OrdersTreeColumn(
-                        _("End"),
+                        _("Deadline"),
                         "estimated_end",
                         _("Estimated end date for the task (press enter in textbox to open calendar popup or type in date directly)")) {
 

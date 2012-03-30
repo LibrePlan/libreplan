@@ -1018,13 +1018,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void doTry() {
 
         }
-
-        protected abstract void addSalaryCell(final T element);
-
-        protected abstract void addUnitsCell(final T element);
-
-        protected abstract void addCostTypeCell(final T element);
-
     }
 
     public void setColumns(List<Column> columns) {
