@@ -288,4 +288,13 @@ public class SubcontractedTaskData extends BaseEntity {
             this.requiredDeliveringDates.first().setCommunicationDate(subcontractCommunicationDate);
         }
     }
+
+    public Date getLastRequiredDeliverDate() {
+        if (this.requiredDeliveringDates != null
+                && !this.requiredDeliveringDates.isEmpty()) {
+            return this.requiredDeliveringDates.first()
+                    .getSubcontractorDeliverDate();
+        }
+        return null;
+    }
 }

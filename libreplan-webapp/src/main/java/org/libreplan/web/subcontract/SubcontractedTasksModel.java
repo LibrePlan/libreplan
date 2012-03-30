@@ -31,7 +31,6 @@ import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,6 +41,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.libreplan.business.planner.entities.SubcontractState;
@@ -99,8 +99,13 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
                 .getAllForMasterScenario();
         for (SubcontractedTaskData subcontractedTaskData : result) {
             forceLoadExternalCompany(subcontractedTaskData);
+            forceLastDeliveryDate(subcontractedTaskData);
         }
         return sortByState(result);
+    }
+
+    private void forceLastDeliveryDate(SubcontractedTaskData subcontractedTaskData) {
+        subcontractedTaskData.getLastRequiredDeliverDate();
     }
 
     private void forceLoadExternalCompany(
@@ -141,11 +146,11 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
     @Override
     @Transactional(readOnly = true)
-    public String getOrderCode(SubcontractedTaskData subcontractedTaskData) {
+    public Order getOrder(SubcontractedTaskData subcontractedTaskData) {
         Task task = subcontractedTaskData.getTask();
         OrderElement orderElement = orderDAO.loadOrderAvoidingProxyFor(task
                 .getOrderElement());
-        return orderElement.getOrder().getCode();
+        return orderElement.getOrder();
     }
 
     @Override

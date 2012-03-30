@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -109,19 +110,37 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             SubcontractedTaskData subcontractedTaskData = (SubcontractedTaskData) data;
             row.setValue(subcontractedTaskData);
 
-            appendLabel(row, toString(subcontractedTaskData
-                    .getSubcontratationDate()));
-            appendLabel(row, toString(subcontractedTaskData
-                    .getSubcontractCommunicationDate()));
+            Order order = getOrder(subcontractedTaskData);
+
+            appendLabel(row,
+                    toString(subcontractedTaskData.getSubcontratationDate(), "dd/MM/yyyy HH:mm"));
+            appendLabel(
+                    row,
+                    toString(subcontractedTaskData.getSubcontractCommunicationDate(),
+                            "dd/MM/yyyy HH:mm"));
             appendLabel(row, getExternalCompany(subcontractedTaskData));
-            appendLabel(row, getOrderCode(subcontractedTaskData));
+            appendLabel(row, getOrderCode(order));
+            appendLabel(row, getOrderName(order));
             appendLabel(row, subcontractedTaskData.getSubcontractedCode());
             appendLabel(row, getTaskName(subcontractedTaskData));
             appendLabel(row, subcontractedTaskData.getWorkDescription());
-            appendLabel(row, toString(subcontractedTaskData
-                    .getSubcontractPrice()));
+            appendLabel(row, toString(subcontractedTaskData.getSubcontractPrice()));
+            appendLabel(row,
+                    toString(subcontractedTaskData.getLastRequiredDeliverDate(), "dd/MM/yyyy"));
             appendLabel(row, _(toString(subcontractedTaskData.getState())));
             appendOperations(row, subcontractedTaskData);
+        }
+
+        private String getOrderCode(Order order) {
+            return (order != null) ? order.getCode() : "";
+        }
+
+        private String getOrderName(Order order) {
+            return (order != null) ? order.getName() : "";
+        }
+
+        private Order getOrder(SubcontractedTaskData subcontractedTaskData) {
+            return subcontractedTasksModel.getOrder(subcontractedTaskData);
         }
 
         private String toString(Object object) {
@@ -132,20 +151,15 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             return object.toString();
         }
 
-        private String toString(Date date) {
+        private String toString(Date date, String precision) {
             if (date == null) {
                 return "";
             }
-
-            return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
+            return new SimpleDateFormat(precision).format(date);
         }
 
         private void appendLabel(Row row, String label) {
             row.appendChild(new Label(label));
-        }
-
-        private String getOrderCode(SubcontractedTaskData subcontractedTaskData) {
-            return subcontractedTasksModel.getOrderCode(subcontractedTaskData);
         }
 
         private String getTaskName(SubcontractedTaskData subcontractedTaskData) {
