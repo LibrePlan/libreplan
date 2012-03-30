@@ -281,3 +281,47 @@ Instructions:
 * Fetch and install ``cutycapt`` (and its dependencies) from testing::
 
   # apt-get -t testing install cutycapt
+
+
+Fix memory errors
+-----------------
+
+With the default parameters of Tomcat in the different distributions you could
+have problems with Java memory.
+
+After a while using LibrePlan you could see that some windows do not work and
+the log shows a ``java.lang.OutOfMemoryError`` exception.
+
+This exception could be caused because of two different issues:
+
+* Heap space::
+
+    java.lang.OutOfMemoryError: Java heap space
+
+* PermGemp space (Permanent Generation, reflective data for the JVM)::
+
+    java.lang.OutOfMemoryError: PermGen space
+
+In order to avoid this problem you need to configure properly ``JAVA_OPTS``
+variable in your server. This is configured in different files depending on the
+distribution:
+
+* Debian or Ubuntu: ``/etc/default/tomcat6``
+* Fedora or openSUSE: ``/etc/tomcat6/tomcat6.conf``
+
+The next lines show a possible configuration to fix the memory errors (the exact
+values depends on the server features)::
+
+  JAVA_OPTS="-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m"
+  JAVA_OPTS="${JAVA_OPTS} -server -Djava.awt.headless=true"
+
+Where the different parameters have the following meaning:
+
+* ``-Xms``: Initial size of the Java heap
+* ``-Xmx``: Maximum size of the Java heap
+* ``-XX:PermSize``: Initial size of PermGen
+* ``-XX:MaxPermSize``: Maximum size of PermGen
+
+.. NOTE::
+
+   Take into account that size of PermGen is additional to heap size.
