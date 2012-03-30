@@ -79,7 +79,7 @@ public class TemplatesTreeComponent extends TreeComponent {
         result.add(schedulingStateColumn);
         result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
-        result.add(new TemplatesTreeColumn(_("TOTAL"), "hours") {
+        result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
@@ -88,59 +88,29 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
-        // result.add(new TemplatesTreeColumn(
-        // _("Must start after (days since beginning project)"),
-        // "estimated_init") {
-        //
-        // @Override
-        // protected void doCell(TemplatesTreeRenderer renderer,
-        // Treeitem item, OrderElementTemplate currentElement) {
-        // renderer.addInitCell(currentElement);
-        // }
-        //
-        // });
-        // result.add(new TemplatesTreeColumn(
-        // _("Deadline (days since beggining project)"),
-        // "estimated_end") {
-        //
-        // @Override
-        // protected void doCell(TemplatesTreeRenderer renderer,
-        // Treeitem item, OrderElementTemplate currentElement) {
-        // renderer.addEndCell(currentElement);
-        // }
-        //
-        // });
-
-        result.add(new TemplatesTreeColumn(_("salary"), "salary") {
+        result.add(new TemplatesTreeColumn(
+                _("Must start after (days since beginning project)"),
+                "estimated_init") {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
                     Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addSalaryCell(currentElement);
+                renderer.addInitCell(currentElement);
             }
 
         });
-        result.add(new TemplatesTreeColumn(_("units"), "units") {
+        result.add(new TemplatesTreeColumn(
+                _("Deadline (days since beggining project)"),
+                "estimated_end") {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
                     Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addUnitsCell(currentElement);
+                renderer.addEndCell(currentElement);
             }
 
         });
-        result.add(new TemplatesTreeColumn(_("cost type"), "cost-type") {
-
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addCostTypeCell(currentElement);
-            }
-
-        });
-
         result.add(operationsColumn);
-
         return result;
     }
 

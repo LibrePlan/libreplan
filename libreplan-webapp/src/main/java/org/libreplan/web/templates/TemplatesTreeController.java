@@ -179,62 +179,6 @@ public class TemplatesTreeController extends
             return currentElement.getSchedulingState();
         }
 
-        @Override
-        protected void addSalaryCell(final OrderElementTemplate element) {
-            Textbox textBoxCode = new Textbox();
-            Util.bind(textBoxCode, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    // Replace by salary
-                    return element.getCode();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    // Replace by salary
-                    element.setCode(value);
-                }
-            });
-            addCell(textBoxCode);
-            // TODO Auto-generated method stub
-        }
-
-        @Override
-        protected void addUnitsCell(final OrderElementTemplate element) {
-            Textbox textBoxCode = new Textbox();
-            Util.bind(textBoxCode, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    return element.getCode();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    element.setCode(value);
-                }
-            });
-            addCell(textBoxCode);
-        }
-
-        @Override
-        protected void addCostTypeCell(final OrderElementTemplate element) {
-            Textbox textBoxCode = new Textbox();
-            Util.bind(textBoxCode, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    return element.getCode();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    element.setCode(value);
-                }
-            });
-            addCell(textBoxCode);
-        }
     }
 
     public TemplatesTreeController(IOrderTemplatesModel model,
