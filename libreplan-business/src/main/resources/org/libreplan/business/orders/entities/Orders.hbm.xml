@@ -157,6 +157,11 @@
 	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.DeadlineCommunication" />
                 </set>
 
+				<set name="endDateCommunicationToCustomer" inverse="false" cascade="all,delete-orphan" access="field"
+	                sort="org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomerComparator">
+	                    <key column="order_id" />
+	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer" />
+                </set>
             </joined-subclass>
 
         </joined-subclass>

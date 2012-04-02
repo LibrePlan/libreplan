@@ -24,6 +24,7 @@ package org.libreplan.business.orders.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,8 +39,6 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
-import org.libreplan.business.advance.entities.AdvanceMeasurement;
-import org.libreplan.business.advance.entities.AdvanceMeasurementComparator;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.calendars.entities.BaseCalendar;
@@ -49,6 +48,8 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomerComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.planner.entities.DayAssignment;
@@ -118,6 +119,10 @@ public class Order extends OrderLineGroup implements Comparable {
     @Valid
     private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
             new DeliverDateComparator());
+
+    @Valid
+    private SortedSet<EndDateCommunicationToCustomer> endDateCommunicationToCustomer = new TreeSet<EndDateCommunicationToCustomer>(
+            new EndDateCommunicationToCustomerComparator());
 
     public enum SchedulingMode {
         FORWARD, BACKWARDS;
@@ -597,4 +602,43 @@ public class Order extends OrderLineGroup implements Comparable {
         return deliveringDates;
     }
 
+    public void setEndDateCommunicationToCustomer(
+            SortedSet<EndDateCommunicationToCustomer> endDateCommunicationToCustomer) {
+        this.endDateCommunicationToCustomer.clear();
+        this.endDateCommunicationToCustomer.addAll(endDateCommunicationToCustomer);
+    }
+
+    public SortedSet<EndDateCommunicationToCustomer> getEndDateCommunicationToCustomer() {
+        return Collections.unmodifiableSortedSet(this.endDateCommunicationToCustomer);
+    }
+
+    public void updateFirstAskedEndDate(Date communicationDate) {
+        if (this.endDateCommunicationToCustomer != null && !this.endDateCommunicationToCustomer.isEmpty()) {
+            this.endDateCommunicationToCustomer.first().setCommunicationDate(communicationDate);
+        }
+    }
+
+    public Date getLastAskedEndDate() {
+        if (this.endDateCommunicationToCustomer != null
+                && !this.endDateCommunicationToCustomer.isEmpty()) {
+            return this.endDateCommunicationToCustomer.first().getEndDate();
+        }
+        return null;
+    }
+
+    public EndDateCommunicationToCustomer getLastEndDateCommunicationToCustomer() {
+        if (this.endDateCommunicationToCustomer != null
+                && !this.endDateCommunicationToCustomer.isEmpty()) {
+            return this.endDateCommunicationToCustomer.first();
+        }
+        return null;
+    }
+
+    public void removeAskedEndDate(EndDateCommunicationToCustomer endDate) {
+        this.endDateCommunicationToCustomer.remove(endDate);
+    }
+
+    public void addAskedEndDate(EndDateCommunicationToCustomer endDate) {
+        this.endDateCommunicationToCustomer.add(endDate);
+    }
 }
