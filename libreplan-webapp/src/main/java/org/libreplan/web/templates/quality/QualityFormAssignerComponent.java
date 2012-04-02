@@ -31,7 +31,7 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.orders.AssignedTaskQualityFormsToOrderElementController;
 import org.libreplan.web.orders.AssignedTaskQualityFormsToOrderElementController.ICheckQualityFormAssigned;
-import org.libreplan.web.templates.IOrderTemplatesModel;
+import org.libreplan.web.templates.ITemplatesModel;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
@@ -41,13 +41,13 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 public class QualityFormAssignerComponent extends HtmlMacroComponent {
 
     private OrderElementTemplate template;
-    private IOrderTemplatesModel model;
+    private ITemplatesModel model;
 
-    public void useModel(IOrderTemplatesModel model) {
+    public void useModel(ITemplatesModel model) {
         useModel(model, model.getTemplate());
     }
 
-    public void useModel(IOrderTemplatesModel model,
+    public void useModel(ITemplatesModel model,
             OrderElementTemplate template) {
         this.model = model;
         this.template = template;

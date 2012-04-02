@@ -22,7 +22,7 @@ package org.libreplan.web.templates.labels;
 
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.orders.labels.IAssignedLabelsModel;
-import org.libreplan.web.templates.IOrderTemplatesModel;
+import org.libreplan.web.templates.ITemplatesModel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -31,6 +31,6 @@ import org.libreplan.web.templates.IOrderTemplatesModel;
 public interface IAssignedLabelsToTemplateModel extends
         IAssignedLabelsModel<OrderElementTemplate> {
 
-    public void setTemplatesModel(IOrderTemplatesModel templatesModel);
+    public void setTemplatesModel(ITemplatesModel templatesModel);
 
 }

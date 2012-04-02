@@ -22,18 +22,18 @@ package org.libreplan.web.templates.labels;
 
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.orders.labels.AssignedLabelsController;
-import org.libreplan.web.templates.IOrderTemplatesModel;
+import org.libreplan.web.templates.ITemplatesModel;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
 public class AssignedLabelsToTemplateController extends
-        AssignedLabelsController<OrderElementTemplate, IOrderTemplatesModel> {
+        AssignedLabelsController<OrderElementTemplate, ITemplatesModel> {
 
     private IAssignedLabelsToTemplateModel assignedLabelsToTemplateModel;
 
-    private IOrderTemplatesModel templatesModel;
+    private ITemplatesModel templatesModel;
 
     private OrderElementTemplate template;
 
@@ -51,7 +51,7 @@ public class AssignedLabelsToTemplateController extends
     }
 
     @Override
-    protected void setOuterModel(IOrderTemplatesModel templatesModel) {
+    protected void setOuterModel(ITemplatesModel templatesModel) {
         this.templatesModel = templatesModel;
         this.assignedLabelsToTemplateModel.setTemplatesModel(templatesModel);
     }

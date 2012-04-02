@@ -28,7 +28,7 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.orders.labels.AssignedLabelsModel;
-import org.libreplan.web.templates.IOrderTemplatesModel;
+import org.libreplan.web.templates.ITemplatesModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -47,7 +47,7 @@ public class AssignedLabelsToTemplateModel extends
     @Autowired
     private IOrderElementTemplateDAO templateDAO;
 
-    private IOrderTemplatesModel templatesModel;
+    private ITemplatesModel templatesModel;
 
     @Override
     protected void addLabelToConversation(Label label) {
@@ -94,7 +94,7 @@ public class AssignedLabelsToTemplateModel extends
     }
 
     @Override
-    public void setTemplatesModel(IOrderTemplatesModel templatesModel) {
+    public void setTemplatesModel(ITemplatesModel templatesModel) {
         this.templatesModel = templatesModel;
     }
 

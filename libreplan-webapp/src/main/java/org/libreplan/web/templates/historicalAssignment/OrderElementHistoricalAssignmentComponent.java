@@ -41,7 +41,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
-import org.libreplan.web.templates.IOrderTemplatesModel;
+import org.libreplan.web.templates.ITemplatesModel;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -58,7 +58,7 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
 
     private OrderElementTemplate template;
 
-    private IOrderTemplatesModel model;
+    private ITemplatesModel model;
 
     private List<OrderElement> orderElements;
 
@@ -78,7 +78,7 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
         this.orderDAO = (IOrderDAO) getBean("orderDAO");
     }
 
-    public void useModel(IOrderTemplatesModel model,
+    public void useModel(ITemplatesModel model,
             IGlobalViewEntryPoints globalView) {
         template = model.getTemplate();
         this.model = model;

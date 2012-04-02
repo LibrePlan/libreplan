@@ -34,7 +34,7 @@ import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.web.templates.IOrderTemplatesModel;
+import org.libreplan.web.templates.ITemplatesModel;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -50,7 +50,7 @@ public class OrderElementHistoricalStatisticsComponent extends
 
     private OrderElementTemplate template;
 
-    private IOrderTemplatesModel model;
+    private ITemplatesModel model;
 
     private IAdHocTransactionService adHocTransactionService;
 
@@ -76,7 +76,7 @@ public class OrderElementHistoricalStatisticsComponent extends
         this.orderElementDAO = (IOrderElementDAO) getBean("orderElementDAO");
     }
 
-    public void useModel(IOrderTemplatesModel model) {
+    public void useModel(ITemplatesModel model) {
         template = model.getTemplate();
         orderElements = model.getOrderElementsOnConversation()
                 .getOrderElements();
