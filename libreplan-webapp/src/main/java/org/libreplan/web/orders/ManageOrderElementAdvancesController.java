@@ -752,6 +752,10 @@ public class ManageOrderElementAdvancesController extends
             removeButton.setDisabled(true);
             removeButton
                     .setTooltiptext(_("Subcontractor values are read only because they were reported by the subcontractor company."));
+        } else if (manageOrderElementAdvancesModel.hasReportedProgress(advance)) {
+            removeButton.setDisabled(true);
+            removeButton
+                    .setTooltiptext(_("Advance assignment can not be removed because, it has advance measures that have already been reported to customer."));
         }
 
         hbox.appendChild(removeButton);
@@ -1076,7 +1080,9 @@ public class ManageOrderElementAdvancesController extends
             value.setScale(calculateScale(advanceMeasurement));
             value.setDisabled(isReadOnlyAdvanceMeasurements()
                     || manageOrderElementAdvancesModel
-                            .hasConsolidatedAdvances(advanceMeasurement));
+                            .hasConsolidatedAdvances(advanceMeasurement)
+                    || manageOrderElementAdvancesModel.isAlreadyReportedProgress(advanceMeasurement));
+
             value.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
@@ -1137,7 +1143,9 @@ public class ManageOrderElementAdvancesController extends
 
             date.setDisabled(isReadOnlyAdvanceMeasurements()
                     || manageOrderElementAdvancesModel
-                            .hasConsolidatedAdvances(advanceMeasurement));
+                            .hasConsolidatedAdvances(advanceMeasurement)
+                    || manageOrderElementAdvancesModel.isAlreadyReportedProgress(advanceMeasurement));
+
             date.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
@@ -1220,7 +1228,11 @@ public class ManageOrderElementAdvancesController extends
                 removeButton.setDisabled(true);
                 removeButton
                         .setTooltiptext(_("Consolidated progress measurement can not be removed"));
-            } else {
+            } else if (manageOrderElementAdvancesModel.isAlreadyReportedProgress(measure)) {
+                removeButton.setDisabled(true);
+                removeButton
+                        .setTooltiptext(_("Values are read only because they have already been sent to the customer company."));
+            } else if (isReadOnlyAdvanceMeasurements()) {
                 removeButton.setDisabled(isReadOnlyAdvanceMeasurements());
                 removeButton
                         .setTooltiptext(_("Subcontractor values are read only because they were reported by the subcontractor company."));
@@ -1347,6 +1359,9 @@ public class ManageOrderElementAdvancesController extends
                     if (consolidatedUntil.compareTo(measurement.getDate()) >= 0) {
                         return _("Date is not valid, it must be greater than the last progress consolidation");
                     }
+                }
+                if (manageOrderElementAdvancesModel.isAlreadyReportedProgressWith(value)) {
+                    return _("Date is not valid, it must be greater than the last progress reported to the customer");
                 }
             }
 

@@ -128,4 +128,10 @@ public interface IManageOrderElementAdvancesModel {
     boolean isSubcontratedAdvanceTypeAndSubcontratedTask(
             AdvanceAssignment advance);
 
+    Boolean isAlreadyReportedProgress(AdvanceMeasurement measure);
+
+    boolean hasReportedProgress(AdvanceAssignment advance);
+
+    Boolean isAlreadyReportedProgressWith(LocalDate date);
+
 }
