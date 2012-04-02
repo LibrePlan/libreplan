@@ -29,6 +29,7 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.workingday.EffortDuration;
@@ -64,7 +65,7 @@ public class SumChargedEffortDAO extends
     @Override
     public void updateRelatedSumChargedEffortWithWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) {
-        mapSumChargedEfforts = new HashMap<OrderElement, SumChargedEffort>();
+        resetMapSumChargedEfforts();
 
         for (WorkReportLine workReportLine : workReportLineSet) {
             updateRelatedSumChargedEffortWithAddedOrModifiedWorkReportLine(workReportLine);
@@ -139,11 +140,15 @@ public class SumChargedEffortDAO extends
     @Override
     public void updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) {
-        mapSumChargedEfforts = new HashMap<OrderElement, SumChargedEffort>();
+        resetMapSumChargedEfforts();
 
         for (WorkReportLine workReportLine : workReportLineSet) {
             updateRelatedSumChargedEffortWithDeletedWorkReportLine(workReportLine);
         }
+    }
+
+    private void resetMapSumChargedEfforts() {
+        mapSumChargedEfforts = new HashMap<OrderElement, SumChargedEffort>();
     }
 
     private void updateRelatedSumChargedEffortWithDeletedWorkReportLine(
@@ -199,6 +204,38 @@ public class SumChargedEffortDAO extends
         return (SumChargedEffort) getSession().createCriteria(getEntityClass())
                 .add(Restrictions.eq("orderElement", orderElement))
                 .uniqueResult();
+    }
+
+    @Override
+    public void recalculateSumChargedEfforts(Order order) {
+        resetMapSumChargedEfforts();
+        resetSumChargedEffort(order);
+        calculateDirectChargedEffort(order);
+    }
+
+    private void resetSumChargedEffort(OrderElement orderElement) {
+        SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
+        if (sumChargedEffort == null) {
+            sumChargedEffort = SumChargedEffort.create(orderElement);
+        }
+        sumChargedEffort.reset();
+
+        for (OrderElement each : orderElement.getChildren()) {
+            resetSumChargedEffort(each);
+        }
+    }
+
+    private void calculateDirectChargedEffort(OrderElement orderElement) {
+        for (OrderElement each : orderElement.getChildren()) {
+            calculateDirectChargedEffort(each);
+        }
+
+        EffortDuration effort = EffortDuration.zero();
+        for (WorkReportLine line : workReportLineDAO
+                .findByOrderElement(orderElement)) {
+            effort = effort.plus(line.getEffort());
+        }
+        addDirectChargedEffort(orderElement, effort);
     }
 
 }

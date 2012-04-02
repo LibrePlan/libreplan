@@ -22,6 +22,7 @@ package org.libreplan.business.orders.daos;
 import java.util.Set;
 
 import org.libreplan.business.common.daos.IGenericDAO;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.workreports.entities.WorkReportLine;
@@ -64,5 +65,13 @@ public interface ISumChargedEffortDAO extends
             Set<WorkReportLine> workReportLineSet);
 
     SumChargedEffort findByOrderElement(OrderElement orderElement);
+
+    /**
+     * Recalculates all the {@link SumChargedEffort} objets of an {@link Order}.
+     * This is needed when some elements are moved inside the {@link Order}.
+     *
+     * @param order
+     */
+    void recalculateSumChargedEfforts(Order order);
 
 }

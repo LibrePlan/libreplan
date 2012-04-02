@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -57,7 +57,11 @@ import org.libreplan.business.util.deepcopy.DeepCopy;
 
 /**
  * It represents an {@link Order} with its related information. <br />
+ *
+ * Every project in the application is an {@link Order}.
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class Order extends OrderLineGroup implements Comparable {
 
@@ -110,6 +114,8 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     private SchedulingMode schedulingMode = SchedulingMode.FORWARD;
+
+    private boolean neededToRecalculateSumChargedEfforts = false;
 
     public static class CurrentVersionInfo {
 
@@ -568,6 +574,14 @@ public class Order extends OrderLineGroup implements Comparable {
     @Override
     public int compareTo(Object o) {
         return this.getName().compareToIgnoreCase(((Order) o).getName());
+    }
+
+    public void markAsNeededToRecalculateSumChargedEfforts() {
+        neededToRecalculateSumChargedEfforts = true;
+    }
+
+    public boolean isNeededToRecalculateSumChargedEfforts() {
+        return neededToRecalculateSumChargedEfforts;
     }
 
 }

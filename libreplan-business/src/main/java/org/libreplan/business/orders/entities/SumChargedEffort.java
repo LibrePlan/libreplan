@@ -86,4 +86,9 @@ public class SumChargedEffort extends BaseEntity {
         return directChargedEffort.plus(indirectChargedEffort);
     }
 
+    public void reset() {
+        directChargedEffort = EffortDuration.zero();
+        indirectChargedEffort = EffortDuration.zero();
+    }
+
 }

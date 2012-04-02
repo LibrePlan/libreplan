@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -58,6 +58,14 @@ import org.libreplan.business.templates.entities.OrderLineGroupTemplate;
 import org.libreplan.business.trees.ITreeParentNode;
 
 
+/**
+ * Represents every container in the WBS view. A task of the WBS that has some
+ * children.<br />
+ *
+ * The project itself is also an {@link OrderLineGroup}.
+ *
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
+ */
 public class OrderLineGroup extends OrderElement implements
         ITreeParentNode<OrderElement> {
 
@@ -93,6 +101,9 @@ public class OrderLineGroup extends OrderElement implements
         protected void onChildAddedAdditionalActions(OrderElement newChild) {
             updateCriterionRequirements();
             newChild.updateLabels();
+            if (!newChild.isNewObject()) {
+                getOrder().markAsNeededToRecalculateSumChargedEfforts();
+            }
         }
 
         @Override
@@ -101,6 +112,9 @@ public class OrderLineGroup extends OrderElement implements
                 removeChildTask(removedChild);
             }
             updateCriterionRequirements();
+            if (!removedChild.isNewObject()) {
+                getOrder().markAsNeededToRecalculateSumChargedEfforts();
+            }
         }
 
         private void removeChildTask(OrderElement removedChild) {

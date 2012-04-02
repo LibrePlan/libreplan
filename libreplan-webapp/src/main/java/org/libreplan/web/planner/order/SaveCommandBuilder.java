@@ -51,6 +51,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.daos.ISumChargedEffortDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -202,6 +203,9 @@ public class SaveCommandBuilder {
 
     @Autowired
     private IDependencyDAO dependencyDAO;
+
+    @Autowired
+    private ISumChargedEffortDAO sumChargedEffortDAO;
 
     private class SaveCommand implements ISaveCommand {
 
@@ -367,6 +371,10 @@ public class SaveCommandBuilder {
             removeTaskElementsWithTaskSourceNull();
 
             state.updateSavedOrderState();
+
+            if (order.isNeededToRecalculateSumChargedEfforts()) {
+                sumChargedEffortDAO.recalculateSumChargedEfforts(order);
+            }
         }
 
         private void removeTaskElementsWithTaskSourceNull() {
