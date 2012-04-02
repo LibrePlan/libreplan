@@ -339,4 +339,13 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
         getOrderElementsOnConversation().initialize(template);
         return getOrderElementsOnConversation().getOrderElements().isEmpty();
     }
+
+    @Override
+    public void validateTemplateCode(String code)
+            throws IllegalArgumentException {
+        if ((code == null) || (code.isEmpty())) {
+            throw new IllegalArgumentException(_("the code must not be empty"));
+        }
+        // TODO complete with unique validation
+    }
 }
