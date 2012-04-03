@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-table-budget_line_template" author="jaragunde">
+        <comment>
+            A subclass of OrderLineTemplate called BudgetLineTemplate has been added, it
+            contains new fields. These fields are saved to a new table called budget_line_template.
+        </comment>
+        <createTable tableName="budget_line_template">
+            <column name="budget_line_template_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="budget_line_template_pkey"/>
+            </column>
+            <column name="cost_or_salary" type="DECIMAL(19,2)"/>
+            <column name="duration" type="INTEGER"/>
+            <column name="quantity" type="INTEGER"/>
+            <column name="indemnization_salary" type="DECIMAL(19,2)"/>
+            <column name="holiday_salary" type="DECIMAL(19,2)"/>
+            <column name="budget_line_type" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

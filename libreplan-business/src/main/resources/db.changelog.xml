@@ -10,5 +10,6 @@
     <include file="src/main/resources/db.changelog-1.0.xml"/>
     <include file="src/main/resources/db.changelog-1.1.xml"/>
     <include file="src/main/resources/db.changelog-1.2.xml"/>
+    <include file="src/main/resources/db.changelog-audiovisual.xml"/>
 
 </databaseChangeLog>

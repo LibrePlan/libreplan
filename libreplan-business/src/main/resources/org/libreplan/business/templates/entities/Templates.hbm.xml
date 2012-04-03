@@ -89,6 +89,22 @@
                 column="last_hours_group_sequence_code" />
 
             <property name="budget" scale="2" access="field" />
+
+            <!-- fields for BudgetLineTemplate -->
+            <joined-subclass name="BudgetLineTemplate" table="budget_line_template">
+                <key column="budget_line_template_id" />
+                <property name="costOrSalary" column="cost_or_salary" access="field" />
+                <property name="duration" column="duration" access="field" />
+                <property name="quantity" column="quantity" access="field" />
+                <property name="indemnizationSalary" column="indemnization_salary" access="field" />
+                <property name="holidaySalary" column="holiday_salary" access="field" />
+                <property name="budgetLineType" column="budget_line_type" access="field" >
+                    <type name="org.hibernate.type.EnumType">
+                        <param name="enumClass">org.libreplan.business.templates.entities.BudgetLineTypeEnum</param>
+                    </type>
+                </property>
+            </joined-subclass>
+
         </joined-subclass>
     </class>
 
