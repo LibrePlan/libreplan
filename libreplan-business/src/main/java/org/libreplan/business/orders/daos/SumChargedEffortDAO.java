@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link SumChargedEffort}.
@@ -59,6 +60,9 @@ public class SumChargedEffortDAO extends
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     private Map<OrderElement, SumChargedEffort> mapSumChargedEfforts;
 
@@ -207,10 +211,16 @@ public class SumChargedEffortDAO extends
     }
 
     @Override
-    public void recalculateSumChargedEfforts(Order order) {
-        resetMapSumChargedEfforts();
-        resetSumChargedEffort(order);
-        calculateDirectChargedEffort(order);
+    @Transactional
+    public void recalculateSumChargedEfforts(Long orderId) {
+        try {
+            Order order = orderDAO.find(orderId);
+            resetMapSumChargedEfforts();
+            resetSumChargedEffort(order);
+            calculateDirectChargedEffort(order);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void resetSumChargedEffort(OrderElement orderElement) {

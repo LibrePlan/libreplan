@@ -70,8 +70,8 @@ public interface ISumChargedEffortDAO extends
      * Recalculates all the {@link SumChargedEffort} objets of an {@link Order}.
      * This is needed when some elements are moved inside the {@link Order}.
      *
-     * @param order
+     * @param orderId
      */
-    void recalculateSumChargedEfforts(Order order);
+    void recalculateSumChargedEfforts(Long orderId);
 
 }

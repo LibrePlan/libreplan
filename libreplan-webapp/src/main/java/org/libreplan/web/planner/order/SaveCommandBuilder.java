@@ -288,6 +288,13 @@ public class SaveCommandBuilder {
                             });
                     dontPoseAsTransientObjectAnymore(state.getOrder());
                     state.getScenarioInfo().afterCommit();
+
+                    if (state.getOrder()
+                            .isNeededToRecalculateSumChargedEfforts()) {
+                        sumChargedEffortDAO.recalculateSumChargedEfforts(state
+                                .getOrder().getId());
+                    }
+
                     fireAfterSave();
                     if (afterSaveActions != null) {
                         afterSaveActions.doActions();
@@ -371,10 +378,6 @@ public class SaveCommandBuilder {
             removeTaskElementsWithTaskSourceNull();
 
             state.updateSavedOrderState();
-
-            if (order.isNeededToRecalculateSumChargedEfforts()) {
-                sumChargedEffortDAO.recalculateSumChargedEfforts(order);
-            }
         }
 
         private void removeTaskElementsWithTaskSourceNull() {
