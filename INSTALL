@@ -133,7 +133,7 @@ Debian/Ubuntu
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/librelplan/LibrePlan/install_1.2.0.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
