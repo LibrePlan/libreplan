@@ -291,7 +291,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                         globalView.goToLimitingResources();
                     }
                 }, "01-introducion.html"),
-            subItem(_("Project Templates"), "/templates/templates.zul", ""));
+                subItem(_("Budget Templates"), "/budgettemplates/templates.zul", ""));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
