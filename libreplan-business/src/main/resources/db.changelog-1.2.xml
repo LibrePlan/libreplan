@@ -93,10 +93,7 @@
     </changeSet>
 
     <changeSet id="change-mapping-order-element-and-sum-charged-effort-postgresql"
-        author="mrego">
-        <preConditions onFail="MARK_RAN">
-            <dbms type="postgresql" />
-        </preConditions>
+        author="mrego" dbms="postgresql">
         <comment>Change mapping between OrderElement and SumChargedEffort in MySQL</comment>
 
         <addColumn tableName="sum_charged_effort">
@@ -131,10 +128,7 @@
     </changeSet>
 
     <changeSet id="change-mapping-order-element-and-sum-charged-effort-mysql"
-        author="mrego">
-        <preConditions onFail="MARK_RAN">
-            <dbms type="mysql" />
-        </preConditions>
+        author="mrego" dbms="mysql">
         <comment>Change mapping between OrderElement and SumChargedEffort in PostgreSQL</comment>
 
         <addColumn tableName="sum_charged_effort">
