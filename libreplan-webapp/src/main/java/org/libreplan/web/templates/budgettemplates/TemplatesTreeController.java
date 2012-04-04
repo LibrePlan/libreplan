@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.ClassValidator;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.templates.entities.BudgetLineTemplate;
+import org.libreplan.business.templates.entities.BudgetLineTypeEnum;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
 import org.libreplan.web.common.Util;
@@ -40,6 +41,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
@@ -313,6 +316,39 @@ public class TemplatesTreeController extends
                     }
                 },
                 null);
+            }
+            else {
+                addEmptyBox();
+            }
+        }
+
+        @Override
+        public void addBudgetLineTypeCell(OrderElementTemplate element) {
+            if (element.isLeaf()) {
+                final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
+                Combobox box = new Combobox();
+                for(BudgetLineTypeEnum type: BudgetLineTypeEnum.values()) {
+                    Comboitem item = new Comboitem(type.toString());
+                    item.setValue(type);
+                    box.appendChild(item);
+                    if(budgetLine.getBudgetLineType().equals(type)) {
+                        box.setSelectedItem(item);
+                    }
+                }
+                box.addEventListener(Events.ON_SELECT, new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) {
+                        Combobox box = (Combobox) event.getTarget();
+
+                        budgetLine.setBudgetLineType((BudgetLineTypeEnum)
+                                box.getSelectedItem().getValue());
+                    }
+                });
+                if (readOnly) {
+                    box.setDisabled(true);
+                }
+                addCell(box);
             }
             else {
                 addEmptyBox();

@@ -787,6 +787,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         protected abstract void addHolidaySalaryCell(final T element);
 
+        public abstract void addBudgetLineTypeCell(final T element);
+
         public void addBudgetCell(final T currentElement) {
             Decimalbox decimalboxBudget = buildBudgetDecimalboxFor(currentElement);
             budgetDecimalboxByElement.put(currentElement, decimalboxBudget);

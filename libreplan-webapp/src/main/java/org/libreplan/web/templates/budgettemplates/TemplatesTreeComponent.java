@@ -97,6 +97,15 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
+        result.add(new TemplatesTreeColumn(_("Type"), "budgettype") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addBudgetLineTypeCell(currentElement);
+            }
+
+        });
         result.add(new TemplatesTreeColumn(_("Duration"), "units") {
 
             @Override
