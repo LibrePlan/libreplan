@@ -22,8 +22,8 @@ package org.libreplan.web.templates.budgettemplates;
 
 import static org.libreplan.web.I18nHelper._;
 
+import org.libreplan.business.templates.entities.BudgetLineTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
-import org.libreplan.business.templates.entities.OrderLineTemplate;
 import org.libreplan.web.tree.EntitiesTree;
 
 /**
@@ -38,7 +38,7 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
 
     @Override
     protected OrderElementTemplate createNewElement() {
-        OrderLineTemplate result = OrderLineTemplate.createNew();
+        BudgetLineTemplate result = BudgetLineTemplate.createNew();
         result.setName(_("New template"));
         result.setCode(_("New code"));
         result.setDescription(_("New Description"));
@@ -47,7 +47,7 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
 
     @Override
     protected OrderElementTemplate createNewElement(String name, int hours) {
-        OrderLineTemplate result = OrderLineTemplate.createNew();
+        BudgetLineTemplate result = BudgetLineTemplate.createNew();
         result.setName(name);
         result.setCode(_("New code"));
         result.setDescription(_("New Description"));

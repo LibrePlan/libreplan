@@ -96,4 +96,8 @@ public class BudgetLineTemplate extends OrderLineTemplate {
     public void setBudgetLineType(BudgetLineTypeEnum budgetLineType) {
         this.budgetLineType = budgetLineType;
     }
+
+    public static BudgetLineTemplate createNew() {
+        return createNew(new BudgetLineTemplate());
+    }
 }
