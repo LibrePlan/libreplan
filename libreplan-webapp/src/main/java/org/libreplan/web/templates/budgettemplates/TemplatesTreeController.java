@@ -197,6 +197,18 @@ public class TemplatesTreeController extends
             addCell(result);
         }
 
+        private void addIntboxFor(OrderElementTemplate element,
+                Getter<Integer> getter, Setter<Integer> setter,
+                Constraint constraint) {
+            Intbox result = new Intbox();
+            Util.bind(result, getter, setter);
+            result.setConstraint(constraint);
+            if (readOnly) {
+                result.setDisabled(true);
+            }
+            addCell(result);
+        }
+
         private void addEmptyBox() {
             Intbox intbox = new Intbox();
             intbox.setDisabled(true);
@@ -229,14 +241,50 @@ public class TemplatesTreeController extends
 
         @Override
         protected void addDurationCell(OrderElementTemplate element) {
-            // TODO Auto-generated method stub
-            addEmptyBox();
+            if (element.isLeaf()) {
+                final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
+                addIntboxFor(element, new Util.Getter<Integer>() {
+
+                    @Override
+                    public Integer get() {
+                        return budgetLine.getDuration();
+                    }
+                }, new Util.Setter<Integer>() {
+
+                    @Override
+                    public void set(Integer value) {
+                        budgetLine.setDuration(value);
+                    }
+                },
+                null);
+            }
+            else {
+                addEmptyBox();
+            }
         }
 
         @Override
         protected void addQuantityCell(OrderElementTemplate element) {
-            // TODO Auto-generated method stub
-            addEmptyBox();
+            if (element.isLeaf()) {
+                final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
+                addIntboxFor(element, new Util.Getter<Integer>() {
+
+                    @Override
+                    public Integer get() {
+                        return budgetLine.getQuantity();
+                    }
+                }, new Util.Setter<Integer>() {
+
+                    @Override
+                    public void set(Integer value) {
+                        budgetLine.setQuantity(value);
+                    }
+                },
+                null);
+            }
+            else {
+                addEmptyBox();
+            }
         }
 
         @Override
