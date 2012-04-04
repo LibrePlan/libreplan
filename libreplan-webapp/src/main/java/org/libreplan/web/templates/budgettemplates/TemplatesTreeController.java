@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.ClassValidator;
 import org.libreplan.business.orders.entities.SchedulingState;
+import org.libreplan.business.templates.entities.BudgetLineTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
 import org.libreplan.web.common.Util;
@@ -38,6 +39,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treeitem;
@@ -180,6 +183,108 @@ public class TemplatesTreeController extends
         protected SchedulingState getSchedulingStateFrom(
                 OrderElementTemplate currentElement) {
             return currentElement.getSchedulingState();
+        }
+
+        private void addDecimalboxFor(OrderElementTemplate element,
+                Getter<BigDecimal> getter, Setter<BigDecimal> setter,
+                Constraint constraint) {
+            Decimalbox result = new DecimalboxDirectValue();
+            Util.bind(result, getter, setter);
+            result.setConstraint(constraint);
+            if (readOnly) {
+                result.setDisabled(true);
+            }
+            addCell(result);
+        }
+
+        private void addEmptyBox() {
+            Intbox intbox = new Intbox();
+            intbox.setDisabled(true);
+            addCell(intbox);
+        }
+
+        @Override
+        protected void addCostSalaryCell(OrderElementTemplate element) {
+            if (element.isLeaf()) {
+                final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
+                addDecimalboxFor(element, new Util.Getter<BigDecimal>() {
+
+                    @Override
+                    public BigDecimal get() {
+                        return budgetLine.getCostOrSalary();
+                    }
+                }, new Util.Setter<BigDecimal>() {
+
+                    @Override
+                    public void set(BigDecimal value) {
+                        budgetLine.setCostOrSalary(value);
+                    }
+                },
+                null);
+            }
+            else {
+                addEmptyBox();
+            }
+        }
+
+        @Override
+        protected void addDurationCell(OrderElementTemplate element) {
+            // TODO Auto-generated method stub
+            addEmptyBox();
+        }
+
+        @Override
+        protected void addQuantityCell(OrderElementTemplate element) {
+            // TODO Auto-generated method stub
+            addEmptyBox();
+        }
+
+        @Override
+        protected void addIndemnizationSalaryCell(OrderElementTemplate element) {
+            if (element.isLeaf()) {
+                final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
+                addDecimalboxFor(element, new Util.Getter<BigDecimal>() {
+
+                    @Override
+                    public BigDecimal get() {
+                        return budgetLine.getIndemnizationSalary();
+                    }
+                }, new Util.Setter<BigDecimal>() {
+
+                    @Override
+                    public void set(BigDecimal value) {
+                        budgetLine.setIndemnizationSalary(value);
+                    }
+                },
+                null);
+            }
+            else {
+                addEmptyBox();
+            }
+        }
+
+        @Override
+        protected void addHolidaySalaryCell(OrderElementTemplate element) {
+            if (element.isLeaf()) {
+                final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
+                addDecimalboxFor(element, new Util.Getter<BigDecimal>() {
+
+                    @Override
+                    public BigDecimal get() {
+                        return budgetLine.getHolidaySalary();
+                    }
+                }, new Util.Setter<BigDecimal>() {
+
+                    @Override
+                    public void set(BigDecimal value) {
+                        budgetLine.setHolidaySalary(value);
+                    }
+                },
+                null);
+            }
+            else {
+                addEmptyBox();
+            }
         }
 
     }

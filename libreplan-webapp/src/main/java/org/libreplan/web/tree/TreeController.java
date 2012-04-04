@@ -777,6 +777,16 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         protected abstract void addDescriptionCell(final T element);
 
+        protected abstract void addCostSalaryCell(final T element);
+
+        protected abstract void addDurationCell(final T element);
+
+        protected abstract void addQuantityCell(final T element);
+
+        protected abstract void addIndemnizationSalaryCell(final T element);
+
+        protected abstract void addHolidaySalaryCell(final T element);
+
         public void addBudgetCell(final T currentElement) {
             Decimalbox decimalboxBudget = buildBudgetDecimalboxFor(currentElement);
             budgetDecimalboxByElement.put(currentElement, decimalboxBudget);
@@ -1276,7 +1286,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
      * JavaScript error when trying to update {@link Decimalbox} that are not in
      * current page in the tree.
      */
-    private class DecimalboxDirectValue extends Decimalbox {
+    public class DecimalboxDirectValue extends Decimalbox {
         @Override
         public void setValueDirectly(Object value) {
             super.setValueDirectly(value);

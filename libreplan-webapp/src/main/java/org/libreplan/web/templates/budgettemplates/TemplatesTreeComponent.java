@@ -97,6 +97,51 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
+        result.add(new TemplatesTreeColumn(_("Cost/Salary"), "budget") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addCostSalaryCell(currentElement);
+            }
+
+        });
+        result.add(new TemplatesTreeColumn(_("Duration"), "units") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addDurationCell(currentElement);
+            }
+
+        });
+        result.add(new TemplatesTreeColumn(_("Quantity"), "units") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addQuantityCell(currentElement);
+            }
+
+        });
+        result.add(new TemplatesTreeColumn(_("Severance pay"), "budget") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addIndemnizationSalaryCell(currentElement);
+            }
+
+        });
+        result.add(new TemplatesTreeColumn(_("Holiday salary"), "budget") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addHolidaySalaryCell(currentElement);
+            }
+
+        });
         result.add(new TemplatesTreeColumn(
                 _("Must start after (days since beginning project)"),
                 "estimated_init") {
