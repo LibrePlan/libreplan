@@ -133,46 +133,6 @@ public class TemplatesTreeController extends
             addCell(textBoxCode);
         }
 
-        void addInitCell(final OrderElementTemplate currentElement) {
-            final Intbox intbox = new Intbox();
-            Util.bind(intbox, new Getter<Integer>() {
-
-                @Override
-                public Integer get() {
-                    return currentElement.getStartAsDaysFromBeginning();
-                }
-            }, new Setter<Integer>() {
-
-                @Override
-                public void set(Integer value) {
-                    checkInvalidValues(validator, "startAsDaysFromBeginning",
-                            value, intbox);
-                    currentElement.setStartAsDaysFromBeginning(value);
-                }
-            });
-            addCell(intbox);
-        }
-
-        void addEndCell(final OrderElementTemplate currentElement) {
-            final Intbox intbox = new Intbox();
-            Util.bind(intbox, new Getter<Integer>() {
-
-                @Override
-                public Integer get() {
-                    return currentElement.getDeadlineAsDaysFromBeginning();
-                }
-            }, new Setter<Integer>() {
-
-                @Override
-                public void set(Integer value) {
-                    checkInvalidValues(validator,
-                            "deadlineAsDaysFromBeginning", value, intbox);
-                    currentElement.setDeadlineAsDaysFromBeginning(value);
-                }
-            });
-            addCell(intbox);
-        }
-
         @Override
         protected void onDoubleClickForSchedulingStateCell(
                 OrderElementTemplate currentElement) {

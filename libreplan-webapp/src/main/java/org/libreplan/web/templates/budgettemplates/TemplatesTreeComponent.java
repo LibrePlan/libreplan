@@ -142,28 +142,6 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
-        result.add(new TemplatesTreeColumn(
-                _("Must start after (days since beginning project)"),
-                "estimated_init") {
-
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addInitCell(currentElement);
-            }
-
-        });
-        result.add(new TemplatesTreeColumn(
-                _("Deadline (days since beggining project)"),
-                "estimated_end") {
-
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addEndCell(currentElement);
-            }
-
-        });
         result.add(operationsColumn);
         return result;
     }
