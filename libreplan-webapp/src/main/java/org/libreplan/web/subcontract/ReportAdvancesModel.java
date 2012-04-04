@@ -41,6 +41,7 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
@@ -97,10 +98,15 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
                 ordersMap.put(order.getId(), order);
                 forceLoadHoursGroups(order);
                 forceLoadAdvanceAssignments(order);
+                forceLoadAskedEndDate(order);
             }
         }
 
         return new ArrayList<Order>(ordersMap.values());
+    }
+
+    private void forceLoadAskedEndDate(Order order) {
+        order.getEndDateCommunicationToCustomer().size();
     }
 
     private void forceLoadHoursGroups(OrderElement orderElement) {
@@ -273,6 +279,33 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         }
 
         return xml.toString();
+    }
+
+    @Override
+    public String getStatus(Order order) {
+        DirectAdvanceAssignment directAdvanceAssignment = order
+                .getDirectAdvanceAssignmentOfTypeSubcontractor();
+
+        boolean advancesNotReported = isAnyAdvanceMeasurementNotReported(directAdvanceAssignment);
+        boolean endDateNotReported = isAnyEndDateNotReported(order);
+        if (advancesNotReported && endDateNotReported) {
+            return "Pending update of progress and communication date";
+        } else if (endDateNotReported) {
+            return "Pending update for communication date";
+        } else if (advancesNotReported) {
+            return "Pending update of progress";
+        }
+        return "Updated";
+    }
+
+    private boolean isAnyEndDateNotReported(Order order) {
+        if (order != null && order.getEndDateCommunicationToCustomer() != null) {
+            EndDateCommunicationToCustomer lastAskedEndDate = order
+                    .getLastEndDateCommunicationToCustomer();
+            return lastAskedEndDate != null ? (lastAskedEndDate.getCommunicationDate() == null)
+                    : false;
+        }
+        return false;
     }
 
 }

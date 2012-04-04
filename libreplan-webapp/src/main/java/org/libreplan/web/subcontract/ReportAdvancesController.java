@@ -107,9 +107,9 @@ public class ReportAdvancesController extends GenericForwardComposer {
             DirectAdvanceAssignment directAdvanceAssignment = order
                     .getDirectAdvanceAssignmentOfTypeSubcontractor();
 
+            // append the last advance measurement reported
             AdvanceMeasurement lastAdvanceMeasurementReported = reportAdvancesModel
                     .getLastAdvanceMeasurementReported(directAdvanceAssignment);
-
             if (lastAdvanceMeasurementReported != null) {
                 appendLabel(row, toString(lastAdvanceMeasurementReported.getDate()));
                 appendLabel(row, toString(lastAdvanceMeasurementReported.getValue()));
@@ -118,9 +118,9 @@ public class ReportAdvancesController extends GenericForwardComposer {
                 appendLabel(row, "");
             }
 
+            // append the last advance measurement not reported
             AdvanceMeasurement lastAdvanceMeasurement = reportAdvancesModel
                     .getLastAdvanceMeasurement(directAdvanceAssignment);
-
             if (lastAdvanceMeasurement != null) {
                 appendLabel(row, toString(lastAdvanceMeasurement.getDate()));
                 appendLabel(row, toString(lastAdvanceMeasurement.getValue()));
@@ -129,15 +129,16 @@ public class ReportAdvancesController extends GenericForwardComposer {
                 appendLabel(row, "");
             }
 
-            if (reportAdvancesModel
-                    .isAnyAdvanceMeasurementNotReported(directAdvanceAssignment)) {
-                appendLabel(row, _("Pending update"));
-                appendOperations(row, order, false);
-            } else {
-                appendLabel(row, _("Updated"));
-                appendOperations(row, order, true);
-            }
+            // append the status
+            String status = reportAdvancesModel.getStatus(order);
+            appendLabel(row, _(status));
 
+            // append the operations
+            if (status.equals("Updated")) {
+                appendOperations(row, order, true);
+            } else {
+                appendOperations(row, order, false);
+            }
         }
 
         private String toString(Object object) {
