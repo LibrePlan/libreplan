@@ -83,8 +83,8 @@ import org.libreplan.web.orders.OrderModelTest;
 import org.libreplan.ws.common.api.AdvanceMeasurementDTO;
 import org.libreplan.ws.common.impl.DateConverter;
 import org.libreplan.ws.subcontract.api.IReportAdvancesService;
-import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsDTO;
-import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsListDTO;
+import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateDTO;
+import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.libreplan.business.planner.entities.SubcontractorCommunication;
 import org.springframework.test.context.ContextConfiguration;
@@ -205,7 +205,7 @@ public class ReportAdvancesServiceTest {
         Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0,
                 BigDecimal.ZERO);
 
-        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
         reportAdvancesService
                 .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
@@ -243,7 +243,7 @@ public class ReportAdvancesServiceTest {
         Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0,
                 BigDecimal.ZERO);
 
-        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
         reportAdvancesService
                 .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
@@ -284,7 +284,7 @@ public class ReportAdvancesServiceTest {
                 BigDecimal.TEN);
         assertThat(values.size(), equalTo(numMeasures));
 
-        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
         reportAdvancesService
                 .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
@@ -316,16 +316,16 @@ public class ReportAdvancesServiceTest {
         }
     }
 
-    private OrderElementWithAdvanceMeasurementsListDTO givenOrderElementWithAdvanceMeasurementsListDTO(
+    private OrderElementWithAdvanceMeasurementsOrEndDateListDTO givenOrderElementWithAdvanceMeasurementsListDTO(
             String orderElementCode, Map<LocalDate, BigDecimal> values) {
-        OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsDTO();
+        OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsOrEndDateDTO();
         orderElementWithAdvanceMeasurementsDTO.code = orderElementCode;
 
         orderElementWithAdvanceMeasurementsDTO.advanceMeasurements = givenAdvanceMeasurementDTOs(values);
 
         ExternalCompany externalCompany = getSubcontractorExternalCompanySaved();
 
-        return new OrderElementWithAdvanceMeasurementsListDTO(externalCompany
+        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(externalCompany
                 .getNif(), Arrays
                 .asList(orderElementWithAdvanceMeasurementsDTO));
     }

@@ -69,8 +69,8 @@ import org.libreplan.ws.common.impl.DateConverter;
 import org.libreplan.ws.common.impl.OrderElementConverter;
 import org.libreplan.ws.common.impl.Util;
 import org.libreplan.ws.subcontract.api.IReportAdvancesService;
-import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsDTO;
-import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsListDTO;
+import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateDTO;
+import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,7 +113,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
     @POST
     @Consumes("application/xml")
     @Transactional
-    public InstanceConstraintViolationsListDTO updateAdvances(OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO) {
+    public InstanceConstraintViolationsListDTO updateAdvances(OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO) {
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
 
@@ -140,8 +140,8 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
                     "external company is not registered as subcontractor");
         }
 
-        List<OrderElementWithAdvanceMeasurementsDTO> orderElements = orderElementWithAdvanceMeasurementsListDTO.orderElements;
-        for (OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO : orderElements) {
+        List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElements = orderElementWithAdvanceMeasurementsListDTO.orderElements;
+        for (OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsDTO : orderElements) {
             try {
                 OrderElement orderElement = orderElementDAO
                         .findUniqueByCode(orderElementWithAdvanceMeasurementsDTO.code);

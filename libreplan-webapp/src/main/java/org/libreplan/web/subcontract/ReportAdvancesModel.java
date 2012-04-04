@@ -56,8 +56,8 @@ import org.libreplan.ws.common.api.InstanceConstraintViolationsDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.libreplan.ws.common.impl.OrderElementConverter;
 import org.libreplan.ws.common.impl.Util;
-import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsDTO;
-import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsListDTO;
+import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateDTO;
+import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -188,7 +188,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
             ConnectionProblemsException {
         orderDAO.save(order);
 
-        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
         ExternalCompany externalCompany = order.getCustomer();
 
         NaiveTrustProvider.setAlwaysTrust(true);
@@ -229,9 +229,9 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         }
     }
 
-    private OrderElementWithAdvanceMeasurementsListDTO getOrderElementWithAdvanceMeasurementsListDTO(
+    private OrderElementWithAdvanceMeasurementsOrEndDateListDTO getOrderElementWithAdvanceMeasurementsListDTO(
             Order order) {
-        List<OrderElementWithAdvanceMeasurementsDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<OrderElementWithAdvanceMeasurementsDTO>();
+        List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<OrderElementWithAdvanceMeasurementsOrEndDateDTO>();
 
         DirectAdvanceAssignment directAdvanceAssignment = order
                 .getDirectAdvanceAssignmentOfTypeSubcontractor();
@@ -248,14 +248,14 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         }
 
         if (!advanceMeasurementDTOs.isEmpty()) {
-            OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsDTO(
+            OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsOrEndDateDTO(
                     directAdvanceAssignment.getOrderElement().getExternalCode(),
                     advanceMeasurementDTOs);
             orderElementWithAdvanceMeasurementsDTOs
                     .add(orderElementWithAdvanceMeasurementsDTO);
         }
 
-        return new OrderElementWithAdvanceMeasurementsListDTO(getCompanyCode(),
+        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(getCompanyCode(),
                 orderElementWithAdvanceMeasurementsDTOs);
     }
 
@@ -266,12 +266,12 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     @Override
     @Transactional(readOnly = true)
     public String exportXML(Order order) {
-        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
 
         StringWriter xml = new StringWriter();
         try {
             JAXBContext jaxbContext = JAXBContext
-                    .newInstance(OrderElementWithAdvanceMeasurementsListDTO.class);
+                    .newInstance(OrderElementWithAdvanceMeasurementsOrEndDateListDTO.class);
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.marshal(orderElementWithAdvanceMeasurementsListDTO, xml);
         } catch (Exception e) {

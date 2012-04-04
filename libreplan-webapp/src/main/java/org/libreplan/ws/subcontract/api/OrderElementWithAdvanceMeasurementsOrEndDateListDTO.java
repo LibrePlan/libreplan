@@ -21,39 +21,36 @@
 
 package org.libreplan.ws.subcontract.api;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.ws.common.api.AdvanceMeasurementDTO;
 
 /**
  * DTO for {@link OrderElement} just with information about advances.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@XmlRootElement(name = "order-element")
-public class OrderElementWithAdvanceMeasurementsDTO {
+@XmlRootElement(name = "order-element-list")
+public class OrderElementWithAdvanceMeasurementsOrEndDateListDTO {
 
-    @XmlAttribute
-    public String code;
+    @XmlAttribute(name = "external-company-nif")
+    public String externalCompanyNif;
 
-    @XmlElementWrapper(name = "advance-measurements")
-    @XmlElement(name = "advance-measurement")
-    public Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
+    @XmlElement(name = "order-element")
+    public List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElements = new ArrayList<OrderElementWithAdvanceMeasurementsOrEndDateDTO>();
 
-    public OrderElementWithAdvanceMeasurementsDTO() {
+    public OrderElementWithAdvanceMeasurementsOrEndDateListDTO() {
     }
 
-    public OrderElementWithAdvanceMeasurementsDTO(String code,
-            Set<AdvanceMeasurementDTO> advanceMeasurements) {
-        this.code = code;
-        this.advanceMeasurements = advanceMeasurements;
+    public OrderElementWithAdvanceMeasurementsOrEndDateListDTO(String externalCompanyNif,
+            List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElements) {
+        this.externalCompanyNif = externalCompanyNif;
+        this.orderElements = orderElements;
     }
 
 }
