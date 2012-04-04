@@ -19,8 +19,6 @@
 
 package org.libreplan.business.orders.entities;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -70,32 +68,25 @@ public class SumChargedEffortRecalculator implements
     private ISumChargedEffortDAO sumChargedEffortDAO;
 
     /**
-     * Queue to store the id of the {@link Order} to be recalculated.
+     * Single thread executor in order to perform the recalculations one by one.
      */
-    private BlockingQueue<Long> queue = new ArrayBlockingQueue<Long>(1);
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    /**
-     * The constructor launch the thread, that will be waiting for elements in
-     * the <code>queue</code> in order to perform the recalculations.<br />
-     *
-     * The class is instantiated by Spring and it is a singleton, so you don't
-     * need to worry about calling this constructor. This will be done by Spring
-     * while launching the application.
-     */
-    public SumChargedEffortRecalculator() {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
+    @Override
+    public void recalculate(Long orderId) {
+        LOG.info("Mark order (id=" + orderId + ") to be recalculated");
+        executor.execute(getRecalculationThread(orderId));
+    }
+
+    private Runnable getRecalculationThread(final Long orderId) {
+        return new Runnable() {
 
             @Override
             public void run() {
-                while (true) {
-                    try {
-                        LOG.info("Waiting for orders to recalculate from queue");
-                        Long orderId = queue.take();
-                        recalculateSumChargedEfforts(orderId);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                try {
+                    recalculateSumChargedEfforts(orderId);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -121,20 +112,12 @@ public class SumChargedEffortRecalculator implements
                             + orderId + ") trying again in 1 second (attempt "
                             + counter + ")");
                     Thread.sleep(1000);
-                    recalculateSumChargedEfforts(orderId, counter++);
+
+                    counter++;
+                    recalculateSumChargedEfforts(orderId, counter);
                 }
             }
-        });
-    }
-
-    @Override
-    public void recalculate(Long orderId) {
-        try {
-            queue.put(orderId);
-            LOG.info("Add order (id=" + orderId + ") to recalculate in queue");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        };
     }
 
 }

@@ -19,7 +19,6 @@
 
 package org.libreplan.business.orders.entities;
 
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Interface to recalculate {@link SumChargedEffort} for an {@link Order}.<br />
@@ -33,9 +32,6 @@ public interface ISumChargedEffortRecalculator {
 
     /**
      * Mark {@link Order} to recalculate {@link SumChargedEffort}.<br />
-     *
-     * It adds the <code>orderId</code> to a {@link BlockingQueue} that will be
-     * read by a thread in charge of perform the recalculations.
      *
      * @param orderId
      */
