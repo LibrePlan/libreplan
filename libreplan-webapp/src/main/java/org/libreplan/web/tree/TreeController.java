@@ -582,7 +582,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         private Map<T, Intbox> hoursIntBoxByElement = new HashMap<T, Intbox>();
 
-        private Map<T, Decimalbox> budgetDecimalboxByElement = new HashMap<T, Decimalbox>();
+        protected Map<T, Decimalbox> budgetDecimalboxByElement = new HashMap<T, Decimalbox>();
 
         private KeyboardNavigationHandler navigationHandler = new KeyboardNavigationHandler();
 

@@ -38,6 +38,7 @@ import org.libreplan.web.tree.TreeController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
@@ -134,6 +135,15 @@ public class TemplatesTreeController extends
         }
 
         @Override
+        public void addBudgetCell(final OrderElementTemplate currentElement) {
+            //create cell normally
+            super.addBudgetCell(currentElement);
+            //disable cell because its value cannot be changed directly
+            Decimalbox box = budgetDecimalboxByElement.get(currentElement);
+            box.setDisabled(true);
+        }
+
+        @Override
         protected void onDoubleClickForSchedulingStateCell(
                 OrderElementTemplate currentElement) {
             // do nothing
@@ -175,6 +185,17 @@ public class TemplatesTreeController extends
             addCell(intbox);
         }
 
+        private void updateTotal(BudgetLineTemplate currentElement) {
+            BigDecimal quantity = new BigDecimal(currentElement.getQuantity());
+            BigDecimal duration = new BigDecimal(currentElement.getDuration());
+            //budget field is used to store the total
+            Decimalbox budgetBox = budgetDecimalboxByElement.get(currentElement);
+            budgetBox.setValue(currentElement.getCostOrSalary().
+                    multiply(quantity).multiply(duration));
+            //fire change event, to update the total in the parents
+            Events.sendEvent(budgetBox, new Event(Events.ON_CHANGE));
+        }
+
         @Override
         protected void addCostSalaryCell(OrderElementTemplate element) {
             if (element.isLeaf()) {
@@ -190,6 +211,7 @@ public class TemplatesTreeController extends
                     @Override
                     public void set(BigDecimal value) {
                         budgetLine.setCostOrSalary(value);
+                        updateTotal(budgetLine);
                     }
                 },
                 null);
@@ -214,6 +236,7 @@ public class TemplatesTreeController extends
                     @Override
                     public void set(Integer value) {
                         budgetLine.setDuration(value);
+                        updateTotal(budgetLine);
                     }
                 },
                 null);
@@ -238,6 +261,7 @@ public class TemplatesTreeController extends
                     @Override
                     public void set(Integer value) {
                         budgetLine.setQuantity(value);
+                        updateTotal(budgetLine);
                     }
                 },
                 null);

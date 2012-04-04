@@ -88,7 +88,7 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
-        result.add(new TemplatesTreeColumn(_("Budget"), "budget") {
+        result.add(new TemplatesTreeColumn(_("TOTAL"), "budget") {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
