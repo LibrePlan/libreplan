@@ -126,6 +126,8 @@ public class TemplatesTreeController extends
                     element.setCode(value);
                 }
             });
+            textBoxCode.setConstraint("no empty:"
+                    + _("cannot be null or empty"));
             addCell(textBoxCode);
         }
 

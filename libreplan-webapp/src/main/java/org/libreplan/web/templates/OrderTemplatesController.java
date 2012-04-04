@@ -28,8 +28,11 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.InvalidValue;
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -215,9 +218,16 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     public void saveAndExit() {
         if (isAllValid()) {
-            model.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _("Template saved"));
-            show(listWindow);
+            try {
+                model.confirmSave();
+                messagesForUser.showMessage(Level.INFO, _("Template saved"));
+                show(listWindow);
+            } catch (ValidationException e) {
+                for (InvalidValue invalidValue : e.getInvalidValues()) {
+                    messagesForUser.showMessage(Level.ERROR,
+                            invalidValue.getMessage());
+                }
+            }
         }
     }
 
@@ -227,15 +237,24 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     public void saveAndContinue() {
         if (isAllValid()) {
-            model.confirmSave();
-            model.initEdit(getTemplate());
-            bindTemplatesTreeWithModel();
-            messagesForUser.showMessage(Level.INFO, _("Template saved"));
+            try {
+                model.confirmSave();
+                model.initEdit(getTemplate());
+                bindTemplatesTreeWithModel();
+                messagesForUser.showMessage(Level.INFO, _("Template saved"));
+            } catch (ValidationException e) {
+                for (InvalidValue invalidValue : e.getInvalidValues()) {
+                    messagesForUser.showMessage(Level.ERROR,
+                            invalidValue.getMessage());
+                }
+            }
+
         }
     }
 
     private boolean isAllValid() {
         // validate template name
+        ConstraintChecker.isValid(editWindow);
         name = (Textbox) editWindow.getFellowIfAny("name");
         if ((name != null) && (!name.isValid())) {
             selectTab("tabGeneralData");
