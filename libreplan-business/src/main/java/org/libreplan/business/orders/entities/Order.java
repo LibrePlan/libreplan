@@ -612,6 +612,7 @@ public class Order extends OrderLineGroup implements Comparable {
         return Collections.unmodifiableSortedSet(this.endDateCommunicationToCustomer);
     }
 
+
     public void updateFirstAskedEndDate(Date communicationDate) {
         if (this.endDateCommunicationToCustomer != null && !this.endDateCommunicationToCustomer.isEmpty()) {
             this.endDateCommunicationToCustomer.first().setCommunicationDate(communicationDate);

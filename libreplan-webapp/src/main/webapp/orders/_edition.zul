@@ -210,7 +210,7 @@
                                </row>
 			                   <row>
                                    <label value="${i18n:_('Customer')}" />
-                                   <bandboxSearch id="bdExternalCompanies" widthBandbox="465px" widthListbox="480px"
+                                   <bandboxSearch id="bdExternalCompanies" widthBandbox="355px" widthListbox="370px"
                                        finder="ExternalCompanyBandboxFinder"
                                        model="@{controller.externalCompaniesAreClient}"
                                        selectedElement="@{controller.order.customer}"
@@ -218,14 +218,15 @@
                                </row>
                                <row>
                                    <label value="${i18n:_('Customer reference')}" />
-                                   <textbox value="@{controller.order.customerReference}" width="465px"
+                                   <textbox value="@{controller.order.customerReference}" width="350px"
                                        disabled="@{controller.subcontractedProject}"/>
                                </row>
                            </rows>
                        </grid>
 
                        <separator spacing="20px"/>
-
+                       <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
+                       <caption label="${i18n:_('Delivery dates requested by the customer. ')}" />
                        <grid id="gridDeliveryDates"
                             model="@{controller.deliverDates}"
 	                        mold="paging" pageSize="4" fixedLayout="true" width="400px"
@@ -241,7 +242,29 @@
                                 </row>
                             </rows>
                         </grid>
-                    </hbox>
+					   </groupbox>
+                     </hbox>
+                     <separator spacing="20px"/>
+                     <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
+                       <caption label="${i18n:_('Delivery dates asked by the subcontractor. ')}" />
+                       <hbox align="bottom" sclass="add-resources-or-criteria">
+                           <label value="${i18n:_('New end date for the customer')}" />
+                           <datebox id="newEndDate"/>
+                           <button label="${i18n:_('Add')}" onClick="controller.addAskedEndDate(newEndDate)"/>
+                       </hbox>
+
+                       <separator spacing="10px"/>
+                       <grid id="gridAskedEndDates" model="@{controller.endDates}"
+                          rowRenderer="@{controller.endDatesRenderer}"
+	                      mold="paging" pageSize="10" fixedLayout="true" width="880px">
+                          <columns>
+                              <column label="${i18n:_('Save date')}" sort="auto(saveDate)" align="center" width="220px"/>
+                              <column label="${i18n:_('End date')}" align="center" width="220px"/>
+                              <column label="${i18n:_('Communication date')}" align="center" width="220px"/>
+                              <column label="${i18n:_('Operations')}" align="center"/>
+                          </columns>
+                       </grid>
+                     </groupbox>
                 </groupbox>
             </tabpanel>
             <tabpanel>

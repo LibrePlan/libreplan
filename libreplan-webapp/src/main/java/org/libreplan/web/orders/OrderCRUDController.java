@@ -43,6 +43,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -74,6 +75,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -227,6 +229,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    private Grid gridAskedEndDates;
+
+    private EndDatesRenderer endDatesRenderer = new EndDatesRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -1003,6 +1009,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                     }
                 });
 
+        gridAskedEndDates = (Grid) editWindow.getFellow("gridAskedEndDates");
+
     }
 
     public void setupOrderDetails() {
@@ -1566,6 +1574,111 @@ public class OrderCRUDController extends GenericForwardComposer {
                 }
             }
         }
+    }
+
+    public SortedSet<EndDateCommunicationToCustomer> getEndDates() {
+        return orderModel.getEndDates();
+    }
+
+    public void addAskedEndDate(Datebox newEndDate) {
+        if (newEndDate == null || newEndDate.getValue() == null) {
+            messagesForUser.showMessage(Level.ERROR, _("You must select a valid date. "));
+            return;
+        }
+        if (thereIsSomeCommunicationDateEmpty()) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("It will only be possible to add a end date if all the exiting ones in the table have already been sent to customer.."));
+            return;
+        }
+        if (orderModel.alreadyExistsRepeatedEndDate(newEndDate.getValue())) {
+            messagesForUser.showMessage(Level.ERROR,
+                    _("It already exists a end date with the same date. "));
+            return;
+        }
+        orderModel.addAskedEndDate(newEndDate.getValue());
+        reloadGridAskedEndDates();
+    }
+
+    private void reloadGridAskedEndDates() {
+        Util.reloadBindings(gridAskedEndDates);
+    }
+
+    private boolean thereIsSomeCommunicationDateEmpty() {
+        for (EndDateCommunicationToCustomer endDate : orderModel.getEndDates()) {
+            if (endDate.getCommunicationDate() == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public EndDatesRenderer getEndDatesRenderer() {
+        return this.endDatesRenderer;
+    }
+
+    private class EndDatesRenderer implements RowRenderer {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            EndDateCommunicationToCustomer endDate = (EndDateCommunicationToCustomer) data;
+            row.setValue(endDate);
+
+            appendLabel(row, toString(endDate.getSaveDate(), "dd/MM/yyyy HH:mm"));
+            appendLabel(row, toString(endDate.getEndDate(), "dd/MM/yyyy"));
+            appendLabel(row, toString(endDate.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
+            appendOperations(row, endDate);
+        }
+
+        private String toString(Date date, String precision) {
+            if (date == null) {
+                return "";
+            }
+            return new SimpleDateFormat(precision, Locales.getCurrent()).format(date);
+        }
+
+        private void appendLabel(Row row, String label) {
+            row.appendChild(new Label(label));
+        }
+
+        private void appendOperations(Row row, EndDateCommunicationToCustomer endDate) {
+            Hbox hbox = new Hbox();
+            hbox.appendChild(getDeleteButton(endDate));
+            row.appendChild(hbox);
+        }
+
+        private Button getDeleteButton(final EndDateCommunicationToCustomer endDate) {
+
+            Button deleteButton = new Button();
+            deleteButton.setDisabled(isNotUpdate(endDate));
+            deleteButton.setSclass("icono");
+            deleteButton.setImage("/common/img/ico_borrar1.png");
+            deleteButton.setHoverImage("/common/img/ico_borrar.png");
+            deleteButton.setTooltiptext(_("Delete"));
+            deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    removeAskedEndDate(endDate);
+                }
+            });
+
+            return deleteButton;
+        }
+
+        private boolean isNotUpdate(final EndDateCommunicationToCustomer endDate) {
+            EndDateCommunicationToCustomer lastAskedEndDate = getOrder()
+                    .getEndDateCommunicationToCustomer().first();
+            if ((lastAskedEndDate != null) && (lastAskedEndDate.equals(endDate))) {
+                return (lastAskedEndDate.getCommunicationDate() != null);
+            }
+            return true;
+        }
+    }
+
+    public void removeAskedEndDate(EndDateCommunicationToCustomer endDate) {
+        orderModel.removeAskedEndDate(endDate);
+        reloadGridAskedEndDates();
     }
 
 }
