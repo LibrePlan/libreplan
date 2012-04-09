@@ -38,9 +38,15 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
 
 /**
@@ -230,6 +236,27 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     public boolean getLdapUserRolesLdapConfiguration() {
         return (isLdapUser() && userModel.isLDAPRolesBeingUsed());
+    }
+
+    public RowRenderer getRolesRenderer() {
+        return new RowRenderer() {
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final UserRole role = (UserRole) data;
+
+                row.appendChild(new Label(_(role.getDisplayName())));
+
+                Button removeButton = Util
+                        .createRemoveButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        removeRole(role);
+                    }
+                });
+                removeButton.setDisabled(getLdapUserRolesLdapConfiguration());
+                row.appendChild(removeButton);
+            }
+        };
     }
 
 }
