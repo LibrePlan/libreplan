@@ -234,10 +234,6 @@ public class CutyPrint {
                 printProcess = Runtime.getRuntime().exec(captureString);
             }
             try {
-                // Ensure CutyCapt process finalization
-                CutyCaptTimeout timeoutThread = new CutyCaptTimeout( CUTYCAPT_TIMEOUT );
-                new Thread(timeoutThread).start();
-
                 printProcess.waitFor();
                 printProcess.destroy();
 
