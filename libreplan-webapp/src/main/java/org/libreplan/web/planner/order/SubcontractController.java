@@ -188,17 +188,17 @@ public class SubcontractController extends GenericForwardComposer {
             SubcontractorDeliverDate subcontractorDeliverDate = (SubcontractorDeliverDate) data;
             row.setValue(subcontractorDeliverDate);
 
-            appendLabel(row, toString(subcontractorDeliverDate.getSaveDate()));
-            appendLabel(row, toString(subcontractorDeliverDate.getSubcontractorDeliverDate()));
-            appendLabel(row, toString(subcontractorDeliverDate.getCommunicationDate()));
+            appendLabel(row, SubcontractController.this.toString(
+                    subcontractorDeliverDate.getSaveDate(), "dd/MM/yyyy HH:mm"));
+            appendLabel(
+                    row,
+                    SubcontractController.this.toString(
+                            subcontractorDeliverDate.getSubcontractorDeliverDate(), "dd/MM/yyyy"));
+            appendLabel(
+                    row,
+                    SubcontractController.this.toString(
+                            subcontractorDeliverDate.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
             appendOperations(row, subcontractorDeliverDate);
-        }
-
-        private String toString(Date date) {
-            if (date == null) {
-                return "";
-            }
-            return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
         }
 
         private void appendLabel(Row row, String label) {
@@ -260,6 +260,13 @@ public class SubcontractController extends GenericForwardComposer {
         return false;
     }
 
+    public String toString(Date date, String precision) {
+        if (date == null) {
+            return "";
+        }
+        return new SimpleDateFormat(precision).format(date);
+    }
+
     public SortedSet<EndDateCommunicationToCustomer> getAskedEndDates() {
         return subcontractModel.getAskedEndDates();
     }
@@ -275,18 +282,15 @@ public class SubcontractController extends GenericForwardComposer {
             EndDateCommunicationToCustomer endDateFromSubcontractor = (EndDateCommunicationToCustomer) data;
             row.setValue(endDateFromSubcontractor);
 
-            appendLabel(row, toString(endDateFromSubcontractor.getEndDate(), "dd/MM/yyyy"));
+            appendLabel(row, SubcontractController.this.toString(
+                    endDateFromSubcontractor.getEndDate(), "dd/MM/yyyy"));
             appendLabel(row,
-                    toString(endDateFromSubcontractor.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
+                    SubcontractController.this.toString(
+                            endDateFromSubcontractor.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
             appendOperations(row, endDateFromSubcontractor);
         }
 
-        private String toString(Date date, String precision) {
-            if (date == null) {
-                return "";
-            }
-            return new SimpleDateFormat(precision).format(date);
-        }
+
 
         private void appendLabel(Row row, String label) {
             row.appendChild(new Label(label));
