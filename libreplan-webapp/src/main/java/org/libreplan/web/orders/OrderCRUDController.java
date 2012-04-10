@@ -491,14 +491,18 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         setCurrentTab();
 
+        Component orderElementHours = editWindow
+                .getFellowIfAny("orderElementHours");
         if (assignedHoursController == null) {
-            Component orderElementHours = editWindow
-                    .getFellowIfAny("orderElementHours");
             assignedHoursController = (AssignedHoursToOrderElementController) orderElementHours
                     .getVariable("assignedHoursToOrderElementController", true);
 
             final IOrderElementModel orderElementModel = getOrderElementModel();
             assignedHoursController.openWindow(orderElementModel);
+        } else {
+            Util.createBindingsFor(orderElementHours);
+            Util.reloadBindings(orderElementHours);
+            assignedHoursController.paintProgressBars();
         }
     }
 
@@ -1445,17 +1449,14 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private boolean readOnly = true;
 
-    private OrderStatusEnum initialStatus;
-
     private void updateDisabilitiesOnInterface() {
         Order order = (Order) orderModel.getOrder();
-
-        initialStatus = order.getState();
 
         boolean permissionForWriting = orderModel.userCanWrite(order,
                 SecurityUtils.getSessionUserLoginName());
         boolean isInStoredState = order.getState() == OrderStatusEnum.STORED;
-        boolean isInitiallyStored = initialStatus == OrderStatusEnum.STORED;
+        boolean isInitiallyStored = orderModel.getPlanningState()
+                .getSavedOrderState() == OrderStatusEnum.STORED;
 
         readOnly = !permissionForWriting || isInStoredState;
 

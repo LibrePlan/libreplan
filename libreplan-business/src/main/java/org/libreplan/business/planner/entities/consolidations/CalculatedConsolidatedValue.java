@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.util.deepcopy.DeepCopy;
+import org.libreplan.business.workingday.IntraDayDate;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -39,12 +40,12 @@ public class CalculatedConsolidatedValue extends ConsolidatedValue {
     }
 
     public static CalculatedConsolidatedValue create(LocalDate date,
-            BigDecimal value, LocalDate taskEndDate) {
+            BigDecimal value, IntraDayDate taskEndDate) {
         return create(new CalculatedConsolidatedValue(date, value, taskEndDate));
     }
 
     protected CalculatedConsolidatedValue(LocalDate date, BigDecimal value,
-            LocalDate taskEndDate) {
+            IntraDayDate taskEndDate) {
         super(date, value, taskEndDate);
     }
 

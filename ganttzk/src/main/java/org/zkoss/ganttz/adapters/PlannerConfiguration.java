@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,7 +46,9 @@ import org.zkoss.zk.ui.Component;
 
 /**
  * A object that defines several extension points for gantt planner
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
@@ -77,6 +79,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         @Override
         public String getImage() {
             return "";
+        }
+
+        @Override
+        public boolean isDisabled() {
+            return false;
         }
 
     }
@@ -140,6 +147,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     private boolean advancesEnabled = true;
 
     private boolean reportedHoursEnabled = true;
+
+    private boolean moneyCostBarEnabled = true;
 
     private boolean expandAllEnabled = true;
 
@@ -336,6 +345,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isReportedHoursEnabled() {
         return reportedHoursEnabled;
+    }
+
+    public void setMoneyCostBarEnabled(boolean moneyCostBarEnabled) {
+        this.moneyCostBarEnabled = moneyCostBarEnabled;
+    }
+
+    @Override
+    public boolean isMoneyCostBarEnabled() {
+        return moneyCostBarEnabled;
     }
 
     public void setExpandAllEnabled(boolean expandAllEnabled) {

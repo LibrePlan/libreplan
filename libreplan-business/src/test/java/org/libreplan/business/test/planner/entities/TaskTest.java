@@ -29,10 +29,10 @@ import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.resetToNice;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 import static org.libreplan.business.test.planner.entities.DayAssignmentMatchers.haveHours;
@@ -42,6 +42,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.easymock.IAnswer;
@@ -60,6 +61,7 @@ import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.entities.AggregateOfDayAssignments;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
@@ -329,7 +331,7 @@ public class TaskTest {
     public void theoreticalHoursIsTotalIfDateIsLaterThanEndDate() {
         prepareTaskForTheoreticalAdvanceTesting();
         EffortDuration totalAllocatedTime = AggregateOfDayAssignments.create(
-                task.getDayAssignments()).getTotalTime();
+                task.getDayAssignments(FilterType.KEEP_ALL)).getTotalTime();
         assertThat(task.getTheoreticalCompletedTimeUntilDate(task.getEndDate()), equalTo(totalAllocatedTime));
 
     }
@@ -407,14 +409,16 @@ public class TaskTest {
     @Test
     public void taskIsNotInProgressIfAdvancePercentageIsZeroAndNoWorkReportsAttached() {
         task.setAdvancePercentage(BigDecimal.ZERO);
-        assertTrue(task.getOrderElement().getSumChargedEffort().isZero());
+        SumChargedEffort sumChargedEffort = task.getOrderElement().getSumChargedEffort();
+        assertTrue(sumChargedEffort == null || sumChargedEffort.isZero());
         assertFalse(task.isFinished());
         assertFalse(task.isInProgress());
     }
 
     @Test
     public void taskIsInProgressIfAdvancePercentageIsZeroButWorkReportsAttached() {
-        SumChargedEffort sumChargedEffort = SumChargedEffort.create();
+        SumChargedEffort sumChargedEffort = SumChargedEffort.create(task
+                .getOrderElement());
         sumChargedEffort.addDirectChargedEffort(EffortDuration.hours(1));
         task.getOrderElement().setSumChargedEffort(sumChargedEffort);
         assertFalse(task.isFinished());
@@ -563,7 +567,7 @@ public class TaskTest {
         task.addResourceAllocation(resourceAllocation);
         assertTrue(task.getNonLimitingResourceAllocations().size() == 1);
         assertThat(task.getAssignedHours(), equalTo(40));
-        assertTrue(task.getDayAssignments().size() == 5);
+        assertTrue(task.getDayAssignments(FilterType.KEEP_ALL).size() == 5);
     }
 
     private void givenWorker(int hoursPerDay) {

@@ -23,6 +23,7 @@ package org.libreplan.web.orders;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -377,6 +378,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
             textBox.setConstraint("no empty:" + _("cannot be empty"));
             addCell(cssClass, textBox);
+            putNameTextbox(orderElementForThisRow, textBox);
         }
 
         @Override
@@ -392,6 +394,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     .getOrderElementModel(currentOrderElement);
             orderElementController.openWindow(model);
             updateHoursFor(currentOrderElement);
+            updateBudgetFor(currentOrderElement);
         }
 
         protected void addCodeCell(final OrderElement orderElement) {
@@ -617,6 +620,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     public void refreshRow(Treeitem item) {
         try {
             getRenderer().updateHoursFor((OrderElement) item.getValue());
+            getRenderer().updateBudgetFor((OrderElement) item.getValue());
             getRenderer().render(item, item.getValue());
         } catch (Exception e) {
             e.printStackTrace();
@@ -714,6 +718,27 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     line.setWorkHours(value);
                 }
             }
+        };
+    }
+
+    @Override
+    protected IBudgetHandler<OrderElement> getBudgetHandler() {
+        return new IBudgetHandler<OrderElement>() {
+
+            @Override
+            public BigDecimal getBudgetFor(OrderElement element) {
+                return element.getBudget();
+            }
+
+            @Override
+            public void setBudgetHours(OrderElement element,
+                    BigDecimal budget) {
+                if (element instanceof OrderLine) {
+                    OrderLine line = (OrderLine) element;
+                    line.setBudget(budget);
+                }
+            }
+
         };
     }
 

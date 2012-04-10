@@ -25,7 +25,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +35,8 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
@@ -377,8 +378,15 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             }
         } else if (updatedComponent == getStartDateTextBox()) {
             try {
-                Date begin = dateFormat.parse(getStartDateTextBox().getValue());
-                task.moveTo(GanttDate.createFrom(begin));
+                final Date begin = dateFormat.parse(getStartDateTextBox()
+                        .getValue());
+                task.doPositionModifications(new IModifications() {
+
+                    @Override
+                    public void doIt(IUpdatablePosition position) {
+                        position.moveTo(GanttDate.createFrom(begin));
+                    }
+                });
             } catch (ParseException e) {
                 getStartDateTextBox().setValue(
                         dateFormat.format(task.getBeginDate()

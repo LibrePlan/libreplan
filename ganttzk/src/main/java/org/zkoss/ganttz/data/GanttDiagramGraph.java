@@ -46,12 +46,16 @@ import org.apache.commons.logging.LogFactory;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.zkoss.ganttz.data.DependencyType.Point;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues;
 import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.ComparisonType;
 import org.zkoss.ganttz.data.criticalpath.ICriticalPathCalculable;
 import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper;
+import org.zkoss.ganttz.util.ReentranceGuard;
+import org.zkoss.ganttz.util.ReentranceGuard.IReentranceCases;
 
 /**
  * This class contains a graph with the {@link Task tasks} as vertexes and the
@@ -75,6 +79,10 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             public void setStartDate(GanttDate previousStart,
                     GanttDate previousEnd, GanttDate newStart) {
             }
+
+            @Override
+            public void positionPotentiallyModified() {
+            }
         };
     }
 
@@ -86,6 +94,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
     public interface IAdapter<V, D extends IDependency<V>> {
         List<V> getChildren(V task);
+
+        V getOwner(V task);
 
         boolean isContainer(V task);
 
@@ -129,6 +139,15 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         @Override
         public List<Task> getChildren(Task task) {
             return task.getTasks();
+        }
+
+        @Override
+        public Task getOwner(Task task) {
+            if (task instanceof Milestone) {
+                Milestone milestone = (Milestone) task;
+                return milestone.getOwner();
+            }
+            return null;
         }
 
         @Override
@@ -180,8 +199,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
 
         @Override
-        public void setEndDateFor(Task task, GanttDate newEnd) {
-            task.setEndDate(newEnd);
+        public void setEndDateFor(Task task, final GanttDate newEnd) {
+            task.doPositionModifications(new IModifications() {
+
+                @Override
+                public void doIt(IUpdatablePosition position) {
+                    position.setEndDate(newEnd);
+                }
+            });
         }
 
         @Override
@@ -190,8 +215,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         @Override
-        public void setStartDateFor(Task task, GanttDate newStart) {
-            task.setBeginDate(newStart);
+        public void setStartDateFor(Task task, final GanttDate newStart) {
+            task.doPositionModifications(new IModifications() {
+
+                @Override
+                public void doIt(IUpdatablePosition position) {
+                    position.setBeginDate(newStart);
+                }
+            });
         }
 
         @Override
@@ -513,6 +544,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                     dependenciesToAdd.add(adapter.createInvisibleDependency(
                             task, child, DependencyType.START_START));
                 }
+            } else {
+                V owner = adapter.getOwner(task);
+                if(owner != null) {
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            task, owner, DependencyType.END_END));
+                    dependenciesToAdd.add(adapter.createInvisibleDependency(
+                            owner, task, DependencyType.START_START));
+                }
             }
         }
         for (D each : dependenciesToAdd) {
@@ -520,16 +559,51 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
     }
 
-    public interface IDependenciesEnforcerHook {
+    private interface IDependenciesEnforcer {
         public void setStartDate(GanttDate previousStart,
                 GanttDate previousEnd, GanttDate newStart);
 
         public void setNewEnd(GanttDate previousEnd, GanttDate newEnd);
     }
 
+    /**
+     * <p>
+     * When a {@link Task}'s dates are modified methods of this interface must
+     * be called. This can potentially trigger the dependencies enforcement
+     * algorithm.
+     * </p>
+     * <p>
+     * If the date modification happens outside the dependencies enforcement
+     * algorithm, it's always executed. Through the algorithm execution other
+     * tasks' dates are modified. When this happens we don't want to trigger the
+     * algorithm, instead we want to record that the change has happened and
+     * when the algorithm ends all the tasks are notified at once.
+     * </p>
+     * <p>
+     * For example imagine a Gantt with three tasks: T1 -> T2 -> T3. Imagine
+     * that T1 position is modified due to being moved by the user. In that case
+     * the scheduling algorithm triggers and the {@link Recalculation
+     * recalculations} needed are done. T2 position would be recalculated and T3
+     * position too. When the recalculation happens their dates are modified,
+     * but in that case we don't want to trigger the dependencies enforcement
+     * algorithm again. What we want is to record the changes that have happened
+     * due to the algorithm. When the algorithm ends all notifications are fired
+     * at once. These notifications are notified to the registered
+     * {@link INotificationAfterDependenciesEnforcement}.
+     * </p>
+     */
+    public interface IDependenciesEnforcerHook extends IDependenciesEnforcer {
+        public void positionPotentiallyModified();
+    }
+
     public interface IDependenciesEnforcerHookFactory<T> {
+        /**
+         * Creates a {@link IDependenciesEnforcerHook} that uses the provided
+         * {@link INotificationAfterDependenciesEnforcement notifier} to notify
+         * the changes that have happened due to the algorithm.
+         */
         public IDependenciesEnforcerHook create(T task,
-                INotificationAfterDependenciesEnforcement notification);
+                INotificationAfterDependenciesEnforcement notifier);
 
         public IDependenciesEnforcerHook create(T task);
     }
@@ -553,6 +627,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
     };
 
+    /**
+     * Tracks all modifications to dates that have happened inside the
+     * dependencies enforcement algorithm. At the end of the algorithm they're
+     * executed via {@link DeferedNotifier#doNotifications()}.
+     */
     public class DeferedNotifier {
 
         private Map<V, NotificationPendingForTask> notificationsPending = new LinkedHashMap<V, NotificationPendingForTask>();
@@ -670,11 +749,18 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         private ThreadLocal<DeferedNotifier> deferedNotifier = new ThreadLocal<DeferedNotifier>();
 
+        /**
+         * It creates a {@link IDependenciesEnforcerHook} that starts the
+         * algorithm <em>onEntrance</em> and in subsequent tasks position
+         * modifications records the changes <em>onNotification</em>.
+         */
         @Override
         public IDependenciesEnforcerHook create(V task,
                 INotificationAfterDependenciesEnforcement notificator) {
-            return onlyEnforceDependenciesOnEntrance(onEntrance(task),
-                    onNotification(task, notificator));
+            return withPositionPotentiallyModified(
+                    task,
+                    onlyEnforceDependenciesOnEntrance(onEntrance(task),
+                            onNotification(task, notificator)));
         }
 
         @Override
@@ -682,8 +768,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             return create(task, EMPTY_NOTIFICATOR);
         }
 
-        private IDependenciesEnforcerHook onEntrance(final V task) {
-            return new IDependenciesEnforcerHook() {
+        /**
+         * What to do when a task's position is modified not inside the
+         * dependencies enforcement algorithm.
+         */
+        private IDependenciesEnforcer onEntrance(final V task) {
+            return new IDependenciesEnforcer() {
 
                 public void setStartDate(GanttDate previousStart,
                         GanttDate previousEnd, GanttDate newStart) {
@@ -698,9 +788,13 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             };
         }
 
-        private IDependenciesEnforcerHook onNotification(final V task,
+        /**
+         * What to do when a task's position is modified from inside the
+         * dependencies enforcement algorithm.
+         */
+        private IDependenciesEnforcer onNotification(final V task,
                 final INotificationAfterDependenciesEnforcement notification) {
-            return new IDependenciesEnforcerHook() {
+            return new IDependenciesEnforcer() {
 
                 @Override
                 public void setStartDate(GanttDate previousStart,
@@ -722,10 +816,45 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         }
 
-        private IDependenciesEnforcerHook onlyEnforceDependenciesOnEntrance(
-                final IDependenciesEnforcerHook onEntrance,
-                final IDependenciesEnforcerHook notification) {
+        /**
+         * Enrich {@link IDependenciesEnforcer} with
+         * {@link IDependenciesEnforcerHook#positionPotentiallyModified()}.
+         */
+        private IDependenciesEnforcerHook withPositionPotentiallyModified(
+                final V task, final IDependenciesEnforcer enforcer) {
             return new IDependenciesEnforcerHook() {
+
+                @Override
+                public void setStartDate(GanttDate previousStart,
+                        GanttDate previousEnd, GanttDate newStart) {
+                    enforcer.setStartDate(previousStart, previousEnd, newStart);
+                }
+
+                @Override
+                public void setNewEnd(GanttDate previousEnd, GanttDate newEnd) {
+                    enforcer.setNewEnd(previousEnd, newEnd);
+                }
+
+                @Override
+                public void positionPotentiallyModified() {
+                    taskPositionModified(task);
+                }
+            };
+        }
+
+        /**
+         * Creates a {@link IDependenciesEnforcer} that detects if a position
+         * change comes from the dependencies algorithm or comes from outside.
+         * For that a {@link ReentranceGuard} is used. If the dependencies
+         * enforcement algorithm isn't being executed the
+         * {@link IDependenciesEnforcer} created delegates to
+         * <code>onEntrance</code>. Otherwise it delegates to
+         * <code>notifier</code>.
+         */
+        private IDependenciesEnforcer onlyEnforceDependenciesOnEntrance(
+                final IDependenciesEnforcer onEntrance,
+                final IDependenciesEnforcer notifier) {
+            return new IDependenciesEnforcer() {
 
                 @Override
                 public void setStartDate(final GanttDate previousStart,
@@ -739,7 +868,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
                                         @Override
                                         public void doAction() {
-                                            notification.setStartDate(
+                                            notifier.setStartDate(
                                                     previousStart,
                                                     previousEnd, newStart);
                                             onEntrance.setStartDate(
@@ -751,7 +880,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
                                 @Override
                                 public void ifAlreadyInside() {
-                                    notification.setStartDate(previousStart,
+                                    notifier.setStartDate(previousStart,
                                             previousEnd, newStart);
 
                                 }
@@ -770,7 +899,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
                                         @Override
                                         public void doAction() {
-                                            notification.setNewEnd(previousEnd,
+                                            notifier.setNewEnd(previousEnd,
                                                     newEnd);
                                             onEntrance.setNewEnd(previousEnd,
                                                     newEnd);
@@ -780,7 +909,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
                                 @Override
                                 public void ifAlreadyInside() {
-                                    notification.setNewEnd(previousEnd, newEnd);
+                                    notifier.setNewEnd(previousEnd, newEnd);
                                 }
                             });
                 }
@@ -827,10 +956,20 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             });
         }
 
+        /**
+         * When entering and exiting the dependencies enforcement algorithm some
+         * listeners must be notified.
+         */
         private void onNewEntrance(final IAction action) {
             preAndPostActions.doAction(decorateWithNotifications(action));
         }
 
+        /**
+         * Attach the {@link DeferedNotifier} for the current execution.
+         * {@link DeferedNotifier#doNotifications()} is called once the
+         * execution has finished, telling all listeners the task positions
+         * modifications that have happened.
+         */
         private IAction decorateWithNotifications(final IAction action) {
             return new IAction() {
 
@@ -1142,14 +1281,15 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         private boolean haveToDoCalculation() {
-            return (recalculationsCouldAffectThis.isEmpty() || parentsHaveBeenModified());
+            return recalculationsCouldAffectThis.isEmpty()
+                    || predecessorsHaveBeenModified();
         }
 
-        private boolean parentsHaveBeenModified() {
+        private boolean predecessorsHaveBeenModified() {
             for (Recalculation each : recalculationsCouldAffectThis) {
                 if (!each.recalculationCalled) {
                     throw new RuntimeException(
-                            "the parent must be called first");
+                            "the predecessor must be called first");
                 }
                 if (each.dataPointModified
                         || each.couldHaveBeenModifiedBeforehand) {
@@ -1711,15 +1851,17 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                         .withConstraints(restrictions.getStartConstraints())
                         .withConstraints(getStartConstraints())
                         .applyWithoutFinalCheck();
-                if (result != null && !result.equals(getStartDate(task))) {
-                    return enforceRestrictions(result);
+                if (result != null) {
+                    enforceRestrictions(result);
+                    return biggerThan(result, adapter.getEndDateFor(task));
                 }
                 return restrictions;
             }
 
-            private PositionRestrictions enforceRestrictions(GanttDate result) {
-                adapter.setStartDateFor(task, result);
-                return biggerThan(result, adapter.getEndDateFor(task));
+            private void enforceRestrictions(GanttDate result) {
+                if (!result.equals(getStartDate(task))) {
+                    adapter.setStartDateFor(task, result);
+                }
             }
 
         }
@@ -1733,8 +1875,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                         .withConstraints(restrictions.getEndConstraints())
                         .withConstraints(getEndConstraints())
                         .applyWithoutFinalCheck();
-                if (result != null && !result.equals(getEndDateFor(task))) {
-                    return enforceRestrictions(result);
+                if (result != null) {
+                    enforceRestrictions(result);
+                    return lessThan(adapter.getStartDate(task), result);
                 }
                 return restrictions;
             }
@@ -1749,11 +1892,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 return adapter.getEndConstraintsFor(task);
             }
 
-            private PositionRestrictions enforceRestrictions(GanttDate newEnd) {
-                adapter.setEndDateFor(task, newEnd);
-                return lessThan(adapter.getStartDate(task), newEnd);
+            private void enforceRestrictions(GanttDate newEnd) {
+                if (!newEnd.equals(getEndDateFor(task))) {
+                    adapter.setEndDateFor(task, newEnd);
+                }
             }
-
         }
 
         @Override
@@ -2284,31 +2427,4 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return adapter.getChildren(task);
     }
 
-}
-
-interface IReentranceCases {
-    public void ifNewEntrance();
-
-    public void ifAlreadyInside();
-}
-
-class ReentranceGuard {
-    private final ThreadLocal<Boolean> inside = new ThreadLocal<Boolean>() {
-        protected Boolean initialValue() {
-            return false;
-        };
-    };
-
-    public void entranceRequested(IReentranceCases reentranceCases) {
-        if (inside.get()) {
-            reentranceCases.ifAlreadyInside();
-            return;
-        }
-        inside.set(true);
-        try {
-            reentranceCases.ifNewEntrance();
-        } finally {
-            inside.set(false);
-        }
-    }
 }

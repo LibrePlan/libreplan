@@ -28,15 +28,18 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.InvalidValue;
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
+import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
 import org.libreplan.web.templates.advances.AdvancesAssignmentComponent;
 import org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent;
@@ -61,6 +64,7 @@ import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
+import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
@@ -214,9 +218,16 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     public void saveAndExit() {
         if (isAllValid()) {
-            model.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _("Template saved"));
-            show(listWindow);
+            try {
+                model.confirmSave();
+                messagesForUser.showMessage(Level.INFO, _("Template saved"));
+                show(listWindow);
+            } catch (ValidationException e) {
+                for (InvalidValue invalidValue : e.getInvalidValues()) {
+                    messagesForUser.showMessage(Level.ERROR,
+                            invalidValue.getMessage());
+                }
+            }
         }
     }
 
@@ -226,15 +237,24 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     public void saveAndContinue() {
         if (isAllValid()) {
-            model.confirmSave();
-            model.initEdit(getTemplate());
-            bindTemplatesTreeWithModel();
-            messagesForUser.showMessage(Level.INFO, _("Template saved"));
+            try {
+                model.confirmSave();
+                model.initEdit(getTemplate());
+                bindTemplatesTreeWithModel();
+                messagesForUser.showMessage(Level.INFO, _("Template saved"));
+            } catch (ValidationException e) {
+                for (InvalidValue invalidValue : e.getInvalidValues()) {
+                    messagesForUser.showMessage(Level.ERROR,
+                            invalidValue.getMessage());
+                }
+            }
+
         }
     }
 
     private boolean isAllValid() {
         // validate template name
+        ConstraintChecker.isValid(editWindow);
         name = (Textbox) editWindow.getFellowIfAny("name");
         if ((name != null) && (!name.isValid())) {
             selectTab("tabGeneralData");
@@ -374,4 +394,18 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         }
 
     }
+
+    public boolean isContainer() {
+        if (model.getTemplate() == null) {
+            return false;
+        }
+        return !model.getTemplate().isLeaf();
+    }
+
+    public void reloadBudget() {
+        Tabpanel tabPanel = (Tabpanel) editWindow
+                .getFellow("tabPanelGeneralData");
+        Util.reloadBindings(tabPanel);
+    }
+
 }

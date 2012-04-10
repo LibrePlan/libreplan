@@ -946,6 +946,7 @@ span.z-dottree-line {
 
 .migas_linea {
     border: 0px;
+    cursor: default;
 }
 
 /* ---- Perspectives ------ */
@@ -1164,6 +1165,16 @@ tr.z-treerow-seld input {
     background-image: none;
 }
 
+tr.z-treerow-over input {
+    background-color: #eff2f6; /* Soft blue */
+        background-image: none;
+}
+
+tr.z-treerow-over input {
+    background-color: #eff2f6; /* Soft blue */
+        background-image: none;
+}
+
 .timeplot-canvas {
     position:relative;
     overflow:hidden;
@@ -1219,15 +1230,18 @@ tr.z-treerow-seld input {
     font-weight:bold;
 }
 
-.migas_linea .scheduling-state {
-    -moz-border-radius: 0 6px 0 6px;
-    -webkit-border-radius: 0 6px 0 6px;
+.migas_linea span.scheduling-state {
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
     border: 1px solid #888888;
     color: #888888;
-    font-weight: bold;
-    margin: 4px 3px 2px 5px;
+    font-weight: normal;
+    margin: 4px 3px 2px 10px;
     padding: 1px 5px;
     cursor: default;
+    text-transform: lowercase;
+    opacity: 0.7;
+    background-color: transparent;
 }
 
 .submenu .z-menu-popup-cnt .z-menu-item-over .z-menu-item-img {
@@ -1447,6 +1461,16 @@ display:none;
 .second_level_ #watermark .bankHoliday {
     height: 99999px;
 }
+
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .timetracker_column {
+    border-right: solid 1px #F2F2F2 !important;
+}
+
+#ganttpanel .second_level_ #watermark .bankHoliday {
+border-right: solid 1px #F2D8D8 !important;
+}
+
 
 .calendar-exceptions div.z-grid-body {
     overflow: hidden;

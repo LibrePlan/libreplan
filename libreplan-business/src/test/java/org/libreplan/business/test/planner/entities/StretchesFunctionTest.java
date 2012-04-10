@@ -40,6 +40,8 @@ import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.Stretch;
 import org.libreplan.business.planner.entities.StretchesFunction;
 import org.libreplan.business.planner.entities.StretchesFunction.Interval;
+import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate;
 
 /**
  * Tests for {@link StretchesFunction} entity.
@@ -59,6 +61,12 @@ public class StretchesFunctionTest {
 
         expect(resourceAllocation.getStartDate()).andReturn(START_DATE).anyTimes();
         expect(resourceAllocation.getEndDate()).andReturn(END_DATE).anyTimes();
+        expect(resourceAllocation.getIntraDayStartDate()).andReturn(
+                IntraDayDate.create(START_DATE, EffortDuration.zero()))
+                .anyTimes();
+        expect(resourceAllocation.getIntraDayEndDate()).andReturn(
+                IntraDayDate.create(END_DATE, EffortDuration.zero()))
+                .anyTimes();
 
         replay(resourceAllocation);
         return resourceAllocation;

@@ -216,9 +216,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                     return false;
                 }
             }
-            if (workerModel.getWorker().isVirtual()) {
-                workerModel.setCapacity(getVirtualWorkerCapacity());
-            }
             if (workerModel.getCalendar() == null) {
                 createCalendar();
             }
@@ -517,7 +514,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             @Override
             public void save() {
                 validateCalendarExceptionCodes();
-                Integer capacity = workerModel.getCapacity();
                 ResourceCalendar calendar = (ResourceCalendar) resourceCalendarModel
                         .getBaseCalendar();
                 if (calendar != null) {
@@ -525,7 +521,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                     workerModel.setCalendar(calendar);
                 }
                 reloadCurrentWindow();
-                workerModel.setCapacity(capacity);
             }
 
             @Override
@@ -601,19 +596,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             ((VirtualWorker) this.workerModel.getWorker())
                     .setObservations(observations);
         }
-    }
-
-    public Integer getVirtualWorkerCapacity() {
-        if (isVirtualWorker()) {
-            if (this.workerModel.getCalendar() != null) {
-                return this.workerModel.getCapacity();
-            }
-        }
-        return 1;
-    }
-
-    public void setVirtualWorkerCapacity(Integer capacity) {
-        this.workerModel.setCapacity(capacity);
     }
 
     /**

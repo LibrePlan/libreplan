@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +21,7 @@
 
 package org.libreplan.web.orders;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.libreplan.business.orders.entities.OrderElement;
@@ -29,6 +30,7 @@ import org.libreplan.business.workingday.EffortDuration;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public interface IAssignedHoursToOrderElementModel{
     public List<WorkReportLineDTO> getWorkReportLines();
@@ -42,4 +44,11 @@ public interface IAssignedHoursToOrderElementModel{
     public int getProgressWork();
 
     public EffortDuration getAssignedDirectEffort();
+
+    BigDecimal getBudget();
+
+    BigDecimal getMoneyCost();
+
+    BigDecimal getMoneyCostPercentage();
+
 }

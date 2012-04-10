@@ -27,7 +27,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +35,9 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -85,6 +84,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
     public List<OrderElement> findWithoutParent() {
@@ -416,134 +418,6 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         }
 
         return false;
-    }
-
-    private void updateRelatedSumChargedEffortWithWorkReportLine(
-            final WorkReportLine workReportLine,
-            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort)
-            throws InstanceNotFoundException {
-
-        OrderElement orderElement = find(workReportLine.getOrderElement().getId());
-        EffortDuration effort = workReportLine.getEffort();
-        EffortDuration differenceOfEffort;
-        boolean mustBeAdded = true;
-
-        if(workReportLine.isNewObject()) {
-            differenceOfEffort = effort;
-        }
-        else {
-            //the line already exists, we have to get the old value for numHours
-            EffortDuration oldEffort = transactionService
-                    .runOnAnotherTransaction(new IOnTransaction<EffortDuration>() {
-
-                @Override
-                        public EffortDuration execute() {
-                    try {
-                                return workReportLineDAO.find(
-                                        workReportLine.getId()).getEffort();
-                    } catch (InstanceNotFoundException e) {
-                        // this shouldn't happen, as workReportLine.isNewObject()
-                        // returns false, indicating this object already exists
-                                return workReportLine.getEffort();
-                    }
-                }
-            });
-            BigDecimal differenceEffortNumeric = effort
-                    .toHoursAsDecimalWithScale(2).subtract(
-                            oldEffort.toHoursAsDecimalWithScale(2));
-            mustBeAdded = differenceEffortNumeric.compareTo(BigDecimal.ZERO) >= 0;
-            if (mustBeAdded)
-                differenceOfEffort = effort.minus(oldEffort);
-            else
-                differenceOfEffort = oldEffort.minus(effort);
-        }
-        if (mustBeAdded)
-            orderElement.getSumChargedEffort().addDirectChargedEffort(
-                differenceOfEffort);
-        else
-            orderElement.getSumChargedEffort().subtractDirectChargedEffort(
-                    differenceOfEffort);
-        save(orderElement);
-        updateIndirectChargedEffortRecursively(orderElement.getParent(),
-                differenceOfEffort,
-                relationOrderElementIdAndIndirectChargedEffort);
-        workReportLineDAO.save(workReportLine);
-    }
-
-    private void updateRelatedSumChargedEffortWithDeletedWorkReportLine(
-            final WorkReportLine workReportLine,
-            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedHours)
-            throws InstanceNotFoundException {
-
-        if(workReportLine.isNewObject()) {
-            //if the line hadn't been saved, we have nothing to update
-            return;
-        }
-        OrderElement orderElement = find(workReportLine.getOrderElement().getId());
-        EffortDuration effort = workReportLine.getEffort();
-
-        orderElement.getSumChargedEffort().subtractDirectChargedEffort(effort);
-        save(orderElement);
-        updateIndirectChargedEffortRecursively(orderElement.getParent(),
-                effort,
-                relationOrderElementIdAndIndirectChargedHours);
-    }
-
-    private void updateIndirectChargedEffortRecursively(
-            OrderElement orderElement,
-            EffortDuration effortDelta,
-            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort) {
-        if(orderElement != null) {
-            Long id = orderElement.getId();
-            if (relationOrderElementIdAndIndirectChargedEffort.containsKey(id)) {
-                EffortDuration previous = relationOrderElementIdAndIndirectChargedEffort
-                        .get(id);
-                relationOrderElementIdAndIndirectChargedEffort.put(id,
-                        previous.plus(effortDelta));
-            }
-            else {
-                relationOrderElementIdAndIndirectChargedEffort.put(id,
-                        effortDelta);
-            }
-            updateIndirectChargedEffortRecursively(orderElement.getParent(),
-                    effortDelta, relationOrderElementIdAndIndirectChargedEffort);
-        }
-    }
-
-    private void updateIndirectChargedEffortWithMap(
-            Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort)
-            throws InstanceNotFoundException {
-
-        for (Long id : relationOrderElementIdAndIndirectChargedEffort.keySet()) {
-            OrderElement orderElement = find(id);
-            orderElement.getSumChargedEffort().addIndirectChargedEffort(
-                    relationOrderElementIdAndIndirectChargedEffort.get(id));
-            save(orderElement);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
-            Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException {
-        Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort = new Hashtable<Long, EffortDuration>();
-        for(WorkReportLine line : workReportLineSet) {
-            updateRelatedSumChargedEffortWithDeletedWorkReportLine(line,
-                    relationOrderElementIdAndIndirectChargedEffort);
-        }
-        updateIndirectChargedEffortWithMap(relationOrderElementIdAndIndirectChargedEffort);
-    }
-
-    @Override
-    @Transactional
-    public void updateRelatedSumChargedEffortWithWorkReportLineSet(
-            Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException {
-        Map<Long, EffortDuration> relationOrderElementIdAndIndirectChargedEffort = new Hashtable<Long, EffortDuration>();
-        for(WorkReportLine line : workReportLineSet) {
-            updateRelatedSumChargedEffortWithWorkReportLine(line,
-                    relationOrderElementIdAndIndirectChargedEffort);
-        }
-        updateIndirectChargedEffortWithMap(relationOrderElementIdAndIndirectChargedEffort);
     }
 
     @SuppressWarnings("unchecked")

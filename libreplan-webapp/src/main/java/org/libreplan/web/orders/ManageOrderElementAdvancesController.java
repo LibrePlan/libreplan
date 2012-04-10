@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -186,7 +185,8 @@ public class ManageOrderElementAdvancesController extends
 
     private void increaseScreenHeight() {
         if ((tabboxOrderElement != null)
-                && (!tabboxOrderElement.getHeight().equals("680px"))) {
+                && (tabboxOrderElement.getHeight() == null || !tabboxOrderElement
+                        .getHeight().equals("680px"))) {
             tabboxOrderElement.setHeight("680px");
             tabboxOrderElement.invalidate();
         }
@@ -276,7 +276,8 @@ public class ManageOrderElementAdvancesController extends
                 .addNewLineAdvaceMeasurement();
         if ((newMeasure != null)
                 && (manageOrderElementAdvancesModel
-                        .hasConsolidatedAdvances(newMeasure))) {
+                        .hasConsolidatedAdvances(newMeasure
+                                .getAdvanceAssignment()))) {
             newMeasure.setDate(null);
         }
         reloadAdvances();
@@ -289,7 +290,7 @@ public class ManageOrderElementAdvancesController extends
             showMessageDeleteSpread();
         } else if (manageOrderElementAdvancesModel
                 .hasConsolidatedAdvances(advance)) {
-            showMessagesConsolidation(1);
+            showErrorMessage(_("This progress assignment cannot be deleted or changed because it has some progress consolidation"));
         } else {
             manageOrderElementAdvancesModel
                     .removeLineAdvanceAssignment(advance);
@@ -317,7 +318,7 @@ public class ManageOrderElementAdvancesController extends
                     .removeLineAdvanceMeasurement(advance);
             reloadAdvances();
         } else {
-            showMessagesConsolidation(2);
+            showErrorMessage(_("This progress measurement cannot be deleted or changed because it is consolidated"));
         }
     }
 
@@ -448,14 +449,16 @@ public class ManageOrderElementAdvancesController extends
             boolean isQualityForm) {
         final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
-        Decimalbox maxValue = new Decimalbox();
+        final Decimalbox maxValue = new Decimalbox();
         maxValue.setScale(2);
 
         final DirectAdvanceAssignment directAdvanceAssignment;
         if ((advanceAssignment instanceof IndirectAdvanceAssignment)
                 || isQualityForm
                 || (advanceAssignment.getAdvanceType() != null && advanceAssignment
-                        .getAdvanceType().getPercentage())) {
+                        .getAdvanceType().getPercentage())
+                || manageOrderElementAdvancesModel
+                        .hasConsolidatedAdvances(advanceAssignment)) {
             maxValue.setDisabled(true);
         }
         if (advanceAssignment instanceof IndirectAdvanceAssignment) {
@@ -486,7 +489,9 @@ public class ManageOrderElementAdvancesController extends
             public void onEvent(Event event) {
                 if (manageOrderElementAdvancesModel
                         .hasConsolidatedAdvances(advanceAssignment)) {
-                    showMessagesConsolidation(1);
+                    throw new WrongValueException(
+                            maxValue,
+                            _("This progress assignment cannot be deleted or changed because it has some progress consolidation"));
                 } else {
                     setPercentage();
                     reloadAdvances();
@@ -718,6 +723,11 @@ public class ManageOrderElementAdvancesController extends
             removeButton.setDisabled(true);
             removeButton
                     .setTooltiptext(_("Calculated progress can not be removed"));
+        } else if (manageOrderElementAdvancesModel
+                .hasConsolidatedAdvances(advance)) {
+            removeButton.setDisabled(true);
+            removeButton
+                    .setTooltiptext(_("Consolidated progress can not be removed"));
         }
 
         hbox.appendChild(removeButton);
@@ -863,15 +873,23 @@ public class ManageOrderElementAdvancesController extends
                     .cleanAdvance((DirectAdvanceAssignment) advance);
     }
 
-    private void setReportGlobalAdvance(final Listitem item){
+    private void setReportGlobalAdvance(final Listitem item) {
         boolean spread = true;
-        if (!radioSpreadIsConsolidated()) {
-            for (AdvanceAssignment advance : this.getAdvanceAssignments()) {
-                advance.setReportGlobalAdvance(false);
-            }
-        } else {
+
+        if (manageOrderElementAdvancesModel
+                .hasAnyConsolidatedAdvanceCurrentOrderElement()) {
+            showErrorMessage(_("Spread progress cannot be changed if there is a consolidation in any progress assignment from root task"));
             spread = false;
+        } else {
+            if (!radioSpreadIsConsolidated()) {
+                for (AdvanceAssignment advance : this.getAdvanceAssignments()) {
+                    advance.setReportGlobalAdvance(false);
+                }
+            } else {
+                spread = false;
+            }
         }
+
         ((AdvanceAssignment) item.getValue()).setReportGlobalAdvance(spread);
         Util.reloadBindings(editAdvances);
         setSelectedAdvanceLine();
@@ -882,7 +900,7 @@ public class ManageOrderElementAdvancesController extends
             if ((advance.getReportGlobalAdvance())
                     && (manageOrderElementAdvancesModel
                             .hasConsolidatedAdvances(advance))) {
-                showMessagesConsolidation(1);
+                showErrorMessage(_("Spread progress cannot be changed if there is a consolidation in any progress assignment"));
                 return true;
             }
         }
@@ -1032,8 +1050,10 @@ public class ManageOrderElementAdvancesController extends
             listcell.appendChild(value);
             listitem.appendChild(listcell);
 
-            value.setScale(4);
-            value.setDisabled(isReadOnlyAdvanceMeasurements());
+            value.setScale(calculateScale(advanceMeasurement));
+            value.setDisabled(isReadOnlyAdvanceMeasurements()
+                    || manageOrderElementAdvancesModel
+                            .hasConsolidatedAdvances(advanceMeasurement));
             value.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
@@ -1043,7 +1063,9 @@ public class ManageOrderElementAdvancesController extends
                         updatesValue(value);
                         validateMeasurementValue(value, value.getValue());
                     } else {
-                        showMessagesConsolidation(2);
+                        throw new WrongValueException(
+                                value,
+                                _("This progress measurement cannot be deleted or changed because it is consolidated"));
                     }
                 }
             });
@@ -1065,6 +1087,7 @@ public class ManageOrderElementAdvancesController extends
                     }
                 }
             });
+            value.focus();
         }
 
         private void appendLabelPercentage(final Listitem listitem) {
@@ -1089,7 +1112,9 @@ public class ManageOrderElementAdvancesController extends
             listcell.appendChild(date);
             listitem.appendChild(listcell);
 
-            date.setDisabled(isReadOnlyAdvanceMeasurements());
+            date.setDisabled(isReadOnlyAdvanceMeasurements()
+                    || manageOrderElementAdvancesModel
+                            .hasConsolidatedAdvances(advanceMeasurement));
             date.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
@@ -1099,7 +1124,9 @@ public class ManageOrderElementAdvancesController extends
                         validateMeasurementDate(date, date.getValue());
                         setCurrentDate(listitem);
                     } else {
-                        showMessagesConsolidation(2);
+                        throw new WrongValueException(
+                                date,
+                                _("This progress measurement cannot be deleted or changed because it is consolidated"));
                     }
                 }
             });
@@ -1165,6 +1192,11 @@ public class ManageOrderElementAdvancesController extends
                 removeButton.setDisabled(true);
                 removeButton
                         .setTooltiptext(_("Calculated progress measurement can not be removed"));
+            } else if (manageOrderElementAdvancesModel
+                    .hasConsolidatedAdvances(measure)) {
+                removeButton.setDisabled(true);
+                removeButton
+                        .setTooltiptext(_("Consolidated progress measurement can not be removed"));
             }
 
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
@@ -1183,6 +1215,11 @@ public class ManageOrderElementAdvancesController extends
 
     public XYModel getChartData() {
         return this.manageOrderElementAdvancesModel.getChartData(selectedAdvances);
+    }
+
+    private int calculateScale(AdvanceMeasurement advanceMeasurement) {
+        return advanceMeasurement.getAdvanceAssignment().getAdvanceType()
+                .getUnitPrecision().stripTrailingZeros().scale();
     }
 
     private Button createRemoveButton() {
@@ -1225,24 +1262,6 @@ public class ManageOrderElementAdvancesController extends
         showErrorMessage(message);
     }
 
-    private void showMessagesConsolidation(int opcion) {
-        String message = "";
-        switch (opcion) {
-        case 1:
-            message = _("This progress can not be changed or removed, because it has got consolidated progress. It is needed to remove the consolidation on all its progress.");
-            break;
-        case 2:
-            message = _("This progress measurement can not be changed or removed, because it is consolidated. It is needed to remove its consolidation.");
-            break;
-        case 3:
-            message = _("This progress measurement can not be in current date, because it is consolidated. it is necessary to select other date.");
-            break;
-        }
-        if (!StringUtils.isBlank(message)) {
-            showErrorMessage(message);
-        }
-    }
-
     private void showMessagesConsolidation(LocalDate date) {
         String message = _("This progress measurement can not be in "
                 + date
@@ -1261,8 +1280,10 @@ public class ManageOrderElementAdvancesController extends
             return _("Value is not valid, the current value must be less than max value");
         }
         if (!manageOrderElementAdvancesModel.isPrecisionValid(measurement)) {
-            return _("Value is not valid, the Precision value must be exact "
-                    + manageOrderElementAdvancesModel.getUnitPrecision());
+            return _(
+                    "Value must be a multiple of the precision value of the progress type: {0}",
+                    manageOrderElementAdvancesModel.getUnitPrecision()
+                            .stripTrailingZeros().toPlainString());
         }
         if (manageOrderElementAdvancesModel.lessThanPreviousMeasurements()) {
             return _("Value is not valid, the value must be greater than the value of the previous progress.");
@@ -1290,6 +1311,18 @@ public class ManageOrderElementAdvancesController extends
                     return _("Value is not valid, the value must be greater than the value of the previous progress.");
                 }
             }
+
+            if (!isReadOnlyAdvanceMeasurements()) {
+                LocalDate consolidatedUntil = manageOrderElementAdvancesModel
+                        .getLastConsolidatedMeasurementDate(measurement
+                                .getAdvanceAssignment());
+                if (consolidatedUntil != null) {
+                    if (consolidatedUntil.compareTo(measurement.getDate()) >= 0) {
+                        return _("Date is not valid, it must be greater than the last progress consolidation");
+                    }
+                }
+            }
+
         }
         return null;
     }
@@ -1347,8 +1380,11 @@ public class ManageOrderElementAdvancesController extends
             } else {
                 String errorMessage = validateDateAdvanceMeasurement(
                         new LocalDate(value), advanceMeasurement);
-                ((Datebox) comp).setValue(advanceMeasurement.getDate()
-                        .toDateTimeAtStartOfDay().toDate());
+                LocalDate date = advanceMeasurement.getDate();
+                if (date != null) {
+                    ((Datebox) comp).setValue(date.toDateTimeAtStartOfDay()
+                            .toDate());
+                }
                 if (errorMessage != null) {
                     throw new WrongValueException(comp, errorMessage);
                 }

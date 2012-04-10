@@ -252,13 +252,13 @@ public class PlanningTabCreator {
                             + order.getDescription());
                     nameLabel.setMaxlength(MAX_ORDERNAME_LENGHT);
 
-                    Label schedulingStateLabel = new Label(order
-                            .getSchedulingState().getStateAbbreviation());
+                    Label schedulingStateLabel = new Label(_(order.getState()
+                            .toString()));
 
                     schedulingStateLabel.setSclass("scheduling-state "
                             + order.getSchedulingState().getCssClass());
-                    schedulingStateLabel.setTooltiptext(order
-                            .getSchedulingState().getStateName());
+                    schedulingStateLabel.setTooltiptext(_(order
+                            .getSchedulingState().getStateName()));
 
                     breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                     breadcrumbs.appendChild(nameLabel);

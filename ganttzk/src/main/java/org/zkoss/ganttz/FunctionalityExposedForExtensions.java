@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -221,9 +221,13 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
                         accumulatedDependencies, child));
                 i++;
             }
+        } else if (navigator.isMilestone(data)) {
+            Milestone milestone = (Milestone) result;
+            milestone.setOwner(position.getParent());
         }
 
         result.setShowingReportedHours(planner.showReportedHoursRightNow());
+        result.setShowingMoneyCostBar(planner.showMoneyCostBarRightNow());
         result.setShowingAdvances(planner.showAdvancesRightNow());
 
         mapper.register(position, result, data);
@@ -303,11 +307,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public Position remove(T domainObject) {
         Task task = mapper.findAssociatedBean(domainObject);
         Position position = mapper.findPositionFor(task);
+        adapter.doRemovalOf(mapper.findAssociatedDomainObject(task));
+        mapper.remove(domainObject);
         diagramGraph.remove(task);
         task.removed();
         planner.removeTask(task);
-        adapter.doRemovalOf(mapper.findAssociatedDomainObject(task));
-        mapper.remove(domainObject);
         return position;
     }
 
@@ -463,6 +467,20 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     @Override
+    public void showMoneyCostBar() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingMoneyCostBar(true);
+        }
+    }
+
+    @Override
+    public void hideMoneyCostBar() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingMoneyCostBar(false);
+        }
+    }
+
+    @Override
     public void reloadCharts() {
         configuration.reloadCharts();
     }
@@ -480,6 +498,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Checkbox advances = (Checkbox) parent.getFellow("print_advances");
         Checkbox reportedHours = (Checkbox) parent
                 .getFellow("print_reported_hours");
+        Checkbox moneyCostBar = (Checkbox) parent
+                .getFellow("print_money_cost_bar");
 
         parameters.put("extension", ".png");
         if (expanded.isChecked() == true) {
@@ -493,6 +513,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
         if (reportedHours.isChecked() == true) {
             parameters.put("reportedHours", "all");
+        }
+        if (moneyCostBar.isChecked() == true) {
+            parameters.put("moneyCostBar", "all");
         }
         if (resources.isChecked() == true) {
             parameters.put("resources", "all");

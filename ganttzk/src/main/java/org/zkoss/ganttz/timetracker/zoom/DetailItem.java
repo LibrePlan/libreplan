@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -49,6 +49,9 @@ public final class DetailItem {
 
     private boolean currentPeriod;
     private int currentDayOffset;
+
+    private boolean projectStart = false;
+    private int projectStartOffset = 0;
 
     private boolean deadlinePeriod;
     private int deadlineOffset;
@@ -99,7 +102,19 @@ public final class DetailItem {
                             new DateTime()).getDays()) + (float) 0.5) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
-            this.markCurrentDay(offsetInPx);
+            // 1px per column side, 1px for right border and 1px own bg-width
+            this.markCurrentDay(Math.min(this.size - 4, offsetInPx));
+        }
+    }
+
+    public void markProjectStart(DateTime projectStart) {
+        if (!this.startDate.isAfter(projectStart)
+                && projectStart.isBefore(endDate)) {
+            int offsetInPx = Math.round((((float) Days.daysBetween(
+                    this.startDate, projectStart).getDays()) / ((float) Days
+                    .daysBetween(this.startDate, this.endDate).getDays()))
+                    * this.size);
+            this.markprojectStart(offsetInPx);
         }
     }
 
@@ -109,8 +124,8 @@ public final class DetailItem {
                     this.startDate, deadline).getDays()) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
-            // Management of left border case for current line format
-            this.markDeadlineDay(Math.min(this.size - 1, offsetInPx));
+            // 1px per column side, 1px for right border and 1px own bg-width
+            this.markDeadlineDay(Math.min(this.size - 4, offsetInPx));
         }
     }
 
@@ -144,6 +159,11 @@ public final class DetailItem {
         this.deadlineOffset = offset;
     }
 
+    public void markprojectStart(int offset) {
+        this.projectStart = true;
+        this.projectStartOffset = offset;
+    }
+
     public boolean isEven() {
         return even;
     }
@@ -162,6 +182,14 @@ public final class DetailItem {
 
     public int getCurrentDayOffset() {
         return currentDayOffset;
+    }
+
+    public boolean isProjectStart() {
+        return projectStart;
+    }
+
+    public int getProjectStartOffset() {
+        return projectStartOffset;
     }
 
     public boolean isDeadlinePeriod() {

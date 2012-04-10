@@ -26,12 +26,14 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
+import org.libreplan.business.workingday.EffortDuration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -69,45 +71,51 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     }
 
     private void updateSumOfAllocatedHours(TaskElement taskElement) {
-        Integer allocatedHours = 0;
-        Integer oldAllocatedHours = taskElement.getSumOfHoursAllocated();
+        EffortDuration assignedEffort = EffortDuration.hours(0);
+        EffortDuration oldAssignedEffort = taskElement.getSumOfAssignedEffort();
         for(ResourceAllocation<?> allocation : taskElement.getAllResourceAllocations()) {
-            allocatedHours += allocation.getAssignedHours();
+            assignedEffort = assignedEffort.plus(allocation.getAssignedEffort());
         }
-        if(allocatedHours != oldAllocatedHours) {
-            taskElement.setSumOfHoursAllocated(allocatedHours);
+        if(assignedEffort.compareTo(oldAssignedEffort) != 0) {
+            taskElement.setSumOfAssignedEffort(assignedEffort);
             updateSumOfAllocatedHoursToParent(taskElement.getParent(),
-                    allocatedHours - oldAllocatedHours);
-            updateSumOfAllocatedHoursToChildren(taskElement,
-                    allocatedHours - oldAllocatedHours);
+                    oldAssignedEffort, assignedEffort);
+            updateSumOfAllocatedHoursToChildren(taskElement);
         }
     }
 
-    private void updateSumOfAllocatedHoursToChildren(
-            TaskElement parent, Integer differenceOfHours) {
+    private void updateSumOfAllocatedHoursToChildren(TaskElement parent) {
         if(parent instanceof TaskGroup) {
             for(TaskElement child : parent.getChildren()) {
-                Integer allocatedHours = 0;
-                Integer oldAllocatedHours = child.getSumOfHoursAllocated();
+                EffortDuration assignedEffort = EffortDuration.hours(0);
+                EffortDuration oldAssignedEffort = child.getSumOfAssignedEffort();
                 for(ResourceAllocation<?> allocation : child.getAllResourceAllocations()) {
-                    allocatedHours += allocation.getAssignedHours();
+                    assignedEffort = assignedEffort.plus(allocation.getAssignedEffort());
                 }
-                if(allocatedHours != oldAllocatedHours) {
-                    child.setSumOfHoursAllocated(allocatedHours);
-                    updateSumOfAllocatedHoursToChildren(child,
-                            allocatedHours - oldAllocatedHours);
+                if(assignedEffort.compareTo(oldAssignedEffort) != 0) {
+                    child.setSumOfAssignedEffort(assignedEffort);
+                    updateSumOfAllocatedHoursToChildren(child);
                 }
             }
         }
     }
 
-    private void updateSumOfAllocatedHoursToParent(TaskGroup taskGroup, Integer differenceOfHours) {
+    private void updateSumOfAllocatedHoursToParent(TaskGroup taskGroup,
+            EffortDuration oldAssignedEffort, EffortDuration newAssignedEffort) {
         if (taskGroup != null) {
             if (!Hibernate.isInitialized(taskGroup)) {
                 reattach(taskGroup);
             }
-            taskGroup.addSumOfHoursAllocated(differenceOfHours);
-            updateSumOfAllocatedHoursToParent(taskGroup.getParent(), differenceOfHours);
+            if(newAssignedEffort.compareTo(oldAssignedEffort) < 0) {
+                taskGroup.setSumOfAssignedEffort(taskGroup.getSumOfAssignedEffort().minus(
+                        oldAssignedEffort.minus(newAssignedEffort)));
+            }
+            else {
+                taskGroup.setSumOfAssignedEffort(taskGroup.getSumOfAssignedEffort().plus(
+                        newAssignedEffort.minus(oldAssignedEffort)));
+            }
+            updateSumOfAllocatedHoursToParent(taskGroup.getParent(),
+                    oldAssignedEffort, newAssignedEffort);
         }
     }
 
@@ -116,6 +124,15 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     public void save(TaskElement taskElement) {
         updateSumOfAllocatedHours(taskElement);
         super.save(taskElement);
+    }
+
+    @Override
+    public List<TaskElement> getTaskElementsNoMilestonesWithoutTaskSource() {
+        String strQuery = "FROM TaskElement "
+                + "WHERE id NOT IN (SELECT id FROM TaskSource) AND "
+                + "id NOT IN (SELECT id FROM TaskMilestone)";
+        Query query = getSession().createQuery(strQuery);
+        return query.list();
     }
 
 }

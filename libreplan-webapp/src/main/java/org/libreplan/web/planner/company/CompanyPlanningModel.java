@@ -21,7 +21,6 @@
 
 package org.libreplan.web.planner.company;
 
-import static java.util.Arrays.asList;
 import static org.libreplan.web.I18nHelper._;
 
 import java.io.IOException;
@@ -65,6 +64,7 @@ import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.web.planner.TaskElementAdapter;
+import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.chart.Chart;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
@@ -95,13 +95,11 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Emitter;
 import org.zkoss.ganttz.util.Emitter.IEmissionListener;
 import org.zkoss.ganttz.util.Interval;
-import org.zkoss.zk.au.out.AuInsertAfter;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
@@ -219,6 +217,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
         appendTabs(chartComponent);
+        appendTabpanels(chartComponent);
 
         configuration.setChartComponent(chartComponent);
         if (doubleClickCommand != null) {
@@ -271,7 +270,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
            final Tabbox chartComponent) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
 
-        appendTabpanels(chartComponent);
         appendTab(chartComponent, appendLoadChartAndLegend(new Tabpanel(), chartLoadTimeplot));
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner);
@@ -305,9 +303,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                Clients.response("aa",
-                        new AuInsertAfter(chartComponent.getTabpanels()
-                                .getFirstChild(), asList(out.toString())));
+
                 return null;
             }
         });
@@ -570,6 +566,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setRenamingTasksEnabled(false);
         configuration.setTreeEditable(false);
         configuration.setShowAllResourcesEnabled(false);
+        configuration.setMoneyCostBarEnabled(false);
     }
 
     private void addAdditionalCommands(
@@ -675,7 +672,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         User user;
-        List<Order> ordersToShow = new ArrayList<Order>();
 
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
@@ -692,12 +688,10 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
 
             if (associatedTaskElement != null
-                    && STATUS_VISUALIZED.contains(order.getState())
                     && (predicate == null || predicate
                             .accepts(associatedTaskElement))) {
                 associatedTaskElement.setSimplifiedAssignedStatusCalculationEnabled(true);
                 result.add(associatedTaskElement);
-                ordersToShow.add(order);
             }
         }
         Collections.sort(result,new Comparator<TaskElement>(){
@@ -706,24 +700,45 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 return arg0.getStartDate().compareTo(arg1.getStartDate());
             }
         });
-        setDefaultFilterValues(ordersToShow);
         return result;
     }
 
-    private void setDefaultFilterValues(List<? extends Order> list) {
+    @Override
+    @Transactional(readOnly = true)
+    public IPredicate getDefaultPredicate(Boolean includeOrderElements) {
+        User user;
+        if (currentScenario == null) {
+            currentScenario = scenarioManager.getCurrent();
+        }
+        try {
+            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
+        }
+        catch(InstanceNotFoundException e) {
+            //this case shouldn't happen, because it would mean that there isn't a logged user
+            //anyway, if it happened we return an empty list
+            return null;
+        }
+        List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
+                user, currentScenario);
         Date startDate = null;
         Date endDate = null;
         for (Order each : list) {
+            each.useSchedulingDataFor(currentScenario, false);
             TaskGroup associatedTaskElement = each.getAssociatedTaskElement();
-            startDate = Collections.min(notNull(startDate, each.getInitDate(),
-                    associatedTaskElement.getStartDate()));
-            endDate = Collections.max(notNull(endDate, each.getDeadline(),
-                    associatedTaskElement.getEndDate()));
+            if (associatedTaskElement != null
+                    && STATUS_VISUALIZED.contains(each.getState())) {
+                startDate = Collections.min(notNull(startDate, each.getInitDate(),
+                        associatedTaskElement.getStartDate()));
+                endDate = Collections.max(notNull(endDate, each.getDeadline(),
+                        associatedTaskElement.getEndDate()));
+            }
         }
         filterStartDate = startDate != null ? LocalDate
                 .fromDateFields(startDate) : null;
         filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate)
                 : null;
+        return new TaskGroupPredicate(null, startDate, endDate,
+                includeOrderElements);
     }
 
     private static <T> List<T> notNull(T... values) {
@@ -834,7 +849,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 addCost(advanceCost, advanceCostPerTask.get(taskElement));
             }
 
-            advanceCost = accumulateResult(advanceCost);
             addZeroBeforeTheFirstValue(advanceCost);
             indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
                     advanceCost, interval.getStart(), interval.getFinish()));

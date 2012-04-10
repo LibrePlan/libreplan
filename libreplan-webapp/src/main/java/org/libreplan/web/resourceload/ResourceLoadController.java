@@ -192,6 +192,7 @@ public class ResourceLoadController implements Composer {
             resourcesLoadPanel = null;
             listeners = new ListenerTracker();
             visualizationModifiers = null;
+            listenersToAdd = null;
         }
 
         public IOnTransaction<Void> reload() {
@@ -229,6 +230,7 @@ public class ResourceLoadController implements Composer {
             } else {
                 resourcesLoadPanel.init(dataToShow.getLoadTimeLines(),
                         timeTracker);
+                listeners.addListeners(resourcesLoadPanel, getListenersToAdd());
             }
 
             resourcesLoadPanel.afterCompose();
@@ -840,9 +842,12 @@ public class ResourceLoadController implements Composer {
                 ResourceLoadDisplayData generatedData, TimeTracker timeTracker) {
             Timeplot chartLoadTimeplot = createEmptyTimeplot();
 
+            ResourceLoadChartFiller chartFiller =
+                    new ResourceLoadChartFiller(generatedData);
             loadChart = new Chart(chartLoadTimeplot,
-                    new ResourceLoadChartFiller(generatedData), timeTracker);
+                    chartFiller, timeTracker);
             loadChart.setZoomLevel(timeTracker.getDetailLevel());
+            chartFiller.initializeResources();
             if (resourcesLoadPanel.isVisibleChart()) {
                 loadChart.fillChart();
             }
@@ -886,6 +891,8 @@ public class ResourceLoadController implements Composer {
 
         private final ResourceLoadDisplayData generatedData;
 
+        private List<Resource> resources;
+
         public ResourceLoadChartFiller(ResourceLoadDisplayData generatedData) {
             this.generatedData = generatedData;
         }
@@ -899,10 +906,14 @@ public class ResourceLoadController implements Composer {
         protected ILoadChartData getDataOn(Interval interval) {
             List<DayAssignment> assignments = generatedData
                     .getDayAssignmentsConsidered();
-            List<Resource> resources = generatedData.getResourcesConsidered();
             return new ResourceLoadChartData(assignments,
                     resources, interval.getStart(), interval.getFinish());
         }
+
+        private void initializeResources() {
+            resources = generatedData.getResourcesConsidered();
+        }
+
 
     }
 

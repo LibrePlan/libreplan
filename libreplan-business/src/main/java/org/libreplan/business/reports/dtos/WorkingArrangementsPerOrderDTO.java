@@ -34,6 +34,7 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.workingday.EffortDuration;
@@ -185,7 +186,7 @@ public class WorkingArrangementsPerOrderDTO {
     }
 
     public Integer calculatePlannedHours(Task task, final LocalDate date) {
-        final List<DayAssignment> dayAssignments = task.getDayAssignments();
+        final List<DayAssignment> dayAssignments = task.getDayAssignments(FilterType.WITHOUT_DERIVED);
         return DayAssignment.sum(removeAfterDate(dayAssignments, date))
                 .roundToHours();
     }

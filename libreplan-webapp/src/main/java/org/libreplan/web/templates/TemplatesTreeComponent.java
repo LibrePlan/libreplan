@@ -88,6 +88,15 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
+        result.add(new TemplatesTreeColumn(_("Budget"), "budget") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addBudgetCell(currentElement);
+            }
+
+        });
         result.add(new TemplatesTreeColumn(
                 _("Must start after (days since beginning project)"),
                 "estimated_init") {

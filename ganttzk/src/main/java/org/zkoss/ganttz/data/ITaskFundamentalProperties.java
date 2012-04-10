@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,17 +29,33 @@ import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public interface ITaskFundamentalProperties {
+
+    public interface IUpdatablePosition {
+
+        public void setBeginDate(GanttDate beginDate);
+
+        public void setEndDate(GanttDate endDate);
+
+        public void resizeTo(GanttDate endDate);
+
+        public void moveTo(GanttDate newStart);
+    }
+
+    /**
+     * The position modifications must be wrapped inside this
+     */
+    public interface IModifications {
+        public void doIt(IUpdatablePosition position);
+    }
+
+    public void doPositionModifications(IModifications modifications);
 
     public String getName();
 
     public void setName(String name);
-
-    /**
-     * Sets the beginDate.
-     */
-    public void setBeginDate(GanttDate beginDate);
 
     public GanttDate getBeginDate();
 
@@ -55,15 +71,13 @@ public interface ITaskFundamentalProperties {
 
     public GanttDate getEndDate();
 
-    public void setEndDate(GanttDate endDate);
-
-    public void resizeTo(GanttDate endDate);
-
     public String getNotes();
 
     public void setNotes(String notes);
 
     public GanttDate getHoursAdvanceEndDate();
+
+    public GanttDate getMoneyCostBarEndDate();
 
     public GanttDate getAdvanceEndDate();
 
@@ -80,8 +94,6 @@ public interface ITaskFundamentalProperties {
     public List<Constraint<GanttDate>> getStartConstraints();
 
     public List<Constraint<GanttDate>> getEndConstraints();
-
-    public void moveTo(GanttDate newStart);
 
     public boolean isSubcontracted();
 
@@ -106,5 +118,9 @@ public interface ITaskFundamentalProperties {
     String updateTooltipText(String progressType);
 
     boolean isManualAnyAllocation();
+
+    public boolean belongsClosedProject();
+
+    public boolean isRoot();
 
 }

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -62,6 +62,7 @@ import org.libreplan.business.planner.chart.ContiguousDaysLine;
 import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.ICostCalculator;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -149,6 +150,8 @@ import org.zkoss.zul.Vbox;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -267,6 +270,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private OverAllProgressContent overallProgressContent;
 
+    private String tabSelected = "load_tab";
+
     private static class NullSeparatorCommandOnTask<T> implements
             ICommandOnTask<T> {
 
@@ -324,8 +329,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 .calculateDefaultLevel(configuration);
         configureInitialZoomLevelFor(planner, defaultZoomLevel);
 
-        final boolean writingAllowed = isWritingAllowedOn(planningState
-                .getOrder());
+        final boolean writingAllowed = isWritingAllowedOnOrder();
         ISaveCommand saveCommand = setupSaveCommand(configuration,
                 writingAllowed);
         setupEditingCapabilities(configuration, writingAllowed);
@@ -380,7 +384,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         // Create 'Earned value' tab
         Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
-        OrderEarnedValueChartFiller earnedValueChartFiller = createOrderEarnedValueChartFiller(planner.getTimeTracker());
+        this.earnedValueChartFiller = createOrderEarnedValueChartFiller(planner.getTimeTracker());
         chartTabpanels.appendChild(createEarnedValueTab(chartEarnedValueTimeplot, earnedValueChartFiller));
 
         // Create 'Overall progress' tab
@@ -410,6 +414,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 + (System.currentTimeMillis() - overalProgressContentTime));
     }
 
+    private OrderEarnedValueChartFiller earnedValueChartFiller;
+
     private void setupAdvanceAssignmentPlanningController(final Planner planner,
             AdvanceAssignmentPlanningController advanceAssignmentPlanningController) {
 
@@ -426,6 +432,28 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                         }
                         if (planner.isVisibleChart()) {
                             overallProgressContent.updateAndRefresh();
+                        }
+                        return null;
+                    }
+                });
+            }
+        });
+        advanceAssignmentPlanningController.setReloadEarnedValueListener(new IReloadChartListener() {
+
+            @Override
+            public void reloadChart() {
+                Registry.getTransactionService().runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+
+                    @Override
+                    public Void execute() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return null;
+                        }
+                        if (planner.isVisibleChart()) {
+                            //update earned value chart
+                            earnedValueChart.fillChart();
+                            //update earned value legend
+                            updateEarnedValueChartLegend();
                         }
                         return null;
                     }
@@ -486,10 +514,14 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return result;
     }
 
+    private Vbox earnedValueChartLegendContainer;
+    private Datebox earnedValueChartLegendDatebox;
+
     private void appendEarnedValueChartAndLegend(
             Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
             final OrderEarnedValueChartFiller earnedValueChartFiller) {
         Vbox vbox = new Vbox();
+        this.earnedValueChartLegendContainer = vbox;
         vbox.setClass("legend-container");
         vbox.setAlign("center");
         vbox.setPack("center");
@@ -497,14 +529,15 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Hbox dateHbox = new Hbox();
         dateHbox.appendChild(new Label(_("Select date")));
 
-        LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
-        Datebox datebox = new Datebox(initialDateForIndicatorValues
+        LocalDate initialDateForIndicatorValues =
+                earnedValueChartFiller.initialDateForIndicatorValues();
+        this.earnedValueChartLegendDatebox = new Datebox(initialDateForIndicatorValues
                 .toDateTimeAtStartOfDay().toDate());
-        datebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
-        dateHbox.appendChild(datebox);
+        this.earnedValueChartLegendDatebox.setConstraint(
+                dateMustBeInsideVisualizationArea(earnedValueChartFiller));
+        dateHbox.appendChild(this.earnedValueChartLegendDatebox);
 
-        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
-                datebox);
+        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox);
         vbox.appendChild(dateHbox);
 
         vbox.appendChild(getEarnedValueChartConfigurableLegend(
@@ -529,15 +562,17 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Chart loadChart = setupChart(planningState.getOrder(),
                 new OrderLoadChartFiller(planningState.getOrder()),
                 chartLoadTimeplot, planner);
-        refillLoadChartWhenNeeded(changeHooker, planner, loadChart);
+        refillLoadChartWhenNeeded(changeHooker, planner, loadChart, false);
     }
+
+    private Chart earnedValueChart;
 
     private void setupEarnedValueChart(Timeplot chartEarnedValueTimeplot,
             OrderEarnedValueChartFiller earnedValueChartFiller,
             Planner planner, ChangeHooker changeHooker) {
-        Chart earnedValueChart = setupChart(planningState.getOrder(),
+        earnedValueChart = setupChart(planningState.getOrder(),
                 earnedValueChartFiller, chartEarnedValueTimeplot, planner);
-        refillLoadChartWhenNeeded(changeHooker, planner, earnedValueChart);
+        refillLoadChartWhenNeeded(changeHooker, planner, earnedValueChart, true);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
@@ -671,38 +706,84 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void configureModificators(Order orderReloaded,
             PlannerConfiguration<TaskElement> configuration) {
-        if (orderReloaded.getDeadline() != null) {
-            configuration.setSecondLevelModificators(SeveralModificators
-                            .create(BankHolidaysMarker.create(orderReloaded
-                                    .getCalendar()),
-                            createDeadlineShower(orderReloaded.getDeadline())));
-        } else {
-            configuration.setSecondLevelModificators(BankHolidaysMarker.create(orderReloaded.getCalendar()));
-        }
+        // Either InitDate or DeadLine must be set, depending on forwards or
+        // backwards planning
+        configuration.setSecondLevelModificators(SeveralModificators.create(
+                BankHolidaysMarker.create(orderReloaded.getCalendar()),
+                createStartDeadlineMarker(orderReloaded)));
     }
 
-    private IDetailItemModificator createDeadlineShower(Date orderDeadline) {
-        final DateTime deadline = new DateTime(orderDeadline);
-        IDetailItemModificator deadlineMarker = new IDetailItemModificator() {
+    private IDetailItemModificator createStartDeadlineMarker(Order order) {
+        final DateTime projectStart = new DateTime(order.getInitDate());
+        final DateTime deadline = new DateTime(order.getDeadline());
+        IDetailItemModificator detailItemModificator;
 
-            @Override
-            public DetailItem applyModificationsTo(DetailItem item,
-                    ZoomLevel zoomlevel) {
-                item.markDeadlineDay(deadline);
-                return item;
+        if (order.getInitDate() != null) {
+            if (order.getDeadline() != null) {
+                // Both project Start and deadline markers
+                detailItemModificator = new IDetailItemModificator() {
+                    @Override
+                    public DetailItem applyModificationsTo(DetailItem item,
+                            ZoomLevel z) {
+                        item.markDeadlineDay(deadline);
+                        item.markProjectStart(projectStart);
+                        return item;
+                    }
+                };
+            } else {
+                // Project Start without deadline
+                detailItemModificator = new IDetailItemModificator() {
+                    @Override
+                    public DetailItem applyModificationsTo(DetailItem item,
+                            ZoomLevel z) {
+                        item.markProjectStart(projectStart);
+                        return item;
+                    }
+                };
             }
-        };
-        return deadlineMarker;
+        } else {
+            // Only project deadline marker
+            detailItemModificator = new IDetailItemModificator() {
+                @Override
+                public DetailItem applyModificationsTo(DetailItem item,
+                        ZoomLevel z) {
+                    item.markDeadlineDay(deadline);
+                    return item;
+                }
+            };
+        }
+        return detailItemModificator;
+    }
+
+    private void selectTab(String tabName) {
+        tabSelected = tabName;
     }
 
     private void appendTabs(Tabbox chartComponent) {
         Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(new Tab(_("Load")));
-        chartTabs.appendChild(new Tab(_("Earned value")));
-        chartTabs.appendChild(new Tab(_("Overall progress")));
+        chartTabs.appendChild(createTab(_("Load"), "load_tab"));
+        chartTabs.appendChild(createTab(_("Earned value"), "earned_value_tab"));
+        chartTabs.appendChild(createTab(_("Overall progress"),
+                "overall_progress_tab"));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
+    }
+
+    private Tab createTab(String name, final String id) {
+        Tab tab = new Tab(name);
+        tab.setId(id);
+        if (id.equals(tabSelected)) {
+            tab.setSelected(true);
+        }
+        tab.addEventListener("onClick", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                selectTab(id);
+            }
+        });
+        return tab;
     }
 
     private org.zkoss.zk.ui.Component getLoadChartLegend() {
@@ -748,21 +829,39 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void appendEventListenerToDateboxIndicators(
             final OrderEarnedValueChartFiller earnedValueChartFiller,
-            final Vbox vbox, final Datebox datebox) {
-        datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
+            final Vbox vbox) {
+        earnedValueChartLegendDatebox.addEventListener(Events.ON_CHANGE,
+                new EventListener() {
 
             @Override
             public void onEvent(Event event) {
-                LocalDate date = new LocalDate(datebox.getValue());
-                org.zkoss.zk.ui.Component child = vbox
-                        .getFellow("indicatorsTable");
-                vbox.removeChild(child);
-                vbox.appendChild(getEarnedValueChartConfigurableLegend(
-                        earnedValueChartFiller, date));
-                dateInfutureMessage(datebox);
+                updateEarnedValueChartLegend();
+                dateInfutureMessage(earnedValueChartLegendDatebox);
             }
 
         });
+    }
+
+    private void updateEarnedValueChartLegend() {
+        try {
+            //force the validation again (getValue alone doesn't work because
+            //the result of the validation is cached)
+            earnedValueChartLegendDatebox.setValue(
+                    earnedValueChartLegendDatebox.getValue());
+        }
+        catch (WrongValueException e) {
+            //the user moved the gantt and the legend became out of the
+            //visualization area, reset to a correct date
+            earnedValueChartLegendDatebox.setValue(earnedValueChartFiller.
+                    initialDateForIndicatorValues().toDateTimeAtStartOfDay()
+                    .toDate());
+        }
+        LocalDate date = new LocalDate(earnedValueChartLegendDatebox.getRawValue());
+        org.zkoss.zk.ui.Component child = earnedValueChartLegendContainer
+                .getFellow("indicatorsTable");
+        earnedValueChartLegendContainer.removeChild(child);
+        earnedValueChartLegendContainer.appendChild(getEarnedValueChartConfigurableLegend(
+                earnedValueChartFiller, date));
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
@@ -867,6 +966,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                 @Override
                                 public Void execute() {
                                     earnedValueChart.fillChart();
+                                    //not necessary to update legend here
                                     return null;
                                 }
                             });
@@ -877,9 +977,10 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void refillLoadChartWhenNeeded(ChangeHooker changeHooker,
-            final Planner planner, final Chart loadChart) {
+            final Planner planner, final Chart loadChart,
+            final boolean updateEarnedValueChartLegend) {
         planner.getTimeTracker().addZoomListener(
-                fillOnZoomChange(loadChart, planner));
+                fillOnZoomChange(loadChart, planner, updateEarnedValueChartLegend));
         planner
                 .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
 
@@ -893,6 +994,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                         }
                         if (planner.isVisibleChart()) {
                             loadChart.fillChart();
+                            if(updateEarnedValueChartLegend) {
+                                updateEarnedValueChartLegend();
+                            }
                         }
                     }
                 });
@@ -909,15 +1013,16 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private boolean isWritingAllowedOn(Order order) {
-        if (order.getState() == OrderStatusEnum.STORED) {
-            //STORED orders can't be saved, independently of user permissions
+    private boolean isWritingAllowedOnOrder() {
+        if (planningState.getSavedOrderState() == OrderStatusEnum.STORED
+                && planningState.getOrder().getState() == OrderStatusEnum.STORED) {
+            // STORED orders can't be saved, independently of user permissions
             return false;
         }
         if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             return true;
         }
-        return thereIsWriteAuthorizationFor(order);
+        return thereIsWriteAuthorizationFor(planningState.getOrder());
     }
 
     private boolean thereIsWriteAuthorizationFor(Order order) {
@@ -941,10 +1046,10 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private ISaveCommand setupSaveCommand(
             PlannerConfiguration<TaskElement> configuration,
             boolean writingAllowed) {
-        if (!writingAllowed) {
-            return null;
-        }
         ISaveCommand result = planningState.getSaveCommand();
+        if (!writingAllowed) {
+            result.setDisabled(true);
+        }
         configuration.addGlobalCommand(result);
         return result;
     }
@@ -1043,6 +1148,11 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 return "/common/img/ico_back.png";
             }
 
+            @Override
+            public boolean isDisabled() {
+                return false;
+            }
+
         };
     }
 
@@ -1082,7 +1192,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private IZoomLevelChangedListener fillOnZoomChange(final Chart loadChart,
-            final Planner planner) {
+            final Planner planner, final boolean updateEarnedValueChartLegend) {
         IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
 
             @Override
@@ -1095,6 +1205,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                             public Void execute() {
                                 if (planner.isVisibleChart()) {
                                     loadChart.fillChart();
+                                    if (updateEarnedValueChartLegend) {
+                                        updateEarnedValueChartLegend();
+                                    }
                                 }
                                 return null;
                             }
@@ -1141,7 +1254,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         @Override
         protected Plotinfo[] getPlotInfos(Interval interval) {
-            List<DayAssignment> orderDayAssignments = order.getDayAssignments();
+            List<DayAssignment> orderDayAssignments = order
+                    .getDayAssignments(FilterType.WITHOUT_DERIVED);
             ContiguousDaysLine<List<DayAssignment>> orderAssignments = ContiguousDaysLine
                     .byDay(orderDayAssignments);
             ContiguousDaysLine<List<DayAssignment>> allAssignments = allAssignments(orderAssignments);
@@ -1249,7 +1363,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             AvailabilityTimeLine.Interval interval = AvailabilityTimeLine.Interval
                     .create(startInclusive, endExclusive);
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : order.getResources()) {
+            for (Resource resource : order
+                    .getResources(FilterType.WITHOUT_DERIVED)) {
                 resourcesDayAssignments.addAll(insideInterval(interval,
                         planningState.getAssignmentsCalculator()
                                 .getAssignments(resource)));
@@ -1333,7 +1448,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 }
             }
 
-            advanceCost = accumulateResult(advanceCost);
             addZeroBeforeTheFirstValue(advanceCost);
             indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
                     advanceCost, interval.getStart(), interval.getFinish()));

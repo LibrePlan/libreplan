@@ -32,10 +32,12 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -43,6 +45,7 @@ import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.web.servlet.dsp.action.Page;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -117,6 +120,8 @@ public class CompanyPlanningController implements Composer {
 
         planner.setAreShownReportedHoursByDefault(Planner
                 .guessShowReportedHoursByDefault(parameters));
+        planner.setAreShownMoneyCostBarByDefault(Planner
+                .guessShowMoneyCostBarByDefault(parameters));
 
         orderFilter = (Vbox) planner.getFellow("orderFilter");
         // Configuration of the order filter
@@ -134,6 +139,23 @@ public class CompanyPlanningController implements Composer {
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
+
+        checkCreationPermissions();
+
+    }
+
+    /**
+     * Checks the creation permissions of the current user and enables/disables
+     * the create buttons accordingly.
+     */
+    private void checkCreationPermissions() {
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            Button createOrderButton = (Button) planner.getPage().getFellow(
+                    "createOrderButton");
+            if (createOrderButton != null) {
+                createOrderButton.setDisabled(true);
+            }
+        }
     }
 
     private void initializeListboxProgressTypes() {
@@ -227,8 +249,9 @@ public class CompanyPlanningController implements Composer {
                     throws WrongValueException {
                 Date finishDate = (Date) value;
                 if ((finishDate != null)
-                        && (filterStartDate.getValue() != null)
-                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
+                        && (filterStartDate.getRawValue() != null)
+                        && (finishDate.compareTo((Date)
+                                filterStartDate.getRawValue()) < 0)) {
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp,
                             _("must be greater than start date"));
@@ -244,8 +267,9 @@ public class CompanyPlanningController implements Composer {
                     throws WrongValueException {
                 Date startDate = (Date) value;
                 if ((startDate != null)
-                        && (filterFinishDate.getValue() != null)
-                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
+                        && (filterFinishDate.getRawValue() != null)
+                        && (startDate.compareTo((Date)
+                                filterFinishDate.getRawValue()) > 0)) {
                     filterStartDate.setValue(null);
                     throw new WrongValueException(comp,
                             _("must be lower than finish date"));
@@ -266,7 +290,17 @@ public class CompanyPlanningController implements Composer {
         Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
 
         if (listFilters.isEmpty() && startDate == null && finishDate == null) {
-            return null;
+            IPredicate predicate = model.getDefaultPredicate(includeOrderElements);
+            //show filter dates calculated by default on screen
+            if(model.getFilterStartDate() != null) {
+                filterStartDate.setValue(model.getFilterStartDate().
+                        toDateMidnight().toDate());
+            }
+            if(model.getFilterFinishDate() != null) {
+                filterFinishDate.setValue(model.getFilterFinishDate().
+                        toDateMidnight().toDate());
+            }
+            return predicate;
         }
         return new TaskGroupPredicate(listFilters, startDate, finishDate,
                 includeOrderElements);

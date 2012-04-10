@@ -44,10 +44,13 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.ICalendar;
 import org.libreplan.business.calendars.entities.SameWorkHoursEveryDay;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
@@ -61,8 +64,8 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.business.util.deepcopy.AfterCopy;
 import org.libreplan.business.util.TaskElementVisitor;
+import org.libreplan.business.util.deepcopy.AfterCopy;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
@@ -425,8 +428,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    public void explicityMoved(IntraDayDate date) {
-        getPositionConstraint().explicityMovedTo(date);
+    public void explicityMoved(IntraDayDate startDate, IntraDayDate endDate) {
+        getPositionConstraint().explicityMovedTo(startDate, endDate,
+                getOrderElement().getOrder().getSchedulingMode());
     }
 
     public TaskPositionConstraint getPositionConstraint() {
@@ -471,56 +475,15 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     }
 
-    private static abstract class AllocationModificationStrategy {
+    private static class WithPotentiallyNewResources {
 
         protected final IResourcesSearcher searcher;
 
-        public AllocationModificationStrategy(IResourcesSearcher searcher) {
+        public WithPotentiallyNewResources(IResourcesSearcher searcher) {
             Validate.notNull(searcher);
             this.searcher = searcher;
         }
 
-        public abstract ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
-                List<ResourceAllocation<?>> allocations);
-
-        public abstract ModificationsResult<EffortModification> getHoursModified(
-                List<ResourceAllocation<?>> allocations);
-
-    }
-
-    private static class WithTheSameHoursAndResourcesPerDay extends
-            AllocationModificationStrategy {
-
-        public WithTheSameHoursAndResourcesPerDay(IResourcesSearcher searcher) {
-            super(searcher);
-        }
-
-        @Override
-        public ModificationsResult<EffortModification> getHoursModified(
-                List<ResourceAllocation<?>> allocations) {
-            List<EffortModification> canBeModified = EffortModification
-                    .fromExistent(allocations, searcher);
-            return ModificationsResult.create(allocations, canBeModified);
-        }
-
-        @Override
-        public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
-                List<ResourceAllocation<?>> allocations) {
-            List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
-                    .fromExistent(allocations, searcher);
-            return ModificationsResult.create(allocations, canBeModified);
-        }
-
-    }
-
-    private static class WithAnotherResources extends
-            AllocationModificationStrategy {
-
-        public WithAnotherResources(IResourcesSearcher searcher) {
-            super(searcher);
-        }
-
-        @Override
         public ModificationsResult<EffortModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
             List<EffortModification> canBeModified = EffortModification
@@ -528,13 +491,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             return ModificationsResult.create(allocations, canBeModified);
         }
 
-        @Override
         public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
             List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
                     .withNewResources(allocations, searcher);
             return ModificationsResult.create(allocations, canBeModified);
         }
+
     }
 
     public void copyAssignmentsFromOneScenarioToAnother(Scenario from, Scenario to) {
@@ -560,8 +523,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             }
 
             private void doReassignment(Direction direction) {
-                reassign(scenario, direction,
-                        new WithTheSameHoursAndResourcesPerDay(searcher));
+                reassign(scenario, direction, new WithPotentiallyNewResources(
+                        searcher));
             }
 
             @Override
@@ -759,12 +722,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourcesSearcher searcher) {
-        reassign(scenario, getAllocationDirection(), new WithAnotherResources(
-                searcher));
+        reassign(scenario, getAllocationDirection(),
+                new WithPotentiallyNewResources(searcher));
     }
 
     private void reassign(Scenario onScenario, Direction direction,
-            AllocationModificationStrategy strategy) {
+            WithPotentiallyNewResources strategy) {
         try {
             this.lastAllocationDirection = direction;
             if (isLimiting()) {
@@ -790,7 +753,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    private void doAllocation(AllocationModificationStrategy strategy,
+    private void doAllocation(WithPotentiallyNewResources strategy,
             Direction direction, List<ResourceAllocation<?>> toBeModified) {
         ModificationsResult<ResourcesPerDayModification> modificationsResult = strategy
                 .getResourcesPerDayModified(toBeModified);
@@ -893,6 +856,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return subcontractedTaskData;
     }
 
+    public ExternalCompany getSubcontractedCompany() {
+        return subcontractedTaskData.getExternalCompany();
+    }
+
     public void removeAllSatisfiedResourceAllocations() {
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
@@ -910,6 +877,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public boolean isSubcontracted() {
         return (subcontractedTaskData != null);
+    }
+
+    public String getSubcontractionName() {
+        return subcontractedTaskData.getExternalCompany().getName();
     }
 
     public boolean isSubcontractedAndWasAlreadySent() {
@@ -1117,7 +1088,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     @Override
     public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
         return AggregateOfDayAssignments.createByDataRange(
-                this.getDayAssignments(),
+                this.getDayAssignments(FilterType.KEEP_ALL),
                 this.getStartDate(),
                 date).getTotalTime();
     }
@@ -1235,7 +1206,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     private boolean hasAttachedWorkReports() {
-        return !this.getOrderElement().getSumChargedEffort().isZero();
+        SumChargedEffort sumChargedEffort = this.getOrderElement().getSumChargedEffort();
+        return sumChargedEffort != null && !sumChargedEffort.isZero();
     }
 
     public void acceptVisitor(TaskElementVisitor visitor) {

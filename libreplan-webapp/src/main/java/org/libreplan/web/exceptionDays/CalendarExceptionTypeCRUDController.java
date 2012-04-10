@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -152,6 +152,7 @@ public class CalendarExceptionTypeCRUDController extends
         tbName = (Textbox) editWindow.getFellowIfAny("tbName");
         overAssignable = Util.findComponentAt(editWindow, "overAssignable");
         standardEffort = Util.findComponentAt(editWindow, "standardEffort");
+        standardEffort.initializeFor24HoursAnd0Minutes();
         extraEffort = Util.findComponentAt(editWindow, "extraEffort");
     }
 
@@ -243,12 +244,12 @@ public class CalendarExceptionTypeCRUDController extends
 
     @Override
     protected String getEntityType() {
-        return "Exception Day Type";
+        return _("Exception Day Type");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return "Exception Day Types";
+        return _("Exception Day Types");
     }
 
     @Override

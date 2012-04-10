@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -181,6 +181,7 @@ public abstract class BaseCalendarEditionController extends
         Component extraEffortRow = comp.getFellow("exceptionDayExtraEffortBox");
 
         EffortDurationPicker normalDuration = findOrCreateDurationPicker(normalEffortRow);
+        normalDuration.initializeFor24HoursAnd0Minutes();
         EffortDurationPicker extraDuration = findOrCreateDurationPicker(extraEffortRow);
         Checkbox checkbox = findOrCreateUnlimitedCheckbox(extraEffortRow);
         return CapacityPicker.workWith(checkbox, normalDuration, extraDuration,
@@ -298,8 +299,8 @@ public abstract class BaseCalendarEditionController extends
         if (baseCalendarModel.isDerived()) {
             String currentStartDate = this.getCurrentStartDateLabel();
             String currentExpiringDate = this.getCurrentExpiringDateLabel();
-            return _("Derived of Calendar " + getNameParentCalendar()
-                    + currentStartDate + currentExpiringDate);
+            return _("Derived of calendar {0}",  getNameParentCalendar())
+                    + currentStartDate + currentExpiringDate;
         }
         return _("Root calendar");
     }
@@ -308,7 +309,7 @@ public abstract class BaseCalendarEditionController extends
         Date date = baseCalendarModel.getCurrentExpiringDate();
         String label = "";
         if (date != null) {
-            label = " to " + new SimpleDateFormat("dd/MM/yyyy").format(date);
+            label = " " + _("to {0}", new SimpleDateFormat("dd/MM/yyyy").format(date));
         }
         return label;
     }
@@ -317,7 +318,7 @@ public abstract class BaseCalendarEditionController extends
         Date date = baseCalendarModel.getCurrentStartDate();
         String label = "";
         if (date != null) {
-            label = " from " + new SimpleDateFormat("dd/MM/yyyy").format(date);
+            label = " " + _("from {0}", new SimpleDateFormat("dd/MM/yyyy").format(date));
         }
         return label;
     }
@@ -347,6 +348,7 @@ public abstract class BaseCalendarEditionController extends
             addLabelCell(item, day);
 
             EffortDurationPicker normalDurationPicker = new EffortDurationPicker();
+            normalDurationPicker.initializeFor24HoursAnd0Minutes();
             EffortDurationPicker extraDurationPicker = new EffortDurationPicker();
             Checkbox unlimitedCheckbox = createUnlimitedCheckbox();
 
@@ -536,6 +538,8 @@ public abstract class BaseCalendarEditionController extends
 
     public void highlightDaysOnCalendar() {
         Calendar calendar = (Calendar) window.getFellow("calendarWidget");
+
+        Clients.response(new AuInvoke(calendar, "resetHighlightedDates"));
 
         Map<String, List<Integer>> daysByColor = getDaysCurrentMonthByColor();
         for (String color : daysByColor.keySet()) {
@@ -1544,6 +1548,18 @@ public abstract class BaseCalendarEditionController extends
             setSelectedDay(calendarException.getDate());
             reloadDayInformation();
         }
+    }
+
+    public boolean isVirtualWorker() {
+        return baseCalendarModel.isVirtualWorker();
+    }
+
+    public Integer getCapacity() {
+        return baseCalendarModel.getCapacity();
+    }
+
+    public void setCapacity(Integer capacity) {
+        baseCalendarModel.setCapacity(capacity);
     }
 
 }

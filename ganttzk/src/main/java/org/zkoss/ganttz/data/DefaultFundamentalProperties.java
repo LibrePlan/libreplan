@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +34,7 @@ import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class DefaultFundamentalProperties implements ITaskFundamentalProperties {
 
@@ -47,9 +48,13 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private long hoursAdvanceEndDate;
 
+    private long moneyCostBarEndDate;
+
     private Date advanceEndDate;
 
     private BigDecimal hoursAdvancePercentage;
+
+    private BigDecimal moneyCostBarPercentage;
 
     private BigDecimal advancePercentage;
 
@@ -59,25 +64,61 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     private String resourcesText;
 
+    private IUpdatablePosition position = new IUpdatablePosition() {
+
+        private final DefaultFundamentalProperties parent = DefaultFundamentalProperties.this;
+
+        @Override
+        public void setBeginDate(GanttDate beginDate) {
+            parent.beginDate = toMilliseconds(beginDate);
+        }
+
+        @Override
+        public void setEndDate(GanttDate endDate) {
+            parent.beginDate = toMilliseconds(endDate)
+                    - parent.lengthMilliseconds;
+        }
+
+        @Override
+        public void resizeTo(GanttDate endDate) {
+            parent.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
+        }
+
+        @Override
+        public void moveTo(GanttDate date) {
+            setBeginDate(date);
+        }
+
+    };
+
     public DefaultFundamentalProperties() {
     }
 
     public DefaultFundamentalProperties(String name, Date beginDate,
             long lengthMilliseconds, String notes,
             Date hoursAdvanceEndDate,
+            Date moneyCostBarEndDate,
             Date advanceEndDate,
-            BigDecimal hoursAdvancePercentage, BigDecimal advancePercentage) {
+            BigDecimal hoursAdvancePercentage,
+            BigDecimal moneyCostBarPercentage, BigDecimal advancePercentage) {
         this.name = name;
         this.beginDate = beginDate.getTime();
         this.lengthMilliseconds = lengthMilliseconds;
         this.notes = notes;
         this.hoursAdvanceEndDate = hoursAdvanceEndDate.getTime();
+        this.moneyCostBarEndDate = moneyCostBarEndDate.getTime();
         this.advanceEndDate = advanceEndDate;
         this.hoursAdvancePercentage = hoursAdvancePercentage;
+        this.moneyCostBarPercentage = moneyCostBarPercentage;
         this.advancePercentage = advancePercentage;
         this.tooltipText = "Default tooltip";
         this.labelsText = "";
         this.resourcesText = "";
+    }
+
+    @Override
+    public void doPositionModifications(IModifications modifications) {
+        modifications.doIt(position);
     }
 
     public String getName() {
@@ -115,11 +156,6 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return toGanttDate(beginDate);
     }
 
-    @Override
-    public void setBeginDate(GanttDate beginDate) {
-        this.beginDate = toMilliseconds(beginDate);
-    }
-
     public long getLengthMilliseconds() {
         return lengthMilliseconds;
     }
@@ -127,16 +163,6 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public GanttDate getEndDate() {
         return toGanttDate(beginDate + getLengthMilliseconds());
-    }
-
-    @Override
-    public void setEndDate(GanttDate endDate) {
-        this.beginDate = toMilliseconds(endDate) - this.lengthMilliseconds;
-    }
-
-    @Override
-    public void resizeTo(GanttDate endDate) {
-        this.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
     }
 
     public String getNotes() {
@@ -150,6 +176,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public GanttDate getHoursAdvanceEndDate() {
         return GanttDate.createFrom(new Date(hoursAdvanceEndDate));
+    }
+
+    @Override
+    public GanttDate getMoneyCostBarEndDate() {
+        return GanttDate.createFrom(new Date(moneyCostBarEndDate));
     }
 
     @Override
@@ -191,11 +222,6 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public List<Constraint<GanttDate>> getEndConstraints() {
         return Collections.emptyList();
-    }
-
-    @Override
-    public void moveTo(GanttDate date) {
-        setBeginDate(date);
     }
 
     @Override
@@ -264,6 +290,16 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     @Override
     public boolean isManualAnyAllocation() {
+        return false;
+    }
+
+    @Override
+    public boolean belongsClosedProject() {
+        return false;
+    }
+
+    @Override
+    public boolean isRoot() {
         return false;
     }
 

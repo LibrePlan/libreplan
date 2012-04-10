@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.workingday.EffortDuration;
 
 /**
@@ -167,8 +168,10 @@ public class PlanningData extends BaseEntity {
             theoreticalCompletedTime = EffortDuration.sum(
                     theoreticalCompletedTime,
                     each.getTheoreticalCompletedTimeUntilDate(limit));
-            totalAssignedTime = EffortDuration.sum(totalAssignedTime,
-                    AggregateOfDayAssignments.create(each.getDayAssignments())
+            totalAssignedTime = EffortDuration.sum(
+                    totalAssignedTime,
+                    AggregateOfDayAssignments.create(
+                            each.getDayAssignments(FilterType.KEEP_ALL))
                             .getTotalTime());
         }
         return theoreticalCompletedTime.dividedByAndResultAsBigDecimal(totalAssignedTime);

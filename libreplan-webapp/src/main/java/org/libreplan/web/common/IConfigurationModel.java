@@ -135,12 +135,6 @@ public interface IConfigurationModel {
 
     void setCompanyLogoURL(String companyLogoURL);
 
-    Boolean isScenariosVisible();
-
-    void setScenariosVisible(Boolean scenariosVisible);
-
-    Boolean moreScenariosThanMasterCreated();
-
     void setLdapConfiguration(LDAPConfiguration ldapConfiguration);
 
     LDAPConfiguration getLdapConfiguration();
@@ -150,4 +144,13 @@ public interface IConfigurationModel {
     Boolean isChangedDefaultPasswdAdmin();
 
     void setAutocompleteLogin(Boolean autocompleteLogin);
+
+    boolean isCheckNewVersionEnabled();
+
+    void setCheckNewVersionEnabled(boolean checkNewVersionEnabled);
+
+    boolean isAllowToGatherUsageStatsEnabled();
+
+    void setAllowToGatherUsageStatsEnabled(
+            boolean allowToGatherUsageStatsEnabled);
 }

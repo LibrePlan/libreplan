@@ -149,6 +149,7 @@ public class DependencyList extends XulElement implements AfterCompose {
                 visibilityToggler);
         destination.getTask().addVisibilityPropertiesChangeListener(
                 visibilityToggler);
+        dependencyComponent.setVisibilityChangeListener(visibilityToggler);
         boolean dependencyMustBeVisible = visibilityToggler
                 .dependencyMustBeVisible();
         visibilityToggler.toggleDependencyExistence(dependencyMustBeVisible);
@@ -280,7 +281,7 @@ public class DependencyList extends XulElement implements AfterCompose {
         for (DependencyComponent dependencyComponent : DependencyList.this
                 .getDependencyComponents()) {
             if (dependencyComponent.contains(task)) {
-                this.removeChild(dependencyComponent);
+                removeDependencyComponent(dependencyComponent);
             }
         }
     }
@@ -289,8 +290,24 @@ public class DependencyList extends XulElement implements AfterCompose {
         for (DependencyComponent dependencyComponent : DependencyList.this
                 .getDependencyComponents()) {
             if (dependencyComponent.hasSameSourceAndDestination(dependency)) {
-                this.removeChild(dependencyComponent);
+                removeDependencyComponent(dependencyComponent);
             }
         }
+    }
+
+    private void removeDependencyComponent(DependencyComponent dependencyComponent) {
+        //remove the visibility listener attached to the tasks
+        TaskComponent source = dependencyComponent.getSource();
+        TaskComponent destination = dependencyComponent.getDestination();
+        PropertyChangeListener listener =
+                dependencyComponent.getVisibilityChangeListener();
+        source.getTask().removeVisibilityPropertiesChangeListener(listener);
+        destination.getTask().removeVisibilityPropertiesChangeListener(listener);
+
+        //remove other change listeners
+        dependencyComponent.removeChangeListeners();
+
+        //remove the dependency itself
+        this.removeChild(dependencyComponent);
     }
 }

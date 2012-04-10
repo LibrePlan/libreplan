@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-task_end_date_effort_duration-to-consolidated_value" author="mrego">
+        <comment>
+            taskEndDate attribute in class ConsolidatedValue has been changed to IntraDayDate.
+            It is needed to add some columns to store EffortDuration in ConsolidatedValue.
+        </comment>
+        <addColumn tableName="consolidated_value">
+            <column name="task_end_date_effort_duration" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="consolidated_value"
+            columnName="task_end_date_effort_duration"
+            defaultValueNumeric="0" />
+    </changeSet>
+
+    <changeSet id="change-sum_of_hours_allocated-to-sum_of_assigned_effort" author="jaragunde">
+        <comment>Changing sum_of_hours_allocated to sum_of_assigned_effort</comment>
+        <renameColumn tableName="task_element"
+            oldColumnName="sum_of_hours_allocated"
+            newColumnName="sum_of_assigned_effort"
+            columnDataType="INTEGER" />
+    </changeSet>
+    <changeSet id="update-effort-values-in-sum_charged_effort" author="jaragunde">
+        <comment>Updating effort values (hours to seconds) in task_element table</comment>
+        <sql>
+            UPDATE task_element
+            SET sum_of_assigned_effort = sum_of_assigned_effort*3600
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-new-column-check_new_version_enabled" author="mrego">
+        <comment>Add new column check_new_version_enabled with default value TRUE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="check_new_version_enabled" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="check_new_version_enabled"
+           defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="check_new_version_enabled"
+            defaultNullValue="TRUE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-allow_to_gather_usage_stats_enabled" author="mrego">
+        <comment>Add new column allow_to_gather_usage_stats_enabled with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="allow_to_gather_usage_stats_enabled" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="allow_to_gather_usage_stats_enabled"
+           defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="allow_to_gather_usage_stats_enabled"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="change-column-description-in-order_element-to-text" author="mrego">
+        <comment>Change column description in order_element to TEXT</comment>
+        <modifyDataType tableName="order_element" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
+    <changeSet id="change-column-description-in-order_element_template-to-text" author="mrego">
+        <comment>Change column description in order_element_template to TEXT</comment>
+        <modifyDataType tableName="order_element_template" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
+    <changeSet id="add-budget-column-to-order_line" author="mrego">
+        <comment>add budget column to order_line</comment>
+        <addColumn tableName="order_line">
+            <column name="budget" type="DECIMAL(19,2)" />
+        </addColumn>
+        <addNotNullConstraint tableName="order_line"
+            columnName="budget" defaultNullValue="0"
+            columnDataType="DECIMAL(19,2)" />
+        <addDefaultValue tableName="order_line"
+            columnName="budget" defaultValueNumeric="0" />
+    </changeSet>
+
+    <changeSet id="add-budget-column-to-order_line_template" author="mrego">
+        <comment>add budget column to order_line_template</comment>
+        <addColumn tableName="order_line_template">
+            <column name="budget" type="DECIMAL(19,2)" />
+        </addColumn>
+        <addNotNullConstraint tableName="order_line_template"
+            columnName="budget" defaultNullValue="0"
+            columnDataType="DECIMAL(19,2)" />
+        <addDefaultValue tableName="order_line_template"
+            columnName="budget" defaultValueNumeric="0" />
+    </changeSet>
+
+    <changeSet id="change-mapping-order-element-and-sum-charged-effort-postgresql"
+        author="mrego" dbms="postgresql">
+        <comment>Change mapping between OrderElement and SumChargedEffort in MySQL</comment>
+
+        <addColumn tableName="sum_charged_effort">
+            <column name="order_element" type="BIGINT" />
+        </addColumn>
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION chageMappingBetweenOrderElementAndSumChargedEffort() RETURNS VOID AS $$
+            DECLARE
+                sce RECORD;
+            BEGIN
+                FOR sce IN SELECT sum_charged_effort_id AS id FROM order_element
+                LOOP
+                    EXECUTE 'UPDATE sum_charged_effort '
+                        || 'SET order_element '
+                        || ' = (SELECT id FROM order_element '
+                            || 'WHERE sum_charged_effort_id '
+                            || ' = '
+                            || quote_literal(sce.id)
+                            || ') '
+                        || 'WHERE id '
+                        || ' = '
+                        || quote_literal(sce.id);
+                END LOOP;
+            END;
+            $$ LANGUAGE plpgsql;
+        </createProcedure>
+        <sql>SELECT chageMappingBetweenOrderElementAndSumChargedEffort()</sql>
+        <addForeignKeyConstraint constraintName="sum_charged_effort_order_element_fkey"
+            baseTableName="sum_charged_effort" baseColumnNames="order_element"
+            referencedTableName="order_element" referencedColumnNames="id" />
+        <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
+    </changeSet>
+
+    <changeSet id="change-mapping-order-element-and-sum-charged-effort-mysql"
+        author="mrego" dbms="mysql">
+        <comment>Change mapping between OrderElement and SumChargedEffort in PostgreSQL</comment>
+
+        <addColumn tableName="sum_charged_effort">
+            <column name="order_element" type="BIGINT" />
+        </addColumn>
+        <sql>DROP PROCEDURE IF EXISTS chageMappingBetweenOrderElementAndSumChargedEffort</sql>
+        <sql splitStatements="false">
+            CREATE PROCEDURE chageMappingBetweenOrderElementAndSumChargedEffort()
+            BEGIN
+                DECLARE done INT DEFAULT FALSE;
+                DECLARE sce_id INT;
+                DECLARE cursor_sce_ids CURSOR FOR SELECT sum_charged_effort_id AS id FROM order_element;
+                DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+                OPEN cursor_sce_ids;
+
+                ids_loop: LOOP
+                    FETCH cursor_sce_ids INTO sce_id;
+                    IF done THEN
+                        LEAVE ids_loop;
+                    END IF;
+                    UPDATE sum_charged_effort SET order_element = (SELECT id FROM order_element WHERE sum_charged_effort_id = sce_id) WHERE id = sce_id;
+                END LOOP;
+
+                CLOSE cursor_sce_ids;
+            END;
+        </sql>
+        <sql>CALL chageMappingBetweenOrderElementAndSumChargedEffort()</sql>
+        <addForeignKeyConstraint constraintName="sum_charged_effort_order_element_fkey"
+            baseTableName="sum_charged_effort" baseColumnNames="order_element"
+            referencedTableName="order_element" referencedColumnNames="id" />
+        <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
+    </changeSet>
+
+</databaseChangeLog>

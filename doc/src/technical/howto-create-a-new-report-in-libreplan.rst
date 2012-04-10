@@ -381,7 +381,7 @@ Now you have defined a very basic report layout using some common elements
 with other LibrePlan reports like header and footer. The result in iReport would
 be something similar to the screenshot.
 
-.. figure:: ireport-resources-list-report.png
+.. figure:: img/ireport-resources-list-report.png
    :alt: iRerpot screenshot for Resources List report
    :width: 100%
 
@@ -568,7 +568,7 @@ are able to see how the basic functionality of JasperReports in LibrePlan is
 integrated. The next step will be to show real data in the report getting it
 from database.
 
-.. figure:: resources-list-report-example-data-pdf.png
+.. figure:: img/resources-list-report-example-data-pdf.png
    :alt: Resources List report with example data in PDF format
    :width: 100%
 

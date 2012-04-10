@@ -581,8 +581,8 @@ public class TaskElementDAOTest {
                     fail();
                     return null;
                 }
-                assertTrue(task1.getSumOfHoursAllocated() == 24);
-                assertTrue(task1.getParent().getSumOfHoursAllocated() == 24);
+                assertTrue(task1.getSumOfAssignedEffort().getHours() == 24);
+                assertTrue(task1.getParent().getSumOfAssignedEffort().getHours() == 24);
 
                 return null;
             }

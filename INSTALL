@@ -24,18 +24,29 @@ Instructions::
   $ sudo apt-get update
   $ sudo apt-get install libreplan
 
+.. TIP::
+
+  If you do not have ``add-apt-repository`` command, you will need to install
+  ``python-software-properties`` package before running the previous commands.
+  You can do it with the following line::
+
+    sudo apt-get install python-software-properties
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory errors`_.
 
 Debian packages
 ~~~~~~~~~~~~~~~
 
 There are Debian packages for Squeeze (i386 and amd64), you can download them
-from: http://sourceforge.net/projects/navalplan/files/LibrePlan/
+from: http://sourceforge.net/projects/libreplan/files/LibrePlan/
 
 Instructions:
 
 * Download the package::
 
-    $ wget http://downloads.sourceforge.net/project/navalplan/files/LibrePlan/libreplan_1.2.0-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/files/LibrePlan/libreplan_1.2.0-1_amd64.deb
 
 * Install package::
 
@@ -44,6 +55,60 @@ Instructions:
 * Install dependencies::
 
     # apt-get install -f
+
+.. WARNING::
+
+  If you have problems with printing support review the section `Fix
+  printing in Debian Squeeze`_.
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory errors`_.
+
+Fedora and openSUSE OBS (openSUSE Build Service)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions depending on the distribution:
+
+* Fedora 16::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_16/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
+
+* Fedora 15::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_15/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
+
+* openSUSE 12.1::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_12.1/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
+
+* openSUSE 11.4::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_11.4/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory errors`_.
+
+RPM Packages
+~~~~~~~~~~~~
+
+There are several LibrePlan RPM packages available in the following URL:
+http://download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory errors`_.
 
 
 LibrePlan manual installation
@@ -68,15 +133,24 @@ Debian/Ubuntu
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/LibrePlan/install_1.2.0.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
     $ psql -h localhost -U libreplan -W libreplan < install.sql
 
+  .. WARNING::
+
+    It is very important to execute the previous command specifiying
+    ``libreplan`` user (as you can see in the ``-U`` option). Otherwise your
+    LibrePlan installation is not going to start properly and you could find in
+    your log files something like that::
+
+      JDBCExceptionReporter  - ERROR: permission denied for relation entity_sequence
+
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/LibrePlan/libreplan_1.2.0.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
@@ -128,6 +202,11 @@ Debian/Ubuntu
 
 * Go to http://localhost:8080/libreplan/
 
+.. WARNING::
+
+  If you have problems with printing support review the last section `Fix
+  printing in Debian Squeeze`_.
+
 
 openSUSE
 ~~~~~~~~
@@ -170,15 +249,24 @@ openSUSE
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/LibrePlan/install_1.2.0.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
     $ psql -h localhost -U libreplan -W libreplan < install.sql
 
+  .. WARNING::
+
+    It is very important to execute the previous command specifiying
+    ``libreplan`` user (as you can see in the ``-U`` option). Otherwise your
+    LibrePlan installation is not going to start properly and you could find in
+    your log files something like that::
+
+      JDBCExceptionReporter  - ERROR: permission denied for relation entity_sequence
+
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/navalplan/LibrePlan/libreplan_1.2.0.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
@@ -219,3 +307,73 @@ folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
 
 Inside this new directory there will be two files (``libreplan.log`` and
 ``libreplan-error.log``) that will be rotated every day.
+
+
+Fix printing in Debian Squeeze
+------------------------------
+
+Since LibrePlan 1.2 printing support is not working properly in Debian Squeeze.
+To fix this issue, basically, you have to get a newer version of CutyCapt and
+WebKit dependencies from Debian testing.
+
+Instructions:
+
+* Make sure stable remains the default distribution to pull packages from::
+
+  # echo 'APT::Default-Release "stable";' >> /etc/apt/apt.conf
+
+* Add a new repository to make testing packages available to ``apt-get``::
+
+  # echo "deb http://ftp.debian.org/debian testing main" >> /etc/apt/sources.list
+
+* Refresh package index::
+
+  # apt-get update
+
+* Fetch and install ``cutycapt`` (and its dependencies) from testing::
+
+  # apt-get -t testing install cutycapt
+
+
+Fix memory errors
+-----------------
+
+With the default parameters of Tomcat in the different distributions you could
+have problems with Java memory.
+
+After a while using LibrePlan you could see that some windows do not work and
+the log shows a ``java.lang.OutOfMemoryError`` exception.
+
+This exception could be caused because of two different issues:
+
+* Heap space::
+
+    java.lang.OutOfMemoryError: Java heap space
+
+* PermGemp space (Permanent Generation, reflective data for the JVM)::
+
+    java.lang.OutOfMemoryError: PermGen space
+
+In order to avoid this problem you need to configure properly ``JAVA_OPTS``
+variable in your server. This is configured in different files depending on the
+distribution:
+
+* Debian or Ubuntu: ``/etc/default/tomcat6``
+* Fedora or openSUSE: ``/etc/tomcat6/tomcat6.conf``
+
+The next lines show a possible configuration to fix the memory errors (the exact
+values depends on the server features)::
+
+  JAVA_OPTS="-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m"
+  JAVA_OPTS="${JAVA_OPTS} -server -Djava.awt.headless=true"
+
+Where the different parameters have the following meaning:
+
+* ``-Xms``: Initial size of the Java heap
+* ``-Xmx``: Maximum size of the Java heap
+* ``-XX:PermSize``: Initial size of PermGen
+* ``-XX:MaxPermSize``: Maximum size of PermGen
+
+.. NOTE::
+
+   Take into account that size of PermGen is additional to heap size.

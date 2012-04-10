@@ -37,4 +37,6 @@ public interface ITaskElementDAO extends IGenericDAO<TaskElement, Long> {
 
     List<TaskElement> listFilteredByDate(Date start, Date end);
 
+    List<TaskElement> getTaskElementsNoMilestonesWithoutTaskSource();
+
 }

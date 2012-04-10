@@ -59,6 +59,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.TaskQualityForm;
@@ -420,6 +421,7 @@ public class OrderElementDAOTest {
     @Test
     public void testSumChargedHoursRelation() throws InstanceNotFoundException {
         OrderLine orderLine = createValidOrderLine();
+        orderLine.setSumChargedEffort(SumChargedEffort.create(orderLine));
 
         orderLine.getSumChargedEffort().addDirectChargedEffort(
                 EffortDuration.hours(8));

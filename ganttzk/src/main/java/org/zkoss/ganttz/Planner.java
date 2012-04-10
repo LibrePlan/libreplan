@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -120,6 +120,15 @@ public class Planner extends HtmlMacroComponent  {
         return toLowercaseSet(values).contains("all");
     }
 
+    public static boolean guessShowMoneyCostBarByDefault(
+            Map<String, String[]> queryURLParameters) {
+        String[] values = queryURLParameters.get("moneyCostBar");
+        if (values == null) {
+            return false;
+        }
+        return toLowercaseSet(values).contains("all");
+    }
+
     private static Set<String> toLowercaseSet(String[] values) {
         Set<String> result = new HashSet<String>();
         for (String each : values) {
@@ -155,6 +164,8 @@ public class Planner extends HtmlMacroComponent  {
     private boolean isShowingLabels = false;
 
     private boolean isShowingReportedHours = false;
+
+    private boolean isShowingMoneyCostBar = false;
 
     private boolean isShowingResources = false;
 
@@ -372,6 +383,11 @@ public class Planner extends HtmlMacroComponent  {
             Button showAllResources = (Button) getFellow("showAllResources");
             showAllResources.setVisible(false);
         }
+        if (!configuration.isMoneyCostBarEnabled()) {
+            Button showMoneyCostBarButton = (Button) getFellow("showMoneyCostBar");
+            showMoneyCostBarButton.setVisible(false);
+        }
+
         listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
 
         this.visibleChart = configuration.isExpandPlanningViewCharts();
@@ -571,11 +587,21 @@ public class Planner extends HtmlMacroComponent  {
         }
     };
 
+    private IGraphChangeListener showMoneyCostBarOnChange = new IGraphChangeListener() {
+
+        @Override
+        public void execute() {
+            context.showMoneyCostBar();
+        }
+    };
+
     private boolean containersExpandedByDefault = false;
 
     private boolean shownAdvanceByDefault = false;
 
     private boolean shownReportedHoursByDefault = false;
+
+    private boolean shownMoneyCostBarByDefault = false;
 
     private FilterAndParentExpandedPredicates predicate;
 
@@ -642,6 +668,26 @@ public class Planner extends HtmlMacroComponent  {
                         .setTooltiptext(_("Hide reported hours"));
             }
             isShowingReportedHours = !isShowingReportedHours;
+        }
+    }
+
+    public void showMoneyCostBar() {
+        Button showMoneyCostBarButton = (Button) getFellow("showMoneyCostBar");
+        if (disabilityConfiguration.isMoneyCostBarEnabled()) {
+            if (isShowingMoneyCostBar) {
+                context.hideMoneyCostBar();
+                diagramGraph
+                        .removePostGraphChangeListener(showMoneyCostBarOnChange);
+                showMoneyCostBarButton.setSclass("planner-command");
+                showMoneyCostBarButton.setTooltiptext(_("Show money cost bar"));
+            } else {
+                context.showMoneyCostBar();
+                diagramGraph
+                        .addPostGraphChangeListener(showMoneyCostBarOnChange);
+                showMoneyCostBarButton.setSclass("planner-command clicked");
+                showMoneyCostBarButton.setTooltiptext(_("Hide money cost bar"));
+            }
+            isShowingMoneyCostBar = !isShowingMoneyCostBar;
         }
     }
 
@@ -730,6 +776,19 @@ public class Planner extends HtmlMacroComponent  {
 
     public boolean showReportedHoursRightNow() {
         return (areShownReportedHoursByDefault() || isShowingReportedHours);
+    }
+
+    public void setAreShownMoneyCostBarByDefault(
+            boolean shownMoneyCostBarByDefault) {
+        this.shownMoneyCostBarByDefault = shownMoneyCostBarByDefault;
+    }
+
+    public boolean areShownMoneyCostBarByDefault() {
+        return shownMoneyCostBarByDefault;
+    }
+
+    public boolean showMoneyCostBarRightNow() {
+        return (areShownMoneyCostBarByDefault() || isShowingMoneyCostBar);
     }
 
     public void expandAll() {
@@ -877,7 +936,9 @@ public class Planner extends HtmlMacroComponent  {
         if (taskList != null) {
             taskList.updateCompletion(progressType);
             // FIXME Bug #1270
-            taskList.invalidate();
+            for (TaskComponent each : taskList.getTaskComponents()) {
+                each.invalidate();
+            }
         }
     }
 

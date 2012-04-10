@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,15 +45,18 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
-import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.ResourcesPerDay;
@@ -395,6 +398,10 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
+        if (taskSource != null && taskSource.getOrderElement() != null) {
+            taskSource.getOrderElement().setDeadline(
+                    (deadline == null)? null : deadline.toDateMidnight().toDate());
+        }
     }
 
     public void add(Dependency dependency) {
@@ -478,7 +485,7 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
-    private void detachDependencies() {
+    public void detachDependencies() {
         detachOutcomingDependencies();
         detachIncomingDependencies();
     }
@@ -486,9 +493,13 @@ public abstract class TaskElement extends BaseEntity {
     private void detachIncomingDependencies() {
         Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
         for (Dependency dependency : dependenciesWithThisDestination) {
-            tasksToNotify.add(dependency.getOrigin());
+            TaskElement origin = dependency.getOrigin();
+            if (origin != null) {
+                tasksToNotify.add(origin);
+            }
         }
         for (TaskElement taskElement : tasksToNotify) {
+            this.removeDependenciesWithOrigin(taskElement);
             taskElement.removeDependenciesWithDestination(this);
         }
     }
@@ -496,9 +507,13 @@ public abstract class TaskElement extends BaseEntity {
     private void detachOutcomingDependencies() {
         Set<TaskElement> tasksToNotify = new HashSet<TaskElement>();
         for (Dependency dependency : dependenciesWithThisOrigin) {
-            tasksToNotify.add(dependency.getDestination());
+            TaskElement destination = dependency.getDestination();
+            if (destination != null) {
+                tasksToNotify.add(destination);
+            }
         }
         for (TaskElement taskElement : tasksToNotify) {
+            this.removeDependenciesWithDestination(taskElement);
             taskElement.removeDependenciesWithOrigin(this);
         }
     }
@@ -542,18 +557,27 @@ public abstract class TaskElement extends BaseEntity {
         result.put(date, current.plus(duration));
     }
 
-    public List<DayAssignment> getDayAssignments() {
+    public List<DayAssignment> getDayAssignments(DayAssignment.FilterType filter) {
         List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             dayAssignments.addAll(resourceAllocation.getAssignments());
+            Set<DerivedAllocation> derivedAllocations = resourceAllocation
+                    .getDerivedAllocations();
+            for (DerivedAllocation each : derivedAllocations) {
+                dayAssignments.addAll(each.getAssignments());
+            }
         }
-        return dayAssignments;
+        return DayAssignment.filter(dayAssignments, filter);
     }
 
     public boolean isSubcontracted() {
         // Just Task could be subcontracted
         return false;
+    }
+
+    public String getSubcontractionName() {
+        return "";
     }
 
     public boolean isSubcontractedAndWasAlreadySent() {
@@ -597,7 +621,7 @@ public abstract class TaskElement extends BaseEntity {
             //simplified calculation has only two states:
             //unassigned, when hours allocated is zero, and
             //assigned otherwise
-            if (getSumOfHoursAllocated() == 0) {
+            if (getSumOfAssignedEffort().isZero()) {
                 return "unassigned";
             }
             return "assigned";
@@ -613,6 +637,18 @@ public abstract class TaskElement extends BaseEntity {
             }
         }
         return "assigned";
+    }
+
+    public Boolean belongsClosedProject() {
+        EnumSet<OrderStatusEnum> CLOSED = EnumSet.of(OrderStatusEnum.CANCELLED,
+                OrderStatusEnum.FINISHED, OrderStatusEnum.STORED);
+
+        Order order = getOrderElement().getOrder();
+        if(CLOSED.contains(order.getState())) {
+            return true;
+        }
+
+        return false;
     }
 
     public abstract boolean hasLimitedResourceAllocation();
@@ -653,40 +689,28 @@ public abstract class TaskElement extends BaseEntity {
         this.resetStatus();
     }
 
-    public void detachFromDependencies() {
-        for (Dependency each : copy(getDependenciesWithThisDestination())) {
-            detachDependency(each);
+    private EffortDuration sumOfAssignedEffort = EffortDuration.hours(0);
+
+    public void setSumOfAssignedEffort(EffortDuration sumOfAssignedEffort) {
+        this.sumOfAssignedEffort = sumOfAssignedEffort;
+    }
+
+    public EffortDuration getSumOfAssignedEffort() {
+        if (this.getParent() == null) {
+            //it's an order, we use the cached value
+            return sumOfAssignedEffort;
         }
-        for (Dependency each : copy(getDependenciesWithThisOrigin())) {
-            detachDependency(each);
+        else {
+            return getSumOfAssignedEffortCalculated();
         }
     }
 
-    /**
-     * Copy the dependencies to a list in order to avoid
-     * {@link ConcurrentModificationException}
-     */
-    private List<Dependency> copy(Set<Dependency> dependencies) {
-        return new ArrayList<Dependency>(dependencies);
-    }
-
-    private void detachDependency(Dependency each) {
-        each.getOrigin().removeDependencyWithDestination(each.getDestination(),
-                each.getType());
-    }
-
-    private Integer sumOfHoursAllocated = 0;
-
-    public void setSumOfHoursAllocated(Integer sumOfHoursAllocated) {
-        this.sumOfHoursAllocated = sumOfHoursAllocated;
-    }
-
-    public void addSumOfHoursAllocated(Integer sumOfHoursAllocated) {
-        this.sumOfHoursAllocated += sumOfHoursAllocated;
-    }
-
-    public Integer getSumOfHoursAllocated() {
-        return sumOfHoursAllocated;
+    private EffortDuration getSumOfAssignedEffortCalculated() {
+        EffortDuration result = EffortDuration.hours(0);
+        for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
+            result = result.plus(allocation.getAssignedEffort());
+        }
+        return result;
     }
 
     public String toString() {
@@ -709,7 +733,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public BigDecimal getTheoreticalAdvancePercentageUntilDate(Date date) {
         EffortDuration totalAllocatedTime = AggregateOfDayAssignments.create(
-                this.getDayAssignments()).getTotalTime();
+                this.getDayAssignments(FilterType.KEEP_ALL)).getTotalTime();
         EffortDuration totalTheoreticalCompletedTime = this.getTheoreticalCompletedTimeUntilDate(date);
         if (totalAllocatedTime.isZero() || totalTheoreticalCompletedTime.isZero()) {
             return BigDecimal.ZERO;
@@ -728,6 +752,21 @@ public abstract class TaskElement extends BaseEntity {
 
     public void updateAdvancePercentageFromOrderElement() {
         setAdvancePercentage(getOrderElement().getAdvancePercentage());
+    }
+
+    public Boolean isRoot() {
+        return (this.getParent() == null);
+    }
+
+    public BigDecimal getBudget() {
+        if ((taskSource != null) && (taskSource.getOrderElement() != null)) {
+            return taskSource.getOrderElement().getBudget();
+        }
+        return null;
+    }
+
+    public ExternalCompany getSubcontractedCompany() {
+        return null;
     }
 
 }

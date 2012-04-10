@@ -52,7 +52,7 @@
     <n:td class="migas_linea"><n:table border="0" cellspacing="0" cellpadding="0">
         <n:tr class="ruta">
           <n:td width="10" height="25"></n:td>
-          <n:td><n:a href="${contextPath}/" class="ruta"><n:strong>${i18n:_('START')}</n:strong></n:a></n:td>
+          <n:td><n:strong>${i18n:_('START')}</n:strong></n:td>
           <n:td width="5"></n:td>
           <n:td><hbox id="breadcrumbs"></hbox>
           <hbox>
@@ -87,11 +87,11 @@
         i18nHelpLink = "/help/" + org.libreplan.web.I18nHelper._("en") + "/" + menuContainer.getHelpLink();
         i18nAboutLink = "/help/" + org.libreplan.web.I18nHelper._("en") + "/20-acerca-de.html";
     ]]></zscript>
-    <popup id="help-popup" width="700px" style="position:relative;right:190px;padding:10px"
+    <popup id="help-popup" width="700px"
       onOpen="helpIframe.setSrc(i18nHelpLink)">
         <iframe id="helpIframe" width="670px" height="450px" style="border: 1px solid gray" />
     </popup>
-    <popup id="help-about" width="700px" style="position:relative;right:190px;padding:10px"
+    <popup id="help-about" width="700px"
         onOpen="aboutIframe.setSrc(i18nAboutLink)">
         <iframe id="aboutIframe" width="670px" height="350px" style="border: 1px solid gray" />
     </popup>

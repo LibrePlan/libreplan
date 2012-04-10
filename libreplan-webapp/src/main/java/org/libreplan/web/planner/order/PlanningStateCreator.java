@@ -44,6 +44,7 @@ import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.orders.entities.TaskSource.IOptionalPersistence;
 import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
@@ -51,9 +52,11 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
+import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.IVisitor;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
@@ -170,6 +173,9 @@ public class PlanningStateCreator {
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
+    @Autowired
+    private IMoneyCostCalculator moneyCostCalculator;
+
     void synchronizeWithSchedule(Order order, IOptionalPersistence persistence) {
         List<TaskSourceSynchronization> synchronizationsNeeded = order
                 .calculateSynchronizationsNeeded();
@@ -259,7 +265,8 @@ public class PlanningStateCreator {
         TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
         if (rootTask != null) {
             forceLoadOf(rootTask);
-            forceLoadDayAssignments(orderReloaded.getResources());
+            forceLoadDayAssignments(orderReloaded
+                    .getResources(FilterType.KEEP_ALL));
             forceLoadOfDepedenciesCollections(rootTask);
             forceLoadOfLabels(Arrays.asList((TaskElement) rootTask));
         }
@@ -273,6 +280,9 @@ public class PlanningStateCreator {
                 currentScenario);
 
         forceLoadOfWorkingHours(result.getInitial());
+
+        moneyCostCalculator.resetMoneyCostMap();
+
         return result;
     }
 
@@ -347,10 +357,16 @@ public class PlanningStateCreator {
         for (ResourceAllocation<?> each : resourceAllocations) {
             each.getAssociatedResources();
             for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
-                eachDerived.getResources();
+                forceLoadOfDerivedAllocation(eachDerived);
             }
             forceLoadOfAssignmentFunction(each);
         }
+    }
+
+    private static void forceLoadOfDerivedAllocation(
+            DerivedAllocation derivedAllocation) {
+        derivedAllocation.getResources();
+        derivedAllocation.getConfigurationUnit().getWorkerAssignments().size();
     }
 
     private static void forceLoadOfAssignmentFunction(ResourceAllocation<?> each) {
@@ -390,7 +406,7 @@ public class PlanningStateCreator {
             return new UsingOwnerScenario(currentScenario, orderReloaded);
         }
         final List<DayAssignment> previousAssignments = orderReloaded
-                .getDayAssignments();
+                .getDayAssignments(DayAssignment.FilterType.KEEP_ALL);
 
         OrderVersion newVersion = OrderVersion
                 .createInitialVersion(currentScenario);
@@ -681,6 +697,8 @@ public class PlanningStateCreator {
         private List<OrderAuthorization> orderAuthorizationsAddition = new ArrayList<OrderAuthorization>();
         private List<OrderAuthorization> orderAuthorizationsRemoval = new ArrayList<OrderAuthorization>();
 
+        private OrderStatusEnum savedOrderState;
+
         public PlanningState(Order order,
                 Collection<? extends Resource> initialResources,
                 Scenario currentScenario) {
@@ -693,6 +711,7 @@ public class PlanningStateCreator {
                     .loadRequiredDataFor(new HashSet<Resource>(initialResources));
             associateWithScenario(this.resources);
             this.orderAuthorizations = loadOrderAuthorizations();
+            this.savedOrderState = order.getState();
         }
 
         private List<OrderAuthorization> loadOrderAuthorizations() {
@@ -785,7 +804,7 @@ public class PlanningStateCreator {
             }
             IAdapterToTaskFundamentalProperties<TaskElement> adapter;
             adapter = taskElementAdapterCreator.createForOrder(
-                    getScenarioInfo().getCurrentScenario(), order);
+                    getScenarioInfo().getCurrentScenario(), order, this);
 
             PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                     adapter, new TaskElementNavigator(), getInitial());
@@ -1053,6 +1072,14 @@ public class PlanningStateCreator {
         public void cleanOrderAuthorizationsAdditionAndRemoval() {
             orderAuthorizationsAddition.clear();
             orderAuthorizationsRemoval.clear();
+        }
+
+        public OrderStatusEnum getSavedOrderState() {
+            return savedOrderState;
+        }
+
+        public void updateSavedOrderState() {
+            savedOrderState = order.getState();
         }
 
     }

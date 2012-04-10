@@ -108,8 +108,8 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         addElementAtImpl(node);
     }
 
-    public void addElementAt(T node, String name, int hours) {
-        addElementAtImpl(node, name, hours);
+    public T addElementAt(T node, String name, int hours) {
+        return addElementAtImpl(node, name, hours);
     }
 
     protected abstract T createNewElement();
@@ -120,8 +120,10 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         addOrderElementAt(parent, createNewElement());
     }
 
-    private void addElementAtImpl(T parent, String name, int hours) {
-        addOrderElementAt(parent, createNewElement(name, hours));
+    private T addElementAtImpl(T parent, String name, int hours) {
+        T newElement = createNewElement(name, hours);
+        addOrderElementAt(parent, newElement);
+        return newElement;
     }
 
     private void addToTree(ITreeNode<T> parentNode, ITreeNode<T> elementToAdd) {
@@ -164,9 +166,11 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
                 .toContainer();
         parentContainer.replace(selectedForTurningIntoContainer.getThis(),
                 asContainer.getThis());
-        asContainer.add(selectedForTurningIntoContainer.getThis());
-        tree.replace(selectedForTurningIntoContainer.getThis(), asContainer
-                .getThis(), childrenExtractor());
+        if (!selectedForTurningIntoContainer.isEmptyLeaf()) {
+            asContainer.add(selectedForTurningIntoContainer.getThis());
+        }
+        tree.replace(selectedForTurningIntoContainer.getThis(),
+                asContainer.getThis(), childrenExtractor());
         return asContainer;
     }
 

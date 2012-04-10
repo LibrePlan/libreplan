@@ -43,4 +43,21 @@ public interface ITreeNode<T extends ITreeNode<T>> {
      */
     T getThis();
 
+    boolean isLeaf();
+
+    /**
+     * Checks if a leaf is or not empty. <br />
+     * An empty leaf is defined as:
+     * <ul>
+     * <li>A leaf with number of hours zero</li>
+     * <li>A leaf without direct criteria assigned</li>
+     * <li>A leaf without progress</li>
+     * <li>A leaf without quality forms</li>
+     * <li>A leaf without labels</li>
+     * <li>A leaf without work report lines devoting time to it</li>
+     * <li>A leaf without resource allocations (not assigned yet)</li>
+     * </ul>
+     */
+    boolean isEmptyLeaf();
+
 }

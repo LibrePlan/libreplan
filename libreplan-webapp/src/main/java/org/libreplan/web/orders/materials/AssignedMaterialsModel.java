@@ -104,6 +104,7 @@ public abstract class AssignedMaterialsModel<T, A> implements
     private void initializeMaterial(Material material) {
         material.getDescription();
         material.getCategory().getName();
+        material.getUnitType().getMeasure();
     }
 
     @Transactional(readOnly = true)

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +34,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties.IUpdatablePosition;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
@@ -58,6 +60,7 @@ import org.zkoss.zul.Div;
  * Graphical component which represents a {@link Task}.
  *
  * @author Javier Morán Rúa <jmoran@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class TaskComponent extends Div implements AfterCompose {
 
@@ -75,6 +78,8 @@ public class TaskComponent extends Div implements AfterCompose {
     private PropertyChangeListener showingAdvancePropertyListener;
 
     private PropertyChangeListener showingReportedHoursPropertyListener;
+
+    private PropertyChangeListener showingMoneyCostBarPropertyListener;
 
     public static TaskComponent asTaskComponent(Task task,
             IDisabilityConfiguration disabilityConfiguration,
@@ -220,6 +225,9 @@ public class TaskComponent extends Div implements AfterCompose {
             cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned "
                     : " limiting-unassigned ";
         }
+        if (task.isRoot() && task.belongsClosedProject()) {
+            cssClass += " project-closed ";
+        }
         return cssClass;
     }
 
@@ -238,9 +246,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (isInPage()) {
-                        updateProperties();
-                    }
+                    updateProperties();
                 }
             };
         }
@@ -274,6 +280,20 @@ public class TaskComponent extends Div implements AfterCompose {
         }
         this.task
                 .addReportedHoursPropertyChangeListener(showingReportedHoursPropertyListener);
+
+        if (showingMoneyCostBarPropertyListener == null) {
+            showingMoneyCostBarPropertyListener = new PropertyChangeListener() {
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (isInPage() && !(task instanceof Milestone)) {
+                        updateCompletionMoneyCostBar();
+                    }
+                }
+            };
+        }
+        this.task
+                .addMoneyCostBarPropertyChangeListener(showingMoneyCostBarPropertyListener);
 
         if (criticalPathPropertyListener == null) {
             criticalPathPropertyListener = new PropertyChangeListener() {
@@ -345,8 +365,14 @@ public class TaskComponent extends Div implements AfterCompose {
 
     void doUpdatePosition(int leftX, int topY) {
         GanttDate startBeforeMoving = this.task.getBeginDate();
-        LocalDate newPosition = getMapper().toDate(leftX);
-        this.task.moveTo(GanttDate.createFrom(newPosition));
+        final LocalDate newPosition = getMapper().toDate(leftX);
+        this.task.doPositionModifications(new IModifications() {
+
+            @Override
+            public void doIt(IUpdatablePosition position) {
+                position.moveTo(GanttDate.createFrom(newPosition));
+            }
+        });
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
@@ -482,10 +508,11 @@ public class TaskComponent extends Div implements AfterCompose {
             return;
         }
         updateCompletionReportedHours();
+        updateCompletionMoneyCostBar();
         updateCompletionAdvance();
     }
 
-    private void updateCompletionReportedHours() {
+    public void updateCompletionReportedHours() {
         if (task.isShowingReportedHours()) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
             String widthHoursAdvancePercentage = pixelsFromStartUntil(
@@ -495,6 +522,19 @@ public class TaskComponent extends Div implements AfterCompose {
                 widthHoursAdvancePercentage));
         } else {
             response(null, new AuInvoke(this, "resizeCompletionAdvance", "0px"));
+        }
+    }
+
+    public void updateCompletionMoneyCostBar() {
+        if (task.isShowingMoneyCostBar()) {
+            int startPixels = this.task.getBeginDate().toPixels(getMapper());
+            String widthMoneyCostBar = pixelsFromStartUntil(startPixels,
+                    this.task.getMoneyCostBarEndDate()) + "px";
+            response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar",
+                    widthMoneyCostBar));
+        } else {
+            response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar",
+                    "0px"));
         }
     }
 
@@ -539,10 +579,6 @@ public class TaskComponent extends Div implements AfterCompose {
     public void updateTooltipText(String progressType) {
         // FIXME Bug #1270
         this.progressType = progressType;
-    }
-
-    private DependencyList getDependencyList() {
-        return getGanntPanel().getDependencyList();
     }
 
     private GanttPanel getGanntPanel() {

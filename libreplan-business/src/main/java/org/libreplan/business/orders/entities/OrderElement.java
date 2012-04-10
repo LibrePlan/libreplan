@@ -110,7 +110,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private Boolean dirtyLastAdvanceMeasurementForSpreading = true;
 
-    private SumChargedEffort sumChargedEffort = SumChargedEffort.create();
+    private SumChargedEffort sumChargedEffort;
 
     public OrderElementTemplate getTemplate() {
         return template;
@@ -292,6 +292,11 @@ public abstract class OrderElement extends IntegrationEntity implements
             SchedulingDataForVersion schedulingDataForVersion) {
         List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
         if (isSchedulingPoint()) {
+            if (!wasASchedulingPoint()) {
+                //this element was a container but now it's a scheduling point
+                //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
+                removeTaskSource(result);
+            }
             result
                     .addAll(synchronizationForSchedulingPoint(schedulingDataForVersion));
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
@@ -321,8 +326,9 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     private boolean wasASchedulingPoint() {
-        return getTaskSource() != null
-                && getTaskSource().getTask() instanceof Task;
+        SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
+        return SchedulingState.Type.SCHEDULING_POINT == currentVersionOnDB
+                .getSchedulingStateType();
     }
 
     private List<TaskSourceSynchronization> childrenSynchronizations() {
@@ -400,19 +406,23 @@ public abstract class OrderElement extends IntegrationEntity implements
         } else {
             TaskSource taskSource = getTaskSource();
             if (taskSource != null) {
-                taskSource.getTask().detachFromDependencies();
-                taskSource.getTask().detachFromParent();
+                taskSource.getTask().detach();
                 getCurrentSchedulingData().taskSourceRemovalRequested();
             }
         }
     }
 
     private TaskSource getOnDBTaskSource() {
+        SchedulingDataForVersion schedulingDataForVersion = getCurrentVersionOnDB();
+        return schedulingDataForVersion.getTaskSource();
+    }
+
+    SchedulingDataForVersion getCurrentVersionOnDB() {
         OrderVersion version = getCurrentSchedulingData()
                 .getOriginOrderVersion();
         SchedulingDataForVersion schedulingDataForVersion = schedulingDatasForVersion
                 .get(version);
-        return schedulingDataForVersion.getTaskSource();
+        return schedulingDataForVersion;
     }
 
     private TaskSourceSynchronization taskSourceRemoval() {
@@ -1465,5 +1475,31 @@ public abstract class OrderElement extends IntegrationEntity implements
         IWorkReportLineDAO workReportLineDAO = Registry.getWorkReportLineDAO();
         return workReportLineDAO.findByOrderElementAndChildren(this, sortedByDate);
     }
+
+    /**
+     * Checks if it has nay consolidated advance, if not checks if any parent
+     * has it
+     */
+    public boolean hasAnyConsolidatedAdvance() {
+        for (DirectAdvanceAssignment each : directAdvanceAssignments) {
+            if (each.hasAnyConsolidationValue()) {
+                return true;
+            }
+        }
+
+        for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
+            if (each.hasAnyConsolidationValue()) {
+                return true;
+            }
+        }
+
+        if (parent != null) {
+            return parent.hasAnyConsolidatedAdvance();
+        }
+
+        return false;
+    }
+
+    public abstract BigDecimal getBudget();
 
 }

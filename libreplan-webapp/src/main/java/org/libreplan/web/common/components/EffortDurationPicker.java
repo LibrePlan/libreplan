@@ -89,6 +89,34 @@ public class EffortDurationPicker extends Hbox {
         spinner.setConstraint(spinnerConstraint);
     }
 
+    public void initializeFor24HoursAnd0Minutes() {
+        minutes.addEventListener(Events.ON_CHANGE, new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                setRangeFor24HoursAnd0Minutes();
+            }
+        });
+        hours.addEventListener(Events.ON_CHANGE, new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                setRangeFor24HoursAnd0Minutes();
+            }
+        });
+    }
+
+    private void setRangeFor24HoursAnd0Minutes() {
+        SimpleSpinnerConstraint spinnerConstraint = new SimpleSpinnerConstraint();
+        spinnerConstraint.setMin(0);
+        if (minutes.getValue() == null || minutes.getValue().intValue() == 0)
+            spinnerConstraint.setMax(24);
+        else {
+            SimpleSpinnerConstraint spinnerConstraintMinutes = new SimpleSpinnerConstraint();
+            spinnerConstraintMinutes.setMin(0);
+            spinnerConstraintMinutes.setMax(59);
+            minutes.setConstraint(spinnerConstraintMinutes);
+            spinnerConstraint.setMax(23);
+        }
+        hours.setConstraint(spinnerConstraint);
+    }
+
     private void setMinFor(Spinner spinner, int min) {
         SimpleSpinnerConstraint spinnerConstraint = new SimpleSpinnerConstraint();
         spinnerConstraint.setMin(min);

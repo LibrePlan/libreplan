@@ -41,7 +41,7 @@ Tal e como se visualiza na anterior captura, a principal pantalla da aplicación
 .. figure:: images/order_list.png
    :scale: 50
 
-   Listado de pedidos
+   Estructura de Descomposición de Traballo
 
 A xestión de perspectivas que se comentou para a vista global de empresa é moi similar á prantexada para un só proxecto. O acceso a un proxecto pódese realizar de varias formas:
 
