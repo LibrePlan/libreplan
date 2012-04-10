@@ -225,7 +225,8 @@
                        </grid>
 
                        <separator spacing="20px"/>
-                       <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
+                       <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false"
+                           visible="@{controller.subcontractedProject}">
                        <caption label="${i18n:_('Delivery dates requested by the customer. ')}" />
                        <grid id="gridDeliveryDates"
                             model="@{controller.deliverDates}"
@@ -245,7 +246,8 @@
 					   </groupbox>
                      </hbox>
                      <separator spacing="20px"/>
-                     <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
+                     <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false"
+                         visible="@{controller.subcontractedProject}">
                        <caption label="${i18n:_('Delivery dates asked by the subcontractor. ')}" />
                        <hbox align="bottom" sclass="add-resources-or-criteria">
                            <label value="${i18n:_('New end date for the customer')}" />
