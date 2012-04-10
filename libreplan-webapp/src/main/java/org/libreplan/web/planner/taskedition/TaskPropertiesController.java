@@ -33,7 +33,6 @@ import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
-import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.ITaskPositionConstrained;
@@ -48,7 +47,6 @@ import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.TaskEditFormComposer.TaskDTO;
 import org.zkoss.ganttz.data.TaskContainer;
@@ -97,6 +95,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private Datebox startDateBox;
 
     private Datebox endDateBox;
+
+    private Datebox deadLineDateBox;
 
     private Combobox startConstraintTypes;
 
@@ -684,4 +684,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
         Util.reloadBindings(startDateBox);
     }
 
+    public TaskEditFormComposer getTaskEditFormComposer() {
+        return taskEditFormComposer;
+    }
+
+    public void refreshTaskDeadline() {
+        Util.reloadBindings(deadLineDateBox);
+    }
 }

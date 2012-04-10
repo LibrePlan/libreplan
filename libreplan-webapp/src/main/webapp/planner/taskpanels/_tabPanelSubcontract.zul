@@ -111,4 +111,22 @@
             </columns>
         </grid>
     </groupbox>
+
+    <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
+        <caption label="${i18n:_('Ended date communicated by the subcontractor.')}" />
+
+        <separator spacing="10px"/>
+
+        <grid id="gridEndDates"
+            model="@{subController.askedEndDates}"
+            rowRenderer="@{subController.endDatesRenderer}"
+	        mold="paging" pageSize="10" fixedLayout="true" width="880px">
+            <columns>
+                <column label="${i18n:_('End date')}" sort="auto(saveDate)" align="center" width="320px"/>
+                <column label="${i18n:_('Communication date')}" align="center" width="320px"/>
+                <column label="${i18n:_('Operations')}" align="center"/>
+            </columns>
+        </grid>
+    </groupbox>
+
 </tabpanel>

@@ -23,17 +23,13 @@ package org.libreplan.web.planner.order;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.entities.SubcontractState;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
@@ -46,12 +42,9 @@ import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
-import org.zkoss.ganttz.servlets.CallbackServlet;
-import org.zkoss.ganttz.servlets.CallbackServlet.DisposalMode;
-import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -87,6 +80,12 @@ public class SubcontractController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
+    private IContextWithPlannerTask<TaskElement> currentContext;
+
+    private Grid gridEndDates;
+
+    private TaskEditFormComposer taskEditFormComposer = new TaskEditFormComposer();
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -94,9 +93,11 @@ public class SubcontractController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
     }
 
-    public void init(Task task,
-            IContextWithPlannerTask<TaskElement> context) {
+    public void init(Task task, IContextWithPlannerTask<TaskElement> context,
+            TaskEditFormComposer taskEditFormComposer) {
+        this.currentContext = context;
         subcontractModel.init(task, context.getTask());
+        this.taskEditFormComposer = taskEditFormComposer;
         Util.reloadBindings(tabpanel);
     }
 
@@ -257,5 +258,88 @@ public class SubcontractController extends GenericForwardComposer {
                     .equals(SubcontractState.FAILED_SENT)));
         }
         return false;
+    }
+
+    public SortedSet<EndDateCommunicationToCustomer> getAskedEndDates() {
+        return subcontractModel.getAskedEndDates();
+    }
+
+    public EndDatesRenderer getEndDatesRenderer() {
+        return new EndDatesRenderer();
+    }
+
+    private class EndDatesRenderer implements RowRenderer {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            EndDateCommunicationToCustomer endDateFromSubcontractor = (EndDateCommunicationToCustomer) data;
+            row.setValue(endDateFromSubcontractor);
+
+            appendLabel(row, toString(endDateFromSubcontractor.getEndDate(), "dd/MM/yyyy"));
+            appendLabel(row,
+                    toString(endDateFromSubcontractor.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
+            appendOperations(row, endDateFromSubcontractor);
+        }
+
+        private String toString(Date date, String precision) {
+            if (date == null) {
+                return "";
+            }
+            return new SimpleDateFormat(precision).format(date);
+        }
+
+        private void appendLabel(Row row, String label) {
+            row.appendChild(new Label(label));
+        }
+
+        private void appendOperations(Row row,
+                EndDateCommunicationToCustomer endDateFromSubcontractor) {
+            Hbox hbox = new Hbox();
+            hbox.appendChild(getUpdateButton(endDateFromSubcontractor));
+            row.appendChild(hbox);
+        }
+
+        private Button getUpdateButton(final EndDateCommunicationToCustomer endDateFromSubcontractor) {
+
+            Button updateButton = new Button(_("Update task end"));
+            updateButton.setDisabled(!isUpgradeable(endDateFromSubcontractor));
+
+            updateButton.setTooltiptext(_("Update task end"));
+            updateButton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    updateTaskEnd(endDateFromSubcontractor.getEndDate());
+                }
+            });
+
+            return updateButton;
+        }
+
+        private boolean isUpgradeable(EndDateCommunicationToCustomer endDateFromSubcontractor) {
+            EndDateCommunicationToCustomer lastEndDateReported = getSubcontractedTaskData()
+                    .getLastEndDatesCommunicatedFromSubcontractor();
+            if (lastEndDateReported != null) {
+                if (lastEndDateReported.equals(endDateFromSubcontractor)) {
+                    Date newEndDate = lastEndDateReported.getEndDate();
+                    Date endDateTask = taskEditFormComposer.getTaskDTO().deadlineDate;
+                    if (endDateTask != null) {
+                        return (newEndDate.compareTo(endDateTask) != 0);
+                    }
+                }
+            }
+            return false;
+        }
+
+    }
+
+    public void updateTaskEnd(Date date) {
+        if (taskEditFormComposer != null) {
+            taskEditFormComposer.getTaskDTO().deadlineDate = date;
+        }
+        refressGridEndDates();
+    }
+
+    public void refressGridEndDates() {
+        Util.reloadBindings(gridEndDates);
     }
 }

@@ -29,6 +29,7 @@ import java.util.TreeSet;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.libreplan.business.planner.entities.SubcontractState;
@@ -40,7 +41,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.data.GanttDate;
 
 /**
  * Model for UI operations related with subcontract process and
@@ -90,8 +90,18 @@ public class SubcontractModel implements ISubcontractModel {
         } else {
             subcontractedTaskDataDAO.reattach(subcontractedTaskData);
             loadRequiredDeliveringDates(subcontractedTaskData);
+            loadAskedEndDatesFromSubcontractor(subcontractedTaskData);
             this.subcontractedTaskData = SubcontractedTaskData
                     .createFrom(subcontractedTaskData);
+        }
+    }
+
+    private void loadAskedEndDatesFromSubcontractor(SubcontractedTaskData subcontractedTaskData) {
+        if (subcontractedTaskData != null) {
+            for (EndDateCommunicationToCustomer askedEndDate : subcontractedTaskData
+                    .getEndDatesCommunicatedFromSubcontractor()) {
+                askedEndDate.getEndDate();
+            }
         }
     }
 
@@ -263,6 +273,14 @@ public class SubcontractModel implements ISubcontractModel {
                     break;
             }
         }
+    }
+
+    @Override
+    public SortedSet<EndDateCommunicationToCustomer> getAskedEndDates() {
+        if (subcontractedTaskData != null) {
+            return subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor();
+        }
+        return new TreeSet<EndDateCommunicationToCustomer>();
     }
 
 }

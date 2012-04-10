@@ -173,7 +173,9 @@ public class EditTaskController extends GenericForwardComposer {
 
         if (ResourceAllocationTypeEnum.SUBCONTRACT
                 .equals(resourceAllocationType)) {
-            subcontractController.init(asTask(taskElement), context);
+
+            subcontractController.init(asTask(taskElement), context,
+                    taskPropertiesController.getTaskEditFormComposer());
             showSubcontractTab();
         } else if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES
                 .equals(resourceAllocationType)) {
@@ -376,5 +378,4 @@ public class EditTaskController extends GenericForwardComposer {
     public Integer getStatus() {
         return (Integer) self.getVariable("status", true);
     }
-
 }

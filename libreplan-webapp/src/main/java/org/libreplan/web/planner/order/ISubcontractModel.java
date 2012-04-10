@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
@@ -75,5 +76,7 @@ public interface ISubcontractModel {
             SubcontractorDeliverDate subcontractorDeliverDate);
 
     boolean alreadyExistsRepeatedDeliverDate(Date newDeliverDate);
+
+    SortedSet<EndDateCommunicationToCustomer> getAskedEndDates();
 
 }
