@@ -22,9 +22,12 @@
 package org.libreplan.business.test.planner.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -87,6 +90,34 @@ public class TaskGroupTest {
     @Test(expected = UnsupportedOperationException.class)
     public void taskElementsCollectionCannotBeModified() {
         taskGroup.getChildren().set(0, null);
+    }
+
+    @Test
+    public void taskGroupIsFinishedIifAllTasksAreFinished() {
+        Task task1 = TaskTest.createValidTaskWithFullProgress();
+        Task task2 = TaskTest.createValidTaskWithFullProgress();
+        TaskGroup taskGroup = new TaskGroup();
+        taskGroup.addTaskElement(task1);
+        taskGroup.addTaskElement(task2);
+        assertTrue(taskGroup.isFinished());
+        task2.setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+        task2.resetStatus();
+        taskGroup.resetStatus();
+        assertFalse(taskGroup.isFinished());
+    }
+
+    @Test
+    public void taskGroupIsInProgressIifAnyTaskisInProgress() {
+        Task task1 = TaskTest.createValidTaskWithFullProgress();
+        Task task2 = TaskTest.createValidTaskWithFullProgress();
+        TaskGroup taskGroup = new TaskGroup();
+        taskGroup.addTaskElement(task1);
+        taskGroup.addTaskElement(task2);
+        assertFalse(taskGroup.isInProgress());
+        task2.setAdvancePercentage(new BigDecimal("0.0001", new MathContext(4)));
+        task2.resetStatus();
+        taskGroup.resetStatus();
+        assertTrue(taskGroup.isInProgress());
     }
 
     public static TaskGroup createValidTaskGroup() {

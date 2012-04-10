@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,7 +51,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández
- *
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class IntraDayDateTest {
 
@@ -365,6 +365,81 @@ public class IntraDayDateTest {
         IntraDayDate intraDate = IntraDayDate.create(today, hours(10));
         assertThat(intraDate.decreaseBy(ResourcesPerDay.amount(1), hours(12))
                 .getDate(), equalTo(today));
+    }
+
+    @Test
+    public void calculateEffortBetweenTwoDates() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+        IntraDayDate end = IntraDayDate.create(today.plusDays(3), hours(0));
+
+        assertThat(start.effortUntil(end), equalTo(hours(8 * 3)));
+
+        end = IntraDayDate.create(today.plusDays(3), hours(8));
+        assertThat(start.effortUntil(end), equalTo(hours(8 * 4)));
+
+        start = IntraDayDate.create(today, hours(8));
+        end = IntraDayDate.create(today.plusDays(3), hours(0));
+        assertThat(start.effortUntil(end), equalTo(hours(8 * 2)));
+
+        start = IntraDayDate.create(today, hours(3));
+        assertThat(start.effortUntil(end), equalTo(hours(8 * 2 + 5)));
+
+        end = IntraDayDate.create(today.plusDays(3), hours(6));
+        assertThat(start.effortUntil(end), equalTo(hours(8 * 2 + 5 + 6)));
+
+        end = IntraDayDate.create(today.plusDays(3), minutes(30));
+        assertThat(start.effortUntil(end),
+                equalTo(hours(8 * 2 + 5).plus(minutes(30))));
+
+        start = IntraDayDate.create(today, hours(5).plus(minutes(40)));
+        assertThat(start.effortUntil(end),
+                equalTo(hours(8 * 2 + 2).plus(minutes(50))));
+    }
+
+    @Test
+    public void calculateAddEffort() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+
+        assertThat(start.addEffort(hours(24)),
+                equalTo(IntraDayDate.create(today.plusDays(3), hours(0))));
+
+        assertThat(start.addEffort(hours(20)),
+                equalTo(IntraDayDate.create(today.plusDays(2), hours(4))));
+
+        assertThat(
+                start.addEffort(hours(20).plus(minutes(20))),
+                equalTo(IntraDayDate.create(today.plusDays(2),
+                        hours(4).plus(minutes(20)))));
+
+        start = IntraDayDate.create(today, hours(3));
+        assertThat(start.addEffort(hours(24)),
+                equalTo(IntraDayDate.create(today.plusDays(3), hours(3))));
+
+        assertThat(start.addEffort(hours(20)),
+                equalTo(IntraDayDate.create(today.plusDays(2), hours(7))));
+
+        assertThat(start.addEffort(hours(20).plus(minutes(20))),
+                equalTo(IntraDayDate.create(today.plusDays(2),
+                        hours(7).plus(minutes(20)))));
+
+        start = IntraDayDate.create(today, hours(3).plus(minutes(40)));
+        assertThat(
+                start.addEffort(hours(24)),
+                equalTo(IntraDayDate.create(today.plusDays(3),
+                        hours(3).plus(minutes(40)))));
+
+        assertThat(
+                start.addEffort(hours(20)),
+                equalTo(IntraDayDate.create(today.plusDays(2),
+                        hours(7).plus(minutes(40)))));
+
+        assertThat(start.addEffort(hours(20).plus(minutes(20))),
+                equalTo(IntraDayDate.create(today.plusDays(3), hours(0))));
+
+        assertThat(
+                start.addEffort(hours(20).plus(minutes(10))),
+                equalTo(IntraDayDate.create(today.plusDays(2),
+                        hours(7).plus(minutes(50)))));
     }
 
 }

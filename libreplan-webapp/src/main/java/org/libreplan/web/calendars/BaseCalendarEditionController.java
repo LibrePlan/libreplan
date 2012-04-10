@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -299,8 +299,8 @@ public abstract class BaseCalendarEditionController extends
         if (baseCalendarModel.isDerived()) {
             String currentStartDate = this.getCurrentStartDateLabel();
             String currentExpiringDate = this.getCurrentExpiringDateLabel();
-            return _("Derived of Calendar " + getNameParentCalendar()
-                    + currentStartDate + currentExpiringDate);
+            return _("Derived of calendar {0}",  getNameParentCalendar())
+                    + currentStartDate + currentExpiringDate;
         }
         return _("Root calendar");
     }
@@ -309,7 +309,7 @@ public abstract class BaseCalendarEditionController extends
         Date date = baseCalendarModel.getCurrentExpiringDate();
         String label = "";
         if (date != null) {
-            label = " to " + new SimpleDateFormat("dd/MM/yyyy").format(date);
+            label = " " + _("to {0}", new SimpleDateFormat("dd/MM/yyyy").format(date));
         }
         return label;
     }
@@ -318,7 +318,7 @@ public abstract class BaseCalendarEditionController extends
         Date date = baseCalendarModel.getCurrentStartDate();
         String label = "";
         if (date != null) {
-            label = " from " + new SimpleDateFormat("dd/MM/yyyy").format(date);
+            label = " " + _("from {0}", new SimpleDateFormat("dd/MM/yyyy").format(date));
         }
         return label;
     }

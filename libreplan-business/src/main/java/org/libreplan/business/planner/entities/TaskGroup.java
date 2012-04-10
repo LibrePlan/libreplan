@@ -24,6 +24,7 @@ package org.libreplan.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -36,6 +37,8 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.TaskElementVisitor;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
 /**
@@ -79,6 +82,27 @@ public class TaskGroup extends TaskElement {
             return BigDecimal.ZERO;
         }
         return planningData.getProgressAllByNumHours();
+    }
+
+    public BigDecimal getTheoreticalProgressByNumHoursForAllTasksUntilNow() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getTheoreticalProgressByNumHoursForAllTasks();
+    }
+
+    public BigDecimal getTheoreticalProgressByDurationForCriticalPathUntilNow() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getTheoreticalProgressByDurationForCriticalPath();
+    }
+
+    public BigDecimal getTheoreticalProgressByNumHoursForCriticalPathUntilNow() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getTheoreticalProgressByNumHoursForCriticalPath();
     }
 
     @SuppressWarnings("unused")
@@ -304,4 +328,52 @@ public class TaskGroup extends TaskElement {
         return false;
     }
 
+    @Override
+    public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
+        EffortDuration sum = EffortDuration.zero();
+        for (TaskElement each: taskElements) {
+            sum = EffortDuration.sum(sum, each.getTheoreticalCompletedTimeUntilDate(date));
+        }
+        return sum;
+    }
+
+    private Boolean isFinished = null;
+    private Boolean isInProgress = null;
+
+    @Override
+    public boolean isFinished() {
+        if (this.isFinished == null) {
+            this.isFinished = new Boolean(true);
+            for (TaskElement each: taskElements) {
+                if (!each.isFinished()) {
+                    this.isFinished = new Boolean(false);
+                    break;
+                }
+            }
+        }
+        return this.isFinished.booleanValue();
+    }
+
+    @Override
+    public boolean isInProgress() {
+        if (this.isInProgress == null) {
+            this.isInProgress = new Boolean(false);
+            for (TaskElement each: taskElements) {
+                if (each.isInProgress()) {
+                    this.isInProgress = new Boolean(true);
+                    break;
+                }
+            }
+        }
+        return this.isInProgress.booleanValue();
+    }
+
+    public void acceptVisitor(TaskElementVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
+    public void resetStatus() {
+        this.isFinished = this.isInProgress = null;
+    }
 }

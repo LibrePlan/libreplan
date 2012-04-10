@@ -24,9 +24,11 @@ package org.libreplan.business.planner.entities;
 import static java.util.Collections.emptyList;
 import static org.libreplan.business.workingday.EffortDuration.min;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -42,10 +44,14 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.ICalendar;
 import org.libreplan.business.calendars.entities.SameWorkHoursEveryDay;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
+import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
 import org.libreplan.business.planner.entities.allocationalgorithms.AllocationModification;
@@ -58,6 +64,7 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.util.deepcopy.AfterCopy;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
@@ -120,6 +127,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
+
+    private TaskStatusEnum currentStatus = null;
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
@@ -847,6 +856,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return subcontractedTaskData;
     }
 
+    public ExternalCompany getSubcontractedCompany() {
+        return subcontractedTaskData.getExternalCompany();
+    }
+
     public void removeAllSatisfiedResourceAllocations() {
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
@@ -864,6 +877,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public boolean isSubcontracted() {
         return (subcontractedTaskData != null);
+    }
+
+    public String getSubcontractionName() {
+        return subcontractedTaskData.getExternalCompany().getName();
     }
 
     public boolean isSubcontractedAndWasAlreadySent() {
@@ -984,6 +1001,29 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return result;
     }
 
+    /* Older methods didn't consider until dates more recent than
+     * task end date
+     */
+    public Integer getWorkableDaysFromLimitedByEndOfTheTask(LocalDate end) {
+        return getWorkableDaysFromLimitedByEndOfTheTask(getStartAsLocalDate(), end);
+    }
+
+    public Integer getWorkableDaysFromLimitedByEndOfTheTask(LocalDate startInclusive,
+            LocalDate endExclusive) {
+        int result = 0;
+        if(endExclusive.compareTo(this.getEndAsLocalDate()) > 0) {
+            endExclusive = getIntraDayEndDate().asExclusiveEnd();
+        }
+        for (LocalDate current = startInclusive; current
+                .compareTo(endExclusive) < 0; current = current
+                .plusDays(1)) {
+            if (isWorkable(current)) {
+                result++;
+            }
+        }
+        return result;
+    }
+
     public LocalDate calculateEndGivenWorkableDays(int workableDays) {
         return calculateEndGivenWorkableDays(getIntraDayStartDate().getDate(),
                 workableDays);
@@ -1045,4 +1085,137 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return true;
     }
 
+    @Override
+    public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
+        return AggregateOfDayAssignments.createByDataRange(
+                this.getDayAssignments(FilterType.KEEP_ALL),
+                this.getStartDate(),
+                date).getTotalTime();
+    }
+
+    public TaskStatusEnum getTaskStatus() {
+        if (this.isFinished()) {
+            return TaskStatusEnum.FINISHED;
+        } else if (this.isInProgress()) {
+            return TaskStatusEnum.IN_PROGRESS;
+        } else if (this.isReadyToStart()) {
+            return TaskStatusEnum.READY_TO_START;
+        } else if (this.isBlocked()){
+            return TaskStatusEnum.BLOCKED;
+        } else {
+            throw new RuntimeException("Unknown task status. You've found a bug :)");
+        }
+    }
+
+    public TaskDeadlineViolationStatusEnum getDeadlineViolationStatus() {
+        LocalDate deadline = this.getDeadline();
+        if (deadline == null) {
+            return TaskDeadlineViolationStatusEnum.NO_DEADLINE;
+        } else if (this.getEndAsLocalDate().isAfter(deadline)) {
+            return TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED;
+        } else {
+            return TaskDeadlineViolationStatusEnum.ON_SCHEDULE;
+        }
+    }
+
+    @Override
+    /* If the status of the task was needed in the past was because
+     * a TaskGroup needed to calculate children status, but only asked
+     * if this task was FINISHED or IN_PROGRESS. Thus, there is no need
+     * to cache other statutes because they only will be queried once.
+     */
+    public boolean isFinished() {
+        if (this.currentStatus != null) {
+            return this.currentStatus == TaskStatusEnum.FINISHED;
+        } else {
+            boolean outcome = this.advancePercentageIsOne();
+            if (outcome == true) {
+                this.currentStatus = TaskStatusEnum.FINISHED;
+            }
+            return outcome;
+        }
+    }
+
+    @Override
+    public boolean isInProgress() {
+        if (this.currentStatus != null) {
+            return this.currentStatus == TaskStatusEnum.IN_PROGRESS;
+        } else {
+            boolean advanceBetweenZeroAndOne = this.advancePertentageIsGreaterThanZero() &&
+                    !advancePercentageIsOne();
+            boolean outcome = advanceBetweenZeroAndOne || this.hasAttachedWorkReports();
+            if (outcome == true) {
+                this.currentStatus = TaskStatusEnum.IN_PROGRESS;
+            }
+            return outcome;
+        }
+    }
+
+    public boolean isReadyToStart() {
+        if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
+            return false;
+        }
+        Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
+        for (Dependency dependency: dependencies) {
+            Type dependencyType = dependency.getType();
+            if (dependencyType.equals(Type.END_START)) {
+                if (!dependency.getOrigin().isFinished()) {
+                    return false;
+                }
+            } else if (dependencyType.equals(Type.START_START)) {
+                if (!dependency.getOrigin().isFinished() &&
+                        !dependency.getOrigin().isInProgress()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean isBlocked() {
+        if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
+            return false;
+        }
+        Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
+        for (Dependency dependency: dependencies) {
+            Type dependencyType = dependency.getType();
+            if (dependencyType.equals(Type.END_START)) {
+                if (!dependency.getOrigin().isFinished()) {
+                    return true;
+                }
+            } else if (dependencyType.equals(Type.START_START)) {
+                if (!dependency.getOrigin().isFinished() &&
+                        !dependency.getOrigin().isInProgress()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+     }
+
+    private boolean advancePertentageIsGreaterThanZero() {
+        return this.getAdvancePercentage().compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    private boolean advancePercentageIsZero() {
+        return this.getAdvancePercentage().compareTo(BigDecimal.ZERO) == 0;
+    }
+
+    private boolean advancePercentageIsOne() {
+        return this.getAdvancePercentage().compareTo(BigDecimal.ONE) == 0;
+    }
+
+    private boolean hasAttachedWorkReports() {
+        SumChargedEffort sumChargedEffort = this.getOrderElement().getSumChargedEffort();
+        return sumChargedEffort != null && !sumChargedEffort.isZero();
+    }
+
+    public void acceptVisitor(TaskElementVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
+    public void resetStatus() {
+        this.currentStatus = null;
+    }
 }

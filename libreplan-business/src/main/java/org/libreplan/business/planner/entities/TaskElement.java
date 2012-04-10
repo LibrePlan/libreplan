@@ -45,13 +45,16 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
 import org.libreplan.business.workingday.EffortDuration;
@@ -401,7 +404,7 @@ public abstract class TaskElement extends BaseEntity {
         }
     }
 
-    void add(Dependency dependency) {
+    public void add(Dependency dependency) {
         if (this.equals(dependency.getOrigin())) {
             dependenciesWithThisOrigin.add(dependency);
         }
@@ -573,6 +576,10 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public String getSubcontractionName() {
+        return "";
+    }
+
     public boolean isSubcontractedAndWasAlreadySent() {
         // Just Task could be subcontracted
         return false;
@@ -679,6 +686,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setAdvancePercentage(BigDecimal advancePercentage) {
         this.advancePercentage = advancePercentage;
+        this.resetStatus();
     }
 
     private EffortDuration sumOfAssignedEffort = EffortDuration.hours(0);
@@ -721,12 +729,44 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
+    public abstract EffortDuration getTheoreticalCompletedTimeUntilDate(Date date);
+
+    public BigDecimal getTheoreticalAdvancePercentageUntilDate(Date date) {
+        EffortDuration totalAllocatedTime = AggregateOfDayAssignments.create(
+                this.getDayAssignments(FilterType.KEEP_ALL)).getTotalTime();
+        EffortDuration totalTheoreticalCompletedTime = this.getTheoreticalCompletedTimeUntilDate(date);
+        if (totalAllocatedTime.isZero() || totalTheoreticalCompletedTime.isZero()) {
+            return BigDecimal.ZERO;
+        }
+        Validate.isTrue(totalTheoreticalCompletedTime.getSeconds() <= totalAllocatedTime.getSeconds());
+        return totalTheoreticalCompletedTime.dividedByAndResultAsBigDecimal(totalAllocatedTime);
+    }
+
+    public abstract boolean isFinished();
+
+    public abstract boolean isInProgress();
+
+    public abstract void acceptVisitor(TaskElementVisitor visitor);
+
+    public abstract void resetStatus();
+
     public void updateAdvancePercentageFromOrderElement() {
         setAdvancePercentage(getOrderElement().getAdvancePercentage());
     }
 
     public Boolean isRoot() {
         return (this.getParent() == null);
+    }
+
+    public BigDecimal getBudget() {
+        if ((taskSource != null) && (taskSource.getOrderElement() != null)) {
+            return taskSource.getOrderElement().getBudget();
+        }
+        return null;
+    }
+
+    public ExternalCompany getSubcontractedCompany() {
+        return null;
     }
 
 }

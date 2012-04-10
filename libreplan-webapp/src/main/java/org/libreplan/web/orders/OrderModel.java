@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
@@ -58,6 +58,7 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
@@ -98,9 +99,11 @@ import org.zkoss.zk.ui.Desktop;
 
 /**
  * Model for UI operations related to {@link Order}. <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -167,6 +170,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IMoneyCostCalculator moneyCostCalculator;
 
     @Override
     @Transactional(readOnly = true)
@@ -691,8 +697,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         orderDAO.reattachUnmodifiedEntity(order);
         StringBuilder result = new StringBuilder();
         result.append(_("Progress") + ": ").append(getEstimatedAdvance(order)).append("% , ");
-        result.append(_("Hours invested") + ": ").append(
-                getHoursAdvancePercentage(order)).append("% \n");
+        result.append(_("Hours invested") + ": ")
+                .append(getHoursAdvancePercentage(order)).append("%\n");
 
         if (!getDescription(order).equals("")) {
             result.append(" , " + _("Description") + ": "

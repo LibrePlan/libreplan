@@ -77,6 +77,16 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
+        columns.add(new OrdersTreeColumn(_("Budget"), "budget",
+                _("Total task budget")) {
+
+            @Override
+            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
+                    OrderElement currentElement) {
+                treeRenderer.addBudgetCell(currentElement);
+            }
+
+        });
         columns.add(new OrdersTreeColumn(_("Must start after"),
                         "estimated_init",
                         _("Date which the task must start after (press enter in textbox to open calendar popup or type in date directly)")) {

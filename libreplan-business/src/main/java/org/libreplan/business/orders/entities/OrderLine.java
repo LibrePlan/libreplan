@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
@@ -71,6 +72,8 @@ public class OrderLine extends OrderElement {
         hoursGroup.setWorkingHours(hours);
         return result;
     }
+
+    private BigDecimal budget = BigDecimal.ZERO.setScale(2);
 
     /**
      * Constructor for hibernate. Do not use!
@@ -123,7 +126,8 @@ public class OrderLine extends OrderElement {
         if (!getMaterialAssignments().isEmpty()) {
             return false;
         }
-        if (!getSumChargedEffort().getDirectChargedEffort().isZero()) {
+        if (getSumChargedEffort() != null
+                && !getSumChargedEffort().getDirectChargedEffort().isZero()) {
             return false;
         }
         if (!getTaskElements().isEmpty()) {
@@ -368,6 +372,18 @@ public class OrderLine extends OrderElement {
                 }
             }
         }
+    }
+
+    public void setBudget(BigDecimal budget) {
+        Validate.isTrue(budget.compareTo(BigDecimal.ZERO) >= 0,
+                "budget cannot be negative");
+        this.budget = budget.setScale(2);
+    }
+
+    @Override
+    @NotNull(message = "budget not specified")
+    public BigDecimal getBudget() {
+        return budget;
     }
 
 }

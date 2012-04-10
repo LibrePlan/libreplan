@@ -109,6 +109,7 @@ public class OrderElementController extends GenericForwardComposer {
             assignedHoursToOrderElementController.openWindow(orderElementModel);
         } else {
             redraw(orderElementHours);
+            assignedHoursToOrderElementController.paintProgressBars();
         }
     }
 

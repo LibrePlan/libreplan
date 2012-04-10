@@ -33,9 +33,14 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 /**
  * Controller for CRUD actions over a {@link Profile}
@@ -162,4 +167,23 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
     protected void delete(Profile profile) throws InstanceNotFoundException {
         profileModel.confirmRemove(profile);
     }
+
+    public RowRenderer getRolesRenderer() {
+        return new RowRenderer() {
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final UserRole role = (UserRole) data;
+
+                row.appendChild(new Label(_(role.getDisplayName())));
+
+                row.appendChild(Util.createRemoveButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        removeRole(role);
+                    }
+                }));
+            }
+        };
+    }
+
 }

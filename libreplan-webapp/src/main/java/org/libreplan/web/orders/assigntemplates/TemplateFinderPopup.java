@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +22,6 @@ package org.libreplan.web.orders.assigntemplates;
 
 import static org.libreplan.web.I18nHelper._;
 
-import org.apache.commons.lang.Validate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
@@ -36,8 +35,10 @@ import org.zkoss.zul.Caption;
 import org.zkoss.zul.Popup;
 
 /**
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * Pop-up to choose the template to create a task from.
  *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class TemplateFinderPopup extends
         HtmlMacroComponent {
@@ -48,10 +49,7 @@ public class TemplateFinderPopup extends
     private BandboxSearch bandboxSearch;
     private Button acceptButton;
     private Button cancelButton;
-    private String acceptButtonLabel = _("Accept");
-    private String cancelButtonLabel = _("Cancel");
     private Caption caption;
-    private String captionLabel;
 
     public interface IOnResult<T extends OrderElementTemplate> {
         public void found(T template);
@@ -112,36 +110,11 @@ public class TemplateFinderPopup extends
         popup.close();
     }
 
-    public void setAcceptButtonLabel(String label) {
-        Validate.notNull(label);
-        this.acceptButtonLabel = label;
-        if (acceptButton != null) {
-            acceptButton.setLabel(label);
-        }
-
-    }
-
-    public void setCancelButtonLabel(String label) {
-        Validate.notNull(label);
-        this.cancelButtonLabel = label;
-        if (cancelButton != null) {
-            cancelButton.setLabel(label);
-        }
-    }
-
-    public void setCaption(String label) {
-        Validate.notNull(label);
-        this.captionLabel = label;
-        if (caption != null) {
-            caption.setLabel(label);
-        }
-    }
-
     @Override
     public void afterCompose() {
         super.afterCompose();
         acceptButton = (Button) getFellow("acceptButton");
-        acceptButton.setLabel(acceptButtonLabel);
+        acceptButton.setLabel(_("Create task"));
         acceptButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
@@ -150,7 +123,7 @@ public class TemplateFinderPopup extends
             }
         });
         cancelButton = (Button) getFellow("cancelButton");
-        cancelButton.setLabel(cancelButtonLabel);
+        cancelButton.setLabel(_("Cancel"));
         cancelButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
@@ -161,7 +134,7 @@ public class TemplateFinderPopup extends
         finderPlaceholder = getFellow("finderPlaceholder");
         popup = (Popup) getFellow("finderPopup");
         caption = (Caption) getFellow("finderCaption");
-        caption.setLabel(captionLabel);
+        caption.setLabel(_("Choosing Template"));
     }
 
 }

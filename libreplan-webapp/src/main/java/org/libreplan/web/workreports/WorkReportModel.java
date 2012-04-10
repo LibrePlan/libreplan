@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,14 +43,13 @@ import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
-import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.daos.ISumChargedEffortDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
-import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -70,8 +69,10 @@ import org.zkoss.ganttz.IPredicate;
 
 /**
  * Model for UI operations related to {@link WorkReport}.
+ *
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -89,22 +90,19 @@ public class WorkReportModel extends IntegrationEntityModel implements
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
     private IWorkerDAO workerDAO;
 
     @Autowired
     private ILabelDAO labelDAO;
 
     @Autowired
-    private IScenarioManager scenarioManager;
-
-    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Autowired
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
+
+    @Autowired
+    private ISumChargedEffortDAO sumChargedEffortDAO;
 
     private WorkReportType workReportType;
 
@@ -113,10 +111,6 @@ public class WorkReportModel extends IntegrationEntityModel implements
     private boolean editing = false;
 
     private boolean listingQuery = false;
-
-    private Map<DescriptionValue, DescriptionField> mapDescriptonValues = new HashMap<DescriptionValue, DescriptionField>();
-
-    private Map<Label, Integer> mapLabels = new HashMap<Label, Integer>();
 
     private static final Map<LabelType, List<Label>> mapLabelTypes = new HashMap<LabelType, List<Label>>();
 
@@ -281,16 +275,11 @@ public class WorkReportModel extends IntegrationEntityModel implements
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
-        try {
-            orderElementDAO
-                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
-                    deletedWorkReportLinesSet);
-            orderElementDAO
-                    .updateRelatedSumChargedEffortWithWorkReportLineSet(
-                    workReport.getWorkReportLines());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        sumChargedEffortDAO.updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(deletedWorkReportLinesSet);
+        sumChargedEffortDAO
+                .updateRelatedSumChargedEffortWithWorkReportLineSet(workReport
+                        .getWorkReportLines());
+
         workReportDAO.save(workReport);
     }
 
@@ -423,9 +412,9 @@ public class WorkReportModel extends IntegrationEntityModel implements
     public void remove(WorkReport workReport) {
         //before deleting the report, update OrderElement.SumChargedHours
         try {
-            orderElementDAO
-                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
-                    workReport.getWorkReportLines());
+            sumChargedEffortDAO
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
+                            .getWorkReportLines());
             workReportDAO.remove(workReport.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);

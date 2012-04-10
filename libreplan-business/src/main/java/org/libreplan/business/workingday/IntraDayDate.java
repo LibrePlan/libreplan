@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -70,7 +70,9 @@ import org.libreplan.business.calendars.entities.Capacity;
  * @see PartialDay
  * @see LocalDate
  * @see EffortDuration
+ *
  * @author Óscar González Fernández
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  *
  */
 public class IntraDayDate implements Comparable<IntraDayDate> {
@@ -495,6 +497,59 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
             return morePreciseAlternative;
         }
         return startOfDay(date);
+    }
+
+    /**
+     * Returns the {@link EffortDuration} until {@code end} considering 8h per
+     * day of effort.
+     *
+     * @param end
+     * @return The {@link EffortDuration} until {@code end}
+     */
+    public EffortDuration effortUntil(IntraDayDate end) {
+        Validate.isTrue(compareTo(end) <= 0);
+        int days = Days.daysBetween(getDate(), end.getDate()).getDays();
+
+        EffortDuration result = EffortDuration.hours(days * 8);
+
+        if (!getEffortDuration().isZero()) {
+            result = result.minus(EffortDuration.hours(8));
+            result = result.plus(EffortDuration.hours(8).minus(
+                    getEffortDuration()));
+        }
+
+        if (!end.getEffortDuration().isZero()) {
+            result = result.plus(end.getEffortDuration());
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the {@link IntraDayDate} adding the {@code effort} considering 8h
+     * per day of effort.
+     *
+     * @param effort
+     * @return The {@link IntraDayDate} result of adding the {@code effort}
+     */
+    public IntraDayDate addEffort(EffortDuration effort) {
+        int secondsPerDay = 3600 * 8;
+
+        int seconds = effort.getSeconds();
+
+        if (!getEffortDuration().isZero()) {
+            seconds += getEffortDuration().getSeconds();
+        }
+
+        int days = seconds / secondsPerDay;
+
+        EffortDuration extraEffort = EffortDuration.zero();
+        int extra = seconds % secondsPerDay;
+        if (extra != 0) {
+            extraEffort = extraEffort.plus(EffortDuration.seconds(extra));
+        }
+
+        return IntraDayDate.create(getDate().plusDays(days), extraEffort);
     }
 
 }

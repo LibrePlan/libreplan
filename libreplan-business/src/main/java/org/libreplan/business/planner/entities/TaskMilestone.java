@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -35,6 +36,8 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.TaskElementVisitor;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
 /**
@@ -183,6 +186,30 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
     @Override
     public boolean isTask() {
         return false;
+    }
+
+    @Override
+    public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
+        return EffortDuration.zero();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isInProgress() {
+        return false;
+    }
+
+    @Override
+    public void acceptVisitor(TaskElementVisitor visitor) {
+        throw new RuntimeException("No visitors should visit this type of TaskElement");
+    }
+
+    @Override
+    public void resetStatus() {
     }
 
     @Override

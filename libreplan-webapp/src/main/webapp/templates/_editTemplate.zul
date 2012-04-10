@@ -1,0 +1,131 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2012 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
+    class="org.libreplan.web.templates.TemplatesTreeComponent"?>
+<?component name="listOrderElementCriterionRequirements"
+    class="org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent"
+    macroURI="/orders/_listOrderElementCriterionRequirements.zul"?>
+<?component name="listOrderElementMaterials"
+    class="org.libreplan.web.templates.materials.MaterialAssignmentTemplateComponent"
+    macroURI="/orders/components/_listOrderElementMaterials.zul"?>
+<?component name="listOrderElementLabels" class="org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent" macroURI="/orders/components/_listOrderElementLabels.zul"?>
+<?component name="assignedQualityForms" class="org.libreplan.web.templates.quality.QualityFormAssignerComponent" macroURI="/templates/_assignedQualityForms.zul" ?>
+<?component name="advancesAssignment" class="org.libreplan.web.templates.advances.AdvancesAssignmentComponent" macroURI="/templates/_advances.zul"?>
+<?component name="editTemplateWindow" macroURI="_editTemplateWindow.zul" inline="true"?>
+<?component name="historicalAssignment" class="org.libreplan.web.templates.historicalAssignment.OrderElementHistoricalAssignmentComponent" macroURI="/templates/_historicalAssignment.zul" ?>
+<?component name="historicalStatistics" class="org.libreplan.web.templates.historicalStatistics.OrderElementHistoricalStatisticsComponent" macroURI="/templates/_historicalStatistics.zul" ?>
+
+
+<window id="${arg.top_id}" title="${i18n:_('Edit Template')}">
+    <editTemplateWindow />
+    <tabbox>
+        <tabs>
+            <tab id="tabGeneralData" label="${i18n:_('General data')}"
+                onSelect="templatesForOrdersController.reloadBudget()" />
+            <tab label="${i18n:_('Template Tree')}"
+                disabled="@{templatesForOrdersController.templateTreeDisabled}"
+                onSelect="templatesForOrdersController.openTemplateTree()" />
+            <tab label="${i18n:_('Progress')}" />
+            <tab label="${i18n:_('Labels')}" />
+            <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />
+            <tab label="${i18n:_('Materials')}" />
+            <tab label="${i18n:_('Quality Forms')}" />
+            <tab label="${i18n:_('Assignment log')}" />
+            <tab label="${i18n:_('Statistics log')}" />
+        </tabs>
+        <tabpanels>
+            <tabpanel id="tabPanelGeneralData">
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column  />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Name')}" />
+                            <textbox id="name" value="@{templatesForOrdersController.template.name}" width="500px"
+                                constraint = "@{templatesForOrdersController.validateTemplateName}"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Code')}" />
+                            <hbox>
+                                <textbox value="@{templatesForOrdersController.template.code}" width="250px" />
+                            </hbox>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Delay from beginning (days)')}" />
+                            <intbox
+                                value="@{templatesForOrdersController.template.startAsDaysFromBeginning}" constraint="no negative"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Days from Beginning to Deadline')}" />
+                            <intbox
+                                value="@{templatesForOrdersController.template.deadlineAsDaysFromBeginning}" constraint="no negative"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Description')}" />
+                            <textbox rows="3" width="600px"
+                                value="@{templatesForOrdersController.template.description}" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Budget')}" />
+                            <decimalbox
+                                value="@{templatesForOrdersController.template.budget}"
+                                disabled="@{templatesForOrdersController.container}"
+                                constraint="no negative:${i18n:_('Budget value cannot be negative')}" />
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+            <tabpanel sclass="template-tree-tabpanel">
+                <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
+            </tabpanel>
+            <tabpanel>
+                <advancesAssignment id="advancesAssignment" />
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementLabels id="listOrderElementLabels"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementCriterionRequirements id="listOrderElementCriterionRequirements"/>
+            </tabpanel>
+            <tabpanel>
+                <listOrderElementMaterials id="listOrderElementMaterials"/>
+            </tabpanel>
+            <tabpanel>
+                <assignedQualityForms id="assignedQualityForms"/>
+            </tabpanel>
+            <tabpanel>
+                <historicalAssignment id="historicalAssignment"/>
+            </tabpanel>
+            <tabpanel>
+                <historicalStatistics id="historicalStatistics"/>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+    <hbox>
+        <button label="${i18n:_('Save')}" onClick="templatesForOrdersController.saveAndExit()"
+            sclass="save-button global-action" />
+        <button label="${i18n:_('Save &amp; Continue')}" onClick="templatesForOrdersController.saveAndContinue()"
+            sclass="saveandcontinue-button global-action" />
+        <button label="${i18n:_('Cancel')}" onClick="templatesForOrdersController.cancel()"
+            sclass="cancel-button global-action" />
+    </hbox>
+</window>

@@ -31,7 +31,6 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.business.workreports.entities.WorkReportLine;
 
 /**
  * Contract for {@link OrderElementDAO}
@@ -110,12 +109,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     EffortDuration calculateMinWorkedHours(final List<OrderElement> list);
 
     boolean isAlreadyInUseThisOrAnyOfItsChildren(OrderElement orderElement);
-
-    void updateRelatedSumChargedEffortWithWorkReportLineSet(
-            Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException;
-
-    void updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
-            Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException;
 
     /**
      * Returns codes in DB searching in all order elements but excluding orderElements

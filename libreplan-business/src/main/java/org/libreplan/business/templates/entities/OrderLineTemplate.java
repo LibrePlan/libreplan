@@ -22,6 +22,7 @@ package org.libreplan.business.templates.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -51,6 +53,7 @@ public class OrderLineTemplate extends OrderElementTemplate {
     public static OrderLineTemplate create(OrderLine orderLine) {
         OrderLineTemplate beingBuilt = new OrderLineTemplate();
         copyHoursGroup(orderLine.getHoursGroups(), beingBuilt);
+        beingBuilt.setBudget(orderLine.getBudget());
         return create(beingBuilt, orderLine);
     }
 
@@ -67,9 +70,12 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return createNew(new OrderLineTemplate());
     }
 
+    private BigDecimal budget = BigDecimal.ZERO.setScale(2);
+
     protected <T extends OrderElement> T setupElementParts(T orderElement) {
         super.setupElementParts(orderElement);
         setupHoursGroups((OrderLine) orderElement);
+        setupBudget((OrderLine) orderElement);
         return orderElement;
     }
 
@@ -79,6 +85,10 @@ public class OrderLineTemplate extends OrderElementTemplate {
             result.add(HoursGroup.copyFrom(each, orderLine));
         }
         orderLine.setHoursGroups(result);
+    }
+
+    private void setupBudget(OrderLine orderLine) {
+        orderLine.setBudget(getBudget());
     }
 
     @Override
@@ -213,6 +223,18 @@ public class OrderLineTemplate extends OrderElementTemplate {
 
     public void recalculateHoursGroups() {
         hoursGroupOrderLineTemplateHandler.recalculateHoursGroups(this);
+    }
+
+    public void setBudget(BigDecimal budget) {
+        Validate.isTrue(budget.compareTo(BigDecimal.ZERO) >= 0,
+                "budget cannot be negative");
+        this.budget = budget.setScale(2);
+    }
+
+    @Override
+    @NotNull(message = "budget not specified")
+    public BigDecimal getBudget() {
+        return budget;
     }
 
 }

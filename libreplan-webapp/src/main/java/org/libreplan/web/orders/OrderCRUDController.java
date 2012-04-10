@@ -502,14 +502,18 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         setCurrentTab();
 
+        Component orderElementHours = editWindow
+                .getFellowIfAny("orderElementHours");
         if (assignedHoursController == null) {
-            Component orderElementHours = editWindow
-                    .getFellowIfAny("orderElementHours");
             assignedHoursController = (AssignedHoursToOrderElementController) orderElementHours
                     .getVariable("assignedHoursToOrderElementController", true);
 
             final IOrderElementModel orderElementModel = getOrderElementModel();
             assignedHoursController.openWindow(orderElementModel);
+        } else {
+            Util.createBindingsFor(orderElementHours);
+            Util.reloadBindings(orderElementHours);
+            assignedHoursController.paintProgressBars();
         }
     }
 

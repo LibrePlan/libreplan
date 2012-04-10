@@ -38,4 +38,6 @@ public interface IOrderPlanningGate {
 
     void goToOrderDetails(Order order);
 
+    void goToDashboard(Order order);
+
 }

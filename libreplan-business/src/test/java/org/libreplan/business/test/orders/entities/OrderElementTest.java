@@ -1175,4 +1175,25 @@ public class OrderElementTest {
                 .getAdvanceType(), equalTo(advanceType2));
     }
 
+    @Test
+    public void checkPositiveBudgetInOrderLine() {
+        OrderLine line = givenOrderLine("task", "code", 10);
+        line.setBudget(new BigDecimal(100));
+        assertThat(line.getBudget(), equalTo(new BigDecimal(100).setScale(2)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkNonNegativeBudgetInOrderLine() {
+        OrderLine line = givenOrderLine("task", "code", 10);
+        line.setBudget(new BigDecimal(-100));
+    }
+
+    @Test
+    public void checkBudgetInOrderLineGroup() {
+        OrderLineGroup group = givenOrderLineGroupWithTwoOrderLines(20, 30);
+        ((OrderLine) group.getChildren().get(0)).setBudget(new BigDecimal(50));
+        ((OrderLine) group.getChildren().get(1)).setBudget(new BigDecimal(70));
+        assertThat(group.getBudget(), equalTo(new BigDecimal(120).setScale(2)));
+    }
+
 }

@@ -22,11 +22,15 @@
 package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
+import org.libreplan.business.workingday.EffortDuration;
 
 /**
  *
@@ -53,6 +57,12 @@ public class PlanningData extends BaseEntity {
 
     private BigDecimal progressByNumHours;
 
+    private BigDecimal theoreticalProgressByNumHoursForAllTasks;
+
+    private BigDecimal theoreticalProgressByDurationForCriticalPath;
+
+    private BigDecimal theoreticalProgressByNumHoursForCriticalPath;
+
     public PlanningData() {
 
     }
@@ -69,6 +79,18 @@ public class PlanningData extends BaseEntity {
         return progressByNumHours;
     }
 
+    public BigDecimal getTheoreticalProgressByNumHoursForAllTasks() {
+        return theoreticalProgressByNumHoursForAllTasks;
+    }
+
+    public BigDecimal getTheoreticalProgressByDurationForCriticalPath() {
+        return theoreticalProgressByDurationForCriticalPath;
+    }
+
+    public BigDecimal getTheoreticalProgressByNumHoursForCriticalPath() {
+        return theoreticalProgressByNumHoursForCriticalPath;
+    }
+
     private PlanningData(TaskGroup rootTask) {
         this.rootTask = rootTask;
     }
@@ -82,6 +104,11 @@ public class PlanningData extends BaseEntity {
                 .getAdvancePercentageChildren();
         progressByDuration = calculateByDuration(criticalPath);
         progressByNumHours = calculateByNumHours(criticalPath);
+
+        Date now = new Date();
+        theoreticalProgressByNumHoursForAllTasks = rootTask.getTheoreticalAdvancePercentageUntilDate(now);
+        theoreticalProgressByDurationForCriticalPath = calculateTheoreticalAdvanceByDurationForCriticalPath(criticalPath, now);
+        theoreticalProgressByNumHoursForCriticalPath = calculateTheoreticalAdvanceByNumHoursForCriticalPath(criticalPath, now);
     }
 
     private BigDecimal calculateByDuration(List<Task> criticalPath) {
@@ -130,6 +157,37 @@ public class PlanningData extends BaseEntity {
             totalProgress = totalProgress.add(progress);
         }
         return divide(totalProgress, totalNumHours);
+    }
+
+    private BigDecimal calculateTheoreticalAdvanceByNumHoursForCriticalPath(
+            List<Task> criticalPath, Date limit) {
+        EffortDuration theoreticalCompletedTime = EffortDuration.zero();
+        EffortDuration totalAssignedTime = EffortDuration.zero();
+
+        for (Task each: criticalPath) {
+            theoreticalCompletedTime = EffortDuration.sum(
+                    theoreticalCompletedTime,
+                    each.getTheoreticalCompletedTimeUntilDate(limit));
+            totalAssignedTime = EffortDuration.sum(
+                    totalAssignedTime,
+                    AggregateOfDayAssignments.create(
+                            each.getDayAssignments(FilterType.KEEP_ALL))
+                            .getTotalTime());
+        }
+        return theoreticalCompletedTime.dividedByAndResultAsBigDecimal(totalAssignedTime);
+    }
+
+    private BigDecimal calculateTheoreticalAdvanceByDurationForCriticalPath(
+            List<Task> criticalPath, Date limit) {
+        int totalTheoreticalProgressDays = 0;
+        int totalDurationDays = 0;
+        LocalDate limitLocalDate = new LocalDate(limit);
+
+        for (Task each : criticalPath) {
+            totalTheoreticalProgressDays += each.getWorkableDaysFromLimitedByEndOfTheTask(limitLocalDate);
+            totalDurationDays += each.getWorkableDays();
+        }
+        return divide(new BigDecimal(totalTheoreticalProgressDays), totalDurationDays);
     }
 
 }

@@ -61,6 +61,7 @@ authentication method", at the end of this document.
 
 LibrePlan should be running at http://localhost:8080/libreplan
 
+Review INSTALL file for more information.
 
 
 Upgrading LibrePlan a.b.c to LibrePlan x.y.z
