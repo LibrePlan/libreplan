@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.CommunicationType;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
@@ -46,7 +47,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
@@ -95,7 +95,12 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
             TaskElement task = subcontractorCommunication.getSubcontractedTaskData().getTask();
             OrderElement orderElement = task.getOrderElement();
             Order order = subcontractorCommunicationModel.getOrder(orderElement);
-            globalView.goToAdvanceTask(order,task);
+
+            if(subcontractorCommunication.getCommunicationType().equals(CommunicationType.PROGRESS_UPDATE)){
+                globalView.goToAdvanceTask(order,task);
+            }else{
+                globalView.goToOrderDetails(order);
+            }
         }
     }
 
@@ -154,7 +159,7 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
             appendLabel(row,  getOrderCode(subcontractorCommunication.getSubcontractedTaskData()));
             appendLabel(row, subcontractorCommunication.getSubcontractedTaskData().getExternalCompany().getName());
             appendLabel(row, toString(subcontractorCommunication.getCommunicationDate()));
-            appendLabelWitTooltip(row,subcontractorCommunication);
+            appendLabelWithTooltip(row, subcontractorCommunication);
             appendCheckbox(row, subcontractorCommunication);
             appendOperations(row, subcontractorCommunication);
         }
@@ -186,10 +191,13 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
             row.appendChild(new Label(label));
         }
 
-        private void appendLabelWitTooltip(final Row row,final SubcontractorCommunication subcontractorCommunication) {
+        private void appendLabelWithTooltip(final Row row,
+                final SubcontractorCommunication subcontractorCommunication) {
             String lastValue = getLastValue(subcontractorCommunication);
             final Label compLabel = new Label(lastValue);
 
+            if (subcontractorCommunication.getCommunicationType().equals(
+                    CommunicationType.PROGRESS_UPDATE)) {
             compLabel.setTooltip(pp);
             compLabel.addEventListener(Events.ON_MOUSE_OVER,
                     new EventListener() {
@@ -201,6 +209,7 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
                             listingValues.invalidate();
                         }
                     });
+            }
             row.appendChild(compLabel);
         }
 
