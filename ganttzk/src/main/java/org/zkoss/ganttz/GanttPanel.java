@@ -141,7 +141,9 @@ public class GanttPanel extends XulElement implements AfterCompose {
         for (Task task : this.tasksLists.getAllTasks()) {
             task.updateTooltipText();
         }
-        invalidate();
+        for (TaskComponent taskComponent : this.tasksLists.getTaskComponents()) {
+            taskComponent.invalidate();
+        }
     }
 
     public TimeTrackerComponent getTimeTrackerComponent() {
