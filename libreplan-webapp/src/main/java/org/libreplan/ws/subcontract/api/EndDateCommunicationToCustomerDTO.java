@@ -22,10 +22,10 @@ package org.libreplan.ws.subcontract.api;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 
 /**
- * DTO for {@link EndDateCommunicationToCustomer} just with information about end date asked by subcontractors
+ * DTO for {@link EndDateCommunication} just with information about end date asked by subcontractors
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */

@@ -44,7 +44,7 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.materials.bootstrap.PredefinedMaterialCategories;
 import org.libreplan.business.materials.entities.Material;
@@ -845,19 +845,19 @@ public final class OrderElementConverter {
                 .getValue());
     }
 
-    public static EndDateCommunicationToCustomer toEntity(
+    public static EndDateCommunication toEntity(
             EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO) {
         Date endDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.endDate);
         Date communicationDate = DateConverter
                 .toDate(endDateCommunicationToCustomerDTO.communicationDate);
         Date saveDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.saveDate);
-        EndDateCommunicationToCustomer endDateCommunicationToCustomer = EndDateCommunicationToCustomer
+        EndDateCommunication endDateCommunicationToCustomer = EndDateCommunication
                 .create(saveDate, endDate, communicationDate);
         return endDateCommunicationToCustomer;
     }
 
     public static EndDateCommunicationToCustomerDTO toDTO(
-            EndDateCommunicationToCustomer endDateCommunicationToCustomer) {
+            EndDateCommunication endDateCommunicationToCustomer) {
         XMLGregorianCalendar endDate = DateConverter
                 .toXMLGregorianCalendar(endDateCommunicationToCustomer.getEndDate());
         XMLGregorianCalendar saveDate = DateConverter

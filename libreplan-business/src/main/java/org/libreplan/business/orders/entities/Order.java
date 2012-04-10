@@ -48,8 +48,8 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomerComparator;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.planner.entities.DayAssignment;
@@ -121,8 +121,8 @@ public class Order extends OrderLineGroup implements Comparable {
             new DeliverDateComparator());
 
     @Valid
-    private SortedSet<EndDateCommunicationToCustomer> endDateCommunicationToCustomer = new TreeSet<EndDateCommunicationToCustomer>(
-            new EndDateCommunicationToCustomerComparator());
+    private SortedSet<EndDateCommunication> endDateCommunicationToCustomer = new TreeSet<EndDateCommunication>(
+            new EndDateCommunicationComparator());
 
     public enum SchedulingMode {
         FORWARD, BACKWARDS;
@@ -603,12 +603,12 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     public void setEndDateCommunicationToCustomer(
-            SortedSet<EndDateCommunicationToCustomer> endDateCommunicationToCustomer) {
+            SortedSet<EndDateCommunication> endDateCommunicationToCustomer) {
         this.endDateCommunicationToCustomer.clear();
         this.endDateCommunicationToCustomer.addAll(endDateCommunicationToCustomer);
     }
 
-    public SortedSet<EndDateCommunicationToCustomer> getEndDateCommunicationToCustomer() {
+    public SortedSet<EndDateCommunication> getEndDateCommunicationToCustomer() {
         return Collections.unmodifiableSortedSet(this.endDateCommunicationToCustomer);
     }
 
@@ -627,7 +627,7 @@ public class Order extends OrderLineGroup implements Comparable {
         return null;
     }
 
-    public EndDateCommunicationToCustomer getLastEndDateCommunicationToCustomer() {
+    public EndDateCommunication getLastEndDateCommunicationToCustomer() {
         if (this.endDateCommunicationToCustomer != null
                 && !this.endDateCommunicationToCustomer.isEmpty()) {
             return this.endDateCommunicationToCustomer.first();
@@ -635,11 +635,11 @@ public class Order extends OrderLineGroup implements Comparable {
         return null;
     }
 
-    public void removeAskedEndDate(EndDateCommunicationToCustomer endDate) {
+    public void removeAskedEndDate(EndDateCommunication endDate) {
         this.endDateCommunicationToCustomer.remove(endDate);
     }
 
-    public void addAskedEndDate(EndDateCommunicationToCustomer endDate) {
+    public void addAskedEndDate(EndDateCommunication endDate) {
         this.endDateCommunicationToCustomer.add(endDate);
     }
 }

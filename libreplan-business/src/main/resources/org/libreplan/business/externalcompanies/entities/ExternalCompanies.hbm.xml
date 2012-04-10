@@ -68,8 +68,8 @@
     <property name="deliverDate" access="field" column="deliver_date" />
 </class>
 
-<!-- EndDateCommunicationToCustomer -->
-<class name="EndDateCommunicationToCustomer" table="end_date_communication_to_customer">
+<!-- EndDateCommunication -->
+<class name="EndDateCommunication" table="end_date_communication">
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>

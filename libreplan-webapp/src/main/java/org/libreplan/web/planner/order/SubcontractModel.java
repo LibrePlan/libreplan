@@ -29,7 +29,7 @@ import java.util.TreeSet;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.libreplan.business.planner.entities.SubcontractState;
@@ -98,7 +98,7 @@ public class SubcontractModel implements ISubcontractModel {
 
     private void loadAskedEndDatesFromSubcontractor(SubcontractedTaskData subcontractedTaskData) {
         if (subcontractedTaskData != null) {
-            for (EndDateCommunicationToCustomer askedEndDate : subcontractedTaskData
+            for (EndDateCommunication askedEndDate : subcontractedTaskData
                     .getEndDatesCommunicatedFromSubcontractor()) {
                 askedEndDate.getEndDate();
             }
@@ -276,11 +276,11 @@ public class SubcontractModel implements ISubcontractModel {
     }
 
     @Override
-    public SortedSet<EndDateCommunicationToCustomer> getAskedEndDates() {
+    public SortedSet<EndDateCommunication> getAskedEndDates() {
         if (subcontractedTaskData != null) {
             return subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor();
         }
-        return new TreeSet<EndDateCommunicationToCustomer>();
+        return new TreeSet<EndDateCommunication>();
     }
 
 }

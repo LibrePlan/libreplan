@@ -33,8 +33,8 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomerComparator;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
@@ -104,8 +104,8 @@ public class SubcontractedTaskData extends BaseEntity {
 
     private Set<SubcontractorCommunication> subcontractorCommunications = new HashSet<SubcontractorCommunication>();
 
-    private SortedSet<EndDateCommunicationToCustomer> endDatesCommunicatedFromSubcontractor = new TreeSet<EndDateCommunicationToCustomer>(
-            new EndDateCommunicationToCustomerComparator());
+    private SortedSet<EndDateCommunication> endDatesCommunicatedFromSubcontractor = new TreeSet<EndDateCommunication>(
+            new EndDateCommunicationComparator());
 
     /**
      * Constructor for hibernate. Do not use!
@@ -307,15 +307,15 @@ public class SubcontractedTaskData extends BaseEntity {
     }
 
     public void setEndDatesCommunicatedFromSubcontractor(
-            SortedSet<EndDateCommunicationToCustomer> endDatesCommunicatedFromSubcontractor) {
+            SortedSet<EndDateCommunication> endDatesCommunicatedFromSubcontractor) {
         this.endDatesCommunicatedFromSubcontractor = endDatesCommunicatedFromSubcontractor;
     }
 
-    public SortedSet<EndDateCommunicationToCustomer> getEndDatesCommunicatedFromSubcontractor() {
+    public SortedSet<EndDateCommunication> getEndDatesCommunicatedFromSubcontractor() {
         return endDatesCommunicatedFromSubcontractor;
     }
 
-    public EndDateCommunicationToCustomer getLastEndDatesCommunicatedFromSubcontractor() {
+    public EndDateCommunication getLastEndDatesCommunicatedFromSubcontractor() {
         if (getEndDatesCommunicatedFromSubcontractor() != null) {
             return getEndDatesCommunicatedFromSubcontractor().first();
         }

@@ -41,7 +41,7 @@ import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
@@ -236,7 +236,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         // create the asked end dates
         EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO = null;
         if (isAnyEndDateNotReported(order)) {
-            EndDateCommunicationToCustomer lastEndDateCommunicationToCustomerReported = order
+            EndDateCommunication lastEndDateCommunicationToCustomerReported = order
                     .getLastEndDateCommunicationToCustomer();
             lastEndDateCommunicationToCustomerReported.setCommunicationDate(new Date());
             endDateCommunicationToCustomerDTO = OrderElementConverter.toDTO(lastEndDateCommunicationToCustomerReported);
@@ -313,7 +313,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     private boolean isAnyEndDateNotReported(Order order) {
         if (order != null && order.getEndDateCommunicationToCustomer() != null) {
-            EndDateCommunicationToCustomer lastAskedEndDate = order
+            EndDateCommunication lastAskedEndDate = order
                     .getLastEndDateCommunicationToCustomer();
             return lastAskedEndDate != null ? (lastAskedEndDate.getCommunicationDate() == null)
                     : false;

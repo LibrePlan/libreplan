@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.planner.entities.SubcontractState;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
@@ -267,7 +267,7 @@ public class SubcontractController extends GenericForwardComposer {
         return new SimpleDateFormat(precision).format(date);
     }
 
-    public SortedSet<EndDateCommunicationToCustomer> getAskedEndDates() {
+    public SortedSet<EndDateCommunication> getAskedEndDates() {
         return subcontractModel.getAskedEndDates();
     }
 
@@ -279,7 +279,7 @@ public class SubcontractController extends GenericForwardComposer {
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            EndDateCommunicationToCustomer endDateFromSubcontractor = (EndDateCommunicationToCustomer) data;
+            EndDateCommunication endDateFromSubcontractor = (EndDateCommunication) data;
             row.setValue(endDateFromSubcontractor);
 
             appendLabel(row, SubcontractController.this.toString(
@@ -297,13 +297,13 @@ public class SubcontractController extends GenericForwardComposer {
         }
 
         private void appendOperations(Row row,
-                EndDateCommunicationToCustomer endDateFromSubcontractor) {
+                EndDateCommunication endDateFromSubcontractor) {
             Hbox hbox = new Hbox();
             hbox.appendChild(getUpdateButton(endDateFromSubcontractor));
             row.appendChild(hbox);
         }
 
-        private Button getUpdateButton(final EndDateCommunicationToCustomer endDateFromSubcontractor) {
+        private Button getUpdateButton(final EndDateCommunication endDateFromSubcontractor) {
 
             Button updateButton = new Button(_("Update task end"));
             updateButton.setDisabled(!isUpgradeable(endDateFromSubcontractor));
@@ -319,8 +319,8 @@ public class SubcontractController extends GenericForwardComposer {
             return updateButton;
         }
 
-        private boolean isUpgradeable(EndDateCommunicationToCustomer endDateFromSubcontractor) {
-            EndDateCommunicationToCustomer lastEndDateReported = getSubcontractedTaskData()
+        private boolean isUpgradeable(EndDateCommunication endDateFromSubcontractor) {
+            EndDateCommunication lastEndDateReported = getSubcontractedTaskData()
                     .getLastEndDatesCommunicatedFromSubcontractor();
             if (lastEndDateReported != null) {
                 if (lastEndDateReported.equals(endDateFromSubcontractor)) {

@@ -46,7 +46,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.CommunicationType;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
@@ -288,7 +288,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
                 Date communicationDate = DateConverter.toDate(endDateDTO.communicationDate);
 
                 subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor().add(
-                        EndDateCommunicationToCustomer.create(new Date(), endDate,
+                        EndDateCommunication.create(new Date(), endDate,
                                 communicationDate));
                 subcontractedTaskDataDAO.save(subcontractedTaskData);
 

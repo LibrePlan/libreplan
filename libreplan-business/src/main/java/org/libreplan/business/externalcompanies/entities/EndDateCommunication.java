@@ -24,12 +24,12 @@ import java.util.Date;
 import org.libreplan.business.common.BaseEntity;
 
 /**
- * Entity EndDateCommunicationToCustomer
+ * Entity EndDateCommunication
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class EndDateCommunicationToCustomer extends BaseEntity {
+public class EndDateCommunication extends BaseEntity {
 
     private Date saveDate;
 
@@ -37,33 +37,33 @@ public class EndDateCommunicationToCustomer extends BaseEntity {
 
     private Date communicationDate;
 
-    protected EndDateCommunicationToCustomer() {
+    protected EndDateCommunication() {
         this.setSaveDate(new Date());
     }
 
-    protected EndDateCommunicationToCustomer(Date endDate) {
+    protected EndDateCommunication(Date endDate) {
         this.setEndDate(endDate);
         this.setSaveDate(new Date());
     }
 
-    protected EndDateCommunicationToCustomer(Date saveDate, Date endDate,
+    protected EndDateCommunication(Date saveDate, Date endDate,
  Date communicationDate) {
         this.setSaveDate(saveDate);
         this.setEndDate(endDate);
         this.setCommunicationDate(communicationDate);
     }
 
-    public static EndDateCommunicationToCustomer create() {
-        return create(new EndDateCommunicationToCustomer());
+    public static EndDateCommunication create() {
+        return create(new EndDateCommunication());
     }
 
-    public static EndDateCommunicationToCustomer create(Date endDate) {
-        return create(new EndDateCommunicationToCustomer(endDate));
+    public static EndDateCommunication create(Date endDate) {
+        return create(new EndDateCommunication(endDate));
     }
 
-    public static EndDateCommunicationToCustomer create(Date saveDate, Date endDate,
+    public static EndDateCommunication create(Date saveDate, Date endDate,
             Date communicationDate) {
-        return create(new EndDateCommunicationToCustomer(saveDate, endDate, communicationDate));
+        return create(new EndDateCommunication(saveDate, endDate, communicationDate));
     }
 
     public void setSaveDate(Date saveDate) {

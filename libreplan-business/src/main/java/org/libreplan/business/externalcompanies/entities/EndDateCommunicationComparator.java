@@ -22,14 +22,14 @@ package org.libreplan.business.externalcompanies.entities;
 import java.util.Comparator;
 
 
-public class EndDateCommunicationToCustomerComparator implements
-        Comparator<EndDateCommunicationToCustomer> {
+public class EndDateCommunicationComparator implements
+        Comparator<EndDateCommunication> {
 
-    public EndDateCommunicationToCustomerComparator() {
+    public EndDateCommunicationComparator() {
     }
 
     @Override
-    public int compare(EndDateCommunicationToCustomer arg0, EndDateCommunicationToCustomer arg1) {
+    public int compare(EndDateCommunication arg0, EndDateCommunication arg1) {
         if (arg0.getSaveDate() == arg1.getSaveDate()) {
             return 0;
         }

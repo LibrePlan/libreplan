@@ -217,4 +217,9 @@
             <column name="subcontracted_task_data_id" type="BIGINT"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="rename-table-end_date_comunication-to-customer" author="smontes">
+        <comment>Rename table to end_date_communication</comment>
+        <renameTable oldTableName="end_date_communication_to_customer" newTableName="end_date_communication" />
+    </changeSet>
 </databaseChangeLog>

@@ -48,7 +48,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
@@ -860,7 +860,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     @Override
-    public void removeAskedEndDate(EndDateCommunicationToCustomer endDate) {
+    public void removeAskedEndDate(EndDateCommunication endDate) {
         Order order = (Order) getOrder();
         if (getOrder() != null && endDate != null) {
             order.removeAskedEndDate(endDate);
@@ -868,12 +868,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     @Override
-    public SortedSet<EndDateCommunicationToCustomer> getEndDates() {
+    public SortedSet<EndDateCommunication> getEndDates() {
         Order order = (Order) getOrder();
         if (getOrder() != null) {
             return order.getEndDateCommunicationToCustomer();
         }
-        return new TreeSet<EndDateCommunicationToCustomer>();
+        return new TreeSet<EndDateCommunication>();
     }
 
     @Override
@@ -881,7 +881,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         if (getOrder() != null) {
             Order order = (Order) getOrder();
 
-            EndDateCommunicationToCustomer askedEndDate = EndDateCommunicationToCustomer.create(
+            EndDateCommunication askedEndDate = EndDateCommunication.create(
                     new Date(), value, null);
             order.addAskedEndDate(askedEndDate);
         }
@@ -895,7 +895,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
                 return false;
             }
 
-            EndDateCommunicationToCustomer endDateCommunicationToCustomer = order
+            EndDateCommunication endDateCommunicationToCustomer = order
                     .getEndDateCommunicationToCustomer().first();
             Date currentEndDate = endDateCommunicationToCustomer.getEndDate();
             return (currentEndDate.compareTo(value) == 0);

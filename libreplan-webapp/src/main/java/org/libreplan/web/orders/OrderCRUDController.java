@@ -43,7 +43,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -1576,7 +1576,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    public SortedSet<EndDateCommunicationToCustomer> getEndDates() {
+    public SortedSet<EndDateCommunication> getEndDates() {
         return orderModel.getEndDates();
     }
 
@@ -1606,7 +1606,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private boolean thereIsSomeCommunicationDateEmpty() {
-        for (EndDateCommunicationToCustomer endDate : orderModel.getEndDates()) {
+        for (EndDateCommunication endDate : orderModel.getEndDates()) {
             if (endDate.getCommunicationDate() == null) {
                 return true;
             }
@@ -1622,7 +1622,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            EndDateCommunicationToCustomer endDate = (EndDateCommunicationToCustomer) data;
+            EndDateCommunication endDate = (EndDateCommunication) data;
             row.setValue(endDate);
 
             appendLabel(row, toString(endDate.getSaveDate(), "dd/MM/yyyy HH:mm"));
@@ -1642,13 +1642,13 @@ public class OrderCRUDController extends GenericForwardComposer {
             row.appendChild(new Label(label));
         }
 
-        private void appendOperations(Row row, EndDateCommunicationToCustomer endDate) {
+        private void appendOperations(Row row, EndDateCommunication endDate) {
             Hbox hbox = new Hbox();
             hbox.appendChild(getDeleteButton(endDate));
             row.appendChild(hbox);
         }
 
-        private Button getDeleteButton(final EndDateCommunicationToCustomer endDate) {
+        private Button getDeleteButton(final EndDateCommunication endDate) {
 
             Button deleteButton = new Button();
             deleteButton.setDisabled(isNotUpdate(endDate));
@@ -1666,8 +1666,8 @@ public class OrderCRUDController extends GenericForwardComposer {
             return deleteButton;
         }
 
-        private boolean isNotUpdate(final EndDateCommunicationToCustomer endDate) {
-            EndDateCommunicationToCustomer lastAskedEndDate = getOrder()
+        private boolean isNotUpdate(final EndDateCommunication endDate) {
+            EndDateCommunication lastAskedEndDate = getOrder()
                     .getEndDateCommunicationToCustomer().first();
             if ((lastAskedEndDate != null) && (lastAskedEndDate.equals(endDate))) {
                 return (lastAskedEndDate.getCommunicationDate() != null);
@@ -1676,7 +1676,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    public void removeAskedEndDate(EndDateCommunicationToCustomer endDate) {
+    public void removeAskedEndDate(EndDateCommunication endDate) {
         orderModel.removeAskedEndDate(endDate);
         reloadGridAskedEndDates();
     }

@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
@@ -131,9 +131,9 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     PlanningState getPlanningState();
 
-    void removeAskedEndDate(EndDateCommunicationToCustomer endDate);
+    void removeAskedEndDate(EndDateCommunication endDate);
 
-    SortedSet<EndDateCommunicationToCustomer> getEndDates();
+    SortedSet<EndDateCommunication> getEndDates();
 
     void addAskedEndDate(Date value);
 
