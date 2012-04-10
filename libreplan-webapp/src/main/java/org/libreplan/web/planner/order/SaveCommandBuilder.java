@@ -120,6 +120,7 @@ import org.zkoss.zul.Messagebox;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class SaveCommandBuilder {
 
+
     private static final Log LOG = LogFactory.getLog(SaveCommandBuilder.class);
 
     public ISaveCommand build(PlanningState planningState,
@@ -285,6 +286,8 @@ public class SaveCommandBuilder {
                                 }
                             });
                     dontPoseAsTransientObjectAnymore(state.getOrder());
+                    dontPoseAsTransientObjectAnymore(state.getOrder()
+                            .getEndDateCommunicationToCustomer());
                     state.getScenarioInfo().afterCommit();
                     fireAfterSave();
                     if (afterSaveActions != null) {
@@ -361,6 +364,7 @@ public class SaveCommandBuilder {
 
             updateTasksRelatedData();
             removeTasksToRemove();
+            loadDataAccessedWithNotPosedAsTransientInOrder(state.getOrder());
             loadDataAccessedWithNotPosedAsTransient(state.getOrder());
             if (state.getRootTask() != null) {
                 loadDependenciesCollectionsForTaskRoot(state.getRootTask());
@@ -796,6 +800,10 @@ public class SaveCommandBuilder {
                             + " does not exist");
                 }
             }
+        }
+
+        private void loadDataAccessedWithNotPosedAsTransientInOrder(Order order) {
+            order.getEndDateCommunicationToCustomer().size();
         }
 
         private void loadDataAccessedWithNotPosedAsTransient(
