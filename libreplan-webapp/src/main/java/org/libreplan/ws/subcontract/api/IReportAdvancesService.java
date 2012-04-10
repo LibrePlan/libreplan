@@ -30,7 +30,7 @@ import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
  */
 public interface IReportAdvancesService {
 
-    InstanceConstraintViolationsListDTO updateAdvances(
+    InstanceConstraintViolationsListDTO updateAdvancesOrEndDate(
             OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO);
 
 }

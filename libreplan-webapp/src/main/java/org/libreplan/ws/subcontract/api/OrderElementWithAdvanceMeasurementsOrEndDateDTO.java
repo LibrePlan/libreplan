@@ -47,13 +47,18 @@ public class OrderElementWithAdvanceMeasurementsOrEndDateDTO {
     @XmlElement(name = "advance-measurement")
     public Set<AdvanceMeasurementDTO> advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
 
+    @XmlElement(name = "end-date-communication-to-customer")
+    public EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO;
+
     public OrderElementWithAdvanceMeasurementsOrEndDateDTO() {
     }
 
     public OrderElementWithAdvanceMeasurementsOrEndDateDTO(String code,
-            Set<AdvanceMeasurementDTO> advanceMeasurements) {
+            Set<AdvanceMeasurementDTO> advanceMeasurements,
+            EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO) {
         this.code = code;
         this.advanceMeasurements = advanceMeasurements;
+        this.endDateCommunicationToCustomerDTO = endDateCommunicationToCustomerDTO;
     }
 
 }

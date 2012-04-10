@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -57,8 +56,6 @@ import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.daos.IGenericDAO;
-import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
@@ -86,7 +83,6 @@ import org.libreplan.ws.subcontract.api.IReportAdvancesService;
 import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateDTO;
 import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.libreplan.business.planner.entities.SubcontractorCommunication;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -208,7 +204,7 @@ public class ReportAdvancesServiceTest {
         OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
         reportAdvancesService
-                .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
+                .updateAdvancesOrEndDate(orderElementWithAdvanceMeasurementsListDTO);
 
         Order foundOrder = orderDAO.findExistingEntity(order.getId());
         assertNotNull(foundOrder);
@@ -236,6 +232,7 @@ public class ReportAdvancesServiceTest {
     @Test
     public void validAdvancesReportToSubcontratedOrderElement() {
         int previousCommunications = subcontractorCommunicationDAO.getAll().size();
+
         OrderLine orderLine = createOrderLine();
 
         String orderElementCode = orderLine.getCode();
@@ -246,7 +243,7 @@ public class ReportAdvancesServiceTest {
         OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
         reportAdvancesService
-                .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
+                .updateAdvancesOrEndDate(orderElementWithAdvanceMeasurementsListDTO);
 
         Order foundOrder = orderDAO.findExistingEntity(orderLine.getOrder().getId());
         assertNotNull(foundOrder);
@@ -271,7 +268,7 @@ public class ReportAdvancesServiceTest {
         }
 
         int currentCommunications = subcontractorCommunicationDAO.getAll().size();
-        assertThat((previousCommunications+1), equalTo(currentCommunications));
+        assertThat((previousCommunications + 1), equalTo(currentCommunications));
     }
 
     @Test
@@ -287,7 +284,7 @@ public class ReportAdvancesServiceTest {
         OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
         reportAdvancesService
-                .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
+                .updateAdvancesOrEndDate(orderElementWithAdvanceMeasurementsListDTO);
 
         Order foundOrder = orderDAO.findExistingEntity(order.getId());
         assertNotNull(foundOrder);

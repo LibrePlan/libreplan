@@ -33,6 +33,8 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomer;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationToCustomerComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
@@ -70,7 +72,8 @@ public class SubcontractedTaskData extends BaseEntity {
         result.hoursGroupsExported = subcontractedTaskData.hoursGroupsExported;
         result.setState(subcontractedTaskData.getState());
         result.setRequiredDeliveringDates(subcontractedTaskData.getRequiredDeliveringDates());
-
+        result.setEndDatesCommunicatedFromSubcontractor(subcontractedTaskData
+                .getEndDatesCommunicatedFromSubcontractor());
         return create(result);
     }
 
@@ -100,6 +103,9 @@ public class SubcontractedTaskData extends BaseEntity {
             new DeliverDateComparator());
 
     private Set<SubcontractorCommunication> subcontractorCommunications = new HashSet<SubcontractorCommunication>();
+
+    private SortedSet<EndDateCommunicationToCustomer> endDatesCommunicatedFromSubcontractor = new TreeSet<EndDateCommunicationToCustomer>(
+            new EndDateCommunicationToCustomerComparator());
 
     /**
      * Constructor for hibernate. Do not use!
@@ -234,6 +240,8 @@ public class SubcontractedTaskData extends BaseEntity {
         this.hoursGroupsExported = subcontratedTask.hoursGroupsExported;
         this.state = subcontratedTask.getState();
         this.setRequiredDeliveringDates(subcontratedTask.getRequiredDeliveringDates());
+        this.setEndDatesCommunicatedFromSubcontractor(subcontratedTask
+                .getEndDatesCommunicatedFromSubcontractor());
     }
 
     @AssertTrue(message = "external company should be subcontractor")
@@ -294,6 +302,22 @@ public class SubcontractedTaskData extends BaseEntity {
                 && !this.requiredDeliveringDates.isEmpty()) {
             return this.requiredDeliveringDates.first()
                     .getSubcontractorDeliverDate();
+        }
+        return null;
+    }
+
+    public void setEndDatesCommunicatedFromSubcontractor(
+            SortedSet<EndDateCommunicationToCustomer> endDatesCommunicatedFromSubcontractor) {
+        this.endDatesCommunicatedFromSubcontractor = endDatesCommunicatedFromSubcontractor;
+    }
+
+    public SortedSet<EndDateCommunicationToCustomer> getEndDatesCommunicatedFromSubcontractor() {
+        return endDatesCommunicatedFromSubcontractor;
+    }
+
+    public EndDateCommunicationToCustomer getLastEndDatesCommunicatedFromSubcontractor() {
+        if (getEndDatesCommunicatedFromSubcontractor() != null) {
+            return getEndDatesCommunicatedFromSubcontractor().first();
         }
         return null;
     }

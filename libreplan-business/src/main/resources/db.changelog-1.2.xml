@@ -210,4 +210,11 @@
             <column name="order_id" type="BIGINT"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="subcontracted-date-id-column-to-end-date-communication" author="smontes">
+        <comment>Add subcontracted date id column to end date communication to customer</comment>
+        <addColumn tableName="end_date_communication_to_customer">
+            <column name="subcontracted_task_data_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

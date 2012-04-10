@@ -41,8 +41,6 @@ import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.orders.OrderCRUDController;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.libreplan.web.planner.company.CompanyPlanningController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
@@ -64,7 +62,6 @@ import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.TabProxy;
-import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.ui.Executions;
@@ -72,7 +69,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
-import org.zkoss.zul.Button;
 
 /**
  * Creates and handles several tabs

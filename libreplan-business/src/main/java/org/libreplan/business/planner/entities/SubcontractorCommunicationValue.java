@@ -100,6 +100,7 @@ public class SubcontractorCommunicationValue implements INewObject {
     public String toString() {
         String datetime = (date == null) ? "" : new SimpleDateFormat(
                 "dd/MM/yyyy").format(date);
-        return progress.toString() + "% - " + datetime;
+        String progress_reported = progress != null ? progress.toString() + "% - " : "";
+        return progress_reported + datetime;
     }
 }

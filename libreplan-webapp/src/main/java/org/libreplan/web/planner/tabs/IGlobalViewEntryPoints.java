@@ -23,7 +23,6 @@ package org.libreplan.web.planner.tabs;
 
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.entrypoints.EntryPoint;

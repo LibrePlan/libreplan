@@ -82,8 +82,8 @@ public class EndDateCommunicationToCustomer extends BaseEntity {
         return endDate;
     }
 
-    public void setCommunicationDate(Date communicationDate2) {
-        this.communicationDate = communicationDate2;
+    public void setCommunicationDate(Date communicationDate) {
+        this.communicationDate = communicationDate;
     }
 
     public Date getCommunicationDate() {

@@ -29,7 +29,7 @@ import static org.libreplan.business.i18n.I18nHelper._;
 public enum CommunicationType {
 
     NEW_PROJECT(_("New project")), PROGRESS_UPDATE(_("Progress Update")), UPDATE_DELIVERING_DATE(
-            _("Update Delivering Date"));
+            _("Update Delivering Date")), END_DATE_UPDATE(_("End date update"));
 
     private String description;
 

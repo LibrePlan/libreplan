@@ -56,6 +56,7 @@ import org.libreplan.ws.common.api.InstanceConstraintViolationsDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.libreplan.ws.common.impl.OrderElementConverter;
 import org.libreplan.ws.common.impl.Util;
+import org.libreplan.ws.subcontract.api.EndDateCommunicationToCustomerDTO;
 import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateDTO;
 import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,6 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
-
 
     @Override
     @Transactional(readOnly = true)
@@ -217,6 +217,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
                 throw new UnrecoverableErrorServiceException(message);
             }
+
         } catch (WebApplicationException e) {
             LOG.error("Problems connecting with client web service", e);
 
@@ -232,27 +233,39 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     private OrderElementWithAdvanceMeasurementsOrEndDateListDTO getOrderElementWithAdvanceMeasurementsListDTO(
             Order order) {
         List<OrderElementWithAdvanceMeasurementsOrEndDateDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<OrderElementWithAdvanceMeasurementsOrEndDateDTO>();
+        // create the asked end dates
+        EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO = null;
+        if (isAnyEndDateNotReported(order)) {
+            EndDateCommunicationToCustomer lastEndDateCommunicationToCustomerReported = order
+                    .getLastEndDateCommunicationToCustomer();
+            lastEndDateCommunicationToCustomerReported.setCommunicationDate(new Date());
+            endDateCommunicationToCustomerDTO = OrderElementConverter.toDTO(lastEndDateCommunicationToCustomerReported);
+        }
 
+        // create the progress
         DirectAdvanceAssignment directAdvanceAssignment = order
                 .getDirectAdvanceAssignmentOfTypeSubcontractor();
         Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
 
-        for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
-                .getAdvanceMeasurements()) {
-            if (advanceMeasurement.getCommunicationDate() == null) {
-                AdvanceMeasurementDTO advanceMeasurementDTO = OrderElementConverter
-                        .toDTO(advanceMeasurement);
-                advanceMeasurement.updateCommunicationDate(new Date());
-                advanceMeasurementDTOs.add(advanceMeasurementDTO);
+        if (directAdvanceAssignment != null) {
+            for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
+                    .getAdvanceMeasurements()) {
+                if (advanceMeasurement.getCommunicationDate() == null) {
+                    AdvanceMeasurementDTO advanceMeasurementDTO = OrderElementConverter
+                            .toDTO(advanceMeasurement);
+                    advanceMeasurement.updateCommunicationDate(new Date());
+                    advanceMeasurementDTOs.add(advanceMeasurementDTO);
+                }
             }
         }
 
-        if (!advanceMeasurementDTOs.isEmpty()) {
-            OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsOrEndDateDTO(
-                    directAdvanceAssignment.getOrderElement().getExternalCode(),
-                    advanceMeasurementDTOs);
+        // add the updates
+        if (endDateCommunicationToCustomerDTO != null || !advanceMeasurementDTOs.isEmpty()) {
+            OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsOrEndDateDTO = new OrderElementWithAdvanceMeasurementsOrEndDateDTO(
+                    order.getExternalCode(),
+                    advanceMeasurementDTOs, endDateCommunicationToCustomerDTO);
             orderElementWithAdvanceMeasurementsDTOs
-                    .add(orderElementWithAdvanceMeasurementsDTO);
+                    .add(orderElementWithAdvanceMeasurementsOrEndDateDTO);
         }
 
         return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(getCompanyCode(),
