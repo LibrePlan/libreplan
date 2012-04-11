@@ -43,6 +43,7 @@ import org.libreplan.business.planner.chart.ILoadChartData;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
@@ -122,6 +123,9 @@ public class ResourceLoadController implements Composer {
     private Reloader reloader = new Reloader();
 
     private IOrderPlanningGate planningControllerEntryPoints;
+
+    @Autowired
+    private IResourcesSearcher resourcesSearcher;
 
     public ResourceLoadController() {
     }
@@ -265,7 +269,7 @@ public class ResourceLoadController implements Composer {
         result.add(filterTypeChanger);
         result.add(new ByDatesFilter(onChange, filterBy));
         WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
-                onChange, filterBy, filterTypeChanger);
+                onChange, filterBy, filterTypeChanger, resourcesSearcher);
         result.add(bandbox);
         result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
                 bandbox));
@@ -501,10 +505,13 @@ public class ResourceLoadController implements Composer {
 
         private List<Object> entitiesSelected = null;
 
+        private final IResourcesSearcher resourcesSearcher;
+
         private WorkersOrCriteriaBandbox(Runnable onChange,
-                PlanningState filterBy,
-                FilterTypeChanger filterType) {
+                PlanningState filterBy, FilterTypeChanger filterType,
+                IResourcesSearcher resourcesSearcher) {
             super(onChange, filterBy, filterType);
+            this.resourcesSearcher = resourcesSearcher;
         }
 
         @Override
@@ -563,12 +570,31 @@ public class ResourceLoadController implements Composer {
                 parameters.clearResourcesToShow();
                 parameters.clearCriteriaToShow();
             } else if (isFilteringByResource()) {
-                parameters.setResourcesToShow(as(Resource.class,
-                        entitiesSelected));
+                parameters.setResourcesToShow(calculateResourcesToShow());
             } else {
                 parameters.setCriteriaToShow(as(Criterion.class,
                         entitiesSelected));
             }
+        }
+
+        private List<Resource> calculateResourcesToShow() {
+            List<Resource> resources = new ArrayList<Resource>();
+            List<Criterion> criteria = new ArrayList<Criterion>();
+
+            for (Object each : entitiesSelected) {
+                if (each instanceof Resource) {
+                    resources.add((Resource) each);
+                } else {
+                    criteria.add((Criterion) each);
+                }
+            }
+
+            if (!criteria.isEmpty()) {
+                resources.addAll(resourcesSearcher.searchBoth()
+                        .byCriteria(criteria).execute());
+            }
+
+            return resources;
         }
 
         public boolean hasEntitiesSelected() {
