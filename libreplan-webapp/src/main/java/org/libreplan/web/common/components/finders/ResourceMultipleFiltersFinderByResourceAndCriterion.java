@@ -41,12 +41,12 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
+public class ResourceMultipleFiltersFinderByResourceAndCriterion extends MultipleFiltersFinder {
 
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
 
-    protected WorkerMultipleFiltersFinder() {
+    protected ResourceMultipleFiltersFinderByResourceAndCriterion() {
     }
 
     @Override
@@ -79,7 +79,7 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
     private void addResource(Class<?> className, Resource resource) {
         String pattern = resource.getName();
         getListMatching().add(
-                new FilterPair(WorkerFilterEnum.RESOURCE, className
+                new FilterPair(ResourceFilterEnumByResourceAndCriterion.RESOURCE, className
                         .getSimpleName(), pattern, resource));
     }
 
@@ -105,7 +105,7 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
     private void addCriterion(CriterionType type, Criterion criterion) {
         String pattern = criterion.getName() + " ( " + type.getName() + " )";
         getListMatching().add(
-                new FilterPair(WorkerFilterEnum.CRITERION, type
+                new FilterPair(ResourceFilterEnumByResourceAndCriterion.CRITERION, type
                         .getResource().toLowerCase(), pattern, criterion));
     }
 

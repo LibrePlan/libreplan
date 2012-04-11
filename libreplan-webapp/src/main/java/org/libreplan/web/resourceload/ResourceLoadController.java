@@ -549,7 +549,7 @@ public class ResourceLoadController implements Composer {
 
         private String getFinderToUse() {
             if (isFilteringByResource()) {
-                return "workerMultipleFiltersFinder";
+                return "resourceMultipleFiltersFinderByResourceAndCriterion";
             } else {
                 return "criterionMultipleFiltersFinder";
             }

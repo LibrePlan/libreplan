@@ -41,7 +41,7 @@
 
     <bean id="nonLimitingResourceAllocationMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.NonLimitingResourceAllocationMultipleFiltersFinder" scope="singleton" />
 
-    <bean id="workerMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.WorkerMultipleFiltersFinder" scope="singleton"/>
+    <bean id="resourceMultipleFiltersFinderByResourceAndCriterion" class="org.libreplan.web.common.components.finders.ResourceMultipleFiltersFinderByResourceAndCriterion" scope="singleton"/>
 
     <bean id="criterionMultipleFiltersFinder" class="org.libreplan.web.common.components.finders.CriterionMultipleFiltersFinder" scope="singleton"/>
 

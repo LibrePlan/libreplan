@@ -26,7 +26,7 @@ import org.libreplan.business.resources.entities.Resource;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public enum WorkerFilterEnum implements IFilterEnum {
+public enum ResourceFilterEnumByResourceAndCriterion implements IFilterEnum {
 
     RESOURCE(_("Resource")), CRITERION(_("Criterion"));
 
@@ -39,7 +39,7 @@ public enum WorkerFilterEnum implements IFilterEnum {
 
     private String description;
 
-    private WorkerFilterEnum(String description) {
+    private ResourceFilterEnumByResourceAndCriterion(String description) {
         this.description = description;
     }
 
