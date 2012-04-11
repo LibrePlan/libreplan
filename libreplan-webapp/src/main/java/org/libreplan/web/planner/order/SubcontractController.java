@@ -329,6 +329,7 @@ public class SubcontractController extends GenericForwardComposer {
                     if (endDateTask != null) {
                         return (newEndDate.compareTo(endDateTask) != 0);
                     }
+                    return true;
                 }
             }
             return false;
