@@ -33,6 +33,8 @@ import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
 import org.libreplan.business.costcategories.daos.IHourCostDAO;
 import org.libreplan.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
+import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.daos.ILabelTypeDAO;
@@ -190,6 +192,12 @@ public class Registry {
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
+
+    @Autowired
+    private IExpenseSheetDAO expenseSheetDAO;
+
+    @Autowired
+    private IExpenseSheetLineDAO expenseSheetLineDAO;
 
     @Autowired
     private IAdHocTransactionService transactionServiceDAO;
@@ -353,5 +361,13 @@ public class Registry {
 
     public static IAdHocTransactionService getTransactionService() {
         return getInstance().transactionServiceDAO;
+    }
+
+    public static IExpenseSheetDAO getExpenseSheetDAO() {
+        return getInstance().expenseSheetDAO;
+    }
+
+    public static IExpenseSheetLineDAO getExpenseSheetLineDAO() {
+        return getInstance().expenseSheetLineDAO;
     }
 }
