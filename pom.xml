@@ -36,6 +36,7 @@
         <databasetable.prefix>public.</databasetable.prefix>
 
         <default.passwordsControl>true</default.passwordsControl>
+        <default.exampleUsersDisabled>true</default.exampleUsersDisabled>
     </properties>
 
     <!--
@@ -83,6 +84,9 @@
                 <hibernate.format_sql>true</hibernate.format_sql>
                 <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
                 <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
+
+                <!-- Enable example users (user, wsreader and wswriter) -->
+                <default.exampleUsersDisabled>false</default.exampleUsersDisabled>
             </properties>
         </profile>
 
