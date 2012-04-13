@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -81,7 +81,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
@@ -96,7 +95,9 @@ import org.zkoss.zul.api.Combobox;
 
 /**
  * Controller for global resourceload view
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -522,29 +523,22 @@ public class ResourceLoadController implements Composer {
             panel.setSecondOptionalFilter(buildBandboxFilterer());
         }
 
-        private Hbox buildBandboxFilterer() {
+        private BandboxMultipleSearch buildBandboxFilterer() {
             bandBox.setId("workerBandboxMultipleSearch");
             bandBox.setWidthBandbox("185px");
             bandBox.setWidthListbox("450px");
             bandBox.setFinder(getFinderToUse());
             bandBox.afterCompose();
 
-            Button button = new Button();
-            button.setImage("/common/img/ico_filter.png");
-            button.setTooltip(_("Filter by worker"));
-            button.addEventListener(Events.ON_CLICK, new EventListener() {
+            bandBox.addEventListener(Events.ON_CHANGE, new EventListener() {
                 @Override
-                public void onEvent(Event event) {
+                public void onEvent(Event event) throws Exception {
                     entitiesSelected = getSelected();
                     notifyChange();
                 }
             });
 
-            Hbox hbox = new Hbox();
-            hbox.appendChild(bandBox);
-            hbox.appendChild(button);
-            hbox.setAlign("center");
-            return hbox;
+            return bandBox;
         }
 
         private String getFinderToUse() {
