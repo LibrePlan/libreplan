@@ -427,8 +427,6 @@ public class ResourceLoadController implements Composer {
         }
 
         private Hbox buildTimeFilter() {
-            Label label1 = new Label(_("Time filter") + ":");
-            Label label2 = new Label("-");
             startBox.setValue(asDate(startDateValue));
             startBox.setWidth("100px");
             startBox.addEventListener(Events.ON_CHANGE, new EventListener() {
@@ -454,9 +452,9 @@ public class ResourceLoadController implements Composer {
                 }
             });
             Hbox hbox = new Hbox();
-            hbox.appendChild(label1);
+            hbox.appendChild(new Label(_("From") + ":"));
             hbox.appendChild(startBox);
-            hbox.appendChild(label2);
+            hbox.appendChild(new Label(_("To") + ":"));
             hbox.appendChild(endBox);
             hbox.setAlign("center");
             return hbox;
@@ -508,6 +506,8 @@ public class ResourceLoadController implements Composer {
 
         private final IResourcesSearcher resourcesSearcher;
 
+        private Label label = new Label();
+
         private WorkersOrCriteriaBandbox(Runnable onChange,
                 PlanningState filterBy, FilterTypeChanger filterType,
                 IResourcesSearcher resourcesSearcher) {
@@ -523,7 +523,7 @@ public class ResourceLoadController implements Composer {
             panel.setSecondOptionalFilter(buildBandboxFilterer());
         }
 
-        private BandboxMultipleSearch buildBandboxFilterer() {
+        private Hbox buildBandboxFilterer() {
             bandBox.setId("workerBandboxMultipleSearch");
             bandBox.setWidthBandbox("185px");
             bandBox.setWidthListbox("450px");
@@ -538,7 +538,25 @@ public class ResourceLoadController implements Composer {
                 }
             });
 
-            return bandBox;
+            Hbox hbox = new Hbox();
+            hbox.appendChild(getLabel());
+            hbox.appendChild(bandBox);
+            hbox.setAlign("center");
+
+            return hbox;
+        }
+
+        private Label getLabel() {
+            updateLabelValue();
+            return label;
+        }
+
+        private void updateLabelValue() {
+            if (isFilteringByResource()) {
+                label.setValue(_("Resources or criteria") + ":");
+            } else {
+                label.setValue(_("Criteria") + ":");
+            }
         }
 
         private String getFinderToUse() {
@@ -556,6 +574,7 @@ public class ResourceLoadController implements Composer {
             }
             entitiesSelected = null;
             bandBox.setFinder(getFinderToUse());
+            updateLabelValue();
         }
 
         @Override

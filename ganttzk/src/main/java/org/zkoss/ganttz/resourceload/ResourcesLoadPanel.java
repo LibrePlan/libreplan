@@ -86,8 +86,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private Listbox listZoomLevels;
 
-    private final String FILTER_RESOURCES = _("by resources");
-    private final String FILTER_CRITERIA = _("by criteria");
+    private final String FILTER_RESOURCES = _("Resources");
+    private final String FILTER_CRITERIA = _("Generic allocation criteria");
     private String feedBackMessage;
     private Boolean filterbyResources;
 
