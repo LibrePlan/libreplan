@@ -9,8 +9,6 @@
 	<parameter name="labels" class="java.lang.String"/>
 	<field name="workerName" class="java.lang.String"/>
 	<field name="date" class="java.util.Date"/>
-	<field name="clockStart" class="java.util.Date"/>
-	<field name="clockFinish" class="java.util.Date"/>
 	<field name="numHours" class="java.math.BigDecimal"/>
 	<field name="orderElementCode" class="java.lang.String"/>
 	<field name="descriptionValues" class="java.lang.String"/>
