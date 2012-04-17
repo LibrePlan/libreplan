@@ -26,6 +26,7 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.order.PlanningStateCreator.and;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -461,8 +462,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                             relatedWith,
                             asDate(parameters.getInitDateFilter()),
                             asDate(parameters.getEndDateFilter()));
-            return doReplacementsIfNeeded(result,
-                    and(onInterval(), new RelatedWithAnyOf(relatedWith)));
+            return doReplacementsIfNeeded(result);
         }
 
         private Map<Criterion, List<ResourceAllocation<?>>> withAssociatedSpecific(
@@ -494,19 +494,19 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     resourceAllocationDAO.findGenericAllocationsByCriterion(
                             getCurrentScenario(),
                             asDate(parameters.getInitDateFilter()),
-                            asDate(parameters.getEndDateFilter())),
-                    onInterval());
+                            asDate(parameters.getEndDateFilter())));
         }
 
         private Map<Criterion, List<GenericResourceAllocation>> doReplacementsIfNeeded(
-                Map<Criterion, List<GenericResourceAllocation>> map,
-                IAllocationCriteria criteria) {
+                Map<Criterion, List<GenericResourceAllocation>> map) {
             if (!parameters.thereIsCurrentOrder()) {
                 return map;
             }
             Map<Criterion, List<GenericResourceAllocation>> result = new HashMap<Criterion, List<GenericResourceAllocation>>();
             for (Entry<Criterion, List<GenericResourceAllocation>> each : map
                     .entrySet()) {
+                IAllocationCriteria criteria = and(onInterval(),
+                        new RelatedWithAnyOf(Arrays.asList(each.getKey())));
                 List<ResourceAllocation<?>> replaced = parameters
                         .getPlanningState().replaceByCurrentOnes(
                                 each.getValue(), criteria);
