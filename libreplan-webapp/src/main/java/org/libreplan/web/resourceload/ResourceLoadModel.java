@@ -26,7 +26,6 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.order.PlanningStateCreator.and;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -74,7 +73,7 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.planner.order.PlanningStateCreator.IAllocationCriteria;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
-import org.libreplan.web.planner.order.PlanningStateCreator.RelatedWithAnyOf;
+import org.libreplan.web.planner.order.PlanningStateCreator.RelatedWith;
 import org.libreplan.web.planner.order.PlanningStateCreator.RelatedWithResource;
 import org.libreplan.web.planner.order.PlanningStateCreator.SpecificRelatedWithCriterionOnInterval;
 import org.libreplan.web.planner.order.PlanningStateCreator.TaskOnInterval;
@@ -506,7 +505,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             for (Entry<Criterion, List<GenericResourceAllocation>> each : map
                     .entrySet()) {
                 IAllocationCriteria criteria = and(onInterval(),
-                        new RelatedWithAnyOf(Arrays.asList(each.getKey())));
+                        new RelatedWith(each.getKey()));
                 List<ResourceAllocation<?>> replaced = parameters
                         .getPlanningState().replaceByCurrentOnes(
                                 each.getValue(), criteria);
