@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +30,7 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
@@ -45,6 +46,7 @@ import org.zkoss.zk.ui.Desktop;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public interface IOrderModel extends IIntegrationEntityModel {
 
@@ -127,5 +129,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
     void useSchedulingDataForCurrentScenario(Order order);
 
     PlanningState getPlanningState();
+
+    boolean isAnyTaskWithConstraint(PositionConstraintType type);
 
 }
