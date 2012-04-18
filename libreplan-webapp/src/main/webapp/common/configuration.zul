@@ -81,7 +81,6 @@
                                     value="${i18n:_('Company logo URL')}" />
                                 <textbox id="companyLogoURL"
                                     value="@{configurationController.companyLogoURL}"
-                                    tooltiptext="${i18n:_('Logo dimensions would be reduced to 300px / 65px if bigger')}"
                                     width="300px" />
                             </row>
                             <row>
