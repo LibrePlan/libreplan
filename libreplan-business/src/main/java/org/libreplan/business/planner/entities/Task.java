@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,6 +42,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.ICalendar;
 import org.libreplan.business.calendars.entities.SameWorkHoursEveryDay;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -66,6 +67,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class Task extends TaskElement implements ITaskPositionConstrained {
 
@@ -888,6 +890,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return subcontractedTaskData;
     }
 
+    public ExternalCompany getSubcontractedCompany() {
+        return subcontractedTaskData.getExternalCompany();
+    }
+
     public void removeAllSatisfiedResourceAllocations() {
         Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
@@ -905,6 +911,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public boolean isSubcontracted() {
         return (subcontractedTaskData != null);
+    }
+
+    public String getSubcontractionName() {
+        return subcontractedTaskData.getExternalCompany().getName();
     }
 
     public boolean isSubcontractedAndWasAlreadySent() {
@@ -1084,6 +1094,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     @Override
     public boolean isTask() {
         return true;
+    }
+
+    @Override
+    public boolean isAnyTaskWithConstraint(PositionConstraintType type) {
+        return getPositionConstraint().getConstraintType().equals(type);
     }
 
 }

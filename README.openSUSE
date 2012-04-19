@@ -61,6 +61,7 @@ authentication method", at the end of this document.
 
 LibrePlan should be running at http://localhost:8080/libreplan
 
+Review INSTALL file for more information.
 
 
 Upgrading LibrePlan a.b.c to LibrePlan x.y.z
@@ -77,10 +78,22 @@ This section explains how to upgrade LibrePlan from version a.b.c to version x.y
 *VERY IMPORTANT*: If there are other versions between a.b.c and x.y.z, we need to execute those scripts in order, so the upgrade is done correctly.
 
 
-2) Restart Tomcat6
-------------------
+2) Stop Tomcat6
+---------------
 
-# service tomcat6 restart
+# service tomcat6 stop
+
+
+3) Remove current deployed aplication
+-------------------------------------
+
+# rm -rf /usr/share/tomcat6/webapps/
+
+
+4) Start Tomcat6
+----------------
+
+# service tomcat6 start
 
 
 LibrePlan should be running at http://localhost:8080/libreplan

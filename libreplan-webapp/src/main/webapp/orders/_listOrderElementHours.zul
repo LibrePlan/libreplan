@@ -3,7 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
-  Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2010-2012 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -59,7 +59,7 @@
                         </row>
                         <row>
                             <label
-                                value="${i18n:_('Sum of all task leafs imputed hours')}" />
+                                value="${i18n:_('Sum of imputed hours in children tasks')}" />
                             <label id="totalIDC"
                                 value="@{assignedHoursToOrderElementController.effortChildren}" />
                         </row>
@@ -117,7 +117,57 @@
                                     value="@{assignedHoursToOrderElementController.progressWork}" />
                                 <label value="${i18n:_('%')}" />
                                 <progressmeter id="hoursProgressBar" />
-                                <progressmeter id="exceedHoursProgressBar" />
+                                <progressmeter id="exceedHoursProgressBar"
+                                    style="background:red ; border:1px solid red"
+                                    value="0" />
+                            </hbox>
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+    </vbox>
+
+    <!-- Money consumed -->
+    <vbox width="100%">
+        <panel
+            title="${i18n:_('Percentage of estimated budget in money / money spent')}">
+            <panelchildren>
+                <grid fixedLayout="true">
+                    <columns>
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <grid fixedLayout="true">
+                                <columns>
+                                    <column width="200px" />
+                                    <column width="200px" />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label
+                                            value="${i18n:_('Budget in money')}:" />
+                                        <label
+                                            value="@{assignedHoursToOrderElementController.budget}" />
+                                    </row>
+                                    <row>
+                                        <label
+                                            value="${i18n:_('Money spent')}:" />
+                                        <label
+                                            value="@{assignedHoursToOrderElementController.moneyCost}" />
+                                    </row>
+                                </rows>
+                            </grid>
+                            <hbox>
+                                <label
+                                    value="@{assignedHoursToOrderElementController.moneyCostPercentage}" />
+                                <label value="${i18n:_('%')}" />
+                                <progressmeter id="moneyCostProgressBar" />
+                                <progressmeter id="exceedMoneyCostProgressBar"
+                                    style="background:red ; border:1px solid red"
+                                    value="0" />
                             </hbox>
                         </row>
                     </rows>

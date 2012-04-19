@@ -45,7 +45,6 @@ import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.web.servlet.dsp.action.Page;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -120,6 +119,8 @@ public class CompanyPlanningController implements Composer {
 
         planner.setAreShownReportedHoursByDefault(Planner
                 .guessShowReportedHoursByDefault(parameters));
+        planner.setAreShownMoneyCostBarByDefault(Planner
+                .guessShowMoneyCostBarByDefault(parameters));
 
         orderFilter = (Vbox) planner.getFellow("orderFilter");
         // Configuration of the order filter

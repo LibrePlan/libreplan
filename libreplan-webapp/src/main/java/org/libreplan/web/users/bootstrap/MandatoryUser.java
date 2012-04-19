@@ -28,20 +28,26 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.Registry;
-import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.users.entities.UserRole;
 
 /**
- * It enumerates the mandatory users (login names) for running the application.
+ * It enumerates the mandatory users (login names) for running the application.<br />
+ *
+ * <code>ADMIN</code> user will be always enabled, however <code>USER</code>,
+ * <code>WSREADER</code> and <code>WSWRITER</code> could be disabled in
+ * copilation time with a Maven option specified via {@link Configuration}
+ * class.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public enum MandatoryUser {
 
-    USER(new ArrayList<UserRole>()) {
+    USER(new ArrayList<UserRole>(), Configuration.isExampleUsersDisabled()) {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultUserPassword();
@@ -50,7 +56,7 @@ public enum MandatoryUser {
     ADMIN(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
         UserRole.ROLE_READ_ALL_ORDERS,
         UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -59,7 +65,7 @@ public enum MandatoryUser {
     },
     ADMIN_EN(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -73,7 +79,7 @@ public enum MandatoryUser {
     },
     ADMIN_ES(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -87,7 +93,7 @@ public enum MandatoryUser {
     },
     ADMIN_GL(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -101,7 +107,7 @@ public enum MandatoryUser {
     },
     ADMIN_PT(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -115,7 +121,7 @@ public enum MandatoryUser {
     },
     ADMIN_RU(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -129,7 +135,7 @@ public enum MandatoryUser {
     },
     ADMIN_IT(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -143,7 +149,7 @@ public enum MandatoryUser {
     },
     ADMIN_FR(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -157,7 +163,7 @@ public enum MandatoryUser {
     },
     ADMIN_NL(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
             UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER)) {
+            UserRole.ROLE_CREATE_ORDER), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -169,13 +175,15 @@ public enum MandatoryUser {
             return Language.DUTCH_LANGUAGE;
         }
     },
-    WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)) {
+    WSREADER(Arrays.asList(UserRole.ROLE_WS_READER), Configuration
+            .isExampleUsersDisabled()) {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultWsreaderPassword();
         }
     },
-    WSWRITER(Arrays.asList(UserRole.ROLE_WS_READER, UserRole.ROLE_WS_WRITER)) {
+    WSWRITER(Arrays.asList(UserRole.ROLE_WS_READER, UserRole.ROLE_WS_WRITER),
+            Configuration.isExampleUsersDisabled()) {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultWswriterPassword();
@@ -197,15 +205,23 @@ public enum MandatoryUser {
         return false;
     }
 
-    private static Configuration getConfiguration() {
+    private static org.libreplan.business.common.entities.Configuration getConfiguration() {
         return Registry.getConfigurationDAO()
                 .getConfigurationWithReadOnlyTransaction();
     }
 
     private Set<UserRole> initialRoles;
 
-    private MandatoryUser(Collection<UserRole> initialUserRoles) {
+    private final boolean userDisabled;
+
+    private MandatoryUser(Collection<UserRole> initialUserRoles,
+            boolean userDisabled) {
         this.initialRoles = new HashSet<UserRole>(initialUserRoles);
+        this.userDisabled = userDisabled;
+    }
+
+    public boolean isUserDisabled() {
+        return userDisabled;
     }
 
     public boolean hasChangedDefaultPasswordOrDisabled() {

@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
@@ -38,9 +37,9 @@ public class HoursWorkedPerResourceDTO implements Comparable {
 
     private Date date;
 
-    private LocalTime clockStart;
+    private String clockStart;
 
-    private LocalTime clockFinish;
+    private String clockFinish;
 
     private EffortDuration effort;
 
@@ -59,8 +58,8 @@ public class HoursWorkedPerResourceDTO implements Comparable {
 
         this.workerName = resource.getName();
         this.date = workReportLine.getDate();
-        this.clockStart = workReportLine.getClockStart();
-        this.clockFinish = workReportLine.getClockFinish();
+        this.clockStart = workReportLine.getClockStart().toString("HH:mm");
+        this.clockFinish = workReportLine.getClockFinish().toString("HH:mm");
         this.effort = workReportLine.getEffort();
         this.orderElementCode = workReportLine.getOrderElement().getCode();
         this.orderElementName = workReportLine.getOrderElement().getName();
@@ -98,19 +97,19 @@ public class HoursWorkedPerResourceDTO implements Comparable {
         this.effort = effort;
     }
 
-    public LocalTime getClockStart() {
+    public String getClockStart() {
         return clockStart;
     }
 
-    public void setClockStart(LocalTime clockStart) {
+    public void setClockStart(String clockStart) {
         this.clockStart = clockStart;
     }
 
-    public LocalTime getClockFinish() {
+    public String getClockFinish() {
         return clockFinish;
     }
 
-    public void setClockFinish(LocalTime clockFinish) {
+    public void setClockFinish(String clockFinish) {
         this.clockFinish = clockFinish;
     }
 

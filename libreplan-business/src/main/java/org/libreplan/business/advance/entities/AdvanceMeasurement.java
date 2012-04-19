@@ -72,8 +72,11 @@ public class AdvanceMeasurement extends BaseEntity {
     }
 
     public void setDate(LocalDate date) {
+        if ((date != null) && (this.date != null)
+                && (this.date.compareTo(date) != 0)) {
+            resetCommunicationDate();
+        }
         this.date = date;
-        resetCommunicationDate();
     }
 
     @NotNull(message = "date not specified")
@@ -86,7 +89,10 @@ public class AdvanceMeasurement extends BaseEntity {
         if (value != null) {
             this.value.setScale(2, BigDecimal.ROUND_DOWN);
         }
-        resetCommunicationDate();
+        if ((this.value != null) && (value != null)
+                && (this.value.compareTo(value) != 0)) {
+            resetCommunicationDate();
+        }
         if (advanceAssignment != null) {
             advanceAssignment.getOrderElement()
                     .markAsDirtyLastAdvanceMeasurementForSpreading();

@@ -1,6 +1,174 @@
 NEWS
 ====
 
+Version 1.2.3 (19 Apr 2012)
+---------------------------
+
+Summary
+~~~~~~~
+
+A new minor version of the LibrePlan 1.2.* version family. The main changes
+included in this new release are:
+
+* Money based cost monitoring system: This is a new feature that allows users to
+  monitor the project cost based on the money spent comparing it to the budget.
+  Users can configure the budget for each task and, after this, LibrePlan
+  calculates the cost in money already spent using the worked time tracked, the
+  type of worked hours (standard, overtime,...) and the cost of each resource
+  hour according to the value defined by the cost category the worker belongs.
+
+* Polish language: LibrePlan is now translated into Polish thanks to the work
+  done by Krzysztof Kamecki.
+
+* Other minor enhancements and bugfixing:
+
+  * Fixed database synchronization issues which appeared on changing planning
+    points in the WBS. The problems arose when planning points were moved from
+    children to their parents or vice versa.
+  * Default users (user, wsreader and wswriter) are disabled by default.
+  * Fixed resource usage grouped by criteria load analysis that was being bad
+    calculated inside a project.
+  * Task duration was not being refreshed properly when doing an allocation and
+    you needed to apply the allocation twice to see it right.
+  * START_IN_FIXED_DATE constraint caused that the project duration was bad
+    calculated in company view.
+
+Notes
+~~~~~
+
+If you are upgrading from any 1.1.x version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.0.sql``, ``scripts/database/upgrade_1.2.1.sql``,
+``scripts/database/upgrade_1.2.2.sql`` and ``scripts/database/upgrade_1.2.3.sql``.
+
+If you are upgrading from 1.2.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.1.sql``, ``scripts/database/upgrade_1.2.2.sql``
+and ``scripts/database/upgrade_1.2.3.sql``.
+
+If you are upgrading from 1.2.1 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.2.sql`` and ``scripts/database/upgrade_1.2.3.sql``.
+
+If you are upgrading from 1.2.2 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.2.3.sql``.
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jacobo Aragunde Pérez
+* Óscar González Fernández
+* Susana Montes Pedreira
+* Francisco Javier Morán Rúa
+* Manuel Rego Casasnovas
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [es] Manuel Rego Casasnovas
+* [fr] Philippe Poumaroux
+* [gl] Manuel Rego Casasnovas
+* [it] Giuseppe Zizza
+* [nl] Jeroen Baten
+* [pl] Krzysztof Kamecki
+
+Changes
+~~~~~~~
+
+* Bug #1417: Add UI validation to prevent empty codes
+* doc: Update AUTHORS file info about new Polish translator
+* i18n: Add Polish language to enum and modify pom.xml to use English userguide
+* i18n: Add Polish translation
+* Bug #1358: Removed unnecessary tooltip string
+* Bug #1358: Added CSS max dimensions restriction to configured company logo
+* Fixed vertical positioning of resources string next to containers
+* Bug #1407: Run TaskComponent.updateProperties() after running the scheduling algorithm.
+* Remove unused fields in Order Costs Per Resource Report
+* Bug #1412: Fix problem converting to string clockStart and clockFinish
+* Bug #1409: Rename RelatedWithAnyOf to RelatedWith
+* Bug #1409: Fix problem replacing allocations for the ones related to the criterion
+* Revert "Bug #1320: When asking a container for start constraints, return the leftmost"
+* Bug #1411: Missing Spanish translation for "Project cost by resource"
+* Fix Sahi test due to change in string
+* i18n: Update Dutch translation
+* i18n: Update French translation
+* doc: Update HACKING file about the compilation options
+* Add new compilation option to disable default users (user, wsreader and wswriter)
+* Bug #1395: Fix issue setting width of date boxes to 100px
+* i18n: Update Italian translation
+* i18n: Update Spanish and Galician translations
+* i18n: Update keys.pot files
+* Bug #1402: Invalidate the TaskComponents instead of the whole GanttPanel
+* Bug #1349: Fix translation issue in choosing template pop-up
+* Bug #1349: Mark to translate exception day type
+* Bug #1349: Fix translation in calendar type
+* Bug #1298: Mark to translate roles in user and profile edition
+* Remove CutyCaptTimeout
+* Bug #1406: Add UI validation for name field too
+* Bug #1406: Add validation in the UI and also a try catch for possible ValidationExceptions
+* doc: Fix typo in INSTALL file
+* doc: Fix broke link in INSTALL file
+* doc: Update information about how to install in Fedora and openSUSE
+* doc: Add info about JAVA_OPTS configuration in INSTALL file
+* [Bug #1234] Fix the deletion of fields in progress reporting in subcontractor module.
+* Fix problems in Liquibase changes in MySQL
+* Fix compilation error in previous merge
+* Merge branch 'libreplan-1.2' into money-cost-monitoring-system
+* doc: Add info about add-apt-repository command in INSTALL file
+* Bug #1387: Code refactor of the previous patches for this bug.
+* Bug #1387: Fix bug when it happens in the opposite way.
+* Show budget information in a read-only field inside task properties tab
+* Bug #1387: Fix bug
+* Change color of money cost bar to a darker one to avoid accessibility issues
+* Bug #1403: Only regenerate codes if isCodeAutogenerated() is true
+* Add a map in MoneyCostCalculator to cache calculated values
+* Disable Money Cost Bar in company view to avoid performance issues
+* Bug #1289: Added subcontractor name to tasks when showing resources is enabled
+* Remove unneeded throws in MoneyCostCalculatorTest
+* Add unit tests to check MoneyCostCalculator with a different type of hours
+* Remove commented lines in MoneyCostCalculatorTest
+* Update Copyright info in user documentation
+* Improve sentence in "Imputed hours" tab editing a task
+* Add information about budget in "Imputed hours" tab
+* Add unit tests to check MoneyCostCalculator with a tree of tasks
+* Remove unused parameters in CutyPrint.createCSSFile
+* Add option to print money cost bar
+* Add a new test case to check MoneyCostCalculator when there is not relationship via cost category
+* Prevent possible rounding problems dividing BigDecimals
+* Prevent NPE if there is not relationship between resource and type of hours via cost category
+* Reload budget field in "General data" of templates
+* Add field in "General data" tab to show the project budget
+* Print Money Cost Bar proportinal to task size
+* Prevent NPE calculating money cost for a TaskElement
+* Remove method getMoneyCostBarPercentage from ITaskFundamentalProperties
+* Improve tooltip message using budget, consumed money and percentage
+* Using the new MoneyCostCalculator to print the new Money Cost bar
+* Implement money cost calculation in a new class called MoneyCostCalculator
+* Fix Money Cost Bar position in containers
+* Add money cost percentage in the tooltip
+* Change CSS for the money cost bar and reported hours bar
+* Change icon for the new money cost bar
+* Add new money cost bar at this moment using value, icon and color of reported hours
+* doc: Update Fedora and openSUSE documentation for upgrade LibrePlan
+* Merge branch 'libreplan-1.2' into money-cost-monitoring-system
+* Fix typo in "Interporlation" (extra r)
+* doc: Fix date format in on version at NEWS file
+* Add no negative constraint in budget fields in edition forms
+* Add budget field in order element template edition form
+* Use budget field when creating a template from a task or vice versa
+* Add budget field in order element details form
+* Add budget cell in WBS
+* Add new field budget to OrderLineTemplate
+* Add basic tests for new attribute budget
+* Add new field budget to OrderLine
+
+
 Version 1.2.2 (15 Mar 2012)
 ---------------------------
 
@@ -2964,8 +3132,8 @@ Changes
 * [Bug #] Fix division by zero in Gantt
 
 
-Version 1.0.5 (8 Apr 2011)
---------------------------
+Version 1.0.5 (08 Apr 2011)
+---------------------------
 
 Last bugfixing version of NavalPlan for 1.0.x cycle, like in previous releases
 it includes all the fixes done in the stable branch since 1.0.4. Among them we

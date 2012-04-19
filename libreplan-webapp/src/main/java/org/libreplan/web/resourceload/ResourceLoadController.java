@@ -425,7 +425,7 @@ public class ResourceLoadController implements Composer {
             Label label1 = new Label(_("Time filter") + ":");
             Label label2 = new Label("-");
             startBox.setValue(asDate(startDateValue));
-            startBox.setWidth("75px");
+            startBox.setWidth("100px");
             startBox.addEventListener(Events.ON_CHANGE, new EventListener() {
                 @Override
                 public void onEvent(Event event) {
@@ -437,7 +437,7 @@ public class ResourceLoadController implements Composer {
                 }
             });
             endBox.setValue(asDate(endDateValue));
-            endBox.setWidth("75px");
+            endBox.setWidth("100px");
             endBox.addEventListener(Events.ON_CHANGE, new EventListener() {
                 @Override
                 public void onEvent(Event event) {

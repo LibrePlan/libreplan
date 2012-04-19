@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.libreplan</groupId>
         <artifactId>libreplan</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.3</version>
     </parent>
     <artifactId>libreplan-webapp</artifactId>
     <packaging>war</packaging>
@@ -124,6 +124,9 @@
                                 <fileset dir="../doc/src/user/en/html"/>
                             </copy>
                             <copy todir="src/main/webapp/help/nl" failonerror="false">
+                                <fileset dir="../doc/src/user/en/html"/>
+                            </copy>
+                            <copy todir="src/main/webapp/help/pl" failonerror="false">
                                 <fileset dir="../doc/src/user/en/html"/>
                             </copy>
                           </tasks>

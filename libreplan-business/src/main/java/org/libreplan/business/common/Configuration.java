@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2010-2011 Wireless Galicia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,23 +20,28 @@
 
 package org.libreplan.business.common;
 
-import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang.BooleanUtils;
+
 
 /**
- * It contains the compiling option to disable the warning changing default
- * password and implements of singleton pattern.
+ * This is a singleton that contains the compilation options passed from Maven.
+ *
+ * Currently we have two options:
+ * <ul>
+ * <li>Enable/Disable the warning changing default password</li>
+ * <li>Enable/Disable default users (such as user, wsreader and wswriter)</li>
+ * </ul>
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class Configuration {
 
     private static final Configuration singleton = new Configuration();
 
-    @Autowired
-    private IConfigurationDAO configurationDAO;
-
     private Boolean defaultPasswordsControl;
+
+    private Boolean exampleUsersDisabled;
 
     private Configuration() {
     }
@@ -59,6 +65,21 @@ public class Configuration {
 
     public Boolean getDefaultPasswordsControl() {
         return defaultPasswordsControl;
+    }
+
+    public void setExampleUsersDisabled(Boolean exampleUsersDisabled) {
+        this.exampleUsersDisabled = exampleUsersDisabled;
+    }
+
+    public Boolean getExampleUsersDisabled() {
+        return exampleUsersDisabled;
+    }
+
+    /**
+     * Returns the value of example users disabled compilation option
+     */
+    public static boolean isExampleUsersDisabled() {
+        return BooleanUtils.isNotFalse(singleton.getExampleUsersDisabled());
     }
 
 }

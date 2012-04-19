@@ -8,10 +8,10 @@
 # Jeroen Baten <jeroen@jeroenbaten.nl>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: LibrePlan\n"
+"Project-Id-Version: libreplan-1.2.3\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
-"POT-Creation-Date: 2012-02-24 09:08+0100\n"
-"PO-Revision-Date: 2012-02-29 19:53+0000\n"
+"POT-Creation-Date: 2012-04-11 08:32+0200\n"
+"PO-Revision-Date: 2012-04-13 14:30+0000\n"
 "Last-Translator: Jeroen Baten <jeroen@jeroenbaten.nl>\n"
 "Language-Team: Nederlands\n"
 "MIME-Version: 1.0\n"
@@ -33,11 +33,15 @@ msgstr "Voeg afhankelijkheid toe"
 msgid "Worker"
 msgstr "Werker"
 
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:682
+msgid "Show money cost bar"
+msgstr "Toon geldelijke kosten balk"
+
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:29
 msgid "Start"
 msgstr "Start"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:635
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:661
 msgid "Show reported hours"
 msgstr "Toon gerapporteerde uren"
 
@@ -86,6 +90,10 @@ msgstr "Beschikbare inspanning: {0}, toegewezen inspanning: {1}"
 msgid "Criterion"
 msgstr "Criterium"
 
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:688
+msgid "Hide money cost bar"
+msgstr "Verberg geldelijke kosten balk"
+
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
 msgid "Print"
 msgstr "Afdrukken"
@@ -114,6 +122,10 @@ msgstr "Einde"
 msgid "changing zoom"
 msgstr "wijzig zoom"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:91
+msgid "Show/Hide money cost bar"
+msgstr "Toon/verberg geldelijke kosten balk"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
 msgid "Quarter"
 msgstr "Kwartaal"
@@ -139,7 +151,7 @@ msgstr "Naam"
 msgid "Name filter"
 msgstr "Naam filter "
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:615
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:641
 msgid "Show progress"
 msgstr "Toon voortgang"
 
@@ -151,13 +163,13 @@ msgstr "Inklappen/Uitklappen alles"
 msgid "Show/Hide critical path"
 msgstr "Toon/Verberg kritieke pad"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
-msgid "Year"
-msgstr "Jaar"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
 msgid "showing criteria"
 msgstr "tonen criteria"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
+msgid "Year"
+msgstr "Jaar"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
 msgid "Month"
@@ -171,11 +183,11 @@ msgstr "Toon/Verberg resources"
 msgid "Set End-Start"
 msgstr "Set End-Start"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:297
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:308
 msgid "decreasing zoom"
 msgstr "uitzoomen"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:596
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:622
 msgid "Hide critical path"
 msgstr "Verberg kritieke pad"
 
@@ -183,7 +195,7 @@ msgstr "Verberg kritieke pad"
 msgid "Day"
 msgstr "Dag"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:642
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:668
 msgid "Hide reported hours"
 msgstr "Verberg gerapporteerde uren"
 
@@ -204,7 +216,7 @@ msgid "Hour"
 msgstr "Uur"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:114
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:120
 msgid "Graphics"
 msgstr "Graphics"
 
@@ -216,7 +228,7 @@ msgstr "Set Start-Start"
 msgid "See resource allocation"
 msgstr "Zie resource allocation"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:280
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:291
 msgid "increasing zoom"
 msgstr "Inzoomen"
 
@@ -232,10 +244,10 @@ msgstr "Alle"
 msgid "Refresh"
 msgstr "Ververs"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:591
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:617
 msgid "Show critical path"
 msgstr "Toon kritieke pad"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:620
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:646
 msgid "Hide progress"
 msgstr "Verberg voortgang"

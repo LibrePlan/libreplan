@@ -57,7 +57,6 @@ import org.libreplan.business.orders.entities.SchedulingState.Type;
 import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
-import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskPositionConstraint;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.TaskQualityForm;
@@ -291,7 +290,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             SchedulingDataForVersion schedulingDataForVersion) {
         List<TaskSourceSynchronization> result = new ArrayList<TaskSourceSynchronization>();
         if (isSchedulingPoint()) {
-            if(isSchedulingPointButItWasNot()) {
+            if (!wasASchedulingPoint()) {
                 //this element was a container but now it's a scheduling point
                 //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
                 removeTaskSource(result);
@@ -325,13 +324,9 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     private boolean wasASchedulingPoint() {
-        return getTaskSource() != null
-                && getTaskSource().getTask() instanceof Task;
-    }
-
-    private boolean isSchedulingPointButItWasNot() {
-        return getTaskSource() != null
-                && getTaskSource().getTask() instanceof TaskGroup;
+        SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
+        return SchedulingState.Type.SCHEDULING_POINT == currentVersionOnDB
+                .getSchedulingStateType();
     }
 
     private List<TaskSourceSynchronization> childrenSynchronizations() {
@@ -417,11 +412,16 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     private TaskSource getOnDBTaskSource() {
+        SchedulingDataForVersion schedulingDataForVersion = getCurrentVersionOnDB();
+        return schedulingDataForVersion.getTaskSource();
+    }
+
+    SchedulingDataForVersion getCurrentVersionOnDB() {
         OrderVersion version = getCurrentSchedulingData()
                 .getOriginOrderVersion();
         SchedulingDataForVersion schedulingDataForVersion = schedulingDatasForVersion
                 .get(version);
-        return schedulingDataForVersion.getTaskSource();
+        return schedulingDataForVersion;
     }
 
     private TaskSourceSynchronization taskSourceRemoval() {
@@ -1493,5 +1493,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
         return false;
     }
+
+    public abstract BigDecimal getBudget();
 
 }

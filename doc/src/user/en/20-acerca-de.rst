@@ -5,11 +5,23 @@ About
 .. contents::
 
 
-Licence
-========
+Copyright
+=========
 
 Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 Desenvolvemento Tecnolóxico de Galicia
+
+Copyright (C) 2010 Igalia, S.L.; Wireless Galicia, S.L.
+
+Copyright (C) 2011 Igalia, S.L.; Wireless Galicia, S.L.; ComtecSF, S.L.;
+CafédeRed Solutions, S.L.
+
+Copyright (C) 2012 Igalia, S.L.; Wireless Galicia, S.L.; CafédeRed Solutions,
+S.L.
+
+
+Licence
+========
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -65,6 +77,7 @@ Translators
   Diego Pino García <dpino@igalia.com>
 * [it] Giuseppe Zizza <gzizza@gmail.com>
 * [nl] Jeroen Baten <jeroen@jeroenbaten.nl>
+* [pl] Krzysztof Kamecki <dwerens90@gmail.com>
 * [pt] Helena Grosso <lenagrosso@gmail.com>,
   Joaquim Rocha <jrocha@igalia.com>
 * [ru] Pavel Rudensky <prudensky@gmail.com>

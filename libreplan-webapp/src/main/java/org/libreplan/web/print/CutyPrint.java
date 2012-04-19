@@ -198,9 +198,7 @@ public class CutyPrint {
         String generatedCSSFile = createCSSFile(
                 absolutePath + "/planner/css/print.css",
                 plannerWidth,
- planner, parameters
-                .get("advances"),
- parameters.get("reportedHours"),
+                planner,
                 parameters.get("labels"),
                 parameters.get("resources"),
                 expanded,
@@ -236,10 +234,6 @@ public class CutyPrint {
                 printProcess = Runtime.getRuntime().exec(captureString);
             }
             try {
-                // Ensure CutyCapt process finalization
-                CutyCaptTimeout timeoutThread = new CutyCaptTimeout( CUTYCAPT_TIMEOUT );
-                new Thread(timeoutThread).start();
-
                 printProcess.waitFor();
                 printProcess.destroy();
 
@@ -312,9 +306,7 @@ public class CutyPrint {
     }
 
     private static String createCSSFile(String srFile, int width,
-            Planner planner, String advances, String reportedHours,
-            String labels, String resources,
-            boolean expanded,
+            Planner planner, String labels, String resources, boolean expanded,
             int minimumWidthForTaskNameColumn) {
         File generatedCSS = null;
         try {

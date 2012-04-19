@@ -215,6 +215,9 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     moveConsolidatedline : function(width){
         jq('#consolidatedline' + this.parent.uuid).css('left', width);
     },
+    resizeCompletionMoneyCostBar : function(width){
+        jq('#' + this.uuid + ' .completionMoneyCostBar:first').css('width', width);
+    },
     resizeCompletionAdvance : function(width){
         jq('#' + this.uuid + ' .completion:first').css('width', width);
     },

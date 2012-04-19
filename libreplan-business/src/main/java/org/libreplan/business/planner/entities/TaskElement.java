@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,6 +46,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
@@ -61,6 +62,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public abstract class TaskElement extends BaseEntity {
 
@@ -569,6 +571,10 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public String getSubcontractionName() {
+        return "";
+    }
+
     public boolean isSubcontractedAndWasAlreadySent() {
         // Just Task could be subcontracted
         return false;
@@ -746,5 +752,18 @@ public abstract class TaskElement extends BaseEntity {
     public Boolean isRoot() {
         return (this.getParent() == null);
     }
+
+    public BigDecimal getBudget() {
+        if ((taskSource != null) && (taskSource.getOrderElement() != null)) {
+            return taskSource.getOrderElement().getBudget();
+        }
+        return null;
+    }
+
+    public ExternalCompany getSubcontractedCompany() {
+        return null;
+    }
+
+    public abstract boolean isAnyTaskWithConstraint(PositionConstraintType type);
 
 }

@@ -21,7 +21,6 @@
 
 package org.libreplan.web.planner.company;
 
-import static java.util.Arrays.asList;
 import static org.libreplan.web.I18nHelper._;
 
 import java.io.IOException;
@@ -96,13 +95,11 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Emitter;
 import org.zkoss.ganttz.util.Emitter.IEmissionListener;
 import org.zkoss.ganttz.util.Interval;
-import org.zkoss.zk.au.out.AuInsertAfter;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
@@ -569,6 +566,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setRenamingTasksEnabled(false);
         configuration.setTreeEditable(false);
         configuration.setShowAllResourcesEnabled(false);
+        configuration.setMoneyCostBarEnabled(false);
     }
 
     private void addAdditionalCommands(

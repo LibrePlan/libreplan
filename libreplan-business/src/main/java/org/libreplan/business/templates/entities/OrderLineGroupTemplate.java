@@ -20,6 +20,7 @@
  */
 package org.libreplan.business.templates.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -259,6 +260,15 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
             result += orderElement.getWorkHours();
         }
         return result;
+    }
+
+    @Override
+    public BigDecimal getBudget() {
+        BigDecimal budget = BigDecimal.ZERO.setScale(2);
+        for (OrderElementTemplate child : children) {
+            budget = budget.add(child.getBudget());
+        }
+        return budget;
     }
 
 }

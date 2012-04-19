@@ -76,7 +76,7 @@ public abstract class AssignmentFunction extends BaseEntity {
         FLAT(_("Flat")),
         MANUAL(_("Manual")),
         STRETCHES(_("Stretches")),
-        INTERPOLATION(_("Interporlation")),
+        INTERPOLATION(_("Interpolation")),
         SIGMOID(_("Sigmoid"));
 
         private String name;

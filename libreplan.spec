@@ -1,5 +1,5 @@
 Name:           libreplan
-Version:        1.2.2
+Version:        1.2.3
 Release:        1
 Summary:        Web application for project planning, monitoring and control
 License:        AGPLv3
@@ -92,6 +92,9 @@ cp ${CURDIR}/scripts/database/upgrade_1.2.1.sql ${RPM_BUILD_ROOT}%{_datadir}/%{n
 # Copy SQL upgrade script for version 1.2.2
 cp ${CURDIR}/scripts/database/upgrade_1.2.2.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
 
+# Copy SQL upgrade script for version 1.2.3
+cp ${CURDIR}/scripts/database/upgrade_1.2.3.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
+
 # Install Policy file
 #mkdir -p ${RPM_BUILD_ROOT}/etc/tomcat6/policy.d
 #cp ${CURDIR}/debian/51libreplan.policy ${RPM_BUILD_ROOT}/etc/tomcat6/policy.d/
@@ -115,6 +118,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{name}/conf/*
 
 %changelog
+* Wed Apr 18 2012 Jacobo Aragunde Pérez <jaragunde@igalia.com> - 1.2.3-1
+- Released LibrePlan 1.2.3
 * Thu Mar 15 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.2.2-1
 - Released LibrePlan 1.2.2
 * Fri Feb 17 2012 Juan A. Suarez Romero <jasuarez@igalia.com> - 1.2.1-1

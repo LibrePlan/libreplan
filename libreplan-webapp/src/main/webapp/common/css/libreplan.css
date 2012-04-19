@@ -209,3 +209,8 @@ a.sub_menu:hover {
 .footer-messages-area a:hover {
   text-decoration: underline;
 }
+
+.logo-area img {
+	max-width: 300px;
+	max-height: 65px;
+}

@@ -1118,4 +1118,13 @@ public class OrderLineGroup extends OrderElement implements
         return true;
     }
 
+    @Override
+    public BigDecimal getBudget() {
+        BigDecimal budget = BigDecimal.ZERO.setScale(2);
+        for (OrderElement child : children) {
+            budget = budget.add(child.getBudget());
+        }
+        return budget;
+    }
+
 }
