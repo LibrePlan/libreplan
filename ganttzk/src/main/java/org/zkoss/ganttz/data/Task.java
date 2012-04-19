@@ -41,6 +41,7 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.INotificationAfterDependenciesEnforcement;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.util.ConstraintViolationNotificator;
 import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 
@@ -468,6 +469,16 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void reloadResourcesText() {
         for (IReloadResourcesTextRequested each : reloadRequestedListeners) {
             each.reloadResourcesTextRequested();
+        }
+    }
+
+    public static void reloadResourcesText(IContextWithPlannerTask<?> context) {
+        Task task = context.getTask();
+        task.reloadResourcesText();
+        List<? extends TaskContainer> parents = context.getMapper().getParents(
+                task);
+        for (TaskContainer each : parents) {
+            each.reloadResourcesText();
         }
     }
 

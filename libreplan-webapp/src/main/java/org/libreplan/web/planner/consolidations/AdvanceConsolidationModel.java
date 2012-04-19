@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -57,7 +57,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -152,7 +151,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             updateConsolidationInAdvanceIfIsNeeded();
 
             ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
-            ganttTask.reloadResourcesText();
             context.reloadCharts();
         }
     }
