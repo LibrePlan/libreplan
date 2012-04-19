@@ -5,7 +5,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <name>LibrePlan</name>
 
     <!--
