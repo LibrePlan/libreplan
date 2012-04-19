@@ -85,7 +85,8 @@
                                 <row>
                                     <label value="${i18n:_('Code')}" />
                                     <hbox>
-                                        <textbox value="@{templatesForOrdersController.template.code}" width="250px" />
+                                        <textbox value="@{templatesForOrdersController.template.code}" width="250px"
+                                          constraint="no empty:${i18n:_('cannot be null or empty')}" />
                                     </hbox>
                                 </row>
                                 <row>
