@@ -22,16 +22,16 @@ included in this new release are:
 
 * Other minor enhancements and bugfixing:
 
-  * Fixed database synchronization issues which appeared on changing planning
-    points in the WBS. The problems arose when planning points were moved from
-    children to their parents or vice versa.
-  * Default users (user, wsreader and wswriter) are disabled by default.
-  * Fixed resource usage grouped by criteria load analysis that was being bad
-    calculated inside a project.
-  * Task duration was not being refreshed properly when doing an allocation and
-    you needed to apply the allocation twice to see it right.
-  * START_IN_FIXED_DATE constraint caused that the project duration was bad
-    calculated in company view.
+  * Fixed database synchronization issues which appeared on changing planning
+    points in the WBS. The problems arose when planning points were moved from
+    children to their parents or vice versa.
+  * Default users (user, wsreader and wswriter) are disabled by default.
+  * Fixed resource usage grouped by criteria load analysis that was being bad
+    calculated inside a project.
+  * Task duration was not being refreshed properly when doing an allocation and
+    you needed to apply the allocation twice to see it right.
+  * START_IN_FIXED_DATE constraint caused that the project duration was bad
+    calculated in company view.
 
 Notes
 ~~~~~
