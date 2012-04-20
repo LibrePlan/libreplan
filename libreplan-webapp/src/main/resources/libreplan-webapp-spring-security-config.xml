@@ -52,6 +52,7 @@
             access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/workreports/workReportTypes.zul"
             access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/expensesheet/**" access="ROLE_ADMINISTRATION,ROLE_EXPENSE_TRACKING"/>
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
         <form-login login-page="/common/layout/login.zul"
             authentication-failure-url="/common/layout/login.zul?login_error=true" />

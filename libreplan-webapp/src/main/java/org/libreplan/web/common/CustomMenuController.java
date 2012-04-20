@@ -298,7 +298,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         resourcesItems.add(subItem(_("Machines"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"));
         resourcesItems.add(subItem(_("Virtual Workers Groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
         resourcesItems.add(subItem(_("Work Reports"), "/workreports/workReport.zul", "09-partes.html#id3"));
-        resourcesItems.add(subItem(_("Expense Tracking"), "/expensesheet/expenseSheet.zul", ""));
+        if ((SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION))
+                || (SecurityUtils.isUserInRole(UserRole.ROLE_EXPENSE_TRACKING))) {
+            resourcesItems
+                    .add(subItem(_("Expense Tracking"), "/expensesheet/expenseSheet.zul", ""));
+        }
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             resourcesItems.add(subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""));
         }
