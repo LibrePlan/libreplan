@@ -36,6 +36,11 @@ included in this new release are:
 Notes
 ~~~~~
 
+.. WARNING::
+
+  Remove web browser cache to avoid any problem with changes in JavaScript
+  resources.
+
 If you are upgrading from any 1.1.x version without using the Debian package,
 you will need to manually execute on your database the SQL sentences from files:
 ``scripts/database/upgrade_1.2.0.sql``, ``scripts/database/upgrade_1.2.1.sql``,
