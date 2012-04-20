@@ -90,6 +90,9 @@
                 <value>
                     org/libreplan/business/scenarios/entities/Scenarios.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/expensesheets/entities/ExpenseSheets.hbm.xml
+                </value>
             </list>
         </property>
 
