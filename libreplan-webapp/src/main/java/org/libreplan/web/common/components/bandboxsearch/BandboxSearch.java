@@ -61,6 +61,13 @@ public class BandboxSearch extends HtmlMacroComponent {
         return bandboxSearch;
     }
 
+    public static BandboxSearch create(String finderClassName) {
+        BandboxSearch bandboxSearch = new BandboxSearch();
+        bandboxSearch.setFinder(finderClassName);
+        bandboxSearch.afterCompose();
+        return bandboxSearch;
+    }
+
     private Listbox listbox;
 
     private Listhead listhead;
@@ -214,8 +221,8 @@ public class BandboxSearch extends HtmlMacroComponent {
     }
 
     public Listitem getSelectedItem() {
-        return listbox == null ? null : (Listitem) listbox.getSelectedItems()
-                .iterator().next();
+        return (listbox == null || listbox.getSelectedItems().isEmpty()) ? null
+                : (Listitem) listbox.getSelectedItems().iterator().next();
     }
 
     public String getFinder() {

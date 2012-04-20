@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
@@ -39,6 +40,7 @@ import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.reports.dtos.OrderCostsPerResourceDTO;
@@ -410,6 +412,15 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         } catch (InstanceNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Order> getActiveOrders() {
+        Criteria criteria = getSession().createCriteria(getEntityClass());
+        criteria.add(Restrictions.not(Restrictions.eq("state", OrderStatusEnum.CANCELLED)));
+        criteria.add(Restrictions.not(Restrictions.eq("state", OrderStatusEnum.STORED)));
+        return criteria.list();
     }
 
 }

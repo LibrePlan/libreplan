@@ -99,4 +99,6 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
             List<OrderElement> orderElement);
 
     boolean existsByNameAnotherTransaction(String name);
+
+    List<Order> getActiveOrders();
 }
