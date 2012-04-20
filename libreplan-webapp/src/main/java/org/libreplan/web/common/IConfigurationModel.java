@@ -153,4 +153,8 @@ public interface IConfigurationModel {
 
     void setAllowToGatherUsageStatsEnabled(
             boolean allowToGatherUsageStatsEnabled);
+
+    Boolean getGenerateCodeForExpenseSheets();
+
+    void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets);
 }

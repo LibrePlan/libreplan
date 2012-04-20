@@ -168,6 +168,10 @@
                                                 label="${i18n:_('Cost category')}"
                                                 checked="@{configurationController.generateCodeForCostCategory}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
+                                           <checkbox
+                                                label="${i18n:_('Expense sheets')}"
+                                                checked="@{configurationController.generateCodeForExpenseSheets}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
                                     </rows>
                                 </grid>

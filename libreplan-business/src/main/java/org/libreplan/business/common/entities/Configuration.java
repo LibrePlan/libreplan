@@ -91,6 +91,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean allowToGatherUsageStatsEnabled = false;
 
+    private Boolean generateCodeForExpenseSheets = true;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -268,6 +270,14 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForCostCategory() {
         return generateCodeForCostCategory;
+    }
+
+    public Boolean getGenerateCodeForExpenseSheets() {
+        return this.generateCodeForExpenseSheets;
+    }
+
+    public void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets) {
+        this.generateCodeForExpenseSheets = generateCodeForExpenseSheets;
     }
 
     public void setProgressType(ProgressType progressType) {

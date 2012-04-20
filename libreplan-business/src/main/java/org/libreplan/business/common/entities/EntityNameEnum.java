@@ -29,6 +29,7 @@ import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.materials.entities.MaterialCategory;
 import org.libreplan.business.materials.entities.UnitType;
@@ -55,7 +56,7 @@ public enum EntityNameEnum {
             "Calendar exception type", true), COST_CATEGORY("Cost category",
             true), RESOURCE_CALENDAR("Resource calendar", true), CRITERION_SATISFACTION(
             "Criterion satisfaction", true), RESOURCE_COST_CATEGORY_ASSIGNMENT(
-            "Resource cost category assignment", true);
+            "Resource cost category assignment", true), EXPENSE_SHEET("Expense sheet", true);
 
     private String description;
 
@@ -118,6 +119,8 @@ public enum EntityNameEnum {
         case RESOURCE_COST_CATEGORY_ASSIGNMENT:
             return (IIntegrationEntityDAO<ResourcesCostCategoryAssignment>) Registry
                     .getResourcesCostCategoryAssignmentDAO();
+        case EXPENSE_SHEET:
+            return (IIntegrationEntityDAO<ExpenseSheet>) Registry.getExpenseSheetDAO();
         default:
             throw new RuntimeException("can't handle the code sequence of the "
                     + description);

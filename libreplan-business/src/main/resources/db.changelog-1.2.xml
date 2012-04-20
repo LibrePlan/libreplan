@@ -203,4 +203,18 @@
             <column name="expense_sheet_id" type="BIGINT"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="add-new-column-generate-code-for-expense-sheets" author="mrego">
+        <comment>Add new column to generate the code for expense sheet in configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="generate_code_for_expense_sheets" type="BOOLEAN"/>
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="generate_code_for_expense_sheets"
+           defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="generate_code_for_expense_sheets"
+            defaultNullValue="TRUE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>
