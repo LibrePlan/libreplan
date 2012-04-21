@@ -133,7 +133,7 @@ public class DashboardModel implements IDashboardModel {
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
-    public BigDecimal getTheoreticalAdvancePercentageByHoursUntilNow(){
+    public BigDecimal getExpectedAdvancePercentageByHours(){
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
@@ -151,7 +151,7 @@ public class DashboardModel implements IDashboardModel {
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
-    public BigDecimal getTheoreticalProgressByNumHoursForCriticalPathUntilNow() {
+    public BigDecimal getExpectedCriticalPathProgressByNumHours() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
@@ -169,7 +169,7 @@ public class DashboardModel implements IDashboardModel {
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
-    public BigDecimal getTheoreticalProgressByDurationForCriticalPathUntilNow() {
+    public BigDecimal getExpectedCriticalPathProgressByDuration() {
         TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");

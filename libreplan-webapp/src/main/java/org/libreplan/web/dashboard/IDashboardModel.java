@@ -49,15 +49,15 @@ interface IDashboardModel {
     /* Progress KPI: "Global Progress of the Project" */
     BigDecimal getAdvancePercentageByHours();
 
-    BigDecimal getTheoreticalAdvancePercentageByHoursUntilNow();
+    BigDecimal getExpectedAdvancePercentageByHours();
 
     BigDecimal getCriticalPathProgressByNumHours();
 
-    BigDecimal getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
+    BigDecimal getExpectedCriticalPathProgressByNumHours();
 
     BigDecimal getCriticalPathProgressByDuration();
 
-    BigDecimal getTheoreticalProgressByDurationForCriticalPathUntilNow();
+    BigDecimal getExpectedCriticalPathProgressByDuration();
 
     /* Time KPI: "Margin with deadline" */
     BigDecimal getMarginWithDeadLine();

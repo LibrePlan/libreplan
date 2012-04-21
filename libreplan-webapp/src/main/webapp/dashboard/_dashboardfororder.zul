@@ -16,113 +16,137 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-    <zscript><![CDATA[
-    dsController = arg.get("dashboardController");
-]]>
-        import java.awt.Font;
-        String fontname = "Verdana";
-        Font tfont = new Font(fontname, Font.BOLD, 14); //for title
-        Font lbfont = new Font(fontname, Font.PLAIN, 12); //for label
+    <zscript>
+        <![CDATA[
+            dsController = arg.get("dashboardController");
+        ]]>
     </zscript>
+
+    <!-- VERY IMPORTANT!!
+        Don't include any HTML or Javascript code here because apparently this view, Dashboard view, will be rendered OK,
+    but it creates a side effect in the other views. If you include HTML here, go to Dashboard and later to other view, a big
+    chunk of space will appear on the top of the view 
+    -->
+
     <div self="@{define(content)}" height="100%" style="overflow:visible">
-    <div height="30px" sclass="toolbar-box" />
+
+        <div height="30px" sclass="toolbar-box" />
+
         <window id="dashboardWindow" apply="${dsController}" vflex="1" style="margin:0;overflow:auto">
 
-            <div id="projectDashboardChartsDiv" sclass="dashboards-container" visible="true" height="100%">
-
-                <groupbox closable="false">
-                    <caption label="${i18n:_('Progress')}" />
+            <div id="projectDashboardChartsDiv" sclass="dashboards-container" height="100%">
+            	<groupbox closable="false">
+                	<caption label="${i18n:_('Progress')}" />
                     <hbox>
-
-                        <chart id="progressKPIglobalProgressChart"
-                            height="200px" width="700px" type="bar"
-                            threeD="true" yAxis="%" orient="horizontal"
-                            titleFont="${tfont}" xAxisFont="${lbfont}"
-                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
-                            yAxisTickFont="${lbfont}"
-                            title="${i18n:_('Global progress of the project')}"
-                            paneColor="#FFFFFF" showLegend="true" />
-
-                        <separator bar="false" spacing="40px"
-                            orient="vertical" />
-
-                        <chart id="progressKPItaskStatusChart"
-                            height="200px" width="300px" type="pie"
-                            threeD="true" title="${i18n:_('Task status')}"
-                            titleFont="${tfont}" xAxisFont="${lbfont}"
-                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
-                            yAxisTickFont="${lbfont}" paneColor="#FFFFFF"
-                            bgColor="#FFFFFF" showLegend="true"
-                            showTooltiptext="true" />
-
-                    </hbox>
-                </groupbox>
-
-                <groupbox closable="false">
-                    <caption label="${i18n:_('Time')}" />
-                    <hbox>
-
-                        <chart id="timeKPILagInTaskCompletionChart"
-                            height="200px" width="500px" type="bar"
-                            xAxis="deviation class [i, i+1) (days)"
-                            threeD="false" yAxis="probability" orient="vertical"
-                            titleFont="${tfont}" xAxisFont="${lbfont}"
-                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
-                            yAxisTickFont="${lbfont}"
-                            title="${i18n:_('Lead/Lag in task completion')}"
-                            paneColor="#FFFFFF" showLegend="false" />
-
-                        <separator bar="false" spacing="40px"
-                            orient="vertical" />
-
-                        <chart
-                            id="progressKPItaskDeadlineViolationStatusChart"
-                            height="200px" width="300px" type="pie"
-                            threeD="true" title="${i18n:_('Deadline violation')}"
-                            titleFont="${tfont}" xAxisFont="${lbfont}"
-                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
-                            yAxisTickFont="${lbfont}" paneColor="#FFFFFF"
-                            bgColor="#FFFFFF" showLegend="true"
-                            showTooltiptext="true" />
-
-                        <chart id="timeKPImarginWithDeadlineChart"
-                            height="400px" width="250px" type="bar"
-                            threeD="true" yAxis="x D days" orient="vertical"
-                            titleFont="${tfont}" xAxisFont="${lbfont}"
-                            xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
-                            yAxisTickFont="${lbfont}"
-                            title="${i18n:_('Margin with deadline')}"
-                            paneColor="#FFFFFF" showLegend="false" />
-
-                    </hbox>
-                </groupbox>
-
-                <groupbox closable="false">
-                    <caption label="Resources" />
-                    <hbox>
-
-                        <chart id="timeKPIEstimationAccuracyChart"
-                                height="200px" width="500px" type="bar"
-                                xAxis="deviation class [i, i+1) (%)" threeD="false"
-                                yAxis="probability" orient="vertical"
-                                titleFont="${tfont}" xAxisFont="${lbfont}"
-                                xAxisTickFont="${lbfont}" yAxisFont="${lbfont}"
-                                yAxisTickFont="${lbfont}"
-                                title="${i18n:_('Estimation Accuracy')}"
-                                paneColor="#FFFFFF" showLegend="false" />
-
-                    </hbox>
-                </groupbox>
-
-
+            			<n:div id="global-progress" style="height:200px; width:500px;"></n:div>
+            			<n:div id="task-status" style="height:200px; width:400px; margin-left: 100px;"></n:div>
+            		</hbox>
+            	</groupbox>
             </div>
+
             <div id="projectDashboardNoTasksWarningDiv" visible="false">
                 <n:h4 class="message_WARNING">
-                    <label id="noTasksWarningLabel"
-                        value="${i18n:_('No tasks available yet')}" />
+                    <label id="noTasksWarningLabel" value="${i18n:_('No tasks available yet')}" />
                 </n:h4>
             </div>
+
         </window>
+
     </div>
+
+    <!-- The variable for containing the 'global progress' has to be global and created before defer -->
+    <script type="text/javascript">
+        var global_progress = { 
+            title: 'Titulo',
+        };
+        var task_status = { };
+    </script>
+
+    <!-- Configure the parameters for the 'global progress' chart. The object contains a method 'render' that
+        is called from the Java file once all objects in the view have been created -->
+    <script type="text/javascript" defer="true">
+    <![CDATA[
+
+        global_progress = {
+            id: 'global-progress',
+            data: [],
+            title: 'Project global progress',
+            seriesDefaults: {
+                renderer:$.jqplot.BarRenderer,
+                pointLabels: { show: true, location: 'e', edgeTolerance: -15 },
+                shadowAngle: 135,
+                rendererOptions: {
+                    barDirection: 'horizontal'
+                },
+            },
+            axes: {
+                xaxis: {
+                    label: "Progress percentage per progress type"
+                },
+                yaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer, 
+                    ticks: ['1','2','3'],
+                    tickOptions: {
+                        showGridline: false,
+                        markSize: 0
+                    }
+                }
+            },
+            series:[
+                {label:'Expected', color: 'blue'},
+                {label:'Actual', color: 'red'},
+            ],
+            legend: {
+                show: true,
+                location: 'e',
+                placement: 'outside',
+            },
+            render: function(data, ticks, series) {
+                if (ticks !== undefined) {
+                    this.axes.yaxis.ticks = jQuery.parseJSON(ticks);
+                }
+                if (series !== undefined) {
+                	this.series = jQuery.parseJSON(series);
+                }
+                this.plot = $.jqplot(this.id, jQuery.parseJSON(data), this);
+            }
+        };
+
+        task_status = {
+            id: 'task-status',
+            title: 'Task status',
+            data: [['Completed', 14], ['In Progress', 36], ['Ready to Start', 30], ['Blocked', 20]],
+            seriesDefaults: {
+                renderer: jQuery.jqplot.PieRenderer,
+                rendererOptions: {
+                    showDataLabels: true
+                }
+            },
+            legend: { 
+                show: true, 
+                location: 'e' 
+            },
+            render: function(data) {
+                this.plot = jQuery.jqplot('task-status', [jQuery.parseJSON(data)], this);
+            }
+        };
+        
+    ]]>
+    </script>
+
+    <!-- Include jqPlot styles -->
+    <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" /> 
+
+    <!-- Include jqPlot library and additional plugins -->
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pointLabels.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pieRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.donutRenderer.min.js"></n:script>
 </zk>

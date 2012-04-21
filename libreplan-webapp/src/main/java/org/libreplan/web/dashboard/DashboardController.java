@@ -21,29 +21,33 @@ package org.libreplan.web.dashboard;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.math.BigDecimal;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.CategoryModel;
-import org.zkoss.zul.Chart;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.PieModel;
-import org.zkoss.zul.SimpleCategoryModel;
-import org.zkoss.zul.SimplePieModel;
 import org.zkoss.zul.Window;
 
+
 /**
- * Controller for dashboardfororder view
  * @author Nacho Barrientos <nacho@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
+ * 
+ *         Controller for dashboardfororder view
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -52,13 +56,6 @@ public class DashboardController extends GenericForwardComposer {
     private IDashboardModel dashboardModel;
 
     private Window dashboardWindow;
-
-    private Chart progressKPIglobalProgressChart;
-    private Chart progressKPItaskStatusChart;
-    private Chart progressKPItaskDeadlineViolationStatusChart;
-    private Chart timeKPImarginWithDeadlineChart;
-    private Chart timeKPIEstimationAccuracyChart;
-    private Chart timeKPILagInTaskCompletionChart;
 
     private Div projectDashboardChartsDiv;
     private Div projectDashboardNoTasksWarningDiv;
@@ -70,170 +67,229 @@ public class DashboardController extends GenericForwardComposer {
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
         this.dashboardWindow = (Window)comp;
+        self.setAttribute("controller", this);
         Util.createBindingsFor(this.dashboardWindow);
     }
+    
+	public void setCurrentOrder(Order order) {
+		dashboardModel.setCurrentOrder(order);
+		if (dashboardModel.tasksAvailable()) {
+			showCharts();
+		} else {
+			hideCharts();
+		}
+		if (this.dashboardWindow != null) {
+	        renderGlobalProgress();
+	        renderTaskStatus();
+		}
+	
+	}
+	
+	private void renderTaskStatus() {
+		TaskStatus taskStatus = TaskStatus.create();
+		taskStatus.data(_("Finished"),
+				dashboardModel.getPercentageOfFinishedTasks());
+		taskStatus.data(_("In progress"),
+				dashboardModel.getPercentageOfInProgressTasks());
+		taskStatus.data(_("Ready to start"),
+				dashboardModel.getPercentageOfReadyToStartTasks());
+		taskStatus.data(_("Blocked"),
+				dashboardModel.getPercentageOfBlockedTasks());
+		taskStatus.render();
+	}
 
-    public void setCurrentOrder(Order order) {
-        dashboardModel.setCurrentOrder(order);
-        if(dashboardModel.tasksAvailable()) {
-            this.reloadCharts();
-        } else {
-            this.hideChartsAndShowWarningMessage();
-        }
-        if (this.dashboardWindow != null) {
-            Util.reloadBindings(this.dashboardWindow);
-        }
-    }
+	private void renderGlobalProgress() {
+		GlobalProgress globalProgress = GlobalProgress.create();
 
-    private void reloadCharts() {
-        generateProgressKPIglobalProgressChart();
-        generateProgressKPItaskStatusChart();
-        generateProgressKPItaskDeadlineViolationStatusChart();
-        generateTimeKPImarginWithDeadlineChart();
-        generateTimeKPIEstimationAccuracyChart();
-        generateTimeKPILagInTaskCompletionChart();
-    }
-
-    private void hideChartsAndShowWarningMessage() {
+		// Current values
+		globalProgress.current(GlobalProgress.CRITICAL_PATH_DURATION,
+				dashboardModel.getCriticalPathProgressByDuration());
+		globalProgress.current(GlobalProgress.CRITICAL_PATH_HOURS,
+				dashboardModel.getCriticalPathProgressByNumHours());
+		globalProgress.current(GlobalProgress.ALL_TASKS_HOURS,
+				dashboardModel.getAdvancePercentageByHours());
+		// Expected values
+		globalProgress.expected(GlobalProgress.CRITICAL_PATH_DURATION,
+				dashboardModel.getExpectedCriticalPathProgressByDuration());
+		globalProgress.expected(GlobalProgress.CRITICAL_PATH_HOURS,
+				dashboardModel.getExpectedCriticalPathProgressByNumHours());
+		globalProgress.expected(GlobalProgress.ALL_TASKS_HOURS,
+				dashboardModel.getExpectedAdvancePercentageByHours());
+		
+		globalProgress.render();
+	}
+    
+	private void showCharts() {
+		projectDashboardChartsDiv.setVisible(true);
+		projectDashboardNoTasksWarningDiv.setVisible(false);
+	}
+	
+    private void hideCharts() {
         projectDashboardChartsDiv.setVisible(false);
         projectDashboardNoTasksWarningDiv.setVisible(true);
     }
+     
+    /**
+     * 
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     */
+	static class GlobalProgress {
 
-    private void generateTimeKPILagInTaskCompletionChart() {
-        CategoryModel categoryModel;
-        categoryModel = refreshTimeKPILagInTaskCompletionCategoryModel();
-        Font labelFont = new Font("serif", Font.PLAIN, 10);
-        timeKPILagInTaskCompletionChart.setXAxisTickFont(labelFont);
-        Color[] seriesColorMappings = {Color.BLUE};
-        timeKPILagInTaskCompletionChart.setAttribute("series-color-mappings",
-                seriesColorMappings);
-        timeKPILagInTaskCompletionChart.setModel(categoryModel);
-    }
+		public static final String ALL_TASKS_HOURS = _("All tasks (hours)");
 
-    private void generateTimeKPIEstimationAccuracyChart() {
-        CategoryModel categoryModel;
-        categoryModel = refreshTimeKPIEstimationAccuracyCategoryModel();
-        Font labelFont = new Font("serif", Font.PLAIN, 10);
-        timeKPIEstimationAccuracyChart.setXAxisTickFont(labelFont);
-        Color[] seriesColorMappings = {Color.BLUE};
-        timeKPIEstimationAccuracyChart.setAttribute("series-color-mappings",
-                seriesColorMappings);
-        timeKPIEstimationAccuracyChart.setModel(categoryModel);
-    }
+		public static final String CRITICAL_PATH_HOURS = _("Critical path (hours)");
 
-    private void generateTimeKPImarginWithDeadlineChart() {
-        CategoryModel categoryModel;
-        categoryModel = refreshTimeKPImarginWithDeadlineCategoryModel();
-        if (categoryModel == null) { // Project has no deadline set.
-            timeKPImarginWithDeadlineChart.setVisible(false);
-            return;
-        }
-        timeKPImarginWithDeadlineChart.setAttribute("range-axis-lower-bound",
-                new Double(-3.0));
-        timeKPImarginWithDeadlineChart.setAttribute("range-axis-upper-bound",
-                new Double(3.0));
-        Color[] seriesColorMappings = new Color[1];
-        if(dashboardModel.getMarginWithDeadLine().compareTo(BigDecimal.ZERO) >= 0) {
-            seriesColorMappings[0] = Color.GREEN;
-        } else {
-            seriesColorMappings[0] = Color.RED;
-        }
-        timeKPImarginWithDeadlineChart.setAttribute("series-color-mappings",
-                seriesColorMappings);
-        timeKPImarginWithDeadlineChart.setModel(categoryModel);
-    }
+		public static final String CRITICAL_PATH_DURATION = _("Critical path (duration)");
 
-    private void generateProgressKPItaskStatusChart() {
-        PieModel model = refreshProgressKPItaskStatusPieModel();
-        progressKPItaskStatusChart.setModel(model);
-    }
+		private Map<String, BigDecimal> current = new LinkedHashMap<String, BigDecimal>();
 
-    private void generateProgressKPItaskDeadlineViolationStatusChart() {
-        PieModel model = refreshProgressKPItaskDeadlieViolationStatusPieModel();
-        progressKPItaskDeadlineViolationStatusChart.setModel(model);
-    }
+		private Map<String, BigDecimal> expected = new LinkedHashMap<String, BigDecimal>();
 
-    private void generateProgressKPIglobalProgressChart() {
-        CategoryModel categoryModel;
-        categoryModel = refreshProgressKPIglobalProgressCategoryModel();
-        progressKPIglobalProgressChart.setAttribute("range-axis-lower-bound",
-                new Double(0.0));
-        progressKPIglobalProgressChart.setAttribute("range-axis-upper-bound",
-                new Double(100.0));
-        progressKPIglobalProgressChart.setModel(categoryModel);
-    }
+		private static List<Series> series = new ArrayList<Series>() {
+			{
+				add(Series.create(_("Current"), "blue"));
+				add(Series.create(_("Expected"), "red"));
+			}
+		};
 
-    private PieModel refreshProgressKPItaskStatusPieModel() {
-        PieModel model = new SimplePieModel();
-        model.setValue(_("Finished"), dashboardModel.getPercentageOfFinishedTasks());
-        model.setValue(_("In progress"), dashboardModel.getPercentageOfInProgressTasks());
-        model.setValue(_("Ready to start"), dashboardModel.getPercentageOfReadyToStartTasks());
-        model.setValue(_("Blocked"), dashboardModel.getPercentageOfBlockedTasks());
-        return model;
-    }
+		private GlobalProgress() {
 
-    private PieModel refreshProgressKPItaskDeadlieViolationStatusPieModel() {
-        PieModel model = new SimplePieModel();
-        model.setValue(_("On schedule"), dashboardModel.getPercentageOfOnScheduleTasks());
-        model.setValue(_("Violated deadline"), dashboardModel.getPercentageOfTasksWithViolatedDeadline());
-        model.setValue(_("No deadline"), dashboardModel.getPercentageOfTasksWithNoDeadline());
-        return model;
-    }
+		}
 
-    private CategoryModel refreshProgressKPIglobalProgressCategoryModel() {
-        CategoryModel result = new SimpleCategoryModel();
-        result.setValue(_("Current"), _("All tasks (hours)"),
-                dashboardModel.getAdvancePercentageByHours());
-        result.setValue(_("Expected"), _("All tasks (hours)"),
-                dashboardModel.getTheoreticalAdvancePercentageByHoursUntilNow());
-        result.setValue(_("Current"), _("Critical path (hours)"),
-                dashboardModel.getCriticalPathProgressByNumHours());
-        result.setValue(_("Expected"), _("Critical path (hours)"), dashboardModel
-                .getTheoreticalProgressByNumHoursForCriticalPathUntilNow());
-        result.setValue(_("Current"), _("Critical path (duration)"),
-                dashboardModel.getCriticalPathProgressByDuration());
-        result.setValue(_("Expected"), _("Critical path (duration)"),
-                dashboardModel.getTheoreticalProgressByDurationForCriticalPathUntilNow());
-        return result;
-    }
+		public void current(String key, BigDecimal value) {
+			current.put(key, value);
+		}
 
-    private CategoryModel refreshTimeKPImarginWithDeadlineCategoryModel() {
-        CategoryModel result = null;
-        BigDecimal marginWithDeadLine = dashboardModel.getMarginWithDeadLine();
-        if (marginWithDeadLine != null) {
-            result = new SimpleCategoryModel();
-            result.setValue(_("None"), _("Deviation"), marginWithDeadLine);
-        }
-        return result;
-    }
+		public void expected(String key, BigDecimal value) {
+			expected.put(key, value);
+		}
 
-    private CategoryModel refreshTimeKPIEstimationAccuracyCategoryModel() {
-        CategoryModel result = new SimpleCategoryModel();
-        List<Double> values = dashboardModel.getFinishedTasksEstimationAccuracyHistogram();
-        Iterator<Double> it = values.iterator();
-        for(int ii= DashboardModel.EA_STRETCHES_MIN_VALUE;
-                ii < DashboardModel.EA_STRETCHES_MAX_VALUE;
-                ii += DashboardModel.EA_STRETCHES_PERCENTAGE_STEP) {
-            result.setValue(_("None"), _(String.valueOf(ii)), it.next());
-        }
-        result.setValue(_("None"),
-                _(">"+DashboardModel.EA_STRETCHES_MAX_VALUE),
-                it.next());
-        return result;
-    }
+		public static GlobalProgress create() {
+			return new GlobalProgress();
+		}
 
-    private CategoryModel refreshTimeKPILagInTaskCompletionCategoryModel() {
-        CategoryModel result = new SimpleCategoryModel();
-        List<Double> values = dashboardModel.getLagInTaskCompletionHistogram();
-        Iterator<Double> it = values.iterator();
-        for(double ii= DashboardModel.LTC_STRETCHES_MIN_VALUE;
-                ii < DashboardModel.LTC_STRETCHES_MAX_VALUE;
-                ii += DashboardModel.LTC_STRETCHES_STEP) {
-            result.setValue(_("None"), _(String.valueOf(ii)), it.next());
-        }
-        result.setValue(_("None"),
-                _(">"+DashboardModel.LTC_STRETCHES_MAX_VALUE),
-                it.next());
-        return result;
+		public String getPercentages() {
+			return String.format("'[%s, %s]'",
+					jsonifyPercentages(current.values()),
+					jsonifyPercentages(expected.values()));
+		}
+
+		private String jsonifyPercentages(Collection<BigDecimal> array) {
+			List<String> result = new ArrayList<String>();
+
+			int i = 1;
+			for (BigDecimal each : array) {
+				result.add(String.format("[%.2f, %d]", each.doubleValue(), i++));
+			}
+			return String.format("[%s]", StringUtils.join(result, ","));
+		}
+
+		private String jsonify(Collection<?> list) {
+			Collection<String> result = new ArrayList<String>();
+			for (Object each : list) {
+				if (each.getClass() == String.class) {
+					result.add(String.format("\"%s\"", each.toString()));
+				} else {
+					result.add(String.format("%s", each.toString()));
+				}
+			}
+			return String.format("'[%s]'", StringUtils.join(result, ','));
+		}
+
+		public String getSeries() {
+			return jsonify(series);
+		}
+
+		/**
+		 * The order of the ticks is taken from the keys in current
+		 * 
+		 * @return
+		 */
+		public String getTicks() {
+			return jsonify(current.keySet());
+		}
+
+		public void render() {
+			String command = String.format(
+					"global_progress.render(%s, %s, %s);", getPercentages(),
+					getTicks(), getSeries());
+			Clients.evalJavaScript(command);
+		}
+
+	}
+    
+    /**
+     * 
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     */
+    static class Series {
+    	
+    	private String label;
+    	
+    	private String color;
+    	
+    	private Series() {
+    		
+    	}
+    	
+    	public static Series create(String label) {
+    		Series series = new Series();
+    		series.label = label;
+    		return series;
+    	}
+    	
+    	public static Series create(String label, String color) {
+    		Series series = new Series();
+    		series.label = label;
+    		series.color = color;
+    		return series;
+    	}
+
+    	public String toString() {
+    		return String.format("{\"label\": \"%s\", \"color\": \"%s\"}", label, color);
+    	}
+    	
     }
+    
+    /**
+     * 
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     */
+    static class TaskStatus {
+    	
+    	private Map<String, BigDecimal> data = new LinkedHashMap<String, BigDecimal>();
+    	
+    	private TaskStatus() {
+    	
+    	}    	    	
+    	
+		public static TaskStatus create() {
+    		return new TaskStatus();
+    	}
+    	
+    	private String getData() {
+    		List<String> result = new ArrayList<String>();
+    		
+    		TreeSet<String> keys = new TreeSet<String>(data.keySet());
+    		for (String key : keys) { 
+    		   BigDecimal value = data.get(key);
+    		   result.add(String.format("[\"%s\", %.2f]", key, value));
+    		}    		    		
+    		return String.format("'[%s]'", StringUtils.join(result, ","));
+    	}
+    	    	
+    	public void data(String key, BigDecimal value) {
+    		data.put(key, value);
+    	}
+    	   	
+    	public void render() {    		
+    		String command = String.format("task_status.render(%s);", getData());
+    		Clients.evalJavaScript(command);    		
+    	}
+    	
+    }
+    
 }
