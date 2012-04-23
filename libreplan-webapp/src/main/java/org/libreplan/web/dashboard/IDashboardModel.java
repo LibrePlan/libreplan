@@ -21,8 +21,10 @@ package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskStatusEnum;
 
 interface IDashboardModel {
 
@@ -67,4 +69,7 @@ interface IDashboardModel {
 
     /* Time KPI: "Lead/Lag in task completion" */
     List<Double> getLagInTaskCompletionHistogram();
+    
+    Map<TaskStatusEnum, Integer> calculateTaskStatus();
+    
 }

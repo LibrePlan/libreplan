@@ -291,6 +291,17 @@ public class DashboardModel implements IDashboardModel {
         }
         return histogram;
     }
+    
+    public Map<TaskStatusEnum, Integer> calculateTaskStatus() {
+        AccumulateTasksStatusVisitor visitor = new AccumulateTasksStatusVisitor();
+        TaskElement rootTask = getRootTask();
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
+        }
+        resetTasksStatusInGraph();
+        rootTask.acceptVisitor(visitor);
+        return visitor.getTaskStatusData();
+    }
 
     private void calculateTaskStatusStatistics() {
         AccumulateTasksStatusVisitor visitor = new AccumulateTasksStatusVisitor();

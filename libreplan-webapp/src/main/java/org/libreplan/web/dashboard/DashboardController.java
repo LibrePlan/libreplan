@@ -23,9 +23,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +31,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -40,6 +39,8 @@ import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
 
@@ -57,6 +58,8 @@ public class DashboardController extends GenericForwardComposer {
 
     private Window dashboardWindow;
 
+    private Grid gridTasksSummary;
+    
     private Div projectDashboardChartsDiv;
     private Div projectDashboardNoTasksWarningDiv;
 
@@ -81,10 +84,26 @@ public class DashboardController extends GenericForwardComposer {
 		if (this.dashboardWindow != null) {
 	        renderGlobalProgress();
 	        renderTaskStatus();
-		}
-	
+	        renderTasksSummary();
+		}		
 	}
 	
+	private void renderTasksSummary() {
+		Map<TaskStatusEnum, Integer> taskStatus = dashboardModel.calculateTaskStatus();
+		
+		taskStatus("lblTasksFinished", taskStatus.get(TaskStatusEnum.FINISHED));
+		taskStatus("lblTasksBlocked", taskStatus.get(TaskStatusEnum.BLOCKED));
+		taskStatus("lblTasksInProgress", taskStatus.get(TaskStatusEnum.IN_PROGRESS));
+		taskStatus("lblTasksReadyToStart", taskStatus.get(TaskStatusEnum.READY_TO_START));
+	}
+	
+	private void taskStatus(String key, Integer value) {
+		Label label = (Label) gridTasksSummary.getFellowIfAny(key);
+		if (label != null) {
+			label.setValue(String.format(_("%d tasks"), value));
+		}
+	}
+
 	private void renderTaskStatus() {
 		TaskStatus taskStatus = TaskStatus.create();
 		taskStatus.data(_("Finished"),
