@@ -77,23 +77,8 @@ cp ${CURDIR}/scripts/database/create_db.sql      ${RPM_BUILD_ROOT}%{_datadir}/%{
 cp ${CURDIR}/scripts/database/create_user_postgresql.sql    ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
 cp ${CURDIR}/scripts/database/install.sql       ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
 
-# Copy SQL upgrade script for version 1.0.0
-cp ${CURDIR}/scripts/database/upgrade_1.0.0.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
-
-# Copy SQL upgrade script for version 1.1.0
-cp ${CURDIR}/scripts/database/upgrade_1.1.0.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
-
-# Copy SQL upgrade script for version 1.2.0
-cp ${CURDIR}/scripts/database/upgrade_1.2.0.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
-
-# Copy SQL upgrade script for version 1.2.1
-cp ${CURDIR}/scripts/database/upgrade_1.2.1.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
-
-# Copy SQL upgrade script for version 1.2.2
-cp ${CURDIR}/scripts/database/upgrade_1.2.2.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
-
-# Copy SQL upgrade script for version 1.2.3
-cp ${CURDIR}/scripts/database/upgrade_1.2.3.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
+# Copy SQL upgrade scripts
+cp ${CURDIR}/scripts/database/upgrade_*.sql ${RPM_BUILD_ROOT}%{_datadir}/%{name}/pgsql/
 
 # Install Policy file
 #mkdir -p ${RPM_BUILD_ROOT}/etc/tomcat6/policy.d
