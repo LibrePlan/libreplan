@@ -40,6 +40,7 @@ import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -72,6 +73,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private IExpenseSheetLineDAO expenseSheetLineDAO;
 
     @Autowired
     private IWorkReportDAO workReportDAO;
@@ -486,4 +490,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return result;
     }
 
+    @Override
+    public boolean hasImputedExpenseSheet(Long id) throws InstanceNotFoundException {
+        OrderElement orderElement = find(id);
+        return (!expenseSheetLineDAO.findByOrderElementAndChildren(orderElement).isEmpty());
+    }
 }

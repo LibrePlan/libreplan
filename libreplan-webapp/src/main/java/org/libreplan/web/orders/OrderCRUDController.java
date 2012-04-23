@@ -855,6 +855,16 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void remove(Order order) {
+        boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheets(order);
+        if (hasImputedExpenseSheets) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("You can not remove the project \"{0}\" because this one has imputed expense sheets.",
+                                    order.getName()));
+            return;
+        }
+
         boolean alreadyInUse = orderModel.isAlreadyInUseAndIsOnlyInCurrentScenario(order);
         if (alreadyInUse) {
             messagesForUser

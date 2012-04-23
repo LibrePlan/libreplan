@@ -126,4 +126,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
      */
     OrderElement findRepeatedOrderCodeInDB(OrderElement order);
 
+    boolean hasImputedExpenseSheet(Long id) throws InstanceNotFoundException;
+
 }

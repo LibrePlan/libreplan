@@ -679,6 +679,16 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     @Override
     public void remove(OrderElement element) {
+        boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheets(element);
+        if (hasImputedExpenseSheets) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("You can not remove the project \"{0}\" because this one has imputed expense sheets.",
+                                    element.getName()));
+            return;
+        }
+
         boolean alreadyInUse = orderModel.isAlreadyInUse(element);
         if (alreadyInUse) {
             messagesForUser

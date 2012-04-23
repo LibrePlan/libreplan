@@ -128,4 +128,6 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     PlanningState getPlanningState();
 
+    boolean hasImputedExpenseSheets(OrderElement order);
+
 }

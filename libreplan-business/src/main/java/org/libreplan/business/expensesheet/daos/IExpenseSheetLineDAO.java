@@ -19,8 +19,11 @@
 
 package org.libreplan.business.expensesheet.daos;
 
+import java.util.List;
+
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
+import org.libreplan.business.orders.entities.OrderElement;
 
 /**
  * Interface for ExpenseSheetLine DAO
@@ -29,5 +32,9 @@ import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
  *
  */
 public interface IExpenseSheetLineDAO extends IIntegrationEntityDAO<ExpenseSheetLine> {
+
+    List<ExpenseSheetLine> findByOrderElement(OrderElement orderElement);
+
+    List<ExpenseSheetLine> findByOrderElementAndChildren(OrderElement orderElement);
 
 }
