@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
@@ -343,5 +344,13 @@ public class BandboxSearch extends HtmlMacroComponent {
         if (bandbox != null) {
             bandbox.close();
         }
+    }
+
+    public void setBandboxConstraint(String constr) {
+        bandbox.setConstraint(constr);
+    }
+
+    public void setBandboxConstraint(Constraint constr) {
+        bandbox.setConstraint(constr);
     }
 }
