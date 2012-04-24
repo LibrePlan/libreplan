@@ -84,4 +84,7 @@ public abstract class BandboxFinder implements IBandboxFinder {
         }
     };
 
+    public void resetModel() {
+        this.model = null;
+    }
 }

@@ -231,6 +231,7 @@ public class BandboxSearch extends HtmlMacroComponent {
 
     public void setFinder(String classname) {
         finder = (IBandboxFinder) getBean(StringUtils.uncapitalize(classname));
+        finder.resetModel();
     }
 
     public List<? extends BaseEntity> getModel() {
