@@ -202,9 +202,18 @@
             <column name="resource_id" type="BIGINT"/>
             <column name="expense_sheet_id" type="BIGINT"/>
         </createTable>
+        <addForeignKeyConstraint constraintName="expense_sheet_line_order_element_fkey"
+            baseTableName="expense_sheet_line" baseColumnNames="order_element_id"
+            referencedTableName="order_element" referencedColumnNames="id" />
+        <addForeignKeyConstraint constraintName="expense_sheet_line_resource_fkey"
+            baseTableName="expense_sheet_line" baseColumnNames="resource_id"
+            referencedTableName="resource" referencedColumnNames="id" />
+        <addForeignKeyConstraint constraintName="expense_sheet_line_expense_sheet_fkey"
+            baseTableName="expense_sheet_line" baseColumnNames="expense_sheet_id"
+            referencedTableName="expense_sheet" referencedColumnNames="id" />
     </changeSet>
 
-    <changeSet id="add-new-column-generate-code-for-expense-sheets" author="mrego">
+    <changeSet id="add-new-column-generate-code-for-expense-sheets" author="smontes">
         <comment>Add new column to generate the code for expense sheet in configuration table</comment>
         <addColumn tableName="configuration">
             <column name="generate_code_for_expense_sheets" type="BOOLEAN"/>

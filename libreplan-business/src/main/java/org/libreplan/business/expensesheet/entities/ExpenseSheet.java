@@ -33,7 +33,6 @@ import org.hibernate.validator.Valid;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
 
 /**
@@ -52,13 +51,14 @@ public class ExpenseSheet extends IntegrationEntity {
     private String description;
 
     @Valid
-    @NotEmpty(message = "the expense sheet must have least a expense sheet line.")
-    @NotNull(message = "the expense sheet must have least a expense sheet line.")
     private SortedSet<ExpenseSheetLine> expenseSheetLines = new TreeSet<ExpenseSheetLine>(
             new ExpenseSheetLineComparator());
 
     private Integer lastExpenseSheetLineSequenceCode = 0;
 
+    /**
+     * Constructor for Hibernate. Do not use!
+     */
     protected ExpenseSheet() {
     }
 
@@ -69,15 +69,11 @@ public class ExpenseSheet extends IntegrationEntity {
     }
 
     public static ExpenseSheet create() {
-        ExpenseSheet expenseSheet = new ExpenseSheet();
-        expenseSheet.setNewObject(true);
-        return expenseSheet;
+        return create(new ExpenseSheet());
     }
 
     public static ExpenseSheet create(Date firstExpense, Date lastExpense, BigDecimal total) {
-        ExpenseSheet expenseSheet = new ExpenseSheet(firstExpense, lastExpense, total);
-        expenseSheet.setNewObject(true);
-        return expenseSheet;
+        return create(new ExpenseSheet(firstExpense, lastExpense, total));
     }
 
     @Override
@@ -105,16 +101,14 @@ public class ExpenseSheet extends IntegrationEntity {
         this.total = total;
     }
 
-    @Min(message = "length less than 0", value = 0)
+    @Min(message = "total must be greater or equal than 0", value = 0)
     @NotNull(message = "total not specified")
     public BigDecimal getTotal() {
         return total;
     }
 
-    public void setExpenseSheetLines(SortedSet<ExpenseSheetLine> expenseSheetLines) {
-        this.expenseSheetLines = expenseSheetLines;
-    }
-
+    @NotEmpty(message = "the expense sheet must have least a expense sheet line.")
+    @NotNull(message = "the expense sheet must have least a expense sheet line.")
     public SortedSet<ExpenseSheetLine> getExpenseSheetLines() {
         return Collections.unmodifiableSortedSet(expenseSheetLines);
     }
@@ -139,11 +133,6 @@ public class ExpenseSheet extends IntegrationEntity {
     @AssertTrue(message = "The expense sheet line codes must be unique.")
     public boolean checkConstraintNonRepeatedExpenseSheetLinesCodes() {
         return getFirstRepeatedCode(this.expenseSheetLines) == null;
-    }
-
-    @AssertTrue(message = "The expense sheet line collection cannot be empty or null.")
-    public boolean checkConstraintNotEmptyExpenseSheetLines() {
-        return ((getExpenseSheetLines() != null) && (!getExpenseSheetLines().isEmpty()));
     }
 
     public void generateExpenseSheetLineCodes(int numberOfDigits) {
@@ -183,7 +172,7 @@ public class ExpenseSheet extends IntegrationEntity {
         }
     }
 
-    public void updateTotal() throws ValidationException {
+    public void updateTotal() {
         this.setTotal(new BigDecimal(0));
         for (ExpenseSheetLine line : this.expenseSheetLines) {
             if (line.getValue() != null) {

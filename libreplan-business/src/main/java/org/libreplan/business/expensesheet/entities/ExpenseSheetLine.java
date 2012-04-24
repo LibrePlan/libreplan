@@ -49,11 +49,14 @@ public class ExpenseSheetLine extends IntegrationEntity {
 
     private ExpenseSheet expenseSheet;
 
+    /**
+     * Constructor for Hibernate. Do not use!
+     */
     protected ExpenseSheetLine() {
 
     }
 
-    protected ExpenseSheetLine(BigDecimal value, String concept, Date date,
+    private ExpenseSheetLine(BigDecimal value, String concept, Date date,
             OrderElement orderElement) {
         this.orderElement = orderElement;
         this.concept = concept;
@@ -63,9 +66,7 @@ public class ExpenseSheetLine extends IntegrationEntity {
 
     public static ExpenseSheetLine create(BigDecimal value, String concept, Date date,
             OrderElement orderElement) {
-        ExpenseSheetLine expenseSheetLine = new ExpenseSheetLine(value, concept, date, orderElement);
-        expenseSheetLine.setNewObject(true);
-        return create(expenseSheetLine);
+        return create(new ExpenseSheetLine(value, concept, date, orderElement));
     }
 
     public void setValue(BigDecimal value) {
@@ -88,8 +89,8 @@ public class ExpenseSheetLine extends IntegrationEntity {
         return true;
     }
 
-    @Min(message = "length less than 0", value = 0)
-    @NotNull(message = "total not specified")
+    @Min(message = "value must be greater or equal than 0", value = 0)
+    @NotNull(message = "value not specified")
     public BigDecimal getValue() {
         return value;
     }
