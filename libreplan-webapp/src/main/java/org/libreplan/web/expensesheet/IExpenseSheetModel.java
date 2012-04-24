@@ -65,6 +65,6 @@ public interface IExpenseSheetModel extends IIntegrationEntityModel {
 
     Order getSelectedProject();
 
-    void generateExpenseSheetLinesIfIsNecessary();
+    void generateExpenseSheetLineCodesIfIsNecessary();
 
 }

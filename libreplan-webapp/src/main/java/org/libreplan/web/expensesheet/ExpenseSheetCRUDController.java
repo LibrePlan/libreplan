@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
-import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.Order;
@@ -43,7 +41,6 @@ import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -53,6 +50,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
@@ -73,7 +71,7 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(ExpenseSheetCRUDController.class);
 
-    private Window createWindow;
+    private Window editWindow;
 
     private Window listWindow;
 
@@ -89,13 +87,13 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
     private static final String ITEM = "item";
 
     /*
-     * componentes listWindow
+     * components listWindow
      */
 
     private Grid listing;
 
     /*
-     * componentes editWindow
+     * components editWindow
      */
 
     private Textbox txtExpenseCode;
@@ -120,6 +118,29 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
 
     private ExpenseSheetLineRenderer expenseSheetLineRenderer = new ExpenseSheetLineRenderer();
 
+    private EventListener eventListenerUpdateResource = new EventListener() {
+        @Override
+        public void onEvent(Event event) {
+            expenseSheetModel.getExpenseSheetLineDTO().setResource(
+                    (Resource) bandboxResource.getSelectedElement());
+        }
+    };
+
+    private EventListener eventListenerUpdateTask = new EventListener() {
+        @Override
+        public void onEvent(Event event) {
+            OrderElement orderElement = (OrderElement) bandboxTasks.getSelectedElement();
+            expenseSheetModel.getExpenseSheetLineDTO().setOrderElement(orderElement);
+        }
+    };
+
+    private EventListener eventListenerUpdateProject = new EventListener() {
+        @Override
+        public void onEvent(Event event) {
+            setProject((Order) bandboxSelectOrder.getSelectedElement());
+        }
+    };
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -129,7 +150,7 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
     }
 
     private OnlyOneVisible getVisibility() {
-        return (visibility == null) ? new OnlyOneVisible(createWindow, listWindow) : visibility;
+        return (visibility == null) ? new OnlyOneVisible(editWindow, listWindow) : visibility;
     }
 
     public void saveAndExit() {
@@ -145,12 +166,15 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
     }
 
     public boolean save() {
-        ConstraintChecker.isValid(createWindow);
-        expenseSheetModel.generateExpenseSheetLinesIfIsNecessary();
+        ConstraintChecker.isValid(editWindow);
+        expenseSheetModel.generateExpenseSheetLineCodesIfIsNecessary();
 
         if (this.getExpenseSheet() != null
-                && !getExpenseSheet().checkConstraintNotEmptyExpenseSheetLines()) {
-            showInvalidProperty();
+                && (getExpenseSheet().getExpenseSheetLines() == null || getExpenseSheet()
+                        .getExpenseSheetLines().isEmpty())) {
+            messagesForUser.showMessage(Level.ERROR,
+                    "The expense sheet line collection cannot be empty.");
+            LOG.error(_("Error on saving element: ", getExpenseSheet().getId()));
             return false;
         }
 
@@ -158,195 +182,13 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
             expenseSheetModel.confirmSave();
             messagesForUser.showMessage(Level.INFO, _("Expense sheet saved"));
             return true;
-        } catch (ValidationException e) {
-            showInvalidValues(e);
         } catch (Exception e) {
-            if (!showInvalidProperty()) {
-                throw new RuntimeException(e);
-            }
+            return false;
         }
-        return false;
     }
 
     public void cancel() {
         goToList();
-    }
-
-    /**
-     * Shows invalid values for {@link ExpenseSheet} and {@link ExpenseSheetLine}
-     * entities
-     * @param e
-     */
-    private void showInvalidValues(ValidationException e) {
-        for (InvalidValue invalidValue : e.getInvalidValues()) {
-            Object value = invalidValue.getBean();
-            if (value instanceof ExpenseSheet) {
-                validateExpenseSheet();
-            }
-            if (value instanceof ExpenseSheetLine) {
-                ExpenseSheetLine expenseSheetLine = (ExpenseSheetLine) invalidValue.getBean();
-                Row row = ComponentsFinder.findRowByValue(gridExpenseLines, expenseSheetLine);
-                if (row == null) {
-                    messagesForUser.showInvalidValues(e);
-                } else {
-                    validateExpenseSheetLine(row, expenseSheetLine);
-                }
-            }
-        }
-    }
-
-    private boolean validateExpenseSheet() {
-        if (!getExpenseSheet().checkConstraintUniqueCode()) {
-            messagesForUser.showMessage(Level.ERROR,
-                    "it already exists another expense sheet with the same code.");
-            LOG.error(_("Error on saving: ", getExpenseSheet().getId()));
-            return false;
-        }
-        if (!getExpenseSheet().checkConstraintNonRepeatedExpenseSheetLinesCodes()) {
-            messagesForUser.showMessage(Level.ERROR,
-                    "it already exists several expense sheet line with the same code.");
-            LOG.error(_("Error on saving element: ", getExpenseSheet().getId()));
-            return false;
-        }
-        if (!getExpenseSheet().checkConstraintNotEmptyExpenseSheetLines()) {
-            messagesForUser.showMessage(Level.ERROR,
-                    "The expense sheet line collection cannot be empty.");
-            LOG.error(_("Error on saving element: ", getExpenseSheet().getId()));
-            return false;
-        }
-        return true;
-    }
-
-    private boolean showInvalidProperty() {
-        ExpenseSheet expenseSheet = getExpenseSheet();
-        if (expenseSheet != null) {
-            if (!validateExpenseSheet()) {
-                return true;
-            }
-            for (ExpenseSheetLine each : expenseSheet.getExpenseSheetLines()) {
-                if (!validateExpenseSheetLine(each)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean validateExpenseSheetLine(ExpenseSheetLine expenseSheetLine) {
-        Row row = ComponentsFinder.findRowByValue(gridExpenseLines, expenseSheetLine);
-        return row != null ? validateExpenseSheetLine(row, expenseSheetLine) : false;
-    }
-
-    /**
-    * Validates {@link ExpenseSheetLine} data constraints
-    *
-    * @param invalidValue
-    */
-    @SuppressWarnings("unchecked")
-    private boolean validateExpenseSheetLine(Row row, ExpenseSheetLine expenseSheetLine) {
-        if (expenseSheetLine != null) {
-            if (expenseSheetLine.getOrderElement() == null) {
-                BandboxSearch bandboxOrder = this.getBandboxSearch(row, 0);
-                if (bandboxOrder != null) {
-                    String message = _("The task cannot be empty");
-                    bandboxOrder.clear();
-                    showInvalidMessage(bandboxOrder, message);
-                }
-                return false;
-            }
-
-            if ((expenseSheetLine.getValue() == null)
-                    || (expenseSheetLine.getValue().compareTo(BigDecimal.ZERO) < 0)) {
-                Decimalbox dbValue = this.getValue(row);
-                if (dbValue != null) {
-                    String message = _("the value must be not empty and greater or equal than zero");
-                    showInvalidMessage(dbValue, message);
-                }
-                return false;
-            }
-
-            if (expenseSheetLine.getDate() == null) {
-                Datebox date = getDateboxDate(row);
-                if (date != null) {
-                    String message = _("The date cannot be empty");
-                    showInvalidMessage(date, message);
-                }
-                return false;
-            }
-
-            if ((!getExpenseSheet().isCodeAutogenerated())
-                    && (expenseSheetLine.getCode() == null || expenseSheetLine.getCode().isEmpty() || (!getExpenseSheet()
-                            .checkConstraintNonRepeatedExpenseSheetLinesCodes()))) {
-                // Locate TextboxCode
-                Textbox txtCode = getTextbox(row, 5);
-                if (txtCode != null) {
-                    String message = _("The code cannot be empty and it must be unique.");
-                    showInvalidMessage(txtCode, message);
-                }
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void showInvalidMessage(Component comp, String message) {
-        throw new WrongValueException(comp, message);
-    }
-
-    /**
-     * Locates {@link Textbox} effort in {@link Row}
-     *
-     * @param row
-     * @return
-     */
-    private Decimalbox getValue(Row row) {
-        try {
-            return (Decimalbox) row.getChildren().get(1);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-    * Locates {@link Textbox} effort in {@link Row}
-    *
-    * @param row
-    * @return
-    */
-    private Textbox getTextbox(Row row, int position) {
-        try {
-            return (Textbox) row.getChildren().get(position);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-    * Locates {@link Datebox} date in {@link Row}
-    * @param row
-    * @return
-    */
-    private Datebox getDateboxDate(Row row) {
-        try {
-            return (Datebox) row.getChildren().get(3);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-    * Locates {@link Bandbox} OrderElement in {@link Row}
-    *
-    * @param row
-    * @return
-    */
-    private BandboxSearch getBandboxSearch(Row row, int position) {
-        try {
-            return (BandboxSearch) row.getChildren().get(position);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     public void goToList() {
@@ -366,99 +208,49 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
 
     public void goToCreateForm() {
         expenseSheetModel.initCreate();
-        goToCreateWindow();
+        goToEditWindow();
     }
 
     public void goToEditForm(ExpenseSheet expenseSheet) {
         expenseSheetModel.prepareToEdit(expenseSheet);
-        goToCreateWindow();
+        goToEditWindow();
     }
 
-    private void goToCreateWindow() {
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
-        loadComponentsCreateWindow();
+    private void goToEditWindow() {
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+        loadComponentsEditWindow();
     }
 
-    private void loadComponentsCreateWindow() {
-        tbConcept = (Textbox) createWindow.getFellowIfAny("tbConcept");
-        dateboxExpenseDate = (Datebox) createWindow.getFellowIfAny("dateboxExpenseDate");
-        dboxValue = (Decimalbox) createWindow.getFellowIfAny("dboxValue");
-        gridExpenseLines = (Grid) createWindow.getFellowIfAny("gridExpenseLines");
-        bandboxResource = (BandboxSearch) createWindow.getFellowIfAny("bandboxResource");
-        bandboxTasks = (BandboxSearch) createWindow.getFellowIfAny("bandboxTasks");
-        bandboxSelectOrder = (BandboxSearch) createWindow.getFellowIfAny("bandboxSelectOrder");
+    private void loadComponentsEditWindow() {
+        tbConcept = (Textbox) editWindow.getFellowIfAny("tbConcept");
+        dateboxExpenseDate = (Datebox) editWindow.getFellowIfAny("dateboxExpenseDate");
+        dboxValue = (Decimalbox) editWindow.getFellowIfAny("dboxValue");
+        gridExpenseLines = (Grid) editWindow.getFellowIfAny("gridExpenseLines");
+        bandboxResource = (BandboxSearch) editWindow.getFellowIfAny("bandboxResource");
+        bandboxTasks = (BandboxSearch) editWindow.getFellowIfAny("bandboxTasks");
+        bandboxSelectOrder = (BandboxSearch) editWindow.getFellowIfAny("bandboxSelectOrder");
 
         if (bandboxSelectOrder != null) {
-            bandboxSelectOrder.setListboxEventListener(Events.ON_SELECT, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    setProject((Order) bandboxSelectOrder.getSelectedElement());
-                }
-            });
-            bandboxSelectOrder.setListboxEventListener(Events.ON_OK, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    setProject((Order) bandboxSelectOrder.getSelectedElement());
-                }
-            });
-
-            bandboxSelectOrder.setBandboxEventListener(Events.ON_CHANGING, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    setProject((Order) bandboxSelectOrder.getSelectedElement());
-                }
-            });
+            bandboxSelectOrder
+                    .setListboxEventListener(Events.ON_SELECT, eventListenerUpdateProject);
+            bandboxSelectOrder.setListboxEventListener(Events.ON_OK, eventListenerUpdateProject);
+            bandboxSelectOrder.setBandboxEventListener(Events.ON_CHANGING,
+                    eventListenerUpdateProject);
         }
 
         if (bandboxTasks != null) {
-            bandboxTasks.setListboxEventListener(Events.ON_SELECT, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    expenseSheetModel.getExpenseSheetLineDTO().setOrderElement(
-                            (OrderElement) bandboxTasks.getSelectedElement());
-                }
-            });
-            bandboxTasks.setListboxEventListener(Events.ON_OK, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    expenseSheetModel.getExpenseSheetLineDTO().setOrderElement(
-                            (OrderElement) bandboxTasks.getSelectedElement());
-                }
-            });
-            bandboxTasks.setBandboxEventListener(Events.ON_CHANGING, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    expenseSheetModel.getExpenseSheetLineDTO().setOrderElement(
-                            (OrderElement) bandboxTasks.getSelectedElement());
-                }
-            });
+            bandboxTasks.setListboxEventListener(Events.ON_SELECT, eventListenerUpdateTask);
+            bandboxTasks.setListboxEventListener(Events.ON_OK, eventListenerUpdateTask);
+            bandboxTasks.setBandboxEventListener(Events.ON_CHANGING, eventListenerUpdateTask);
         }
 
         if (bandboxResource != null) {
-            bandboxResource.setListboxEventListener(Events.ON_SELECT, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    expenseSheetModel.getExpenseSheetLineDTO().setResource(
-                            (Resource) bandboxResource.getSelectedElement());
-                }
-            });
-            bandboxResource.setListboxEventListener(Events.ON_OK, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    expenseSheetModel.getExpenseSheetLineDTO().setResource(
-                            (Resource) bandboxResource.getSelectedElement());
-                }
-            });
-            bandboxResource.setBandboxEventListener(Events.ON_CHANGING, new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    expenseSheetModel.getExpenseSheetLineDTO().setResource(
-                            (Resource) bandboxResource.getSelectedElement());
-                }
-            });
+            bandboxResource.setListboxEventListener(Events.ON_SELECT, eventListenerUpdateResource);
+            bandboxResource.setListboxEventListener(Events.ON_OK, eventListenerUpdateResource);
+            bandboxResource
+                    .setBandboxEventListener(Events.ON_CHANGING, eventListenerUpdateResource);
         }
-
     }
 
     /*
@@ -470,7 +262,6 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
     }
 
     public List<ExpenseSheet> getExpenseSheets() {
-        // return new ArrayList<ExpenseSheet>();
         return expenseSheetModel.getExpenseSheets();
     }
 
@@ -606,7 +397,7 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
                 messagesForUser.showMessage(Level.ERROR, err.getMessage());
             }
         }
-        Util.reloadBindings(createWindow);
+        Util.reloadBindings(editWindow);
         reloadExpenseSheetLines();
     }
 
@@ -690,7 +481,6 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
         private void appendDateInLines(Row row) {
             final ExpenseSheetLine expenseSheetLine = (ExpenseSheetLine) row.getValue();
             final Datebox dateboxExpense = new Datebox();
-
             Util.bind(dateboxExpense, new Util.Getter<Date>() {
 
                 @Override
@@ -710,6 +500,7 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
                     }
                 }
             });
+            dateboxExpense.setConstraint("no empty:" + _("cannot be null or empty"));
             row.appendChild(dateboxExpense);
         }
 
@@ -722,31 +513,16 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
             bandboxSearch.setSclass("bandbox-workreport-task");
             bandboxSearch.setListboxWidth("450px");
 
-            bandboxSearch.setListboxEventListener(Events.ON_SELECT,
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) {
-                            Listitem selectedItem = bandboxSearch.getSelectedItem();
-                            setResourceInESL(selectedItem, expenseSheetLine);
-                        }
-                    });
-
-            bandboxSearch.setListboxEventListener(Events.ON_OK,
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) {
-                            Listitem selectedItem = bandboxSearch.getSelectedItem();
-                            setResourceInESL(selectedItem, expenseSheetLine);
-                        }
-                    });
-            bandboxSearch.setBandboxEventListener(Events.ON_CHANGING,
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) {
-                            Listitem selectedItem = bandboxSearch.getSelectedItem();
-                            setResourceInESL(selectedItem, expenseSheetLine);
-                        }
-                    });
+            EventListener eventListenerUpdateResource = new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    Listitem selectedItem = bandboxSearch.getSelectedItem();
+                    setResourceInESL(selectedItem, expenseSheetLine);
+                }
+            };
+            bandboxSearch.setListboxEventListener(Events.ON_SELECT, eventListenerUpdateResource);
+            bandboxSearch.setListboxEventListener(Events.ON_OK, eventListenerUpdateResource);
+            bandboxSearch.setBandboxEventListener(Events.ON_CHANGING, eventListenerUpdateResource);
             row.appendChild(bandboxSearch);
         }
 
@@ -768,6 +544,7 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
                     line.setCode(code.getValue());
                 }
             });
+            code.setConstraint(checkConstraintLineCodes(line));
             row.appendChild(code);
         }
 
@@ -810,6 +587,7 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
                 }
             });
 
+            dbValue.setConstraint(checkConstraintExpenseValue());
             row.appendChild(dbValue);
         }
 
@@ -820,40 +598,27 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
          */
         private void appendOrderElementInLines(Row row) {
             final ExpenseSheetLine expenseSheetLine = (ExpenseSheetLine) row.getValue();
-
-            final BandboxSearch bandboxSearch = BandboxSearch.create(
-                        "TaskInExpenseSheetBandboxFinder");
+            final BandboxSearch bandboxSearch = BandboxSearch
+                    .create("OrderElementInExpenseSheetBandboxFinder");
 
             bandboxSearch.setSelectedElement(expenseSheetLine.getOrderElement());
-                bandboxSearch.setSclass("bandbox-workreport-task");
-                bandboxSearch.setListboxWidth("450px");
+            bandboxSearch.setSclass("bandbox-workreport-task");
+            bandboxSearch.setListboxWidth("450px");
 
-                bandboxSearch.setListboxEventListener(Events.ON_SELECT,
-                        new EventListener() {
-                            @Override
-                            public void onEvent(Event event) {
-                                Listitem selectedItem = bandboxSearch.getSelectedItem();
-                                setOrderElementInESL(selectedItem, expenseSheetLine);
-                            }
-                        });
-
-                bandboxSearch.setListboxEventListener(Events.ON_OK,
-                        new EventListener() {
-                            @Override
-                            public void onEvent(Event event) {
-                                Listitem selectedItem = bandboxSearch.getSelectedItem();
-                                setOrderElementInESL(selectedItem, expenseSheetLine);
-                            }
-                        });
-                bandboxSearch.setBandboxEventListener(Events.ON_CHANGING,
-                        new EventListener() {
-                            @Override
-                            public void onEvent(Event event) {
-                                Listitem selectedItem = bandboxSearch.getSelectedItem();
-                                setOrderElementInESL(selectedItem, expenseSheetLine);
-                            }
-                        });
-                row.appendChild(bandboxSearch);
+            EventListener eventListenerUpdateOrderElement = new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    Listitem selectedItem = bandboxSearch.getSelectedItem();
+                    setOrderElementInESL(selectedItem, expenseSheetLine);
+                }
+            };
+            bandboxSearch
+                    .setListboxEventListener(Events.ON_SELECT, eventListenerUpdateOrderElement);
+            bandboxSearch.setListboxEventListener(Events.ON_OK, eventListenerUpdateOrderElement);
+            bandboxSearch.setBandboxEventListener(Events.ON_CHANGING,
+                    eventListenerUpdateOrderElement);
+            bandboxSearch.setBandboxConstraint("no empty:" + _("cannot be null or empty"));
+            row.appendChild(bandboxSearch);
         }
 
         private void setOrderElementInESL(Listitem selectedItem, ExpenseSheetLine line) {
@@ -862,12 +627,65 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
             line.setOrderElement(orderElement);
         }
 
-
         private void setResourceInESL(Listitem selectedItem,
                 ExpenseSheetLine expenseSheetLine) {
             Resource resource = (selectedItem == null ? null : (Resource) selectedItem.getValue());
             expenseSheetLine.setResource(resource);
         }
+    }
+
+    public Constraint checkConstraintExpenseValue() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value) throws WrongValueException {
+                BigDecimal expenseValue = (BigDecimal) value;
+                if (expenseValue == null || expenseValue.compareTo(BigDecimal.ZERO) < 0) {
+                    throw new WrongValueException(comp, _("must be greater or equal than 0"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintLineCodes(final ExpenseSheetLine line) {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value) throws WrongValueException {
+                if (!getExpenseSheet().isCodeAutogenerated()) {
+                    String code = (String) value;
+                    if (code == null || code.isEmpty()){
+                        throw new WrongValueException(comp,
+                                _("The code cannot be empty."));
+                    }else{
+                        String oldCode = line.getCode();
+                        line.setCode(code);
+                        if(!getExpenseSheet()
+                            .checkConstraintNonRepeatedExpenseSheetLinesCodes()) {
+                                line.setCode(oldCode);
+                                throw new WrongValueException(comp,
+                                        _("The code must be unique."));
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintExpendeCode() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value) throws WrongValueException {
+                if (!getExpenseSheet().isCodeAutogenerated()) {
+                    String code = (String) value;
+                    if (code == null || code.isEmpty()) {
+                        throw new WrongValueException(comp,
+                                _("The code cannot be empty and it must be unique."));
+                    } else if (!getExpenseSheet().checkConstraintUniqueCode()) {
+                        throw new WrongValueException(comp,
+                                _("it already exists another expense sheet with the same code."));
+                    }
+                }
+            }
+        };
     }
 
 }
