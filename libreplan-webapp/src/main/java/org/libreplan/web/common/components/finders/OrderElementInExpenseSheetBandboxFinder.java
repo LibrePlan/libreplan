@@ -37,7 +37,7 @@ import org.zkoss.zul.ListitemRenderer;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Repository
-public class TaskInExpenseSheetBandboxFinder extends BandboxFinder implements IBandboxFinder {
+public class OrderElementInExpenseSheetBandboxFinder extends BandboxFinder implements IBandboxFinder {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -93,11 +93,13 @@ public class TaskInExpenseSheetBandboxFinder extends BandboxFinder implements IB
             Order order = (Order) orderElement.getOrder();
 
             Listcell infoTask = new Listcell();
-            infoTask.setLabel(orderElement.getName() + " (" + orderElement.getCode() + ")");
+            String valueTask = orderElement.getName() + " (" + orderElement.getCode() + ")";
+            infoTask.setLabel(valueTask);
             infoTask.setParent(item);
 
             Listcell infoProject = new Listcell();
-            infoProject.setLabel(order.getName() + " (" + order.getCode() + ")");
+            String valueProject = order.getName() + " (" + order.getCode() + ")";
+            infoProject.setLabel(valueProject);
             infoProject.setParent(item);
 
         }
