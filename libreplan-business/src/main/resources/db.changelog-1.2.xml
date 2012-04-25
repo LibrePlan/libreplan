@@ -226,4 +226,15 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="modify-columns-type-in-expense-sheet-to-date" author="smontes">
+    <comment>modify columns type in expense sheet to date</comment>
+        <modifyDataType tableName="expense_sheet" columnName="first_expense" newDataType="DATE"/>
+        <modifyDataType tableName="expense_sheet" columnName="last_expense" newDataType="DATE"/>
+    </changeSet>
+
+	<changeSet id="modify-columns-type-in-expense-sheet-line-to-date" author="smontes">
+    <comment>modify columns type in expense sheet line to date</comment>
+        <modifyDataType tableName="expense_sheet_line" columnName="date" newDataType="DATE"/>
+    </changeSet>
+
 </databaseChangeLog>

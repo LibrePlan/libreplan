@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.SortedSet;
 
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.Order;
@@ -372,7 +373,7 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
 
     private String getExpenseSheetLineName(ExpenseSheetLine expenseSheetLine) {
         if (expenseSheetLine != null) {
-            Date date = expenseSheetLine.getDate();
+            LocalDate date = expenseSheetLine.getDate();
             OrderElement task = expenseSheetLine.getOrderElement();
             if (date != null && task != null) {
                 return _("expense line of the ") + task.getName() + " - " + date;
@@ -486,7 +487,9 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
                 @Override
                 public Date get() {
                     if (expenseSheetLine != null) {
-                        return expenseSheetLine.getDate();
+                        if (expenseSheetLine.getDate() != null) {
+                            return expenseSheetLine.getDate().toDateTimeAtStartOfDay().toDate();
+                        }
                     }
                     return null;
                 }
@@ -496,7 +499,11 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
                 @Override
                 public void set(Date value) {
                     if (expenseSheetLine != null) {
-                        expenseSheetLine.setDate(value);
+                        LocalDate newDate = null;
+                        if (value != null) {
+                            newDate = LocalDate.fromDateFields(value);
+                        }
+                        expenseSheetLine.setDate(newDate);
                     }
                 }
             });
@@ -686,6 +693,21 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
                 }
             }
         };
+    }
+
+    public Date getExpenseSheetLineDate() {
+        if (expenseSheetModel.getExpenseSheetLineDTO() != null) {
+            return (expenseSheetModel.getExpenseSheetLineDTO().getDate() != null) ? expenseSheetModel
+                    .getExpenseSheetLineDTO().getDate().toDateTimeAtStartOfDay().toDate()
+                    : null;
+        }
+        return null;
+    }
+
+    public void setExpenseSheetLineDate(Date date) {
+        if (expenseSheetModel.getExpenseSheetLineDTO() != null) {
+            expenseSheetModel.getExpenseSheetLineDTO().setDate(LocalDate.fromDateFields(date));
+        }
     }
 
 }

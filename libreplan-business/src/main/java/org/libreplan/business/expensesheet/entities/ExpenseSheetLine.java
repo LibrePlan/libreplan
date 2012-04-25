@@ -20,10 +20,10 @@
 package org.libreplan.business.expensesheet.entities;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
@@ -41,7 +41,7 @@ public class ExpenseSheetLine extends IntegrationEntity {
 
     private String concept;
 
-    private Date date;
+    private LocalDate date;
 
     private OrderElement orderElement;
 
@@ -56,7 +56,7 @@ public class ExpenseSheetLine extends IntegrationEntity {
 
     }
 
-    private ExpenseSheetLine(BigDecimal value, String concept, Date date,
+    private ExpenseSheetLine(BigDecimal value, String concept, LocalDate date,
             OrderElement orderElement) {
         this.orderElement = orderElement;
         this.concept = concept;
@@ -64,7 +64,7 @@ public class ExpenseSheetLine extends IntegrationEntity {
         this.setDate(date);
     }
 
-    public static ExpenseSheetLine create(BigDecimal value, String concept, Date date,
+    public static ExpenseSheetLine create(BigDecimal value, String concept, LocalDate date,
             OrderElement orderElement) {
         return create(new ExpenseSheetLine(value, concept, date, orderElement));
     }
@@ -125,7 +125,7 @@ public class ExpenseSheetLine extends IntegrationEntity {
         return Registry.getExpenseSheetLineDAO();
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         boolean different = isDifferent(date);
         this.date = date;
         if (this.expenseSheet != null && different) {
@@ -133,7 +133,7 @@ public class ExpenseSheetLine extends IntegrationEntity {
         }
     }
 
-    private boolean isDifferent(Date date) {
+    private boolean isDifferent(LocalDate date) {
         if (this.date == null && date == null) {
             return false;
         }
@@ -144,7 +144,7 @@ public class ExpenseSheetLine extends IntegrationEntity {
     }
 
     @NotNull(message = "date not specified")
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 

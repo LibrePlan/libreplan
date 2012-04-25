@@ -30,7 +30,23 @@ public class ExpenseSheetLineComparator implements Comparator<ExpenseSheetLine> 
 
     @Override
     public int compare(ExpenseSheetLine arg0, ExpenseSheetLine arg1) {
-        if (arg0.getDate() == arg1.getDate()) {
+        if ((arg0.getDate() == null) && (arg1.getDate() == null)) {
+            return compareCode(arg0, arg1);
+        }
+        if (arg0.getDate() == null) {
+            return -1;
+        }
+        if (arg1.getDate() == null) {
+            return 1;
+        }
+        if (arg1.getDate().compareTo(arg0.getDate()) == 0) {
+            return compareCode(arg0, arg1);
+        }
+        return arg1.getDate().compareTo(arg0.getDate());
+    }
+
+    private int compareCode(ExpenseSheetLine arg0, ExpenseSheetLine arg1) {
+        if ((arg0.getCode() == null) && (arg1.getCode() == null)) {
             return 0;
         }
         if (arg0.getDate() == null) {
@@ -39,6 +55,6 @@ public class ExpenseSheetLineComparator implements Comparator<ExpenseSheetLine> 
         if (arg1.getDate() == null) {
             return 1;
         }
-        return arg1.getDate().compareTo(arg0.getDate());
+        return arg1.getCode().compareTo(arg0.getCode());
     }
 }

@@ -21,7 +21,6 @@ package org.libreplan.business.expensesheet.entities;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -30,6 +29,7 @@ import org.hibernate.validator.Min;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -42,9 +42,9 @@ import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
  */
 public class ExpenseSheet extends IntegrationEntity {
 
-    private Date firstExpense;
+    private LocalDate firstExpense;
 
-    private Date lastExpense;
+    private LocalDate lastExpense;
 
     private BigDecimal total;
 
@@ -62,7 +62,7 @@ public class ExpenseSheet extends IntegrationEntity {
     protected ExpenseSheet() {
     }
 
-    protected ExpenseSheet(Date firstExpense, Date lastExpense, BigDecimal total) {
+    protected ExpenseSheet(LocalDate firstExpense, LocalDate lastExpense, BigDecimal total) {
         this.setFirstExpense(firstExpense);
         this.setLastExpense(lastExpense);
         this.setTotal(total);
@@ -72,7 +72,8 @@ public class ExpenseSheet extends IntegrationEntity {
         return create(new ExpenseSheet());
     }
 
-    public static ExpenseSheet create(Date firstExpense, Date lastExpense, BigDecimal total) {
+    public static ExpenseSheet create(LocalDate firstExpense, LocalDate lastExpense,
+            BigDecimal total) {
         return create(new ExpenseSheet(firstExpense, lastExpense, total));
     }
 
@@ -81,19 +82,19 @@ public class ExpenseSheet extends IntegrationEntity {
         return Registry.getExpenseSheetDAO();
     }
 
-    protected void setFirstExpense(Date firstExpense) {
+    protected void setFirstExpense(LocalDate firstExpense) {
         this.firstExpense = firstExpense;
     }
 
-    public Date getFirstExpense() {
+    public LocalDate getFirstExpense() {
         return firstExpense;
     }
 
-    protected void setLastExpense(Date lastExpense) {
+    protected void setLastExpense(LocalDate lastExpense) {
         this.lastExpense = lastExpense;
     }
 
-    public Date getLastExpense() {
+    public LocalDate getLastExpense() {
         return lastExpense;
     }
 

@@ -21,7 +21,6 @@ package org.libreplan.web.expensesheet;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +29,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
@@ -176,8 +176,8 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     }
 
     private void resetExpenseSheetLineDTO() {
-        this.expenseSheetLineDTO = ExpenseSheetLine.create(new BigDecimal(0), "", new Date(), null);
-        this.expenseSheetLineDTO.setCode("");
+        this.expenseSheetLineDTO = ExpenseSheetLine.create(new BigDecimal(0), "", new LocalDate(),
+                null);
     }
 
     @Override

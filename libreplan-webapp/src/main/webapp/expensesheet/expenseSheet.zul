@@ -62,8 +62,8 @@
                 </columns>
                 <rows>
                     <row self="@{each='expensesheet'}" value="@{expensesheet}" onClick="controller.goToEditForm(self.value);">
-                        <label value="@{expensesheet.firstExpense, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
-                        <label value="@{expensesheet.lastExpense, converter='org.libreplan.web.common.typeconverters.DateConverter'}"/>
+                        <label value="@{expensesheet.firstExpense, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}" />
+                        <label value="@{expensesheet.lastExpense, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}"/>
                         <label value="@{expensesheet.total}" />
                         <label value="@{expensesheet.code}" />
                         <label value="@{expensesheet.description}" />
@@ -121,7 +121,8 @@
                     </hbox>
                     <hbox>
                         <label value="${i18n:_('Expense date')}" />
-                        <datebox id="dateboxExpenseDate" width="150px" value="@{controller.expenseSheetLineDTO.date}"
+                        <datebox id="dateboxExpenseDate" width="150px"
+                            value="@{controller.expenseSheetLineDate}"
                             constraint="no empty:${i18n:_('cannot be null or empty')}"/>
                     </hbox>
                 </vbox>

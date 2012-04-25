@@ -178,8 +178,8 @@ public class ExpenseSheetTestDAO {
         OrderElement orderElement = null;
 
         // a expense sheet with valid value,date but without order element.
-        ExpenseSheetLine line1 = ExpenseSheetLine.create(BigDecimal.ZERO, "concept", new Date(),
-                orderElement);
+        ExpenseSheetLine line1 = ExpenseSheetLine.create(BigDecimal.ZERO, "concept",
+                new LocalDate(), orderElement);
 
         line1.setExpenseSheet(expense);
         expense.add(line1);
@@ -199,7 +199,7 @@ public class ExpenseSheetTestDAO {
         OrderElement orderElement = this.givenOrderElement("order-element-2");
 
         // a expense sheet with valid date and order element, but invalid value.
-        ExpenseSheetLine line1 = ExpenseSheetLine.create(null, "concept", new Date(),
+        ExpenseSheetLine line1 = ExpenseSheetLine.create(null, "concept", new LocalDate(),
                 orderElement);
 
         // add the line to the expense sheet
@@ -220,8 +220,8 @@ public class ExpenseSheetTestDAO {
         } catch (ValidationException e) {
         }
 
-        ExpenseSheetLine line2 = ExpenseSheetLine.create(BigDecimal.TEN, "concept", new Date(),
-                orderElement);
+        ExpenseSheetLine line2 = ExpenseSheetLine.create(BigDecimal.TEN, "concept",
+                new LocalDate(), orderElement);
 
         // add other line to the expense sheet
         line2.setExpenseSheet(expense);
@@ -267,14 +267,14 @@ public class ExpenseSheetTestDAO {
         } catch (ValidationException e) {
         }
 
-        Date today = new Date();
+        LocalDate today = new LocalDate();
         line1.setDate(today);
 
         assertThat(expense.getFirstExpense(), equalTo(today));
         assertThat(expense.getLastExpense(), equalTo(today));
 
         // add other line with other date
-        Date tomorrow = new LocalDate().plusDays(1).toDateTimeAtStartOfDay().toDate();
+        LocalDate tomorrow = new LocalDate().plusDays(1);
         ExpenseSheetLine line2 = ExpenseSheetLine.create(BigDecimal.ONE, "concept", tomorrow,
                 orderElement);
         line2.setExpenseSheet(expense);
@@ -305,7 +305,7 @@ public class ExpenseSheetTestDAO {
         Worker worker = givenSavedValidWorker();
 
         // add line 1 with a resource
-        Date today = new Date();
+        LocalDate today = new LocalDate();
         ExpenseSheetLine line1 = ExpenseSheetLine.create(BigDecimal.ONE, "concept 1", today,
                 orderElement);
         line1.setResource(worker);
@@ -313,7 +313,7 @@ public class ExpenseSheetTestDAO {
         expense.add(line1);
 
         // add line 2 without resource
-        Date tomorrow = new LocalDate().plusDays(1).toDateTimeAtStartOfDay().toDate();
+        LocalDate tomorrow = new LocalDate().plusDays(1);
         ExpenseSheetLine line2 = ExpenseSheetLine.create(BigDecimal.ONE, "concept 2", tomorrow,
                 orderElement);
         line2.setExpenseSheet(expense);
@@ -411,7 +411,7 @@ public class ExpenseSheetTestDAO {
         expense.setCode(code);
 
         // add line 1
-        Date today = new Date();
+        LocalDate today = new LocalDate();
         ExpenseSheetLine line1 = ExpenseSheetLine.create(BigDecimal.ONE, "concept 1", today,
                 orderElement);
         line1.setExpenseSheet(expense);
@@ -491,7 +491,6 @@ public class ExpenseSheetTestDAO {
         assertThat(expenseSheetDAO.getAll().size(), equalTo(previousExpenses + 1));
         assertThat(expenseSheetLineDAO.findAll().size(), equalTo(previousExpenseLines + 1));
 
-
         expenseSheetDAO.remove(expense.getId());
         expenseSheetDAO.flush();
 
@@ -515,7 +514,7 @@ public class ExpenseSheetTestDAO {
         Worker worker = givenSavedValidWorker();
 
         // add line 1 with a resource
-        Date today = new Date();
+        LocalDate today = new LocalDate();
         ExpenseSheetLine line1 = ExpenseSheetLine.create(BigDecimal.ONE, "concept 1", today,
                 orderElement);
         line1.setResource(worker);
@@ -523,7 +522,7 @@ public class ExpenseSheetTestDAO {
         expense.add(line1);
 
         // add line 2 without resource
-        Date tomorrow = new LocalDate().plusDays(1).toDateTimeAtStartOfDay().toDate();
+        LocalDate tomorrow = new LocalDate().plusDays(1);
         ExpenseSheetLine line2 = ExpenseSheetLine.create(BigDecimal.ONE, "concept 2", tomorrow,
                 orderElement);
         line2.setCode("code-line-2");
