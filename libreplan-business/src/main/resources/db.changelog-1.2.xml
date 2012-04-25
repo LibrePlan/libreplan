@@ -58,14 +58,28 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
-    <changeSet id="change-column-description-in-order_element-to-text" author="mrego">
+    <changeSet id="change-column-description-in-order_element-to-text"
+        author="mrego" dbms="postgresql">
         <comment>Change column description in order_element to TEXT</comment>
         <modifyDataType tableName="order_element" columnName="description" newDataType="TEXT" />
     </changeSet>
 
-    <changeSet id="change-column-description-in-order_element_template-to-text" author="mrego">
+    <changeSet id="change-column-description-in-order_element_template-to-text"
+        author="mrego" dbms="postgresql">
         <comment>Change column description in order_element_template to TEXT</comment>
         <modifyDataType tableName="order_element_template" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
+    <changeSet id="change-column-description-in-to-text-in-mysql"
+        author="mrego" dbms="mysql">
+        <comment>
+            Change column description in order_element and
+            order_element_template to TEXT in MySQL.
+            Because of using modifyDataType convert the column in LONGTEXT and
+            this is causing some problems with Hibernate mapping.
+        </comment>
+        <sql>ALTER TABLE order_element MODIFY description TEXT</sql>
+        <sql>ALTER TABLE order_element_template MODIFY description TEXT</sql>
     </changeSet>
 
     <changeSet id="add-budget-column-to-order_line" author="mrego">
