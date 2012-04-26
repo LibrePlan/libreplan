@@ -84,6 +84,15 @@
                                     width="300px" />
                             </row>
                             <row>
+                                <label
+                                    value="${i18n:_('Currency')}" />
+                                <listbox id="currencyListbox"
+                                    model="@{configurationController.currencies}"
+                                    itemRenderer="@{configurationController.currencyRenderer}"
+                                    selectedItem="@{configurationController.selectedCurrency}"
+                                    mold="select" />
+                            </row>
+                            <row>
                                 <label value="${i18n:_('Autocomplete login form')}" />
                                 <checkbox id="enableAutocompleteLogin"
                                     label="${i18n:_('Enable/Disable')}"
