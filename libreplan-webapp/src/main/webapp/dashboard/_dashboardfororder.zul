@@ -34,9 +34,11 @@
 
         <div height="30px" sclass="toolbar-box" />
 
-        <window id="dashboardWindow" apply="${dsController}" vflex="1" style="margin:0;overflow:auto">
+        <window id="dashboardWindow" apply="${dsController}" vflex="1" contentStyle="margin: 0; overflow: auto">
 
-            <div id="projectDashboardChartsDiv" sclass="dashboards-container" height="100%">
+            <div id="projectDashboardChartsDiv" sclass="dashboards-container" height="100%" width="100%">
+
+                <!-- Progress -->
             	<groupbox closable="false">
                 	<caption label="${i18n:_('Progress')}" />
                     <hbox>
@@ -44,7 +46,7 @@
             			<n:div id="task-status" style="height:200px; width:400px; margin-left: 100px;"></n:div>
                 
                         <!-- Tasks summary -->
-                        <grid id="gridTasksSummary" style="margin-top: 50px" visible="false">
+                        <grid id="gridTasksSummary" style="margin-top: 50px;" width="300px">
                             <auxhead>
                                 <auxheader label="${i18n:_('Tasks summary')}" colspan="2"/>
                             </auxhead>
@@ -72,7 +74,18 @@
                             </rows>
                         </grid>
             		</hbox>
+            	</groupbox>            	
+
+                <!-- Time -->
+            	<groupbox closable="false">
+                	<caption label="${i18n:_('Time')}" />
+                    <hbox>
+            			<n:div id="task-completation-lag" style="height:200px; width:560px;"></n:div>
+            			<n:div id="deadline-violation" style="height:200px; width:400px; margin-left: 100px;"></n:div>
+            			<n:div id="margin-with-deadline" style="height:200px; width:400px; margin-left: 100px;"></n:div>
+            		</hbox>
             	</groupbox>
+
             </div>
 
             <div id="projectDashboardNoTasksWarningDiv" visible="false">
@@ -87,11 +100,23 @@
 
     <!-- The variable for containing the 'global progress' has to be global and created before defer -->
     <script type="text/javascript">
-        var global_progress = { 
-            title: 'Titulo',
-        };
+        var global_progress = { };
         var task_status = { };
+        var task_completation_lag = { };    
     </script>
+
+    <n:style type="text/css">
+        .tooltip {
+            display:none;
+            position:absolute;
+            border:1px solid #333;
+            background-color:#161616;
+            border-radius:5px;
+            padding:10px;
+            color:#fff;
+            font-size:12px Arial;
+        }
+    </n:style>
 
     <!-- Configure the parameters for the 'global progress' chart. The object contains a method 'render' that
         is called from the Java file once all objects in the view have been created -->
@@ -159,6 +184,66 @@
             },
             render: function(data) {
                 this.plot = jQuery.jqplot('task-status', [jQuery.parseJSON(data)], this);
+            }
+        };
+
+        task_completation_lag = {
+            id: 'task-completation-lag',
+            title: 'Task completation lag',
+            data: [],
+            seriesDefaults:{
+                renderer:$.jqplot.BarRenderer,
+                rendererOptions: {
+                    fillToZero: true
+                }
+            },
+            axesDefaults: {
+                tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+                tickOptions: {
+                    angle: -30,
+                    fontSize: '10pt'
+                }
+            }, 
+            axes: {
+                xaxis: {
+                    label: 'Number of Days / Days Interval',
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                },
+            },
+            render: function(data, conf) {
+                if (conf.ticks !== undefined) {
+                    this.axes.xaxis.ticks = jQuery.parseJSON(conf.ticks);
+                }
+                if (conf.titles !== undefined) {
+                    this.axes.xaxis.ticks = jQuery.parseJSON(conf.ticks);
+                }
+                
+                this.plot = $.jqplot(this.id, [jQuery.parseJSON(data)], this);
+                this.attachTooltip();
+            },
+            attachTooltip: function() {
+                var node = $('#' + this.id);
+                node.bind('jqplotDataHighlight', 
+                    function (ev, seriesIndex, pointIndex, data) {
+                        var x = ev.pageX - node.offset().left;
+                        var y = ev.pageY - node.offset().top;
+
+                        var tooltip = $('<span class="tooltip"></span>');
+                        tooltip.text(data[1]).appendTo(node);
+                        tooltip.css({'top': y, 'left': x, 'position': 'absolute'});
+                        tooltip.fadeIn('slow');
+                    }
+                );    
+                node.bind('jqplotDataUnhighlight', 
+                    function (ev) {
+                        $('.tooltip').remove();
+                    }
+                );
+                node.mousemove(function(ev) {
+                    var x = ev.pageX - node.offset().left;
+                    var y = ev.pageY - node.offset().top;
+                    $('.tooltip').css({'top': y, 'left': x, 'position': 'absolute'})
+                });
             }
         };
         

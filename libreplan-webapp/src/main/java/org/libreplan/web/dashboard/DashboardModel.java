@@ -22,10 +22,13 @@ package org.libreplan.web.dashboard;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -45,7 +48,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Model for UI operations related to Order Dashboard View
- *
+ * 
  * @author Nacho Barrientos <nacho@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
@@ -64,12 +67,11 @@ public class DashboardModel implements IDashboardModel {
     public static double LTC_STRETCHES_MIN_VALUE = 0;
     public static double LTC_STRETCHES_MAX_VALUE = 0;
 
-
     private Order currentOrder;
     private Integer taskCount = null;
 
-    private Map<TaskStatusEnum, BigDecimal> taskStatusStats;
-    private Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
+    private final Map<TaskStatusEnum, BigDecimal> taskStatusStats;
+    private final Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
     private List<Double> taskEstimationAccuracyHistogram;
     private BigDecimal marginWithDeadLine;
     private List<Double> lagInTaskCompletionHistogram;
@@ -81,10 +83,11 @@ public class DashboardModel implements IDashboardModel {
                 TaskDeadlineViolationStatusEnum.class);
     }
 
+    @Override
     public void setCurrentOrder(Order order) {
         this.currentOrder = order;
         this.taskCount = null;
-        if(tasksAvailable()) {
+        if (tasksAvailable()) {
             this.calculateTaskStatusStatistics();
             this.calculateTaskViolationStatusStatistics();
             this.calculateMarginWithDeadLine();
@@ -94,38 +97,49 @@ public class DashboardModel implements IDashboardModel {
     }
 
     /* Progress KPI: "Number of tasks by status" */
+    @Override
     public BigDecimal getPercentageOfFinishedTasks() {
         return taskStatusStats.get(TaskStatusEnum.FINISHED);
     }
 
+    @Override
     public BigDecimal getPercentageOfInProgressTasks() {
         return taskStatusStats.get(TaskStatusEnum.IN_PROGRESS);
     }
 
+    @Override
     public BigDecimal getPercentageOfReadyToStartTasks() {
         return taskStatusStats.get(TaskStatusEnum.READY_TO_START);
     }
 
+    @Override
     public BigDecimal getPercentageOfBlockedTasks() {
         return taskStatusStats.get(TaskStatusEnum.BLOCKED);
     }
 
     /* Progress KPI: "Deadline violation" */
+    @Override
     public BigDecimal getPercentageOfOnScheduleTasks() {
-        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.ON_SCHEDULE);
+        return taskDeadlineViolationStatusStats
+                .get(TaskDeadlineViolationStatusEnum.ON_SCHEDULE);
     }
 
+    @Override
     public BigDecimal getPercentageOfTasksWithViolatedDeadline() {
-        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED);
+        return taskDeadlineViolationStatusStats
+                .get(TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED);
     }
 
+    @Override
     public BigDecimal getPercentageOfTasksWithNoDeadline() {
-        return taskDeadlineViolationStatusStats.get(TaskDeadlineViolationStatusEnum.NO_DEADLINE);
+        return taskDeadlineViolationStatusStats
+                .get(TaskDeadlineViolationStatusEnum.NO_DEADLINE);
     }
 
     /* Progress KPI: "Global Progress of the Project" */
-    public BigDecimal getAdvancePercentageByHours(){
-        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+    @Override
+    public BigDecimal getAdvancePercentageByHours() {
+        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
         }
@@ -133,17 +147,20 @@ public class DashboardModel implements IDashboardModel {
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
-    public BigDecimal getExpectedAdvancePercentageByHours(){
-        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+    @Override
+    public BigDecimal getExpectedAdvancePercentageByHours() {
+        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByNumHoursForAllTasksUntilNow();
+        BigDecimal ratio = rootAsTaskGroup
+                .getTheoreticalProgressByNumHoursForAllTasksUntilNow();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
+    @Override
     public BigDecimal getCriticalPathProgressByNumHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
         }
@@ -151,17 +168,20 @@ public class DashboardModel implements IDashboardModel {
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
+    @Override
     public BigDecimal getExpectedCriticalPathProgressByNumHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
+        BigDecimal ratio = rootAsTaskGroup
+                .getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
+    @Override
     public BigDecimal getCriticalPathProgressByDuration() {
-        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
         }
@@ -169,16 +189,19 @@ public class DashboardModel implements IDashboardModel {
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
+    @Override
     public BigDecimal getExpectedCriticalPathProgressByDuration() {
-        TaskGroup rootAsTaskGroup = (TaskGroup)getRootTask();
+        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getTheoreticalProgressByDurationForCriticalPathUntilNow();
+        BigDecimal ratio = rootAsTaskGroup
+                .getTheoreticalProgressByDurationForCriticalPathUntilNow();
         return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
     }
 
     /* Time KPI: Margin with deadline */
+    @Override
     public BigDecimal getMarginWithDeadLine() {
         return this.marginWithDeadLine;
     }
@@ -208,6 +231,7 @@ public class DashboardModel implements IDashboardModel {
     }
 
     /* Time KPI: Estimation accuracy */
+    @Override
     public List<Double> getFinishedTasksEstimationAccuracyHistogram() {
         return this.taskEstimationAccuracyHistogram;
     }
@@ -216,21 +240,19 @@ public class DashboardModel implements IDashboardModel {
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
         }
-        CalculateFinishedTasksEstimationDeviationVisitor visitor =
-                new CalculateFinishedTasksEstimationDeviationVisitor();
+        CalculateFinishedTasksEstimationDeviationVisitor visitor = new CalculateFinishedTasksEstimationDeviationVisitor();
         TaskElement rootTask = getRootTask();
         rootTask.acceptVisitor(visitor);
         List<Double> deviations = visitor.getDeviations();
 
         // [-100, -90), [-90, -80), ..., [190, 200), [200, inf)
         this.taskEstimationAccuracyHistogram = createHistogram(
-                EA_STRETCHES_MIN_VALUE,
-                EA_STRETCHES_MAX_VALUE,
-                EA_STRETCHES_PERCENTAGE_STEP,
-                deviations);
+                EA_STRETCHES_MIN_VALUE, EA_STRETCHES_MAX_VALUE,
+                EA_STRETCHES_PERCENTAGE_STEP, deviations);
     }
 
     /* Time KPI: Lead/Lag in task completion */
+    @Override
     public List<Double> getLagInTaskCompletionHistogram() {
         return this.lagInTaskCompletionHistogram;
     }
@@ -239,8 +261,7 @@ public class DashboardModel implements IDashboardModel {
         if (this.getRootTask() == null) {
             throw new RuntimeException("Root task is null");
         }
-        CalculateFinishedTasksLagInCompletionVisitor visitor =
-                new CalculateFinishedTasksLagInCompletionVisitor();
+        CalculateFinishedTasksLagInCompletionVisitor visitor = new CalculateFinishedTasksLagInCompletionVisitor();
         TaskElement rootTask = getRootTask();
         rootTask.acceptVisitor(visitor);
         List<Double> deviations = visitor.getDeviations();
@@ -253,45 +274,137 @@ public class DashboardModel implements IDashboardModel {
             LTC_STRETCHES_MAX_VALUE = Collections.max(deviations);
         }
         LTC_STRETCHES_STEP = (LTC_STRETCHES_MAX_VALUE - LTC_STRETCHES_MIN_VALUE)
-                /LTC_NUMBER_OF_INTERVALS;
+                / LTC_NUMBER_OF_INTERVALS;
         this.lagInTaskCompletionHistogram = createHistogram(
-                LTC_STRETCHES_MIN_VALUE,
-                LTC_STRETCHES_MAX_VALUE,
-                LTC_STRETCHES_STEP,
-                deviations);
+                LTC_STRETCHES_MIN_VALUE, LTC_STRETCHES_MAX_VALUE,
+                LTC_STRETCHES_STEP, deviations);
     }
 
     private List<Double> createHistogram(double lowBound, double highBound,
             double intervalStep, List<Double> values) {
         double variableRange = highBound - lowBound;
         /* TODO: What if highBound == lowBound? */
-        int numberOfClasses = (int)(variableRange/intervalStep);
-        int[] classes = new int[numberOfClasses+1];
+        int numberOfClasses = (int) (variableRange / intervalStep);
+        int[] classes = new int[numberOfClasses + 1];
 
-        for(Double value: values) {
+        for (Double value : values) {
             int index;
             if (value >= highBound) {
                 index = numberOfClasses;
             } else {
-                index = (int)(numberOfClasses *
-                    (((value.doubleValue() - lowBound))/variableRange));
+                index = (int) (numberOfClasses * (((value.doubleValue() - lowBound)) / variableRange));
             }
             classes[index]++;
         }
 
         List<Double> histogram = new ArrayList<Double>();
         int numberOfConsideredTasks = values.size();
-        for (int numberOfElementsInClass: classes) {
+        for (int numberOfElementsInClass : classes) {
             Double relativeCount = new Double(0.0);
             if (numberOfConsideredTasks > 0) {
-                relativeCount = new Double(1.0*numberOfElementsInClass/
-                        numberOfConsideredTasks);
+                relativeCount = new Double(1.0 * numberOfElementsInClass
+                        / numberOfConsideredTasks);
             }
             histogram.add(relativeCount);
         }
         return histogram;
     }
-    
+
+    @Override
+    public Map<Interval, Integer> calculateTaskCompletation() {
+        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
+        final Integer one = Integer.valueOf(1);
+
+        // Get deviations of finished tasks, calculate max, min and delta
+        List<Double> deviations = getDeviations();
+        if (deviations.isEmpty()) {
+            return result;
+        }
+        Double max = Collections.max(deviations);
+        Double min = Collections.min(deviations);
+        double delta = (max - min) / Interval.MAX_INTERVALS;
+
+        // Create MAX_INTERVALS
+        double from = min;
+        for (int i = 0; i < Interval.MAX_INTERVALS; i++) {
+            result.put(Interval.create(from, from + delta), Integer.valueOf(0));
+            from = from + delta;
+        }
+
+        // Construct map with number of tasks for each interval
+        final Set<Interval> intervals = result.keySet();
+        for (Double each : deviations) {
+            Interval interval = Interval.containingValue(intervals, each);
+            if (interval != null) {
+                Integer value = result.get(interval);
+                result.put(interval, value + one);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 
+     * @author Diego Pino García<dpino@igalia.com>
+     * 
+     */
+    static class Interval {
+
+        public static final double MAX_INTERVALS = 6;
+
+        private double min;
+
+        private double max;
+
+        private Interval() {
+
+        }
+
+        public static Interval create(double min, double max) {
+            return new Interval(min, max);
+        }
+
+        private Interval(double min, double max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public static Interval copy(Interval interval) {
+            return new Interval(interval.min, interval.max);
+        }
+
+        public static Interval containingValue(Collection<Interval> intervals,
+                Double value) {
+            for (Interval each : intervals) {
+                if (each.includes(value)) {
+                    return each;
+                }
+            }
+            return null;
+        }
+
+        private boolean includes(double value) {
+            return (value >= min) && (value <= max);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("[%.2f, %.2f]", min, max);
+        }
+
+    }
+
+    private List<Double> getDeviations() {
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
+        }
+        CalculateFinishedTasksEstimationDeviationVisitor visitor = new CalculateFinishedTasksEstimationDeviationVisitor();
+        TaskElement rootTask = getRootTask();
+        rootTask.acceptVisitor(visitor);
+        return visitor.getDeviations();
+    }
+
+    @Override
     public Map<TaskStatusEnum, Integer> calculateTaskStatus() {
         AccumulateTasksStatusVisitor visitor = new AccumulateTasksStatusVisitor();
         TaskElement rootTask = getRootTask();
@@ -322,7 +435,8 @@ public class DashboardModel implements IDashboardModel {
             throw new RuntimeException("Root task is null");
         }
         rootTask.acceptVisitor(visitor);
-        Map<TaskDeadlineViolationStatusEnum, Integer> count = visitor.getTaskDeadlineViolationStatusData();
+        Map<TaskDeadlineViolationStatusEnum, Integer> count = visitor
+                .getTaskDeadlineViolationStatusData();
         mapAbsoluteValuesToPercentages(count, taskDeadlineViolationStatusStats);
     }
 
@@ -353,8 +467,9 @@ public class DashboardModel implements IDashboardModel {
     }
 
     private int countTasksInAResultMap(Map<? extends Object, Integer> map) {
-        /* It's only needed to count the number of tasks once
-         * each time setOrder is called.
+        /*
+         * It's only needed to count the number of tasks once each time setOrder
+         * is called.
          */
         if (this.taskCount != null) {
             return this.taskCount.intValue();
@@ -367,6 +482,7 @@ public class DashboardModel implements IDashboardModel {
         return sum;
     }
 
+    @Override
     public boolean tasksAvailable() {
         return getRootTask() != null;
     }
