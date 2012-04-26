@@ -60,7 +60,6 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
-import org.libreplan.business.orders.daos.OrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
@@ -1034,13 +1033,19 @@ public class TaskElementAdapter {
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 } else {
+                    String budget = getBudget()
+                            + " "
+                            + configurationDAO.getConfiguration()
+                                    .getCurrencySymbol();
+                    String moneyCost = getMoneyCost()
+                            + " "
+                            + configurationDAO.getConfiguration()
+                                    .getCurrencySymbol();
                     result.append(
-                            _("Budget: {0}€, Consumed: {1}€ ({2}%)",
-                                    getBudget(),
-                                    getMoneyCost(),
-                                    getMoneyCostBarPercentage().multiply(
-                                            new BigDecimal(100)))).append(
-                            "<br/>");
+                            _("Budget: {0}, Consumed: {1} ({2}%)", budget,
+                                    moneyCost, getMoneyCostBarPercentage()
+                                            .multiply(new BigDecimal(100))))
+                            .append("<br/>");
                 }
 
                 String labels = buildLabelsText();
