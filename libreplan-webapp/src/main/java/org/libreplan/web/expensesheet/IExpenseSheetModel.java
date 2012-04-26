@@ -35,7 +35,7 @@ import org.libreplan.web.common.IIntegrationEntityModel;
  */
 public interface IExpenseSheetModel extends IIntegrationEntityModel {
 
-    boolean confirmSave();
+    void confirmSave();
 
     void prepareToList();
 

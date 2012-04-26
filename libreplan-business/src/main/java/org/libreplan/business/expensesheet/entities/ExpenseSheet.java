@@ -30,6 +30,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -40,7 +41,7 @@ import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class ExpenseSheet extends IntegrationEntity {
+public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiable {
 
     private LocalDate firstExpense;
 
@@ -62,7 +63,7 @@ public class ExpenseSheet extends IntegrationEntity {
     protected ExpenseSheet() {
     }
 
-    protected ExpenseSheet(LocalDate firstExpense, LocalDate lastExpense, BigDecimal total) {
+    private ExpenseSheet(LocalDate firstExpense, LocalDate lastExpense, BigDecimal total) {
         this.setFirstExpense(firstExpense);
         this.setLastExpense(lastExpense);
         this.setTotal(total);
@@ -190,6 +191,11 @@ public class ExpenseSheet extends IntegrationEntity {
     public void remove(ExpenseSheetLine line) {
         this.expenseSheetLines.remove(line);
         this.updateCalculatedProperties();
+    }
+
+    @Override
+    public String getHumanId() {
+        return getCode() + (description != null ? description : "");
     }
 
 }

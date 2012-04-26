@@ -93,15 +93,17 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
 
     @Override
     @Transactional
-    public boolean confirmSave() {
-        if (!hasExpenseSheetLines()) {
-            return false;
+    public void confirmSave() {
+        updateCalculatedFields(getExpenseSheet());
+        expenseSheetDAO.save(getExpenseSheet());
+        dontPoseAsTransientAndChildrenObjects(getExpenseSheet());
+    }
+
+    private void dontPoseAsTransientAndChildrenObjects(ExpenseSheet expenseSheet) {
+        expenseSheet.dontPoseAsTransientObjectAnymore();
+        for (ExpenseSheetLine expenseSheetLine : expenseSheet.getExpenseSheetLines()) {
+            expenseSheetLine.dontPoseAsTransientObjectAnymore();
         }
-        if(getExpenseSheet() != null){
-            updateCalculatedFields(getExpenseSheet());
-            expenseSheetDAO.save(getExpenseSheet());
-        }
-        return true;
     }
 
     @Override
@@ -239,17 +241,12 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     @Override
     public Set<IntegrationEntity> getChildren() {
         return (Set<IntegrationEntity>) (getExpenseSheet() != null ? getExpenseSheet()
-                .getExpenseSheetLines()
-                : new HashSet<IntegrationEntity>());
+                .getExpenseSheetLines() : new HashSet<IntegrationEntity>());
     }
 
     @Override
     public IntegrationEntity getCurrentEntity() {
         return this.expenseSheet;
-    }
-
-    public boolean hasExpenseSheetLines() {
-        return (!getExpenseSheet().getExpenseSheetLines().isEmpty());
     }
 
     @Override

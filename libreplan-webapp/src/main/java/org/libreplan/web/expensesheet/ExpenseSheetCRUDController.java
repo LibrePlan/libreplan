@@ -29,16 +29,15 @@ import java.util.SortedSet;
 
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
-import org.libreplan.web.common.ConstraintChecker;
-import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Level;
-import org.libreplan.web.common.MessagesForUser;
-import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +47,7 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
@@ -60,30 +57,19 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions over a {@link ExpenseSheet}
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class ExpenseSheetCRUDController extends GenericForwardComposer {
+public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet> {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(ExpenseSheetCRUDController.class);
 
-    private Window editWindow;
-
-    private Window listWindow;
-
     @Autowired
     private IExpenseSheetModel expenseSheetModel;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
 
     private static final String ITEM = "item";
 
@@ -96,10 +82,6 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
     /*
      * components editWindow
      */
-
-    private Textbox txtExpenseCode;
-
-    private Checkbox generateCode;
 
     private BandboxSearch bandboxSelectOrder;
 
@@ -143,87 +125,26 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
     };
 
     @Override
-    public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
-        goToList();
+    public void save() throws ValidationException {
+        expenseSheetModel.confirmSave();
     }
 
-    private OnlyOneVisible getVisibility() {
-        return (visibility == null) ? new OnlyOneVisible(editWindow, listWindow) : visibility;
-    }
-
-    public void saveAndExit() {
-        if (save()) {
-            goToList();
-        }
-    }
-
-    public void saveAndContinue() {
-        if (save()) {
-            goToEditForm(getExpenseSheet());
-        }
-    }
-
-    public boolean save() {
-        ConstraintChecker.isValid(editWindow);
+    @Override
+    protected void beforeSaving() throws ValidationException {
+        super.beforeSaving();
         expenseSheetModel.generateExpenseSheetLineCodesIfIsNecessary();
-
-        if (this.getExpenseSheet() != null
-                && (getExpenseSheet().getExpenseSheetLines() == null || getExpenseSheet()
-                        .getExpenseSheetLines().isEmpty())) {
-            messagesForUser.showMessage(Level.ERROR,
-                    "The expense sheet line collection cannot be empty.");
-            LOG.error(_("Error on saving element: ", getExpenseSheet().getId()));
-            return false;
-        }
-
-        try {
-            expenseSheetModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _("Expense sheet saved"));
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     public void cancel() {
         goToList();
     }
 
-    public void goToList() {
-        expenseSheetModel.prepareToList();
-        goToListWindow();
-    }
-
-    private void goToListWindow() {
-        getVisibility().showOnly(listWindow);
-        Util.reloadBindings(listWindow);
-        loadComponentsListWindow();
-    }
-
-    private void loadComponentsListWindow() {
-        listing = (Grid) this.listWindow.getFellowIfAny("listing");
-    }
-
-    public void goToCreateForm() {
-        expenseSheetModel.initCreate();
-        goToEditWindow();
-    }
-
-    public void goToEditForm(ExpenseSheet expenseSheet) {
-        expenseSheetModel.prepareToEdit(expenseSheet);
-        goToEditWindow();
-    }
-
     private void goToEditWindow() {
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
+        showEditWindow();
         loadComponentsEditWindow();
     }
 
-    private void loadComponentsEditWindow() {
+     private void loadComponentsEditWindow() {
         tbConcept = (Textbox) editWindow.getFellowIfAny("tbConcept");
         dateboxExpenseDate = (Datebox) editWindow.getFellowIfAny("dateboxExpenseDate");
         dboxValue = (Decimalbox) editWindow.getFellowIfAny("dboxValue");
@@ -258,42 +179,8 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
      * Operations in the list window
      */
 
-    public void onCreateNewExpenseSheet() {
-        goToCreateForm();
-    }
-
     public List<ExpenseSheet> getExpenseSheets() {
         return expenseSheetModel.getExpenseSheets();
-    }
-
-    public void confirmRemove(ExpenseSheet expenseSheet) {
-        try {
-            int status = Messagebox.show(
-                    _("Confirm deleting {0}. Are you sure?", getExpenseSheetName(expenseSheet)),
-                    _("Delete"), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                removeExpenseSheet(expenseSheet);
-            }
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", expenseSheet.getId()), e);
-        }
-    }
-
-    private void removeExpenseSheet(ExpenseSheet expenseSheet) {
-        expenseSheetModel.removeExpenseSheet(expenseSheet);
-        reloadExpenseSheetList();
-    }
-
-    private String getExpenseSheetName(ExpenseSheet expenseSheet) {
-        if (expenseSheet != null) {
-            String code = expenseSheet.getCode();
-            String description = expenseSheet.getDescription();
-            if (code != null && description != null) {
-                return _("expense sheet ") + code + " - " + description;
-            }
-        }
-        return ITEM;
     }
 
     /*
@@ -306,10 +193,6 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
 
     public SortedSet<ExpenseSheetLine> getExpenseSheetLines() {
         return expenseSheetModel.getExpenseSheetLines();
-    }
-
-    private void reloadExpenseSheetList() {
-        Util.reloadBindings(this.listing);
     }
 
     /**
@@ -659,17 +542,14 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
             public void validate(Component comp, Object value) throws WrongValueException {
                 if (!getExpenseSheet().isCodeAutogenerated()) {
                     String code = (String) value;
-                    if (code == null || code.isEmpty()){
-                        throw new WrongValueException(comp,
-                                _("The code cannot be empty."));
-                    }else{
+                    if (code == null || code.isEmpty()) {
+                        throw new WrongValueException(comp, _("The code cannot be empty."));
+                    } else {
                         String oldCode = line.getCode();
                         line.setCode(code);
-                        if(!getExpenseSheet()
-                            .checkConstraintNonRepeatedExpenseSheetLinesCodes()) {
-                                line.setCode(oldCode);
-                                throw new WrongValueException(comp,
-                                        _("The code must be unique."));
+                        if (!getExpenseSheet().checkConstraintNonRepeatedExpenseSheetLinesCodes()) {
+                            line.setCode(oldCode);
+                            throw new WrongValueException(comp, _("The code must be unique."));
                         }
                     }
                 }
@@ -706,8 +586,44 @@ public class ExpenseSheetCRUDController extends GenericForwardComposer {
 
     public void setExpenseSheetLineDate(Date date) {
         if (expenseSheetModel.getExpenseSheetLineDTO() != null) {
-            expenseSheetModel.getExpenseSheetLineDTO().setDate(LocalDate.fromDateFields(date));
+            LocalDate localDate = null;
+            if (date != null) {
+                localDate = LocalDate.fromDateFields(date);
+            }
+            expenseSheetModel.getExpenseSheetLineDTO().setDate(localDate);
         }
+    }
+
+    @Override
+    protected void initCreate() {
+        expenseSheetModel.initCreate();
+        goToEditWindow();
+    }
+
+    @Override
+    protected void initEdit(ExpenseSheet expenseSheet) {
+        expenseSheetModel.prepareToEdit(expenseSheet);
+        goToEditWindow();
+    }
+
+    @Override
+    protected ExpenseSheet getEntityBeingEdited() {
+        return expenseSheetModel.getExpenseSheet();
+    }
+
+    @Override
+    protected void delete(ExpenseSheet expenseSheet) throws InstanceNotFoundException {
+        expenseSheetModel.removeExpenseSheet(expenseSheet);
+    }
+
+    @Override
+    protected String getEntityType() {
+        return _("Expense sheet");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Expense sheets");
     }
 
 }

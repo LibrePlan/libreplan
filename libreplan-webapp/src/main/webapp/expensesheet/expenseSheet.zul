@@ -33,7 +33,7 @@
                 <hbox align="center">
                   <!-- Create new Expense Sheet  -->
                   <button label="${i18n:_('New expense sheet')}"
-                        onClick="controller.onCreateNewExpenseSheet()"/>
+                        onClick="controller.goToCreateForm()"/>
                 </hbox>
             </div>
 
@@ -58,7 +58,7 @@
                         sortDirection="ascending"
                         width="260px"/>
                     <column label="${i18n:_('Description')}" width="286px"/>
-                    <column label="${i18n:_('Actions')}" width="80px"/>
+                    <column label="${i18n:_('Actions')}" width="80px" align="center"/>
                 </columns>
                 <rows>
                     <row self="@{each='expensesheet'}" value="@{expensesheet}" onClick="controller.goToEditForm(self.value);">
@@ -77,7 +77,7 @@
                             <button sclass="icono" image="/common/img/ico_borrar1.png"
                                 hoverImage="/common/img/ico_borrar.png"
                                 tooltiptext="${i18n:_('Delete')}"
-                                onClick="controller.confirmRemove(self.parent.parent.value);">
+                                onClick="controller.confirmDelete(self.parent.parent.value);">
                             </button>
                         </hbox>
                     </row>
@@ -86,6 +86,7 @@
         </window>
 
         <window id="editWindow">
+            <caption id="caption" sclass="caption-title" />
             <groupbox closable="false" width="600px">
                 <caption label="${i18n:_('Identification')}" />
                 <separator bar="false" spacing="5px" orient="horizontal"/>
@@ -122,8 +123,7 @@
                     <hbox>
                         <label value="${i18n:_('Expense date')}" />
                         <datebox id="dateboxExpenseDate" width="150px"
-                            value="@{controller.expenseSheetLineDate}"
-                            constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                            value="@{controller.expenseSheetLineDate}"/>
                     </hbox>
                 </vbox>
             </groupbox>
@@ -166,16 +166,15 @@
                 </hbox>
                 <separator bar="false" spacing="10px" orient="horizontal"/>
                 <grid id="gridExpenseLines" mold="paging" pageSize="10"
-                    model="@{controller.expenseSheetLines}"
-                    fixedLayout="true" width="100%"
+                    model="@{controller.expenseSheetLines}" width="100%"
                     rowRenderer="@{controller.expenseSheetLineRenderer}">
                     <columns>
                         <column label="${i18n:_('Task')}" width="275px"/>
                         <column label="${i18n:_('Value')}" width="100px"/>
-                        <column label="${i18n:_('Concept')}" width="176px"/>
-                        <column label="${i18n:_('Date')}" width="120px"/>
+                        <column label="${i18n:_('Concept')}" width="172px"/>
+                        <column label="${i18n:_('Date')}" width="118px"/>
                         <column label="${i18n:_('Resource')}" width="275px"/>
-                        <column label="${i18n:_('Code')}" width="187px"/>
+                        <column label="${i18n:_('Code')}" width="182px"/>
                         <column label="${i18n:_('Operation')}" align="center"/>
                     </columns>
                 </grid>
@@ -185,7 +184,7 @@
                 label="${i18n:_('Save')}" sclass="save-button global-action"/>
             <button onClick="controller.saveAndContinue();"
                 label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
-            <button onClick="controller.cancel();"
+            <button onClick="controller.cancelForm();"
                 label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
         </window>
     </window>
