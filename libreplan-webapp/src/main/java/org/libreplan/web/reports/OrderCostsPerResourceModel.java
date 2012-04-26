@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -36,6 +36,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
@@ -61,6 +62,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -77,6 +79,9 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     private List<Order> selectedOrders = new ArrayList<Order>();
 
@@ -408,6 +413,12 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
             hasChangeCriteria = false;
         }
         return selectedCriteria;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getCurrencySymbol() {
+        return configurationDAO.getConfiguration().getCurrencySymbol();
     }
 
 }
