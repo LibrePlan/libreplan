@@ -177,4 +177,26 @@
         <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
     </changeSet>
 
+    <changeSet id="add-new-columns-for-currency-in-configuration" author="mrego">
+        <comment>Add new columns for currency in configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="currency_code" type="VARCHAR(255)" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="currency_code"
+            defaultValue="EUR" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="currency_code"
+            defaultNullValue="EUR"
+            columnDataType="VARCHAR(255)" />
+        <addColumn tableName="configuration">
+            <column name="currency_symbol" type="VARCHAR(255)" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="currency_symbol"
+            defaultValue="€" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="currency_symbol"
+            defaultNullValue="€"
+            columnDataType="VARCHAR(255)" />
+    </changeSet>
+
 </databaseChangeLog>
