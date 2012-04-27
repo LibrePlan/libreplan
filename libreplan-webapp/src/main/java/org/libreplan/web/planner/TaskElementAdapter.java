@@ -89,6 +89,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -1033,14 +1034,9 @@ public class TaskElementAdapter {
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 } else {
-                    String budget = getBudget()
-                            + " "
-                            + configurationDAO.getConfiguration()
-                                    .getCurrencySymbol();
-                    String moneyCost = getMoneyCost()
-                            + " "
-                            + configurationDAO.getConfiguration()
-                                    .getCurrencySymbol();
+                    String currencySymbol = Util.getCurrencySymbol();
+                    String budget = getBudget() + " " + currencySymbol;
+                    String moneyCost = getMoneyCost() + " " + currencySymbol;
                     result.append(
                             _("Budget: {0}, Consumed: {1} ({2}%)", budget,
                                     moneyCost, getMoneyCostBarPercentage()

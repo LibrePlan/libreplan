@@ -88,8 +88,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         result.put("endingDate", getEndingDate());
         result.put("criteria", getParameterCriterions());
         result.put("labels", getParameterLabels());
-        result.put("currencySymbol",
-                orderCostsPerResourceModel.getCurrencySymbol());
+        result.put("currencySymbol", Util.getCurrencySymbol());
 
         return result;
     }

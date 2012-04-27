@@ -415,10 +415,4 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
         return selectedCriteria;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public String getCurrencySymbol() {
-        return configurationDAO.getConfiguration().getCurrencySymbol();
-    }
-
 }

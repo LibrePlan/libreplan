@@ -69,5 +69,4 @@ public interface IOrderCostsPerResourceModel {
 
     String getSelectedLabel();
 
-    String getCurrencySymbol();
 }

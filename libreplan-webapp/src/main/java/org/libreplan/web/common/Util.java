@@ -31,6 +31,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.Configuration;
+import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.Registry;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -627,6 +630,22 @@ public class Util {
             LOG.error("failed to set sort property for: " + column + " with: "
                     + sortSpec, e);
         }
+    }
+
+    /**
+     * Gets currency symbol from {@link Configuration} object.
+     *
+     * @return Currency symbol configured in the application
+     */
+    public static String getCurrencySymbol() {
+        return Registry.getTransactionService().runOnReadOnlyTransaction(
+                new IOnTransaction<String>() {
+                    @Override
+                    public String execute() {
+                        return Registry.getConfigurationDAO()
+                                .getConfiguration().getCurrencySymbol();
+                    }
+                });
     }
 
 }
