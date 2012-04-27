@@ -112,6 +112,8 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private SumChargedEffort sumChargedEffort;
 
+    private SumExpenses sumExpenses;
+
     public OrderElementTemplate getTemplate() {
         return template;
     }
@@ -1501,5 +1503,13 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public abstract BigDecimal getBudget();
+
+    public void setSumExpenses(SumExpenses sumExpenses) {
+        this.sumExpenses = sumExpenses;
+    }
+
+    public SumExpenses getSumExpenses() {
+        return this.sumExpenses;
+    }
 
 }

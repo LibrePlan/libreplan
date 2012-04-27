@@ -29,6 +29,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.daos.IConfigurationDAO;
@@ -39,8 +40,11 @@ import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLineComparator;
 import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.daos.ISumExpensesDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.libreplan.web.resources.worker.WorkerModel;
@@ -67,10 +71,16 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     private IOrderDAO orderDAO;
 
     @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
     private IExpenseSheetDAO expenseSheetDAO;
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private ISumExpensesDAO sumExpensesDAO;
 
     private ExpenseSheet expenseSheet;
 
@@ -81,6 +91,8 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     private List<OrderElement> allActiveOrdersChildren = new ArrayList<OrderElement>();
 
     private Order selectedProject;
+
+    private Set<ExpenseSheetLine> deletedExpenseSheetLinesSet = new HashSet<ExpenseSheetLine>();
 
     public void setExpenseSheet(ExpenseSheet expenseSheet) {
         this.expenseSheet = expenseSheet;
@@ -94,6 +106,11 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     @Override
     @Transactional
     public void confirmSave() {
+        sumExpensesDAO
+                .updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(deletedExpenseSheetLinesSet);
+        sumExpensesDAO.updateRelatedSumExpensesWithExpenseSheetLineSet(getExpenseSheet()
+                .getExpenseSheetLines());
+
         updateCalculatedFields(getExpenseSheet());
         expenseSheetDAO.save(getExpenseSheet());
         dontPoseAsTransientAndChildrenObjects(getExpenseSheet());
@@ -141,6 +158,7 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
         } else {
             setDefaultCode();
         }
+        deletedExpenseSheetLinesSet = new HashSet<ExpenseSheetLine>();
     }
 
     @Override
@@ -151,6 +169,7 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
         Validate.notNull(expenseSheet);
         this.expenseSheet = getFromDB(expenseSheet);
         initOldCodes();
+        deletedExpenseSheetLinesSet = new HashSet<ExpenseSheetLine>();
     }
 
     @Transactional(readOnly = true)
@@ -169,11 +188,22 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
 
     private void forceLoadExpenseSheetLineData(ExpenseSheetLine line) {
         line.getCode();
-        if (line.getOrderElement() != null) {
-            line.getOrderElement().getName();
-        }
         if (line.getResource() != null) {
             line.getResource().getName();
+        }
+        initalizeOrderElement(line.getOrderElement());
+    }
+
+    private void initalizeOrderElement(OrderElement orderElement) {
+        Hibernate.initialize(orderElement);
+        initalizeOrder(orderElement);
+    }
+
+    private void initalizeOrder(OrderElement orderElement) {
+        OrderLineGroup parent = orderElement.getParent();
+        while (parent != null) {
+            Hibernate.initialize(parent);
+            parent = parent.getParent();
         }
     }
 
@@ -195,12 +225,15 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     @Override
     @Transactional
     public void removeExpenseSheet(ExpenseSheet expenseSheet) {
-        if (expenseSheet != null) {
-            try {
-                expenseSheetDAO.remove(expenseSheet.getId());
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+        Validate.notNull(expenseSheet);
+        expenseSheet = getFromDB(expenseSheet);
+        try {
+            sumExpensesDAO.updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(expenseSheet
+                    .getExpenseSheetLines());
+
+            expenseSheetDAO.remove(expenseSheet.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -215,7 +248,9 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     @Override
     public void removeExpenseSheetLine(ExpenseSheetLine expenseSheetLine) {
         if (getExpenseSheet() != null) {
+            deletedExpenseSheetLinesSet.add(expenseSheetLine);
             getExpenseSheet().remove(expenseSheetLine);
+            expenseSheetLine.setExpenseSheet(null);
         }
     }
 

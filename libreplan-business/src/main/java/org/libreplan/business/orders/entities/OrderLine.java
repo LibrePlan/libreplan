@@ -130,6 +130,9 @@ public class OrderLine extends OrderElement {
                 && !getSumChargedEffort().getDirectChargedEffort().isZero()) {
             return false;
         }
+        if (getSumExpenses() != null && !getSumExpenses().isTotalDirectExpensesZero()) {
+            return false;
+        }
         if (!getTaskElements().isEmpty()) {
             if (!getTaskElements().iterator().next()
                     .getDayAssignments(FilterType.KEEP_ALL).isEmpty()) {

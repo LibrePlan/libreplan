@@ -33,9 +33,9 @@ public class SumExpenses extends BaseEntity {
 
     private OrderElement orderElement;
 
-    private BigDecimal totalDirectExpenses;
+    private BigDecimal totalDirectExpenses = BigDecimal.ZERO;
 
-    private BigDecimal totalIndirectExpenses;
+    private BigDecimal totalIndirectExpenses = BigDecimal.ZERO;
 
     protected SumExpenses() {
     }
@@ -53,7 +53,15 @@ public class SumExpenses extends BaseEntity {
     }
 
     public void reset() {
+        resetDirectExpenses();
+        resetIndirectExpenses();
+    }
+
+    private void resetDirectExpenses() {
         this.setTotalDirectExpenses(BigDecimal.ZERO);
+    }
+
+    private void resetIndirectExpenses() {
         this.setTotalIndirectExpenses(BigDecimal.ZERO);
     }
 
@@ -79,6 +87,9 @@ public class SumExpenses extends BaseEntity {
 
     public void subtractDirectExpenses(BigDecimal directExpenses) {
         this.totalDirectExpenses = this.totalDirectExpenses.subtract(directExpenses);
+        if (this.totalDirectExpenses.compareTo(BigDecimal.ZERO) < 0) {
+            this.resetDirectExpenses();
+        }
     }
 
     public void addIndirectExpenses(BigDecimal indirectExpenses) {
@@ -87,6 +98,9 @@ public class SumExpenses extends BaseEntity {
 
     public void subtractIndirectExpenses(BigDecimal indirectExpenses) {
         this.totalIndirectExpenses = this.totalIndirectExpenses.subtract(indirectExpenses);
+        if (this.totalIndirectExpenses.compareTo(BigDecimal.ZERO) < 0) {
+            this.resetIndirectExpenses();
+        }
     }
 
     public boolean isTotalDirectExpensesZero() {
