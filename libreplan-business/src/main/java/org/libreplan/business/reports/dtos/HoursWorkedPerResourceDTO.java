@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
@@ -58,8 +59,12 @@ public class HoursWorkedPerResourceDTO implements Comparable {
 
         this.workerName = resource.getName();
         this.date = workReportLine.getDate();
-        this.clockStart = workReportLine.getClockStart().toString("HH:mm");
-        this.clockFinish = workReportLine.getClockFinish().toString("HH:mm");
+        LocalTime clockStart = workReportLine.getClockStart();
+        this.clockStart = (clockStart != null) ? clockStart.toString("HH:mm")
+                : "";
+        LocalTime clockFinish = workReportLine.getClockFinish();
+        this.clockFinish = (clockFinish != null) ? clockFinish
+                .toString("HH:mm") : "";
         this.effort = workReportLine.getEffort();
         this.orderElementCode = workReportLine.getOrderElement().getCode();
         this.orderElementName = workReportLine.getOrderElement().getName();
