@@ -77,6 +77,9 @@
         <one-to-one name="sumChargedEffort" class="SumChargedEffort"
             cascade="delete" property-ref="orderElement" />
 
+        <one-to-one name="sumExpenses" class="SumExpenses"
+            cascade="delete" property-ref="orderElement" />
+
         <joined-subclass name="OrderLineGroup"  table="order_line_group">
             <key column="order_element_id"></key>
 
@@ -251,6 +254,21 @@
         <property name="indirectChargedEffort" access="field"
             column="indirect_charged_effort"
             type="org.libreplan.business.workingday.hibernate.EffortDurationType" />
+    </class>
+
+    <class name="SumExpenses" table="sum_expenses">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <many-to-one name="orderElement" column="order_element_id" cascade="none" unique="true"
+            class="OrderElement" />
+
+        <property name="totalDirectExpenses" access="field" column="total_direct_expenses"/>
+        <property name="totalIndirectExpenses" access="field" column="total_indirect_expenses"/>
     </class>
 
 </hibernate-mapping>

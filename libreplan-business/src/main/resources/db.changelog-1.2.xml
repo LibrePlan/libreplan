@@ -227,14 +227,31 @@
     </changeSet>
 
     <changeSet id="modify-columns-type-in-expense-sheet-to-date" author="smontes">
-    <comment>modify columns type in expense sheet to date</comment>
+        <comment>modify columns type in expense sheet to date</comment>
         <modifyDataType tableName="expense_sheet" columnName="first_expense" newDataType="DATE"/>
         <modifyDataType tableName="expense_sheet" columnName="last_expense" newDataType="DATE"/>
     </changeSet>
 
-	<changeSet id="modify-columns-type-in-expense-sheet-line-to-date" author="smontes">
-    <comment>modify columns type in expense sheet line to date</comment>
+    <changeSet id="modify-columns-type-in-expense-sheet-line-to-date" author="smontes">
+        <comment>modify columns type in expense sheet line to date</comment>
         <modifyDataType tableName="expense_sheet_line" columnName="date" newDataType="DATE"/>
     </changeSet>
 
+	<changeSet author="smontes" id="create3-table-sum-expenses">
+	    <comment>creation table sum_expenses</comment>
+        <createTable tableName="sum_expenses">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sum_expenses_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_element_id" type="BIGINT"/>
+            <column name="total_direct_expenses" type="DECIMAL(19,2)"/>
+            <column name="total_indirect_expenses" type="DECIMAL(19,2)"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="sum_expenses_order_element_fkey"
+            baseTableName="sum_expenses" baseColumnNames="order_element_id"
+            referencedTableName="order_element" referencedColumnNames="id" />
+    </changeSet>
 </databaseChangeLog>
