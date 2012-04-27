@@ -157,7 +157,7 @@
 				<textField isBlankWhenNull="true">
 					<reportElement x="434" y="14" width="72" height="15"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalPricePerDay}.setScale(2) + " " + $P{currencySymbol}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalPricePerDay}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -292,7 +292,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{totalPrice}.setScale(2) + " " + $P{currencySymbol}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{totalPrice}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="390" y="0" width="65" height="73"/>
@@ -304,7 +304,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{unitPrice}.setScale(2) + " " + $P{currencySymbol}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{unitPrice}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="520" y="0" width="60" height="73">
