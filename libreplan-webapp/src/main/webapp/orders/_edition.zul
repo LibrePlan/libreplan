@@ -142,20 +142,28 @@
                                 <label value="${i18n:_('Work')}" />
                                 <decimalbox id="boxWorkBudget" width="150px" scale = "2"
                                     value="@{controller.order.workBudget}"
-                                    onChange="controller.reloadTotalBudget(txtTotalBudget)" />
+                                    onChange="controller.reloadTotalBudget(txtTotalBudget)"
+                                    format="@{controller.moneyFormat}" />
                                 <separator bar="false" spacing="15px" orient="vertical"/>
                                 <label value="${i18n:_('Materials')}" />
                                 <decimalbox id="boxMaterialsBudget" width="150px" scale="2"
                                     value="@{controller.order.materialsBudget}"
-                                    onChange="controller.reloadTotalBudget(txtTotalBudget)" />
+                                    onChange="controller.reloadTotalBudget(txtTotalBudget)"
+                                    format="@{controller.moneyFormat}" />
                                 <separator bar="false" spacing="15px" orient="vertical"/>
                                 <label value=" ${i18n:_('Total')} :" />
-                                <label id="txtTotalBudget" value="@{controller.order.totalBudget}"/>
+                                <decimalbox id="txtTotalBudget" width="150px"
+                                    value="@{controller.order.totalBudget}"
+                                    format="@{controller.moneyFormat}"
+                                    disabled="true" />
                             </hbox>
                         </row>
                         <row>
                             <label value="${i18n:_('Calculated budget')}" />
-                            <label id="budget" value="@{controller.order.budget}" />
+                            <decimalbox id="budget" width="150px"
+                                value="@{controller.order.budget}"
+                                format="@{controller.moneyFormat}"
+                                disabled="true" />
                         </row>
                         <row>
                             <label value="${i18n:_('Total hours')}" />

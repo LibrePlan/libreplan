@@ -554,4 +554,9 @@ public class MaterialsController extends
             }
         }
     }
+
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
+
 }

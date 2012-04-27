@@ -87,6 +87,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -1210,7 +1211,8 @@ public class OrderCRUDController extends GenericForwardComposer {
             appendDate(row, order.getInitDate());
             appendDate(row, order.getDeadline());
             appendCustomer(row, order.getCustomer());
-            appendObject(row, order.getTotalBudget());
+            appendObject(row,
+                    order.getTotalBudget() + " " + Util.getCurrencySymbol());
             appendObject(row, order.getTotalHours());
             appendObject(row, _(order.getState().toString()));
             appendOperations(row, order);
@@ -1329,8 +1331,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         return orderModel.gettooltipText(order);
     }
 
-    public void reloadTotalBudget(Label txtTotalBudget) {
-        Util.reloadBindings(txtTotalBudget);
+    public void reloadTotalBudget(Decimalbox decimalboxTotalBudget) {
+        Util.reloadBindings(decimalboxTotalBudget);
     }
 
     /**
@@ -1564,4 +1566,9 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         };
     }
+
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
+
 }

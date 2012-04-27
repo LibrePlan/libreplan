@@ -116,7 +116,10 @@
                                     <listcell label="@{material.code}" />
                                     <listcell label="@{material.description}" />
                                     <listcell label="@{material.unitType.measure}" />
-                                    <listcell label="@{material.defaultUnitPrice}" />
+                                    <listcell>
+                                        <label value="@{material.defaultUnitPrice}" />
+                                        <label value="@{assignedMaterialsController.currencySymbol}" />
+                                    </listcell>
                                     <listcell label="@{material.category.name}" />
                                 </listitem>
                             </listbox>

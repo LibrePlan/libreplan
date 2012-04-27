@@ -408,4 +408,8 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         Util.reloadBindings(tabPanel);
     }
 
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
+
 }

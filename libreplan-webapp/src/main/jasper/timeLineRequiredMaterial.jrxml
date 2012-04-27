@@ -5,6 +5,7 @@
 	<parameter name="endingDate" class="java.util.Date"/>
 	<parameter name="status" class="java.lang.String"/>
 	<parameter name="logo" class="java.lang.String"/>
+    <parameter name="currencySymbol" class="java.lang.String"/>
 	<field name="status" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
@@ -156,7 +157,7 @@
 				<textField isBlankWhenNull="true">
 					<reportElement x="434" y="14" width="72" height="15"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalPricePerDay}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalPricePerDay}.setScale(2) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -291,7 +292,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{totalPrice}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{totalPrice}.setScale(2) + " " + $P{currencySymbol}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="390" y="0" width="65" height="73"/>
@@ -303,7 +304,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{unitPrice}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{unitPrice}.setScale(2) + " " + $P{currencySymbol}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="520" y="0" width="60" height="73">

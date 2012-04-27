@@ -648,4 +648,15 @@ public class Util {
                 });
     }
 
+    /**
+     * Gets money format for a {@link Decimalbox} using 2 figures for the
+     * decimal part and concatenating the currency symbol
+     *
+     * @return Format for a {@link Decimalbox} <code>###.##</code> plus currency
+     *         symbol
+     */
+    public static String getMoneyFormat() {
+        return "###.## " + getCurrencySymbol();
+    }
+
 }

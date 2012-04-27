@@ -59,7 +59,8 @@
                                 <label value="${i18n:_('Default price')}" />
                                 <decimalbox id="defaultPrice"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"
-                                    value="@{controller.typeOfWorkHours.defaultPrice}" width="300px" />
+                                    value="@{controller.typeOfWorkHours.defaultPrice}" width="300px"
+                                    format="@{controller.moneyFormat}" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Enabled')}" />

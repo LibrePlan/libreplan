@@ -141,4 +141,13 @@ public class TypeOfWorkHoursCRUDController extends BaseCRUDController<TypeOfWork
     protected boolean beforeDeleting(TypeOfWorkHours typeOfWorkHours) {
         return !isReferencedByOtherEntities(typeOfWorkHours);
     }
+
+    public String getCurrencySymbol() {
+        return Util.getCurrencySymbol();
+    }
+
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
+
 }
