@@ -1,7 +1,0 @@
-# This works on my local apache (with mod_php)
-# AddType application/x-httpd-php .php .html .htm
-
-# This works for dreamhost (php as fast cgi)
-# AddType php-cgi .php .html .htm
-
-IndexOptions +FancyIndexing +SuppressDescription NameWidth=* +FoldersFirst
