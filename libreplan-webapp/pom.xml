@@ -437,5 +437,10 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-jdk1.5</artifactId>
         </dependency>
+        <!-- jqPlot -->
+        <dependency>
+            <groupId>br.com.digilabs.jqplot</groupId>
+            <artifactId>jqplot4java</artifactId>
+        </dependency>
    </dependencies>
 </project>

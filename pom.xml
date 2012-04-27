@@ -744,6 +744,12 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>2.0.4</version>
             </dependency>
+            <!-- jqPlot -->
+            <dependency>
+                <groupId>br.com.digilabs.jqplot</groupId>
+                <artifactId>jqplot4java</artifactId>
+                <version>1.2.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
