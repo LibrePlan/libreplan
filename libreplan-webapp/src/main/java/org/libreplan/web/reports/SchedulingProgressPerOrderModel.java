@@ -129,6 +129,7 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
     private void initializeResourceAllocations(Set<ResourceAllocation<?>> resourceAllocations) {
         for (ResourceAllocation<?> each: resourceAllocations) {
             each.getAssignedHours();
+            each.getDerivedAllocations().size();
         }
     }
 
