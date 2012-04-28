@@ -23,7 +23,6 @@
         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
             <column label="${i18n:_('Type')}" sort="auto(type)" />
-            <column label="${i18n:_('Code')}" sort="auto(code)" />
             <column label="${i18n:_('Name')}" sort="auto(name)" />
             <column label="${i18n:_('Delay from beginning (days)')}"
                 sort="auto(startAsDaysFromBeginning)" />
@@ -36,7 +35,6 @@
         <rows>
             <row self="@{each='template'}" value="@{template}" onClick="templatesForOrdersController.goToEditForm(self.value);">
                 <label value="@{template.type}" />
-                <label value="@{template.code}" />
                 <label value="@{template.name}" />
                 <label value="@{template.startAsDaysFromBeginning}" />
                 <label value="@{template.deadlineAsDaysFromBeginning}" />
