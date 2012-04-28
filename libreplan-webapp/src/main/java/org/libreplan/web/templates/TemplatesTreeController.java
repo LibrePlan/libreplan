@@ -114,22 +114,7 @@ public class TemplatesTreeController extends
 
         @Override
         protected void addCodeCell(final OrderElementTemplate element) {
-            Textbox textBoxCode = new Textbox();
-            Util.bind(textBoxCode, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    return element.getCode();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    element.setCode(value);
-                }
-            });
-            textBoxCode.setConstraint("no empty:"
-                    + _("cannot be null or empty"));
-            addCell(textBoxCode);
+            //empty because templates don't have code attribute
         }
 
         void addInitCell(final OrderElementTemplate currentElement) {
