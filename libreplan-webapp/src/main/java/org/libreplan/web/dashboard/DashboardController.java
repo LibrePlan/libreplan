@@ -65,6 +65,7 @@ public class DashboardController extends GenericForwardComposer {
     private Window dashboardWindow;
 
     private Grid gridTasksSummary;
+    private Grid gridMarginWithDeadline;
 
     private Div projectDashboardChartsDiv;
     private Div projectDashboardNoTasksWarningDiv;
@@ -93,6 +94,22 @@ public class DashboardController extends GenericForwardComposer {
             renderTaskCompletationLag();
             renderTasksSummary();
             renderDeadlineViolation();
+            renderMarginWithDeadline();
+        }
+    }
+
+    private void renderMarginWithDeadline() {
+        marginWithDeadline("lblRelative",
+                dashboardModel.getMarginWithDeadLine());
+        // FIXME: Calculate absolute days margin
+        marginWithDeadline("lblAbsolute", BigDecimal.ZERO);
+    }
+
+    private void marginWithDeadline(String key, BigDecimal value) {
+        Label label = (Label) gridMarginWithDeadline.getFellowIfAny(key);
+        if (label != null) {
+            value = value != null ? value : BigDecimal.ZERO;
+            label.setValue(String.format(_("%.2f days"), value.doubleValue()));
         }
     }
 

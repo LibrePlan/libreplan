@@ -82,7 +82,27 @@
                     <hbox>
                         <n:div id="task-completation-lag" style="height:200px; width:580px;"></n:div>
                         <n:div id="deadline-violation" style="height:200px; width:400px; margin-left: 100px;"></n:div>
-                        <n:div id="margin-with-deadline" style="height:200px; width:400px; margin-left: 100px;"></n:div>
+
+                        <!-- Margin with deadline -->
+                        <grid id="gridMarginWithDeadline" style="margin-top: 50px;" width="200px">
+                            <auxhead>
+                                <auxheader label="${i18n:_('Margin with deadline')}" colspan="2"/>
+                            </auxhead>
+                            <columns sizable="false">
+                                <column width="100px"/>
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Relative')}:"/>
+                                    <label id="lblRelative" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Absolute')}:"/>
+                                    <label id="lblAbsolute" />
+                                </row>
+                            </rows>
+                        </grid>
                     </hbox>
                 </groupbox>
 
