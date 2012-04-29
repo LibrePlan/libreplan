@@ -44,6 +44,10 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
+import br.com.digilabs.jqplot.Chart;
+import br.com.digilabs.jqplot.JqPlotUtils;
+import br.com.digilabs.jqplot.chart.PieChart;
+
 /**
  * @author Nacho Barrientos <nacho@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
@@ -86,7 +90,27 @@ public class DashboardController extends GenericForwardComposer {
             renderTaskStatus();
             renderTaskCompletationLag();
             renderTasksSummary();
+            renderDeadlineViolation();
         }
+    }
+
+    private void renderDeadlineViolation() {
+        final String divId = "deadline-violation";
+
+        PieChart<Number> pieChart = new PieChart<Number>(
+                _("Deadline Violation"));
+        pieChart.addValue(_("On schedule"),
+                dashboardModel.getPercentageOfOnScheduleTasks());
+        pieChart.addValue(_("Violated deadline"),
+                dashboardModel.getPercentageOfTasksWithViolatedDeadline());
+        pieChart.addValue(_("No deadline"),
+                dashboardModel.getPercentageOfTasksWithNoDeadline());
+        renderChart(pieChart, divId);
+    }
+
+    private void renderChart(Chart<?> chart, String divId) {
+        String jsCode = JqPlotUtils.createJquery(chart, divId);
+        Clients.evalJavaScript(jsCode);
     }
 
     private void renderTaskCompletationLag() {
