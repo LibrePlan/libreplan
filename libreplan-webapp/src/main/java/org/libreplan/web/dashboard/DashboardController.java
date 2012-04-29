@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.Order;
@@ -45,12 +46,14 @@ import org.zkoss.zul.Window;
 
 import br.com.digilabs.jqplot.Chart;
 import br.com.digilabs.jqplot.JqPlotUtils;
+import br.com.digilabs.jqplot.chart.BarChart;
 import br.com.digilabs.jqplot.chart.PieChart;
+import br.com.digilabs.jqplot.elements.Serie;
 
 /**
  * @author Nacho Barrientos <nacho@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
- * 
+ *
  *         Controller for dashboardfororder view
  */
 @Component
@@ -113,14 +116,27 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private void renderTaskCompletationLag() {
-        Map<Interval, Integer> taskCompletationData = dashboardModel
-                .calculateTaskCompletation();
-        TaskCompletationLag taskCompletation = TaskCompletationLag.create();
-        for (Interval each : taskCompletationData.keySet()) {
-            Integer value = taskCompletationData.get(each);
-            taskCompletation.data(each.toString(), value);
-        }
-        taskCompletation.render();
+        final String divId = "task-completation-lag";
+
+        BarChart<Integer> barChart;
+        barChart = new BarChart<Integer>("Task Completation Lead/Lag");
+
+        barChart.setFillZero(true);
+        barChart.setHighlightMouseDown(true);
+        barChart.setStackSeries(false);
+        barChart.setBarMargin(30);
+
+        barChart.addSeries(new Serie("Tasks"));
+
+        TaskCompletationData taskCompletationData = TaskCompletationData
+                .create(dashboardModel);
+        barChart.setTicks(taskCompletationData.getTicks());
+        barChart.addValues(taskCompletationData.getValues());
+
+        barChart.getAxes().getXaxis()
+                .setLabel(_("Number of Days / Days Interval"));
+
+        renderChart(barChart, divId);
     }
 
     private void renderTasksSummary() {
@@ -189,9 +205,9 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     /**
-     * 
+     *
      * @author Diego Pino García <dpino@igalia.com>
-     * 
+     *
      */
     static class GlobalProgress {
 
@@ -262,7 +278,7 @@ public class DashboardController extends GenericForwardComposer {
 
         /**
          * The order of the ticks is taken from the keys in current
-         * 
+         *
          * @return
          */
         public String getTicks() {
@@ -279,9 +295,9 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     /**
-     * 
+     *
      * @author Diego Pino García <dpino@igalia.com>
-     * 
+     *
      */
     static class Series {
 
@@ -314,59 +330,46 @@ public class DashboardController extends GenericForwardComposer {
 
     }
 
-    static class TaskCompletationLag {
+    /**
+     *
+     * @author Diego Pino García<dpino@igalia.com>
+     *
+     */
+    static class TaskCompletationData {
 
-        private final String id = "task_completation_lag";
+        private final IDashboardModel dashboardModel;
 
-        private final Map<String, Integer> data = new LinkedHashMap<String, Integer>();
+        private Map<Interval, Integer> taskCompletationData;
 
-        private TaskCompletationLag() {
-
+        private TaskCompletationData(IDashboardModel dashboardModel) {
+            this.dashboardModel = dashboardModel;
         }
 
-        public static TaskCompletationLag create() {
-            return new TaskCompletationLag();
+        public static TaskCompletationData create(IDashboardModel dashboardModel) {
+            return new TaskCompletationData(dashboardModel);
         }
 
-        public void data(String interval, Integer value) {
-            data.put(interval, value);
-        }
-
-        public void render() {
-            String _data = JSONHelper.values(data);
-            String ticks = JSONHelper.keys(data);
-            String command = String.format("%s.render(%s, %s);", id, _data,
-                    ticks);
-            Clients.evalJavaScript(command);
-        }
-
-    }
-
-    static class JSONHelper {
-
-        public static String format(Map<String, Integer> data) {
-            List<String> result = new ArrayList<String>();
-            for (String key : data.keySet()) {
-                Integer value = data.get(data);
-                result.add(String.format("[\"%s\", %d]", key, value));
+        private Map<Interval, Integer> getData() {
+            if (taskCompletationData == null) {
+                taskCompletationData = dashboardModel
+                        .calculateTaskCompletation();
             }
-            return String.format("'[%s]'", StringUtils.join(result, ','));
+            return taskCompletationData;
         }
 
-        public static String keys(Map<String, ?> map) {
-            List<String> result = new ArrayList<String>();
-            for (String each : map.keySet()) {
-                result.add(String.format("\"%s\"", each));
+        public String[] getTicks() {
+            Set<Interval> intervals = getData().keySet();
+            String[] result = new String[intervals.size()];
+            int i = 0;
+            for (Interval each : intervals) {
+                result[i++] = each.toString();
+
             }
-            return String.format("'[%s]'", StringUtils.join(result, ','));
+            return result;
         }
 
-        public static String values(Map<?, Integer> map) {
-            List<String> result = new ArrayList<String>();
-            for (Integer each : map.values()) {
-                result.add(each.toString());
-            }
-            return String.format("'[%s]'", StringUtils.join(result, ','));
+        public Collection<Integer> getValues() {
+            return getData().values();
         }
 
     }
