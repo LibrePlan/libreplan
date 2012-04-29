@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.Order;
@@ -144,16 +143,18 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private void renderTaskStatus() {
-        TaskStatus taskStatus = TaskStatus.create();
-        taskStatus.data(_("Finished"),
+        final String divId = "task-status";
+
+        PieChart<Number> taskStatus = new PieChart<Number>(_("Task Status"));
+        taskStatus.addValue(_("Finished"),
                 dashboardModel.getPercentageOfFinishedTasks());
-        taskStatus.data(_("In progress"),
+        taskStatus.addValue(_("In progress"),
                 dashboardModel.getPercentageOfInProgressTasks());
-        taskStatus.data(_("Ready to start"),
+        taskStatus.addValue(_("Ready to start"),
                 dashboardModel.getPercentageOfReadyToStartTasks());
-        taskStatus.data(_("Blocked"),
+        taskStatus.addValue(_("Blocked"),
                 dashboardModel.getPercentageOfBlockedTasks());
-        taskStatus.render();
+        renderChart(taskStatus, divId);
     }
 
     private void renderGlobalProgress() {
@@ -309,46 +310,6 @@ public class DashboardController extends GenericForwardComposer {
         public String toString() {
             return String.format("{\"label\": \"%s\", \"color\": \"%s\"}",
                     label, color);
-        }
-
-    }
-
-    /**
-     * 
-     * @author Diego Pino García <dpino@igalia.com>
-     * 
-     */
-    static class TaskStatus {
-
-        private final Map<String, BigDecimal> data = new LinkedHashMap<String, BigDecimal>();
-
-        private TaskStatus() {
-
-        }
-
-        public static TaskStatus create() {
-            return new TaskStatus();
-        }
-
-        private String getData() {
-            List<String> result = new ArrayList<String>();
-
-            TreeSet<String> keys = new TreeSet<String>(data.keySet());
-            for (String key : keys) {
-                BigDecimal value = data.get(key);
-                result.add(String.format("[\"%s\", %.2f]", key, value));
-            }
-            return String.format("'[%s]'", StringUtils.join(result, ","));
-        }
-
-        public void data(String key, BigDecimal value) {
-            data.put(key, value);
-        }
-
-        public void render() {
-            String command = String
-                    .format("task_status.render(%s);", getData());
-            Clients.evalJavaScript(command);
         }
 
     }

@@ -101,7 +101,6 @@
     <!-- The variable for containing the 'global progress' has to be global and created before defer -->
     <script type="text/javascript">
         var global_progress = { };
-        var task_status = { };
         var task_completation_lag = { };    
     </script>
 
@@ -165,25 +164,6 @@
                 	this.series = jQuery.parseJSON(series);
                 }
                 this.plot = $.jqplot(this.id, jQuery.parseJSON(data), this);
-            }
-        };
-
-        task_status = {
-            id: 'task-status',
-            title: 'Task status',
-            data: [['Completed', 14], ['In Progress', 36], ['Ready to Start', 30], ['Blocked', 20]],
-            seriesDefaults: {
-                renderer: jQuery.jqplot.PieRenderer,
-                rendererOptions: {
-                    showDataLabels: true
-                }
-            },
-            legend: { 
-                show: true, 
-                location: 'e' 
-            },
-            render: function(data) {
-                this.plot = jQuery.jqplot('task-status', [jQuery.parseJSON(data)], this);
             }
         };
 
