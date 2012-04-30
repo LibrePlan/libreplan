@@ -22,4 +22,15 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add-code-order_element_template" author="jaragunde">
+        <comment>
+            The code attribute was removed from order_element_template table in master,
+            but in audiovisual branch it is needed.
+        </comment>
+        <addColumn tableName="order_element_template">
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -354,6 +354,14 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         this.deadlineAsDaysFromBeginning = days;
     }
 
+    public String getCode() {
+        return getInfoComponent().getCode();
+    }
+
+    public void setCode(String code) {
+        getInfoComponent().setCode(code);
+    }
+
     public String getDescription() {
         return getInfoComponent().getDescription();
     }
@@ -376,6 +384,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     protected void copyTo(OrderElementTemplate result) {
+        result.setCode(getCode());
         result.setName(getName());
         result.setDescription(getDescription());
         result.setDeadlineAsDaysFromBeginning(getDeadlineAsDaysFromBeginning());
