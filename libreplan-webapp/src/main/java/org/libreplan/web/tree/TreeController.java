@@ -858,6 +858,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             }
         }
 
+        public void updateNameFor(T element) {
+            if (!readOnly) {
+                Textbox textbox = nameTextboxByElement.get(element);
+                textbox.setValue(getNameHandler().getNameFor(element));
+            }
+        }
+
         public void refreshBudgetValueForThisNodeAndParents(T node) {
             List<T> nodeAndItsParents = getModel().getParents(node);
             nodeAndItsParents.add(node);
@@ -1183,6 +1190,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     protected abstract IBudgetHandler<T> getBudgetHandler();
+
+    public interface INameHandler<T> {
+
+        String getNameFor(T element);
+
+    }
+
+    protected abstract INameHandler<T> getNameHandler();
 
     /**
      * Disable control buttons (new, up, down, indent, unindent, delete)
