@@ -380,18 +380,19 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
                 Date begin = dateFormat.parse(getStartDateTextBox().getValue());
                 task.moveTo(GanttDate.createFrom(begin));
             } catch (ParseException e) {
-                getStartDateTextBox().setValue(
-                        dateFormat.format(task.getBeginDate()
-                                .toDayRoundedDate()));
+                // Do nothing as textbox is rested in the next sentence
             }
+            getStartDateTextBox().setValue(
+                    dateFormat.format(task.getBeginDate().toDayRoundedDate()));
         } else if (updatedComponent == getEndDateTextBox()) {
             try {
                 Date newEnd = dateFormat.parse(getEndDateTextBox().getValue());
                 task.resizeTo(LocalDate.fromDateFields(newEnd));
             } catch (ParseException e) {
-                getEndDateTextBox().setValue(
-                        asString(task.getEndDate().toDayRoundedDate()));
+                // Do nothing as textbox is rested in the next sentence
             }
+            getEndDateTextBox().setValue(
+                    asString(task.getEndDate().toDayRoundedDate()));
         }
         planner.updateTooltips();
     }
