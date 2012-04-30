@@ -852,7 +852,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void updateBudgetFor(T element) {
             if (!readOnly && element.isLeaf()) {
                 Decimalbox decimalbox = budgetDecimalboxByElement.get(element);
-                Treecell tc = (Treecell) decimalbox.getParent();
                 decimalbox.invalidate();
                 refreshBudgetValueForThisNodeAndParents(element);
             }
