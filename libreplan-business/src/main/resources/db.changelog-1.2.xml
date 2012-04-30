@@ -199,4 +199,9 @@
             columnDataType="VARCHAR(255)" />
     </changeSet>
 
+    <changeSet id="remove-code-from-order_element_template" author="jaragunde">
+        <comment>Remove column code in order_element_template table</comment>
+        <dropColumn tableName="order_element_template" columnName="code" />
+    </changeSet>
+
 </databaseChangeLog>
