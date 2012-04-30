@@ -331,7 +331,7 @@ public class TemplatesTreeController extends
                     Comboitem item = new Comboitem(type.toString());
                     item.setValue(type);
                     box.appendChild(item);
-                    if(budgetLine.getBudgetLineType().equals(type)) {
+                    if(type.equals(budgetLine.getBudgetLineType())) {
                         box.setSelectedItem(item);
                     }
                 }
