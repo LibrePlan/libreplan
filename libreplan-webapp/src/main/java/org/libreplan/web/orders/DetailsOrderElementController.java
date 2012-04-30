@@ -67,4 +67,8 @@ public class DetailsOrderElementController extends
         return !orderElementModel.getOrderElement().isLeaf();
     }
 
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
+
 }

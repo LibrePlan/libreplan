@@ -28,7 +28,8 @@ public enum TaskStatusEnum {
     FINISHED(_("Finished")),
     IN_PROGRESS(_("In progress")),
     PENDING(_("Pending")),
-    BLOCKED(_("Blocked"));
+    BLOCKED(_("Blocked")),
+    READY_TO_START(_("Ready to start"));
 
     private String value;
 

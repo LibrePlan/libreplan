@@ -36,6 +36,7 @@ import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
+import org.libreplan.web.dashboard.DashboardController;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.orders.OrderCRUDController;
@@ -159,6 +160,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     private ITab advancedAllocationTab;
 
+    private ITab dashboardTab;
+
     private TabSwitcher tabsSwitcher;
 
     @Autowired
@@ -178,6 +181,9 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private LimitingResourcesController limitingResourcesControllerGlobal;
+
+    @Autowired
+    private DashboardController dashboardController;
 
     private org.zkoss.zk.ui.Component breadcrumbs;
 
@@ -227,6 +233,11 @@ public class MultipleTabsPlannerController implements Composer,
                                 .show(planningTab, changeModeTo(order));
                     }
 
+                    @Override
+                    public void goToDashboard(Order order) {
+                        // do nothing
+                    }
+
                 }, breadcrumbs);
 
         limitingResourcesTab = LimitingResourcesTabCreator.create(mode,
@@ -253,7 +264,15 @@ public class MultipleTabsPlannerController implements Composer,
                         // do nothing
                     }
 
+                    @Override
+                    public void goToDashboard(Order order) {
+                        // do nothing
+                    }
+
                 }, parameters);
+
+        dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
+                dashboardController, breadcrumbs);
 
         final boolean isMontecarloVisible = isMonteCarloVisible();
         if (isMontecarloVisible) {
@@ -273,7 +292,8 @@ public class MultipleTabsPlannerController implements Composer,
             .add(tabWithNameReloading(ordersTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
-            .add(visibleOnlyAtOrderMode(advancedAllocationTab));
+            .add(visibleOnlyAtOrderMode(advancedAllocationTab))
+            .add(visibleOnlyAtOrderMode(dashboardTab));
 
         if (isMontecarloVisible) {
             tabsConfiguration.add(visibleOnlyAtOrderMode(monteCarloTab));

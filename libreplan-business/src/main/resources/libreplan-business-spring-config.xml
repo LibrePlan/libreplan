@@ -141,7 +141,10 @@
         factory-method="getInstance"
         lazy-init="false">
         <property name="defaultPasswordsControl">
-        <value>${default.passwordsControl}</value>
+            <value>${default.passwordsControl}</value>
+        </property>
+        <property name="exampleUsersDisabled">
+            <value>${default.exampleUsersDisabled}</value>
         </property>
     </bean>
 

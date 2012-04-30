@@ -1069,6 +1069,10 @@ span.perspective, span.perspective-active {
 .perspective-active.montecarlo-simulation .z-button-cm {
     background-image: url(../img/ico_montecarlo-simulation.png);
 }
+.perspective.order-dashboard .z-button-cm,
+.perspective-active.order-dashboard .z-button-cm {
+    background-image: url(../img/ico_order-dashboard.png);
+}
 
 
 .perspectives-column {

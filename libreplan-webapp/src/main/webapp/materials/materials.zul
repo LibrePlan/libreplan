@@ -92,7 +92,8 @@
                                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
                                 <textbox value="@{material.description}" width="95%"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}" />
-                                <doublebox value="@{material.defaultUnitPrice}" />
+                                <decimalbox value="@{material.defaultUnitPrice}"
+                                    format="@{materialsController.moneyFormat}" />
                                 <listbox mold="select"  model="@{materialsController.unitTypes}"
                                     onSelect = "materialsController.selectUnitType(self)"
                                     itemRenderer="@{materialsController.renderer}"/>

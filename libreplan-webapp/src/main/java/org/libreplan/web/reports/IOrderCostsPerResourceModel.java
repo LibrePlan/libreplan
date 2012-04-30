@@ -68,4 +68,5 @@ public interface IOrderCostsPerResourceModel {
     String getSelectedCriteria();
 
     String getSelectedLabel();
+
 }

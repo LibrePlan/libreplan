@@ -101,4 +101,8 @@ public class SubcontractController extends GenericForwardComposer {
         subcontractModel.removeSubcontractedTaskData();
     }
 
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
+
 }

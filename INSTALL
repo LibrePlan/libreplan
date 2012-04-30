@@ -32,6 +32,9 @@ Instructions::
 
     sudo apt-get install python-software-properties
 
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory errors`_.
 
 Debian packages
 ~~~~~~~~~~~~~~~
@@ -43,7 +46,7 @@ Instructions:
 
 * Download the package::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/files/LibrePlan/libreplan_1.2.0-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0-1_amd64.deb
 
 * Install package::
 
@@ -55,8 +58,57 @@ Instructions:
 
 .. WARNING::
 
-  If you have problems with printing support review the last section `Fix
+  If you have problems with printing support review the section `Fix
   printing in Debian Squeeze`_.
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory errors`_.
+
+Fedora and openSUSE OBS (openSUSE Build Service)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Instructions depending on the distribution:
+
+* Fedora 16::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_16/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
+
+* Fedora 15::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_15/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
+
+* openSUSE 12.1::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_12.1/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
+
+* openSUSE 11.4::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_11.4/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory errors`_.
+
+RPM Packages
+~~~~~~~~~~~~
+
+There are several LibrePlan RPM packages available in the following URL:
+http://download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/
+
+.. WARNING::
+
+  If you have memory problems review the section `Fix memory errors`_.
 
 
 LibrePlan manual installation
@@ -81,7 +133,7 @@ Debian/Ubuntu
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/librelplan/LibrePlan/install_1.2.0.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.2.0.sql
 
 * Create database structure::
 
@@ -281,3 +333,47 @@ Instructions:
 * Fetch and install ``cutycapt`` (and its dependencies) from testing::
 
   # apt-get -t testing install cutycapt
+
+
+Fix memory errors
+-----------------
+
+With the default parameters of Tomcat in the different distributions you could
+have problems with Java memory.
+
+After a while using LibrePlan you could see that some windows do not work and
+the log shows a ``java.lang.OutOfMemoryError`` exception.
+
+This exception could be caused because of two different issues:
+
+* Heap space::
+
+    java.lang.OutOfMemoryError: Java heap space
+
+* PermGemp space (Permanent Generation, reflective data for the JVM)::
+
+    java.lang.OutOfMemoryError: PermGen space
+
+In order to avoid this problem you need to configure properly ``JAVA_OPTS``
+variable in your server. This is configured in different files depending on the
+distribution:
+
+* Debian or Ubuntu: ``/etc/default/tomcat6``
+* Fedora or openSUSE: ``/etc/tomcat6/tomcat6.conf``
+
+The next lines show a possible configuration to fix the memory errors (the exact
+values depends on the server features)::
+
+  JAVA_OPTS="-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m"
+  JAVA_OPTS="${JAVA_OPTS} -server -Djava.awt.headless=true"
+
+Where the different parameters have the following meaning:
+
+* ``-Xms``: Initial size of the Java heap
+* ``-Xmx``: Maximum size of the Java heap
+* ``-XX:PermSize``: Initial size of PermGen
+* ``-XX:MaxPermSize``: Maximum size of PermGen
+
+.. NOTE::
+
+   Take into account that size of PermGen is additional to heap size.

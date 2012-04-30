@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +34,7 @@ import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.daos.ISumChargedEffortDAO;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
@@ -63,6 +64,9 @@ public class WorkReportServiceREST extends
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private ISumChargedEffortDAO sumChargedEffortDAO;
 
     @Override
     @GET
@@ -143,15 +147,9 @@ public class WorkReportServiceREST extends
                  * Validate and save (insert or update) the entity.
                  */
                 entity.validate();
-                try {
-                    orderElementDAO
-                            .updateRelatedSumChargedEffortWithWorkReportLineSet(
-                            entity.getWorkReportLines());
-                } catch (InstanceNotFoundException e) {
-                    //should never happen, because the entity has been
-                    //validated before, so we are sure the lines refer
-                    //to existing order elements
-                }
+                sumChargedEffortDAO
+                        .updateRelatedSumChargedEffortWithWorkReportLineSet(entity
+                                .getWorkReportLines());
                 entityDAO.saveWithoutValidating(entity);
 
                 return null;

@@ -69,6 +69,8 @@ import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.business.util.deepcopy.DeepCopy;
 import org.libreplan.business.workingday.IntraDayDate;
+import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 
 public abstract class OrderElement extends IntegrationEntity implements
         ICriterionRequirable, ITreeNode<OrderElement> {
@@ -108,7 +110,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     private Boolean dirtyLastAdvanceMeasurementForSpreading = true;
 
-    private SumChargedEffort sumChargedEffort = SumChargedEffort.create();
+    private SumChargedEffort sumChargedEffort;
 
     public OrderElementTemplate getTemplate() {
         return template;
@@ -1467,6 +1469,11 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public String toString() {
         return super.toString() + " :: " + getName();
+    }
+
+    public List<WorkReportLine> getWorkReportLines(boolean sortedByDate) {
+        IWorkReportLineDAO workReportLineDAO = Registry.getWorkReportLineDAO();
+        return workReportLineDAO.findByOrderElementAndChildren(this, sortedByDate);
     }
 
     /**

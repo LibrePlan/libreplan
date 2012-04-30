@@ -338,7 +338,8 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
 
             Label lblName = new Label(materialCategory.getName());
             Label lblUnits = new Label(getUnits(materialCategory).toString());
-            Label lblPrice = new Label(getPrice(materialCategory).toString());
+            Label lblPrice = new Label(getPrice(materialCategory).toString()
+                    + getCurrencySymbol());
 
             Treerow tr = null;
             ti.setValue(node);
@@ -571,6 +572,14 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
                 && (material.getUnitType() != null)
  && (unitType
                 .getId().equals(material.getUnitType().getId())));
+    }
+
+    public String getCurrencySymbol() {
+        return Util.getCurrencySymbol();
+    }
+
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
     }
 
 }

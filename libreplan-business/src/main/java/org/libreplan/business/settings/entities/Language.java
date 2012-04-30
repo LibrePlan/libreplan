@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 ComtecSF, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +29,7 @@ import java.util.Locale;
  *
  * @author Cristina Alavarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public enum Language {
 
@@ -39,7 +41,8 @@ public enum Language {
     PORTUGUESE_LANGUAGE("Português", new Locale("pt")),
     ITALIAN_LANGUAGE("Italiano", new Locale("it")),
     FRENCH_LANGUAGE("Français", new Locale("fr")),
-    DUTCH_LANGUAGE("Nederlands", new Locale("nl"));
+    DUTCH_LANGUAGE("Nederlands", new Locale("nl")),
+    POLISH_LANGUAGE("Polski", new Locale("pl"));
 
     private final String displayName;
 

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -35,11 +36,14 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.TaskElementVisitor;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class TaskMilestone extends TaskElement implements ITaskPositionConstrained {
 
@@ -186,6 +190,30 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
     }
 
     @Override
+    public EffortDuration getTheoreticalCompletedTimeUntilDate(Date date) {
+        return EffortDuration.zero();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
+    public boolean isInProgress() {
+        return false;
+    }
+
+    @Override
+    public void acceptVisitor(TaskElementVisitor visitor) {
+        throw new RuntimeException("No visitors should visit this type of TaskElement");
+    }
+
+    @Override
+    public void resetStatus() {
+    }
+
+    @Override
     public Boolean belongsClosedProject() {
         EnumSet<OrderStatusEnum> CLOSED = EnumSet.of(OrderStatusEnum.CANCELLED,
                 OrderStatusEnum.FINISHED, OrderStatusEnum.STORED);
@@ -196,6 +224,11 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isAnyTaskWithConstraint(PositionConstraintType type) {
+        return getPositionConstraint().getConstraintType().equals(type);
     }
 
 }

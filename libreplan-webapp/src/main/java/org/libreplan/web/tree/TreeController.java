@@ -808,6 +808,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 // If it's a container budget cell is not editable
                 Util.bind(result, getBudgetGetterFor(element));
             }
+            result.setFormat(Util.getMoneyFormat());
             return result;
         }
 

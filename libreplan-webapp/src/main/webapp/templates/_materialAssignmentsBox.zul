@@ -44,9 +44,11 @@
                         onSelect = "assignedMaterialsController.selectUnitType(self)"
                         itemRenderer="@{assignedMaterialsController.renderer}"
                         disabled="true"/>
-                    <doublebox value="@{assignedMaterial.unitPrice}"
-                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
-                    <doublebox id="totalPrice" value="@{assignedMaterial.totalPrice}" disabled="${true}"/>
+                    <decimalbox value="@{assignedMaterial.unitPrice}"
+                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)"
+                        format="@{assignedMaterialsController.moneyFormat}" />
+                    <decimalbox id="totalPrice" value="@{assignedMaterial.totalPrice}" disabled="${true}"
+                        format="@{assignedMaterialsController.moneyFormat}" />
                     <label value="@{assignedMaterial.material.category.name}" width="150px" />
                     <hbox>
                         <button sclass="icono"

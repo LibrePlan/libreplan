@@ -35,11 +35,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Implements all the methods needed to search the criterion to filter the
- * resources. Provides multiples criterions to filter like {@link Criterion},
- * {@link Category} or filter by name or nif.
+ * resources. Provides multiples criteria to filter like {@link Criterion} or
+ * {@link CostCategory}.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-
 public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired

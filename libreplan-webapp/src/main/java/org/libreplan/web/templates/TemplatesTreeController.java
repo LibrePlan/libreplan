@@ -107,27 +107,14 @@ public class TemplatesTreeController extends
                             element.setName(value);
                         }
                     });
-
+            textBox.setConstraint("no empty:" + _("cannot be null or empty"));
             addCell(textBox);
             putNameTextbox(element, textBox);
         }
 
         @Override
         protected void addCodeCell(final OrderElementTemplate element) {
-            Textbox textBoxCode = new Textbox();
-            Util.bind(textBoxCode, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    return element.getCode();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    element.setCode(value);
-                }
-            });
-            addCell(textBoxCode);
+            //empty because templates don't have code attribute
         }
 
         void addInitCell(final OrderElementTemplate currentElement) {

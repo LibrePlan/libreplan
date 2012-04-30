@@ -79,24 +79,30 @@ public class SpecificResourceAllocationTest {
     private ResourceCalendar calendar;
 
     private void givenResourceCalendarAlwaysReturning(final int hours) {
-        this.calendar = createNiceMock(ResourceCalendar.class);
-        expect(this.calendar.getCapacityOn(isA(PartialDay.class)))
-                .andReturn(EffortDuration.hours(hours)).anyTimes();
-        IAnswer<? extends EffortDuration> asDurationAnswer = asDurationOnAnswer(hours(hours));
-        expect(
-                this.calendar.asDurationOn(isA(PartialDay.class),
-                        isA(ResourcesPerDay.class)))
-                .andAnswer(asDurationAnswer).anyTimes();
-        expect(this.calendar.getCapacityWithOvertime(isA(LocalDate.class)))
-                .andReturn(
-                        Capacity.create(hours(hours))
-                                .overAssignableWithoutLimit()).anyTimes();
-        expect(this.calendar.getAvailability()).andReturn(
-                AvailabilityTimeLine.allValid()).anyTimes();
-        replay(this.calendar);
+        this.calendar = createResourceCalendarAlwaysReturning(hours);
     }
 
-    private IAnswer<? extends EffortDuration> asDurationOnAnswer(
+    public static ResourceCalendar createResourceCalendarAlwaysReturning(final int hours) {
+        ResourceCalendar workerCalendar;
+        workerCalendar = createNiceMock(ResourceCalendar.class);
+        expect(workerCalendar.getCapacityOn(isA(PartialDay.class)))
+        .andReturn(EffortDuration.hours(hours)).anyTimes();
+        IAnswer<? extends EffortDuration> asDurationAnswer = asDurationOnAnswer(hours(hours));
+        expect(
+                workerCalendar.asDurationOn(isA(PartialDay.class),
+                        isA(ResourcesPerDay.class)))
+                        .andAnswer(asDurationAnswer).anyTimes();
+        expect(workerCalendar.getCapacityWithOvertime(isA(LocalDate.class)))
+        .andReturn(
+                Capacity.create(hours(hours))
+                .overAssignableWithoutLimit()).anyTimes();
+        expect(workerCalendar.getAvailability()).andReturn(
+                AvailabilityTimeLine.allValid()).anyTimes();
+        replay(workerCalendar);
+        return workerCalendar;
+    }
+
+    private static IAnswer<? extends EffortDuration> asDurationOnAnswer(
             final EffortDuration duration) {
         return new IAnswer<EffortDuration>() {
 

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,6 +43,7 @@ import org.libreplan.business.planner.chart.ILoadChartData;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
@@ -80,7 +81,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
@@ -95,7 +95,9 @@ import org.zkoss.zul.api.Combobox;
 
 /**
  * Controller for global resourceload view
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -122,6 +124,9 @@ public class ResourceLoadController implements Composer {
     private Reloader reloader = new Reloader();
 
     private IOrderPlanningGate planningControllerEntryPoints;
+
+    @Autowired
+    private IResourcesSearcher resourcesSearcher;
 
     public ResourceLoadController() {
     }
@@ -265,7 +270,7 @@ public class ResourceLoadController implements Composer {
         result.add(filterTypeChanger);
         result.add(new ByDatesFilter(onChange, filterBy));
         WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
-                onChange, filterBy, filterTypeChanger);
+                onChange, filterBy, filterTypeChanger, resourcesSearcher);
         result.add(bandbox);
         result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
                 bandbox));
@@ -422,10 +427,8 @@ public class ResourceLoadController implements Composer {
         }
 
         private Hbox buildTimeFilter() {
-            Label label1 = new Label(_("Time filter") + ":");
-            Label label2 = new Label("-");
             startBox.setValue(asDate(startDateValue));
-            startBox.setWidth("75px");
+            startBox.setWidth("100px");
             startBox.addEventListener(Events.ON_CHANGE, new EventListener() {
                 @Override
                 public void onEvent(Event event) {
@@ -437,7 +440,7 @@ public class ResourceLoadController implements Composer {
                 }
             });
             endBox.setValue(asDate(endDateValue));
-            endBox.setWidth("75px");
+            endBox.setWidth("100px");
             endBox.addEventListener(Events.ON_CHANGE, new EventListener() {
                 @Override
                 public void onEvent(Event event) {
@@ -449,9 +452,9 @@ public class ResourceLoadController implements Composer {
                 }
             });
             Hbox hbox = new Hbox();
-            hbox.appendChild(label1);
+            hbox.appendChild(new Label(_("From") + ":"));
             hbox.appendChild(startBox);
-            hbox.appendChild(label2);
+            hbox.appendChild(new Label(_("To") + ":"));
             hbox.appendChild(endBox);
             hbox.setAlign("center");
             return hbox;
@@ -501,10 +504,15 @@ public class ResourceLoadController implements Composer {
 
         private List<Object> entitiesSelected = null;
 
+        private final IResourcesSearcher resourcesSearcher;
+
+        private Label label = new Label();
+
         private WorkersOrCriteriaBandbox(Runnable onChange,
-                PlanningState filterBy,
-                FilterTypeChanger filterType) {
+                PlanningState filterBy, FilterTypeChanger filterType,
+                IResourcesSearcher resourcesSearcher) {
             super(onChange, filterBy, filterType);
+            this.resourcesSearcher = resourcesSearcher;
         }
 
         @Override
@@ -522,27 +530,38 @@ public class ResourceLoadController implements Composer {
             bandBox.setFinder(getFinderToUse());
             bandBox.afterCompose();
 
-            Button button = new Button();
-            button.setImage("/common/img/ico_filter.png");
-            button.setTooltip(_("Filter by worker"));
-            button.addEventListener(Events.ON_CLICK, new EventListener() {
+            bandBox.addEventListener(Events.ON_CHANGE, new EventListener() {
                 @Override
-                public void onEvent(Event event) {
+                public void onEvent(Event event) throws Exception {
                     entitiesSelected = getSelected();
                     notifyChange();
                 }
             });
 
             Hbox hbox = new Hbox();
+            hbox.appendChild(getLabel());
             hbox.appendChild(bandBox);
-            hbox.appendChild(button);
             hbox.setAlign("center");
+
             return hbox;
+        }
+
+        private Label getLabel() {
+            updateLabelValue();
+            return label;
+        }
+
+        private void updateLabelValue() {
+            if (isFilteringByResource()) {
+                label.setValue(_("Resources or criteria") + ":");
+            } else {
+                label.setValue(_("Criteria") + ":");
+            }
         }
 
         private String getFinderToUse() {
             if (isFilteringByResource()) {
-                return "workerMultipleFiltersFinder";
+                return "resourceMultipleFiltersFinderByResourceAndCriterion";
             } else {
                 return "criterionMultipleFiltersFinder";
             }
@@ -555,6 +574,7 @@ public class ResourceLoadController implements Composer {
             }
             entitiesSelected = null;
             bandBox.setFinder(getFinderToUse());
+            updateLabelValue();
         }
 
         @Override
@@ -563,12 +583,31 @@ public class ResourceLoadController implements Composer {
                 parameters.clearResourcesToShow();
                 parameters.clearCriteriaToShow();
             } else if (isFilteringByResource()) {
-                parameters.setResourcesToShow(as(Resource.class,
-                        entitiesSelected));
+                parameters.setResourcesToShow(calculateResourcesToShow());
             } else {
                 parameters.setCriteriaToShow(as(Criterion.class,
                         entitiesSelected));
             }
+        }
+
+        private List<Resource> calculateResourcesToShow() {
+            List<Resource> resources = new ArrayList<Resource>();
+            List<Criterion> criteria = new ArrayList<Criterion>();
+
+            for (Object each : entitiesSelected) {
+                if (each instanceof Resource) {
+                    resources.add((Resource) each);
+                } else {
+                    criteria.add((Criterion) each);
+                }
+            }
+
+            if (!criteria.isEmpty()) {
+                resources.addAll(resourcesSearcher.searchBoth()
+                        .byCriteria(criteria).execute());
+            }
+
+            return resources;
         }
 
         public boolean hasEntitiesSelected() {

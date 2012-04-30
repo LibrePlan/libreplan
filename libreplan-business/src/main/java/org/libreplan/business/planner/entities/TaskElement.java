@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -50,9 +50,11 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.util.TaskElementVisitor;
 import org.libreplan.business.util.deepcopy.OnCopy;
 import org.libreplan.business.util.deepcopy.Strategy;
 import org.libreplan.business.workingday.EffortDuration;
@@ -61,6 +63,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public abstract class TaskElement extends BaseEntity {
 
@@ -402,7 +405,7 @@ public abstract class TaskElement extends BaseEntity {
         }
     }
 
-    void add(Dependency dependency) {
+    public void add(Dependency dependency) {
         if (this.equals(dependency.getOrigin())) {
             dependenciesWithThisOrigin.add(dependency);
         }
@@ -684,6 +687,7 @@ public abstract class TaskElement extends BaseEntity {
 
     public void setAdvancePercentage(BigDecimal advancePercentage) {
         this.advancePercentage = advancePercentage;
+        this.resetStatus();
     }
 
     public void detachFromDependencies() {
@@ -748,6 +752,27 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
+    public abstract EffortDuration getTheoreticalCompletedTimeUntilDate(Date date);
+
+    public BigDecimal getTheoreticalAdvancePercentageUntilDate(Date date) {
+        EffortDuration totalAllocatedTime = AggregateOfDayAssignments.create(
+                this.getDayAssignments(FilterType.KEEP_ALL)).getTotalTime();
+        EffortDuration totalTheoreticalCompletedTime = this.getTheoreticalCompletedTimeUntilDate(date);
+        if (totalAllocatedTime.isZero() || totalTheoreticalCompletedTime.isZero()) {
+            return BigDecimal.ZERO;
+        }
+        Validate.isTrue(totalTheoreticalCompletedTime.getSeconds() <= totalAllocatedTime.getSeconds());
+        return totalTheoreticalCompletedTime.dividedByAndResultAsBigDecimal(totalAllocatedTime);
+    }
+
+    public abstract boolean isFinished();
+
+    public abstract boolean isInProgress();
+
+    public abstract void acceptVisitor(TaskElementVisitor visitor);
+
+    public abstract void resetStatus();
+
     public void updateAdvancePercentageFromOrderElement() {
         setAdvancePercentage(getOrderElement().getAdvancePercentage());
     }
@@ -766,5 +791,7 @@ public abstract class TaskElement extends BaseEntity {
     public ExternalCompany getSubcontractedCompany() {
         return null;
     }
+
+    public abstract boolean isAnyTaskWithConstraint(PositionConstraintType type);
 
 }

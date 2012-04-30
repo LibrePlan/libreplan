@@ -41,9 +41,11 @@
                     <doublebox value="@{assignedMaterial.units}"
                         onChange="assignedMaterialsController.updateTotalPrice(self.parent)" style="text-align:right" />
                     <label value="@{assignedMaterial.material.unitType.measure}"/>
-                    <doublebox value="@{assignedMaterial.unitPrice}"
-                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)" style="text-align:right" />
-                    <doublebox value="@{assignedMaterial.totalPrice}" style="text-align:right" disabled="true" />
+                    <decimalbox value="@{assignedMaterial.unitPrice}"
+                        onChange="assignedMaterialsController.updateTotalPrice(self.parent)" style="text-align:right"
+                        format="@{assignedMaterialsController.moneyFormat}" />
+                    <decimalbox value="@{assignedMaterial.totalPrice}" style="text-align:right" disabled="true"
+                        format="@{assignedMaterialsController.moneyFormat}" />
                     <listbox mold="select" model="@{materialStatus}"
                         selectedItem="@{assignedMaterial.status}"
                         itemRenderer="org.libreplan.web.common.EnumsListitemRenderer" />

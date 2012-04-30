@@ -149,14 +149,20 @@
                                     <row>
                                         <label
                                             value="${i18n:_('Budget in money')}:" />
-                                        <label
-                                            value="@{assignedHoursToOrderElementController.budget}" />
+                                        <hbox>
+                                            <label
+                                                value="@{assignedHoursToOrderElementController.budget}" />
+                                            <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                                        </hbox>
                                     </row>
                                     <row>
                                         <label
                                             value="${i18n:_('Money spent')}:" />
-                                        <label
-                                            value="@{assignedHoursToOrderElementController.moneyCost}" />
+                                        <hbox>
+                                            <label
+                                                value="@{assignedHoursToOrderElementController.moneyCost}" />
+                                            <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                                        </hbox>
                                     </row>
                                 </rows>
                             </grid>

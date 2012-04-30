@@ -79,7 +79,7 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
     }
 
     protected String extractStringFor(T template) {
-        return template.getName() + " (" + template.getCode() + ")";
+        return template.getName();
     }
 
     @Override
@@ -92,7 +92,6 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
 
     protected void generateColumnsForRenderer(Listitem item, T template) {
         final Listcell codeCell = new Listcell();
-        codeCell.setLabel(template.getCode());
         codeCell.setParent(item);
         codeCell.setStyle("width:200px");
 

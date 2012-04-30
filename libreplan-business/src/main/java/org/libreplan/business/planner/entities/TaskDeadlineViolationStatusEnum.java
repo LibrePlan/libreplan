@@ -1,8 +1,6 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,30 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.print;
+package org.libreplan.business.planner.entities;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
+import static org.libreplan.business.i18n.I18nHelper._;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+/**
+ * Enumerate of {@Link Task} deadline violation statuses.
+ *
+ * NO_DEADLINE: Task has no deadline set.
+ * DEADLINE_VIOLATED: Task didn't finish on time.
+ * ON_SCHEDULE: Either Task is ahead schedule or finished just in time.
+ *
+ * @author Nacho Barrientos <nacho@igalia.com>
+ */
+public enum TaskDeadlineViolationStatusEnum {
+    NO_DEADLINE(_("No deadline")),
+    DEADLINE_VIOLATED(_("Deadline violated")),
+    ON_SCHEDULE(_("On schedule"));
 
+    private String value;
 
-public class CutyCaptTimeout extends Thread {
-
-    long timeout;
-
-    private static final Log LOG = LogFactory.getLog(CutyPrint.class);
-
-    CutyCaptTimeout(int timeout) {
-        this.timeout = timeout;
+    private TaskDeadlineViolationStatusEnum(String value) {
+        this.value = value;
     }
 
-    public void run() {
-        try {
-            sleep(timeout);
-            Runtime.getRuntime().exec("killall CutyCapt");
-        } catch (Exception e) {
-            LOG.error(_("CutycaptTimeout thread exception"), e);
-        }
+    public String toString() {
+        return value;
     }
 }

@@ -54,23 +54,12 @@
                         <button label="${i18n:_('Add role')}"
                             onClick="controller.addSelectedRole()"/>
                     </hbox>
-                    <grid id="listing" model="@{controller.roles}">
+                    <grid id="listing" model="@{controller.roles}"
+                        rowRenderer="@{controller.rolesRenderer}">
                         <columns sizable="true">
                             <column label="${i18n:_('Role name')}" />
                             <column label="${i18n:_('Actions')}" />
                         </columns>
-                        <rows>
-                            <row self="@{each='role'}" value="@{role}">
-                                <label value="@{role.displayName}" />
-                                <hbox>
-                                    <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                        hoverImage="/common/img/ico_borrar.png"
-                                        tooltiptext="${i18n:_('Delete')}"
-                                        onClick="controller.removeRole(self.parent.parent.value);">
-                                    </button>
-                                </hbox>
-                            </row>
-                        </rows>
                     </grid>
                 </groupbox>
             </tabpanel>

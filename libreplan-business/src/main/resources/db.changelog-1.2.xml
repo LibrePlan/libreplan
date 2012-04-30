@@ -58,14 +58,28 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
-    <changeSet id="change-column-description-in-order_element-to-text" author="mrego">
+    <changeSet id="change-column-description-in-order_element-to-text"
+        author="mrego" dbms="postgresql">
         <comment>Change column description in order_element to TEXT</comment>
         <modifyDataType tableName="order_element" columnName="description" newDataType="TEXT" />
     </changeSet>
 
-    <changeSet id="change-column-description-in-order_element_template-to-text" author="mrego">
+    <changeSet id="change-column-description-in-order_element_template-to-text"
+        author="mrego" dbms="postgresql">
         <comment>Change column description in order_element_template to TEXT</comment>
         <modifyDataType tableName="order_element_template" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
+    <changeSet id="change-column-description-in-to-text-in-mysql"
+        author="mrego" dbms="mysql">
+        <comment>
+            Change column description in order_element and
+            order_element_template to TEXT in MySQL.
+            Because of using modifyDataType convert the column in LONGTEXT and
+            this is causing some problems with Hibernate mapping.
+        </comment>
+        <sql>ALTER TABLE order_element MODIFY description TEXT</sql>
+        <sql>ALTER TABLE order_element_template MODIFY description TEXT</sql>
     </changeSet>
 
     <changeSet id="add-budget-column-to-order_line" author="mrego">
@@ -90,6 +104,104 @@
             columnDataType="DECIMAL(19,2)" />
         <addDefaultValue tableName="order_line_template"
             columnName="budget" defaultValueNumeric="0" />
+    </changeSet>
+
+    <changeSet id="change-mapping-order-element-and-sum-charged-effort-postgresql"
+        author="mrego" dbms="postgresql">
+        <comment>Change mapping between OrderElement and SumChargedEffort in MySQL</comment>
+
+        <addColumn tableName="sum_charged_effort">
+            <column name="order_element" type="BIGINT" />
+        </addColumn>
+        <createProcedure>
+            CREATE OR REPLACE FUNCTION chageMappingBetweenOrderElementAndSumChargedEffort() RETURNS VOID AS $$
+            DECLARE
+                sce RECORD;
+            BEGIN
+                FOR sce IN SELECT sum_charged_effort_id AS id FROM order_element
+                LOOP
+                    EXECUTE 'UPDATE sum_charged_effort '
+                        || 'SET order_element '
+                        || ' = (SELECT id FROM order_element '
+                            || 'WHERE sum_charged_effort_id '
+                            || ' = '
+                            || quote_literal(sce.id)
+                            || ') '
+                        || 'WHERE id '
+                        || ' = '
+                        || quote_literal(sce.id);
+                END LOOP;
+            END;
+            $$ LANGUAGE plpgsql;
+        </createProcedure>
+        <sql>SELECT chageMappingBetweenOrderElementAndSumChargedEffort()</sql>
+        <addForeignKeyConstraint constraintName="sum_charged_effort_order_element_fkey"
+            baseTableName="sum_charged_effort" baseColumnNames="order_element"
+            referencedTableName="order_element" referencedColumnNames="id" />
+        <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
+    </changeSet>
+
+    <changeSet id="change-mapping-order-element-and-sum-charged-effort-mysql"
+        author="mrego" dbms="mysql">
+        <comment>Change mapping between OrderElement and SumChargedEffort in PostgreSQL</comment>
+
+        <addColumn tableName="sum_charged_effort">
+            <column name="order_element" type="BIGINT" />
+        </addColumn>
+        <sql>DROP PROCEDURE IF EXISTS chageMappingBetweenOrderElementAndSumChargedEffort</sql>
+        <sql splitStatements="false">
+            CREATE PROCEDURE chageMappingBetweenOrderElementAndSumChargedEffort()
+            BEGIN
+                DECLARE done INT DEFAULT FALSE;
+                DECLARE sce_id INT;
+                DECLARE cursor_sce_ids CURSOR FOR SELECT sum_charged_effort_id AS id FROM order_element;
+                DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+                OPEN cursor_sce_ids;
+
+                ids_loop: LOOP
+                    FETCH cursor_sce_ids INTO sce_id;
+                    IF done THEN
+                        LEAVE ids_loop;
+                    END IF;
+                    UPDATE sum_charged_effort SET order_element = (SELECT id FROM order_element WHERE sum_charged_effort_id = sce_id) WHERE id = sce_id;
+                END LOOP;
+
+                CLOSE cursor_sce_ids;
+            END;
+        </sql>
+        <sql>CALL chageMappingBetweenOrderElementAndSumChargedEffort()</sql>
+        <addForeignKeyConstraint constraintName="sum_charged_effort_order_element_fkey"
+            baseTableName="sum_charged_effort" baseColumnNames="order_element"
+            referencedTableName="order_element" referencedColumnNames="id" />
+        <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
+    </changeSet>
+
+    <changeSet id="add-new-columns-for-currency-in-configuration" author="mrego">
+        <comment>Add new columns for currency in configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="currency_code" type="VARCHAR(255)" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="currency_code"
+            defaultValue="EUR" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="currency_code"
+            defaultNullValue="EUR"
+            columnDataType="VARCHAR(255)" />
+        <addColumn tableName="configuration">
+            <column name="currency_symbol" type="VARCHAR(255)" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="currency_symbol"
+            defaultValue="€" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="currency_symbol"
+            defaultNullValue="€"
+            columnDataType="VARCHAR(255)" />
+    </changeSet>
+
+    <changeSet id="remove-code-from-order_element_template" author="jaragunde">
+        <comment>Remove column code in order_element_template table</comment>
+        <dropColumn tableName="order_element_template" columnName="code" />
     </changeSet>
 
 </databaseChangeLog>

@@ -80,7 +80,7 @@ function templateTaskAssignTemplate($projectName, $taskName){
     _click(_cell("Add From Template"));
     _click(_italic(0, _cell("z-caption-l")));
     _click(_div("new container"));
-    _click(_cell("Create Task"));
+    _click(_cell("Create task"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
     _log("Assign the task template", "custom1")

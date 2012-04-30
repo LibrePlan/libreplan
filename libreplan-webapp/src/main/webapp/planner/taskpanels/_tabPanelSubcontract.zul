@@ -50,7 +50,8 @@
             </row>
             <row>
                 <label value="${i18n:_('Subcontract price')}" />
-                <decimalbox value="@{subController.subcontractedTaskData.subcontractPrice}" />
+                <decimalbox value="@{subController.subcontractedTaskData.subcontractPrice}"
+                    format="@{subController.moneyFormat}" />
             </row>
             <row>
                 <label value="${i18n:_('Subcontracted code')}" />

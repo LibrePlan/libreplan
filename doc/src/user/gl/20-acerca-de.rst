@@ -77,6 +77,7 @@ Traductores
   Diego Pino García <dpino@igalia.com>
 * [it] Giuseppe Zizza <gzizza@gmail.com>
 * [nl] Jeroen Baten <jeroen@jeroenbaten.nl>
+* [pl] Krzysztof Kamecki <dwerens90@gmail.com>
 * [pt] Helena Grosso <lenagrosso@gmail.com>,
   Joaquim Rocha <jrocha@igalia.com>
 * [ru] Pavel Rudensky <prudensky@gmail.com>

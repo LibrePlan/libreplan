@@ -38,9 +38,9 @@ public class HoursWorkedPerResourceDTO implements Comparable {
 
     private Date date;
 
-    private LocalTime clockStart;
+    private String clockStart;
 
-    private LocalTime clockFinish;
+    private String clockFinish;
 
     private EffortDuration effort;
 
@@ -59,8 +59,12 @@ public class HoursWorkedPerResourceDTO implements Comparable {
 
         this.workerName = resource.getName();
         this.date = workReportLine.getDate();
-        this.clockStart = workReportLine.getClockStart();
-        this.clockFinish = workReportLine.getClockFinish();
+        LocalTime clockStart = workReportLine.getClockStart();
+        this.clockStart = (clockStart != null) ? clockStart.toString("HH:mm")
+                : "";
+        LocalTime clockFinish = workReportLine.getClockFinish();
+        this.clockFinish = (clockFinish != null) ? clockFinish
+                .toString("HH:mm") : "";
         this.effort = workReportLine.getEffort();
         this.orderElementCode = workReportLine.getOrderElement().getCode();
         this.orderElementName = workReportLine.getOrderElement().getName();
@@ -98,19 +102,19 @@ public class HoursWorkedPerResourceDTO implements Comparable {
         this.effort = effort;
     }
 
-    public LocalTime getClockStart() {
+    public String getClockStart() {
         return clockStart;
     }
 
-    public void setClockStart(LocalTime clockStart) {
+    public void setClockStart(String clockStart) {
         this.clockStart = clockStart;
     }
 
-    public LocalTime getClockFinish() {
+    public String getClockFinish() {
         return clockFinish;
     }
 
-    public void setClockFinish(LocalTime clockFinish) {
+    public void setClockFinish(String clockFinish) {
         this.clockFinish = clockFinish;
     }
 

@@ -60,7 +60,8 @@
             </row>
             <row>
                 <label value="${i18n:_('Budget')}" />
-                <decimalbox id="budget" disabled="true" />
+                <decimalbox id="budget" disabled="true"
+                    format="@{propertiesController.moneyFormat}" />
             </row>
             <row id="startConstraint">
                 <label value="${i18n:_('Constraint')}" />

@@ -1,0 +1,192 @@
+<!--
+    This file is part of LibrePlan
+
+    Copyright (C) 2010-2012 Igalia, S.L.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+    <zscript>
+        <![CDATA[
+            dsController = arg.get("dashboardController");
+        ]]>
+    </zscript>
+
+    <!-- VERY IMPORTANT!!
+        Don't include any HTML or Javascript code here because apparently this view, Dashboard view, will be rendered OK,
+    but it creates a side effect in the other views. If you include HTML here, go to Dashboard and later to other view, a big
+    chunk of space will appear on the top of the view
+    -->
+
+    <div self="@{define(content)}" height="100%" style="overflow:visible">
+
+        <div height="30px" sclass="toolbar-box" />
+
+        <window id="dashboardWindow" apply="${dsController}" vflex="1" contentStyle="margin: 0; overflow: auto">
+
+            <div id="projectDashboardChartsDiv" sclass="dashboards-container" height="100%" width="100%">
+
+                <!-- Progress -->
+                <groupbox closable="false">
+                    <caption label="${i18n:_('Progress')}" />
+                    <hbox>
+                        <n:div id="global-progress" style="height:200px; width:500px;"></n:div>
+                        <n:div id="task-status" style="height:200px; width:400px; margin-left: 100px;"></n:div>
+
+                        <!-- Tasks summary -->
+                        <grid id="gridTasksSummary" style="margin-top: 50px;" width="300px">
+                            <auxhead>
+                                <auxheader label="${i18n:_('Tasks summary')}" colspan="2"/>
+                            </auxhead>
+                            <columns sizable="false">
+                                <column width="100px"/>
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Finished')}:"/>
+                                    <label id="lblTasksFinished" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Blocked')}:"/>
+                                    <label id="lblTasksBlocked" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('In Progress')}:"/>
+                                    <label id="lblTasksInProgress" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Ready to start')}:"/>
+                                    <label id="lblTasksReadyToStart" />
+                                </row>
+                            </rows>
+                        </grid>
+                    </hbox>
+                </groupbox>
+
+                <!-- Time -->
+                <groupbox closable="false">
+                    <caption label="${i18n:_('Time')}" />
+                    <hbox>
+                        <n:div id="task-completation-lag" style="height:200px; width:580px;"></n:div>
+                        <n:div id="deadline-violation" style="height:200px; width:400px; margin-left: 100px;"></n:div>
+
+                        <!-- Margin with deadline -->
+                        <grid id="gridMarginWithDeadline" style="margin-top: 50px;" width="200px">
+                            <auxhead>
+                                <auxheader label="${i18n:_('Margin with deadline')}" colspan="2"/>
+                            </auxhead>
+                            <columns sizable="false">
+                                <column width="100px"/>
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Relative')}:"/>
+                                    <label id="lblRelative" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Absolute')}:"/>
+                                    <label id="lblAbsolute" />
+                                </row>
+                            </rows>
+                        </grid>
+                    </hbox>
+                </groupbox>
+
+            </div>
+
+            <div id="projectDashboardNoTasksWarningDiv" visible="false">
+                <n:h4 class="message_WARNING">
+                    <label id="noTasksWarningLabel" value="${i18n:_('No tasks available yet')}" />
+                </n:h4>
+            </div>
+
+        </window>
+
+    </div>
+
+    <!-- The variable for containing the 'global progress' has to be global and created before defer -->
+    <script type="text/javascript">
+        var global_progress = { };
+    </script>
+
+    <!-- Configure the parameters for the 'global progress' chart. The object contains a method 'render' that
+        is called from the Java file once all objects in the view have been created -->
+    <script type="text/javascript" defer="true">
+    <![CDATA[
+
+        global_progress = {
+            id: 'global-progress',
+            data: [],
+            title: 'Project global progress',
+            seriesDefaults: {
+                renderer:$.jqplot.BarRenderer,
+                pointLabels: { show: true, location: 'e', edgeTolerance: -15 },
+                shadowAngle: 135,
+                rendererOptions: {
+                    barDirection: 'horizontal'
+                },
+            },
+            axes: {
+                xaxis: {
+                    label: "Progress percentage per progress type"
+                },
+                yaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: ['1','2','3'],
+                    tickOptions: {
+                        showGridline: false,
+                        markSize: 0
+                    }
+                }
+            },
+            series:[
+                {label:'Expected', color: 'blue'},
+                {label:'Actual', color: 'red'},
+            ],
+            legend: {
+                show: true,
+                location: 'e',
+                placement: 'outside',
+            },
+            render: function(data, ticks, series) {
+                if (ticks !== undefined) {
+                    this.axes.yaxis.ticks = jQuery.parseJSON(ticks);
+                }
+                if (series !== undefined) {
+                    this.series = jQuery.parseJSON(series);
+                }
+                this.plot = $.jqplot(this.id, jQuery.parseJSON(data), this);
+            }
+        };
+
+    ]]>
+    </script>
+
+    <!-- Include jqPlot styles -->
+    <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" />
+
+    <!-- Include jqPlot library and additional plugins -->
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pointLabels.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pieRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.donutRenderer.min.js"></n:script>
+</zk>

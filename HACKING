@@ -351,6 +351,44 @@ command. For example:
     mvn -Pprod,postgresql clean install
 
 
+Compilation options
+-------------------
+
+In LibrePlan there are two custom Maven properties, which allow you to configure
+some small bits in the project.
+
+* *default.passwordsControl* - Warning about default passwords (``true`` by
+  default)
+
+  If this option is enabled, a warning is show in LibrePlan footer to
+  application administrators in order to change the default password (which
+  matches with user login) for the users created by default: admin, user,
+  wsreader and wswriter.
+
+* *default.exampleUsersDisabled* - Disable default users (``true`` by default)
+
+  If true, example default users such as user, wsreader and wswriter are
+  disabled. This is a good option for production environments.
+
+  This option is set to ``false`` if you are using the development profile (the
+  default one).
+
+How to set compilation options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Maven properties have a default value, but you can change it using the parameter
+``-D`` for Maven command to set the value of each option you want to modify. For
+example:
+
+* Set *default.passwordsControl* to ``false``::
+
+    mvn -Ddefault.passwordsControl=false clean install
+
+* Set *default.passwordsControl* and *default.exampleUsersDisabled* to false::
+
+    mvn -Ddefault.passwordsControl=false -Ddefault.exampleUsersDisabled=false clean install
+
+
 Tests
 -----
 

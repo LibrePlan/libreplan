@@ -29,7 +29,7 @@ a) Clone Git repository (recommended)::
 
 b) Download last version source code::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/files/LibrePlan/libreplan_1.2.0.tar.gz
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.tar.gz
     $ tar -xzvf libreplan_1.2.0.tar.gz
 
 You should review ``HACKING`` file to check that you have installed all the
