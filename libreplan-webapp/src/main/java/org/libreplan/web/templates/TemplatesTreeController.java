@@ -169,6 +169,36 @@ public class TemplatesTreeController extends
             return currentElement.getSchedulingState();
         }
 
+        @Override
+        protected void addCostSalaryCell(OrderElementTemplate element) {
+            // added to prevent compilation errors, but it will be never used
+        }
+
+        @Override
+        protected void addDurationCell(OrderElementTemplate element) {
+            // added to prevent compilation errors, but it will be never used
+        }
+
+        @Override
+        protected void addQuantityCell(OrderElementTemplate element) {
+            // added to prevent compilation errors, but it will be never used
+        }
+
+        @Override
+        protected void addIndemnizationSalaryCell(OrderElementTemplate element) {
+            // added to prevent compilation errors, but it will be never used
+        }
+
+        @Override
+        protected void addHolidaySalaryCell(OrderElementTemplate element) {
+            // added to prevent compilation errors, but it will be never used
+        }
+
+        @Override
+        public void addBudgetLineTypeCell(OrderElementTemplate element) {
+            // added to prevent compilation errors, but it will be never used
+        }
+
     }
 
     public TemplatesTreeController(IOrderTemplatesModel model,
