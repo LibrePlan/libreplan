@@ -109,6 +109,7 @@ public class TemplatesTreeController extends
                     });
             textBox.setConstraint("no empty:" + _("cannot be null or empty"));
             addCell(textBox);
+            putNameTextbox(element, textBox);
         }
 
         @Override

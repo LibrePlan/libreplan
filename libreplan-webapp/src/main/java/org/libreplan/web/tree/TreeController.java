@@ -564,6 +564,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         }
 
+        private Map<T, Textbox> nameTextboxByElement = new HashMap<T, Textbox>();
+
         private Map<T, Intbox> hoursIntBoxByElement = new HashMap<T, Intbox>();
 
         private Map<T, Decimalbox> budgetDecimalboxByElement = new HashMap<T, Decimalbox>();
@@ -577,6 +579,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public Renderer() {
+        }
+
+        protected Textbox getNameTextbox(T key) {
+            return nameTextboxByElement.get(key);
+        }
+
+        protected void putNameTextbox(T key, Textbox textbox) {
+            nameTextboxByElement.put(key, textbox);
         }
 
         protected void registerFocusEvent(final InputElement inputElement) {

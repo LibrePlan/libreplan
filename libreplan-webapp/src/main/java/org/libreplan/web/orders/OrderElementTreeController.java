@@ -378,6 +378,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
             textBox.setConstraint("no empty:" + _("cannot be empty"));
             addCell(cssClass, textBox);
+            putNameTextbox(orderElementForThisRow, textBox);
         }
 
         @Override
