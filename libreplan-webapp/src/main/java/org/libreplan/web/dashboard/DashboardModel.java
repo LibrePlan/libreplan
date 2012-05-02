@@ -418,7 +418,8 @@ public class DashboardModel implements IDashboardModel {
 
         @Override
         public String toString() {
-            return String.format("[%.2f, %.2f]", min, max);
+            return String.format("[%d, %d]", (int) Math.ceil(min),
+                    (int) Math.ceil(max));
         }
 
     }
