@@ -65,6 +65,8 @@ interface IDashboardModel {
     /* Time KPI: "Margin with deadline" */
     BigDecimal getMarginWithDeadLine();
 
+    Integer getAbsoluteMarginWithDeadLine();
+
     /* Time KPI: "Estimation accuracy" */
     List<Double> getFinishedTasksEstimationAccuracyHistogram();
 

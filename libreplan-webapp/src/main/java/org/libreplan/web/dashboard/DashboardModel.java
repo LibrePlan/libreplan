@@ -24,6 +24,7 @@ import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -74,6 +75,7 @@ public class DashboardModel implements IDashboardModel {
     private final Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
     private List<Double> taskEstimationAccuracyHistogram;
     private BigDecimal marginWithDeadLine;
+    private Integer absoluteMarginWithDeadLine;
     private List<Double> lagInTaskCompletionHistogram;
 
     public DashboardModel() {
@@ -228,6 +230,33 @@ public class DashboardModel implements IDashboardModel {
         this.marginWithDeadLine = outcome.divide(
                 new BigDecimal(orderDuration.getDays()), 8,
                 BigDecimal.ROUND_HALF_EVEN);
+    }
+
+    @Override
+    public Integer getAbsoluteMarginWithDeadLine() {
+        if (absoluteMarginWithDeadLine == null) {
+            calculateAbsoluteMarginWithDeadLine();
+        }
+        return absoluteMarginWithDeadLine;
+    }
+
+    private void calculateAbsoluteMarginWithDeadLine() {
+        TaskElement rootTask = getRootTask();
+        Date deadline = currentOrder.getDeadline();
+
+        if (rootTask == null) {
+            throw new RuntimeException("Root task is null");
+        }
+        if (deadline == null) {
+            this.absoluteMarginWithDeadLine = null;
+            return;
+        }
+        absoluteMarginWithDeadLine = daysBetween(rootTask.getEndAsLocalDate(),
+                LocalDate.fromDateFields(deadline));
+    }
+
+    private int daysBetween(LocalDate start, LocalDate end) {
+        return Days.daysBetween(start, end).getDays();
     }
 
     /* Time KPI: Estimation accuracy */

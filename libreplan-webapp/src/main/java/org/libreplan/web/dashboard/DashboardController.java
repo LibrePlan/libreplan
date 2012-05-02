@@ -99,17 +99,33 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private void renderMarginWithDeadline() {
-        marginWithDeadline("lblRelative",
-                dashboardModel.getMarginWithDeadLine());
-        // FIXME: Calculate absolute days margin
-        marginWithDeadline("lblAbsolute", BigDecimal.ZERO);
+        marginWithDeadline(dashboardModel.getMarginWithDeadLine());
+        absoluteMarginWithDeadline(dashboardModel
+                .getAbsoluteMarginWithDeadLine());
     }
 
-    private void marginWithDeadline(String key, BigDecimal value) {
-        Label label = (Label) gridMarginWithDeadline.getFellowIfAny(key);
+    private void marginWithDeadline(BigDecimal value) {
+        Label label = (Label) gridMarginWithDeadline
+                .getFellowIfAny("lblRelative");
         if (label != null) {
-            value = value != null ? value : BigDecimal.ZERO;
-            label.setValue(String.format(_("%.2f days"), value.doubleValue()));
+            if (value != null) {
+                label.setValue(String.format(_("%.2f %%"),
+                        value.doubleValue() * 100));
+            } else {
+                label.setValue(_("<No deadline>"));
+            }
+        }
+    }
+
+    private void absoluteMarginWithDeadline(Integer value) {
+        Label label = (Label) gridMarginWithDeadline
+                .getFellowIfAny("lblAbsolute");
+        if (label != null) {
+            if (value != null) {
+                label.setValue(String.format(_("%d days"), value));
+            } else {
+                label.setValue(_("<No deadline>"));
+            }
         }
     }
 

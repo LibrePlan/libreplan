@@ -94,12 +94,12 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Relative')}:"/>
-                                    <label id="lblRelative" />
-                                </row>
-                                <row>
                                     <label value="${i18n:_('Absolute')}:"/>
                                     <label id="lblAbsolute" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Relative')}:"/>
+                                    <label id="lblRelative" />
                                 </row>
                             </rows>
                         </grid>
