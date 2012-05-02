@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Model for UI operations related to Order Dashboard View
- * 
+ *
  * @author Nacho Barrientos <nacho@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
@@ -383,9 +383,70 @@ public class DashboardModel implements IDashboardModel {
     }
 
     /**
-     * 
+     * Calculates the estimation accuracy deviations for the current order
+     *
+     * All the deviations are groups in Interval.MAX_INTERVALS intervals of
+     * equal size. If the order contains just one single task then, the upper
+     * limit will be the deviation of the task + 30, and the lower limit will be
+     * deviation of the task - 20
+     *
+     * Each {@link Interval} contains the number of tasks that fit in that
+     * interval
+     *
+     * @return
+     */
+    public Map<Interval, Integer> calculateEstimationAccuracy() {
+        final Integer one = Integer.valueOf(1);
+        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
+        Double max, min;
+
+        // Get deviations of finished tasks, calculate max, min and delta
+        List<Double> deviations = getEstimationAccuracyDeviations();
+        if (deviations.isEmpty()) {
+            return result;
+        }
+        if (deviations.size() == 1) {
+            max = deviations.get(0).doubleValue() + 30;
+            min = deviations.get(0).doubleValue() - 20;
+        } else {
+            max = Collections.max(deviations);
+            min = Collections.min(deviations);
+        }
+        double delta = (max - min) / Interval.MAX_INTERVALS;
+
+        // Create MAX_INTERVALS
+        double from = min;
+        for (int i = 0; i < Interval.MAX_INTERVALS; i++) {
+            result.put(Interval.create(from, from + delta), Integer.valueOf(0));
+            from = from + delta;
+        }
+
+        // Construct map with number of tasks for each interval
+        final Set<Interval> intervals = result.keySet();
+        for (Double each : deviations) {
+            Interval interval = Interval.containingValue(intervals, each);
+            if (interval != null) {
+                Integer value = result.get(interval);
+                result.put(interval, value + one);
+            }
+        }
+        return result;
+    }
+
+    private List<Double> getEstimationAccuracyDeviations() {
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
+        }
+        CalculateFinishedTasksEstimationDeviationVisitor visitor = new CalculateFinishedTasksEstimationDeviationVisitor();
+        TaskElement rootTask = getRootTask();
+        rootTask.acceptVisitor(visitor);
+        return visitor.getDeviations();
+    }
+
+    /**
+     *
      * @author Diego Pino García<dpino@igalia.com>
-     * 
+     *
      */
     static class Interval {
 

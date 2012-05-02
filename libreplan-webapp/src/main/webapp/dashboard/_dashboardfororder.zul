@@ -106,6 +106,14 @@
                     </hbox>
                 </groupbox>
 
+                <!-- Resources -->
+                <groupbox closable="false">
+                    <caption label="${i18n:_('Resources')}" />
+                    <hbox>
+                        <n:div id="estimation-accuracy" style="height:200px; width:580px;"></n:div>
+                    </hbox>
+                </groupbox>
+
             </div>
 
             <div id="projectDashboardNoTasksWarningDiv" visible="false">

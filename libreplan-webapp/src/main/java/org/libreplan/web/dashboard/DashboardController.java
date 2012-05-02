@@ -95,6 +95,7 @@ public class DashboardController extends GenericForwardComposer {
             renderTasksSummary();
             renderDeadlineViolation();
             renderMarginWithDeadline();
+            renderEstimationAccuracy();
         }
     }
 
@@ -168,6 +169,30 @@ public class DashboardController extends GenericForwardComposer {
 
         barChart.getAxes().getXaxis()
                 .setLabel(_("Number of Days / Days Interval"));
+
+        renderChart(barChart, divId);
+    }
+
+    private void renderEstimationAccuracy() {
+        final String divId = "estimation-accuracy";
+
+        BarChart<Integer> barChart;
+        barChart = new BarChart<Integer>("Estimation Accuracy");
+
+        barChart.setFillZero(true);
+        barChart.setHighlightMouseDown(true);
+        barChart.setStackSeries(false);
+        barChart.setBarMargin(30);
+
+        barChart.addSeries(new Serie("Tasks"));
+
+        EstimationAccuracy estimationAccuracyData = EstimationAccuracy
+                .create(dashboardModel);
+        barChart.setTicks(estimationAccuracyData.getTicks());
+        barChart.addValues(estimationAccuracyData.getValues());
+
+        barChart.getAxes().getXaxis()
+                .setLabel(_("Number of Tasks / % Deviation"));
 
         renderChart(barChart, divId);
     }
@@ -388,6 +413,50 @@ public class DashboardController extends GenericForwardComposer {
                         .calculateTaskCompletation();
             }
             return taskCompletationData;
+        }
+
+        public String[] getTicks() {
+            Set<Interval> intervals = getData().keySet();
+            String[] result = new String[intervals.size()];
+            int i = 0;
+            for (Interval each : intervals) {
+                result[i++] = each.toString();
+
+            }
+            return result;
+        }
+
+        public Collection<Integer> getValues() {
+            return getData().values();
+        }
+
+    }
+
+    /**
+     *
+     * @author Diego Pino García<dpino@igalia.com>
+     *
+     */
+    static class EstimationAccuracy {
+
+        private final IDashboardModel dashboardModel;
+
+        private Map<Interval, Integer> estimationAccuracyData;
+
+        private EstimationAccuracy(IDashboardModel dashboardModel) {
+            this.dashboardModel = dashboardModel;
+        }
+
+        public static EstimationAccuracy create(IDashboardModel dashboardModel) {
+            return new EstimationAccuracy(dashboardModel);
+        }
+
+        private Map<Interval, Integer> getData() {
+            if (estimationAccuracyData == null) {
+                estimationAccuracyData = dashboardModel
+                        .calculateEstimationAccuracy();
+            }
+            return estimationAccuracyData;
         }
 
         public String[] getTicks() {
