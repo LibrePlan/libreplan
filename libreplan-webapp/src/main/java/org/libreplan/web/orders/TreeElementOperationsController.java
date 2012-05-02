@@ -236,9 +236,9 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
     private int showConfirmCreateTemplateDialog() {
         try {
             return Messagebox
-                    .show(_("Unsaved changes will be lost. Would you like to continue?",
-                            _("Confirm create template"), Messagebox.YES
-                                    | Messagebox.NO, Messagebox.QUESTION));
+                    .show(_("Unsaved changes will be lost. Would you like to continue?"),
+                            _("Confirm create template"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
