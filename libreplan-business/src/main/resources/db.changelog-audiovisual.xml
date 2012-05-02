@@ -22,6 +22,19 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add-table-budget_template" author="jaragunde">
+        <comment>
+            A subclass of OrderTemplate called BudgetTemplate has been added. It doesn't contain
+            new fields but the entity will be used to list the Templates differentiating them from
+            Budgets, which are also children of OrderTemplate.
+        </comment>
+        <createTable tableName="budget_template">
+            <column name="budget_template_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="budget_template_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="add-code-order_element_template" author="jaragunde">
         <comment>
             The code attribute was removed from order_element_template table in master,

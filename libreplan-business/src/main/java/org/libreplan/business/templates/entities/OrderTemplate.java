@@ -46,7 +46,7 @@ public class OrderTemplate extends OrderLineGroupTemplate {
     }
 
     @NotNull(message = "project calendar not specified")
-    private BaseCalendar calendar;
+    protected BaseCalendar calendar;
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
