@@ -415,7 +415,6 @@ public class DashboardModel implements IDashboardModel {
      */
     @Override
     public Map<Interval, Integer> calculateEstimationAccuracy() {
-        final Integer one = Integer.valueOf(1);
         Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
         Double max, min;
 
@@ -446,7 +445,7 @@ public class DashboardModel implements IDashboardModel {
             Interval interval = Interval.containingValue(intervals, each);
             if (interval != null) {
                 Integer value = result.get(interval);
-                result.put(interval, value + one);
+                result.put(interval, value + 1);
             }
         }
         return result;
