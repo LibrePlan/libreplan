@@ -100,4 +100,21 @@ public class BudgetLineTemplate extends OrderLineTemplate {
     public static BudgetLineTemplate createNew() {
         return createNew(new BudgetLineTemplate());
     }
+
+    @Override
+    //Reimplemented overriding the method at OrderLineTemplate, because
+    //the parent implementation cannot be applied to child.
+    public boolean isEmptyLeaf() {
+        if (getBudget().compareTo(BigDecimal.ZERO) != 0) {
+            return false;
+        }
+        if (!getQualityForms().isEmpty()) {
+            return false;
+        }
+        if (!getLabels().isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
 }
