@@ -31,11 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.libreplan.business.advance.entities.AdvanceAssignmentTemplate;
-import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
@@ -97,9 +94,6 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
 
     @Autowired
     private ICriterionDAO criterionDAO;
-
-    @Autowired
-    private IConfigurationDAO configurationDAO;
 
     @Autowired
     private IAdHocTransactionService transaction;
@@ -203,21 +197,8 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
     public void initCreate() {
         initializeAcompanyingObjectsOnConversation();
         BudgetTemplate template = BudgetTemplate.create();
-        template.setCalendar(getDefaultCalendar());
         this.template = template;
         treeModel = new TemplatesTree(this.template);
-    }
-
-    @Transactional(readOnly = true)
-    private BaseCalendar getDefaultCalendar() {
-        Configuration configuration = configurationDAO.getConfiguration();
-        if (configuration == null) {
-            return null;
-        }
-        BaseCalendar defaultCalendar = configuration
-                .getDefaultCalendar();
-//        forceLoadCalendar(defaultCalendar);
-        return defaultCalendar;
     }
 
     private void loadAssociatedData(OrderElementTemplate template) {

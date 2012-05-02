@@ -19,6 +19,9 @@
 package org.libreplan.business.templates.entities;
 
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.entities.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Marker class intended to differentiate two different kinds of OrderTemplate:
@@ -30,10 +33,9 @@ public class BudgetTemplate extends OrderTemplate {
 
     public static BudgetTemplate create() {
         BudgetTemplate beingBuilt = new BudgetTemplate();
+        beingBuilt.calendar =
+                Registry.getConfigurationDAO().getConfiguration().getDefaultCalendar();
         return create(beingBuilt);
     }
 
-    public void setCalendar(BaseCalendar calendar) {
-        this.calendar = calendar;
-    }
 }
