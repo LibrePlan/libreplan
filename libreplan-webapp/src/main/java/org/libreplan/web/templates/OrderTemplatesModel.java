@@ -347,4 +347,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         }
         // TODO complete with unique validation
     }
+
+    @Override
+    public void initCreate() {
+        //do nothing, initCreate is only for BudgetTemplates
+    }
 }

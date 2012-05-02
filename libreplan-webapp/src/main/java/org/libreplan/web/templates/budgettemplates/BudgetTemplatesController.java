@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -126,6 +127,11 @@ public class BudgetTemplatesController extends GenericForwardComposer implements
 
     public void goToEditForm(OrderElementTemplate template) {
         model.initEdit(template);
+        showEditWindow();
+    }
+
+    public void goToCreateForm() {
+        model.initCreate();
         showEditWindow();
     }
 
