@@ -345,7 +345,7 @@ public class DashboardModel implements IDashboardModel {
         final Integer one = Integer.valueOf(1);
 
         // Get deviations of finished tasks, calculate max, min and delta
-        List<Double> deviations = getDeviations();
+        List<Double> deviations = getTaskLagDeviations();
         if (deviations.isEmpty()) {
             return result;
         }
@@ -370,6 +370,16 @@ public class DashboardModel implements IDashboardModel {
             }
         }
         return result;
+    }
+
+    private List<Double> getTaskLagDeviations() {
+        if (this.getRootTask() == null) {
+            throw new RuntimeException("Root task is null");
+        }
+        CalculateFinishedTasksLagInCompletionVisitor visitor = new CalculateFinishedTasksLagInCompletionVisitor();
+        TaskElement rootTask = getRootTask();
+        rootTask.acceptVisitor(visitor);
+        return visitor.getDeviations();
     }
 
     /**
@@ -422,16 +432,6 @@ public class DashboardModel implements IDashboardModel {
                     (int) Math.ceil(max));
         }
 
-    }
-
-    private List<Double> getDeviations() {
-        if (this.getRootTask() == null) {
-            throw new RuntimeException("Root task is null");
-        }
-        CalculateFinishedTasksEstimationDeviationVisitor visitor = new CalculateFinishedTasksEstimationDeviationVisitor();
-        TaskElement rootTask = getRootTask();
-        rootTask.acceptVisitor(visitor);
-        return visitor.getDeviations();
     }
 
     @Override
