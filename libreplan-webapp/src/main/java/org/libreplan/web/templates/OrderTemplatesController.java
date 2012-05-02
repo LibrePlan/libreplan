@@ -106,7 +106,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(OrderTemplatesController.class);
 
-    public List<OrderElementTemplate> getTemplates() {
+    public List<? extends OrderElementTemplate> getTemplates() {
         return model.getRootTemplates();
     }
 

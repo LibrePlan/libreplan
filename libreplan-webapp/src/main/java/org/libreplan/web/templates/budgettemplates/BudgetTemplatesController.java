@@ -104,7 +104,7 @@ public class BudgetTemplatesController extends GenericForwardComposer implements
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(BudgetTemplatesController.class);
 
-    public List<OrderElementTemplate> getTemplates() {
+    public List<? extends OrderElementTemplate> getTemplates() {
         return model.getRootTemplates();
     }
 

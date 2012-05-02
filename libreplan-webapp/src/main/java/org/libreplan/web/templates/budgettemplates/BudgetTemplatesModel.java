@@ -141,8 +141,8 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
     }
 
     @Override
-    public List<OrderElementTemplate> getRootTemplates() {
-        return dao.getRootTemplates();
+    public List<? extends OrderElementTemplate> getRootTemplates() {
+        return dao.getRootBudgetTemplates();
     }
 
     @Override

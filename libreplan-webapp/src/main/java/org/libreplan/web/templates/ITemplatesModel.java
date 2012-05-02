@@ -39,7 +39,7 @@ import org.libreplan.web.tree.EntitiesTree;
  */
 public interface ITemplatesModel {
 
-    List<OrderElementTemplate> getRootTemplates();
+    List<? extends OrderElementTemplate> getRootTemplates();
 
     void createTemplateFrom(OrderElement orderElement);
 

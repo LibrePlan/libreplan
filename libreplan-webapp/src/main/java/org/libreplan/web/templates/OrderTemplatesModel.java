@@ -133,7 +133,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     }
 
     @Override
-    public List<OrderElementTemplate> getRootTemplates() {
+    public List<? extends OrderElementTemplate> getRootTemplates() {
         return dao.getRootTemplates();
     }
 

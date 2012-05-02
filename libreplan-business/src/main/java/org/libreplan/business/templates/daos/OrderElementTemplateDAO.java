@@ -27,6 +27,7 @@ import org.hibernate.NonUniqueResultException;
 import org.hibernate.Query;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -52,6 +53,13 @@ public class OrderElementTemplateDAO extends
         Query query = getSession().createQuery(
                 "select t from OrderElementTemplate t where t.parent = NULL");
         return query.list();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    public List<BudgetTemplate> getRootBudgetTemplates() {
+        return getSession().createCriteria(BudgetTemplate.class).list();
     }
 
     @Override

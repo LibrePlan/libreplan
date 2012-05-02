@@ -25,6 +25,7 @@ import java.util.List;
 import org.hibernate.NonUniqueResultException;
 import org.libreplan.business.common.daos.IGenericDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 
 /**
@@ -35,6 +36,8 @@ public interface IOrderElementTemplateDAO extends
         IGenericDAO<OrderElementTemplate, Long> {
 
     List<OrderElementTemplate> getRootTemplates();
+
+    List<BudgetTemplate> getRootBudgetTemplates();
 
     OrderElementTemplate findUniqueRootByName(
             OrderElementTemplate orderElementTemplate)
