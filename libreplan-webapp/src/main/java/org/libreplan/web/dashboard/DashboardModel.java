@@ -339,18 +339,36 @@ public class DashboardModel implements IDashboardModel {
         return histogram;
     }
 
+    /**
+     * Calculates the task completation deviations for the current order
+     *
+     * All the deviations are groups in Interval.MAX_INTERVALS intervals of
+     * equal size. If the order contains just one single task then, the upper
+     * limit will be the deviation of the task + 3, and the lower limit will be
+     * deviation of the task - 2
+     *
+     * Each {@link Interval} contains the number of tasks that fit in that
+     * interval
+     *
+     * @return
+     */
     @Override
     public Map<Interval, Integer> calculateTaskCompletation() {
         Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
-        final Integer one = Integer.valueOf(1);
+        Double max, min;
 
         // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getTaskLagDeviations();
         if (deviations.isEmpty()) {
             return result;
         }
-        Double max = Collections.max(deviations);
-        Double min = Collections.min(deviations);
+        if (deviations.size() == 1) {
+            max = deviations.get(0).doubleValue() + 3;
+            min = deviations.get(0).doubleValue() - 2;
+        } else {
+            max = Collections.max(deviations);
+            min = Collections.min(deviations);
+        }
         double delta = (max - min) / Interval.MAX_INTERVALS;
 
         // Create MAX_INTERVALS
@@ -366,7 +384,7 @@ public class DashboardModel implements IDashboardModel {
             Interval interval = Interval.containingValue(intervals, each);
             if (interval != null) {
                 Integer value = result.get(interval);
-                result.put(interval, value + one);
+                result.put(interval, value + 1);
             }
         }
         return result;
@@ -395,6 +413,7 @@ public class DashboardModel implements IDashboardModel {
      *
      * @return
      */
+    @Override
     public Map<Interval, Integer> calculateEstimationAccuracy() {
         final Integer one = Integer.valueOf(1);
         Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
