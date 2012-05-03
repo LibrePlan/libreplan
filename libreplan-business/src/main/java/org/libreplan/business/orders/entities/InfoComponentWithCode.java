@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,38 +21,27 @@ package org.libreplan.business.orders.entities;
 import org.hibernate.validator.NotEmpty;
 
 /**
- * @author  Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
-public class InfoComponent {
+public class InfoComponentWithCode extends InfoComponent {
 
-    private String name;
+    private String code;
 
-    private String description;
-
-    public InfoComponent() {
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @NotEmpty(message = "code not specified")
+    public String getCode() {
+        return code;
     }
 
-    @NotEmpty(message = "name not specified")
-    public String getName() {
-        return name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public InfoComponent copy() {
-        InfoComponent result = new InfoComponent();
+    public InfoComponentWithCode copy() {
+        InfoComponentWithCode result = new InfoComponentWithCode();
+        result.setCode(getCode());
         result.setName(getName());
         result.setDescription(getDescription());
         return result;
     }
+
 }
