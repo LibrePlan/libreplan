@@ -49,7 +49,7 @@ import org.libreplan.business.materials.entities.MaterialAssignment;
 import org.libreplan.business.materials.entities.MaterialAssignmentTemplate;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.ICriterionRequirable;
-import org.libreplan.business.orders.entities.InfoComponent;
+import org.libreplan.business.orders.entities.InfoComponentWithCode;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
@@ -76,7 +76,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     private SchedulingState.Type schedulingStateType;
 
-    private InfoComponent infoComponent;
+    private InfoComponentWithCode infoComponent;
 
     private Integer startAsDaysFromBeginning;
 
@@ -100,7 +100,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     public static <T extends OrderElementTemplate> T create(T beingBuilt,
             OrderElement origin) {
-        InfoComponent infoComponentCopied = origin.getInfoComponent().copy();
+        InfoComponentWithCode infoComponentCopied = origin.getInfoComponent().copy();
         Order order = origin.getOrder();
         Days fromBeginningToStart = daysBetween(order.getInitDate(), origin
                 .getInitDate());
@@ -154,7 +154,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     public static <T extends OrderElementTemplate> T createNew(T beingBuilt) {
-        beingBuilt.infoComponent = new InfoComponent();
+        beingBuilt.infoComponent = new InfoComponentWithCode();
         assignDates(beingBuilt, null, null);
         return create(beingBuilt);
     }
@@ -322,9 +322,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     @Valid
-    private InfoComponent getInfoComponent() {
+    private InfoComponentWithCode getInfoComponent() {
         if (infoComponent == null) {
-            infoComponent = new InfoComponent();
+            infoComponent = new InfoComponentWithCode();
         }
         return infoComponent;
     }
