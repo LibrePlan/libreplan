@@ -17,6 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?component name="costStatus" inline="true" macroURI="_costStatus.zul"?>
+
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
     <zscript>
         <![CDATA[
@@ -111,6 +113,15 @@
                     <caption label="${i18n:_('Resources')}" />
                     <hbox>
                         <n:div id="estimation-accuracy" style="height:200px; width:580px;"></n:div>
+                    </hbox>
+                </groupbox>
+
+                <!-- Cost -->
+                <groupbox closable="false">
+                    <caption label="${i18n:_('Cost')}" />
+                    <hbox>
+                        <!-- Cost status -->
+                        <costStatus id="costStatus" />
                     </hbox>
                 </groupbox>
 

@@ -67,6 +67,8 @@ public class DashboardController extends GenericForwardComposer {
     private Grid gridTasksSummary;
     private Grid gridMarginWithDeadline;
 
+    private org.zkoss.zk.ui.Component costStatus;
+
     private Div projectDashboardChartsDiv;
     private Div projectDashboardNoTasksWarningDiv;
 
@@ -96,7 +98,18 @@ public class DashboardController extends GenericForwardComposer {
             renderDeadlineViolation();
             renderMarginWithDeadline();
             renderEstimationAccuracy();
+            renderCostStatus(order);
         }
+    }
+
+    private void renderCostStatus(Order order) {
+        CostStatusController costStatusController = getCostStatusController();
+        costStatusController.setOrder(order);
+        costStatusController.render();
+    }
+
+    private CostStatusController getCostStatusController() {
+        return (CostStatusController) costStatus.getAttribute("controller");
     }
 
     private void renderMarginWithDeadline() {
