@@ -54,13 +54,6 @@
                                 constraint = "@{controller.validateTemplateName}"/>
                         </row>
                         <row>
-                            <label value="${i18n:_('Code')}" />
-                            <hbox>
-                                <textbox value="@{controller.template.code}" width="250px"
-                                    constraint= "no empty:${i18n:_('cannot be null or empty')}"/>
-                            </hbox>
-                        </row>
-                        <row>
                             <label value="${i18n:_('Delay from beginning (days)')}" />
                             <intbox
                                 value="@{controller.template.startAsDaysFromBeginning}" constraint="no negative"/>

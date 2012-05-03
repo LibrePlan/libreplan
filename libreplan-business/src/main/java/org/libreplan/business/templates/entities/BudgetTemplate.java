@@ -35,6 +35,7 @@ public class BudgetTemplate extends OrderTemplate {
         BudgetTemplate beingBuilt = new BudgetTemplate();
         beingBuilt.calendar =
                 Registry.getConfigurationDAO().getConfiguration().getDefaultCalendar();
+        beingBuilt.setCode("default-code-for-budget-template");
         return create(beingBuilt);
     }
 
