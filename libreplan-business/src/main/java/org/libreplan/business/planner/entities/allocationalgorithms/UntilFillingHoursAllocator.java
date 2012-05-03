@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -89,8 +88,19 @@ public abstract class UntilFillingHoursAllocator {
             IntraDayDate candidate = untilAllocating(dateFromWhichToAllocate,
                     each.allocation, each.duration);
             currentResult = pickCurrentOrCandidate(currentResult, candidate);
+            setNewDataForAllocation(each.allocation, currentResult);
+
+            // This is done in order that new assignments are taken into account
+            // for the next allocations in the same task
+            each.allocation.getResourceAllocation()
+                    .associateAssignmentsToResource();
         }
-        setAssignmentsForEachAllocation(currentResult);
+        // Then we detach the day assignments as they are going to be associated
+        // again later
+        for (EffortPerAllocation each : effortPerAllocation) {
+            each.allocation.getResourceAllocation().detach();
+        }
+
         return currentResult;
     }
 
@@ -228,22 +238,16 @@ public abstract class UntilFillingHoursAllocator {
         }
     }
 
-    private void setAssignmentsForEachAllocation(IntraDayDate resultDate) {
-        for (Entry<ResourcesPerDayModification, List<DayAssignment>> entry : resultAssignments
-                .entrySet()) {
-            setNewDataForAllocation(entry, resultDate);
-        }
-    }
-
     private <T extends DayAssignment> void setNewDataForAllocation(
-            Entry<ResourcesPerDayModification, List<DayAssignment>> entry,
+            ResourcesPerDayModification resourcesPerDayModification,
             IntraDayDate resultDate) {
         @SuppressWarnings("unchecked")
-        ResourceAllocation<T> allocation = (ResourceAllocation<T>) entry
-                .getKey().getBeingModified();
-        ResourcesPerDay resourcesPerDay = entry.getKey().getGoal();
+        ResourceAllocation<T> allocation = (ResourceAllocation<T>) resourcesPerDayModification
+                .getBeingModified();
+        ResourcesPerDay resourcesPerDay = resourcesPerDayModification.getGoal();
         @SuppressWarnings("unchecked")
-        List<T> value = (List<T>) entry.getValue();
+        List<T> value = (List<T>) resultAssignments
+                .get(resourcesPerDayModification);
         setNewDataForAllocation(allocation, resultDate, resourcesPerDay,
                 value);
     }

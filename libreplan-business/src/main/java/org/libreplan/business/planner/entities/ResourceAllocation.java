@@ -2123,7 +2123,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         getDayAssignmentsState().detachAssignments();
     }
 
-    void associateAssignmentsToResource() {
+    public void associateAssignmentsToResource() {
         for (DayAssignment dayAssignment : getAssignments()) {
             dayAssignment.associateToResource();
         }
