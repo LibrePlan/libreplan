@@ -622,15 +622,15 @@ public final class OrderElementConverter {
                     update(orderElement.getOrderElement(childDTO.code),
                             childDTO, configuration);
                 } else {
-                    if (checkConstraintUniqueOrderCode(orderElementDTO)) {
-                        throw new ValidationException(_(
-                                "Task {0}: Duplicate code in DB",
-                                orderElementDTO.code));
+                    if (checkConstraintUniqueOrderCode(childDTO)) {
+                        throw new ValidationException(
+                                _("Task {0}: Duplicate code in DB",
+                                        childDTO.code));
                     }
-                    if (checkConstraintUniqueHoursGroupCode(orderElementDTO)) {
+                    if (checkConstraintUniqueHoursGroupCode(childDTO)) {
                         throw new ValidationException(_(
                                 "Hours Group {0}: Duplicate code in DB",
-                                orderElementDTO.code));
+                                childDTO.code));
                     }
                     ((OrderLineGroup) orderElement).add(toEntity(childDTO,
                             configuration));
