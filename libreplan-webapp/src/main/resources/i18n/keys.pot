@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libreplan-1.2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-04 12:44+0200\n"
+"POT-Creation-Date: 2012-05-04 13:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2338,10 +2338,6 @@ msgstr ""
 msgid "missing date in a calendar exception"
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:421
-msgid "Starting date cannot be empty in backwards mode"
-msgstr ""
-
 #: libreplan-webapp/src/main/java/org/libreplan/ws/workreports/impl/WorkReportConverter.java:108
 #: libreplan-webapp/src/main/java/org/libreplan/ws/workreports/impl/WorkReportConverter.java:172
 #: libreplan-webapp/src/main/java/org/libreplan/ws/workreports/impl/WorkReportConverter.java:437
@@ -3698,12 +3694,6 @@ msgstr ""
 msgid "Edit {0}: {1}"
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:426
-msgid ""
-"Starting date cannot be empty because there is a task with constraint \"as "
-"late as possible\""
-msgstr ""
-
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeModel.java:400
 msgid "Exist other workReportType with the same code."
 msgstr ""
@@ -3722,6 +3712,12 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelTaskProperties.zul:66
 msgid "Constraint"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:426
+msgid ""
+"Deadline cannot be empty because there is a task with constraint \"as late "
+"as possible\""
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/workreports/_editWorkReportType.zul:150
@@ -5398,6 +5394,10 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/limitingresources/manualAllocation.zul:92
 msgid "Latest date"
+msgstr ""
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:421
+msgid "Deadline cannot be empty in backwards mode"
 msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/ResourceAllocationController.java:625
