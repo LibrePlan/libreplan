@@ -22,7 +22,6 @@
 package org.libreplan.business.test.planner.entities;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
@@ -778,7 +777,7 @@ public class GenericResourceAllocationTest {
         givenGenericResourceAllocationForTask(task);
         givenWorkersWithLoads(8, 6, 2);
         IntraDayDate end = ResourceAllocation.allocating(
-                singletonList(ResourcesPerDayModification.create(
+                Arrays.asList(ResourcesPerDayModification.create(
                         genericResourceAllocation,
                         ResourcesPerDay.amount(new BigDecimal(1)), workers)))
                 .untilAllocating(hours(12));
@@ -798,7 +797,7 @@ public class GenericResourceAllocationTest {
         givenGenericResourceAllocationForTask(task);
         givenWorkersWithLoads(8, 2, 6);
         IntraDayDate end = ResourceAllocation.allocating(
-                singletonList(ResourcesPerDayModification.create(
+                Arrays.asList(ResourcesPerDayModification.create(
                         genericResourceAllocation, ResourcesPerDay.amount(1),
                         workers))).untilAllocating(hours(16));
         assertThat(end.getDate(), equalTo(start.plusDays(2)));
