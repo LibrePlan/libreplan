@@ -419,12 +419,12 @@ public class OrderCRUDController extends GenericForwardComposer {
                         if (mode == SchedulingMode.BACKWARDS) {
                             throw new WrongValueException(
                                     comp,
-                                    _("Starting date cannot be empty in backwards mode"));
+                                    _("Deadline cannot be empty in backwards mode"));
                         }
                         if (orderModel
                                 .isAnyTaskWithConstraint(PositionConstraintType.AS_LATE_AS_POSSIBLE)) {
                             throw new WrongValueException(comp,
-                                    _("Starting date cannot be empty because there is a task with constraint \"as late as possible\""));
+                                    _("Deadline cannot be empty because there is a task with constraint \"as late as possible\""));
                         }
                     }
                 }
