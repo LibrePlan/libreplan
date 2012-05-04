@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,44 +17,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.dashboard;
+package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.util.SortedMap;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
 
 /**
- *
  * @author Diego Pino García <dpino@igalia.com>
  *
+ *         Utility class for calculating all 'Earned Value' measurements
  */
-interface ICostStatusModel {
+public interface IEarnedValueCalculator {
 
-    // Actual Cost Work Performed (ACWP)
-    BigDecimal getActualCostWorkPerformedAt(LocalDate date);
+    // ACWP　(Actual Cost Work Performed)
+    SortedMap<LocalDate, BigDecimal> calculateActualCostWorkPerformed(
+            Order order);
 
-    // Budget At Completion (BAC)
-    BigDecimal getBudgetAtCompletion();
+    // BCWP (Budgeted Cost Work Performed)
+    SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkPerformed(
+            Order order);
 
-    // Budgeted Cost Work Performed (BCWP)
-    BigDecimal getBudgetedCostWorkPerformedAt(LocalDate date);
+    // BCWS (Budgeted Cost Work Scheduled)
+    SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkScheduled(Order order);
 
-    // Cost Performance Index (CPI)
+    // ACWP at date
+    BigDecimal getActualCostWorkPerformedAt(Order order, LocalDate date);
+
+    // BAC (Budget at Completion)
+    BigDecimal getBudgetAtCompletion(Order order);
+
+    // BCWP at date
+    BigDecimal getBudgetedCostWorkPerformedAt(Order order, LocalDate date);
+
+    // CPI (Cost Performance Index)
     BigDecimal getCostPerformanceIndex(BigDecimal budgetedCost,
             BigDecimal actualCost);
 
-    // Cost Variance (CV)
+    // CV (Cost Variance)
     BigDecimal getCostVariance(BigDecimal budgetedCost, BigDecimal actualCost);
 
-    // Estimate at Completion (EAC)
+    // EAC (Estimate At Completion)
     BigDecimal getEstimateAtCompletion(BigDecimal budgetAtCompletion,
             BigDecimal costPerformanceIndex);
-
-    // Variance at Completion (VAC)
-    BigDecimal getVarianceAtCompletion(BigDecimal budgetAtCompletion,
-            BigDecimal estimateAtCompletion);
-
-    void setCurrentOrder(Order order);
 
 }

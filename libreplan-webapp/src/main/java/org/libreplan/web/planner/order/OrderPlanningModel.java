@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
@@ -64,7 +63,7 @@ import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.ICostCalculator;
-import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.IEarnedValueCalculator;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
@@ -261,6 +260,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private ICostCalculator hoursCostCalculator;
+
+    @Autowired
+    private IEarnedValueCalculator earnedValueCalculator;
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
@@ -1130,6 +1132,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION,
                             new org.zkoss.zk.ui.event.EventListener() {
+                                @Override
                                 public void onEvent(Event evt)
                                         throws InterruptedException {
                                     if (evt.getName().equals("onOK")) {
@@ -1394,63 +1397,37 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             this.order = orderReloaded;
         }
 
+        @Override
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            List<TaskElement> list = order
-                    .getAllChildrenAssociatedTaskElements();
-            list.add(order.getAssociatedTaskElement());
-
-            SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
-
-            for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(estimatedCost, hoursCostCalculator
-                            .getEstimatedCost((Task) taskElement));
-                }
-            }
-
-            estimatedCost = accumulateResult(estimatedCost);
-            addZeroBeforeTheFirstValue(estimatedCost);
-            indicators.put(EarnedValueType.BCWS, calculatedValueForEveryDay(
-                    estimatedCost, interval.getStart(), interval.getFinish()));
+            setIndicatorInInterval(EarnedValueType.BCWS, interval,
+                    earnedValueCalculator
+                            .calculateBudgetedCostWorkScheduled(order));
         }
 
+        @Override
         protected void calculateActualCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = order
-                    .getAllChildrenAssociatedTaskElements();
-            list.add(order.getAssociatedTaskElement());
-
-            SortedMap<LocalDate, BigDecimal> workReportCost = new TreeMap<LocalDate, BigDecimal>();
-
-            for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(workReportCost, hoursCostCalculator
-                            .getWorkReportCost((Task) taskElement));
-                }
-            }
-
-            workReportCost = accumulateResult(workReportCost);
-            addZeroBeforeTheFirstValue(workReportCost);
-            indicators.put(EarnedValueType.ACWP, calculatedValueForEveryDay(
-                    workReportCost, interval.getStart(), interval.getFinish()));
+            setIndicatorInInterval(EarnedValueType.ACWP, interval,
+                    earnedValueCalculator
+                            .calculateActualCostWorkPerformed(order));
         }
 
+        @Override
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = order
-                    .getAllChildrenAssociatedTaskElements();
-            list.add(order.getAssociatedTaskElement());
+            setIndicatorInInterval(EarnedValueType.BCWP, interval,
+                    earnedValueCalculator
+                            .calculateBudgetedCostWorkPerformed(order));
+        }
 
-            SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
+        private void setIndicatorInInterval(EarnedValueType type,
+                Interval interval, SortedMap<LocalDate, BigDecimal> values) {
+            addZeroBeforeTheFirstValue(values);
+            indicators.put(type, calculatedValueForEveryDay(values, interval));
+        }
 
-            for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(advanceCost, hoursCostCalculator
-                            .getAdvanceCost((Task) taskElement));
-                }
-            }
-
-            addZeroBeforeTheFirstValue(advanceCost);
-            indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
-                    advanceCost, interval.getStart(), interval.getFinish()));
+        private SortedMap<LocalDate, BigDecimal> calculatedValueForEveryDay(
+                SortedMap<LocalDate, BigDecimal> values, Interval interval) {
+            return calculatedValueForEveryDay(values, interval.getStart(),
+                    interval.getFinish());
         }
 
         @Override
@@ -1466,6 +1443,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return subcontractCommand;
     }
 
+    @Override
     public Order getOrder() {
         return planningState.getOrder();
     }
@@ -1603,7 +1581,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         private void updateCriticalPathProgress(TaskGroup rootTask) {
             if (planner != null) {
-                rootTask.updateCriticalPathProgress((List<TaskElement>) planner
+                rootTask.updateCriticalPathProgress(planner
                         .getCriticalPath());
             }
         }
