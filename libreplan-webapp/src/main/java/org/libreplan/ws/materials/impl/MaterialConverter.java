@@ -21,8 +21,6 @@
 
 package org.libreplan.ws.materials.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -119,7 +117,7 @@ public final class MaterialConverter {
                 materialCategory.setParent(parentCategory);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no material category with this code"));
+                        "There is no material category with this code");
             }
         }
 
@@ -160,7 +158,7 @@ public final class MaterialConverter {
         // find the parent
         if (materialCategoryDTO.parent != null) {
             if (!materialCategoryDTO.parent.equalsIgnoreCase(parent.getCode())) {
-                throw new ValidationException(_("inconsistent parent code."));
+                throw new ValidationException("inconsistent parent code.");
             }
         }
 
@@ -182,7 +180,7 @@ public final class MaterialConverter {
                         materialDTO.unitType);
                 material.setUnitType(unitType);
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(_("unit type code not found"));
+                throw new ValidationException("unit type code not found");
             }
         }
 
@@ -201,7 +199,7 @@ public final class MaterialConverter {
                         materialCategoryDTO.parent)))
                 || ((!(materialCategoryDTO.parent == null) && (materialCategory
                         .getParent() == null)))) {
-            throw new ValidationException(_("inconsistent parent code."));
+            throw new ValidationException("inconsistent parent code.");
         }
 
         /*
@@ -213,8 +211,7 @@ public final class MaterialConverter {
 
                 /* Step 1.1 requires each material DTO to have a code. */
                 if (StringUtils.isBlank(materialDTO.code)) {
-                    throw new ValidationException(
-                            _("missing code in a material"));
+                    throw new ValidationException("missing code in a material");
                 }
 
                 try {
@@ -237,7 +234,7 @@ public final class MaterialConverter {
                 /* Step 2.1 requires each subcategory DTO to have a code. */
                 if (StringUtils.isBlank(subcategoryDTO.code)) {
                     throw new ValidationException(
-                        _("missing code in a subcategory"));
+                            "missing code in a subcategory");
                 }
 
                 try {
@@ -266,7 +263,7 @@ public final class MaterialConverter {
                         materialDTO.unitType);
                 material.setUnitType(type);
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(_("unit type code not found"));
+                throw new ValidationException("unit type code not found");
             }
         }
         material.updateUnvalidated(StringUtils.trim(materialDTO.description),

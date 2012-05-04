@@ -21,8 +21,6 @@
 
 package org.libreplan.ws.calendars.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -136,7 +134,7 @@ public final class CalendarConverter {
         return BaseCalendar.createUnvalidated(baseCalendarDTO.code,
                 baseCalendarDTO.name, parent, exceptions, calendarDataVersions);
         } catch (IllegalArgumentException e) {
-            throw new ValidationException(_(e.getMessage()));
+            throw new ValidationException(e.getMessage());
         }
     }
 
@@ -170,7 +168,7 @@ public final class CalendarConverter {
         try {
             calendarData.updateCapacitiesPerDay(capacitiesPerDays);
         } catch (IllegalArgumentException e) {
-            throw new ValidationException(_(e.getMessage()));
+            throw new ValidationException(e.getMessage());
         }
 
         return calendarData;
@@ -184,12 +182,12 @@ public final class CalendarConverter {
 
                 if (StringUtils.isBlank(exceptionDTO.code)) {
                     throw new ValidationException(
-                            _("missing code in a calendar exception"));
+                            "missing code in a calendar exception");
                 }
 
                 if (exceptionDTO.date == null) {
                     throw new ValidationException(
-                            _("missing date in a calendar exception"));
+                            "missing date in a calendar exception");
                 }
                 // find by code
                 try {
@@ -203,13 +201,13 @@ public final class CalendarConverter {
                                     .toLocalDate(exceptionDTO.date));
                     if (exception != null) {
                         throw new ValidationException(
-                                _("exception date already exists"));
+                                "exception date already exists");
                     } else {
                         try {
                             baseCalendar
                                     .addExceptionDay(toEntity(exceptionDTO));
                         } catch (IllegalArgumentException o) {
-                            throw new ValidationException(_(o.getMessage()));
+                            throw new ValidationException(o.getMessage());
                         }
                     }
                 }
@@ -222,7 +220,7 @@ public final class CalendarConverter {
 
                 if (StringUtils.isBlank(calendarDataDTO.code)) {
                     throw new ValidationException(
-                            _("missing code in a calendar data version"));
+                            "missing code in a calendar data version");
                 }
 
                 // find by code
@@ -234,7 +232,7 @@ public final class CalendarConverter {
                     try {
                         baseCalendar.addNewVersion(toEntity(calendarDataDTO));
                     } catch (IllegalArgumentException o) {
-                        throw new ValidationException(_(o.getMessage()));
+                        throw new ValidationException(o.getMessage());
                     }
                 }
             }
@@ -248,7 +246,7 @@ public final class CalendarConverter {
                         baseCalendarDTO.parent);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("The base calendar parent not found"));
+                        "The base calendar parent not found");
             }
         }
 
@@ -284,7 +282,7 @@ public final class CalendarConverter {
         try {
             calendarData.updateCapacitiesPerDay(capacitiesPerDays);
         } catch (IllegalArgumentException e) {
-            throw new ValidationException(_(e.getMessage()));
+            throw new ValidationException(e.getMessage());
         }
 
         calendarData.updateUnvalidated(expiringDate, parent);
@@ -304,9 +302,9 @@ public final class CalendarConverter {
                             .overAssignableWithoutLimit();
                     result.put(day, capacity);
                 } catch (IllegalArgumentException e) {
-                    throw new ValidationException(_("a day is not valid"));
+                    throw new ValidationException("a day is not valid");
                 } catch(NullPointerException e){
-                    throw new ValidationException(_("a day is empty"));
+                    throw new ValidationException("a day is empty");
                 }
             }
         }
@@ -321,8 +319,7 @@ public final class CalendarConverter {
         try {
             return Registry.getBaseCalendarDAO().findByCode(parentCode);
         } catch (InstanceNotFoundException e) {
-            throw new ValidationException(
-                    _("The base calendar parent not found"));
+            throw new ValidationException("The base calendar parent not found");
         }
     }
 
@@ -336,7 +333,7 @@ public final class CalendarConverter {
             return Registry.getCalendarExceptionTypeDAO().findByCode(typeCode);
         } catch (InstanceNotFoundException e) {
             throw new ValidationException(
-                    _("The calendar exception type not found"));
+                    "The calendar exception type not found");
         }
     }
 

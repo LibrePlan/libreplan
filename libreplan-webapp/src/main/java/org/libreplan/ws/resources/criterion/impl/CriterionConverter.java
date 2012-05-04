@@ -21,8 +21,6 @@
 
 package org.libreplan.ws.resources.criterion.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -127,7 +125,7 @@ public final class CriterionConverter {
 
             /* Step 3 requires each criterion DTO to have a code. */
             if (StringUtils.isBlank(criterionWrapper.dto.code)) {
-                throw new ValidationException(_("missing code in a criterion"));
+                throw new ValidationException("missing code in a criterion");
             }
 
             try {

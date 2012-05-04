@@ -21,8 +21,6 @@
 
 package org.libreplan.ws.costcategories.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -132,7 +130,7 @@ public class CostCategoryConverter {
                 hourCost.setType(typeOfWorkHours);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no type of work hours with this code"));
+                        "There is no type of work hours with this code");
             }
         }
         return hourCost;
@@ -147,7 +145,7 @@ public class CostCategoryConverter {
 
             /* Step 1.1: requires each hour cost DTO to have a code. */
             if (StringUtils.isBlank(hourCostDTO.code)) {
-                throw new ValidationException(_("missing code in a hour cost"));
+                throw new ValidationException("missing code in a hour cost");
             }
 
             try {
@@ -192,7 +190,7 @@ public class CostCategoryConverter {
                 hourCost.setType(typeOfWorkHours);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no type of work hours with this code"));
+                        "There is no type of work hours with this code");
             }
         }
     }

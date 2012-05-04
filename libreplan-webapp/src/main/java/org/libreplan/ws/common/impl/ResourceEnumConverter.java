@@ -21,8 +21,7 @@
 
 package org.libreplan.ws.common.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,9 +57,9 @@ public class ResourceEnumConverter {
         ResourceEnumDTO value = resourceEnumToDTO.get(resource);
 
         if (value == null) {
-            throw new RuntimeException(_("Unable to convert {0} "
-                    + "value to {1} type", resource.toString(),
-                    ResourceEnumDTO.class.getName()));
+            throw new RuntimeException(MessageFormat.format(
+                    "Unable to convert {0} " + "value to {1} type",
+                    resource.toString(), ResourceEnumDTO.class.getName()));
         } else {
             return value;
         }
@@ -78,7 +77,8 @@ public class ResourceEnumConverter {
         ResourceEnum value = resourceEnumFromDTO.get(resource);
 
         if (value == null) {
-            throw new RuntimeException(_("Unable to convert value to {0} type",
+            throw new RuntimeException(MessageFormat.format(
+                    "Unable to convert value to {0} type",
                     ResourceEnum.class.getName()));
         } else {
             return value;
