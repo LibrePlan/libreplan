@@ -297,6 +297,11 @@ public abstract class OrderElement extends IntegrationEntity implements
                 //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
                 removeTaskSource(result);
             }
+            if(getOnDBTaskSource() != getTaskSource()) {
+                //this element was unscheduled and then scheduled again. Its TaskSource has
+                //been recreated but we have to remove the old one.
+                removeTaskSource(result);
+            }
             result
                     .addAll(synchronizationForSchedulingPoint(schedulingDataForVersion));
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
