@@ -1034,9 +1034,8 @@ public class TaskElementAdapter {
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 } else {
-                    String currencySymbol = Util.getCurrencySymbol();
-                    String budget = getBudget() + " " + currencySymbol;
-                    String moneyCost = getMoneyCost() + " " + currencySymbol;
+                    String budget = Util.addCurrencySymbol(getBudget());
+                    String moneyCost = Util.addCurrencySymbol(getMoneyCost());
                     result.append(
                             _("Budget: {0}, Consumed: {1} ({2}%)", budget,
                                     moneyCost, getMoneyCostBarPercentage()

@@ -656,6 +656,18 @@ public class Util {
     }
 
     /**
+     * Returns the value using the money format, that means, 2 figures for the
+     * decimal part and concatenating the currency symbol from
+     * {@link Configuration} object.
+     */
+    public static String addCurrencySymbol(BigDecimal value) {
+        DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat
+                .getInstance();
+        decimalFormat.applyPattern(getMoneyFormat());
+        return decimalFormat.format(value);
+    }
+
+    /**
      * Gets money format for a {@link Decimalbox} using 2 figures for the
      * decimal part and concatenating the currency symbol
      *
