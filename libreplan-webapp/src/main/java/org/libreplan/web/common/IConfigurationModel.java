@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +22,7 @@
 package org.libreplan.web.common;
 
 import java.util.List;
+import java.util.Set;
 
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.entities.EntityNameEnum;
@@ -157,4 +158,13 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForExpenseSheets();
 
     void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets);
+
+    Set<String> getCurrencies();
+
+    String getCurrencySymbol(String currencyCode);
+
+    String getCurrencyCode();
+
+    void setCurrency(String currencyCode);
+
 }

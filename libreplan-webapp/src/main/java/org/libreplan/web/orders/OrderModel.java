@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2012 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
@@ -56,6 +56,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
+import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
@@ -861,6 +862,14 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isAnyTaskWithConstraint(PositionConstraintType type) {
+        if ((planningState == null) || (planningState.getRootTask() == null)) {
+            return false;
+        }
+
+        return planningState.getRootTask().isAnyTaskWithConstraint(type);
     }
 
 }

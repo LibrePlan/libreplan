@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -842,6 +842,30 @@ public class ConfigurationController extends GenericForwardComposer {
             boolean allowToGatherUsageStatsEnabled) {
         configurationModel
                 .setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
+    }
+
+    public Set<String> getCurrencies() {
+        return configurationModel.getCurrencies();
+    }
+
+    public ListitemRenderer getCurrencyRenderer() {
+        return new ListitemRenderer() {
+            @Override
+            public void render(Listitem item, Object data) throws Exception {
+                String currencyCode = (String) data;
+                item.setLabel(currencyCode + " - "
+                        + configurationModel.getCurrencySymbol(currencyCode));
+                item.setValue(currencyCode);
+            }
+        };
+    }
+
+    public String getSelectedCurrency() {
+        return configurationModel.getCurrencyCode();
+    }
+
+    public void setSelectedCurrency(String currencyCode) {
+        configurationModel.setCurrency(currencyCode);
     }
 
 }

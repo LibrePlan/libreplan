@@ -8,7 +8,7 @@
             </generator>
         </id>
         <version name="version" access="property" type="long" />
-        <component name="infoComponent" class="org.libreplan.business.orders.entities.InfoComponent">
+        <component name="infoComponent" class="org.libreplan.business.orders.entities.InfoComponentWithCode">
             <property name="name" access="field" />
             <property name="description" access="field" type="text" />
             <property name="code" access="field" unique="true" />

@@ -21,8 +21,11 @@ package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskStatusEnum;
+import org.libreplan.web.dashboard.DashboardModel.Interval;
 
 interface IDashboardModel {
 
@@ -49,22 +52,31 @@ interface IDashboardModel {
     /* Progress KPI: "Global Progress of the Project" */
     BigDecimal getAdvancePercentageByHours();
 
-    BigDecimal getTheoreticalAdvancePercentageByHoursUntilNow();
+    BigDecimal getExpectedAdvancePercentageByHours();
 
     BigDecimal getCriticalPathProgressByNumHours();
 
-    BigDecimal getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
+    BigDecimal getExpectedCriticalPathProgressByNumHours();
 
     BigDecimal getCriticalPathProgressByDuration();
 
-    BigDecimal getTheoreticalProgressByDurationForCriticalPathUntilNow();
+    BigDecimal getExpectedCriticalPathProgressByDuration();
 
     /* Time KPI: "Margin with deadline" */
     BigDecimal getMarginWithDeadLine();
+
+    Integer getAbsoluteMarginWithDeadLine();
 
     /* Time KPI: "Estimation accuracy" */
     List<Double> getFinishedTasksEstimationAccuracyHistogram();
 
     /* Time KPI: "Lead/Lag in task completion" */
     List<Double> getLagInTaskCompletionHistogram();
+
+    Map<TaskStatusEnum, Integer> calculateTaskStatus();
+
+    Map<Interval, Integer> calculateTaskCompletation();
+
+    Map<Interval, Integer> calculateEstimationAccuracy();
+
 }

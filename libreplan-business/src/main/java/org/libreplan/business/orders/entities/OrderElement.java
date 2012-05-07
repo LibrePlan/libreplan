@@ -75,7 +75,7 @@ import org.libreplan.business.workreports.entities.WorkReportLine;
 public abstract class OrderElement extends IntegrationEntity implements
         ICriterionRequirable, ITreeNode<OrderElement> {
 
-    protected InfoComponent infoComponent = new InfoComponent();
+    protected InfoComponentWithCode infoComponent = new InfoComponentWithCode();
 
     private Date initDate;
 
@@ -1269,9 +1269,9 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     @Valid
-    public InfoComponent getInfoComponent() {
+    public InfoComponentWithCode getInfoComponent() {
         if (infoComponent == null) {
-            infoComponent = new InfoComponent();
+            infoComponent = new InfoComponentWithCode();
         }
         return infoComponent;
     }

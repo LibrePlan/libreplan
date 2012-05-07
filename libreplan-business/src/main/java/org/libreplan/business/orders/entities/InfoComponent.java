@@ -27,22 +27,11 @@ import org.hibernate.validator.NotEmpty;
  */
 public class InfoComponent {
 
-    private String code;
-
     private String name;
 
     private String description;
 
     public InfoComponent() {
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    @NotEmpty(message = "code not specified")
-    public String getCode() {
-        return code;
     }
 
     public void setName(String name) {
@@ -64,7 +53,6 @@ public class InfoComponent {
 
     public InfoComponent copy() {
         InfoComponent result = new InfoComponent();
-        result.setCode(getCode());
         result.setName(getName());
         result.setDescription(getDescription());
         return result;

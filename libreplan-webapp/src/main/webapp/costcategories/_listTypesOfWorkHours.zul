@@ -33,7 +33,10 @@
             <row self="@{each='typeOfWorkHours'}" value="@{typeOfWorkHours}" onClick="controller.goToEditForm(self.value);">
                 <label value="@{typeOfWorkHours.code}" />
                 <label value="@{typeOfWorkHours.name}" />
-                <label value="@{typeOfWorkHours.defaultPrice}" />
+                <hbox>
+                    <label value="@{typeOfWorkHours.defaultPrice}" />
+                    <label value="@{controller.currencySymbol}" />
+                </hbox>
                 <checkbox checked="@{typeOfWorkHours.enabled}" disabled="true" />
                 <!-- Buttons for each row -->
                 <hbox>

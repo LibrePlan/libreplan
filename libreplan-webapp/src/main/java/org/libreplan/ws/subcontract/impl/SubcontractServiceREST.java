@@ -21,8 +21,6 @@
 
 package org.libreplan.ws.subcontract.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -274,7 +272,7 @@ public class SubcontractServiceREST implements ISubcontractService {
         order.useSchedulingDataFor(version);
         order.add(orderElement);
 
-        order.setName(_("Project from client"));
+        order.setName("Project from client");
         order.setInitDate(orderElement.getInitDate());
         order.setDeadline(orderElement.getDeadline());
         order.setCalendar(getDefaultCalendar());

@@ -109,7 +109,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             appendLabel(row, subcontractedTaskData.getSubcontractedCode());
             appendLabel(row, getTaskName(subcontractedTaskData));
             appendLabel(row, subcontractedTaskData.getWorkDescription());
-            appendLabel(row, toString(subcontractedTaskData
+            appendLabel(row, Util.addCurrencySymbol(subcontractedTaskData
                     .getSubcontractPrice()));
             appendLabel(row, _(toString(subcontractedTaskData.getState())));
             appendOperations(row, subcontractedTaskData);

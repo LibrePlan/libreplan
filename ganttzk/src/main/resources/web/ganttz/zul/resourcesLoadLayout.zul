@@ -40,16 +40,16 @@ resourcesLoadPanel = self;
         <separator/>
         <hbox id="additionalFilterInsertionPoint1" />
         <separator/>
-        ${ganttzk_i18n:_('Show')}:
-        <listbox id="listFilters" mold="select" rows="1" width="100px"
+        <label id="filterByNameLabel">${ganttzk_i18n:_('Page')}:</label>
+        <combobox id="filterByNameCombo" width="50px"
+            onChange="resourcesLoadPanel.onSelectFilterByName(self)" />
+        <separator/>
+        ${ganttzk_i18n:_('Group by')}:
+        <listbox id="listFilters" mold="select" rows="1" width="150px"
             model="${resourcesLoadPanel.filters}"
             selectedIndex="0"
             onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
         </listbox>
-        <separator/>
-        <label id="filterByNameLabel">${ganttzk_i18n:_('Name filter')}:</label>
-        <combobox id="filterByNameCombo" width="50px"
-            onChange="resourcesLoadPanel.onSelectFilterByName(self)" />
         <separator/>
         <hbox id="additionalFilterInsertionPoint2" />
        </hbox>

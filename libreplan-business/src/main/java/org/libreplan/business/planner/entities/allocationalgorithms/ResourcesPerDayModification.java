@@ -127,6 +127,11 @@ public abstract class ResourcesPerDayModification extends
             return genericAllocation.createEffortDistributor(getResources());
         }
 
+        @Override
+        public boolean isSpecific() {
+            return false;
+        }
+
     }
 
     private static class OnSpecificAllocation extends
@@ -192,6 +197,11 @@ public abstract class ResourcesPerDayModification extends
         @Override
         protected IEffortDistributor<?> toEffortDistributor() {
             return resourceAllocation.createEffortDistributor();
+        }
+
+        @Override
+        public boolean isSpecific() {
+            return true;
         }
 
     }
@@ -318,5 +328,7 @@ public abstract class ResourcesPerDayModification extends
         return getGoal().equals(
                 getBeingModified().getNonConsolidatedResourcePerDay());
     }
+
+    public abstract boolean isSpecific();
 
 }

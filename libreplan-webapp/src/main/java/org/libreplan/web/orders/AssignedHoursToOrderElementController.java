@@ -184,4 +184,8 @@ public class AssignedHoursToOrderElementController extends
         return assignedHoursToOrderElementModel.getExpenseSheetLines();
     }
 
+    public String getCurrencySymbol() {
+        return Util.getCurrencySymbol();
+    }
+
 }

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,6 +45,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
+import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.IMessagesForUser;
@@ -86,6 +87,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -108,6 +110,7 @@ import org.zkoss.zul.api.Window;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -387,11 +390,45 @@ public class OrderCRUDController extends GenericForwardComposer {
             return result;
         }
 
-        private void setConstraintsFor(SchedulingMode mode) {
-            initDate.setConstraint(mode == SchedulingMode.FORWARD ? "no empty"
-                    : null);
-            deadline.setConstraint(mode == SchedulingMode.BACKWARDS ? "no empty"
-                    : null);
+        private void setConstraintsFor(final SchedulingMode mode) {
+            initDate.setConstraint(new Constraint() {
+
+                @Override
+                public void validate(Component comp, Object value)
+                        throws WrongValueException {
+                    if (value == null) {
+                        if (mode == SchedulingMode.FORWARD) {
+                            throw new WrongValueException(
+                                    comp,
+                                    _("Starting date cannot be empty in forward mode"));
+                        }
+                        if (orderModel
+                                .isAnyTaskWithConstraint(PositionConstraintType.AS_SOON_AS_POSSIBLE)) {
+                            throw new WrongValueException(comp,
+                                    _("Starting date cannot be empty because there is a task with constraint \"as soon as possible\""));
+                        }
+                    }
+                }
+            });
+            deadline.setConstraint(new Constraint() {
+
+                @Override
+                public void validate(Component comp, Object value)
+                        throws WrongValueException {
+                    if (value == null) {
+                        if (mode == SchedulingMode.BACKWARDS) {
+                            throw new WrongValueException(
+                                    comp,
+                                    _("Deadline cannot be empty in backwards mode"));
+                        }
+                        if (orderModel
+                                .isAnyTaskWithConstraint(PositionConstraintType.AS_LATE_AS_POSSIBLE)) {
+                            throw new WrongValueException(comp,
+                                    _("Deadline cannot be empty because there is a task with constraint \"as late as possible\""));
+                        }
+                    }
+                }
+            });
         }
 
         private void changeFocusAccordingTo(SchedulingMode chosen) {
@@ -1184,7 +1221,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             appendDate(row, order.getInitDate());
             appendDate(row, order.getDeadline());
             appendCustomer(row, order.getCustomer());
-            appendObject(row, order.getTotalBudget());
+            appendObject(row, Util.addCurrencySymbol(order.getTotalBudget()));
             appendObject(row, order.getTotalHours());
             appendObject(row, _(order.getState().toString()));
             appendOperations(row, order);
@@ -1303,8 +1340,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         return orderModel.gettooltipText(order);
     }
 
-    public void reloadTotalBudget(Label txtTotalBudget) {
-        Util.reloadBindings(txtTotalBudget);
+    public void reloadTotalBudget(Decimalbox decimalboxTotalBudget) {
+        Util.reloadBindings(decimalboxTotalBudget);
     }
 
     /**
@@ -1538,4 +1575,9 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         };
     }
+
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
+
 }

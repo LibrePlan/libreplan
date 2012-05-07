@@ -38,10 +38,8 @@ import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.HourCost;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.web.common.BaseCRUDController;
-import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.util.ValidationExceptionPrinter;
 import org.libreplan.web.workreports.WorkReportCRUDController;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -305,6 +303,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
         Decimalbox boxCost = new Decimalbox();
         bindDecimalboxCost(boxCost, (HourCost) row.getValue());
         boxCost.setConstraint("no empty:" + _("cannot be null or empty"));
+        boxCost.setFormat(Util.getMoneyFormat());
         row.appendChild(boxCost);
     }
 

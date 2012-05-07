@@ -24,6 +24,7 @@ package org.libreplan.web.common;
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -31,6 +32,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.Configuration;
+import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.Registry;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -61,6 +65,12 @@ import org.zkoss.zul.api.Column;
 public class Util {
 
     private static final Log LOG = LogFactory.getLog(Util.class);
+
+    /**
+     * Special chars from {@link DecimalFormat} class.
+     */
+    private static final String[] DECIMAL_FORMAT_SPECIAL_CHARS = { "0", ",",
+            ".", "\u2030", "%", "#", ";", "-" };
 
     private Util() {
     }
@@ -627,6 +637,57 @@ public class Util {
             LOG.error("failed to set sort property for: " + column + " with: "
                     + sortSpec, e);
         }
+    }
+
+    /**
+     * Gets currency symbol from {@link Configuration} object.
+     *
+     * @return Currency symbol configured in the application
+     */
+    public static String getCurrencySymbol() {
+        return Registry.getTransactionService().runOnReadOnlyTransaction(
+                new IOnTransaction<String>() {
+                    @Override
+                    public String execute() {
+                        return Registry.getConfigurationDAO()
+                                .getConfiguration().getCurrencySymbol();
+                    }
+                });
+    }
+
+    /**
+     * Returns the value using the money format, that means, 2 figures for the
+     * decimal part and concatenating the currency symbol from
+     * {@link Configuration} object.
+     */
+    public static String addCurrencySymbol(BigDecimal value) {
+        DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat
+                .getInstance();
+        decimalFormat.applyPattern(getMoneyFormat());
+        return decimalFormat.format(value);
+    }
+
+    /**
+     * Gets money format for a {@link Decimalbox} using 2 figures for the
+     * decimal part and concatenating the currency symbol
+     *
+     * @return Format for a {@link Decimalbox} <code>###.##</code> plus currency
+     *         symbol
+     */
+    public static String getMoneyFormat() {
+        return "###.## " + escapeDecimalFormatSpecialChars(getCurrencySymbol());
+    }
+
+    /**
+     * Escapes special chars used in {@link DecimalFormat} to define the number
+     * format that appear in the <code>currencySymbol</code>.
+     */
+    private static String escapeDecimalFormatSpecialChars(String currencySymbol) {
+        for (String specialChar : DECIMAL_FORMAT_SPECIAL_CHARS) {
+            currencySymbol = currencySymbol.replace(specialChar, "'"
+                    + specialChar + "'");
+        }
+        return currencySymbol;
     }
 
 }

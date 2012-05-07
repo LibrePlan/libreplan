@@ -9,6 +9,7 @@
 	<parameter name="labels" class="java.lang.String"/>
 	<parameter name="subReportWRL" class="java.lang.String"/>
 	<parameter name="subReportES" class="java.lang.String"/>
+	<parameter name="currencySymbol" class="java.lang.String"/>
 	<field name="orderElementCode" class="java.lang.String"/>
 	<field name="orderName" class="java.lang.String"/>
 	<field name="orderElementName" class="java.lang.String"/>
@@ -60,20 +61,20 @@
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.time.money}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement x="423" y="45" width="130" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalExpenses}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalExpenses}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="###0.00 h">
 					<reportElement x="287" y="5" width="135" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalHours}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement x="423" y="65" width="130" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalCosts}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalCosts}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="287" y="45" width="135" height="20"/>
@@ -110,10 +111,10 @@
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{total}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement x="423" y="25" width="130" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalCostsByHours}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalCostsByHours}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>

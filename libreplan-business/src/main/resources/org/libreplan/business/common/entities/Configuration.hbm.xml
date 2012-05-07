@@ -68,6 +68,9 @@
         <property name="scenariosVisible" not-null="true"
             column="scenarios_visible" />
 
+        <property name="currencyCode" not-null="true" column="currency_code" />
+        <property name="currencySymbol" not-null="true" column="currency_symbol" />
+
         <component name="ldapConfiguration" class="org.libreplan.business.common.entities.LDAPConfiguration">
             <property name="ldapHost" column="ldap_Host"/>
             <property name="ldapPort" column="ldap_port"/>

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -44,6 +44,7 @@ import org.libreplan.business.workingday.IntraDayDate;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class TaskGroup extends TaskElement {
 
@@ -376,4 +377,15 @@ public class TaskGroup extends TaskElement {
     public void resetStatus() {
         this.isFinished = this.isInProgress = null;
     }
+
+    @Override
+    public boolean isAnyTaskWithConstraint(PositionConstraintType type) {
+        for (TaskElement taskElement : getChildren()) {
+            if (taskElement.isAnyTaskWithConstraint(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

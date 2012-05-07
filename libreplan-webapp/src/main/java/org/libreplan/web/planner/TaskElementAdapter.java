@@ -90,6 +90,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -118,41 +119,8 @@ public class TaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
-    private static TaskPositionConstraint getLeftMostFixedDateConstraintAmongChildren(
-            TaskGroup container) {
-
-        TaskPositionConstraint constraint = null;
-        for(TaskElement child : ((TaskGroup)container).getChildren()) {
-            TaskPositionConstraint currentConstraint = null;
-            if (child instanceof ITaskPositionConstrained) {
-                ITaskPositionConstrained task = (ITaskPositionConstrained) child;
-                currentConstraint = task.getPositionConstraint();
-            }
-            else if (child instanceof TaskGroup) {
-                currentConstraint = getLeftMostFixedDateConstraintAmongChildren(
-                        (TaskGroup) child);
-            }
-            if(currentConstraint != null &&
-                    currentConstraint.getConstraintType().equals(
-                            PositionConstraintType.START_IN_FIXED_DATE) &&
-                    (constraint == null || currentConstraint.getConstraintDate().
-                            compareTo(constraint.getConstraintDate()) < 0)) {
-                constraint = currentConstraint;
-            }
-        }
-        return constraint;
-    }
     public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement, LocalDate orderInitDate) {
-        if (taskElement instanceof TaskGroup) {
-            TaskPositionConstraint constraint =
-                    getLeftMostFixedDateConstraintAmongChildren((TaskGroup) taskElement);
-            if(constraint == null) {
-                return Collections.emptyList();
-            }
-            return Collections.singletonList(equalTo(toGantt(
-                    constraint.getConstraintDate())));
-        }
         if (taskElement instanceof ITaskPositionConstrained) {
             ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint startConstraint = task
@@ -1087,19 +1055,18 @@ public class TaskElementAdapter {
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 } else {
-                    result.append(
-                            _("Budget: {0}€, Consumed: {1}€ ({2}%)",
-                                    getBudget(),
-                                    getMoneyCost(),
-                                    getMoneyCostBarPercentage().multiply(
-                                            new BigDecimal(100)))).append(
-                            "<br/>");
-
+                    String budget = Util.addCurrencySymbol(getBudget());
+                    String moneyCost = Util.addCurrencySymbol(getMoneyCost());
                     Map<String, BigDecimal> mapCosts = getMoneyItemizedCost();
+                    String costHours = Util.addCurrencySymbol(mapCosts.get("costHours"));
+                    String costExpenses = Util.addCurrencySymbol(mapCosts.get("costExpenses"));
+                    result.append(
+                            _("Budget: {0}, Consumed: {1} ({2}%)", budget, moneyCost,
+                                    getMoneyCostBarPercentage().multiply(new BigDecimal(100))))
+                            .append("<br/>");
                     result.append(
                             _("cost because of worked hours: {0}€, cost because of expenses: {1}€",
-                                    mapCosts.get("costHours"), mapCosts.get("costExpenses")))
-                            .append("<br/>");
+                            costHours, costExpenses));
                 }
 
                 String labels = buildLabelsText();

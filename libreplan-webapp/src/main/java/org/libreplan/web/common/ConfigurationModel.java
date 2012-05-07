@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,12 +25,16 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
@@ -65,6 +69,8 @@ public class ConfigurationModel implements IConfigurationModel {
     private Configuration configuration;
 
     private Map<EntityNameEnum, List<EntitySequence>> entitySequences = new HashMap<EntityNameEnum, List<EntitySequence>>();
+
+    private static Map<String, String> currencies = getAllCurrencies();
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -570,6 +576,41 @@ public class ConfigurationModel implements IConfigurationModel {
             boolean allowToGatherUsageStatsEnabled) {
         configuration
                 .setAllowToGatherUsageStatsEnabled(allowToGatherUsageStatsEnabled);
+    }
+
+    private static Map<String, String> getAllCurrencies() {
+        Map<String, String> currencies = new TreeMap<String, String>();
+        for (Locale locale : Locale.getAvailableLocales()) {
+            if (StringUtils.isNotBlank(locale.getCountry())) {
+                Currency currency = Currency.getInstance(locale);
+                currencies.put(currency.getCurrencyCode(),
+                        currency.getSymbol(locale));
+            }
+        }
+        return currencies;
+    }
+
+    @Override
+    public Set<String> getCurrencies() {
+        return currencies.keySet();
+    }
+
+    @Override
+    public String getCurrencySymbol(String currencyCode) {
+        return currencies.get(currencyCode);
+    }
+
+    @Override
+    public String getCurrencyCode() {
+        return configuration.getCurrencyCode();
+    }
+
+    @Override
+    public void setCurrency(String currencyCode) {
+        if (configuration != null) {
+            configuration.setCurrencyCode(currencyCode);
+            configuration.setCurrencySymbol(currencies.get(currencyCode));
+        }
     }
 
 }

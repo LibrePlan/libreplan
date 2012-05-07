@@ -90,6 +90,8 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         result.put("labels", getParameterLabels());
         result.put("subReportWRL", "costWorkReportLinesReport.jasper");
         result.put("subReportES", "costExpenseSheetLinesReport.jasper");
+        result.put("currencySymbol", Util.getCurrencySymbol());
+
         return result;
     }
 

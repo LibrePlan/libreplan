@@ -21,8 +21,6 @@
 
 package org.libreplan.ws.common.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +41,7 @@ public class InstanceNotFoundRecoverableErrorException
     public InstanceNotFoundRecoverableErrorException(String type,
         String value) {
 
-        super(_("instance not found"),
-            RecoverableErrorCodeEnum.INSTANCE_NOT_FOUND);
+        super("instance not found", RecoverableErrorCodeEnum.INSTANCE_NOT_FOUND);
 
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("type", type);

@@ -77,7 +77,6 @@ public class TemplatesTreeComponent extends TreeComponent {
         List<Column> result = new ArrayList<Column>();
 
         result.add(schedulingStateColumn);
-        result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
         result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
 
