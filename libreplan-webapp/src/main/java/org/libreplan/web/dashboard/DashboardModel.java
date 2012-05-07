@@ -141,65 +141,64 @@ public class DashboardModel implements IDashboardModel {
     /* Progress KPI: "Global Progress of the Project" */
     @Override
     public BigDecimal getAdvancePercentageByHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getProgressAllByNumHours();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask.getProgressAllByNumHours());
+    }
+
+    private BigDecimal asPercentage(BigDecimal value) {
+        return value != null ? value.multiply(BigDecimal.valueOf(100))
+                : BigDecimal.ZERO;
     }
 
     @Override
     public BigDecimal getExpectedAdvancePercentageByHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup
-                .getTheoreticalProgressByNumHoursForAllTasksUntilNow();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask
+                .getTheoreticalProgressByNumHoursForAllTasksUntilNow());
     }
 
     @Override
     public BigDecimal getCriticalPathProgressByNumHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByNumHours();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask.getCriticalPathProgressByNumHours());
     }
 
     @Override
     public BigDecimal getExpectedCriticalPathProgressByNumHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup
-                .getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask
+                .getTheoreticalProgressByNumHoursForCriticalPathUntilNow());
     }
 
     @Override
     public BigDecimal getCriticalPathProgressByDuration() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByDuration();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask.getCriticalPathProgressByDuration());
     }
 
     @Override
     public BigDecimal getExpectedCriticalPathProgressByDuration() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup
-                .getTheoreticalProgressByDurationForCriticalPathUntilNow();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask
+                .getTheoreticalProgressByDurationForCriticalPathUntilNow());
     }
 
     /* Time KPI: Margin with deadline */
