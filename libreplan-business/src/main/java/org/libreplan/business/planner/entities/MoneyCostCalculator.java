@@ -44,6 +44,7 @@ import org.springframework.stereotype.Component;
  * be reseted when needed with method {@code resetMoneyCostMap}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -57,7 +58,7 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
 
     private Map<OrderElement, MoneyCost> moneyCostTotalMap = new HashMap<OrderElement, MoneyCost>();
 
-    public class MoneyCost {
+    private class MoneyCost {
         private BigDecimal costOfHours;
         private BigDecimal costOfExpenses;
 
@@ -88,21 +89,24 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
     }
 
     @Override
-    public BigDecimal getMoneyCostTotal(OrderElement orderElement) {
+    public BigDecimal getTotalMoneyCost(OrderElement orderElement) {
         BigDecimal result = BigDecimal.ZERO.setScale(2);
-        BigDecimal moneyCostOfHours = getCostOfHours(orderElement);
+        BigDecimal moneyCostOfHours = getHoursMoneyCost(orderElement);
         if (moneyCostOfHours != null) {
             result = result.add(moneyCostOfHours);
         }
-        BigDecimal moneyCostOfExpenses = getCostOfExpenses(orderElement);
+        BigDecimal moneyCostOfExpenses = getExpensesMoneyCost(orderElement);
         if (moneyCostOfExpenses != null) {
-            result = result.add(moneyCostOfExpenses).setScale(2, RoundingMode.HALF_UP);
+            result = result.add(moneyCostOfExpenses);
+        }
+        if (result != null) {
+            result = result.setScale(2, RoundingMode.HALF_UP);
         }
         return result;
     }
 
     @Override
-    public BigDecimal getCostOfHours(OrderElement orderElement) {
+    public BigDecimal getHoursMoneyCost(OrderElement orderElement) {
         MoneyCost moneyCost = moneyCostTotalMap.get(orderElement);
         if (moneyCost != null) {
             BigDecimal result = moneyCost.getCostOfHours();
@@ -113,7 +117,7 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
 
         BigDecimal result = BigDecimal.ZERO.setScale(2);
         for (OrderElement each : orderElement.getChildren()) {
-            result = result.add(getCostOfHours(each));
+            result = result.add(getHoursMoneyCost(each));
         }
 
         result = result.add(getMoneyCostFromOwnWorkReportLines(orderElement))
@@ -169,7 +173,7 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
     }
 
     @Override
-    public BigDecimal getCostOfExpenses(OrderElement orderElement) {
+    public BigDecimal getExpensesMoneyCost(OrderElement orderElement) {
         MoneyCost moneyCost = moneyCostTotalMap.get(orderElement);
         if (moneyCost != null) {
             BigDecimal result = moneyCost.getCostOfExpenses();

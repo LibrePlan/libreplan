@@ -242,7 +242,7 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
         if (orderElement == null) {
             return BigDecimal.ZERO;
         }
-        return moneyCostCalculator.getMoneyCostTotal(orderElement);
+        return moneyCostCalculator.getTotalMoneyCost(orderElement);
     }
 
     @Override
@@ -267,7 +267,7 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
         if (orderElement == null) {
             return BigDecimal.ZERO.setScale(2);
         }
-        return moneyCostCalculator.getCostOfExpenses(orderElement);
+        return moneyCostCalculator.getExpensesMoneyCost(orderElement);
     }
 
     @Override
@@ -276,7 +276,7 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
         if (orderElement == null) {
             return BigDecimal.ZERO.setScale(2);
         }
-        return moneyCostCalculator.getCostOfHours(orderElement);
+        return moneyCostCalculator.getHoursMoneyCost(orderElement);
     }
 
     @Override
@@ -286,7 +286,7 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
             return BigDecimal.ZERO;
         }
         return MoneyCostCalculator.getMoneyCostProportion(
-                moneyCostCalculator.getMoneyCostTotal(orderElement), orderElement.getBudget())
+                moneyCostCalculator.getTotalMoneyCost(orderElement), orderElement.getBudget())
                 .multiply(
                 new BigDecimal(100));
     }

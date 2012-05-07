@@ -2,6 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="orderCostsPerResource">
 	<reportFont name="FreeSans" isDefault="true" fontName="FreeSans" size="9"/>
 	<subDataset name="dataset1"/>
+	<parameter name="currencySymbol" class="java.lang.String"/>
 	<field name="date" class="java.util.Date"/>
 	<field name="value" class="java.math.BigDecimal"/>
 	<field name="concept" class="java.lang.String"/>
@@ -31,10 +32,10 @@
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.task}]]></textFieldExpression>
 				</textField>
-				<textField evaluationTime="Report" pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+				<textField evaluationTime="Report" isBlankWhenNull="true">
 					<reportElement x="422" y="0" width="110" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumValuePerTask}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumValuePerTask}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -130,10 +131,10 @@
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{resource}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement x="434" y="0" width="98" height="14"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{value}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{value}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

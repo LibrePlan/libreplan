@@ -478,6 +478,7 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
             });
 
             dbValue.setConstraint(checkConstraintExpenseValue());
+            dbValue.setFormat(Util.getMoneyFormat());
             row.appendChild(dbValue);
         }
 
@@ -624,6 +625,10 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
     @Override
     protected String getPluralEntityType() {
         return _("Expense sheets");
+    }
+
+    public String getCurrencySymbol() {
+        return Util.getCurrencySymbol();
     }
 
 }

@@ -37,7 +37,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -658,29 +657,37 @@ public class TaskElementAdapter {
 
                             @Override
                             public BigDecimal execute() {
-                                return moneyCostCalculator.getMoneyCostTotal(taskElement
+                                return moneyCostCalculator.getTotalMoneyCost(taskElement
                                         .getOrderElement());
                             }
                         });
             }
 
-            private Map<String, BigDecimal> getMoneyItemizedCost() {
+            private BigDecimal getHoursMoneyCost() {
                 if ((taskElement == null) || (taskElement.getOrderElement() == null)) {
-                    Map<String, BigDecimal> costs = new HashMap<String, BigDecimal>();
-                    costs.put("costHours", BigDecimal.ZERO);
-                    costs.put("costExpenses", BigDecimal.ZERO);
-                    return costs;
+                    return BigDecimal.ZERO;
                 }
+
                 return transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Map<String, BigDecimal>>() {
+                        .runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
                             @Override
-                            public Map<String, BigDecimal> execute() {
-                                Map<String, BigDecimal> costs = new HashMap<String, BigDecimal>();
-                                costs.put("costHours", moneyCostCalculator
-                                        .getCostOfHours(taskElement.getOrderElement()));
-                                costs.put("costExpenses", moneyCostCalculator
-                                        .getCostOfExpenses(taskElement.getOrderElement()));
-                                return costs;
+                            public BigDecimal execute() {
+                                return moneyCostCalculator.getHoursMoneyCost(taskElement.getOrderElement());
+                            }
+                        });
+            }
+
+            private BigDecimal getExpensesMoneyCost() {
+                if ((taskElement == null) || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
+
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
+                            @Override
+                            public BigDecimal execute() {
+                                return moneyCostCalculator.getExpensesMoneyCost(taskElement
+                                        .getOrderElement());
                             }
                         });
             }
@@ -1057,15 +1064,16 @@ public class TaskElementAdapter {
                 } else {
                     String budget = Util.addCurrencySymbol(getBudget());
                     String moneyCost = Util.addCurrencySymbol(getMoneyCost());
-                    Map<String, BigDecimal> mapCosts = getMoneyItemizedCost();
-                    String costHours = Util.addCurrencySymbol(mapCosts.get("costHours"));
-                    String costExpenses = Util.addCurrencySymbol(mapCosts.get("costExpenses"));
+
+                    String costHours = Util.addCurrencySymbol(getHoursMoneyCost());
+                    String costExpenses = Util.addCurrencySymbol(getExpensesMoneyCost());
                     result.append(
                             _("Budget: {0}, Consumed: {1} ({2}%)", budget, moneyCost,
                                     getMoneyCostBarPercentage().multiply(new BigDecimal(100))))
                             .append("<br/>");
                     result.append(
-                            _("cost because of worked hours: {0}€, cost because of expenses: {1}€",
+_(
+                            "cost because of worked hours: {0}, cost because of expenses: {1}",
                             costHours, costExpenses));
                 }
 

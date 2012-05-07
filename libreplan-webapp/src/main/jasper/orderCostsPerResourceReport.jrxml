@@ -142,6 +142,9 @@
 				</textField>
 				<subreport>
 					<reportElement key="subreport" positionType="Float" x="2" y="31" width="490" height="47"/>
+                    <subreportParameter name="currencySymbol">
+                        <subreportParameterExpression><![CDATA[$P{currencySymbol}]]></subreportParameterExpression>
+                    </subreportParameter>
 					<dataSourceExpression><![CDATA[$F{listWorkReportLineDTO}]]></dataSourceExpression>
 					<returnValue subreportVariable="sumCostsPerTask" toVariable="sumTotalCostsByHours" calculation="Sum"/>
 					<returnValue subreportVariable="sumHoursPerTask" toVariable="sumTotalHours" calculation="Sum"/>
@@ -151,6 +154,9 @@
 					<reportElement key="subreport" positionType="Float" x="2" y="78" width="490" height="47">
 						<printWhenExpression><![CDATA[$F{listExpensesDTO} != null]]></printWhenExpression>
 					</reportElement>
+                    <subreportParameter name="currencySymbol">
+                        <subreportParameterExpression><![CDATA[$P{currencySymbol}]]></subreportParameterExpression>
+				    </subreportParameter>
 					<dataSourceExpression><![CDATA[$F{listExpensesDTO}]]></dataSourceExpression>
 					<returnValue subreportVariable="sumValuePerTask" toVariable="sumTotalExpenses" calculation="Sum"/>
 					<subreportExpression class="java.lang.String"><![CDATA[$P{subReportES}]]></subreportExpression>

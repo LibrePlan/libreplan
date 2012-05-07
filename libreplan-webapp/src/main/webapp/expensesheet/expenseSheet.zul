@@ -64,7 +64,10 @@
                     <row self="@{each='expensesheet'}" value="@{expensesheet}" onClick="controller.goToEditForm(self.value);">
                         <label value="@{expensesheet.firstExpense, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}" />
                         <label value="@{expensesheet.lastExpense, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}"/>
-                        <label value="@{expensesheet.total}" />
+                        <hbox>
+                            <label value="@{expensesheet.total}" />
+                            <label value="@{controller.currencySymbol}" />
+                        </hbox>
                         <label value="@{expensesheet.code}" />
                         <label value="@{expensesheet.description}" />
                         <hbox>
