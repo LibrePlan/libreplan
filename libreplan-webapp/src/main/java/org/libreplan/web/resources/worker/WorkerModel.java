@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -59,6 +59,8 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.VirtualWorker;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.web.calendars.IBaseCalendarModel;
 import org.libreplan.web.common.IntegrationEntityModel;
@@ -73,9 +75,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for worker <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -126,6 +130,9 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
 
     @Autowired
     private IScenarioManager scenarioManager;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     @Autowired
     public WorkerModel(IResourceDAO resourceDAO, ICriterionDAO criterionDAO) {
@@ -224,6 +231,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             this.worker = (Worker) resourceDAO.find(worker.getId());
             forceLoadSatisfactions(this.worker);
             forceLoadCalendar(this.worker);
+            forceLoadUser(this.worker);
             localizationsAssigner = new MultipleCriterionActiveAssigner(
                     criterionDAO, this.worker,
                     PredefinedCriterionTypes.LOCATION);
@@ -255,6 +263,12 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             }
         }
         baseCalendar.getExceptions().size();
+    }
+
+    private void forceLoadUser(Worker worker) {
+        if (worker.getUser() != null) {
+            worker.getUser().getLoginName();
+        }
     }
 
     @Override
@@ -612,6 +626,29 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     public void removeCalendar() {
         calendarToRemove = worker.getCalendar();
         worker.setCalendar(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> getPossibleUsersToBound() {
+        List<User> users = new ArrayList<User>();
+        users.addAll(userDAO.getUnboundUsers(worker));
+        return users;
+    }
+
+    @Override
+    public User getBoundUser() {
+        if (worker != null) {
+            return worker.getUser();
+        }
+        return null;
+    }
+
+    @Override
+    public void setBoundUser(User user) {
+        if (worker != null) {
+            worker.setUser(user);
+        }
     }
 
 }

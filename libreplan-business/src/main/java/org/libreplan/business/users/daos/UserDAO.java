@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,12 +21,14 @@
 
 package org.libreplan.business.users.daos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.User;
@@ -40,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Repository
 public class UserDAO extends GenericDAOHibernate<User, Long>
@@ -127,4 +130,23 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
                 .add(Restrictions.eq("user", user)).list();
         return orderAuthorizations;
     }
+
+    @Override
+    public List<User> getUnboundUsers(Worker worker) {
+        List<User> result = new ArrayList<User>();
+        for (User user : getUsersOrderByLoginame()) {
+            if ((user.getWorker() == null)
+                    || (worker != null && !worker.isNewObject() && worker
+                            .getId().equals(user.getWorker().getId()))) {
+                result.add(user);
+            }
+        }
+        return result;
+    }
+
+    private List<User> getUsersOrderByLoginame() {
+        return getSession().createCriteria(User.class).addOrder(
+                org.hibernate.criterion.Order.asc("loginName")).list();
+    }
+
 }

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,6 +39,8 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.resources.daos.IWorkerDAO;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.daos.IProfileDAO;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.Profile;
@@ -55,6 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
@@ -70,6 +73,9 @@ public class UserDAOTest {
 
     @Autowired
     IProfileDAO profileDAO;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
 
     @Test
     public void testBasicSave() throws InstanceNotFoundException {
@@ -283,4 +289,35 @@ public class UserDAOTest {
         Set<UserRole> roles = new HashSet<UserRole>();
         return Profile.create(profileName, roles);
     }
+
+    @Test
+    public void testUnoundUsers1() {
+        int previous = userDAO.list(User.class).size();
+        userDAO.save(createUser(getUniqueName()));
+
+        List<User> unboundUsers = userDAO.getUnboundUsers(null);
+        assertEquals(previous + 1, unboundUsers.size());
+    }
+
+    private Worker givenStoredWorkerRelatedTo(User user) {
+        Worker worker = Worker.create();
+        worker.setFirstName("Name " + UUID.randomUUID());
+        worker.setSurname("Surname " + UUID.randomUUID());
+        worker.setNif("ID " + UUID.randomUUID());
+        worker.setUser(user);
+        workerDAO.save(worker);
+
+        return worker;
+    }
+
+    @Test
+    public void testUnoundUsers2() {
+        int previous = userDAO.list(User.class).size();
+        User user = createUser(getUniqueName());
+        user.setWorker(givenStoredWorkerRelatedTo(user));
+
+        List<User> unboundUsers = userDAO.getUnboundUsers(null);
+        assertEquals(previous, unboundUsers.size());
+    }
+
 }

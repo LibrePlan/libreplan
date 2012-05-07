@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,6 +38,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.ResourceType;
 import org.libreplan.business.resources.entities.VirtualWorker;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.calendars.BaseCalendarEditionController;
 import org.libreplan.web.calendars.IBaseCalendarModel;
 import org.libreplan.web.common.BaseCRUDController.CRUDControllerState;
@@ -71,6 +72,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -82,8 +84,10 @@ import org.zkoss.zul.api.Window;
 
 /**
  * Controller for {@link Worker} resource <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class WorkerCRUDController extends GenericForwardComposer implements
         IWorkerCRUDControllerEntryPoints {
@@ -894,6 +898,31 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             }
             ((Caption) editWindow.getFellow("caption")).setLabel(title);
         }
+    }
+
+    public List<User> getPossibleUsersToBound() {
+        return workerModel.getPossibleUsersToBound();
+    }
+
+    public User getBoundUser() {
+        return workerModel.getBoundUser();
+    }
+
+    public void setBoundUser(User user) {
+        workerModel.setBoundUser(user);
+    }
+
+    public ListitemRenderer getUsersRenderer() {
+        return new ListitemRenderer() {
+
+            @Override
+            public void render(Listitem item, Object data) throws Exception {
+                User user = (User) data;
+
+                item.setLabel(user.getLoginName());
+                item.setValue(user);
+            }
+        };
     }
 
 }
