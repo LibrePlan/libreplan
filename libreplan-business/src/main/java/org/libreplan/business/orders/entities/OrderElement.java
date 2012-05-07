@@ -295,10 +295,10 @@ public abstract class OrderElement extends IntegrationEntity implements
                 //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
                 removeTaskSource(result);
             }
-            if(getOnDBTaskSource() != getTaskSource()) {
+            if(currentTaskSourceIsNotTheSame()) {
                 //this element was unscheduled and then scheduled again. Its TaskSource has
                 //been recreated but we have to remove the old one.
-                if(getParent().getTaskSource() == getParent().getOnDBTaskSource()) {
+                if(!getParent().currentTaskSourceIsNotTheSame()) {
                     //we only remove the TaskSource if the parent is not in the same situation.
                     //In case the parent is in the same situation, it will remove the related
                     //TaskSources in children tasks.
@@ -312,7 +312,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (wasASchedulingPoint()) {
                 result.add(taskSourceRemoval());
             }
-            if(getOnDBTaskSource() != getTaskSource()) {
+            if(currentTaskSourceIsNotTheSame()) {
                 //all the children of this element were unscheduled and then scheduled again,
                 //its TaskSource has been recreated but we have to remove the old one.
                 result.add(taskSourceRemoval());
@@ -342,6 +342,10 @@ public abstract class OrderElement extends IntegrationEntity implements
         SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
         return SchedulingState.Type.SCHEDULING_POINT == currentVersionOnDB
                 .getSchedulingStateType();
+    }
+
+    protected boolean currentTaskSourceIsNotTheSame() {
+        return getOnDBTaskSource() != getTaskSource();
     }
 
     private List<TaskSourceSynchronization> childrenSynchronizations() {
@@ -426,7 +430,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
-    protected TaskSource getOnDBTaskSource() {
+    private TaskSource getOnDBTaskSource() {
         SchedulingDataForVersion schedulingDataForVersion = getCurrentVersionOnDB();
         return schedulingDataForVersion.getTaskSource();
     }
