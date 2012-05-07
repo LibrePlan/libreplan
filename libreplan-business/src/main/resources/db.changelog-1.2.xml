@@ -451,4 +451,16 @@
         <dropColumn tableName="order_element_template" columnName="code" />
     </changeSet>
 
+    <changeSet id="add-relationship-between-worker-and-user" author="mrego">
+        <comment>Add column and constraints needed for relationship between worker and user</comment>
+        <addColumn tableName="worker">
+            <column name="user_id" type="BIGINT" />
+        </addColumn>
+        <addUniqueConstraint tableName="worker" columnNames="user_id"
+            constraintName="worker_user_id_key" />
+        <addForeignKeyConstraint constraintName="worker_user_fkey"
+            baseTableName="worker" baseColumnNames="user_id"
+            referencedTableName="user_table" referencedColumnNames="id" />
+    </changeSet>
+
 </databaseChangeLog>

@@ -59,6 +59,10 @@
       <property name="surname"/>
       <property name="nif"/>
 
+        <many-to-one name="user" cascade="save-update"
+            class="org.libreplan.business.users.entities.User"
+            column="user_id" unique="true" />
+
         <joined-subclass name="org.libreplan.business.resources.entities.VirtualWorker" table="virtual_worker">
             <key column="virtual_worker_id"/>
             <property name="observations"/>

@@ -59,6 +59,10 @@
         </set>
         <many-to-one name="lastConnectedScenario"
             class="org.libreplan.business.scenarios.entities.Scenario" />
+
+        <one-to-one name="worker" property-ref="user"
+            class="org.libreplan.business.resources.entities.Worker" />
+
     </class>
 
     <class name="Profile" table="profile_table">

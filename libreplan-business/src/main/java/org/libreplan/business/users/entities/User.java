@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +30,7 @@ import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -41,7 +42,7 @@ import org.libreplan.business.users.daos.IUserDAO;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
- *
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class User extends BaseEntity implements IHumanIdentifiable{
 
@@ -73,6 +74,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     private String firstName = "";
 
     private String lastName = "";
+
+    private Worker worker;
 
     /**
      * Necessary for Hibernate. Please, do not call it.
@@ -290,6 +293,14 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         if (isLibrePlanUser())
             return "Database";
         return "LDAP";
+    }
+
+    public Worker getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
     }
 
 }
