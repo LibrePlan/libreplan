@@ -27,6 +27,7 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 
 /**
@@ -212,6 +213,30 @@ public class Worker extends Resource {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @AssertTrue(message = "User already bound to other worker")
+    public boolean checkUserNotBoundToOtherWorker() {
+        if (user == null || user.isNewObject()) {
+            return true;
+        }
+
+        IUserDAO userDAO = Registry.getUserDAO();
+        User foundUser = userDAO.findOnAnotherTransaction(user.getId());
+        if (foundUser == null) {
+            return true;
+        }
+
+        Worker worker = foundUser.getWorker();
+        if (worker == null) {
+            return true;
+        }
+
+        if (getId() == null) {
+            return false;
+        }
+
+        return getId().equals(worker.getId());
     }
 
 }

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,6 +46,7 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.daos.ICriterionTypeDAO;
 import org.libreplan.business.resources.daos.IResourceDAO;
@@ -56,6 +57,8 @@ import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.Interval;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -90,6 +93,9 @@ public class ResourceDAOTest {
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     @Test
     public void saveResourceWithCalendar() throws InstanceNotFoundException {
@@ -231,6 +237,46 @@ public class ResourceDAOTest {
                 .byCriteria(criterions).execute();
         assertNotNull(result);
         assertThat(result.size(), not(equalTo(1)));
+    }
+
+    private User givenStoredUser() {
+        return transactionService
+                .runOnAnotherTransaction(new IOnTransaction<User>() {
+
+                    @Override
+                    public User execute() {
+                        User user = User.create("login" + UUID.randomUUID(),
+                                "password", null);
+                        userDAO.save(user);
+                        user.dontPoseAsTransientObjectAnymore();
+                        return user;
+                    }
+                });
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testWorkerBoundToUserAlreadyBound() {
+        final User user = givenStoredUser();
+
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                Worker worker1 = givenValidWorker();
+                worker1.setUser(user);
+                resourceDAO.save(worker1);
+                return null;
+            }
+        });
+
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                Worker worker2 = givenValidWorker();
+                worker2.setUser(user);
+                resourceDAO.save(worker2);
+                return null;
+            }
+        });
     }
 
 }

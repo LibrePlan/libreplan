@@ -92,4 +92,6 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
      */
     List<User> getUnboundUsers(Worker worker);
 
+    User findOnAnotherTransaction(Long id);
+
 }

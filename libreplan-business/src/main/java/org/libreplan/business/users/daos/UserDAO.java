@@ -149,4 +149,14 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
                 org.hibernate.criterion.Order.asc("loginName")).list();
     }
 
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public User findOnAnotherTransaction(Long id) {
+        try {
+            return find(id);
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
+    }
+
 }
