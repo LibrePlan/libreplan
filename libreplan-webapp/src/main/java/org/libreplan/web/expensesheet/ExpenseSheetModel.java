@@ -40,7 +40,6 @@ import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLineComparator;
 import org.libreplan.business.orders.daos.IOrderDAO;
-import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.daos.ISumExpensesDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -69,9 +68,6 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    @Autowired
-    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private IExpenseSheetDAO expenseSheetDAO;

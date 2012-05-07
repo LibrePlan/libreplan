@@ -43,6 +43,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.reports.dtos.CostExpenseSheetDTO;
 import org.libreplan.business.reports.dtos.OrderCostsPerResourceDTO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.entities.Scenario;
@@ -57,6 +58,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 /**
  * Dao for {@link Order}
  *
@@ -161,6 +163,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
                 // Attach ordername value
                 each.setOrderName(order.getName());
+                each.setOrderCode(order.getCode());
                 // Attach calculated pricePerHour
                 BigDecimal pricePerHour = CostCategoryDAO
                         .getPriceByResourceDateAndHourType(each.getWorker(),
@@ -421,6 +424,58 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         criteria.add(Restrictions.not(Restrictions.eq("state", OrderStatusEnum.CANCELLED)));
         criteria.add(Restrictions.not(Restrictions.eq("state", OrderStatusEnum.STORED)));
         return criteria.list();
+    }
+
+    @Override
+    public List<CostExpenseSheetDTO> getCostExpenseSheet(List<Order> orders, Date startingDate,
+            Date endingDate, List<Criterion> criterions) {
+
+        String strQuery = "SELECT new org.libreplan.business.reports.dtos.CostExpenseSheetDTO(expense) "
+                + "FROM OrderElement orderElement, ExpenseSheetLine expense "
+                + "LEFT OUTER JOIN expense.orderElement exp_ord "
+                + "WHERE orderElement.id = exp_ord.id ";
+
+        if (!orders.isEmpty()) {
+            strQuery += "AND orderElement.parent IN (:orders) ";
+        }
+        if (startingDate != null && endingDate != null) {
+            strQuery += "AND wrl.date BETWEEN :startingDate AND :endingDate ";
+        }
+        if (startingDate != null && endingDate == null) {
+            strQuery += "AND wrl.date >= :startingDate ";
+        }
+        if (startingDate == null && endingDate != null) {
+            strQuery += "AND wrl.date <= :endingDate ";
+        }
+
+        // Order by date
+        strQuery += "ORDER BY expense.date";
+
+        Query query = getSession().createQuery(strQuery);
+
+        // Set parameters
+        if (!orders.isEmpty()) {
+            query.setParameterList("orders", orders);
+        }
+        if (startingDate != null) {
+            query.setParameter("startingDate", startingDate);
+        }
+        if (endingDate != null) {
+            query.setParameter("endingDate", endingDate);
+        }
+
+        List<CostExpenseSheetDTO> list = query.list();
+
+        List<CostExpenseSheetDTO> filteredList = new ArrayList<CostExpenseSheetDTO>();
+        for (CostExpenseSheetDTO each : list) {
+            Order order = loadOrderAvoidingProxyFor(each.getOrderElement());
+            // Apply filtering
+            if (matchFilterCriterion(each.getOrderElement(), criterions)) {
+                each.setOrder(order);
+                filteredList.add(each);
+            }
+        }
+        return filteredList;
     }
 
 }

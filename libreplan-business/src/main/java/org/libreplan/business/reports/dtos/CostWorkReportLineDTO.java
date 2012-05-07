@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2012 WirelessGalcia S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,16 +25,21 @@ import java.util.Set;
 
 import org.joda.time.LocalTime;
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
 
-
 /**
  * Note: this class has a natural ordering that is inconsistent with equals.
  */
-public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implements
-        Comparable<OrderCostsPerResourceDTO> {
+
+/**
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
+public class CostWorkReportLineDTO implements Comparable<CostWorkReportLineDTO> {
+
+    private OrderElement orderElement;
 
     private String workerName;
 
@@ -47,10 +50,6 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
     private LocalTime clockFinish;
 
     private BigDecimal numHours;
-
-    private String orderElementName;
-
-    private String orderElementCode;
 
     private String descriptionValues;
 
@@ -66,28 +65,15 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
     // Attached outside the DTO
     private BigDecimal costPerHour;
 
-    // Attached outside the DTO
-    private String orderName;
-
-    // Attached outside the DTO
-    private String orderCode;
-
     private Worker worker;
 
     private Boolean costTypeHours = Boolean.TRUE;
 
-    /*
-     * type net.sf.jasperreports.engine.JRDataSource;
-     */
-    private Object listExpensesDTO;
+    public CostWorkReportLineDTO(Worker worker, WorkReportLine workReportLine) {
 
-    public OrderCostsPerResourceDTO(Worker worker,
-            WorkReportLine workReportLine) {
-        super(workReportLine.getOrderElement());
         this.workerName = worker.getName();
         if (workReportLine.getLocalDate() != null) {
-            this.date = workReportLine.getLocalDate().toDateTimeAtStartOfDay()
-                .toDate();
+            this.date = workReportLine.getLocalDate().toDateTimeAtStartOfDay().toDate();
         }
         this.clockStart = workReportLine.getClockStart();
         this.clockFinish = workReportLine.getClockFinish();
@@ -96,15 +82,25 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
         this.labels = labelsAsString(workReportLine.getLabels());
         this.hoursType = workReportLine.getTypeOfWorkHours().getName();
         this.hoursTypeCode = workReportLine.getTypeOfWorkHours().getCode();
-
-        this.orderElementCode = workReportLine.getOrderElement().getCode();
-        this.orderElementName = workReportLine.getOrderElement().getName();
         this.worker = worker;
+    }
+
+    public CostWorkReportLineDTO(OrderCostsPerResourceDTO dto) {
+        this.workerName = dto.getWorkerName();
+        this.date = dto.getDate();
+        this.clockStart = dto.getClockStart();
+        this.clockFinish = dto.getClockFinish();
+        this.numHours = dto.getNumHours();
+        this.descriptionValues = dto.getDescriptionValues();
+        this.labels = dto.getLabels();
+        this.hoursType = dto.getHoursType();
+        this.hoursTypeCode = dto.getHoursTypeCode();
+        this.worker = dto.getWorker();
     }
 
     private String labelsAsString(Set<Label> labels) {
         String result = "";
-        for (Label label: labels) {
+        for (Label label : labels) {
             result = label.getType().getName() + ": " + label.getName() + ", ";
         }
         return (result.length() > 0) ? result.substring(0, result.length() - 2) : result;
@@ -112,7 +108,7 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
 
     private String descriptionValuesAsString(Set<DescriptionValue> descriptionValues) {
         String result = "";
-        for (DescriptionValue descriptionValue: descriptionValues) {
+        for (DescriptionValue descriptionValue : descriptionValues) {
             result = descriptionValue.getFieldName() + ": " + descriptionValue.getValue() + ", ";
         }
         return (result.length() > 0) ? result.substring(0, result.length() - 2) : result;
@@ -158,14 +154,6 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
         this.date = date;
     }
 
-    public String getOrderElementCode() {
-        return orderElementCode;
-    }
-
-    public void setOrderElementCode(String orderElementCode) {
-        this.orderElementCode = orderElementCode;
-    }
-
     public String getDescriptionValues() {
         return descriptionValues;
     }
@@ -180,14 +168,6 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
 
     public void setLabels(String labels) {
         this.labels = labels;
-    }
-
-    public String getOrderName() {
-        return orderName;
-    }
-
-    public void setOrderName(String orderName) {
-        this.orderName = orderName;
     }
 
     public String getHoursType() {
@@ -222,11 +202,9 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
         this.worker = worker;
     }
 
-    public int compareTo(OrderCostsPerResourceDTO o) {
-        String comparator = this.orderName + this.orderElementCode
-                + this.workerName;
-        int result = comparator.compareToIgnoreCase(o.orderName
-                + o.getOrderElementCode() + o.workerName);
+    public int compareTo(CostWorkReportLineDTO o) {
+        String comparator = this.workerName;
+        int result = comparator.compareToIgnoreCase(o.workerName);
         if (result == 0) {
             if ((this.date != null) && (o.getDate() != null)) {
                 if (this.date.compareTo(o.getDate()) == 0) {
@@ -248,22 +226,6 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
         return hoursTypeCode;
     }
 
-    public void setOrderElementName(String orderElementName) {
-        this.orderElementName = orderElementName;
-    }
-
-    public String getOrderElementName() {
-        return orderElementName;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
     public void setCostTypeHours(Boolean costTypeHours) {
         this.costTypeHours = costTypeHours;
     }
@@ -272,12 +234,12 @@ public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implement
         return costTypeHours;
     }
 
-    public void setListExpensesDTO(Object listExpensesDTO) {
-        this.listExpensesDTO = listExpensesDTO;
+    public void setOrderElement(OrderElement orderElement) {
+        this.orderElement = orderElement;
     }
 
-    public Object getListExpensesDTO() {
-        return listExpensesDTO;
+    public OrderElement getOrderElement() {
+        return orderElement;
     }
 
 }

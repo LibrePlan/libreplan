@@ -88,7 +88,8 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         result.put("endingDate", getEndingDate());
         result.put("criteria", getParameterCriterions());
         result.put("labels", getParameterLabels());
-
+        result.put("subReportWRL", "costWorkReportLinesReport.jasper");
+        result.put("subReportES", "costExpenseSheetLinesReport.jasper");
         return result;
     }
 
