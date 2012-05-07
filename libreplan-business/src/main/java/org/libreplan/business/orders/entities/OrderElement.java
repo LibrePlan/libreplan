@@ -300,13 +300,23 @@ public abstract class OrderElement extends IntegrationEntity implements
             if(getOnDBTaskSource() != getTaskSource()) {
                 //this element was unscheduled and then scheduled again. Its TaskSource has
                 //been recreated but we have to remove the old one.
-                removeTaskSource(result);
+                if(getParent().getTaskSource() == getParent().getOnDBTaskSource()) {
+                    //we only remove the TaskSource if the parent is not in the same situation.
+                    //In case the parent is in the same situation, it will remove the related
+                    //TaskSources in children tasks.
+                    removeTaskSource(result);
+                }
             }
             result
                     .addAll(synchronizationForSchedulingPoint(schedulingDataForVersion));
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
             removeUnscheduled(result);
             if (wasASchedulingPoint()) {
+                result.add(taskSourceRemoval());
+            }
+            if(getOnDBTaskSource() != getTaskSource()) {
+                //all the children of this element were unscheduled and then scheduled again,
+                //its TaskSource has been recreated but we have to remove the old one.
                 result.add(taskSourceRemoval());
             }
             result
@@ -417,7 +427,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
-    private TaskSource getOnDBTaskSource() {
+    protected TaskSource getOnDBTaskSource() {
         SchedulingDataForVersion schedulingDataForVersion = getCurrentVersionOnDB();
         return schedulingDataForVersion.getTaskSource();
     }
