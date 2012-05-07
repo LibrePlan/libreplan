@@ -24,6 +24,7 @@ package org.libreplan.web.orders;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.business.workingday.EffortDuration;
@@ -50,5 +51,17 @@ public interface IAssignedHoursToOrderElementModel{
     BigDecimal getMoneyCost();
 
     BigDecimal getMoneyCostPercentage();
+
+    public String getTotalDirectExpenses();
+
+    public String getTotalIndirectExpenses();
+
+    public List<ExpenseSheetLine> getExpenseSheetLines();
+
+    public String getTotalExpenses();
+
+    public BigDecimal getCostOfExpenses();
+
+    public BigDecimal getCostOfHours();
 
 }

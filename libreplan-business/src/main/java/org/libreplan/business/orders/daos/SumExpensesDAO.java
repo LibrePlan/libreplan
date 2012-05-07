@@ -32,12 +32,14 @@ import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumExpenses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Contract for {@link SumExpensesDAO}
@@ -197,4 +199,40 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
                 .add(Restrictions.eq("orderElement", orderElement)).uniqueResult();
     }
 
+    @Override
+    @Transactional
+    public void recalculateSumExpenses(Long orderId) {
+        try {
+            Order order = orderDAO.find(orderId);
+            resetMapSumExpenses();
+            resetSumExpenses(order);
+            calculateDirectExpenses(order);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void resetSumExpenses(OrderElement orderElement) {
+        SumExpenses sumExpenses = getByOrderElement(orderElement);
+        if (sumExpenses == null) {
+            sumExpenses = SumExpenses.create(orderElement);
+        }
+        sumExpenses.reset();
+
+        for (OrderElement each : orderElement.getChildren()) {
+            resetSumExpenses(each);
+        }
+    }
+
+    private void calculateDirectExpenses(OrderElement orderElement) {
+        for (OrderElement each : orderElement.getChildren()) {
+            calculateDirectExpenses(each);
+        }
+
+        BigDecimal value = BigDecimal.ZERO;
+        for (ExpenseSheetLine line : expenseSheetLineDAO.findByOrderElement(orderElement)) {
+            value = value.add(line.getValue());
+        }
+        addDirectExpenses(orderElement, value);
+    }
 }

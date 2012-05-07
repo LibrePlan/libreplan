@@ -48,12 +48,18 @@ public interface IMoneyCostCalculator {
      *            {@link OrderElement} to calculate the money cost
      * @return Money cost of the order element and all its children
      */
-    BigDecimal getMoneyCost(OrderElement orderElement);
+    // BigDecimal getMoneyCost(OrderElement orderElement);
 
     /**
      * Resets the map used to save cached values of money cost for each
      * {@link OrderElement}
      */
     void resetMoneyCostMap();
+
+    BigDecimal getCostOfHours(OrderElement orderElement);
+
+    BigDecimal getCostOfExpenses(OrderElement orderElement);
+
+    BigDecimal getMoneyCostTotal(OrderElement orderElement);
 
 }

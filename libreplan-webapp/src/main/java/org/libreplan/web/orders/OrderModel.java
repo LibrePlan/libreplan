@@ -853,6 +853,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public boolean hasImputedExpenseSheets(OrderElement order) {
+        if (order.isNewObject()) {
+            return false;
+        }
         try {
             return orderElementDAO.hasImputedExpenseSheet(order.getId());
         } catch (InstanceNotFoundException e) {

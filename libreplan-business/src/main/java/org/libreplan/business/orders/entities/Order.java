@@ -117,6 +117,8 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private boolean neededToRecalculateSumChargedEfforts = false;
 
+    private boolean neededToRecalculateSumExpenses = false;
+
     public static class CurrentVersionInfo {
 
         private final OrderVersion orderVersion;
@@ -582,6 +584,14 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public boolean isNeededToRecalculateSumChargedEfforts() {
         return neededToRecalculateSumChargedEfforts;
+    }
+
+    public void markAsNeededToRecalculateSumExpenses() {
+        neededToRecalculateSumExpenses = true;
+    }
+
+    public boolean isNeededToRecalculateSumExpenses() {
+        return neededToRecalculateSumExpenses;
     }
 
 }

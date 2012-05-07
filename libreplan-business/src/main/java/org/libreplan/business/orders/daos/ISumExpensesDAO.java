@@ -64,4 +64,11 @@ public interface ISumExpensesDAO extends IGenericDAO<SumExpenses, Long> {
 
     SumExpenses findByOrderElement(OrderElement orderElement);
 
+    /**
+    * Recalculates all the {@link SumExpenses} objets of an {@link Order}.
+    * This is needed when some elements are moved inside the {@link Order}.
+    *
+    * @param orderId
+    */
+    void recalculateSumExpenses(Long orderId);
 }

@@ -24,6 +24,7 @@ package org.libreplan.web.orders;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.web.common.Util;
@@ -73,6 +74,18 @@ public class AssignedHoursToOrderElementController extends
                 .toFormattedString();
     }
 
+    public String getTotalDirectExpenses() {
+        return assignedHoursToOrderElementModel.getTotalDirectExpenses();
+    }
+
+    public String getTotalIndirectExpenses() {
+        return assignedHoursToOrderElementModel.getTotalIndirectExpenses();
+    }
+
+    public String getTotalExpenses() {
+        return assignedHoursToOrderElementModel.getTotalExpenses();
+    }
+
     public String getEffortChildren() {
         return assignedHoursToOrderElementModel
                 .getAssignedDirectEffortChildren().toFormattedString();
@@ -93,6 +106,14 @@ public class AssignedHoursToOrderElementController extends
 
     public BigDecimal getMoneyCost() {
         return assignedHoursToOrderElementModel.getMoneyCost();
+    }
+
+    public BigDecimal getCostOfHours() {
+        return assignedHoursToOrderElementModel.getCostOfHours();
+    }
+
+    public BigDecimal getCostOfExpenses() {
+        return assignedHoursToOrderElementModel.getCostOfExpenses();
     }
 
     public BigDecimal getMoneyCostPercentage() {
@@ -157,6 +178,10 @@ public class AssignedHoursToOrderElementController extends
             moneyCostProgressBar.setValue(moneyCostPercentage.intValue());
             exceedMoneyCostProgressBar.setVisible(false);
         }
+    }
+
+    public List<ExpenseSheetLine> getExpenseSheetLines() {
+        return assignedHoursToOrderElementModel.getExpenseSheetLines();
     }
 
 }

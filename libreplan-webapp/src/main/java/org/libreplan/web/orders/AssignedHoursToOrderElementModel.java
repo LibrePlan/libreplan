@@ -30,6 +30,9 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLineComparator;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.MoneyCostCalculator;
@@ -51,8 +54,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class AssignedHoursToOrderElementModel implements
-        IAssignedHoursToOrderElementModel {
+public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderElementModel {
+
+    @Autowired
+    private final IExpenseSheetLineDAO expenseSheetLineDAO;
 
     @Autowired
     private final IWorkReportLineDAO workReportLineDAO;
@@ -70,9 +75,12 @@ public class AssignedHoursToOrderElementModel implements
     private List<WorkReportLineDTO> listWRL;
 
     @Autowired
-    public AssignedHoursToOrderElementModel(IWorkReportLineDAO workReportLineDAO) {
+    public AssignedHoursToOrderElementModel(IWorkReportLineDAO workReportLineDAO,
+            IExpenseSheetLineDAO expenseSheetLineDAO) {
         Validate.notNull(workReportLineDAO);
+        Validate.notNull(expenseSheetLineDAO);
         this.workReportLineDAO = workReportLineDAO;
+        this.expenseSheetLineDAO = expenseSheetLineDAO;
         this.assignedDirectEffort = EffortDuration.zero();
     }
 
@@ -102,12 +110,12 @@ public class AssignedHoursToOrderElementModel implements
     private List<WorkReportLineDTO> sortByDate(List<WorkReportLineDTO> listWRL) {
         Collections.sort(listWRL, new Comparator<WorkReportLineDTO>() {
             public int compare(WorkReportLineDTO arg0, WorkReportLineDTO arg1) {
-            if (arg0.getDate() == null) {
-                return -1;
-            }
-            if (arg1.getDate() == null) {
-                return 1;
-            }
+                if (arg0.getDate() == null) {
+                    return -1;
+                }
+                if (arg1.getDate() == null) {
+                    return 1;
+                }
                 return arg0.getDate().compareTo(arg1.getDate());
             }
         });
@@ -160,6 +168,24 @@ public class AssignedHoursToOrderElementModel implements
             return EffortDuration.zero();
         }
         return this.orderElement.getSumChargedEffort().getTotalChargedEffort();
+    }
+
+    @Override
+    public String getTotalDirectExpenses() {
+        if ((orderElement != null) && (orderElement.getSumExpenses() != null)
+                && (orderElement.getSumExpenses().getTotalDirectExpenses() != null)) {
+            return orderElement.getSumExpenses().getTotalDirectExpenses().toPlainString();
+        }
+        return BigDecimal.ZERO.toPlainString();
+    }
+
+    @Override
+    public String getTotalIndirectExpenses() {
+        if ((orderElement != null) && (orderElement.getSumExpenses() != null)
+                && (orderElement.getSumExpenses().getTotalIndirectExpenses() != null)) {
+            return orderElement.getSumExpenses().getTotalIndirectExpenses().toPlainString();
+        }
+        return BigDecimal.ZERO.toPlainString();
     }
 
     @Override
@@ -216,7 +242,41 @@ public class AssignedHoursToOrderElementModel implements
         if (orderElement == null) {
             return BigDecimal.ZERO;
         }
-        return moneyCostCalculator.getMoneyCost(orderElement);
+        return moneyCostCalculator.getMoneyCostTotal(orderElement);
+    }
+
+    @Override
+    public String getTotalExpenses() {
+        if ((orderElement != null) && (orderElement.getSumExpenses() != null)) {
+            BigDecimal directExpenses = orderElement.getSumExpenses().getTotalDirectExpenses();
+            BigDecimal indirectExpenses = orderElement.getSumExpenses().getTotalIndirectExpenses();
+            BigDecimal total = BigDecimal.ZERO;
+            if (directExpenses != null) {
+                total = total.add(directExpenses);
+            }
+            if (indirectExpenses != null) {
+                total = total.add(indirectExpenses);
+            }
+            return total.toPlainString();
+        }
+        return BigDecimal.ZERO.toPlainString();
+    }
+
+    @Override
+    public BigDecimal getCostOfExpenses() {
+        if (orderElement == null) {
+            return BigDecimal.ZERO.setScale(2);
+        }
+        return moneyCostCalculator.getCostOfExpenses(orderElement);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getCostOfHours() {
+        if (orderElement == null) {
+            return BigDecimal.ZERO.setScale(2);
+        }
+        return moneyCostCalculator.getCostOfHours(orderElement);
     }
 
     @Override
@@ -226,8 +286,32 @@ public class AssignedHoursToOrderElementModel implements
             return BigDecimal.ZERO;
         }
         return MoneyCostCalculator.getMoneyCostProportion(
-                moneyCostCalculator.getMoneyCost(orderElement),
-                orderElement.getBudget()).multiply(new BigDecimal(100));
+                moneyCostCalculator.getMoneyCostTotal(orderElement), orderElement.getBudget())
+                .multiply(
+                new BigDecimal(100));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ExpenseSheetLine> getExpenseSheetLines() {
+        if (orderElement != null) {
+            List<ExpenseSheetLine> result = expenseSheetLineDAO.findByOrderElement(orderElement);
+            if (result != null && !result.isEmpty()) {
+                Collections.sort(result, new ExpenseSheetLineComparator());
+                loadDataExpenseSheetLines(result);
+                return result;
+            }
+        }
+        return new ArrayList<ExpenseSheetLine>();
+    }
+
+    private void loadDataExpenseSheetLines(List<ExpenseSheetLine> expenseSheetLineList) {
+        for (ExpenseSheetLine line : expenseSheetLineList) {
+            line.getCode();
+            if (line.getResource() != null) {
+                line.getResource().getName();
+            }
+        }
     }
 
 }

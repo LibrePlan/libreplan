@@ -53,6 +53,7 @@ import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.ISumChargedEffortRecalculator;
+import org.libreplan.business.orders.entities.ISumExpensesRecalculator;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
@@ -207,6 +208,9 @@ public class SaveCommandBuilder {
     @Autowired
     private ISumChargedEffortRecalculator sumChargedEffortRecalculator;
 
+    @Autowired
+    private ISumExpensesRecalculator sumExpensesRecalculator;
+
     private class SaveCommand implements ISaveCommand {
 
         private PlanningState state;
@@ -293,6 +297,10 @@ public class SaveCommandBuilder {
                             .isNeededToRecalculateSumChargedEfforts()) {
                         sumChargedEffortRecalculator.recalculate(state
                                 .getOrder().getId());
+                    }
+
+                    if (state.getOrder().isNeededToRecalculateSumExpenses()) {
+                        sumExpensesRecalculator.recalculate(state.getOrder().getId());
                     }
 
                     fireAfterSave();

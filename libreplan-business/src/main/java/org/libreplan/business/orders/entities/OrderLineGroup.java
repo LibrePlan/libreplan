@@ -103,6 +103,7 @@ public class OrderLineGroup extends OrderElement implements
             newChild.updateLabels();
             if (!newChild.isNewObject()) {
                 getOrder().markAsNeededToRecalculateSumChargedEfforts();
+                getOrder().markAsNeededToRecalculateSumExpenses();
             }
         }
 
@@ -114,6 +115,7 @@ public class OrderLineGroup extends OrderElement implements
             updateCriterionRequirements();
             if (!removedChild.isNewObject()) {
                 getOrder().markAsNeededToRecalculateSumChargedEfforts();
+                getOrder().markAsNeededToRecalculateSumExpenses();
             }
         }
 

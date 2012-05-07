@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,6 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
-import org.libreplan.business.orders.daos.OrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
@@ -690,9 +690,29 @@ public class TaskElementAdapter {
 
                             @Override
                             public BigDecimal execute() {
-                                return moneyCostCalculator
-                                        .getMoneyCost(taskElement
-                                                .getOrderElement());
+                                return moneyCostCalculator.getMoneyCostTotal(taskElement
+                                        .getOrderElement());
+                            }
+                        });
+            }
+
+            private Map<String, BigDecimal> getMoneyItemizedCost() {
+                if ((taskElement == null) || (taskElement.getOrderElement() == null)) {
+                    Map<String, BigDecimal> costs = new HashMap<String, BigDecimal>();
+                    costs.put("costHours", BigDecimal.ZERO);
+                    costs.put("costExpenses", BigDecimal.ZERO);
+                    return costs;
+                }
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Map<String, BigDecimal>>() {
+                            @Override
+                            public Map<String, BigDecimal> execute() {
+                                Map<String, BigDecimal> costs = new HashMap<String, BigDecimal>();
+                                costs.put("costHours", moneyCostCalculator
+                                        .getCostOfHours(taskElement.getOrderElement()));
+                                costs.put("costExpenses", moneyCostCalculator
+                                        .getCostOfExpenses(taskElement.getOrderElement()));
+                                return costs;
                             }
                         });
             }
@@ -1074,6 +1094,12 @@ public class TaskElementAdapter {
                                     getMoneyCostBarPercentage().multiply(
                                             new BigDecimal(100)))).append(
                             "<br/>");
+
+                    Map<String, BigDecimal> mapCosts = getMoneyItemizedCost();
+                    result.append(
+                            _("cost because of worked hours: {0}€, cost because of expenses: {1}€",
+                                    mapCosts.get("costHours"), mapCosts.get("costExpenses")))
+                            .append("<br/>");
                 }
 
                 String labels = buildLabelsText();
