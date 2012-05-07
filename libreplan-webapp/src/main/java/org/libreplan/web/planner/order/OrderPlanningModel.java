@@ -62,7 +62,7 @@ import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.ICostCalculator;
-import org.libreplan.business.planner.entities.IEarnedValueCalculator;
+import org.libreplan.business.planner.entities.IOrderEarnedValueCalculator;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
@@ -261,7 +261,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private ICostCalculator hoursCostCalculator;
 
     @Autowired
-    private IEarnedValueCalculator earnedValueCalculator;
+    private IOrderEarnedValueCalculator earnedValueCalculator;
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 

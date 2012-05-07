@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.planner.entities.IEarnedValueCalculator;
+import org.libreplan.business.planner.entities.IOrderEarnedValueCalculator;
 import org.libreplan.web.planner.order.OrderPlanningModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -48,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CostStatusModel implements ICostStatusModel {
 
     @Autowired
-    private IEarnedValueCalculator earnedValueCalculator;
+    private IOrderEarnedValueCalculator earnedValueCalculator;
 
     private Order order;
 

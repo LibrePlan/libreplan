@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class EarnedValueCalculator implements IEarnedValueCalculator {
+public class OrderEarnedValueCalculator implements IOrderEarnedValueCalculator {
 
     @Autowired
     private ICostCalculator hoursCostCalculator;
