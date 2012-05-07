@@ -43,7 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class CompanyEarnedValueCalculator implements ICompanyEarnedValueCalculator {
+public class CompanyEarnedValueCalculator extends EarnedValueCalculator implements ICompanyEarnedValueCalculator {
 
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;

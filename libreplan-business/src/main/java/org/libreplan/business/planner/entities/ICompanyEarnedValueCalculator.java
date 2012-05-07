@@ -28,9 +28,9 @@ import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 /**
  * @author Diego Pino García <dpino@igalia.com>
  *
- *         Utility class for calculating all 'Earned Value' measurements
+ *         Utility class for calculating all 'Earned Value' indicators
  */
-public interface ICompanyEarnedValueCalculator {
+public interface ICompanyEarnedValueCalculator extends IEarnedValueCalculator {
 
     SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkScheduled(
             AvailabilityTimeLine.Interval interval);

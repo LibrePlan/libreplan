@@ -28,9 +28,9 @@ import org.libreplan.business.orders.entities.Order;
 /**
  * @author Diego Pino García <dpino@igalia.com>
  *
- *         Utility class for calculating all 'Earned Value' measurements
+ *         Utility class for calculating all 'Earned Value' indicators
  */
-public interface IOrderEarnedValueCalculator {
+public interface IOrderEarnedValueCalculator extends IEarnedValueCalculator {
 
     // ACWP　(Actual Cost Work Performed)
     SortedMap<LocalDate, BigDecimal> calculateActualCostWorkPerformed(
