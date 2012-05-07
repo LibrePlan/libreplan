@@ -317,7 +317,11 @@ public abstract class OrderElement extends IntegrationEntity implements
             if(currentTaskSourceIsNotTheSame()) {
                 //all the children of this element were unscheduled and then scheduled again,
                 //its TaskSource has been recreated but we have to remove the old one.
-                result.add(taskSourceRemoval());
+                if(getParent() == null || !getParent().currentTaskSourceIsNotTheSame()) {
+                    //if it's a container node inside another container we could have the
+                    //same problem than in the case of leaf tasks.
+                    result.add(taskSourceRemoval());
+                }
             }
             result
                     .add(synchronizationForSuperelement(schedulingDataForVersion));
