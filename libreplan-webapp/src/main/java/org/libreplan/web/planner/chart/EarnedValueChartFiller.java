@@ -418,4 +418,10 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         }
     }
 
+    public void setIndicatorInInterval(EarnedValueType type,
+            Interval interval, SortedMap<LocalDate, BigDecimal> values) {
+        addZeroBeforeTheFirstValue(values);
+        indicators.put(type, calculatedValueForEveryDay(values, interval));
+    }
+
 }

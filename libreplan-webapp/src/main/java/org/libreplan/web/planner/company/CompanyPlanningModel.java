@@ -38,8 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
@@ -55,6 +53,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.chart.ILoadChartData;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
+import org.libreplan.business.planner.entities.ICompanyEarnedValueCalculator;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskMilestone;
@@ -62,7 +61,6 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
-import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.chart.Chart;
@@ -131,6 +129,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private ICompanyEarnedValueCalculator earnedValueCalculator;
 
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
@@ -275,6 +276,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner);
 
         chartComponent.getTabs().getLastChild().addEventListener(Events.ON_SELECT, new EventListener() {
+            @Override
             public void onEvent(Event event) throws Exception {
                 createOnDemandEarnedValueTimePlot(chartComponent, planner);
                 event.getTarget().removeEventListener(Events.ON_SELECT, this);
@@ -783,75 +785,33 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     }
 
+    /**
+     *
+     * @author Manuel Rego Casasnovas <mrego@igalia.com>
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     */
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
+        @Override
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            Map<TaskElement, SortedMap<LocalDate, BigDecimal>> estimatedCostPerTask =
-                databaseSnapshots.snapshotEstimatedCostPerTask();
-            Collection<TaskElement> list = filterTasksByDate(
-                    estimatedCostPerTask.keySet(), getFilterInterval());
-
-            SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
-
-            for (TaskElement taskElement : list) {
-                addCost(estimatedCost, estimatedCostPerTask.get(taskElement));
-            }
-
-            estimatedCost = accumulateResult(estimatedCost);
-            addZeroBeforeTheFirstValue(estimatedCost);
-            indicators.put(EarnedValueType.BCWS, calculatedValueForEveryDay(
-                    estimatedCost, interval.getStart(), interval.getFinish()));
+            setIndicatorInInterval(EarnedValueType.BCWS, interval,
+                    earnedValueCalculator
+                            .calculateBudgetedCostWorkScheduled(getFilterInterval()));
         }
 
+        @Override
         protected void calculateActualCostWorkPerformed(Interval interval) {
-            SortedMap<LocalDate, BigDecimal> workReportCost = getWorkReportCost();
-
-            workReportCost = accumulateResult(workReportCost);
-            addZeroBeforeTheFirstValue(workReportCost);
-            indicators.put(EarnedValueType.ACWP, calculatedValueForEveryDay(
-                    workReportCost, interval.getStart(), interval.getFinish()));
+            setIndicatorInInterval(EarnedValueType.ACWP, interval,
+                    earnedValueCalculator
+                            .calculateActualCostWorkPerformed(getFilterInterval()));
         }
 
-        private SortedMap<LocalDate, BigDecimal> getWorkReportCost() {
-            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-
-            Collection<WorkReportLine> workReportLines = filterWorkReportLinesByDate(
-                    databaseSnapshots.snapshotWorkReportLines(),
-                    getFilterInterval());
-
-            if (workReportLines.isEmpty()) {
-                return result;
-            }
-
-            for (WorkReportLine workReportLine : workReportLines) {
-                LocalDate day = new LocalDate(workReportLine.getDate());
-                BigDecimal cost = workReportLine.getEffort()
-                        .toHoursAsDecimalWithScale(2);
-
-                if (!result.containsKey(day)) {
-                    result.put(day, BigDecimal.ZERO);
-                }
-                result.put(day, result.get(day).add(cost));
-            }
-
-            return result;
-        }
-
+        @Override
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            Map<TaskElement, SortedMap<LocalDate, BigDecimal>> advanceCostPerTask =
-                databaseSnapshots.snapshotAdvanceCostPerTask();
-            Collection<TaskElement> list = filterTasksByDate(
-                    advanceCostPerTask.keySet(), getFilterInterval());
-
-            SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
-
-            for (TaskElement taskElement : list) {
-                addCost(advanceCost, advanceCostPerTask.get(taskElement));
-            }
-
-            addZeroBeforeTheFirstValue(advanceCost);
-            indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
-                    advanceCost, interval.getStart(), interval.getFinish()));
+            setIndicatorInInterval(EarnedValueType.BCWP, interval,
+                    earnedValueCalculator
+                            .calculateBudgetedCostWorkPerformed(getFilterInterval()));
         }
 
         @Override
@@ -859,33 +819,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             return getEarnedValueSelectedIndicators();
         }
 
-        private List<TaskElement> filterTasksByDate(
-                Collection<TaskElement> tasks,
-                AvailabilityTimeLine.Interval interval) {
-            List<TaskElement> result = new ArrayList<TaskElement>();
-            for(TaskElement task : tasks) {
-                if (interval.includes(task.getStartAsLocalDate())
-                        || interval.includes(task.getEndAsLocalDate())) {
-                    result.add(task);
-                }
-            }
-            return result;
-        }
-
-
-        private List<WorkReportLine> filterWorkReportLinesByDate(
-                Collection<WorkReportLine> lines,
-                AvailabilityTimeLine.Interval interval) {
-            List<WorkReportLine> result = new ArrayList<WorkReportLine>();
-            for(WorkReportLine line: lines) {
-                if (interval.includes(line.getLocalDate())) {
-                    result.add(line);
-                }
-            }
-            return result;
-        }
     }
 
+    @Override
     @Transactional(readOnly=true)
     public ProgressType getProgressTypeFromConfiguration() {
         return configurationDAO.getConfiguration().getProgressType();

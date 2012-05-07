@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
@@ -1389,6 +1388,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
+    /**
+    *
+    * @author Manuel Rego Casasnovas <mrego@igalia.com>
+    * @author Diego Pino García <dpino@igalia.com>
+    *
+    */
     class OrderEarnedValueChartFiller extends EarnedValueChartFiller {
 
         private Order order;
@@ -1416,18 +1421,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             setIndicatorInInterval(EarnedValueType.BCWP, interval,
                     earnedValueCalculator
                             .calculateBudgetedCostWorkPerformed(order));
-        }
-
-        private void setIndicatorInInterval(EarnedValueType type,
-                Interval interval, SortedMap<LocalDate, BigDecimal> values) {
-            addZeroBeforeTheFirstValue(values);
-            indicators.put(type, calculatedValueForEveryDay(values, interval));
-        }
-
-        private SortedMap<LocalDate, BigDecimal> calculatedValueForEveryDay(
-                SortedMap<LocalDate, BigDecimal> values, Interval interval) {
-            return calculatedValueForEveryDay(values, interval.getStart(),
-                    interval.getFinish());
         }
 
         @Override
