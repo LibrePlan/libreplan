@@ -27,7 +27,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
@@ -35,13 +37,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
+import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.HourCost;
 import org.libreplan.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
+import org.libreplan.business.expensesheet.entities.ExpenseSheet;
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.daos.ISumExpensesDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
@@ -60,6 +69,7 @@ import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,9 +120,19 @@ public class MoneyCostCalculatorTest {
     @Autowired
     private IScenarioManager scenarioManager;
 
+    @Autowired
+    private ISumExpensesDAO sumExpensesDAO;
+
+    @Autowired
+    private IExpenseSheetDAO expenseSheetDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     private List<TypeOfWorkHours> typesOfWorkHours = new ArrayList<TypeOfWorkHours>();
     private CostCategory costCategory;
     private Resource resource;
+    private ExpenseSheet expenseSheet;
     private List<OrderElement> orderElements = new ArrayList<OrderElement>();
     private WorkReportType workReportType;
     private WorkReport workReport;
@@ -127,24 +147,24 @@ public class MoneyCostCalculatorTest {
     }
 
     private void givenCostCategory() {
-        costCategory = CostCategory.createUnvalidated("default-cost-category",
-                "default-cost-category", true);
-        HourCost hourCost = HourCost.createUnvalidated(
-                "default-hour-cost", new BigDecimal(50), new LocalDate());
+        costCategory = CostCategory.createUnvalidated("default-cost-category" + UUID.randomUUID(),
+                "default-cost-category" + UUID.randomUUID(), true);
+        HourCost hourCost = HourCost.createUnvalidated("default-hour-cost" + UUID.randomUUID(),
+                new BigDecimal(50), new LocalDate());
         hourCost.setType(typesOfWorkHours.get(0));
         costCategory.addHourCost(hourCost);
         costCategoryDAO.save(costCategory);
     }
 
     private void givenResource(boolean relatedWithCostCategory) {
-        resource = Worker.createUnvalidated("default-resource",
+        resource = Worker.createUnvalidated("default-resource" + UUID.randomUUID(),
                 "default-resource", "default-resource", "default-resource");
 
         if (relatedWithCostCategory) {
             ResourcesCostCategoryAssignment resourcesCostCategoryAssignment = ResourcesCostCategoryAssignment
                     .create();
-            resourcesCostCategoryAssignment
-                    .setCode("resources-cost-category-assignment");
+            resourcesCostCategoryAssignment.setCode("resources-cost-category-assignment"
+                    + UUID.randomUUID());
             resourcesCostCategoryAssignment.setCostCategory(costCategory);
             resourcesCostCategoryAssignment.setInitDate(new LocalDate());
 
@@ -383,4 +403,113 @@ public class MoneyCostCalculatorTest {
                 equalTo(new BigDecimal(870).setScale(2)));
     }
 
+    private ExpenseSheet givenExpenseSheet() {
+        expenseSheet = ExpenseSheet.create();
+        expenseSheet.setCode("default-expense-sheet" + UUID.randomUUID());
+        return expenseSheet;
+    }
+
+    private ExpenseSheetLine createExpenseSheetLine(BigDecimal value, String concept,
+            int indiceOrder) {
+        ExpenseSheetLine expenseSheetLine = ExpenseSheetLine.create(value, concept,
+                new LocalDate(), orderElements.get(indiceOrder));
+        expenseSheetLine.setCode("default-expense-sheet-line-" + UUID.randomUUID());
+        expenseSheetLine.setResource(resource);
+        expenseSheetLine.setExpenseSheet(expenseSheet);
+        expenseSheet.add(expenseSheetLine);
+        return expenseSheetLine;
+    }
+
+    private void givenBasicExpensesExample() {
+        givenExpenseSheet();
+        givenOrderElement();
+        givenExpenseSheetLines(0);
+    }
+
+    private void givenExpensesExampleWithChildren() {
+        givenExpenseSheet();
+        givenOrderLineGroupWithTwoLines();
+        givenExpenseSheetLines(0);
+        givenExpenseSheetLines(1);
+    }
+
+    private void givenExpenseSheetLines(int indiceOrder) {
+        createExpenseSheetLine(BigDecimal.TEN, "expense-sheet-line-concept-1", indiceOrder);
+        createExpenseSheetLine(new BigDecimal(55), "expense-sheet-line-concept-1", indiceOrder);
+    }
+
+    private void saveExpensesSheetLines() {
+        Set<ExpenseSheetLine> deletedExpenseSheetLinesSet = new HashSet<ExpenseSheetLine>();
+        sumExpensesDAO
+                .updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(deletedExpenseSheetLinesSet);
+        sumExpensesDAO.updateRelatedSumExpensesWithExpenseSheetLineSet(expenseSheet
+                .getExpenseSheetLines());
+        sumExpensesDAO.flush();
+
+        expenseSheet.updateCalculatedProperties();
+        expenseSheetDAO.save(expenseSheet);
+        expenseSheetDAO.flush();
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddExpenseSheetWithTwoDirectLines() {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                orderElements.clear();
+                givenBasicExpensesExample();
+                saveExpensesSheetLines();
+                return null;
+            }
+        });
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                OrderElement orderElement;
+                try {
+                    orderElement = orderElementDAO.findByCode(orderElements.get(0).getCode());
+                    assertThat(moneyCostCalculator.getExpensesMoneyCost(orderElement),
+                            equalTo(new BigDecimal(65).setScale(2)));
+                } catch (InstanceNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
+    }
+
+    @Test
+    @NotTransactional
+    public void testAddExpenseSheetWithIndirectLines() {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                orderElements.clear();
+                givenExpensesExampleWithChildren();
+                saveExpensesSheetLines();
+                return null;
+            }
+        });
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                OrderElement orderElement;
+                try {
+                    orderElement = orderElementDAO.findByCode(orderElements.get(0).getCode());
+                    assertThat(moneyCostCalculator.getExpensesMoneyCost(orderElement),
+                            equalTo(new BigDecimal(130).setScale(2)));
+
+                    orderElement = orderElementDAO.findByCode(orderElements.get(1).getCode());
+                    assertThat(moneyCostCalculator.getExpensesMoneyCost(orderElement),
+                            equalTo(new BigDecimal(65).setScale(2)));
+                } catch (InstanceNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
+    }
 }
