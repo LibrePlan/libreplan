@@ -95,23 +95,71 @@
                         </rows>
                     </grid>
                 </groupbox>
-                <groupbox style="margin-top: 5px" closable="false">
+                <groupbox style="margin-top: 5px" closable="false"
+                    id="userBindingGroupbox"
+                    visible="@{controller.notLimitingOrVirtualResource}">
                     <caption label="${i18n:_('Bound user')}" />
-                    <grid fixedLayout="true">
-                        <columns>
-                            <column width="200px" />
-                            <column  />
-                        </columns>
-                        <rows>
-                            <row>
-                                <label value="${i18n:_('User')}" />
-                                <listbox mold="select"
-                                    model="@{controller.possibleUsersToBound}"
-                                    selectedItem="@{controller.boundUser}"
-                                    itemRenderer="@{controller.usersRenderer}" />
-                            </row>
-                        </rows>
-                    </grid>
+                    <radiogroup id="userBindingRadiogroup"
+                        onCheck="controller.updateUserBindingView();" />
+                    <panel title="${i18n:_('Existing user')}" border="normal"
+                        visible="@{controller.existingUser}">
+                        <panelchildren>
+                            <grid fixedLayout="true">
+                                <columns>
+                                    <column width="200px" />
+                                    <column />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="${i18n:_('User')}" />
+                                        <listbox id="userListbox" mold="select"
+                                            model="@{controller.possibleUsersToBound}"
+                                            selectedItem="@{controller.boundUser}"
+                                            itemRenderer="@{controller.usersRenderer}" />
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('Login name')}" />
+                                        <label value="@{controller.loginName}" />
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('E-mail')}" />
+                                        <label value="@{controller.email}" />
+                                    </row>
+                                </rows>
+                            </grid>
+                        </panelchildren>
+                    </panel>
+                    <panel title="${i18n:_('New user')}" border="normal"
+                        visible="@{controller.createNewUser}">
+                        <panelchildren>
+                            <grid fixedLayout="true">
+                                <columns>
+                                    <column width="200px" />
+                                    <column />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="${i18n:_('Login name')}" />
+                                        <textbox id="loginName" width="300px" />
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('Password')}" />
+                                        <textbox id="password" width="300px"
+                                            type="password" />
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('Password confirmation')}" />
+                                        <textbox id="passwordConfirmation"
+                                            width="300px" type="password" />
+                                    </row>
+                                    <row>
+                                        <label value="${i18n:_('E-mail')}" />
+                                        <textbox id="email" width="300px" />
+                                    </row>
+                                </rows>
+                            </grid>
+                        </panelchildren>
+                    </panel>
                 </groupbox>
             </tabpanel>
             <tabpanel>

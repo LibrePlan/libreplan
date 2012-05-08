@@ -25,6 +25,7 @@ package org.libreplan.business.resources.entities;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Valid;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -207,6 +208,7 @@ public class Worker extends Resource {
         return firstName + " " + surname;
     }
 
+    @Valid
     public User getUser() {
         return user;
     }
@@ -253,6 +255,13 @@ public class Worker extends Resource {
             return user == null;
         }
         return true;
+    }
+
+    public void updateUserData() {
+        if (user != null) {
+            user.setFirstName(firstName);
+            user.setLastName(surname);
+        }
     }
 
 }

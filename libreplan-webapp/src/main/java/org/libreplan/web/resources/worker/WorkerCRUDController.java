@@ -54,6 +54,8 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.libreplan.web.resources.search.ResourcePredicate;
+import org.libreplan.web.users.services.IDBPasswordEncoderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -74,12 +76,15 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Caption;
+import org.zkoss.zul.api.Groupbox;
+import org.zkoss.zul.api.Radiogroup;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -91,6 +96,9 @@ import org.zkoss.zul.api.Window;
  */
 public class WorkerCRUDController extends GenericForwardComposer implements
         IWorkerCRUDControllerEntryPoints {
+
+    @Autowired
+    private IDBPasswordEncoderService dbPasswordEncoderService;
 
     private Window listWindow;
 
@@ -145,6 +153,33 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private Tab costCategoryAssignmentTab;
 
     private CRUDControllerState state = CRUDControllerState.LIST;
+
+    private Groupbox userBindingGroupbox;
+
+    private Radiogroup userBindingRadiogroup;
+
+    private Listbox userListbox;
+
+    private Textbox loginNameTextbox;
+
+    private Textbox emailTextbox;
+
+    private Textbox passwordTextbox;
+
+    private Textbox passwordConfirmationTextbox;
+
+    private enum UserBindingOption {
+        NOT_BOUND(_("Not bound")),
+        EXISTING_USER(_("Existing user")),
+        CREATE_NEW_USER(_("Create new user"));
+
+        private String label;
+
+        private UserBindingOption(String label) {
+            this.label = label;
+        }
+
+    };
 
     public WorkerCRUDController() {
     }
@@ -204,6 +239,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public boolean save() {
         validateConstraints();
 
+        setUserBindingInfo();
+
         // Validate 'Cost category assignment' tab is correct
         if (resourcesCostCategoryAssignmentController != null) {
             if (!resourcesCostCategoryAssignmentController.validate()) {
@@ -230,6 +267,58 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             messages.showInvalidValues(e);
         }
         return false;
+    }
+
+    private void setUserBindingInfo() {
+        int option = userBindingRadiogroup.getSelectedIndex();
+
+        if (UserBindingOption.NOT_BOUND.ordinal() == option) {
+            getWorker().setUser(null);
+        }
+
+        if (UserBindingOption.EXISTING_USER.ordinal() == option) {
+            if (getWorker().getUser() == null) {
+                throw new WrongValueException(userListbox,
+                        _("please select a user to bound"));
+            }
+            getWorker().updateUserData();
+        }
+
+        if (UserBindingOption.CREATE_NEW_USER.ordinal() == option) {
+            getWorker().setUser(createNewUserForBinding());
+        }
+    }
+
+    private User createNewUserForBinding() {
+        String loginName = loginNameTextbox.getValue();
+        if (StringUtils.isBlank(loginName)) {
+            throw new WrongValueException(loginNameTextbox,
+                    _("cannot be null or empty"));
+        }
+
+        String password = passwordTextbox.getValue();
+        if (StringUtils.isBlank(loginName)) {
+            throw new WrongValueException(passwordTextbox,
+                    _("cannot be null or empty"));
+        }
+
+        String passwordConfirmation = passwordConfirmationTextbox.getValue();
+        if (!password.equals(passwordConfirmation)) {
+            throw new WrongValueException(passwordConfirmationTextbox,
+                    _("passwords do not match"));
+        }
+
+        String encodedPassword = dbPasswordEncoderService.encodePassword(
+                password, loginName);
+
+        User newUser = User.create(loginName, encodedPassword,
+                emailTextbox.getValue());
+
+        Worker worker = getWorker();
+        newUser.setFirstName(worker.getFirstName());
+        newUser.setLastName(worker.getSurname());
+
+        return newUser;
     }
 
     private void validateConstraints() {
@@ -285,7 +374,27 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             editCalendar();
         }
         editAsignedCriterions();
+        updateUserBindingComponents();
         showEditWindow(_("Edit Worker: {0}", worker.getHumanId()));
+    }
+
+    private void updateUserBindingComponents() {
+        User user = getBoundUser();
+        if (user == null) {
+            userBindingRadiogroup.setSelectedIndex(UserBindingOption.NOT_BOUND
+                    .ordinal());
+        } else {
+            userBindingRadiogroup
+                    .setSelectedIndex(UserBindingOption.EXISTING_USER.ordinal());
+        }
+
+        // Reste new user fields
+        loginNameTextbox.setValue("");
+        emailTextbox.setValue("");
+        passwordTextbox.setValue("");
+        passwordConfirmationTextbox.setValue("");
+
+        Util.reloadBindings(userBindingGroupbox);
     }
 
     public void goToEditVirtualWorkerForm(Worker worker) {
@@ -316,6 +425,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
+        updateUserBindingComponents();
         showEditWindow(_("Create Worker"));
         resourceCalendarModel.cancel();
     }
@@ -348,6 +458,29 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         initFilterComponent();
         setupFilterLimitingResourceListbox();
         initializeTabs();
+        initUserBindingComponents();
+    }
+
+    private void initUserBindingComponents() {
+        userBindingGroupbox = (Groupbox) editWindow
+                .getFellowIfAny("userBindingGroupbox");
+        userBindingRadiogroup = (Radiogroup) editWindow
+                .getFellowIfAny("userBindingRadiogroup");
+        initUserBindingOptions();
+        userListbox = (Listbox) editWindow.getFellowIfAny("userListbox");
+        loginNameTextbox = (Textbox) editWindow.getFellowIfAny("loginName");
+        passwordTextbox = (Textbox) editWindow.getFellowIfAny("password");
+        passwordConfirmationTextbox = (Textbox) editWindow
+                .getFellowIfAny("passwordConfirmation");
+        emailTextbox = (Textbox) editWindow.getFellowIfAny("email");
+    }
+
+    private void initUserBindingOptions() {
+        UserBindingOption[] values = UserBindingOption.values();
+        for (UserBindingOption option : values) {
+            Radio radio = new Radio(option.label);
+            userBindingRadiogroup.appendChild(radio);
+        }
     }
 
     private void initializeTabs() {
@@ -782,6 +915,10 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         Worker worker = getWorker();
         if (worker != null) {
             worker.setResourceType(LimitingResourceEnum.toResourceType(option));
+            if (worker.isLimitingResource()) {
+                worker.setUser(null);
+            }
+            Util.reloadBindings(userBindingGroupbox);
         }
     }
 
@@ -910,6 +1047,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void setBoundUser(User user) {
         workerModel.setBoundUser(user);
+        updateUserBindingComponents();
     }
 
     public ListitemRenderer getUsersRenderer() {
@@ -923,6 +1061,52 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 item.setValue(user);
             }
         };
+    }
+
+    public boolean isUserSelected() {
+        if (userListbox.getSelectedItem() == null
+                || userListbox.getSelectedItem().getValue() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public String getLoginName() {
+        User user = getBoundUser();
+        if (user != null) {
+            return user.getLoginName();
+        }
+        return "";
+    }
+
+    public String getEmail() {
+        User user = getBoundUser();
+        if (user != null) {
+            return user.getEmail();
+        }
+        return "";
+    }
+
+    public boolean isExistingUser() {
+        int option = userBindingRadiogroup.getSelectedIndex();
+        return UserBindingOption.EXISTING_USER.ordinal() == option;
+    }
+
+    public boolean isCreateNewUser() {
+        int option = userBindingRadiogroup.getSelectedIndex();
+        return UserBindingOption.CREATE_NEW_USER.ordinal() == option;
+    }
+
+    public void updateUserBindingView() {
+        Util.reloadBindings(userBindingGroupbox);
+    }
+
+    public boolean isNotLimitingOrVirtualResource() {
+        Worker worker = getWorker();
+        if (worker != null) {
+            return !(worker.isLimitingResource() || worker.isVirtual());
+        }
+        return false;
     }
 
 }

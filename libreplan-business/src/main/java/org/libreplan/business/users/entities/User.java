@@ -89,6 +89,12 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         this.roles = roles;
     }
 
+    private User(String loginName, String password, String email) {
+        this.loginName = loginName;
+        this.password = password;
+        this.email = email;
+    }
+
     public static User create(String loginName, String password,
             Set<UserRole> roles) {
 
@@ -98,6 +104,10 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public static User create() {
         return create(new User());
+    }
+
+    public static User create(String loginName, String password, String email) {
+        return create(new User(loginName, password, email));
     }
 
     @NotEmpty(message = "login name not specified")

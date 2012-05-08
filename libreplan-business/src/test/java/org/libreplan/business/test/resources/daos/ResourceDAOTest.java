@@ -246,7 +246,7 @@ public class ResourceDAOTest {
                     @Override
                     public User execute() {
                         User user = User.create("login" + UUID.randomUUID(),
-                                "password", null);
+                                "password", "");
                         userDAO.save(user);
                         user.dontPoseAsTransientObjectAnymore();
                         return user;
