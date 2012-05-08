@@ -661,6 +661,7 @@ public class Util {
      * {@link Configuration} object.
      */
     public static String addCurrencySymbol(BigDecimal value) {
+        value = (value == null ? BigDecimal.ZERO : value);
         DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat
                 .getInstance();
         decimalFormat.applyPattern(getMoneyFormat());
