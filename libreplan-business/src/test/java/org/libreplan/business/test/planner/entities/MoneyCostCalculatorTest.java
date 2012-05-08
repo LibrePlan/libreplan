@@ -310,58 +310,58 @@ public class MoneyCostCalculatorTest {
     @Test
     public void basicTest() {
         givenBasicExample();
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(0)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
 
     @Test
     public void basicTestWithoutCostCategoryRelationship() {
         givenBasicExampleWithoutCostCategoryRelationship();
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(0)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(300).setScale(2)));
     }
 
     @Test
     public void exampleOrderLineGroup() {
         givenExampleOrderLineGroup();
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(0)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(1500).setScale(2)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(1)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)),
                 equalTo(new BigDecimal(500).setScale(2)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(2)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
 
     @Test
     public void exampleOrderLineGroupWithDifferentHours1() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(0, 10, 5));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(0)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(750).setScale(2)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(1)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)),
                 equalTo(new BigDecimal(500).setScale(2)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(2)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)),
                 equalTo(new BigDecimal(250).setScale(2)));
     }
 
     @Test
     public void exampleOrderLineGroupWithDifferentHours2() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(6, 0, 0));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(0)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(300).setScale(2)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(1)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)),
                 equalTo(new BigDecimal(0).setScale(2)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(2)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)),
                 equalTo(new BigDecimal(0).setScale(2)));
     }
 
     @Test
     public void exampleOrderLineGroupWithDifferentHours3() {
         givenExampleOrderLineGroupWithDifferentHours(Arrays.asList(6, 5, 10));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(0)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(1050).setScale(2)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(1)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(1)),
                 equalTo(new BigDecimal(250).setScale(2)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(2)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(2)),
                 equalTo(new BigDecimal(500).setScale(2)));
     }
 
@@ -370,7 +370,7 @@ public class MoneyCostCalculatorTest {
         givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(
                 Arrays.asList(10, 5),
                 Arrays.asList(new BigDecimal(30), new BigDecimal(50)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(0)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(550).setScale(2)));
     }
 
@@ -379,7 +379,7 @@ public class MoneyCostCalculatorTest {
         givenExampleWithoutCostCategoryRelationshipButDifferentTypeOfHours(
                 Arrays.asList(10, 5, 8), Arrays.asList(new BigDecimal(30),
                         new BigDecimal(50), new BigDecimal(40)));
-        assertThat(moneyCostCalculator.getCostOfHours(orderElements.get(0)),
+        assertThat(moneyCostCalculator.getHoursMoneyCost(orderElements.get(0)),
                 equalTo(new BigDecimal(870).setScale(2)));
     }
 
