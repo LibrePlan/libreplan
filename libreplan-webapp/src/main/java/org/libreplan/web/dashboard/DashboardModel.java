@@ -359,9 +359,9 @@ public class DashboardModel implements IDashboardModel {
         // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getTaskLagDeviations();
         if (deviations.isEmpty()) {
-            return result;
-        }
-        if (deviations.size() == 1) {
+            max = Double.valueOf(3);
+            min = Double.valueOf(-2);
+        } else if (deviations.size() == 1) {
             max = deviations.get(0).doubleValue() + 3;
             min = deviations.get(0).doubleValue() - 2;
         } else {
