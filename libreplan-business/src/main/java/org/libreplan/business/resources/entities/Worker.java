@@ -239,4 +239,20 @@ public class Worker extends Resource {
         return getId().equals(worker.getId());
     }
 
+    @AssertTrue(message = "Limiting resources cannot be bound to any user")
+    public boolean checkLimitingResourceNotBoundToUser() {
+        if (isLimitingResource()) {
+            return user == null;
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "Virtual resources cannot be bound to any user")
+    public boolean checkVirtualResourceNotBoundToUser() {
+        if (isVirtual()) {
+            return user == null;
+        }
+        return true;
+    }
+
 }
