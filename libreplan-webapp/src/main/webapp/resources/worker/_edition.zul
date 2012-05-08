@@ -112,14 +112,9 @@
                                 <rows>
                                     <row>
                                         <label value="${i18n:_('User')}" />
-                                        <listbox id="userListbox" mold="select"
+                                        <bandboxSearch id="userBandbox" finder="UserBandboxFinder"
                                             model="@{controller.possibleUsersToBound}"
-                                            selectedItem="@{controller.boundUser}"
-                                            itemRenderer="@{controller.usersRenderer}" />
-                                    </row>
-                                    <row>
-                                        <label value="${i18n:_('Login name')}" />
-                                        <label value="@{controller.loginName}" />
+                                            selectedElement="@{controller.boundUser, access='both'}" />
                                     </row>
                                     <row>
                                         <label value="${i18n:_('E-mail')}" />

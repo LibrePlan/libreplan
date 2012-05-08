@@ -313,4 +313,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         this.worker = worker;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
 }

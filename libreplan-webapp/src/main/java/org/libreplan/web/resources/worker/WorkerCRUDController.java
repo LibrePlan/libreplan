@@ -49,6 +49,7 @@ import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
+import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
@@ -74,7 +75,6 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
@@ -158,7 +158,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Radiogroup userBindingRadiogroup;
 
-    private Listbox userListbox;
+    private BandboxSearch userBandbox;
 
     private Textbox loginNameTextbox;
 
@@ -278,7 +278,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
         if (UserBindingOption.EXISTING_USER.ordinal() == option) {
             if (getWorker().getUser() == null) {
-                throw new WrongValueException(userListbox,
+                throw new WrongValueException(userBandbox,
                         _("please select a user to bound"));
             }
             getWorker().updateUserData();
@@ -467,7 +467,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         userBindingRadiogroup = (Radiogroup) editWindow
                 .getFellowIfAny("userBindingRadiogroup");
         initUserBindingOptions();
-        userListbox = (Listbox) editWindow.getFellowIfAny("userListbox");
+        userBandbox = (BandboxSearch) editWindow.getFellowIfAny("userBandbox");
         loginNameTextbox = (Textbox) editWindow.getFellowIfAny("loginName");
         passwordTextbox = (Textbox) editWindow.getFellowIfAny("password");
         passwordConfirmationTextbox = (Textbox) editWindow
@@ -1050,25 +1050,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         updateUserBindingComponents();
     }
 
-    public ListitemRenderer getUsersRenderer() {
-        return new ListitemRenderer() {
-
-            @Override
-            public void render(Listitem item, Object data) throws Exception {
-                User user = (User) data;
-
-                item.setLabel(user.getLoginName());
-                item.setValue(user);
-            }
-        };
-    }
-
     public boolean isUserSelected() {
-        if (userListbox.getSelectedItem() == null
-                || userListbox.getSelectedItem().getValue() == null) {
-            return false;
-        }
-        return true;
+        return userBandbox.getSelectedElement() != null;
     }
 
     public String getLoginName() {

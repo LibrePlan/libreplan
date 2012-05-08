@@ -165,6 +165,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         final Object object = getSelectedItem().getValue();
         bandbox.setValue(finder.objectToString(object));
         setSelectedElement(object);
+        Util.getBinder(this).saveAttribute(this, "selectedElement");
     }
 
     private void clearSelectedElement() {
