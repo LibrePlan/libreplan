@@ -352,7 +352,7 @@ public class DashboardModel implements IDashboardModel {
      * @return
      */
     @Override
-    public Map<Interval, Integer> calculateTaskCompletation() {
+    public Map<Interval, Integer> calculateTaskCompletion() {
         Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
         Double max, min;
 

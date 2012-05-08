@@ -416,7 +416,7 @@ public class DashboardController extends GenericForwardComposer {
         private Map<Interval, Integer> getData() {
             if (taskCompletationData == null) {
                 taskCompletationData = dashboardModel
-                        .calculateTaskCompletation();
+                        .calculateTaskCompletion();
             }
             return taskCompletationData;
         }
