@@ -169,20 +169,26 @@
                                     <label value="${i18n:_('Work')}" />
                                     <decimalbox id="boxWorkBudget" width="80px" scale = "2"
                                         value="@{controller.order.workBudget}"
-                                        onChange="controller.reloadTotalBudget(txtTotalBudget)" />
+                                        onChange="controller.reloadTotalBudget(txtTotalBudget)"
+                                        format="@{controller.moneyFormat}"/>
                                     <separator bar="false" spacing="15px" orient="vertical"/>
                                     <label value="${i18n:_('Materials')}" />
                                     <decimalbox id="boxMaterialsBudget" width="80px" scale="2"
                                         value="@{controller.order.materialsBudget}"
-                                        onChange="controller.reloadTotalBudget(txtTotalBudget)" />
+                                        onChange="controller.reloadTotalBudget(txtTotalBudget)"
+                                        format="@{controller.moneyFormat}"/>
                                     <separator bar="false" spacing="15px" orient="vertical"/>
                                     <label value=" ${i18n:_('Total')} :" />
-                                        <label id="txtTotalBudget" value="@{controller.order.totalBudget}"/>
+                                    <label id="txtTotalBudget" value="@{controller.order.totalBudget}"/>
+                                    <label value="@{controller.currencySymbol}"/>
                                 </hbox>
                             </row>
                             <row>
                                 <label value="${i18n:_('Calculated budget')}" />
-                                <label id="budget" value="@{controller.order.budget}" />
+                                <hbox>
+                                    <label id="budget" value="@{controller.order.budget}" />
+                                    <label value="@{controller.currencySymbol}"/>
+                                </hbox>
                             </row>
                             <row>
                                 <label value="${i18n:_('Total hours')}" />

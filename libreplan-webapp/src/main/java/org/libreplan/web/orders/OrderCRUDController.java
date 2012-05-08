@@ -94,7 +94,6 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -1343,8 +1342,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         return orderModel.gettooltipText(order);
     }
 
-    public void reloadTotalBudget(Decimalbox decimalboxTotalBudget) {
-        Util.reloadBindings(decimalboxTotalBudget);
+    public void reloadTotalBudget(Label labelTotalBudget) {
+        Util.reloadBindings(labelTotalBudget);
     }
 
     /**
@@ -1726,4 +1725,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         return Util.getMoneyFormat();
     }
 
+    public String getCurrencySymbol() {
+        return Util.getCurrencySymbol();
+    }
 }
