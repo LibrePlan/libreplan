@@ -4,7 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  *
- * Copyright (C) 2011 Igalia S.L
+ * Copyright (C) 2011-2012 Igalia S.L
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -92,7 +92,11 @@ public abstract class TreeElementOperationsController<T> {
 
     public void indentSelectedElement() {
         if (tree.getSelectedCount() == 1) {
+            int page = tree.getActivePage();
             indent(getSelectedElement());
+            if (tree.getPageCount() > page) {
+                tree.setActivePage(page);
+            }
         } else {
             showSelectAnElementError();
         }
@@ -236,9 +240,9 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
     private int showConfirmCreateTemplateDialog() {
         try {
             return Messagebox
-                    .show(_("Unsaved changes will be lost. Would you like to continue?",
-                            _("Confirm create template"), Messagebox.YES
-                                    | Messagebox.NO, Messagebox.QUESTION));
+                    .show(_("Unsaved changes will be lost. Would you like to continue?"),
+                            _("Confirm create template"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

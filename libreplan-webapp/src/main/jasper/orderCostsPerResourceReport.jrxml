@@ -7,10 +7,9 @@
 	<parameter name="logo" class="java.lang.String"/>
 	<parameter name="criteria" class="java.lang.String"/>
 	<parameter name="labels" class="java.lang.String"/>
+	<parameter name="currencySymbol" class="java.lang.String"/>
 	<field name="workerName" class="java.lang.String"/>
 	<field name="date" class="java.util.Date"/>
-	<field name="clockStart" class="java.util.Date"/>
-	<field name="clockFinish" class="java.util.Date"/>
 	<field name="numHours" class="java.math.BigDecimal"/>
 	<field name="orderElementCode" class="java.lang.String"/>
 	<field name="descriptionValues" class="java.lang.String"/>
@@ -90,12 +89,12 @@
 					</textElement>
 					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalHours}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0.00 €;-###0.00 €">
+				<textField>
 					<reportElement x="422" y="2" width="119" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalCosts}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalCosts}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -137,10 +136,10 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumHoursPerTask}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement x="422" y="2" width="119" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumCostsPerTask}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumCostsPerTask}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -230,10 +229,10 @@
 		</groupHeader>
 		<groupFooter>
 			<band height="28">
-				<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement x="422" y="2" width="119" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumCosts}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumCosts}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="71" y="2" width="258" height="20"/>
@@ -266,20 +265,20 @@
 		</groupHeader>
 		<groupFooter>
 			<band height="15">
-				<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement x="423" y="0" width="119" height="14"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumCostsPerWorkerandCost}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumCostsPerWorkerandCost}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.00 h">
 					<reportElement x="330" y="0" width="93" height="14"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumHoursPerWorkerandCost}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0.00 €/h;-###0.00 €/h" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement x="252" y="0" width="78" height="14"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{costPerHour}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{costPerHour}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol} + "/h"]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement x="110" y="0" width="141" height="14"/>

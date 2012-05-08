@@ -60,7 +60,6 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
-import org.libreplan.business.orders.daos.OrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
@@ -90,6 +89,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -118,41 +118,8 @@ public class TaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
-    private static TaskPositionConstraint getLeftMostFixedDateConstraintAmongChildren(
-            TaskGroup container) {
-
-        TaskPositionConstraint constraint = null;
-        for(TaskElement child : ((TaskGroup)container).getChildren()) {
-            TaskPositionConstraint currentConstraint = null;
-            if (child instanceof ITaskPositionConstrained) {
-                ITaskPositionConstrained task = (ITaskPositionConstrained) child;
-                currentConstraint = task.getPositionConstraint();
-            }
-            else if (child instanceof TaskGroup) {
-                currentConstraint = getLeftMostFixedDateConstraintAmongChildren(
-                        (TaskGroup) child);
-            }
-            if(currentConstraint != null &&
-                    currentConstraint.getConstraintType().equals(
-                            PositionConstraintType.START_IN_FIXED_DATE) &&
-                    (constraint == null || currentConstraint.getConstraintDate().
-                            compareTo(constraint.getConstraintDate()) < 0)) {
-                constraint = currentConstraint;
-            }
-        }
-        return constraint;
-    }
     public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement, LocalDate orderInitDate) {
-        if (taskElement instanceof TaskGroup) {
-            TaskPositionConstraint constraint =
-                    getLeftMostFixedDateConstraintAmongChildren((TaskGroup) taskElement);
-            if(constraint == null) {
-                return Collections.emptyList();
-            }
-            return Collections.singletonList(equalTo(toGantt(
-                    constraint.getConstraintDate())));
-        }
         if (taskElement instanceof ITaskPositionConstrained) {
             ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint startConstraint = task
@@ -1067,13 +1034,13 @@ public class TaskElementAdapter {
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 } else {
+                    String budget = Util.addCurrencySymbol(getBudget());
+                    String moneyCost = Util.addCurrencySymbol(getMoneyCost());
                     result.append(
-                            _("Budget: {0}€, Consumed: {1}€ ({2}%)",
-                                    getBudget(),
-                                    getMoneyCost(),
-                                    getMoneyCostBarPercentage().multiply(
-                                            new BigDecimal(100)))).append(
-                            "<br/>");
+                            _("Budget: {0}, Consumed: {1} ({2}%)", budget,
+                                    moneyCost, getMoneyCostBarPercentage()
+                                            .multiply(new BigDecimal(100))))
+                            .append("<br/>");
                 }
 
                 String labels = buildLabelsText();

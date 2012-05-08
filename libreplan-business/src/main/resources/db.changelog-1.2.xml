@@ -186,12 +186,14 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
-    <changeSet id="change-column-description-in-order_element-to-text" author="mrego">
+    <changeSet id="change-column-description-in-order_element-to-text"
+        author="mrego" dbms="postgresql">
         <comment>Change column description in order_element to TEXT</comment>
         <modifyDataType tableName="order_element" columnName="description" newDataType="TEXT" />
     </changeSet>
 
-    <changeSet id="change-column-description-in-order_element_template-to-text" author="mrego">
+    <changeSet id="change-column-description-in-order_element_template-to-text"
+        author="mrego" dbms="postgresql">
         <comment>Change column description in order_element_template to TEXT</comment>
         <modifyDataType tableName="order_element_template" columnName="description" newDataType="TEXT" />
     </changeSet>
@@ -221,6 +223,18 @@
     <changeSet id="rename-table-end_date_comunication-to-customer" author="smontes">
         <comment>Rename table to end_date_communication</comment>
         <renameTable oldTableName="end_date_communication_to_customer" newTableName="end_date_communication" />
+    </changeSet>
+
+    <changeSet id="change-column-description-in-to-text-in-mysql"
+        author="mrego" dbms="mysql">
+        <comment>
+            Change column description in order_element and
+            order_element_template to TEXT in MySQL.
+            Because of using modifyDataType convert the column in LONGTEXT and
+            this is causing some problems with Hibernate mapping.
+        </comment>
+        <sql>ALTER TABLE order_element MODIFY description TEXT</sql>
+        <sql>ALTER TABLE order_element_template MODIFY description TEXT</sql>
     </changeSet>
 
     <changeSet id="add-budget-column-to-order_line" author="mrego">
@@ -316,6 +330,33 @@
             baseTableName="sum_charged_effort" baseColumnNames="order_element"
             referencedTableName="order_element" referencedColumnNames="id" />
         <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
+    </changeSet>
+
+    <changeSet id="add-new-columns-for-currency-in-configuration" author="mrego">
+        <comment>Add new columns for currency in configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="currency_code" type="VARCHAR(255)" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="currency_code"
+            defaultValue="EUR" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="currency_code"
+            defaultNullValue="EUR"
+            columnDataType="VARCHAR(255)" />
+        <addColumn tableName="configuration">
+            <column name="currency_symbol" type="VARCHAR(255)" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="currency_symbol"
+            defaultValue="€" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="currency_symbol"
+            defaultNullValue="€"
+            columnDataType="VARCHAR(255)" />
+    </changeSet>
+
+    <changeSet id="remove-code-from-order_element_template" author="jaragunde">
+        <comment>Remove column code in order_element_template table</comment>
+        <dropColumn tableName="order_element_template" columnName="code" />
     </changeSet>
 
 </databaseChangeLog>

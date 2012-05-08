@@ -9,8 +9,8 @@
 	<parameter name="labels" class="java.lang.String"/>
 	<field name="workerName" class="java.lang.String"/>
 	<field name="date" class="java.util.Date"/>
-	<field name="clockStart" class="java.util.Date"/>
-	<field name="clockFinish" class="java.util.Date"/>
+	<field name="clockStart" class="java.lang.String"/>
+	<field name="clockFinish" class="java.lang.String"/>
 	<field name="self" class="org.libreplan.business.reports.dtos.HoursWorkedPerResourceDTO"/>
 	<field name="effort" class="org.libreplan.business.workingday.EffortDuration"/>
 	<field name="orderElementCode" class="java.lang.String"/>
@@ -343,7 +343,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.util.Date"><![CDATA[$F{clockFinish}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{clockFinish}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="116" y="0" width="70" height="30"/>
@@ -355,7 +355,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.util.Date"><![CDATA[$F{clockStart}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{clockStart}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="0" width="116" height="15"/>

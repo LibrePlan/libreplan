@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,6 +39,7 @@ import org.libreplan.web.planner.taskedition.TaskPropertiesController.ResourceAl
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -310,8 +311,12 @@ public class EditTaskController extends GenericForwardComposer {
 
     private void askForReloads() {
         if (context != null) {
-            context.getTask().reloadResourcesText();
+            org.zkoss.ganttz.data.Task.reloadResourcesText(context);
             context.reloadCharts();
+            if (context.getRelativeTo() instanceof TaskComponent) {
+                ((TaskComponent) context.getRelativeTo()).updateProperties();
+                ((TaskComponent) context.getRelativeTo()).invalidate();
+            }
         }
     }
 

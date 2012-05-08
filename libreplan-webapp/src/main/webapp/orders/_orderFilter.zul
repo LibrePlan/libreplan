@@ -3,7 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
-  Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2010-2012 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +22,7 @@
 <hbox align="center" sclass="filtering-area">
     <label value=" ${i18n:_('Filter')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
-    <bandboxMultipleSearch id="bdFilters" widthBandbox="385px" widthListbox="400px"
+    <bandboxMultipleSearch id="bdFilters" widthBandbox="260px" widthListbox="550px"
         finder="ordersMultipleFiltersFinder"/>
     <label value="${i18n:_('from')}"/>
     <datebox id="filterStartDate" constraint = "@{orderFilterController.checkConstraintStartDate}"/>

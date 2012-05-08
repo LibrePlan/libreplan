@@ -114,22 +114,7 @@ public class TemplatesTreeController extends
 
         @Override
         protected void addCodeCell(final OrderElementTemplate element) {
-            Textbox textBoxCode = new Textbox();
-            Util.bind(textBoxCode, new Util.Getter<String>() {
-                @Override
-                public String get() {
-                    return element.getCode();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    element.setCode(value);
-                }
-            });
-            textBoxCode.setConstraint("no empty:"
-                    + _("cannot be null or empty"));
-            addCell(textBoxCode);
+            //empty because templates don't have code attribute
         }
 
         void addInitCell(final OrderElementTemplate currentElement) {
@@ -297,10 +282,23 @@ public class TemplatesTreeController extends
         };
     }
 
+    @Override
+    protected INameHandler<OrderElementTemplate> getNameHandler() {
+        return new INameHandler<OrderElementTemplate>() {
+
+            @Override
+            public String getNameFor(OrderElementTemplate element) {
+                return element.getName();
+            }
+
+        };
+    }
+
     public void refreshRow(Treeitem item) {
         try {
             OrderElementTemplate orderElement = (OrderElementTemplate) item
                     .getValue();
+            getRenderer().updateNameFor(orderElement);
             getRenderer().updateHoursFor(orderElement);
             getRenderer().updateBudgetFor(orderElement);
             getRenderer().render(item, orderElement);

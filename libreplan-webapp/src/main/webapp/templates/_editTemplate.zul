@@ -64,12 +64,6 @@
                                 constraint = "@{templatesForOrdersController.validateTemplateName}"/>
                         </row>
                         <row>
-                            <label value="${i18n:_('Code')}" />
-                            <hbox>
-                                <textbox value="@{templatesForOrdersController.template.code}" width="250px" />
-                            </hbox>
-                        </row>
-                        <row>
                             <label value="${i18n:_('Delay from beginning (days)')}" />
                             <intbox
                                 value="@{templatesForOrdersController.template.startAsDaysFromBeginning}" constraint="no negative"/>
@@ -89,7 +83,8 @@
                             <decimalbox
                                 value="@{templatesForOrdersController.template.budget}"
                                 disabled="@{templatesForOrdersController.container}"
-                                constraint="no negative:${i18n:_('Budget value cannot be negative')}" />
+                                constraint="no negative:${i18n:_('Budget value cannot be negative')}"
+                                format="@{templatesForOrdersController.moneyFormat}" />
                         </row>
                     </rows>
                 </grid>

@@ -347,4 +347,8 @@ public class SubcontractController extends GenericForwardComposer {
     public void refressGridEndDates() {
         Util.reloadBindings(gridEndDates);
     }
+
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
 }

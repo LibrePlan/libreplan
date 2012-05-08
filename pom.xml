@@ -5,7 +5,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <name>LibrePlan</name>
 
     <!--
@@ -36,6 +36,7 @@
         <databasetable.prefix>public.</databasetable.prefix>
 
         <default.passwordsControl>true</default.passwordsControl>
+        <default.exampleUsersDisabled>true</default.exampleUsersDisabled>
     </properties>
 
     <!--
@@ -83,6 +84,9 @@
                 <hibernate.format_sql>true</hibernate.format_sql>
                 <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
                 <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
+
+                <!-- Enable example users (user, wsreader and wswriter) -->
+                <default.exampleUsersDisabled>false</default.exampleUsersDisabled>
             </properties>
         </profile>
 
@@ -572,17 +576,17 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>5.0.10</version>
+                <version>5.0.11</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>5.0.10</version>
+                <version>5.0.11</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>5.0.10</version>
+                <version>5.0.11</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jruby</groupId>
@@ -733,12 +737,18 @@
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
-                <version>2.0-rc7</version>
+                <version>2.0.4</version>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>2.0-rc7</version>
+                <version>2.0.4</version>
+            </dependency>
+            <!-- jqPlot -->
+            <dependency>
+                <groupId>br.com.digilabs.jqplot</groupId>
+                <artifactId>jqplot4java</artifactId>
+                <version>1.2.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -961,7 +971,7 @@
         <plugin>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
-                <version>2.0-rc7</version>
+                <version>2.0.4</version>
             </plugin>
 
         </plugins>

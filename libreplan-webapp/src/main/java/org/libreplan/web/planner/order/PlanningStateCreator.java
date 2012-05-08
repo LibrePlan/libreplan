@@ -227,6 +227,7 @@ public class PlanningStateCreator {
             }
         }
         PlanningState result = createPlanning(reload(order));
+        result.onRetrieval();
         desktop.setAttribute(ATTRIBUTE_NAME, result);
         return result;
     }
@@ -1147,14 +1148,13 @@ public class PlanningStateCreator {
         }
     }
 
-    public static class RelatedWithAnyOf implements
+    public static class RelatedWith implements
             IAllocationCriteria {
 
-        private final Collection<? extends Criterion> anyOf;
+        private final Criterion criterion;
 
-        public RelatedWithAnyOf(
-                Collection<? extends Criterion> anyOf) {
-            this.anyOf = anyOf;
+        public RelatedWith(Criterion criterion) {
+            this.criterion = criterion;
         }
 
         @Override
@@ -1170,7 +1170,7 @@ public class PlanningStateCreator {
         private boolean someCriterionIn(
                 Collection<? extends Criterion> allocationCriterions) {
             for (Criterion each : allocationCriterions) {
-                if (this.anyOf.contains(each)) {
+                if (criterion.equals(each)) {
                     return true;
                 }
             }

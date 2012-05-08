@@ -21,8 +21,7 @@
 
 package org.libreplan.ws.workreports.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -81,7 +80,7 @@ public final class WorkReportConverter {
             workReport.setWorkReportType(workReportType);
         } catch (InstanceNotFoundException e) {
             throw new ValidationException(
-                    _("There is no type of work report with this code"));
+                    "There is no type of work report with this code");
         }
 
         for (WorkReportLineDTO workReportLineDTO : workReportDTO.workReportLines) {
@@ -105,7 +104,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReport.setResource(null);
                 throw new ValidationException(
-                        _("There is no resource with this ID"));
+                        "There is no resource with this ID");
             }
         }
 
@@ -114,9 +113,9 @@ public final class WorkReportConverter {
                 workReport.setLabels(LabelReferenceConverter
                         .toEntity(workReportDTO.labels));
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        _("There is no label with this code "
-                                + (String) e.getKey()));
+                throw new ValidationException(MessageFormat.format(
+                        "There is no label with this code ",
+                        (String) e.getKey()));
             }
         }
 
@@ -148,7 +147,7 @@ public final class WorkReportConverter {
                 workReportLine.setTypeOfWorkHours(typeOfWorkHours);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no type of work hours with this code"));
+                        "There is no type of work hours with this code");
             }
         }
 
@@ -169,7 +168,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReportLine.setResource(null);
                 throw new ValidationException(
-                        _("There is no resource with this ID"));
+                        "There is no resource with this ID");
             }
         }
 
@@ -222,7 +221,7 @@ public final class WorkReportConverter {
                     .getCode();
         } else {
             throw new ValidationException(
-                    _("missing work report code in a work report"));
+                    "missing work report code in a work report");
         }
 
         // Optional fields
@@ -242,7 +241,7 @@ public final class WorkReportConverter {
                 resourceNif = worker.getNif();
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("missing worker code in the work report"));
+                        "missing worker code in the work report");
             }
         }
 
@@ -344,7 +343,7 @@ public final class WorkReportConverter {
             WorkReportDTO workReportDTO) throws ValidationException {
 
         if (StringUtils.isBlank(workReportDTO.code)) {
-            throw new ValidationException(_("missing code in a work report."));
+            throw new ValidationException("missing code in a work report.");
         }
 
         /*
@@ -356,7 +355,7 @@ public final class WorkReportConverter {
             /* Step 1.1: requires each work report line DTO to have a code. */
             if (StringUtils.isBlank(lineDTO.code)) {
                 throw new ValidationException(
-                        _("missing code in a work report line"));
+                        "missing code in a work report line");
             }
 
             try {
@@ -368,7 +367,7 @@ public final class WorkReportConverter {
                     workReport.addWorkReportLine(toEntity(lineDTO, workReport));
                 } catch (InstanceNotFoundException o) {
                     throw new ValidationException(
-                            _("missing type of work hours in a work report line"));
+                            "missing type of work hours in a work report line");
                 }
             }
         }
@@ -381,7 +380,7 @@ public final class WorkReportConverter {
 
                 /* Step 2.1: requires each label reference DTO to have a code. */
                 if (StringUtils.isBlank(labelDTO.code)) {
-                    throw new ValidationException(_("missing code in a label"));
+                    throw new ValidationException("missing code in a label");
                 }
 
                 try {
@@ -389,7 +388,7 @@ public final class WorkReportConverter {
                     updateLabel(labelDTO, labels);
                 } catch (InstanceNotFoundException e) {
                     throw new ValidationException(
-                        _("work report has not this label type assigned"));
+                            "work report has not this label type assigned");
                 }
             }
         }
@@ -403,7 +402,7 @@ public final class WorkReportConverter {
                 /* Step 3.1: requires each description value DTO to have a code. */
                 if (StringUtils.isBlank(valueDTO.fieldName)) {
                     throw new ValidationException(
-                            _("missing field name in a description value"));
+                            "missing field name in a description value");
                 }
 
                 try {
@@ -412,7 +411,7 @@ public final class WorkReportConverter {
                     value.setValue(StringUtils.trim(valueDTO.value));
                 } catch (InstanceNotFoundException e) {
                     throw new ValidationException(
-                            _("work report has not any description value with this field name"));
+                            "work report has not any description value with this field name");
                 }
             }
         }
@@ -434,7 +433,7 @@ public final class WorkReportConverter {
                 workReport.setResource(resource);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no resource with this ID"));
+                        "There is no resource with this ID");
             }
         }
 
@@ -446,8 +445,7 @@ public final class WorkReportConverter {
                     .findUniqueByCode(orderElementCode);
                 workReport.setOrderElement(orderElement);
             } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        _("There is no task with this code"));
+                throw new ValidationException("There is no task with this code");
             }
         }
     }
@@ -465,15 +463,15 @@ public final class WorkReportConverter {
                 // * Step 2.1: requires each label reference DTO to have a code.
                 // */
                 if (StringUtils.isBlank(labelDTO.code)) {
-                    throw new ValidationException(_("missing code in a label"));
+                    throw new ValidationException("missing code in a label");
                 }
 
                 try {
                     Set<Label> labels = workReportLine.getLabels();
                     updateLabel(labelDTO, labels);
                 } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        _("a work report line has not this label type assigned"));
+                    throw new ValidationException(
+                            "a work report line has not this label type assigned");
                 }
             }
         }
@@ -498,8 +496,7 @@ public final class WorkReportConverter {
                     resourceNif);
             workReportLine.setResource(resource);
         } catch (InstanceNotFoundException e) {
-            throw new ValidationException(
-                    _("There is no resource with this ID"));
+            throw new ValidationException("There is no resource with this ID");
         }
 
         /* Step 3.3: Update the order element. */
@@ -509,8 +506,7 @@ public final class WorkReportConverter {
                     .findUniqueByCode(orderElementCode);
             workReportLine.setOrderElement(orderElement);
         } catch (InstanceNotFoundException e) {
-            throw new ValidationException(
-                    _("There is no task with this code"));
+            throw new ValidationException("There is no task with this code");
         }
 
         /* Step 3.4: Update the type of work hours. */
@@ -520,7 +516,7 @@ public final class WorkReportConverter {
                 workReportLine.setTypeOfWorkHours(typeOfWorkHours);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no type of work hours with this code"));
+                        "There is no type of work hours with this code");
             }
         }
 
@@ -553,7 +549,7 @@ public final class WorkReportConverter {
                     /* Step 3.1: requires each description value DTO to have a code. */
                 if (StringUtils.isBlank(valueDTO.fieldName)) {
                     throw new ValidationException(
-                            _("missing field name in a description value"));
+                            "missing field name in a description value");
                 }
 
                 try {
@@ -561,8 +557,8 @@ public final class WorkReportConverter {
                         .getDescriptionValueByFieldName(valueDTO.fieldName);
                     value.setValue(StringUtils.trim(valueDTO.value));
                 } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        _("work report have not any description value with this field name"));
+                    throw new ValidationException(
+                            "work report have not any description value with this field name");
                 }
             }
         }

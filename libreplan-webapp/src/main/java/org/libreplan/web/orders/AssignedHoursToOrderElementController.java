@@ -159,4 +159,8 @@ public class AssignedHoursToOrderElementController extends
         }
     }
 
+    public String getCurrencySymbol() {
+        return Util.getCurrencySymbol();
+    }
+
 }

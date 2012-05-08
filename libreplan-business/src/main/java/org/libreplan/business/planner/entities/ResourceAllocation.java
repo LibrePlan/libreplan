@@ -209,7 +209,38 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public static AllocationsSpecified allocating(
             List<ResourcesPerDayModification> resourceAllocations) {
+        sortResourceAllocations(resourceAllocations);
         return new AllocationsSpecified(resourceAllocations);
+    }
+
+    /**
+     * Specific allocations should be done first in order to generic allocations
+     * selects the less charged resources if there are several allocations in
+     * the same task
+     *
+     * @param resourceAllocations
+     *            Sorted with specific allocations before generic ones
+     */
+    private static void sortResourceAllocations(
+            List<ResourcesPerDayModification> resourceAllocations) {
+        Collections.sort(resourceAllocations,
+                new Comparator<ResourcesPerDayModification>() {
+
+                    @Override
+                    public int compare(ResourcesPerDayModification o1,
+                            ResourcesPerDayModification o2) {
+                        if (o1.isSpecific() && o2.isSpecific()) {
+                            return 0;
+                        }
+                        if (o1.isSpecific()) {
+                            return -1;
+                        }
+                        if (o2.isSpecific()) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                });
     }
 
     private static void checkStartLessOrEqualToEnd(IntraDayDate startInclusive,
@@ -2123,7 +2154,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         getDayAssignmentsState().detachAssignments();
     }
 
-    void associateAssignmentsToResource() {
+    public void associateAssignmentsToResource() {
         for (DayAssignment dayAssignment : getAssignments()) {
             dayAssignment.associateToResource();
         }

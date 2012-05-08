@@ -73,7 +73,7 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.planner.order.PlanningStateCreator.IAllocationCriteria;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
-import org.libreplan.web.planner.order.PlanningStateCreator.RelatedWithAnyOf;
+import org.libreplan.web.planner.order.PlanningStateCreator.RelatedWith;
 import org.libreplan.web.planner.order.PlanningStateCreator.RelatedWithResource;
 import org.libreplan.web.planner.order.PlanningStateCreator.SpecificRelatedWithCriterionOnInterval;
 import org.libreplan.web.planner.order.PlanningStateCreator.TaskOnInterval;
@@ -461,8 +461,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                             relatedWith,
                             asDate(parameters.getInitDateFilter()),
                             asDate(parameters.getEndDateFilter()));
-            return doReplacementsIfNeeded(result,
-                    and(onInterval(), new RelatedWithAnyOf(relatedWith)));
+            return doReplacementsIfNeeded(result);
         }
 
         private Map<Criterion, List<ResourceAllocation<?>>> withAssociatedSpecific(
@@ -494,19 +493,19 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     resourceAllocationDAO.findGenericAllocationsByCriterion(
                             getCurrentScenario(),
                             asDate(parameters.getInitDateFilter()),
-                            asDate(parameters.getEndDateFilter())),
-                    onInterval());
+                            asDate(parameters.getEndDateFilter())));
         }
 
         private Map<Criterion, List<GenericResourceAllocation>> doReplacementsIfNeeded(
-                Map<Criterion, List<GenericResourceAllocation>> map,
-                IAllocationCriteria criteria) {
+                Map<Criterion, List<GenericResourceAllocation>> map) {
             if (!parameters.thereIsCurrentOrder()) {
                 return map;
             }
             Map<Criterion, List<GenericResourceAllocation>> result = new HashMap<Criterion, List<GenericResourceAllocation>>();
             for (Entry<Criterion, List<GenericResourceAllocation>> each : map
                     .entrySet()) {
+                IAllocationCriteria criteria = and(onInterval(),
+                        new RelatedWith(each.getKey()));
                 List<ResourceAllocation<?>> replaced = parameters
                         .getPlanningState().replaceByCurrentOnes(
                                 each.getValue(), criteria);

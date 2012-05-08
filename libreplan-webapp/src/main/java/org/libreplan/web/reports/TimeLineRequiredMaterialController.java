@@ -185,6 +185,8 @@ public class TimeLineRequiredMaterialController extends
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
         result.put("status", getSelectedStatusName());
+        result.put("currencySymbol", Util.getCurrencySymbol());
+
         return result;
     }
 
