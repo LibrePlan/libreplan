@@ -125,6 +125,10 @@
                                     <label value="${i18n:_('Overtime ratio')}:"/>
                                     <label id="lblOvertimeRatio" />
                                 </row>
+                                <row>
+                                    <label value="${i18n:_('Availability ratio')}:"/>
+                                    <label id="lblAvailabilityRatio" />
+                                </row>
                             </rows>
                         </grid>
                     </hbox>

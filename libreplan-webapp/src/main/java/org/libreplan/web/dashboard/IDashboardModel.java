@@ -83,4 +83,7 @@ interface IDashboardModel {
     // (Load + Overload) / Load
     BigDecimal getOvertimeRatio();
 
+    // Load / Capacity
+    BigDecimal getAvailabilityRatio();
+
 }

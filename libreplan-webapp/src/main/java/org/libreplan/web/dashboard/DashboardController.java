@@ -63,6 +63,7 @@ public class DashboardController extends GenericForwardComposer {
     private Grid gridTasksSummary;
     private Grid gridMarginWithDeadline;
     private Label lblOvertimeRatio;
+    private Label lblAvailabilityRatio;
 
     private org.zkoss.zk.ui.Component costStatus;
 
@@ -90,6 +91,7 @@ public class DashboardController extends GenericForwardComposer {
                 renderEstimationAccuracy();
                 renderCostStatus(order);
                 renderOvertimeRatio();
+                renderAvailabilityRatio();
             }
             showCharts();
         } else {
@@ -100,6 +102,11 @@ public class DashboardController extends GenericForwardComposer {
     private void renderOvertimeRatio() {
         lblOvertimeRatio.setValue(String.format("%.2f", dashboardModel
                 .getOvertimeRatio().doubleValue()));
+    }
+
+    private void renderAvailabilityRatio() {
+        lblAvailabilityRatio.setValue(String.format("%.2f", dashboardModel
+                .getAvailabilityRatio().doubleValue()));
     }
 
     private void renderCostStatus(Order order) {

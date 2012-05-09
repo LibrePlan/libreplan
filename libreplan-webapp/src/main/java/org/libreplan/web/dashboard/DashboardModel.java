@@ -64,6 +64,9 @@ import org.springframework.stereotype.Component;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class DashboardModel implements IDashboardModel {
 
+    @Autowired
+    private IOrderResourceLoadCalculator resourceLoadCalculator;
+
     /* Parameters */
     public final static int EA_STRETCHES_PERCENTAGE_STEP = 10;
     public final static int EA_STRETCHES_MIN_VALUE = -100;
@@ -602,9 +605,6 @@ public class DashboardModel implements IDashboardModel {
         return getRootTask() != null;
     }
 
-    @Autowired
-    private IOrderResourceLoadCalculator resourceLoadCalculator;
-
     @Override
     public BigDecimal getOvertimeRatio() {
         EffortDuration load = sumAll(resourceLoadCalculator.getAllLoad());
@@ -626,6 +626,15 @@ public class DashboardModel implements IDashboardModel {
             result = EffortDuration.sum(result, effort);
         }
         return result;
+    }
+
+    @Override
+    public BigDecimal getAvailabilityRatio() {
+        EffortDuration load = sumAll(resourceLoadCalculator.getAllLoad());
+        EffortDuration capacity = sumAll(resourceLoadCalculator
+                .getMaxCapacityOnResources());
+        return load.dividedByAndResultAsBigDecimal(capacity).setScale(2,
+                RoundingMode.HALF_UP);
     }
 
 }
