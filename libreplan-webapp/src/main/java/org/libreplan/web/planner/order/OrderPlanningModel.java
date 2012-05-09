@@ -1191,12 +1191,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 });
     }
 
-    // Soft green
-    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3";
-
-    // Soft red
-    public static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2";
-
     /**
      *
      * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -1206,6 +1200,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
      *         'Resource Load' chart
      */
     private class OrderLoadChartFiller extends LoadChartFiller {
+
+        // Soft green
+        private static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3";
+
+        // Soft red
+        private static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2";
 
         private final Order order;
 
