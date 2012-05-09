@@ -21,6 +21,7 @@
 
 <?page title="${i18n:_('LibrePlan: Subcontracted Tasks')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
