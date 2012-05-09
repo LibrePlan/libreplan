@@ -21,11 +21,13 @@ package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,9 @@ import java.util.Set;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.chart.ContiguousDaysLine;
+import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
+import org.libreplan.business.planner.entities.IOrderResourceLoadCalculator;
 import org.libreplan.business.planner.entities.TaskDeadlineViolationStatusEnum;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -43,6 +48,8 @@ import org.libreplan.business.planner.entities.visitors.AccumulateTasksStatusVis
 import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksEstimationDeviationVisitor;
 import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksLagInCompletionVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
+import org.libreplan.business.workingday.EffortDuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -593,6 +600,32 @@ public class DashboardModel implements IDashboardModel {
     @Override
     public boolean tasksAvailable() {
         return getRootTask() != null;
+    }
+
+    @Autowired
+    private IOrderResourceLoadCalculator resourceLoadCalculator;
+
+    @Override
+    public BigDecimal getOvertimeRatio() {
+        EffortDuration load = sumAll(resourceLoadCalculator.getAllLoad());
+        EffortDuration overload = sumAll(resourceLoadCalculator
+                .getAllOverload());
+        return EffortDuration.sum(load, overload)
+                .dividedByAndResultAsBigDecimal(load)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private EffortDuration sumAll(
+            ContiguousDaysLine<EffortDuration> contiguousDays) {
+        EffortDuration result = EffortDuration.zero();
+        Iterator<OnDay<EffortDuration>> iterator = contiguousDays
+                .iterator();
+        while (iterator.hasNext()) {
+            OnDay<EffortDuration> value = iterator.next();
+            EffortDuration effort = value.getValue();
+            result = EffortDuration.sum(result, effort);
+        }
+        return result;
     }
 
 }

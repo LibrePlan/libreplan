@@ -113,6 +113,20 @@
                     <caption label="${i18n:_('Resources')}" />
                     <hbox>
                         <n:div id="estimation-accuracy" style="height:200px; width:580px;"></n:div>
+
+                        <!-- Overtime ratio -->
+                        <grid style="margin-top: 43px;" width="200px">
+                            <columns sizable="false">
+                                <column width="100px"/>
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Overtime ratio')}:"/>
+                                    <label id="lblOvertimeRatio" />
+                                </row>
+                            </rows>
+                        </grid>
                     </hbox>
                 </groupbox>
 

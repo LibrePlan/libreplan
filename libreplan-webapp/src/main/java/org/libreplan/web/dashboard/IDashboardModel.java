@@ -77,6 +77,10 @@ interface IDashboardModel {
 
     Map<Interval, Integer> calculateTaskCompletion();
 
+    /* Resources KPI: "Overtime Ratio" */
     Map<Interval, Integer> calculateEstimationAccuracy();
+
+    // (Load + Overload) / Load
+    BigDecimal getOvertimeRatio();
 
 }

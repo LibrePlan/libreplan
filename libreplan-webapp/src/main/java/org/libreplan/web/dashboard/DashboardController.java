@@ -62,6 +62,7 @@ public class DashboardController extends GenericForwardComposer {
 
     private Grid gridTasksSummary;
     private Grid gridMarginWithDeadline;
+    private Label lblOvertimeRatio;
 
     private org.zkoss.zk.ui.Component costStatus;
 
@@ -88,11 +89,17 @@ public class DashboardController extends GenericForwardComposer {
                 renderMarginWithDeadline();
                 renderEstimationAccuracy();
                 renderCostStatus(order);
+                renderOvertimeRatio();
             }
             showCharts();
         } else {
             hideCharts();
         }
+    }
+
+    private void renderOvertimeRatio() {
+        lblOvertimeRatio.setValue(String.format("%.2f", dashboardModel
+                .getOvertimeRatio().doubleValue()));
     }
 
     private void renderCostStatus(Order order) {
