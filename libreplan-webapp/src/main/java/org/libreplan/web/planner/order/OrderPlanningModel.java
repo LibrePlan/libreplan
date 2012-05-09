@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +43,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.common.AdHocTransactionService;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
@@ -56,12 +54,9 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.chart.ContiguousDaysLine;
-import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
-import org.libreplan.business.planner.chart.ResourceLoadChartData;
-import org.libreplan.business.planner.entities.DayAssignment;
-import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.ICostCalculator;
 import org.libreplan.business.planner.entities.IOrderEarnedValueCalculator;
+import org.libreplan.business.planner.entities.IOrderResourceLoadCalculator;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
@@ -261,6 +256,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     @Autowired
     private IOrderEarnedValueCalculator earnedValueCalculator;
+
+    @Autowired
+    private IOrderResourceLoadCalculator resourceLoadCalculator;
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
@@ -1193,10 +1191,20 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 });
     }
 
-    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3"; // Soft
-    // green
-    public static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2"; // Soft red
+    // Soft green
+    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3";
 
+    // Soft red
+    public static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2";
+
+    /**
+     *
+     * @author Óscar González Fernández <ogonzalez@igalia.com>
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     *         Calculates 'Resource Load' values and set them in the Order
+     *         'Resource Load' chart
+     */
     private class OrderLoadChartFiller extends LoadChartFiller {
 
         private final Order order;
@@ -1212,25 +1220,18 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         @Override
         protected Plotinfo[] getPlotInfos(Interval interval) {
-            List<DayAssignment> orderDayAssignments = order
-                    .getDayAssignments(FilterType.WITHOUT_DERIVED);
-            ContiguousDaysLine<List<DayAssignment>> orderAssignments = ContiguousDaysLine
-                    .byDay(orderDayAssignments);
-            ContiguousDaysLine<List<DayAssignment>> allAssignments = allAssignments(orderAssignments);
-            ContiguousDaysLine<List<DayAssignment>> filteredAssignments = filterAllAssignmentsByOrderResources(
-                    allAssignments, orderAssignments);
+            resourceLoadCalculator.setOrder(order, planningState.getAssignmentsCalculator());
 
-            ContiguousDaysLine<EffortDuration> maxCapacityOnResources = orderAssignments
-                    .transform(ResourceLoadChartData
-                            .extractAvailabilityOnAssignedResources());
-            ContiguousDaysLine<EffortDuration> orderLoad = orderAssignments
-                    .transform(ResourceLoadChartData.extractLoad());
-            ContiguousDaysLine<EffortDuration> allLoad = filteredAssignments
-                    .transform(ResourceLoadChartData.extractLoad());
-            ContiguousDaysLine<EffortDuration> orderOverload = orderAssignments
-                    .transform(ResourceLoadChartData.extractOverload());
-            ContiguousDaysLine<EffortDuration> allOverload = filteredAssignments
-                    .transform(ResourceLoadChartData.extractOverload());
+            ContiguousDaysLine<EffortDuration> maxCapacityOnResources = resourceLoadCalculator
+                    .getMaxCapacityOnResources();
+            ContiguousDaysLine<EffortDuration> orderLoad = resourceLoadCalculator
+                    .getOrderLoad();
+            ContiguousDaysLine<EffortDuration> allLoad = resourceLoadCalculator
+                    .getAllLoad();
+            ContiguousDaysLine<EffortDuration> orderOverload = resourceLoadCalculator
+                    .getOrderOverload();
+            ContiguousDaysLine<EffortDuration> allOverload = resourceLoadCalculator
+                    .getAllOverload();
 
             Plotinfo plotOrderLoad = createPlotinfoFromDurations(
                     groupAsNeededByZoom(toSortedMap(ContiguousDaysLine.min(
@@ -1270,76 +1271,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
             return new Plotinfo[] { plotOtherOverload, plotOrderOverload,
                     plotMaxCapacity, plotOtherLoad, plotOrderLoad };
-        }
-
-        private ContiguousDaysLine<List<DayAssignment>> filterAllAssignmentsByOrderResources(
-                ContiguousDaysLine<List<DayAssignment>> allAssignments,
-                ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
-            List<DayAssignment> filteredAssignments = new ArrayList<DayAssignment>();
-
-            Iterator<OnDay<List<DayAssignment>>> iterator = orderAssignments
-                    .iterator();
-            while (iterator.hasNext()) {
-                OnDay<List<DayAssignment>> onDay = iterator.next();
-                Set<Resource> resources = getResources(onDay.getValue());
-                filteredAssignments.addAll(filterAssignmentsByResource(
-                        allAssignments.get(onDay.getDay()), resources));
-            }
-            return ContiguousDaysLine.byDay(filteredAssignments);
-        }
-
-        private List<DayAssignment> filterAssignmentsByResource(
-                List<DayAssignment> list, Set<Resource> resources) {
-            List<DayAssignment> result = new ArrayList<DayAssignment>();
-            for (DayAssignment each : list) {
-                if (resources.contains(each.getResource())) {
-                    result.add(each);
-                }
-            }
-            return result;
-        }
-
-        private Set<Resource> getResources(List<DayAssignment> dayAssignments) {
-            Set<Resource> resources = new HashSet<Resource>();
-            for (DayAssignment each : dayAssignments) {
-                resources.add(each.getResource());
-            }
-            return resources;
-        }
-
-        private ContiguousDaysLine<List<DayAssignment>> allAssignments(
-                ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
-            if (orderAssignments.isNotValid()) {
-                return ContiguousDaysLine.<List<DayAssignment>> invalid();
-            }
-            return allAssignmentsOnResourcesAt(orderAssignments.getStart(),
-                    orderAssignments.getEndExclusive());
-        }
-
-        private ContiguousDaysLine<List<DayAssignment>> allAssignmentsOnResourcesAt(
-                LocalDate startInclusive, LocalDate endExclusive) {
-            AvailabilityTimeLine.Interval interval = AvailabilityTimeLine.Interval
-                    .create(startInclusive, endExclusive);
-            List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : order
-                    .getResources(FilterType.WITHOUT_DERIVED)) {
-                resourcesDayAssignments.addAll(insideInterval(interval,
-                        planningState.getAssignmentsCalculator()
-                                .getAssignments(resource)));
-            }
-            return ContiguousDaysLine.byDay(resourcesDayAssignments);
-        }
-
-        private List<DayAssignment> insideInterval(
-                AvailabilityTimeLine.Interval interval,
-                List<DayAssignment> assignments) {
-            List<DayAssignment> result = new ArrayList<DayAssignment>();
-            for (DayAssignment each : assignments) {
-                if (interval.includes(each.getDay())) {
-                    result.add(each);
-                }
-            }
-            return result;
         }
 
     }
