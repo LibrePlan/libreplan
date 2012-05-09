@@ -606,8 +606,12 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
 
     @Override
     @Transactional
-    public void confirmRemove(Worker worker) throws InstanceNotFoundException {
+    public void confirmRemove(Worker worker, boolean removeBoundUser)
+            throws InstanceNotFoundException {
         resourceDAO.remove(worker.getId());
+        if (removeBoundUser) {
+            userDAO.remove(worker.getUser());
+        }
     }
 
     public EntityNameEnum getEntityName() {
@@ -649,6 +653,24 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
         if (worker != null) {
             worker.setUser(user);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getBoundUserFromDB(Worker worker) {
+        if (worker != null) {
+            User user = worker.getUser();
+            if (user != null) {
+                try {
+                    User foundUser = userDAO.find(user.getId());
+                    foundUser.getAllRoles().size();
+                    return foundUser;
+                } catch (InstanceNotFoundException e) {
+                    // Do nothing
+                }
+            }
+        }
+        return null;
     }
 
 }

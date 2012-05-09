@@ -947,20 +947,33 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void confirmRemove(Worker worker) {
         try {
+            if (!workerModel.canRemove(worker)) {
+                messages.showMessage(
+                        Level.WARNING,
+                        _("This worker cannot be deleted because it has assignments to projects or imputed hours"));
+                return;
+            }
+
             int status = Messagebox.show(_("Confirm deleting this worker. Are you sure?"), _("Delete"),
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
             if (Messagebox.OK != status) {
                 return;
             }
-            if(workerModel.canRemove(worker)) {
-                workerModel.confirmRemove(worker);
-                messages.showMessage(Level.INFO, _("Worker deleted"));
-                goToList();
+
+            boolean removeBoundUser = false;
+            User user = workerModel.getBoundUserFromDB(worker);
+            if (user != null && !user.isAdministrator()) {
+                removeBoundUser = Messagebox.show(
+                        _("Do you want to remove bound user \"{0}\" too?",
+                                user.getLoginName()), _("Delete bound user"),
+                        Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES;
             }
-            else {
-                messages.showMessage(Level.WARNING,
-                        _("This worker cannot be deleted because it has assignments to projects or imputed hours"));
-            }
+
+            workerModel.confirmRemove(worker, removeBoundUser);
+            messages.showMessage(Level.INFO,
+                    removeBoundUser ? _("Worker and bound user deleted")
+                            : _("Worker deleted"));
+            goToList();
         } catch (InterruptedException e) {
             messages.showMessage(
                     Level.ERROR, e.getMessage());

@@ -134,7 +134,8 @@ public interface IWorkerModel extends IIntegrationEntityModel {
 
     boolean canRemove(Worker worker);
 
-    void confirmRemove(Worker worker) throws InstanceNotFoundException;
+    void confirmRemove(Worker worker, boolean removeBoundUser)
+            throws InstanceNotFoundException;
 
     void removeCalendar();
 
@@ -143,5 +144,7 @@ public interface IWorkerModel extends IIntegrationEntityModel {
     User getBoundUser();
 
     void setBoundUser(User user);
+
+    User getBoundUserFromDB(Worker worker);
 
 }
