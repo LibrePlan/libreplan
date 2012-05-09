@@ -25,9 +25,12 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
@@ -36,6 +39,7 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -45,6 +49,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
@@ -60,6 +65,9 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         IUserCRUDController {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(UserCRUDController.class);
+
+    @Resource
+    private IWorkerCRUDControllerEntryPoints workerCRUD;
 
     private IUserModel userModel;
 
@@ -329,6 +337,26 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             return user.isBound();
         }
         return false;
+    }
+
+    public void goToWorkerEdition() {
+        Worker worker = getUser().getWorker();
+        if (worker != null) {
+            if (showConfirmWorkerEditionDialog() == Messagebox.OK) {
+                workerCRUD.goToEditForm(worker);
+            }
+        }
+    }
+
+    private int showConfirmWorkerEditionDialog() {
+        try {
+            return Messagebox
+                    .show(_("Unsaved changes will be lost. Would you like to continue?"),
+                            _("Confirm worker edition"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

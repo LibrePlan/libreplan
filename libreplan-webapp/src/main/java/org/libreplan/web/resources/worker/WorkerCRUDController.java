@@ -457,14 +457,15 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         messages = new MessagesForUser(messagesContainer);
         setupResourcesCostCategoryAssignmentController(comp);
 
-        final EntryPointsHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
-                .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
-        handler.register(this, page);
         getVisibility().showOnly(listWindow);
         initFilterComponent();
         setupFilterLimitingResourceListbox();
         initializeTabs();
         initUserBindingComponents();
+
+        final EntryPointsHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
+                .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
+        handler.register(this, page);
     }
 
     private void initUserBindingComponents() {
