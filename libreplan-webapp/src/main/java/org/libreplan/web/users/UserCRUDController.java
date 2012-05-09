@@ -53,6 +53,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Groupbox;
 
 /**
  * Controller for CRUD actions over a {@link User}
@@ -76,6 +77,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     private Textbox passwordConfirmationBox;
 
     private Combobox userRolesCombo;
+
+    private Groupbox boundResourceGroupbox;
 
     private Autocomplete profileAutocomplete;
 
@@ -118,6 +121,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         profileAutocomplete = (Autocomplete) editWindow.getFellowIfAny("profileAutocomplete");
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRoles(userRolesCombo);
+        boundResourceGroupbox = (Groupbox) editWindow
+                .getFellowIfAny("boundResourceGroupbox");
 
         final EntryPointsHandler<IUserCRUDController> handler = URLHandlerRegistry
                 .getRedirectorFor(IUserCRUDController.class);
@@ -374,6 +379,11 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void unboundResource() {
+        userModel.unboundResource();
+        Util.reloadBindings(boundResourceGroupbox);
     }
 
 }

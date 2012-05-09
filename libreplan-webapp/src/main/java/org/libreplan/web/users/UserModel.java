@@ -71,6 +71,8 @@ public class UserModel implements IUserModel {
 
     private String clearNewPassword;
 
+    private Worker unboundWorker;
+
     @Override
     @Transactional(readOnly = true)
     public List<User> getUsers() {
@@ -116,6 +118,11 @@ public class UserModel implements IUserModel {
 
         user.validate();
         userDAO.save(user);
+
+        if (unboundWorker != null) {
+            unboundWorker.setUser(null);
+            workerDAO.save(unboundWorker);
+        }
     }
 
     @Override
@@ -126,6 +133,7 @@ public class UserModel implements IUserModel {
     @Override
     public void initCreate() {
         this.user = User.create();
+        this.unboundWorker = null;
     }
 
     @Override
@@ -134,6 +142,7 @@ public class UserModel implements IUserModel {
         Validate.notNull(user);
         this.user = getFromDB(user);
         this.setClearNewPassword(null);
+        this.unboundWorker = null;
     }
 
     @Transactional(readOnly = true)
@@ -248,6 +257,12 @@ public class UserModel implements IUserModel {
     public boolean isLDAPRolesBeingUsed() {
         return configurationDAO.getConfiguration().getLdapConfiguration()
                 .getLdapSaveRolesDB();
+    }
+
+    @Override
+    public void unboundResource() {
+        unboundWorker = user.getWorker();
+        user.setWorker(null);
     }
 
 }

@@ -93,7 +93,7 @@
                     </grid>
                     </groupbox>
 
-                    <groupbox closable="false">
+                    <groupbox closable="false" id="boundResourceGroupbox">
                     <caption label="${i18n:_('Bound resource')}" />
                     <grid fixedLayout="false" span="true">
                         <columns>
@@ -113,6 +113,9 @@
                     </grid>
                     <button label="${i18n:_('Go to worker edition window')}"
                         onClick="controller.goToWorkerEdition();"
+                        visible="@{controller.bound}" />
+                    <button label="${i18n:_('Unbound resource')}"
+                        onClick="controller.unboundResource();"
                         visible="@{controller.bound}" />
                     </groupbox>
 
