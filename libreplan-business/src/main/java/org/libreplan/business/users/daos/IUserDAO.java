@@ -83,8 +83,6 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
 
     public List<User> findByLastConnectedScenario(Scenario scenario);
 
-    List<OrderAuthorization> getOrderAuthorizationsByUser(User user);
-
     /**
      * Returns the list of {@link User}s not bound to any {@link Worker} yet,
      * plus the {@link User} bound to the {@link Worker} specified as parameter
@@ -93,5 +91,11 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
     List<User> getUnboundUsers(Worker worker);
 
     User findOnAnotherTransaction(Long id);
+
+    /**
+     * Removes all the {@link OrderAuthorization}s of this {@link User} and then
+     * removes the {@link User} too
+     */
+    void remove(User user) throws InstanceNotFoundException;
 
 }

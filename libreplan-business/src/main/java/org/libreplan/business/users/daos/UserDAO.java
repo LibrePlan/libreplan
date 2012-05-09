@@ -33,6 +33,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserOrderAuthorization;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class UserDAO extends GenericDAOHibernate<User, Long>
     implements IUserDAO {
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -123,8 +127,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
         return c.list();
     }
 
-    @Override
-    public List<OrderAuthorization> getOrderAuthorizationsByUser(User user) {
+    private List<OrderAuthorization> getOrderAuthorizationsByUser(User user) {
         List orderAuthorizations = getSession()
                 .createCriteria(UserOrderAuthorization.class)
                 .add(Restrictions.eq("user", user)).list();
@@ -157,6 +160,17 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
         } catch (InstanceNotFoundException e) {
             return null;
         }
+    }
+
+    @Override
+    public void remove(User user) throws InstanceNotFoundException {
+        List<OrderAuthorization> orderAuthorizations = getOrderAuthorizationsByUser(user);
+        if (!orderAuthorizations.isEmpty()) {
+            for (OrderAuthorization orderAuthorization : orderAuthorizations) {
+                orderAuthorizationDAO.remove(orderAuthorization.getId());
+            }
+        }
+        super.remove(user.getId());
     }
 
 }
