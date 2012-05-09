@@ -22,6 +22,9 @@ package org.libreplan.web.templates.budgettemplates;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.libreplan.business.templates.entities.BudgetLineTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.tree.EntitiesTree;

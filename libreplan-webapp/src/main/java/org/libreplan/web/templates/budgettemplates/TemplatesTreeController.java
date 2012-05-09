@@ -37,6 +37,7 @@ import org.libreplan.web.common.Util.Setter;
 import org.libreplan.web.tree.EntitiesTree;
 import org.libreplan.web.tree.TreeController;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -132,6 +133,23 @@ public class TemplatesTreeController extends
                 @Override
                 public void set(String value) {
                     element.setCode(value);
+                    model.notifyUpdate(element);
+                }
+            });
+            textBoxCode.setConstraint(new Constraint() {
+                @Override
+                public void validate(Component comp, Object value)
+                        throws WrongValueException {
+                    if(value == null || value.equals("")) {
+                        throw new WrongValueException(
+                                comp,
+                                _("Code should not be empty"));
+                    }
+                    if (!model.checkValidCode(element, (String) value)) {
+                        throw new WrongValueException(
+                                comp,
+                                _("Code should be unique inside this template"));
+                    }
                 }
             });
             addCell(textBoxCode);

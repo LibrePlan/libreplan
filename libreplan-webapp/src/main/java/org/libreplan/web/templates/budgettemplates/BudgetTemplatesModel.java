@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.libreplan.business.advance.entities.AdvanceAssignmentTemplate;
@@ -73,6 +74,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class BudgetTemplatesModel implements IBudgetTemplatesModel {
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
+
+    private static Map<OrderElementTemplate, String> templateElementsAndCodes;
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -202,11 +205,20 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
     }
 
     private void loadAssociatedData(OrderElementTemplate template) {
+        setupTemplatesMap(template);
         loadAdvanceAssignments(template);
         loadQualityForms(template);
         loadLabels(template);
         loadCriterionRequirements(template);
         getOrderElementsOnConversation().initialize(template);
+    }
+
+    @Transactional(readOnly = true)
+    private void setupTemplatesMap(OrderElementTemplate root) {
+        templateElementsAndCodes.put(root, root.getCode());
+        for(OrderElementTemplate child : root.getAllChildren()) {
+            templateElementsAndCodes.put(child, child.getCode());
+        }
     }
 
     private static void loadCriterionRequirements(OrderElementTemplate orderElement) {
@@ -266,6 +278,7 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
         loadCriterions();
         getLabelsOnConversation().initializeLabels();
         getQualityFormsOnConversation().initialize();
+        templateElementsAndCodes = new HashMap<OrderElementTemplate, String>();
     }
 
     private void loadCriterions() {
@@ -357,5 +370,20 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
             throw new IllegalArgumentException(_("the code must not be empty"));
         }
         // TODO complete with unique validation
+    }
+
+    @Override
+    public void notifyUpdate(OrderElementTemplate element) {
+        templateElementsAndCodes.put(element, element.getCode());
+    }
+
+    @Override
+    public boolean checkValidCode(OrderElementTemplate element, String code) {
+        for(Entry<OrderElementTemplate, String> entry : templateElementsAndCodes.entrySet()) {
+            if(entry.getValue().equals(code) && !entry.getKey().equals(element)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

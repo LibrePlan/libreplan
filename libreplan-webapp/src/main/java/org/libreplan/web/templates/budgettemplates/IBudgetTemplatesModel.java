@@ -18,6 +18,7 @@
  */
 package org.libreplan.web.templates.budgettemplates;
 
+import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.templates.ITemplatesModel;
 
 /**
@@ -25,5 +26,9 @@ import org.libreplan.web.templates.ITemplatesModel;
  *
  */
 public interface IBudgetTemplatesModel extends ITemplatesModel {
+
+    void notifyUpdate(OrderElementTemplate element);
+
+    boolean checkValidCode(OrderElementTemplate element, String code);
 
 }
