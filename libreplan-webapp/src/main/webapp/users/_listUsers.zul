@@ -3,7 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
-  Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2010-2012 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +21,8 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Users List')}">
     <newdatasortablegrid id="listing" model="@{controller.users}" mold="paging"
-        pageSize="10" sclass="clickable-rows">
+        pageSize="10" sclass="clickable-rows"
+        rowRenderer="@{controller.usersRenderer}">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('User login name')}" sort="auto(loginName)" />
             <newdatasortablecolumn label="${i18n:_('Disabled')}" />
@@ -29,26 +30,6 @@
             <newdatasortablecolumn label="${i18n:_('Authentication type')}" />
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
-        <rows>
-            <row self="@{each='user'}" value="@{user}" onClick="controller.goToEditForm(self.value);">
-                <label value="@{user.loginName}" />
-                <checkbox checked="@{user.disabled}" disabled="true" />
-                <checkbox checked="@{user.administrator}" disabled="true" />
-                <label value="@{user.authenticationType}" />
-                <hbox>
-                    <button sclass="icono" image="/common/img/ico_editar1.png"
-                        hoverImage="/common/img/ico_editar.png"
-                        tooltiptext="${i18n:_('Edit')}"
-                        onClick="controller.goToEditForm(self.parent.parent.value);">
-                    </button>
-                    <button sclass="icono" image="/common/img/ico_borrar1.png"
-                        hoverImage="/common/img/ico_borrar.png"
-                        tooltiptext="${i18n:_('Delete')}"
-                        onClick="controller.confirmDelete(self.parent.parent.value);">
-                    </button>
-                </hbox>
-            </row>
-        </rows>
     </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
         label="${i18n:_('Create')}" sclass="create-button global-action" >

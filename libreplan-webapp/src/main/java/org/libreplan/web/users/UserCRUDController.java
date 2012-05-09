@@ -73,6 +73,32 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
+    private RowRenderer usersRenderer = new RowRenderer() {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            final User user = (User) data;
+            row.setValue(user);
+
+            Util.appendLabel(row, user.getLoginName());
+            Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
+            Util.appendLabel(row, user.isAdministrator() ? _("Yes") : _("No"));
+            Util.appendLabel(row, getAuthenticationType(user));
+
+            Util.appendOperationsAndOnClickEvent(row, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToEditForm(user);
+                }
+            }, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    confirmDelete(user);
+                }
+            });
+        }
+    };
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -258,6 +284,25 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                 row.appendChild(removeButton);
             }
         };
+    }
+
+    public String getAuthenticationType() {
+        User user = getUser();
+        if (user != null) {
+            return getAuthenticationType(user);
+        }
+        return "";
+    }
+
+    private String getAuthenticationType(User user) {
+        if (user.isLibrePlanUser()) {
+            return _("Database");
+        }
+        return _("LDAP");
+    }
+
+    public RowRenderer getUsersRenderer() {
+        return usersRenderer;
     }
 
 }

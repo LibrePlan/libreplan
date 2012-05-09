@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -49,8 +49,11 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.api.Checkbox;
@@ -689,6 +692,32 @@ public class Util {
                     + specialChar + "'");
         }
         return currencySymbol;
+    }
+
+    /**
+     * Appends the <code>text</code> as a {@link Label} into the specified
+     * {@link Row}.
+     */
+    public static void appendLabel(Row row, String text) {
+        row.appendChild(new Label(text));
+    }
+
+    /**
+     * Appends a edit button and a remove button to the {@link Row} inside a
+     * {@link Hbox} and adds the <code>ON_CLICK</code> event over the
+     * {@link Row} for the edit operation.<br />
+     *
+     * The edit button will call the <code>editButtonListener</code> when
+     * clicked and the remove button the <code>removeButtonListener</code>.
+     */
+    public static void appendOperationsAndOnClickEvent(Row row,
+            EventListener editButtonListener, EventListener removeButtonListener) {
+        Hbox hbox = new Hbox();
+        hbox.appendChild(Util.createEditButton(editButtonListener));
+        hbox.appendChild(Util.createRemoveButton(removeButtonListener));
+        row.appendChild(hbox);
+
+        row.addEventListener(Events.ON_CLICK, editButtonListener);
     }
 
 }
