@@ -2,7 +2,7 @@
 
 . ./rest-common-env.sh
 
-printf "Login name: "
+printf "Username: "
 read loginName
 printf "Password: "
 read password

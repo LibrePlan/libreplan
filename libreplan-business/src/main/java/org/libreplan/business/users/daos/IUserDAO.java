@@ -39,34 +39,36 @@ import org.libreplan.business.users.entities.User;
 public interface IUserDAO extends IGenericDAO<User, Long>{
 
     /**
-     * NOTE: Login name comparison is case-insensitive.
+     * NOTE: Username comparison is case-insensitive.
      */
     public User findByLoginName(String loginName)
         throws InstanceNotFoundException;
 
     /**
-     * NOTE: Login name comparison is case-insensitive, and the method is
-     * executed in another transaction.
+     * NOTE: Username comparison is case-insensitive, and the method is executed
+     * in another transaction.
      */
     public User findByLoginNameAnotherTransaction(String loginName)
         throws InstanceNotFoundException;
 
     /**
-     * NOTE: Login name comparison is case-insensitive.
+     * NOTE: Username comparison is case-insensitive.
      */
     public boolean existsByLoginName(String loginName);
 
     /**
-     * NOTE: Login name comparison is case-insensitive, and the method is
-     * executed in another transaction.
+     * NOTE: Username comparison is case-insensitive, and the method is executed
+     * in another transaction.
      */
     public boolean existsByLoginNameAnotherTransaction(String loginName);
 
     /**
      * Finds a User entity by its loginName, among those with the disabled
      * attribute set to false.
-     * @param loginName loginName to perform the search. NOTE: Login name
-     * comparison is case-insensitive.
+     *
+     * @param loginName
+     *            loginName to perform the search. NOTE: Username comparison is
+     *            case-insensitive.
      * @return a {@link User} object.
      * @throws InstanceNotFoundException
      */

@@ -71,7 +71,7 @@ function profileAssign($account, $password, $profile){
 }
 
 function accountsForm($name, $password, $profile) {
-    _setValue(_textbox(0, _near(_span("Login name"))), $name);
+    _setValue(_textbox(0, _near(_span("Username"))), $name);
     _setValue(_password(0, _near(_span("Password"))), $password);
     _setValue(_password(0, _near(_span("Password confirmation"))), $password);
     _click(_textbox(0, _near(_cell("Add role"))));

@@ -63,8 +63,8 @@ public class DBUserDetailsService implements UserDetailsService {
         try {
             user = userDAO.findByLoginName(loginName);
         } catch (InstanceNotFoundException e) {
-            throw new UsernameNotFoundException(_("User with login name " +
-                "'{0}': not found", loginName));
+            throw new UsernameNotFoundException(_(
+                    "User with username '{0}': not found", loginName));
         }
 
         Scenario scenario = user.getLastConnectedScenario();

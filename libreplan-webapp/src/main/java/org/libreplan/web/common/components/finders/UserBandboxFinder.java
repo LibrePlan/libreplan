@@ -44,7 +44,7 @@ public class UserBandboxFinder extends BandboxFinder implements IBandboxFinder {
     @Autowired
     private IUserDAO userDAO;
 
-    private final String headers[] = { _("Login name"), _("Full name") };
+    private final String headers[] = { _("Username"), _("Full name") };
 
     /**
      * Forces to mark the string as needing translation

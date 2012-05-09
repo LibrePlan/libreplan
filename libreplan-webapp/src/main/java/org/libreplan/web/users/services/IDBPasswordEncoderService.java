@@ -36,7 +36,7 @@ public interface IDBPasswordEncoderService {
 
     /**
      * Encodes a clear password. The second parameter (which must be the
-     * login name) may be used as a salt.
+     * username) may be used as a salt.
      */
     public String encodePassword(String clearPassword, String loginName);
 

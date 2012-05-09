@@ -137,7 +137,7 @@
                                 </columns>
                                 <rows>
                                     <row>
-                                        <label value="${i18n:_('Login name')}" />
+                                        <label value="${i18n:_('Username')}" />
                                         <textbox id="loginName" width="300px" />
                                     </row>
                                     <row>

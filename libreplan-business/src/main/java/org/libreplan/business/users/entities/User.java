@@ -110,7 +110,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return create(new User(loginName, password, email));
     }
 
-    @NotEmpty(message = "login name not specified")
+    @NotEmpty(message = "username not specified")
     public String getLoginName() {
         return loginName;
     }
@@ -208,7 +208,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return isInRole(UserRole.ROLE_ADMINISTRATION);
     }
 
-    @AssertTrue(message = "login name is already being used by another user")
+    @AssertTrue(message = "username is already being used by another user")
     public boolean checkConstraintUniqueLoginName() {
 
         IUserDAO userDAO = Registry.getUserDAO();
