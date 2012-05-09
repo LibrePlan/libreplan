@@ -409,10 +409,9 @@ public class MoneyCostCalculatorTest {
         return expenseSheet;
     }
 
-    private ExpenseSheetLine createExpenseSheetLine(BigDecimal value, String concept,
-            int indiceOrder) {
+    private ExpenseSheetLine createExpenseSheetLine(BigDecimal value, String concept, int indexOrder) {
         ExpenseSheetLine expenseSheetLine = ExpenseSheetLine.create(value, concept,
-                new LocalDate(), orderElements.get(indiceOrder));
+                new LocalDate(), orderElements.get(indexOrder));
         expenseSheetLine.setCode("default-expense-sheet-line-" + UUID.randomUUID());
         expenseSheetLine.setResource(resource);
         expenseSheetLine.setExpenseSheet(expenseSheet);
@@ -433,9 +432,9 @@ public class MoneyCostCalculatorTest {
         givenExpenseSheetLines(1);
     }
 
-    private void givenExpenseSheetLines(int indiceOrder) {
-        createExpenseSheetLine(BigDecimal.TEN, "expense-sheet-line-concept-1", indiceOrder);
-        createExpenseSheetLine(new BigDecimal(55), "expense-sheet-line-concept-1", indiceOrder);
+    private void givenExpenseSheetLines(int indexOrder) {
+        createExpenseSheetLine(BigDecimal.TEN, "expense-sheet-line-concept-1", indexOrder);
+        createExpenseSheetLine(new BigDecimal(55), "expense-sheet-line-concept-1", indexOrder);
     }
 
     private void saveExpensesSheetLines() {
@@ -472,8 +471,7 @@ public class MoneyCostCalculatorTest {
                     assertThat(moneyCostCalculator.getExpensesMoneyCost(orderElement),
                             equalTo(new BigDecimal(65).setScale(2)));
                 } catch (InstanceNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new RuntimeException();
                 }
                 return null;
             }
@@ -505,8 +503,7 @@ public class MoneyCostCalculatorTest {
                     assertThat(moneyCostCalculator.getExpensesMoneyCost(orderElement),
                             equalTo(new BigDecimal(65).setScale(2)));
                 } catch (InstanceNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new RuntimeException();
                 }
                 return null;
             }
