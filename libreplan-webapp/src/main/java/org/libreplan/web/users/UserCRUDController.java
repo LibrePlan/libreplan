@@ -84,6 +84,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
             Util.appendLabel(row, user.isAdministrator() ? _("Yes") : _("No"));
             Util.appendLabel(row, getAuthenticationType(user));
+            Util.appendLabel(row, user.isBound() ? user.getWorker()
+                    .getShortDescription() : "");
 
             Util.appendOperationsAndOnClickEvent(row, new EventListener() {
                 @Override
