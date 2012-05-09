@@ -352,6 +352,16 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="change-column-description-in-expense_sheet_to-text-in-mysql"
+        author="mrego" dbms="mysql">
+        <comment>
+            Change column description in expense_sheet to TEXT in MySQL.
+            Because of using modifyDataType convert the column in LONGTEXT and
+            this is causing some problems with Hibernate mapping.
+        </comment>
+        <sql>ALTER TABLE expense_sheet MODIFY description TEXT</sql>
+    </changeSet>
+
     <changeSet author="smontes" id="creation-table-expense-sheet-line">
         <createTable tableName="expense_sheet_line">
             <column name="id" type="BIGINT">

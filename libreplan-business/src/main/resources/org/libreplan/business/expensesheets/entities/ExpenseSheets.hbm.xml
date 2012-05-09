@@ -55,7 +55,8 @@
 
 		<property name="total" access="field" column="total" />
 
-		<property name="description" access="field" column="description" />
+		<property name="description" access="field" column="description"
+            type="text" />
 
 		<property name="lastExpenseSheetLineSequenceCode" access="field"
 			column="last_expense_sheet_line_sequence_code" />
