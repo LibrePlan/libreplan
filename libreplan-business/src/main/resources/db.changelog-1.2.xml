@@ -54,13 +54,13 @@
     <changeSet id="rename-column-comunication_type-to-communication_type" author="smontes">
         <comment>Rename column comunication_type to communication_type</comment>
         <renameColumn tableName="customer_communication" oldColumnName="comunication_type"
-        newColumnName="communication_type"/>
+        newColumnName="communication_type" columnDataType="INTEGER" />
     </changeSet>
 
     <changeSet id="rename-column-comunication_date-to-communication_date" author="smontes">
         <comment>Rename column comunication_date to communication_date</comment>
         <renameColumn tableName="customer_communication" oldColumnName="comunication_date"
-        newColumnName="communication_date"/>
+        newColumnName="communication_date" columnDataType="DATETIME" />
     </changeSet>
 
     <changeSet id="rename-table-subcontractor_comunication" author="smontes">
@@ -71,13 +71,13 @@
     <changeSet id="rename-column-comunication_type-on-subcontractor-communication" author="smontes">
         <comment>Rename column comunication_type to communication_type</comment>
         <renameColumn tableName="subcontractor_communication" oldColumnName="comunication_type"
-        newColumnName="communication_type"/>
+        newColumnName="communication_type" columnDataType="INTEGER" />
     </changeSet>
 
     <changeSet id="rename-column-comunication_date-on-subcontractor-communication" author="smontes">
         <comment>Rename column comunication_date to communication_date</comment>
         <renameColumn tableName="subcontractor_communication" oldColumnName="comunication_date"
-        newColumnName="communication_date"/>
+        newColumnName="communication_date" columnDataType="DATETIME" />
     </changeSet>
 
     <changeSet id="rename-table-subcontractor_comunication_values" author="smontes">
@@ -88,7 +88,7 @@
     <changeSet id="rename-column-subcontractor_comunication_id" author="smontes">
         <comment>Rename column subcontractor_comunication_id</comment>
         <renameColumn tableName="subcontractor_communication_values" oldColumnName="subcontractor_comunication_id"
-        newColumnName="subcontractor_communication_id"/>
+        newColumnName="subcontractor_communication_id" columnDataType="BIGINT" />
     </changeSet>
 
 	<changeSet author="smontes" id="creation-deadline-communication">
