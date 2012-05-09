@@ -29,6 +29,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
@@ -55,6 +57,7 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.libreplan.web.resources.search.ResourcePredicate;
+import org.libreplan.web.users.IUserCRUDController;
 import org.libreplan.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
@@ -99,6 +102,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     @Autowired
     private IDBPasswordEncoderService dbPasswordEncoderService;
+
+    @Resource
+    private IUserCRUDController userCRUD;
 
     private Window listWindow;
 
@@ -1090,6 +1096,26 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             return !(worker.isLimitingResource() || worker.isVirtual());
         }
         return false;
+    }
+
+    public void goToUserEdition() {
+        User user = getWorker().getUser();
+        if (user != null) {
+            if (showConfirmUserEditionDialog() == Messagebox.OK) {
+                userCRUD.goToEditForm(user);
+            }
+        }
+    }
+
+    private int showConfirmUserEditionDialog() {
+        try {
+            return Messagebox
+                    .show(_("Unsaved changes will be lost. Would you like to continue?"),
+                            _("Confirm user edition"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

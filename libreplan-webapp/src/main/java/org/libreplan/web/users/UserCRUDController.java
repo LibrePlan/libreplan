@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -53,6 +53,7 @@ import org.zkoss.zul.Textbox;
  * Controller for CRUD actions over a {@link User}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @SuppressWarnings("serial")
 public class UserCRUDController extends BaseCRUDController<User> implements
@@ -76,15 +77,15 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
 
-        final EntryPointsHandler<IUserCRUDController> handler = URLHandlerRegistry
-                .getRedirectorFor(IUserCRUDController.class);
-        handler.register(this, page);
-
         passwordBox = (Textbox) editWindow.getFellowIfAny("password");
         passwordConfirmationBox = (Textbox) editWindow.getFellowIfAny("passwordConfirmation");
         profileAutocomplete = (Autocomplete) editWindow.getFellowIfAny("profileAutocomplete");
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRoles(userRolesCombo);
+
+        final EntryPointsHandler<IUserCRUDController> handler = URLHandlerRegistry
+                .getRedirectorFor(IUserCRUDController.class);
+        handler.register(this, page);
     }
 
     /**
