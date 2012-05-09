@@ -142,7 +142,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 allocationsFinder.lazilyGetResourcesIncluded(),
                 allocationsFinder.lazilyGetAssignmentsShown());
     }
-    
+
 
     @Override
     @Transactional(readOnly = true)
@@ -642,7 +642,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             }
             return result;
         }
-        
+
         private LoadTimeLine buildTimeLine(Collection<Criterion> criterions,
                 Task task, Resource resource, String type,
                 List<GenericResourceAllocation> allocationsSortedByStartDate,
@@ -1043,7 +1043,7 @@ class PeriodBuilderFactory {
         this.initDateFilter = initDateFilter;
         this.endDateFilter = endDateFilter;
     }
-    
+
     public List<LoadPeriod> build(LoadPeriodGeneratorFactory factory, List<? extends ResourceAllocation<?>> sortedByStartDate){
         if (initDateFilter == null && endDateFilter == null) {
             return PeriodsBuilder.build(factory, sortedByStartDate);
@@ -1055,7 +1055,7 @@ class PeriodBuilderFactory {
     private Date asDate(LocalDate date) {
         return ResourceLoadModel.asDate(date);
     }
-    
+
 }
 
 class PeriodsBuilder {

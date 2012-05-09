@@ -75,7 +75,7 @@ interface IDashboardModel {
 
     Map<TaskStatusEnum, Integer> calculateTaskStatus();
 
-    Map<Interval, Integer> calculateTaskCompletation();
+    Map<Interval, Integer> calculateTaskCompletion();
 
     Map<Interval, Integer> calculateEstimationAccuracy();
 

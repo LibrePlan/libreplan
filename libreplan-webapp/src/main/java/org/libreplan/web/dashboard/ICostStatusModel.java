@@ -31,12 +31,14 @@ import org.libreplan.business.orders.entities.Order;
  */
 interface ICostStatusModel {
 
-    BigDecimal getActualCostWorkPerformedAt(LocalDate day);
+    // Actual Cost Work Performed (ACWP)
+    BigDecimal getActualCostWorkPerformedAt(LocalDate date);
 
-    // Budget at Completion (BAC)
+    // Budget At Completion (BAC)
     BigDecimal getBudgetAtCompletion();
 
-    BigDecimal getBudgetedCostWorkPerformedAt(LocalDate day);
+    // Budgeted Cost Work Performed (BCWP)
+    BigDecimal getBudgetedCostWorkPerformedAt(LocalDate date);
 
     // Cost Performance Index (CPI)
     BigDecimal getCostPerformanceIndex(BigDecimal budgetedCost,

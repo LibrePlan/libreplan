@@ -20,12 +20,17 @@
 package org.libreplan.business.test.orders.daos;
 
 import static junit.framework.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.Date;
 import java.util.UUID;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +39,7 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.scenarios.IScenarioManager;
@@ -100,6 +106,56 @@ public class OrderDAOTest {
                 .setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(orderVersion);
         return order;
+    }
+
+    private Order createValidOrderWithDeadlineCommunications(String name) {
+        Order order = createValidOrder(name);
+
+        //create two deadline communications
+        Date date1 = (new Date());
+        Date date2 = (new LocalDate(date1).plusDays(3)).toDateTimeAtStartOfDay().toDate();
+
+        DeadlineCommunication deadlineCommunication1 = DeadlineCommunication.create(date1, null);
+        DeadlineCommunication deadlineCommunication2 = DeadlineCommunication.create(date2, null);
+
+        order.getDeliveringDates().add(deadlineCommunication1);
+        order.getDeliveringDates().add(deadlineCommunication2);
+
+        return order;
+    }
+
+    @Test
+    public void testSaveOrdersWithDeliveringDates() {
+        Order order = createValidOrderWithDeadlineCommunications("test");
+        orderDAO.save(order);
+        orderDAO.flush();
+
+        assertThat(order.getDeliveringDates().size(), equalTo(2));
+
+        DeadlineCommunication dcFirst = order.getDeliveringDates().first();
+        DeadlineCommunication dcLast = order.getDeliveringDates().last();
+
+        assertTrue(dcFirst.getSaveDate().after(dcLast.getSaveDate()));
+
+
+        //A new DeadlineCommunication is placed between the existing communications.
+        Date date = (new LocalDate(dcLast.getSaveDate()).plusDays(2)).toDateTimeAtStartOfDay().toDate();
+        DeadlineCommunication deadlineCommunication = DeadlineCommunication.create(date, null);
+        order.getDeliveringDates().add(deadlineCommunication);
+
+        orderDAO.save(order);
+        orderDAO.flush();
+
+        assertThat(order.getDeliveringDates().size(), equalTo(3));
+
+        dcFirst = order.getDeliveringDates().first();
+        dcLast =  order.getDeliveringDates().last();
+        DeadlineCommunication new_dc = (DeadlineCommunication) order.getDeliveringDates().toArray()[1];
+
+        assertTrue(dcFirst.getSaveDate().after(dcLast.getSaveDate()));
+        assertTrue(dcFirst.getSaveDate().after(new_dc.getSaveDate()));
+        assertFalse(dcLast.equals(new_dc));
+        assertTrue(dcLast.getSaveDate().before(new_dc.getSaveDate()));
     }
 
     @Test

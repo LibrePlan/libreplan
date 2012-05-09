@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 WirelessGalicia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +23,7 @@ package org.libreplan.web.planner.tabs;
 
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.entrypoints.EntryPoint;
 import org.libreplan.web.common.entrypoints.EntryPoints;
@@ -30,6 +32,7 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
  * Entry points for {@link MultipleTabsPlannerController} <br />
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @EntryPoints(page = "/planner/index.zul", registerAs = "globalView")
@@ -64,5 +67,11 @@ public interface IGlobalViewEntryPoints {
 
     @EntryPoint("order_advanced_allocation")
     void goToAdvancedAllocation(Order order);
+
+    @EntryPoint("create_order_from_template")
+    void goToCreateotherOrderFromTemplate(OrderTemplate template);
+
+    @EntryPoint({"order","task"})
+    void goToAdvanceTask(Order order,TaskElement task);
 
 }

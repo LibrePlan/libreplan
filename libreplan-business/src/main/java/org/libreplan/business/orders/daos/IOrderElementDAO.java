@@ -128,4 +128,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
 
     boolean hasImputedExpenseSheet(Long id) throws InstanceNotFoundException;
 
+    OrderElement findByExternalCode(String code) throws InstanceNotFoundException;
+
 }

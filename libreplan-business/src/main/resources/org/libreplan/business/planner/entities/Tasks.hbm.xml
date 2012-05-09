@@ -213,6 +213,22 @@
             </type>
         </property>
 
+		<set name="requiredDeliveringDates" inverse="false" cascade="all-delete-orphan" access="field"
+	        sort="org.libreplan.business.externalcompanies.entities.DeliverDateComparator">
+	        <key column="subcontracted_task_data_id" />
+	        <one-to-many class="org.libreplan.business.planner.entities.SubcontractorDeliverDate" />
+		</set>
+
+		<set name="subcontractorCommunications" inverse="true" cascade="delete" access="field">
+	        <key column="subcontracted_task_data" />
+	        <one-to-many class="org.libreplan.business.planner.entities.SubcontractorCommunication" />
+		</set>
+
+		<set name="endDatesCommunicatedFromSubcontractor" inverse="false" cascade="all-delete-orphan" access="field"
+	        sort="org.libreplan.business.externalcompanies.entities.EndDateCommunicationComparator">
+	        <key column="subcontracted_task_data_id" />
+	        <one-to-many class="org.libreplan.business.externalcompanies.entities.EndDateCommunication" />
+		</set>
     </class>
 
 </hibernate-mapping>

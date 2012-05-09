@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
@@ -46,6 +48,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
@@ -282,10 +285,22 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         forceLoadCriterionRequirements(order);
         forceLoadCalendar(this.getCalendar());
         forceLoadCustomer(order.getCustomer());
+        forceLoadDeliveringDates(order);
         forceLoadLabels(order);
         forceLoadMaterialAssignments(order);
         forceLoadTaskQualityForms(order);
+        forceLoadEndDateCommunicationToCustomer(order);
         initOldCodes();
+    }
+
+    private void forceLoadEndDateCommunicationToCustomer(Order order) {
+        if (order != null) {
+            order.getEndDateCommunicationToCustomer().size();
+        }
+    }
+
+    private void forceLoadDeliveringDates(Order order){
+        order.getDeliveringDates().size();
     }
 
     private void forceLoadLabels(OrderElement orderElement) {
@@ -862,6 +877,49 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void removeAskedEndDate(EndDateCommunication endDate) {
+        Order order = (Order) getOrder();
+        if (getOrder() != null && endDate != null) {
+            order.removeAskedEndDate(endDate);
+        }
+    }
+
+    @Override
+    public SortedSet<EndDateCommunication> getEndDates() {
+        Order order = (Order) getOrder();
+        if (getOrder() != null) {
+            return order.getEndDateCommunicationToCustomer();
+        }
+        return new TreeSet<EndDateCommunication>();
+    }
+
+    @Override
+    public void addAskedEndDate(Date value) {
+        if (getOrder() != null) {
+            Order order = (Order) getOrder();
+
+            EndDateCommunication askedEndDate = EndDateCommunication.create(
+                    new Date(), value, null);
+            order.addAskedEndDate(askedEndDate);
+        }
+    }
+
+    @Override
+    public boolean alreadyExistsRepeatedEndDate(Date value) {
+        if(getOrder() != null){
+            Order order = (Order) getOrder();
+            if (order.getEndDateCommunicationToCustomer().isEmpty()) {
+                return false;
+            }
+
+            EndDateCommunication endDateCommunicationToCustomer = order
+                    .getEndDateCommunicationToCustomer().first();
+            Date currentEndDate = endDateCommunicationToCustomer.getEndDate();
+            return (currentEndDate.compareTo(value) == 0);
+        }
+        return false;
     }
 
     public boolean isAnyTaskWithConstraint(PositionConstraintType type) {

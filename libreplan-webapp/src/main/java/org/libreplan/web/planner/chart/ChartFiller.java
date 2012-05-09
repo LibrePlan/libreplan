@@ -509,6 +509,12 @@ public abstract class ChartFiller implements IChartFiller {
     }
 
     protected SortedMap<LocalDate, BigDecimal> calculatedValueForEveryDay(
+            SortedMap<LocalDate, BigDecimal> values, Interval interval) {
+        return calculatedValueForEveryDay(values, interval.getStart(),
+                interval.getFinish());
+    }
+
+    protected SortedMap<LocalDate, BigDecimal> calculatedValueForEveryDay(
             SortedMap<LocalDate, BigDecimal> map, Date start, Date finish) {
         return calculatedValueForEveryDay(map, new LocalDate(start),
                 new LocalDate(finish));

@@ -23,6 +23,7 @@ package org.libreplan.web.subcontract;
 import java.util.List;
 
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.web.subcontract.exceptions.ConnectionProblemsException;
 import org.libreplan.web.subcontract.exceptions.UnrecoverableErrorServiceException;
@@ -36,12 +37,11 @@ public interface ISubcontractedTasksModel {
 
     List<SubcontractedTaskData> getSubcontractedTasks();
 
-    String getOrderCode(SubcontractedTaskData subcontractedTaskData);
-
     void sendToSubcontractor(SubcontractedTaskData subcontractedTaskData)
             throws ValidationException, ConnectionProblemsException,
             UnrecoverableErrorServiceException;
 
     String exportXML(SubcontractedTaskData subcontractedTaskData);
 
+    Order getOrder(SubcontractedTaskData subcontractedTaskData);
 }

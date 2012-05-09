@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -307,9 +309,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             resourcesItems.add(subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""));
         }
-        resourcesItems.add(subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
-                subItem(_("Subcontracted Tasks"), "/subcontract/subcontractedTasks.zul", ""),
-                subItem(_("Report Progress"), "/subcontract/reportAdvances.zul", "")));
+        resourcesItems.add(subItem(_("Communications"), "/subcontract/subcontractedTasks.zul", "",
+                subItem(_("Send to subcontractors"), "/subcontract/subcontractedTasks.zul", ""),
+                subItem(_("Received from subcontractors"), "/subcontract/subcontractorCommunications.zul",""),
+                subItem(_("Send to customers"), "/subcontract/reportAdvances.zul", ""),
+                subItem(_("Received from customers"), "/subcontract/customerCommunications.zul","")));
         topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
 
         if (isScenariosVisible()) {

@@ -27,8 +27,11 @@ import java.text.SimpleDateFormat;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -38,6 +41,9 @@ import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
+import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -70,6 +76,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -87,13 +94,13 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
@@ -225,6 +232,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     @Autowired
     private IOrderDAO orderDAO;
 
+    private Grid gridAskedEndDates;
+
+    private EndDatesRenderer endDatesRenderer = new EndDatesRenderer();
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -247,7 +258,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         checkCreationPermissions();
         setupGlobalButtons();
-
     }
 
     private void setupGlobalButtons() {
@@ -1049,6 +1059,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                     }
                 });
 
+        gridAskedEndDates = (Grid) editWindow.getFellow("gridAskedEndDates");
+
     }
 
     public void setupOrderDetails() {
@@ -1340,8 +1352,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         return orderModel.gettooltipText(order);
     }
 
-    public void reloadTotalBudget(Decimalbox decimalboxTotalBudget) {
-        Util.reloadBindings(decimalboxTotalBudget);
+    public void reloadTotalBudget(Label labelTotalBudget) {
+        Util.reloadBindings(labelTotalBudget);
     }
 
     /**
@@ -1528,6 +1540,13 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
+    public SortedSet<DeadlineCommunication> getDeliverDates() {
+        if(getOrder() != null){
+               return getOrder().getDeliveringDates();
+        }
+        return new TreeSet<DeadlineCommunication>(new DeliverDateComparator());
+    }
+
     public Constraint chekValidProjectName() {
         return new Constraint() {
             @Override
@@ -1576,8 +1595,147 @@ public class OrderCRUDController extends GenericForwardComposer {
         };
     }
 
+    public boolean isSubcontractedProject() {
+        return (getOrder() != null) ? (getOrder().getExternalCode() != null)
+                : false;
+    }
+
+    public String getProjectType() {
+        return (isSubcontractedProject()) ? "Subcontracted by client"
+                : "Regular project";
+    }
+
+    public void setCurrentDeliveryDate(Grid listDeliveryDates) {
+        if (getOrder() != null && getOrder().getDeliveringDates() != null
+                && !getOrder().getDeliveringDates().isEmpty()) {
+            DeadlineCommunication lastDeliveryDate = getOrder()
+                    .getDeliveringDates().first();
+            if (listDeliveryDates != null) {
+                listDeliveryDates.renderAll();
+                final Rows rows = listDeliveryDates.getRows();
+                for (Iterator i = rows.getChildren().iterator(); i.hasNext();) {
+                    final Row row = (Row) i.next();
+                    final DeadlineCommunication deliveryDate = (DeadlineCommunication) row
+                            .getValue();
+                    if (deliveryDate.equals(lastDeliveryDate)) {
+                        row.setSclass("current-delivery-date");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    public SortedSet<EndDateCommunication> getEndDates() {
+        return orderModel.getEndDates();
+    }
+
+    public void addAskedEndDate(Datebox newEndDate) {
+        if (newEndDate == null || newEndDate.getValue() == null) {
+            messagesForUser.showMessage(Level.ERROR, _("You must select a valid date. "));
+            return;
+        }
+        if (thereIsSomeCommunicationDateEmpty()) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("It will only be possible to add a end date if all the exiting ones in the table have already been sent to customer.."));
+            return;
+        }
+        if (orderModel.alreadyExistsRepeatedEndDate(newEndDate.getValue())) {
+            messagesForUser.showMessage(Level.ERROR,
+                    _("It already exists a end date with the same date. "));
+            return;
+        }
+        orderModel.addAskedEndDate(newEndDate.getValue());
+        reloadGridAskedEndDates();
+    }
+
+    private void reloadGridAskedEndDates() {
+        Util.reloadBindings(gridAskedEndDates);
+    }
+
+    private boolean thereIsSomeCommunicationDateEmpty() {
+        for (EndDateCommunication endDate : orderModel.getEndDates()) {
+            if (endDate.getCommunicationDate() == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public EndDatesRenderer getEndDatesRenderer() {
+        return this.endDatesRenderer;
+    }
+
+    private class EndDatesRenderer implements RowRenderer {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            EndDateCommunication endDate = (EndDateCommunication) data;
+            row.setValue(endDate);
+
+            appendLabel(row, toString(endDate.getSaveDate(), "dd/MM/yyyy HH:mm"));
+            appendLabel(row, toString(endDate.getEndDate(), "dd/MM/yyyy"));
+            appendLabel(row, toString(endDate.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
+            appendOperations(row, endDate);
+        }
+
+        private String toString(Date date, String precision) {
+            if (date == null) {
+                return "";
+            }
+            return new SimpleDateFormat(precision, Locales.getCurrent()).format(date);
+        }
+
+        private void appendLabel(Row row, String label) {
+            row.appendChild(new Label(label));
+        }
+
+        private void appendOperations(Row row, EndDateCommunication endDate) {
+            Hbox hbox = new Hbox();
+            hbox.appendChild(getDeleteButton(endDate));
+            row.appendChild(hbox);
+        }
+
+        private Button getDeleteButton(final EndDateCommunication endDate) {
+
+            Button deleteButton = new Button();
+            deleteButton.setDisabled(isNotUpdate(endDate));
+            deleteButton.setSclass("icono");
+            deleteButton.setImage("/common/img/ico_borrar1.png");
+            deleteButton.setHoverImage("/common/img/ico_borrar.png");
+            deleteButton.setTooltiptext(_("Delete"));
+            deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    removeAskedEndDate(endDate);
+                }
+            });
+
+            return deleteButton;
+        }
+
+        private boolean isNotUpdate(final EndDateCommunication endDate) {
+            EndDateCommunication lastAskedEndDate = getOrder()
+                    .getEndDateCommunicationToCustomer().first();
+            if ((lastAskedEndDate != null) && (lastAskedEndDate.equals(endDate))) {
+                return (lastAskedEndDate.getCommunicationDate() != null);
+            }
+            return true;
+        }
+    }
+
+    public void removeAskedEndDate(EndDateCommunication endDate) {
+        orderModel.removeAskedEndDate(endDate);
+        reloadGridAskedEndDates();
+    }
+
     public String getMoneyFormat() {
         return Util.getMoneyFormat();
     }
 
+    public String getCurrencySymbol() {
+        return Util.getCurrencySymbol();
+    }
 }

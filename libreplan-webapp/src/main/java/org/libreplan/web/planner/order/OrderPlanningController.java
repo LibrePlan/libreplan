@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2011 WirelessGalicia S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -63,6 +64,7 @@ import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -72,6 +74,7 @@ import org.zkoss.zul.Vbox;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -107,6 +110,8 @@ public class OrderPlanningController implements Composer {
 
     @Autowired
     private OrderCRUDController orderCRUDController;
+
+    private GenericForwardComposer currentControllerToShow;
 
     private Order order;
 
@@ -216,6 +221,7 @@ public class OrderPlanningController implements Composer {
                     + (System.currentTimeMillis() - time) + " ms");
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();
+
         }
     }
 
@@ -363,9 +369,17 @@ public class OrderPlanningController implements Composer {
             if ((foundTask != null) && (foundTaskElement != null)) {
                 IContextWithPlannerTask<TaskElement> contextTask = ContextWithPlannerTask
                         .create(context, foundTask);
-                this.editTaskController
-                        .showEditFormResourceAllocation(contextTask,
-                                foundTaskElement, model.getPlanningState());
+                if (this.getCurrentControllerToShow().equals(
+                        getEditTaskController())) {
+                    this.editTaskController.showEditFormResourceAllocation(
+                            contextTask, foundTaskElement,
+                            model.getPlanningState());
+                } else if (this.getCurrentControllerToShow().equals(
+                        this.getAdvanceAssignmentPlanningController())) {
+                    getAdvanceAssignmentPlanningController().showWindow(
+                            contextTask, foundTaskElement,
+                            model.getPlanningState());
+                }
             }
         }
     }
@@ -376,6 +390,14 @@ public class OrderPlanningController implements Composer {
 
     public AdvanceAssignmentPlanningController getAdvanceAssignmentPlanningController() {
         return advanceAssignmentPlanningController;
+    }
+
+    public void setCurrentControllerToShow(GenericForwardComposer currentControllerToShow) {
+        this.currentControllerToShow = currentControllerToShow;
+    }
+
+    public GenericForwardComposer getCurrentControllerToShow() {
+        return currentControllerToShow;
     }
 
 }

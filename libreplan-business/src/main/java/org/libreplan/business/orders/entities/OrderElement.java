@@ -299,12 +299,31 @@ public abstract class OrderElement extends IntegrationEntity implements
                 //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
                 removeTaskSource(result);
             }
+            if(currentTaskSourceIsNotTheSame()) {
+                //this element was unscheduled and then scheduled again. Its TaskSource has
+                //been recreated but we have to remove the old one.
+                if(!getParent().currentTaskSourceIsNotTheSame()) {
+                    //we only remove the TaskSource if the parent is not in the same situation.
+                    //In case the parent is in the same situation, it will remove the related
+                    //TaskSources in children tasks.
+                    removeTaskSource(result);
+                }
+            }
             result
                     .addAll(synchronizationForSchedulingPoint(schedulingDataForVersion));
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
             removeUnscheduled(result);
             if (wasASchedulingPoint()) {
                 result.add(taskSourceRemoval());
+            }
+            if(currentTaskSourceIsNotTheSame()) {
+                //all the children of this element were unscheduled and then scheduled again,
+                //its TaskSource has been recreated but we have to remove the old one.
+                if(getParent() == null || !getParent().currentTaskSourceIsNotTheSame()) {
+                    //if it's a container node inside another container we could have the
+                    //same problem than in the case of leaf tasks.
+                    result.add(taskSourceRemoval());
+                }
             }
             result
                     .add(synchronizationForSuperelement(schedulingDataForVersion));
@@ -331,6 +350,10 @@ public abstract class OrderElement extends IntegrationEntity implements
         SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
         return SchedulingState.Type.SCHEDULING_POINT == currentVersionOnDB
                 .getSchedulingStateType();
+    }
+
+    protected boolean currentTaskSourceIsNotTheSame() {
+        return getOnDBTaskSource() != getTaskSource();
     }
 
     private List<TaskSourceSynchronization> childrenSynchronizations() {
@@ -742,7 +765,7 @@ public abstract class OrderElement extends IntegrationEntity implements
      * @param newAdvanceAssignment
      * @throws DuplicateAdvanceAssignmentForOrderElementException
      */
-    private void checkAncestorsNoOtherAssignmentWithSameAdvanceType(
+    public void checkAncestorsNoOtherAssignmentWithSameAdvanceType(
             OrderElement orderElement,
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {

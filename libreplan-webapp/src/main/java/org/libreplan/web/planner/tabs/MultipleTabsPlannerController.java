@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -40,8 +42,6 @@ import org.libreplan.web.dashboard.DashboardController;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.orders.OrderCRUDController;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.libreplan.web.planner.company.CompanyPlanningController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
@@ -63,7 +63,6 @@ import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.TabProxy;
-import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.ui.Executions;
@@ -71,7 +70,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
-import org.zkoss.zul.Button;
 
 /**
  * Creates and handles several tabs
@@ -229,6 +227,7 @@ public class MultipleTabsPlannerController implements Composer,
                     public void goToTaskResourceAllocation(Order order,
                             TaskElement task) {
                         orderPlanningController.setShowedTask(task);
+                        orderPlanningController.setCurrentControllerToShow(orderPlanningController.getEditTaskController());
                         getTabsRegistry()
                                 .show(planningTab, changeModeTo(order));
                     }
@@ -473,6 +472,21 @@ public class MultipleTabsPlannerController implements Composer,
     @Override
     public void goToAdvancedAllocation(Order order) {
         getTabsRegistry().show(advancedAllocationTab, changeModeTo(order));
+    }
+
+    @Override
+    public void goToCreateotherOrderFromTemplate(OrderTemplate template) {
+        getTabsRegistry().show(ordersTab);
+        orderCRUDController.showCreateFormFromTemplate(template);
+    }
+
+    @Override
+    public void goToAdvanceTask(Order order,TaskElement task) {
+        orderPlanningController.setShowedTask(task);
+        orderPlanningController
+                .setCurrentControllerToShow(orderPlanningController
+                        .getAdvanceAssignmentPlanningController());
+        getTabsRegistry().show(planningTab, changeModeTo(order));
     }
 
     private IBeforeShowAction changeModeTo(final Order order) {

@@ -33,4 +33,51 @@
         column="company_user" />
 </class>
 
+<!-- CustomerCommunication -->
+<class name="CustomerCommunication" table="customer_communication">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="deadline" access="field"/>
+    <property name="communicationType" access="field" column="communication_type">
+        <type name="org.hibernate.type.EnumType">
+            <param name="enumClass">
+                org.libreplan.business.externalcompanies.entities.CommunicationType
+            </param>
+        </type>
+    </property>
+    <property name="communicationDate" access="field" column="communication_date" />
+    <property name="reviewed" access="field" column="reviewed" />
+    <many-to-one name="order" class="org.libreplan.business.orders.entities.Order" column="order_id" />
+</class>
+
+<!-- DeadlineCommunication -->
+<class name="DeadlineCommunication" table="deadline_communication">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="saveDate" access="field" column="save_date"/>
+    <property name="deliverDate" access="field" column="deliver_date" />
+</class>
+
+<!-- EndDateCommunication -->
+<class name="EndDateCommunication" table="end_date_communication">
+    <id name="id" type="long" access="property">
+        <generator class="hilo">
+            <param name="max_lo">100</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+	<property name="endDate" access="field" column="end_date"/>
+    <property name="saveDate" access="field" column="save_date"/>
+    <property name="communicationDate" access="field" column="communication_date" />
+</class>
 </hibernate-mapping>

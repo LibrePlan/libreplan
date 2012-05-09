@@ -144,6 +144,23 @@
                     <many-to-many column="order_version_id"
                         class="org.libreplan.business.scenarios.entities.OrderVersion"/>
                 </map>
+
+                <set name="customerCommunications" cascade="delete-orphan" inverse="true" >
+                    <key column="order_id" />
+                    <one-to-many class="org.libreplan.business.externalcompanies.entities.CustomerCommunication" />
+                </set>
+
+		        <set name="deliveringDates" inverse="false" cascade="all,delete-orphan" access="field"
+	                sort="org.libreplan.business.externalcompanies.entities.DeliverDateComparator">
+	                    <key column="order_id" />
+	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.DeadlineCommunication" />
+                </set>
+
+				<set name="endDateCommunicationToCustomer" inverse="false" cascade="all,delete-orphan" access="field"
+	                sort="org.libreplan.business.externalcompanies.entities.EndDateCommunicationComparator">
+	                    <key column="order_id" />
+	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.EndDateCommunication" />
+                </set>
             </joined-subclass>
 
         </joined-subclass>

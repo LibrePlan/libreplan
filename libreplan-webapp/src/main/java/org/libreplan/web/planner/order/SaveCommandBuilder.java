@@ -69,6 +69,8 @@ import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.DerivedDayAssignment;
 import org.libreplan.business.planner.entities.DerivedDayAssignmentsContainer;
 import org.libreplan.business.planner.entities.ResourceAllocation;
+import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -119,6 +121,7 @@ import org.zkoss.zul.Messagebox;
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class SaveCommandBuilder {
+
 
     private static final Log LOG = LogFactory.getLog(SaveCommandBuilder.class);
 
@@ -291,6 +294,8 @@ public class SaveCommandBuilder {
                                 }
                             });
                     dontPoseAsTransientObjectAnymore(state.getOrder());
+                    dontPoseAsTransientObjectAnymore(state.getOrder()
+                            .getEndDateCommunicationToCustomer());
                     state.getScenarioInfo().afterCommit();
 
                     if (state.getOrder()
@@ -359,6 +364,7 @@ public class SaveCommandBuilder {
             state.synchronizeTrees();
 
             TaskGroup rootTask = state.getRootTask();
+
             if (rootTask != null) {
                 // This reattachment is needed to ensure that the root task in
                 // the state is the one associated to the transaction's session.
@@ -375,6 +381,7 @@ public class SaveCommandBuilder {
 
             updateTasksRelatedData();
             removeTasksToRemove();
+            loadDataAccessedWithNotPosedAsTransientInOrder(state.getOrder());
             loadDataAccessedWithNotPosedAsTransient(state.getOrder());
             if (state.getRootTask() != null) {
                 loadDependenciesCollectionsForTaskRoot(state.getRootTask());
@@ -812,6 +819,10 @@ public class SaveCommandBuilder {
             }
         }
 
+        private void loadDataAccessedWithNotPosedAsTransientInOrder(Order order) {
+            order.getEndDateCommunicationToCustomer().size();
+        }
+
         private void loadDataAccessedWithNotPosedAsTransient(
                 OrderElement orderElement) {
             orderElement.getDirectAdvanceAssignments().size();
@@ -986,6 +997,7 @@ public class SaveCommandBuilder {
             }
             if (taskElement instanceof Task) {
                 dontPoseAsTransient(((Task) taskElement).getConsolidation());
+                dontPoseAsTransient(((Task) taskElement).getSubcontractedTaskData());
             }
             if (taskElement instanceof TaskGroup) {
                 ((TaskGroup) taskElement).dontPoseAsTransientPlanningData();
@@ -1001,6 +1013,19 @@ public class SaveCommandBuilder {
                 } else {
                     dontPoseAsTransient(((NonCalculatedConsolidation) consolidation)
                             .getNonCalculatedConsolidatedValues());
+                }
+            }
+        }
+
+        private void dontPoseAsTransient(SubcontractedTaskData subcontractedTaskData) {
+            if (subcontractedTaskData != null) {
+                //dontPoseAsTransient - subcontratedTaskData
+                subcontractedTaskData.dontPoseAsTransientObjectAnymore();
+
+                for (SubcontractorDeliverDate subDeliverDate : subcontractedTaskData
+                        .getRequiredDeliveringDates()) {
+                    //dontPoseAsTransient - DeliverDate
+                    subDeliverDate.dontPoseAsTransientObjectAnymore();
                 }
             }
         }

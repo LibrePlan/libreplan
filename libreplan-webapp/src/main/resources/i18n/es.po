@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: libreplan-1.2.4\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
 "POT-Creation-Date: 2012-05-04 13:15+0200\n"
-"PO-Revision-Date: 2012-05-04 11:18+0000\n"
+"PO-Revision-Date: 2012-05-07 19:43+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <rego@igalia.com>\n"
 "Language-Team: Español\n"
 "MIME-Version: 1.0\n"
@@ -3280,7 +3280,7 @@ msgstr "Tipo de horas"
 
 #: libreplan-webapp/src/main/webapp/planner/print_configuration.zul:43
 msgid "Show money cost bar"
-msgstr "Monstrar barra de coste monetario"
+msgstr "Mostrar barra de coste monetario"
 
 #: libreplan-webapp/src/main/java/org/libreplan/ws/resources/impl/ResourceConverter.java:156
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/CriterionType.java:211

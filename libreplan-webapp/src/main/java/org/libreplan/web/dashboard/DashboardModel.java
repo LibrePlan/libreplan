@@ -141,65 +141,64 @@ public class DashboardModel implements IDashboardModel {
     /* Progress KPI: "Global Progress of the Project" */
     @Override
     public BigDecimal getAdvancePercentageByHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getProgressAllByNumHours();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask.getProgressAllByNumHours());
+    }
+
+    private BigDecimal asPercentage(BigDecimal value) {
+        return value != null ? value.multiply(BigDecimal.valueOf(100))
+                : BigDecimal.ZERO;
     }
 
     @Override
     public BigDecimal getExpectedAdvancePercentageByHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup
-                .getTheoreticalProgressByNumHoursForAllTasksUntilNow();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask
+                .getTheoreticalProgressByNumHoursForAllTasksUntilNow());
     }
 
     @Override
     public BigDecimal getCriticalPathProgressByNumHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByNumHours();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask.getCriticalPathProgressByNumHours());
     }
 
     @Override
     public BigDecimal getExpectedCriticalPathProgressByNumHours() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup
-                .getTheoreticalProgressByNumHoursForCriticalPathUntilNow();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask
+                .getTheoreticalProgressByNumHoursForCriticalPathUntilNow());
     }
 
     @Override
     public BigDecimal getCriticalPathProgressByDuration() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup.getCriticalPathProgressByDuration();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask.getCriticalPathProgressByDuration());
     }
 
     @Override
     public BigDecimal getExpectedCriticalPathProgressByDuration() {
-        TaskGroup rootAsTaskGroup = (TaskGroup) getRootTask();
-        if (this.getRootTask() == null) {
+        TaskGroup rootTask = (TaskGroup) getRootTask();
+        if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        BigDecimal ratio = rootAsTaskGroup
-                .getTheoreticalProgressByDurationForCriticalPathUntilNow();
-        return ratio.multiply(BigDecimal.TEN).multiply(BigDecimal.TEN);
+        return asPercentage(rootTask
+                .getTheoreticalProgressByDurationForCriticalPathUntilNow());
     }
 
     /* Time KPI: Margin with deadline */
@@ -353,16 +352,16 @@ public class DashboardModel implements IDashboardModel {
      * @return
      */
     @Override
-    public Map<Interval, Integer> calculateTaskCompletation() {
+    public Map<Interval, Integer> calculateTaskCompletion() {
         Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
         Double max, min;
 
         // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getTaskLagDeviations();
         if (deviations.isEmpty()) {
-            return result;
-        }
-        if (deviations.size() == 1) {
+            max = Double.valueOf(3);
+            min = Double.valueOf(-2);
+        } else if (deviations.size() == 1) {
             max = deviations.get(0).doubleValue() + 3;
             min = deviations.get(0).doubleValue() - 2;
         } else {
@@ -421,9 +420,9 @@ public class DashboardModel implements IDashboardModel {
         // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getEstimationAccuracyDeviations();
         if (deviations.isEmpty()) {
-            return result;
-        }
-        if (deviations.size() == 1) {
+            max = Double.valueOf(30);
+            min = Double.valueOf(-20);
+        } else if (deviations.size() == 1) {
             max = deviations.get(0).doubleValue() + 30;
             min = deviations.get(0).doubleValue() - 20;
         } else {

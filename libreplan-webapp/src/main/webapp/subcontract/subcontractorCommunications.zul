@@ -1,0 +1,79 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2011 WirelessGalicia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Received from subcontractors')}"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+<zk>
+<window self="@{define(content)}"
+        apply="org.libreplan.web.subcontract.SubcontractorCommunicationCRUDController"
+        title="${i18n:_('Communications from subcontractors')}">
+
+    <vbox id="messagesContainer" />
+    <div align="right">
+		<label class="subtitulo" value="${i18n:_('Show :')}" />
+        <listbox id="listFilter" mold="select" rows="1"
+            model="@{controller.filterItems}"
+            selectedItem="@{controller.currentFilterItem}"
+            itemRenderer="org.libreplan.web.common.EnumsListitemRenderer">
+        </listbox>
+        <button label="${i18n:_('Refresh')}" style="margin-top: -4px"
+                        onClick="controller.onApplyFilter(event)"/>
+    </div>
+	<separator bar="false" spacing="20px" orient="horizontal"/>
+	 <grid id="listing"
+        model="@{controller.subcontractorCommunications}"
+        rowRenderer="@{controller.subcontractorCommunicationRenderer}"
+        mold="paging" pageSize="10" fixedLayout="true">
+        <columns>
+            <column label="${i18n:_('Communication Type')}" align="center" width="140px" sort="auto(lower(communicationType))"/>
+            <column label="${i18n:_('Subcontrated task')}" align="center" sort="auto(lower(subcontractedTaskData.task.name))"/>
+            <column label="${i18n:_('Project name')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.task.orderElement.name))"/>
+            <column label="${i18n:_('Project Code')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.task.orderElement.code))"/>
+            <column label="${i18n:_('Company')}" width="150px" align="center" sort="auto(lower(subcontractedTaskData.externalCompany.name))"/>
+            <column label="${i18n:_('Communication Date')}" width="150px" align="center" sort="auto(lower(communicationDate))"/>
+            <column label="${i18n:_('Value')}" width="200px" align="center" sort="auto(lower(lastSubcontractorCommunicationValueDate))"/>
+            <column label="${i18n:_('Reviewed')}" width="80px" align="center"/>
+            <column label="${i18n:_('Operations')}" width="80px" align="center"/>
+        </columns>
+    </grid>
+
+
+    <popup id="pp">
+        <grid id="listingValues" width="300px" fixedLayout="true">
+			<columns>
+                <column label="${i18n:_('Progress %')}" width="150px"/>
+                <column label="${i18n:_('Date')}" width="150px"/>
+            </columns>
+            <rows>
+                <row self="@{each='value'}" value="@{value}">
+                    <label value="@{value.progress}"/>
+                    <label value="@{value.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
+                </row>
+            </rows>
+        </grid>
+	</popup>
+</window>
+</zk>

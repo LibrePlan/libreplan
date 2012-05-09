@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -23,6 +25,7 @@ package org.libreplan.web.test.ws.subcontract;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
@@ -58,17 +61,29 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
+import org.libreplan.business.orders.entities.SchedulingDataForVersion;
+import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
+import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
+import org.libreplan.business.planner.daos.ISubcontractorCommunicationDAO;
+import org.libreplan.business.planner.daos.ITaskElementDAO;
+import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.web.orders.OrderModelTest;
 import org.libreplan.ws.common.api.AdvanceMeasurementDTO;
 import org.libreplan.ws.common.impl.DateConverter;
+import org.libreplan.ws.subcontract.api.EndDateCommunicationToCustomerDTO;
 import org.libreplan.ws.subcontract.api.IReportAdvancesService;
-import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsDTO;
-import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsListDTO;
+import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateDTO;
+import org.libreplan.ws.subcontract.api.OrderElementWithAdvanceMeasurementsOrEndDateListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -80,9 +95,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
-        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_TEST_FILE, WEBAPP_SPRING_SECURITY_CONFIG_FILE,
         WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 @Transactional
 public class ReportAdvancesServiceTest {
@@ -123,6 +137,9 @@ public class ReportAdvancesServiceTest {
     private IOrderDAO orderDAO;
 
     @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Autowired
@@ -134,8 +151,24 @@ public class ReportAdvancesServiceTest {
     @Autowired
     private IScenarioManager scenarioManager;
 
-    private ExternalCompany getSubcontractorExternalCompanySaved(String name,
-            String nif) {
+    @Autowired
+    private ISubcontractorCommunicationDAO subcontractorCommunicationDAO;
+
+    @Autowired
+    private ISubcontractedTaskDataDAO subcontractorTaskDataDAO;
+
+    private HoursGroup associatedHoursGroup;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
+
+    @Autowired
+    private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
+
+    private ExternalCompany getExternalCompany(String name, String nif) {
         ExternalCompany externalCompany = ExternalCompany.create(name, nif);
         externalCompany.setSubcontractor(true);
 
@@ -148,18 +181,26 @@ public class ReportAdvancesServiceTest {
         return externalCompany;
     }
 
+    private ExternalCompany getSubcontractorExternalCompanySaved() {
+        return transactionService.runOnAnotherTransaction(new IOnTransaction<ExternalCompany>() {
+            @Override
+            public ExternalCompany execute() {
+                return getExternalCompany("Company" + UUID.randomUUID().toString(), UUID
+                        .randomUUID().toString());
+            }
+        });
+    }
+
     @Test
     public void validAdvancesReport() {
         Order order = givenOrder();
         String orderElementCode = order.getChildren().get(0).getCode();
 
-        Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0,
-                BigDecimal.ZERO);
+        Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0, BigDecimal.ZERO);
 
-        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
-        reportAdvancesService
-                .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
+        reportAdvancesService.updateAdvancesOrEndDate(orderElementWithAdvanceMeasurementsListDTO);
 
         Order foundOrder = orderDAO.findExistingEntity(order.getId());
         assertNotNull(foundOrder);
@@ -171,10 +212,8 @@ public class ReportAdvancesServiceTest {
         DirectAdvanceAssignment directAdvanceAssignmentSubcontractor = orderElement
                 .getDirectAdvanceAssignmentSubcontractor();
         assertNotNull(directAdvanceAssignmentSubcontractor);
-        assertTrue(directAdvanceAssignmentSubcontractor
-                .getReportGlobalAdvance());
-        assertThat(directAdvanceAssignmentSubcontractor
-                .getAdvanceMeasurements().size(), equalTo(1));
+        assertTrue(directAdvanceAssignmentSubcontractor.getReportGlobalAdvance());
+        assertThat(directAdvanceAssignmentSubcontractor.getAdvanceMeasurements().size(), equalTo(1));
 
         for (Entry<LocalDate, BigDecimal> entry : values.entrySet()) {
             AdvanceMeasurement advanceMeasurement = directAdvanceAssignmentSubcontractor
@@ -185,19 +224,150 @@ public class ReportAdvancesServiceTest {
     }
 
     @Test
+    public void validAdvancesReportToSubcontratedOrderElement() {
+        int previousCommunications = subcontractorCommunicationDAO.getAll().size();
+
+        OrderLine orderLine = createOrderLine();
+
+        String orderElementCode = orderLine.getCode();
+
+        Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0, BigDecimal.ZERO);
+
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
+                orderElementCode, values);
+        reportAdvancesService.updateAdvancesOrEndDate(orderElementWithAdvanceMeasurementsListDTO);
+
+        Order foundOrder = orderDAO.findExistingEntity(orderLine.getOrder().getId());
+        assertNotNull(foundOrder);
+        assertThat(foundOrder.getChildren().size(), equalTo(1));
+
+        OrderElement orderElement = foundOrder.getChildren().get(0);
+        assertNotNull(orderElement);
+
+        DirectAdvanceAssignment directAdvanceAssignmentSubcontractor = orderElement
+                .getDirectAdvanceAssignmentSubcontractor();
+        assertNotNull(directAdvanceAssignmentSubcontractor);
+        assertTrue(directAdvanceAssignmentSubcontractor.getReportGlobalAdvance());
+        assertThat(directAdvanceAssignmentSubcontractor.getAdvanceMeasurements().size(), equalTo(1));
+
+        for (Entry<LocalDate, BigDecimal> entry : values.entrySet()) {
+            AdvanceMeasurement advanceMeasurement = directAdvanceAssignmentSubcontractor
+                    .getAdvanceMeasurements().first();
+            assertThat(advanceMeasurement.getDate(), equalTo(entry.getKey()));
+            assertThat(advanceMeasurement.getValue(), equalTo(entry.getValue()));
+        }
+
+        int currentCommunications = subcontractorCommunicationDAO.getAll().size();
+        assertThat((previousCommunications + 1), equalTo(currentCommunications));
+    }
+
+    @Test
+    public void validEndDateReportToSubcontratedOrderElement() {
+        int previousCommunications = subcontractorCommunicationDAO.getAll().size();
+
+        OrderLine orderLine = createOrderLine();
+
+        String orderElementCode = orderLine.getCode();
+
+        Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0, BigDecimal.ZERO);
+
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsOrEndDateListDTO = givenOrderWithEndDateListDTO(orderElementCode);
+        reportAdvancesService
+                .updateAdvancesOrEndDate(orderElementWithAdvanceMeasurementsOrEndDateListDTO);
+
+        Order foundOrder = orderDAO.findExistingEntity(orderLine.getOrder().getId());
+        assertNotNull(foundOrder);
+        assertThat(foundOrder.getChildren().size(), equalTo(1));
+
+        OrderElement orderElement = foundOrder.getChildren().get(0);
+        assertNotNull(orderElement);
+
+        DirectAdvanceAssignment directAdvanceAssignmentSubcontractor = orderElement
+                .getDirectAdvanceAssignmentSubcontractor();
+        assertNull(directAdvanceAssignmentSubcontractor);
+
+        int currentCommunications = subcontractorCommunicationDAO.getAll().size();
+        assertThat((previousCommunications + 1), equalTo(currentCommunications));
+
+        Task task = (Task) orderElement.getTaskSource().getTask();
+        SubcontractedTaskData subcontractedTaskData = task.getSubcontractedTaskData();
+        assertNotNull(subcontractedTaskData);
+        assertThat(subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor().size(),
+                    equalTo(1));
+    }
+
+    @Test
+    public void validAdvancesAndEndDateReportToSubcontratedOrderElement() {
+        int previousCommunications = subcontractorCommunicationDAO.getAll().size();
+
+        OrderLine orderLine = createOrderLine();
+
+        String orderElementCode = orderLine.getCode();
+
+        Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0, BigDecimal.ZERO);
+
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsAndEndDateListDTO(
+                orderElementCode, values);
+        reportAdvancesService.updateAdvancesOrEndDate(orderElementWithAdvanceMeasurementsListDTO);
+
+        Order foundOrder = orderDAO.findExistingEntity(orderLine.getOrder().getId());
+        assertNotNull(foundOrder);
+        assertThat(foundOrder.getChildren().size(), equalTo(1));
+
+        OrderElement orderElement = foundOrder.getChildren().get(0);
+        assertNotNull(orderElement);
+
+        DirectAdvanceAssignment directAdvanceAssignmentSubcontractor = orderElement
+                .getDirectAdvanceAssignmentSubcontractor();
+        assertNotNull(directAdvanceAssignmentSubcontractor);
+        assertTrue(directAdvanceAssignmentSubcontractor.getReportGlobalAdvance());
+        assertThat(directAdvanceAssignmentSubcontractor.getAdvanceMeasurements().size(), equalTo(1));
+
+        for (Entry<LocalDate, BigDecimal> entry : values.entrySet()) {
+            AdvanceMeasurement advanceMeasurement = directAdvanceAssignmentSubcontractor
+                    .getAdvanceMeasurements().first();
+            assertThat(advanceMeasurement.getDate(), equalTo(entry.getKey()));
+            assertThat(advanceMeasurement.getValue(), equalTo(entry.getValue()));
+        }
+
+        int currentCommunications = subcontractorCommunicationDAO.getAll().size();
+        assertThat((previousCommunications + 2), equalTo(currentCommunications));
+
+        Task task = (Task) orderElement.getTaskSource().getTask();
+        SubcontractedTaskData subcontractedTaskData = task.getSubcontractedTaskData();
+        assertNotNull(subcontractedTaskData);
+        assertThat(subcontractedTaskData.getEndDatesCommunicatedFromSubcontractor().size(),
+                equalTo(1));
+
+    }
+
+    private OrderElementWithAdvanceMeasurementsOrEndDateListDTO givenOrderElementWithAdvanceMeasurementsAndEndDateListDTO(
+            String orderElementCode, Map<LocalDate, BigDecimal> values) {
+        OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsOrEndDateDTO = new OrderElementWithAdvanceMeasurementsOrEndDateDTO();
+        orderElementWithAdvanceMeasurementsOrEndDateDTO.code = orderElementCode;
+
+        orderElementWithAdvanceMeasurementsOrEndDateDTO.advanceMeasurements = givenAdvanceMeasurementDTOs(values);
+
+        ExternalCompany externalCompany = getSubcontractorExternalCompanySaved();
+
+        orderElementWithAdvanceMeasurementsOrEndDateDTO.endDateCommunicationToCustomerDTO = givenEndDateCommunicationToCustomersDTO();
+
+        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(externalCompany.getNif(),
+                Arrays.asList(orderElementWithAdvanceMeasurementsOrEndDateDTO));
+    }
+
+    @Test
     public void validAdvancesReportWithSeveralDates() {
         Order order = givenOrder();
         String orderElementCode = order.getChildren().get(0).getCode();
 
         int numMeasures = 3;
-        Map<LocalDate, BigDecimal> values = givenValidMapValues(numMeasures, 5,
-                BigDecimal.TEN);
+        Map<LocalDate, BigDecimal> values = givenValidMapValues(numMeasures, 5, BigDecimal.TEN);
         assertThat(values.size(), equalTo(numMeasures));
 
-        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
+        OrderElementWithAdvanceMeasurementsOrEndDateListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
                 orderElementCode, values);
-        reportAdvancesService
-                .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
+        reportAdvancesService.updateAdvancesOrEndDate(orderElementWithAdvanceMeasurementsListDTO);
 
         Order foundOrder = orderDAO.findExistingEntity(order.getId());
         assertNotNull(foundOrder);
@@ -209,40 +379,58 @@ public class ReportAdvancesServiceTest {
         DirectAdvanceAssignment directAdvanceAssignmentSubcontractor = orderElement
                 .getDirectAdvanceAssignmentSubcontractor();
         assertNotNull(directAdvanceAssignmentSubcontractor);
-        assertTrue(directAdvanceAssignmentSubcontractor
-                .getReportGlobalAdvance());
-        assertThat(directAdvanceAssignmentSubcontractor
-                .getAdvanceMeasurements().size(), equalTo(numMeasures));
+        assertTrue(directAdvanceAssignmentSubcontractor.getReportGlobalAdvance());
+        assertThat(directAdvanceAssignmentSubcontractor.getAdvanceMeasurements().size(),
+                equalTo(numMeasures));
 
-        assertThat(directAdvanceAssignmentSubcontractor
-                .getAdvanceMeasurements().size(), equalTo(values.size()));
+        assertThat(directAdvanceAssignmentSubcontractor.getAdvanceMeasurements().size(),
+                equalTo(values.size()));
 
         for (AdvanceMeasurement measure : directAdvanceAssignmentSubcontractor
                 .getAdvanceMeasurements()) {
             assertTrue(values.containsKey(measure.getDate()));
             assertTrue(values.containsValue(measure.getValue()));
-            assertThat(values.get(measure.getDate()), equalTo(measure
-                    .getValue()));
+            assertThat(values.get(measure.getDate()), equalTo(measure.getValue()));
         }
     }
 
-    private OrderElementWithAdvanceMeasurementsListDTO givenOrderElementWithAdvanceMeasurementsListDTO(
+    private OrderElementWithAdvanceMeasurementsOrEndDateListDTO givenOrderElementWithAdvanceMeasurementsListDTO(
             String orderElementCode, Map<LocalDate, BigDecimal> values) {
-        OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsDTO();
+        OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsOrEndDateDTO();
         orderElementWithAdvanceMeasurementsDTO.code = orderElementCode;
 
         orderElementWithAdvanceMeasurementsDTO.advanceMeasurements = givenAdvanceMeasurementDTOs(values);
 
-        ExternalCompany externalCompany = getSubcontractorExternalCompanySaved(
-                "Company", "company-nif");
+        ExternalCompany externalCompany = getSubcontractorExternalCompanySaved();
 
-        return new OrderElementWithAdvanceMeasurementsListDTO(externalCompany
-                .getNif(), Arrays
-                .asList(orderElementWithAdvanceMeasurementsDTO));
+        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(externalCompany.getNif(),
+                Arrays.asList(orderElementWithAdvanceMeasurementsDTO));
     }
 
-    private Set<AdvanceMeasurementDTO> givenAdvanceMeasurementDTOs(
-            Map<LocalDate, BigDecimal> values) {
+    private OrderElementWithAdvanceMeasurementsOrEndDateListDTO givenOrderWithEndDateListDTO(
+            String orderElementCode) {
+        OrderElementWithAdvanceMeasurementsOrEndDateDTO orderElementWithAdvanceMeasurementsOrEndDateDTO = new OrderElementWithAdvanceMeasurementsOrEndDateDTO();
+        orderElementWithAdvanceMeasurementsOrEndDateDTO.code = orderElementCode;
+
+        orderElementWithAdvanceMeasurementsOrEndDateDTO.advanceMeasurements = new HashSet<AdvanceMeasurementDTO>();
+
+        ExternalCompany externalCompany = getSubcontractorExternalCompanySaved();
+
+        orderElementWithAdvanceMeasurementsOrEndDateDTO.endDateCommunicationToCustomerDTO = givenEndDateCommunicationToCustomersDTO();
+
+        return new OrderElementWithAdvanceMeasurementsOrEndDateListDTO(externalCompany.getNif(),
+                Arrays.asList(orderElementWithAdvanceMeasurementsOrEndDateDTO));
+    }
+
+    private EndDateCommunicationToCustomerDTO givenEndDateCommunicationToCustomersDTO() {
+        EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO = new EndDateCommunicationToCustomerDTO(
+                DateConverter.toXMLGregorianCalendar(new Date()),
+                DateConverter.toXMLGregorianCalendar(new Date()),
+                DateConverter.toXMLGregorianCalendar(new Date()));
+        return endDateCommunicationToCustomerDTO;
+    }
+
+    private Set<AdvanceMeasurementDTO> givenAdvanceMeasurementDTOs(Map<LocalDate, BigDecimal> values) {
         Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
         for (Entry<LocalDate, BigDecimal> entry : values.entrySet()) {
             advanceMeasurementDTOs.add(new AdvanceMeasurementDTO(DateConverter
@@ -251,8 +439,8 @@ public class ReportAdvancesServiceTest {
         return advanceMeasurementDTOs;
     }
 
-    private Map<LocalDate, BigDecimal> givenValidMapValues(int iterations,
-            int separatorDay, BigDecimal separatorPercentage) {
+    private Map<LocalDate, BigDecimal> givenValidMapValues(int iterations, int separatorDay,
+            BigDecimal separatorPercentage) {
         Map<LocalDate, BigDecimal> values = new HashMap<LocalDate, BigDecimal>();
         LocalDate currentDate = new LocalDate();
         BigDecimal currentValue = new BigDecimal(10);
@@ -270,13 +458,12 @@ public class ReportAdvancesServiceTest {
     }
 
     private Order givenOrder() {
-        return transactionService
-                .runOnAnotherTransaction(new IOnTransaction<Order>() {
-                    @Override
-                    public Order execute() {
-                        return givenValidOrderAlreadyStored();
-                    }
-                });
+        return transactionService.runOnAnotherTransaction(new IOnTransaction<Order>() {
+            @Override
+            public Order execute() {
+                return givenValidOrderAlreadyStored();
+            }
+        });
     }
 
     private Order givenValidOrderAlreadyStored() {
@@ -284,13 +471,12 @@ public class ReportAdvancesServiceTest {
         order.setCode(UUID.randomUUID().toString());
         order.setName("Order name " + UUID.randomUUID());
         order.setInitDate(new Date());
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
-        OrderVersion version = OrderModelTest.setupVersionUsing(
-                scenarioManager, order);
+        order.setCalendar(configurationDAO.getConfiguration().getDefaultCalendar());
+        OrderVersion version = OrderModelTest.setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(version);
-        OrderLine orderLine = OrderLine
-                .createOrderLineWithUnfixedPercentage(1000);
+
+        OrderLine orderLine = OrderLine.createOrderLineWithUnfixedPercentage(1000);
+        orderLine.useSchedulingDataFor(version);
         order.add(orderLine);
         orderLine.setCode(UUID.randomUUID().toString());
         orderLine.setName("Order line name");
@@ -304,4 +490,51 @@ public class ReportAdvancesServiceTest {
         }
     }
 
+    private OrderLine createOrderLine() {
+        return transactionService.runOnAnotherTransaction(new IOnTransaction<OrderLine>() {
+            @Override
+            public OrderLine execute() {
+                Order order = givenValidOrderAlreadyStored();
+                OrderLine orderLine = (OrderLine) order.getChildren().get(0);
+                createValidSubcontractedTaskData(
+                        "subcotrated_task_" + UUID.randomUUID().toString(), orderLine);
+                return orderLine;
+            }
+        });
+    }
+
+    private Task createValidTask(OrderLine orderLine) {
+        associatedHoursGroup = new HoursGroup();
+        associatedHoursGroup.setCode("hours-group-code-" + UUID.randomUUID());
+
+        orderLine.addHoursGroup(associatedHoursGroup);
+        SchedulingDataForVersion schedulingDataForVersion = orderLine
+                .getCurrentSchedulingDataForVersion();
+
+        TaskSource taskSource = TaskSource.create(schedulingDataForVersion,
+                Arrays.asList(associatedHoursGroup));
+
+        orderLine.getCurrentSchedulingData().requestedCreationOf(taskSource);
+
+        TaskSourceSynchronization mustAdd = TaskSource.mustAdd(taskSource);
+        mustAdd.apply(TaskSource.persistTaskSources(taskSourceDAO));
+
+        Task task = (Task) taskSource.getTask();
+        return task;
+    }
+
+    public SubcontractedTaskData createValidSubcontractedTaskData(final String name,
+            final OrderLine orderLine) {
+        Task task = createValidTask(orderLine);
+        SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData.create(task);
+        subcontractedTaskData.setExternalCompany(getSubcontractorExternalCompanySaved());
+
+        task.setSubcontractedTaskData(subcontractedTaskData);
+        taskElementDAO.save(task);
+        task.dontPoseAsTransientObjectAnymore();
+        taskElementDAO.flush();
+
+        subcontractedTaskDataDAO.save(subcontractedTaskData);
+        return subcontractedTaskData;
+    }
 }

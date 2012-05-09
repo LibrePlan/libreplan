@@ -281,6 +281,29 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return c.list();
     }
 
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public OrderElement findByExternalCode(String code) throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(null, getEntityClass()
+                    .getName());
+        }
+
+        Criteria c = getSession().createCriteria(OrderElement.class);
+        c.add(Restrictions.eq("externalCode", code.trim()).ignoreCase());
+        OrderElement entity = (OrderElement) c.uniqueResult();
+
+        if (entity == null) {
+            throw new InstanceNotFoundException(code, getEntityClass()
+                    .getName());
+        } else {
+            return entity;
+        }
+
+    }
+
     /**
      * Methods to calculate estatistics with the estimated hours and worked
      * hours of a set of order elements.

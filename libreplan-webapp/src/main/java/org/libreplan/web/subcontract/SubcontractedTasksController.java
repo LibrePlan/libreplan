@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011-2012 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -32,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -52,22 +55,29 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.api.Window;
 
 /**
  * Controller for operations related with subcontracted tasks.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SubcontractedTasksController extends GenericForwardComposer {
 
     private Window window;
+
+    private Column columnBySort;
+
+    private Grid listing;
 
     private Component messagesContainer;
     private IMessagesForUser messagesForUser;
@@ -100,19 +110,37 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             SubcontractedTaskData subcontractedTaskData = (SubcontractedTaskData) data;
             row.setValue(subcontractedTaskData);
 
-            appendLabel(row, toString(subcontractedTaskData
-                    .getSubcontratationDate()));
-            appendLabel(row, toString(subcontractedTaskData
-                    .getSubcontractCommunicationDate()));
+            Order order = getOrder(subcontractedTaskData);
+
+            appendLabel(row,
+                    toString(subcontractedTaskData.getSubcontratationDate(), "dd/MM/yyyy HH:mm"));
+            appendLabel(
+                    row,
+                    toString(subcontractedTaskData.getSubcontractCommunicationDate(),
+                            "dd/MM/yyyy HH:mm"));
             appendLabel(row, getExternalCompany(subcontractedTaskData));
-            appendLabel(row, getOrderCode(subcontractedTaskData));
+            appendLabel(row, getOrderCode(order));
+            appendLabel(row, getOrderName(order));
             appendLabel(row, subcontractedTaskData.getSubcontractedCode());
             appendLabel(row, getTaskName(subcontractedTaskData));
             appendLabel(row, subcontractedTaskData.getWorkDescription());
-            appendLabel(row, Util.addCurrencySymbol(subcontractedTaskData
-                    .getSubcontractPrice()));
+            appendLabel(row, Util.addCurrencySymbol(subcontractedTaskData.getSubcontractPrice()));
+            appendLabel(row,
+                    toString(subcontractedTaskData.getLastRequiredDeliverDate(), "dd/MM/yyyy"));
             appendLabel(row, _(toString(subcontractedTaskData.getState())));
             appendOperations(row, subcontractedTaskData);
+        }
+
+        private String getOrderCode(Order order) {
+            return (order != null) ? order.getCode() : "";
+        }
+
+        private String getOrderName(Order order) {
+            return (order != null) ? order.getName() : "";
+        }
+
+        private Order getOrder(SubcontractedTaskData subcontractedTaskData) {
+            return subcontractedTasksModel.getOrder(subcontractedTaskData);
         }
 
         private String toString(Object object) {
@@ -123,20 +151,15 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             return object.toString();
         }
 
-        private String toString(Date date) {
+        private String toString(Date date, String precision) {
             if (date == null) {
                 return "";
             }
-
-            return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
+            return new SimpleDateFormat(precision).format(date);
         }
 
         private void appendLabel(Row row, String label) {
             row.appendChild(new Label(label));
-        }
-
-        private String getOrderCode(SubcontractedTaskData subcontractedTaskData) {
-            return subcontractedTasksModel.getOrderCode(subcontractedTaskData);
         }
 
         private String getTaskName(SubcontractedTaskData subcontractedTaskData) {
@@ -211,7 +234,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
                     } catch (ValidationException e) {
                         messagesForUser.showInvalidValues(e);
                     }
-                    Util.reloadBindings(window);
+                    reload();
                 }
 
             });
@@ -223,4 +246,23 @@ public class SubcontractedTasksController extends GenericForwardComposer {
 
     }
 
+    public void reload() {
+        Util.reloadBindings(window);
+        forceSortGridSatisfaction();
+    }
+
+    public void forceSortGridSatisfaction() {
+        Column column = (Column) columnBySort;
+        ListModelExt model = (ListModelExt) listing.getModel();
+        if ("ascending".equals(column.getSortDirection())) {
+            model.sort(column.getSortAscending(), true);
+        }
+        if ("descending".equals(column.getSortDirection())) {
+            model.sort(column.getSortDescending(), false);
+        }
+    }
+
+    public void initRender() {
+        forceSortGridSatisfaction();
+    }
 }

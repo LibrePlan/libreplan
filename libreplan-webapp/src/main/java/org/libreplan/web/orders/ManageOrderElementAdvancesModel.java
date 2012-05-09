@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011-2012 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -54,7 +56,9 @@ import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOr
 import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.libreplan.business.planner.entities.consolidations.Consolidation;
@@ -344,6 +348,14 @@ public class ManageOrderElementAdvancesModel implements
                     continue;
                 }
             }
+            // if the associated task of the order elemement or of some its
+            // children is subcontrated the advance type subcontractor is not
+            // permitted
+            if (advanceType.getUnitName().equals(
+                    PredefinedAdvancedTypes.SUBCONTRACTOR.getTypeName())
+                    && hasAnySubcontratedTaskOnChildren()) {
+                continue;
+            }
             advanceTypes.add(advanceType);
         }
         return getSpecificOrder(advanceTypes);
@@ -402,7 +414,30 @@ public class ManageOrderElementAdvancesModel implements
             }
         }
 
-        return this.isIndirectAdvanceAssignment;
+        if(isIndirectAdvanceAssignment){
+            return true;
+        }
+
+        return isSubcontratedAdvanceTypeAndSubcontratedTask(advanceAssignment);
+    }
+
+    @Override
+    public boolean isSubcontratedAdvanceTypeAndSubcontratedTask(
+            AdvanceAssignment advance) {
+        return (isSubcontratedAdvanceType(advance) && hasSubcontractedAssociatedTask(advance
+                .getOrderElement()));
+    }
+
+    @Override
+    public boolean isSubcontratedAdvanceType(AdvanceAssignment advance) {
+        AdvanceType advanceType = advance.getAdvanceType();
+        if (advanceType != null) {
+            if (advanceType.getUnitName().equals(
+                    PredefinedAdvancedTypes.SUBCONTRACTOR.getTypeName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -697,7 +732,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Transactional(readOnly = true)
     public boolean canRemoveOrChange(AdvanceMeasurement advanceMeasurement) {
-        return (!hasConsolidatedAdvances(advanceMeasurement));
+        return (!hasConsolidatedAdvances(advanceMeasurement) && !isAlreadyReportedProgress(advanceMeasurement));
     }
 
     @Transactional(readOnly = true)
@@ -836,6 +871,90 @@ public class ManageOrderElementAdvancesModel implements
             return false;
         }
         return orderElement.hasAnyConsolidatedAdvance();
+    }
+
+    @Override
+    public boolean hasAnySubcontratedTaskOnChildren() {
+        List<OrderElement> list = new ArrayList<OrderElement>();
+        list.add(orderElement);
+        list.addAll(orderElement.getAllChildren());
+        for (OrderElement child : list) {
+            if (hasSubcontractedAssociatedTask(child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasSubcontractedAssociatedTask(OrderElement orderElement) {
+        for (TaskElement task : orderElement.getTaskElements()) {
+            if (task.isSubcontracted()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean isAlreadyReportedProgress(AdvanceMeasurement measure) {
+        if (measure != null && !measure.isNewObject()) {
+            return isAlreadyReportedProgressWith(measure.getDate());
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean isAlreadyReportedProgressWith(LocalDate date) {
+        if (isSubcontractedByCustomer() && isSubcontratedAdvanceType(advanceAssignment)) {
+            LocalDate lastReported = getLastReportedProgressToCustomer();
+            return (date != null && lastReported != null && date.compareTo(lastReported) <= 0);
+        }
+        return false;
+    }
+
+    private LocalDate getLastReportedProgressToCustomer() {
+        return getLastReportedProgressToCustomerOf(advanceAssignment);
+    }
+
+    private LocalDate getLastReportedProgressToCustomerOf(DirectAdvanceAssignment advanceAssignment) {
+        if (advanceAssignment != null && isSubcontractedByCustomer()) {
+            AdvanceMeasurement lastAdvanceMeasurementReported = null;
+            for (AdvanceMeasurement advanceMeasurement : advanceAssignment.getAdvanceMeasurements()) {
+                if (advanceMeasurement.getCommunicationDate() != null) {
+                    if (lastAdvanceMeasurementReported == null) {
+                        lastAdvanceMeasurementReported = advanceMeasurement;
+                    } else {
+                        if (advanceMeasurement.getCommunicationDate().compareTo(
+                                lastAdvanceMeasurementReported.getCommunicationDate()) > 0) {
+                            lastAdvanceMeasurementReported = advanceMeasurement;
+                        }
+                    }
+                }
+            }
+            return (lastAdvanceMeasurementReported != null) ? lastAdvanceMeasurementReported
+                    .getDate() : null;
+        }
+        return null;
+    }
+
+    private Boolean isSubcontractedByCustomer() {
+        if (orderElement != null) {
+            Order order = orderElement.getOrder();
+            if (order != null && order.getExternalCode() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasReportedProgress(AdvanceAssignment advance) {
+        if (advance instanceof DirectAdvanceAssignment) {
+            return isSubcontractedByCustomer()
+                    && isSubcontratedAdvanceType(advance)
+                    && (getLastReportedProgressToCustomerOf((DirectAdvanceAssignment) advance) != null);
+        }
+        return false;
     }
 
 }

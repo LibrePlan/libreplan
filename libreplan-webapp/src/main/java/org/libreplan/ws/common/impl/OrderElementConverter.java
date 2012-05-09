@@ -43,6 +43,7 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.materials.bootstrap.PredefinedMaterialCategories;
 import org.libreplan.business.materials.entities.Material;
@@ -74,6 +75,7 @@ import org.libreplan.ws.common.api.OrderElementDTO;
 import org.libreplan.ws.common.api.OrderLineDTO;
 import org.libreplan.ws.common.api.OrderLineGroupDTO;
 import org.libreplan.ws.common.api.ResourceEnumDTO;
+import org.libreplan.ws.subcontract.api.EndDateCommunicationToCustomerDTO;
 
 /**
  * Converter from/to {@link OrderElement} entities to/from DTOs.
@@ -844,6 +846,28 @@ public final class OrderElementConverter {
                 .toXMLGregorianCalendar(advanceMeasurement.getDate());
         return new AdvanceMeasurementDTO(date, advanceMeasurement
                 .getValue());
+    }
+
+    public static EndDateCommunication toEntity(
+            EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO) {
+        Date endDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.endDate);
+        Date communicationDate = DateConverter
+                .toDate(endDateCommunicationToCustomerDTO.communicationDate);
+        Date saveDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.saveDate);
+        EndDateCommunication endDateCommunicationToCustomer = EndDateCommunication
+                .create(saveDate, endDate, communicationDate);
+        return endDateCommunicationToCustomer;
+    }
+
+    public static EndDateCommunicationToCustomerDTO toDTO(
+            EndDateCommunication endDateCommunicationToCustomer) {
+        XMLGregorianCalendar endDate = DateConverter
+                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getEndDate());
+        XMLGregorianCalendar saveDate = DateConverter
+                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getSaveDate());
+        XMLGregorianCalendar communicationDate = DateConverter
+                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getCommunicationDate());
+        return new EndDateCommunicationToCustomerDTO(saveDate, endDate, communicationDate);
     }
 
 }

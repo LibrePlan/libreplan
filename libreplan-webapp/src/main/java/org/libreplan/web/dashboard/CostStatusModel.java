@@ -20,15 +20,10 @@
 package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.planner.entities.ICostCalculator;
-import org.libreplan.business.planner.entities.Task;
-import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.planner.entities.IOrderEarnedValueCalculator;
 import org.libreplan.web.planner.order.OrderPlanningModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -53,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CostStatusModel implements ICostStatusModel {
 
     @Autowired
-    private ICostCalculator hoursCostCalculator;
+    private IOrderEarnedValueCalculator earnedValueCalculator;
 
     private Order order;
 
@@ -64,128 +59,27 @@ public class CostStatusModel implements ICostStatusModel {
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getActualCostWorkPerformedAt(LocalDate date) {
-        SortedMap<LocalDate, BigDecimal> actualCost = calculateActualCostWorkPerformed();
-        BigDecimal result = actualCost.get(date);
-        return (result != null) ? result : BigDecimal.ZERO;
-    }
-
-    private SortedMap<LocalDate, BigDecimal> calculateActualCostWorkPerformed() {
-        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-        for (TaskElement taskElement : getAllTaskElements(order)) {
-            if (taskElement instanceof Task) {
-                addCost(result, getWorkReportCost((Task) taskElement));
-            }
-        }
-        return accumulateResult(result);
-    }
-
-    private SortedMap<LocalDate, BigDecimal> accumulateResult(
-            SortedMap<LocalDate, BigDecimal> map) {
-        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-        if (map.isEmpty()) {
-            return result;
-        }
-
-        BigDecimal accumulatedResult = BigDecimal.ZERO;
-        for (LocalDate day : map.keySet()) {
-            BigDecimal value = map.get(day);
-            accumulatedResult = accumulatedResult.add(value);
-            result.put(day, accumulatedResult);
-        }
-        return result;
-    }
-
-    private void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
-            SortedMap<LocalDate, BigDecimal> additionalCost) {
-        for (LocalDate day : additionalCost.keySet()) {
-            if (!currentCost.containsKey(day)) {
-                currentCost.put(day, BigDecimal.ZERO);
-            }
-            currentCost.put(day,
-                    currentCost.get(day).add(additionalCost.get(day)));
-        }
-    }
-
-    private List<TaskElement> getAllTaskElements(Order order) {
-        List<TaskElement> result = order.getAllChildrenAssociatedTaskElements();
-        result.add(order.getAssociatedTaskElement());
-        return result;
-    }
-
-    private SortedMap<LocalDate, BigDecimal> getWorkReportCost(Task taskElement) {
-        return hoursCostCalculator.getWorkReportCost(taskElement);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public BigDecimal getBudgetAtCompletion() {
-        SortedMap<LocalDate, BigDecimal> budgedtedCost = calculateBudgetedCostWorkScheduled();
-        LocalDate lastKey = budgedtedCost.lastKey();
-        return (lastKey) != null ? budgedtedCost.get(lastKey) : BigDecimal.ZERO;
-    }
-
-    private SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkScheduled() {
-        SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
-        for (TaskElement taskElement : getAllTaskElements(order)) {
-            if (taskElement instanceof Task) {
-                addCost(result, getEstimatedCost((Task) taskElement));
-            }
-        }
-        return accumulateResult(result);
-    }
-
-    private SortedMap<LocalDate, BigDecimal> getEstimatedCost(Task task) {
-        return hoursCostCalculator.getEstimatedCost(task);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public BigDecimal getBudgetedCostWorkPerformedAt(LocalDate date) {
-        SortedMap<LocalDate, BigDecimal> budgetedCost = calculateBudgetedCostWorkPerformed();
-        BigDecimal result = budgetedCost.get(date);
-        return (result != null) ? result : BigDecimal.ZERO;
-    }
-
-    private SortedMap<LocalDate, BigDecimal> calculateBudgetedCostWorkPerformed() {
-        SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
-        for (TaskElement taskElement : getAllTaskElements(order)) {
-            if (taskElement instanceof Task) {
-                addCost(estimatedCost, getAdvanceCost((Task) taskElement));
-            }
-        }
-        return accumulateResult(estimatedCost);
-    }
-
-    private SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task) {
-        return hoursCostCalculator.getAdvanceCost(task);
+        return earnedValueCalculator.getActualCostWorkPerformedAt(order, date);
     }
 
     @Override
     public BigDecimal getCostPerformanceIndex(BigDecimal budgetedCost,
             BigDecimal actualCost) {
-        if (BigDecimal.ZERO.compareTo(actualCost) == 0) {
-            return BigDecimal.ZERO;
-        }
-        return asPercentage(budgetedCost.divide(actualCost));
-    }
-
-    private BigDecimal asPercentage(BigDecimal value) {
-        return value.multiply(BigDecimal.valueOf(100)).setScale(2);
+        return earnedValueCalculator.getCostPerformanceIndex(budgetedCost,
+                actualCost);
     }
 
     @Override
     public BigDecimal getCostVariance(BigDecimal budgetedCost,
             BigDecimal actualCost) {
-        return budgetedCost.subtract(actualCost);
+        return earnedValueCalculator.getCostVariance(budgetedCost, actualCost);
     }
 
     @Override
     public BigDecimal getEstimateAtCompletion(BigDecimal budgetAtCompletion,
             BigDecimal costPerformanceIndex) {
-        if (BigDecimal.ZERO.compareTo(costPerformanceIndex) == 0) {
-            return BigDecimal.ZERO;
-        }
-        return asPercentage(budgetAtCompletion.divide(costPerformanceIndex));
+        return earnedValueCalculator.getEstimateAtCompletion(
+                budgetAtCompletion, costPerformanceIndex);
     }
 
     @Override
@@ -197,6 +91,17 @@ public class CostStatusModel implements ICostStatusModel {
     @Override
     public void setCurrentOrder(Order order) {
         this.order = order;
+    }
+
+    @Override
+    public BigDecimal getBudgetAtCompletion() {
+        return earnedValueCalculator.getBudgetAtCompletion(order);
+    }
+
+    @Override
+    public BigDecimal getBudgetedCostWorkPerformedAt(LocalDate date) {
+        return earnedValueCalculator
+                .getBudgetedCostWorkPerformedAt(order, date);
     }
 
 }

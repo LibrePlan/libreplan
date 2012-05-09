@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -24,10 +26,13 @@ package org.libreplan.business.planner.daos;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -97,6 +102,20 @@ public class SubcontractedTaskDataDAO extends
         }
 
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SubcontractedTaskData getSubcontratedTaskDataByOrderElement(
+            OrderElement orderElement) throws InstanceNotFoundException {
+        Criteria c = getSession().createCriteria(TaskElement.class)
+         .createCriteria("taskSource","ts")
+         .createCriteria("schedulingData","data")
+         .add(Restrictions.eq("data.orderElement",orderElement));
+
+        TaskElement taskElement = (TaskElement) c.uniqueResult();
+        return (taskElement != null && taskElement.isSubcontracted()) ? ((Task) taskElement)
+                .getSubcontractedTaskData() : null;
     }
 
 }

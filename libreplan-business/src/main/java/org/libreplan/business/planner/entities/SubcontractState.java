@@ -29,7 +29,9 @@ import static org.libreplan.business.i18n.I18nHelper._;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public enum SubcontractState {
-    PENDING(_("Pending"), true), FAILED_SENT(_("Failed sent"), true), SUCCESS_SENT(
+    PENDING_INITIAL_SEND(_("Pending initial send"), true), PENDING_UPDATE_DELIVERING_DATE(
+            _("Pending update delivering date"), true), FAILED_SENT(
+            _("Failed sent"), true), FAILED_UPDATE(_("Failed update"), true), SUCCESS_SENT(
             _("Success sent"), false);
 
     private String name;

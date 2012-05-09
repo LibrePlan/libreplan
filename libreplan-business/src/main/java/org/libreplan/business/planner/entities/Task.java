@@ -887,7 +887,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public boolean isSubcontractedAndWasAlreadySent() {
         return (subcontractedTaskData != null)
                 && (!subcontractedTaskData.getState()
-                        .equals(SubcontractState.PENDING));
+                        .equals(SubcontractState.PENDING_INITIAL_SEND));
     }
 
     public boolean hasSomeSatisfiedAllocation() {
