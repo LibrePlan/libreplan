@@ -204,4 +204,68 @@
         <dropColumn tableName="order_element_template" columnName="code" />
     </changeSet>
 
+    <changeSet author="smontes" id="creation-table-filming-progress">
+        <createTable tableName="filming_progress">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="filming_progress_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="DATETIME"/>
+            <column name="end_date" type="DATETIME"/>
+            <column name="progress_granularity" type="INTEGER"/>
+       </createTable>
+    </changeSet>
+
+    <changeSet author="smontes" id="initial-database-creation-initial-progress-forecast">
+        <createTable tableName="initial_progress_forecast">
+            <column name="filming_progress_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="day" type="DATETIME"/>
+            <column name="scenes" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="filming_progress_id, day" constraintName="scenes_per_day_pkey" tableName="initial_progress_forecast"/>
+        <addForeignKeyConstraint baseColumnNames="filming_progress_id" baseTableName="initial_progress_forecast"
+            constraintName="fk_initial_progress_forecast_per_filming" deferrable="false" initiallyDeferred="false"
+            onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="filming_progress"
+            referencesUniqueColumn="false"/>
+    </changeSet>
+
+    <changeSet author="smontes" id="initial-database-creation-progress-forecast">
+        <createTable tableName="progress_forecast">
+            <column name="filming_progress_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="day" type="DATETIME"/>
+            <column name="scenes" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="filming_progress_id, day" constraintName="scenes_per_day_forecast_pkey" tableName="progress_forecast"/>
+        <addForeignKeyConstraint baseColumnNames="filming_progress_id" baseTableName="progress_forecast"
+            constraintName="fk_progress_forecast_per_filming" deferrable="false" initiallyDeferred="false"
+            onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="filming_progress"
+            referencesUniqueColumn="false"/>
+    </changeSet>
+
+    <changeSet author="smontes" id="initial-database-creation-real-progress">
+        <createTable tableName="real_progress">
+            <column name="filming_progress_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="day" type="DATETIME"/>
+            <column name="scenes" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="filming_progress_id, day" constraintName="real_scenes_per_day_pkey" tableName="real_progress"/>
+        <addForeignKeyConstraint baseColumnNames="filming_progress_id" baseTableName="real_progress"
+            constraintName="fk_real_progress_per_filming" deferrable="false" initiallyDeferred="false"
+            onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="filming_progress"
+            referencesUniqueColumn="false"/>
+    </changeSet>
 </databaseChangeLog>
