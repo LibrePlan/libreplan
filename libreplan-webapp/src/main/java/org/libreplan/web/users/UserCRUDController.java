@@ -255,6 +255,23 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     @Override
+    protected boolean beforeDeleting(User user) {
+        Worker worker = user.getWorker();
+        if (worker != null) {
+            try {
+                return Messagebox
+                        .show(_("User is bound to resource \"{0}\" and it will be unbound. Do you want to continue with user removal?",
+                                worker.getShortDescription()),
+                                _("Confirm remove user"), Messagebox.YES
+                                        | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
+    }
+
+    @Override
     protected void delete(User user) throws InstanceNotFoundException {
         userModel.confirmRemove(user);
     }

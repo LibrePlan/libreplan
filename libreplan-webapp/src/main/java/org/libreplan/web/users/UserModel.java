@@ -29,6 +29,8 @@ import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.resources.daos.IWorkerDAO;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
@@ -61,6 +63,9 @@ public class UserModel implements IUserModel {
 
     @Autowired
     private IDBPasswordEncoderService dbPasswordEncoderService;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
 
     private User user;
 
@@ -223,6 +228,11 @@ public class UserModel implements IUserModel {
     @Override
     @Transactional
     public void confirmRemove(User user) throws InstanceNotFoundException {
+        Worker worker = user.getWorker();
+        if (worker != null) {
+            worker.setUser(null);
+            workerDAO.save(worker);
+        }
         userDAO.remove(user);
     }
 
