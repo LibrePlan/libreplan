@@ -317,4 +317,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return firstName + " " + lastName;
     }
 
+    public boolean isBound() {
+        return worker != null;
+    }
+
 }

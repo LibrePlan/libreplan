@@ -2,7 +2,8 @@
     This file is part of LibrePlan
 
     Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
-    Desenvolvemento Tecnolóxico de Galicia
+                            Desenvolvemento Tecnolóxico de Galicia
+    Copyright (C) 2010-2012 Igalia, S.L.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -53,12 +54,14 @@
                             <row>
                                 <label value="${i18n:_('First name')}" />
                                 <textbox id="firstName"
-                                    value="@{controller.user.firstName}" width="300px"/>
+                                    value="@{controller.user.firstName}" width="300px"
+                                    disabled="@{controller.user.bound}" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Last name')}" />
                                 <textbox id="lastName"
-                                    value="@{controller.user.lastName}" width="300px"/>
+                                    value="@{controller.user.lastName}" width="300px"
+                                    disabled="@{controller.user.bound}" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Password')}" />
