@@ -307,4 +307,28 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return usersRenderer;
     }
 
+    public String hasBoundResource() {
+        User user = getUser();
+        if (user != null && user.isBound()) {
+            return _("Yes");
+        }
+        return _("No");
+    }
+
+    public String getBoundResource() {
+        User user = getUser();
+        if (user != null && user.isBound()) {
+            return user.getWorker().getShortDescription();
+        }
+        return "";
+    }
+
+    public boolean isBound() {
+        User user = getUser();
+        if (user != null) {
+            return user.isBound();
+        }
+        return false;
+    }
+
 }

@@ -93,6 +93,26 @@
                     </grid>
                     </groupbox>
 
+                    <groupbox closable="false">
+                    <caption label="${i18n:_('Bound resource')}" />
+                    <grid fixedLayout="false" span="true">
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Has bound resource')}" />
+                                <label value="@{controller.hasBoundResource}" />
+                            </row>
+                            <row visible="@{controller.bound}">
+                                <label value="${i18n:_('Bound resource')}" />
+                                <label value="@{controller.boundResource}" />
+                            </row>
+                        </rows>
+                    </grid>
+                    </groupbox>
+
                     <!-- Associated UserRoles -->
                     <groupbox closable="false">
                     <caption label="${i18n:_('Association with roles')}" />
