@@ -32,7 +32,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
-import org.libreplan.web.common.Util;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -42,7 +41,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Window;
 
 import br.com.digilabs.jqplot.Chart;
 import br.com.digilabs.jqplot.JqPlotUtils;
@@ -62,8 +60,6 @@ public class DashboardController extends GenericForwardComposer {
 
     private IDashboardModel dashboardModel;
 
-    private Window dashboardWindow;
-
     private Grid gridTasksSummary;
     private Grid gridMarginWithDeadline;
 
@@ -78,27 +74,24 @@ public class DashboardController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
-        this.dashboardWindow = (Window) comp;
-        self.setAttribute("controller", this);
-        Util.createBindingsFor(this.dashboardWindow);
     }
 
     public void setCurrentOrder(Order order) {
         dashboardModel.setCurrentOrder(order);
         if (dashboardModel.tasksAvailable()) {
+            if (self != null) {
+                renderGlobalProgress();
+                renderTaskStatus();
+                renderTaskCompletationLag();
+                renderTasksSummary();
+                renderDeadlineViolation();
+                renderMarginWithDeadline();
+                renderEstimationAccuracy();
+                renderCostStatus(order);
+            }
             showCharts();
         } else {
             hideCharts();
-        }
-        if (this.dashboardWindow != null) {
-            renderGlobalProgress();
-            renderTaskStatus();
-            renderTaskCompletationLag();
-            renderTasksSummary();
-            renderDeadlineViolation();
-            renderMarginWithDeadline();
-            renderEstimationAccuracy();
-            renderCostStatus(order);
         }
     }
 
@@ -423,7 +416,7 @@ public class DashboardController extends GenericForwardComposer {
         private Map<Interval, Integer> getData() {
             if (taskCompletationData == null) {
                 taskCompletationData = dashboardModel
-                        .calculateTaskCompletation();
+                        .calculateTaskCompletion();
             }
             return taskCompletationData;
         }

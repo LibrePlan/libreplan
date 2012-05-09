@@ -352,16 +352,16 @@ public class DashboardModel implements IDashboardModel {
      * @return
      */
     @Override
-    public Map<Interval, Integer> calculateTaskCompletation() {
+    public Map<Interval, Integer> calculateTaskCompletion() {
         Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
         Double max, min;
 
         // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getTaskLagDeviations();
         if (deviations.isEmpty()) {
-            return result;
-        }
-        if (deviations.size() == 1) {
+            max = Double.valueOf(3);
+            min = Double.valueOf(-2);
+        } else if (deviations.size() == 1) {
             max = deviations.get(0).doubleValue() + 3;
             min = deviations.get(0).doubleValue() - 2;
         } else {
@@ -420,9 +420,9 @@ public class DashboardModel implements IDashboardModel {
         // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getEstimationAccuracyDeviations();
         if (deviations.isEmpty()) {
-            return result;
-        }
-        if (deviations.size() == 1) {
+            max = Double.valueOf(30);
+            min = Double.valueOf(-20);
+        } else if (deviations.size() == 1) {
             max = deviations.get(0).doubleValue() + 30;
             min = deviations.get(0).doubleValue() - 20;
         } else {
