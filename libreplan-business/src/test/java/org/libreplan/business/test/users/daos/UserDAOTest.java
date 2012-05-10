@@ -292,11 +292,32 @@ public class UserDAOTest {
 
     @Test
     public void testUnoundUsers1() {
-        int previous = userDAO.getUnboundUsers(null).size();
-        userDAO.save(createUser(getUniqueName()));
+        int previous = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
 
-        List<User> unboundUsers = userDAO.getUnboundUsers(null);
-        assertEquals(previous + 1, unboundUsers.size());
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                userDAO.save(createUser(getUniqueName()));
+                return null;
+            }
+        });
+
+        int size = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
+
+        assertEquals(previous + 1, size);
     }
 
     private Worker givenStoredWorkerRelatedTo(final User user) {
@@ -320,22 +341,50 @@ public class UserDAOTest {
 
     @Test
     public void testUnoundUsers2() {
-        int previous = userDAO.getUnboundUsers(null).size();
+        int previous = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
+
         User user = createUser(getUniqueName());
         user.setWorker(givenStoredWorkerRelatedTo(user));
 
-        List<User> unboundUsers = userDAO.getUnboundUsers(null);
-        assertEquals(previous, unboundUsers.size());
+        int size = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
+
+        assertEquals(previous, size);
     }
 
     @Test
     public void testUnoundUsers3() {
-        int previous = userDAO.getUnboundUsers(null).size();
-        User user = createUser(getUniqueName());
-        user.setWorker(givenStoredWorkerRelatedTo(user));
+        int previous = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
 
-        List<User> unboundUsers = userDAO.getUnboundUsers(user.getWorker());
-        assertEquals(previous + 1, unboundUsers.size());
+        User user = createUser(getUniqueName());
+        final Worker worker = givenStoredWorkerRelatedTo(user);
+        user.setWorker(worker);
+
+        int size = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(worker).size();
+                    }
+                });
+        assertEquals(previous + 1, size);
     }
 
 }
