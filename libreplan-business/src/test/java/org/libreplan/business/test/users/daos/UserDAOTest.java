@@ -292,7 +292,7 @@ public class UserDAOTest {
 
     @Test
     public void testUnoundUsers1() {
-        int previous = userDAO.list(User.class).size();
+        int previous = userDAO.getUnboundUsers(null).size();
         userDAO.save(createUser(getUniqueName()));
 
         List<User> unboundUsers = userDAO.getUnboundUsers(null);
@@ -312,7 +312,7 @@ public class UserDAOTest {
 
     @Test
     public void testUnoundUsers2() {
-        int previous = userDAO.list(User.class).size();
+        int previous = userDAO.getUnboundUsers(null).size();
         User user = createUser(getUniqueName());
         user.setWorker(givenStoredWorkerRelatedTo(user));
 
