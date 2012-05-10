@@ -299,15 +299,23 @@ public class UserDAOTest {
         assertEquals(previous + 1, unboundUsers.size());
     }
 
-    private Worker givenStoredWorkerRelatedTo(User user) {
-        Worker worker = Worker.create();
-        worker.setFirstName("Name " + UUID.randomUUID());
-        worker.setSurname("Surname " + UUID.randomUUID());
-        worker.setNif("ID " + UUID.randomUUID());
-        worker.setUser(user);
-        workerDAO.save(worker);
+    private Worker givenStoredWorkerRelatedTo(final User user) {
+        return transactionService
+                .runOnAnotherTransaction(new IOnTransaction<Worker>() {
 
-        return worker;
+                    @Override
+                    public Worker execute() {
+                        Worker worker = Worker.create();
+                        worker.setFirstName("Name " + UUID.randomUUID());
+                        worker.setSurname("Surname " + UUID.randomUUID());
+                        worker.setNif("ID " + UUID.randomUUID());
+                        worker.setUser(user);
+                        workerDAO.save(worker);
+                        worker.dontPoseAsTransientObjectAnymore();
+
+                        return worker;
+                    }
+                });
     }
 
     @Test
@@ -318,6 +326,16 @@ public class UserDAOTest {
 
         List<User> unboundUsers = userDAO.getUnboundUsers(null);
         assertEquals(previous, unboundUsers.size());
+    }
+
+    @Test
+    public void testUnoundUsers3() {
+        int previous = userDAO.getUnboundUsers(null).size();
+        User user = createUser(getUniqueName());
+        user.setWorker(givenStoredWorkerRelatedTo(user));
+
+        List<User> unboundUsers = userDAO.getUnboundUsers(user.getWorker());
+        assertEquals(previous + 1, unboundUsers.size());
     }
 
 }
