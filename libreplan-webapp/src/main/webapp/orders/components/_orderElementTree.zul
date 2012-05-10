@@ -33,10 +33,9 @@
             <label value="${i18n:_('New task')}" />
             <textbox value="" id="newOrderElementName" width="150px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
-            <label value="${i18n:_('Hours')}" />
-            <intbox value="0" id="newOrderElementHours" width="40px"
-                onOK="treeController.addElement(self.parent);"
-                constraint="no negative" disabled="true" />
+            <label value="${i18n:_('Type')}" />
+            <combobox id="newBudgetLineTemplateType"
+                onOK="treeController.addElement(self.parent);" disabled="true" />
             <button id="btnNew" label="${treeComponent.addElementLabel}"
                 onClick="treeController.addElement(self.parent);" disabled="true" />
             <button id="btnNewFromTemplate" label="${i18n:_('Add From Template')}"

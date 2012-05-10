@@ -40,6 +40,7 @@ import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.orders.entities.SchedulingState.ITypeChangedListener;
 import org.libreplan.business.orders.entities.SchedulingState.Type;
+import org.libreplan.business.templates.entities.BudgetLineTypeEnum;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.web.common.IMessagesForUser;
@@ -62,6 +63,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
@@ -216,14 +219,18 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     public void addElement(Component cmp) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
-        Intbox hours = (Intbox) cmp.getFellow("newOrderElementHours");
+        Combobox typeBox = (Combobox) cmp
+                .getFellow("newBudgetLineTemplateType");
 
         if (StringUtils.isEmpty(name.getValue())) {
             throw new WrongValueException(name, _("cannot be empty"));
         }
 
-        if (hours.getValue() == null) {
-            hours.setValue(0);
+        BudgetLineTypeEnum type;
+        if (typeBox.getSelectedItem() == null) {
+            type = null;
+        } else {
+            type = (BudgetLineTypeEnum) typeBox.getSelectedItem().getValue();
         }
 
         Textbox nameTextbox = null;
@@ -233,8 +240,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             if (tree.getSelectedCount() == 1) {
                 T node = getSelectedNode();
 
-                T newNode = getModel().addElementAt(node, name.getValue(),
-                        hours.getValue());
+                T newNode = getModel()
+                        .addElementAt(node, name.getValue(), type);
                 getRenderer().refreshHoursValueForThisNodeAndParents(newNode);
                 getRenderer().refreshBudgetValueForThisNodeAndParents(newNode);
 
@@ -243,7 +250,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     nameTextbox = getRenderer().getNameTextbox(node);
                 }
             } else {
-                getModel().addElement(name.getValue(), hours.getValue());
+                getModel().addElement(name.getValue(), type);
             }
             filterByPredicateIfAny();
         } catch (IllegalStateException e) {
@@ -252,7 +259,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         name.setValue("");
-        hours.setValue(0);
+        typeBox.setValue(null);
 
         if (nameTextbox != null) {
             nameTextbox.focus();
@@ -335,6 +342,17 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
+        populateTypeCombobox();
+    }
+
+    private void populateTypeCombobox() {
+        Combobox box = ((Combobox) orderElementTreeComponent
+                .getFellowIfAny("newBudgetLineTemplateType"));
+        for (BudgetLineTypeEnum type : BudgetLineTypeEnum.values()) {
+            Comboitem item = new Comboitem(type.toString());
+            item.setValue(type);
+            box.appendChild(item);
+        }
     }
 
     public boolean isItemSelected() {
@@ -1245,7 +1263,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             ((Button)orderElementTreeComponent.getFellowIfAny("btnNew")).setDisabled(readOnly);
             ((Button)orderElementTreeComponent.getFellowIfAny("btnNewFromTemplate")).setDisabled(readOnly);
             ((Textbox)orderElementTreeComponent.getFellowIfAny("newOrderElementName")).setDisabled(readOnly);
-            ((Intbox)orderElementTreeComponent.getFellowIfAny("newOrderElementHours")).setDisabled(readOnly);
+            ((Combobox) orderElementTreeComponent
+                    .getFellowIfAny("newBudgetLineTemplateType"))
+                    .setDisabled(readOnly);
             Util.reloadBindings(orderElementTreeComponent);
         }
     }

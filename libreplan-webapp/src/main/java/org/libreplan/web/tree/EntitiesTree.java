@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.libreplan.business.templates.entities.BudgetLineTypeEnum;
 import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.business.trees.ITreeParentNode;
 import org.zkoss.ganttz.util.MutableTreeModel;
@@ -104,6 +105,10 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         addElementAtImpl(tree.getRoot(), name, hours);
     }
 
+    public void addElement(String name, BudgetLineTypeEnum type) {
+        addElementAtImpl(tree.getRoot(), name, type);
+    }
+
     public void addElementAt(T node) {
         addElementAtImpl(node);
     }
@@ -112,9 +117,15 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         return addElementAtImpl(node, name, hours);
     }
 
+    public T addElementAt(T node, String name, BudgetLineTypeEnum type) {
+        return addElementAtImpl(node, name, type);
+    }
+
     protected abstract T createNewElement();
 
     protected abstract T createNewElement(String name, int hours);
+
+    protected abstract T createNewElement(String name, BudgetLineTypeEnum type);
 
     private void addElementAtImpl(T parent) {
         addOrderElementAt(parent, createNewElement());
@@ -122,6 +133,12 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
 
     private T addElementAtImpl(T parent, String name, int hours) {
         T newElement = createNewElement(name, hours);
+        addOrderElementAt(parent, newElement);
+        return newElement;
+    }
+
+    private T addElementAtImpl(T parent, String name, BudgetLineTypeEnum type) {
+        T newElement = createNewElement(name, type);
         addOrderElementAt(parent, newElement);
         return newElement;
     }

@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,16 +20,13 @@ package org.libreplan.web.templates.budgettemplates;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.libreplan.business.templates.entities.BudgetLineTemplate;
+import org.libreplan.business.templates.entities.BudgetLineTypeEnum;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.tree.EntitiesTree;
 
 /**
- * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
 public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
 
@@ -55,6 +50,17 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
         result.setCode(_("New code"));
         result.setDescription(_("New Description"));
         result.setWorkHours(hours);
+        return result;
+    }
+
+    @Override
+    protected OrderElementTemplate createNewElement(String name,
+            BudgetLineTypeEnum type) {
+        BudgetLineTemplate result = BudgetLineTemplate.createNew();
+        result.setName(name);
+        result.setCode(_("New code"));
+        result.setDescription(_("New Description"));
+        result.setBudgetLineType(type);
         return result;
     }
 
