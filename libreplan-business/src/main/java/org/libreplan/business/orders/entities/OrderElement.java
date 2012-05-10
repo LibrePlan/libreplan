@@ -295,7 +295,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                 //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
                 removeTaskSource(result);
             }
-            if(currentTaskSourceIsNotTheSame()) {
+            if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
                 //this element was unscheduled and then scheduled again. Its TaskSource has
                 //been recreated but we have to remove the old one.
                 if(!getParent().currentTaskSourceIsNotTheSame()) {
@@ -312,7 +312,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (wasASchedulingPoint()) {
                 result.add(taskSourceRemoval());
             }
-            if(currentTaskSourceIsNotTheSame()) {
+            if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
                 //all the children of this element were unscheduled and then scheduled again,
                 //its TaskSource has been recreated but we have to remove the old one.
                 if(getParent() == null || !getParent().currentTaskSourceIsNotTheSame()) {
@@ -350,6 +350,10 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     protected boolean currentTaskSourceIsNotTheSame() {
         return getOnDBTaskSource() != getTaskSource();
+    }
+
+    protected boolean hadATaskSource() {
+        return getOnDBTaskSource() != null;
     }
 
     private List<TaskSourceSynchronization> childrenSynchronizations() {
