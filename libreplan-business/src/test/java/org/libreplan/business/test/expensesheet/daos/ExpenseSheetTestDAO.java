@@ -57,6 +57,7 @@ import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.test.calendars.entities.BaseCalendarTest;
 import org.libreplan.business.test.planner.daos.ResourceAllocationDAOTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -468,7 +469,11 @@ public class ExpenseSheetTestDAO {
     public void testSaveExpenseSheetWithoutCode() {
         ExpenseSheet expense = ExpenseSheet.create();
         expense.setCode(null);
+        try {
         expenseSheetDAO.save(expense);
+        } catch (DataIntegrityViolationException e) {
+            throw new ValidationException(e.getMessage());
+        }
     }
 
     @Test
