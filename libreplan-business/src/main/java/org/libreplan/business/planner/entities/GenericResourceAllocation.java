@@ -238,19 +238,18 @@ public class GenericResourceAllocation extends
 
     }
 
-    private IAssignedEffortForResource assignedEffortCalculatorOverriden = null;
+    private IAssignedEffortForResource assignedEffortForResource = null;
 
-    public void discountAssignedHoursForResourceFrom(
-            Collection<? extends ResourceAllocation<?>> allocations) {
-        assignedEffortCalculatorOverriden = AssignedEffortForResource
-                .discount(allocations);
+    public void customAssignedEffortForResource(
+            IAssignedEffortForResource assignedEffortForResource) {
+        this.assignedEffortForResource = assignedEffortForResource;
     }
 
     private IAssignedEffortForResource getAssignedEffortForResource() {
-        if (assignedEffortCalculatorOverriden != null) {
-            return assignedEffortCalculatorOverriden;
+        if (assignedEffortForResource != null) {
+            return assignedEffortForResource;
         }
-        return AssignedEffortForResource.discount(Collections
+        return AssignedEffortForResource.effortDiscounting(Collections
                 .singletonList(this));
     }
 

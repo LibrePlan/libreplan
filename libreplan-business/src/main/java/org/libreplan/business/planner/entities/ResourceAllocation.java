@@ -53,6 +53,7 @@ import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalcula
 import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Registry;
+import org.libreplan.business.planner.entities.AssignedEffortForResource.IAssignedEffortForResource;
 import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.libreplan.business.planner.entities.allocationalgorithms.AllocationModification;
 import org.libreplan.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
@@ -84,7 +85,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
  *         Resources are allocated to planner tasks.
  */
 public abstract class ResourceAllocation<T extends DayAssignment> extends
-        BaseEntity {
+        BaseEntity implements IAssignedEffortForResource {
 
     private static final Log LOG = LogFactory.getLog(ResourceAllocation.class);
 
@@ -1985,6 +1986,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         List<DayAssignment> assignments = getAssingments(resource,
                 start.getDate(), endExclusive.asExclusiveEnd());
         return getAssignedDuration(assignments, start, endExclusive);
+    }
+
+    @Override
+    public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
+        IntraDayDate start = IntraDayDate.startOfDay(day);
+        return getAssignedEffort(resource, start, start.nextDayAtStart());
     }
 
     private List<DayAssignment> getAssingments(final Resource resource,

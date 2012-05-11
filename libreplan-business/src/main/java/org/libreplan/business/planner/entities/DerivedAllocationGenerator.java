@@ -105,7 +105,7 @@ public class DerivedAllocationGenerator {
             List<? extends DayAssignment> dayAssignments) {
         List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
         EffortDistributor distributor = new EffortDistributor(resourcesFound,
-                AssignedEffortForResource.discount(Collections.singletonList(parent)));
+                AssignedEffortForResource.effortDiscounting(Collections.singletonList(parent)));
         for (DayAssignment each : dayAssignments) {
             int durationInSeconds = alpha.multiply(
                     new BigDecimal(each.getDuration().getSeconds())).intValue();
