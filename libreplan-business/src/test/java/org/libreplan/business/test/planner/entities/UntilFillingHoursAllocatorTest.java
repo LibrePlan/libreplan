@@ -412,11 +412,11 @@ public class UntilFillingHoursAllocatorTest {
         givenSpecificAllocations(ResourcesPerDay.amount(1), ResourcesPerDay
                 .amount(1));
         ResourceAllocation.allocating(allocations).untilAllocating(hours(64));
-        ResourceAllocation<?> firstSpecific = allocations.get(0)
+        ResourceAllocation<?> generic = allocations.get(0).getBeingModified();
+        ResourceAllocation<?> firstSpecific = allocations.get(1)
                 .getBeingModified();
-        ResourceAllocation<?> secondSpecific = allocations.get(1)
+        ResourceAllocation<?> secondSpecific = allocations.get(2)
                 .getBeingModified();
-        ResourceAllocation<?> generic = allocations.get(2).getBeingModified();
         assertThat(generic.getAssignments(), haveHours(16, 16));
         assertThat(firstSpecific.getAssignments(), haveHours(8, 8));
         assertThat(secondSpecific.getAssignments(), haveHours(8, 8));

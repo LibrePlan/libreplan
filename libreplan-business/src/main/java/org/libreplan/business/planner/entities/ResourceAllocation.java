@@ -209,6 +209,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public static AllocationsSpecified allocating(
             List<ResourcesPerDayModification> resourceAllocations) {
+        resourceAllocations = new ArrayList<ResourcesPerDayModification>(
+                resourceAllocations);
         sortResourceAllocations(resourceAllocations);
         return new AllocationsSpecified(resourceAllocations);
     }
