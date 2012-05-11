@@ -593,6 +593,7 @@ content:
  <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
  <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
+ <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
  <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
  <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 
