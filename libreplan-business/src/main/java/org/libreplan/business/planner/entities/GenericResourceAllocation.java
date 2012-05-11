@@ -240,7 +240,7 @@ public class GenericResourceAllocation extends
 
     private IAssignedEffortForResource assignedEffortForResource = null;
 
-    public void customAssignedEffortForResource(
+    public void setAssignedEffortForResource(
             IAssignedEffortForResource assignedEffortForResource) {
         this.assignedEffortForResource = assignedEffortForResource;
     }

@@ -779,7 +779,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
                 GenericResourceAllocation.class, beingModified);
         for (GenericResourceAllocation each : generic) {
-            each.customAssignedEffortForResource(AssignedEffortForResource.sum(
+            each.setAssignedEffortForResource(AssignedEffortForResource.sum(
                     allNewLoad.withoutConsidering(each), discounting));
         }
     }
