@@ -216,7 +216,7 @@ public abstract class AllocationRow {
         for (GenericResourceAllocation each : ResourceAllocation.getOfType(GenericResourceAllocation.class, beingModified)) {
             IAssignedEffortForResource custom = AssignedEffortForResource.sum(
                     withTheLoadOf.withoutConsidering(each), effortForResource);
-            each.customAssignedEffortForResource(custom);
+            each.setAssignedEffortForResource(custom);
         }
     }
 
