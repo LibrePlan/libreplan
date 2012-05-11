@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2012 Óscar González Fernández
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +19,6 @@
 package org.libreplan.business.planner.entities;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,21 +27,35 @@ import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
 
-public class AssignedEffortDiscounting implements
-        IAssignedEffortForResource {
+/**
+ * @author Oscar Gonzalez Fernandez <ogfernandez@gmail.com>
+ */
+public class AssignedEffortForResource {
 
-    private final Map<Long, Set<BaseEntity>> allocations;
+    public interface IAssignedEffortForResource {
 
-    public AssignedEffortDiscounting(BaseEntity allocationToDiscountFrom) {
-        this(Collections.singleton(allocationToDiscountFrom));
+        public EffortDuration getAssignedDurationAt(Resource resource,
+                LocalDate day);
     }
 
-    AssignedEffortDiscounting(Collection<? extends BaseEntity> discountFrom) {
-        this.allocations = BaseEntity.byId(discountFrom);
+    public static IAssignedEffortForResource discount(
+            Collection<? extends BaseEntity> allocations) {
+        return new AssignedEffortDiscounting(allocations);
     }
 
-    public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
-        return resource.getAssignedDurationDiscounting(allocations, day);
+    private static class AssignedEffortDiscounting implements
+            IAssignedEffortForResource {
+
+        private final Map<Long, Set<BaseEntity>> allocations;
+
+        AssignedEffortDiscounting(Collection<? extends BaseEntity> discountFrom) {
+            this.allocations = BaseEntity.byId(discountFrom);
+        }
+
+        public EffortDuration getAssignedDurationAt(Resource resource,
+                LocalDate day) {
+            return resource.getAssignedDurationDiscounting(allocations, day);
+        }
     }
 
 }

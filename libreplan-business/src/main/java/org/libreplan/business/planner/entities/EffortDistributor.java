@@ -42,6 +42,7 @@ import org.libreplan.business.calendars.entities.Capacity;
 import org.libreplan.business.calendars.entities.ICalendar;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.calendars.entities.SameWorkHoursEveryDay;
+import org.libreplan.business.planner.entities.AssignedEffortForResource.IAssignedEffortForResource;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
