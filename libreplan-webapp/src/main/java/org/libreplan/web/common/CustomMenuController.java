@@ -357,7 +357,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Task Scheduling Status In Project"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
             subItem(_("Materials Needs At Date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
 
-        topItem(_("My account"), "/myaccount/settings.zul", "",
+        topItem(_("My account"), "/myaccount/userDashboard.zul", "",
+                subItem(_("My dashboard"), "/myaccount/userDashboard.zul", ""),
                 subItem(_("Settings"), "/myaccount/settings.zul", ""),
                 subItem(_("Change Password"), "/myaccount/changePassword.zul", ""));
     }
