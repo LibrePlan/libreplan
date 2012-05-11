@@ -22,6 +22,7 @@ package org.libreplan.web.templates;
 
 import static org.libreplan.web.I18nHelper._;
 
+import org.libreplan.business.templates.entities.BudgetLineTypeEnum;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderLineTemplate;
 import org.libreplan.web.tree.EntitiesTree;
@@ -51,6 +52,13 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
         result.setDescription(_("New Description"));
         result.setWorkHours(hours);
         return result;
+    }
+
+    @Override
+    protected OrderElementTemplate createNewElement(String name,
+            BudgetLineTypeEnum type) {
+        // OrderLineTemplate objects don't support type field
+        return createNewElement(name, 0);
     }
 
 }

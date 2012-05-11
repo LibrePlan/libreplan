@@ -28,6 +28,7 @@ import java.util.List;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
+import org.libreplan.business.templates.entities.BudgetLineTypeEnum;
 import org.libreplan.web.tree.EntitiesTree;
 
 /**
@@ -60,6 +61,12 @@ public class OrderElementTreeModel extends EntitiesTree<OrderElement> {
                 .createOrderLineWithUnfixedPercentage(hours);
         newOrderElement.setName(name);
         return newOrderElement;
+    }
+
+    @Override
+    protected OrderElement createNewElement(String name, BudgetLineTypeEnum type) {
+        // OrderElements don't support type field yet
+        return createNewElement(name, 0);
     }
 
 }
