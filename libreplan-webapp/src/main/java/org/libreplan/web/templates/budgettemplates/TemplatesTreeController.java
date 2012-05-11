@@ -48,7 +48,9 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
+import org.zkoss.zul.Treerow;
 
 /**
  * Controller for template element tree <br />
@@ -73,6 +75,35 @@ public class TemplatesTreeController extends
 
         private final ClassValidator<OrderElementTemplate> validator = new ClassValidator<OrderElementTemplate>(
                 OrderElementTemplate.class);
+
+        @Override
+        /**
+         * We override parent method to remove the scheduling state
+         * toggler from the cell.
+         */
+        public void addSchedulingStateCell(
+                final OrderElementTemplate currentElement) {
+            final Treecell cell = addCell();
+            cell.addEventListener("onDoubleClick", new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+
+                    markModifiedTreeitem((Treerow) cell.getParent());
+                    onDoubleClickForSchedulingStateCell(currentElement);
+                }
+            });
+            cell.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                private Treeitem item = (Treeitem) getCurrentTreeRow()
+                        .getParent();
+
+                @Override
+                public void onEvent(Event event) {
+                    item.getTree().toggleItemSelection(item);
+                }
+            });
+            cell.setDraggable("true");
+        }
 
         @Override
         protected void addOperationsCell(Treeitem item,

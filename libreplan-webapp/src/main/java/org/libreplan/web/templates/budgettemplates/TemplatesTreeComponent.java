@@ -76,7 +76,18 @@ public class TemplatesTreeComponent extends TreeComponent {
     public List<Column> getColumns() {
         List<Column> result = new ArrayList<Column>();
 
-        result.add(schedulingStateColumn);
+        result.add(new Column("", "",
+                _("Position in the tree. (Drag and drop to move tasks)")) {
+
+            @Override
+            public <T extends ITreeNode<T>> void doCell(
+                    TreeController<T>.Renderer renderer, Treeitem item,
+                    T currentElement) {
+                renderer.addSchedulingStateCell(currentElement);
+            }
+
+        });
+
         result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
         result.add(new TemplatesTreeColumn(_("TOTAL"), "budget") {
