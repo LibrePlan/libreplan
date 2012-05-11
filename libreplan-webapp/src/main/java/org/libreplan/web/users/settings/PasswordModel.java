@@ -45,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/settings/changePassword.zul")
+@OnConcurrentModification(goToPage = "/myaccount/changePassword.zul")
 public class PasswordModel implements IPasswordModel {
 
     @Autowired

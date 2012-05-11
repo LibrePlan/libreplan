@@ -43,7 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/settings/settings.zul")
+@OnConcurrentModification(goToPage = "/myaccount/settings.zul")
 public class SettingsModel implements ISettingsModel {
 
     @Autowired
