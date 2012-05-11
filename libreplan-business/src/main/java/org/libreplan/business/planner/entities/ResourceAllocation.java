@@ -54,6 +54,7 @@ import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalcula
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
+import org.libreplan.business.planner.entities.allocationalgorithms.AllocationModification;
 import org.libreplan.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
 import org.libreplan.business.planner.entities.allocationalgorithms.Distributor;
 import org.libreplan.business.planner.entities.allocationalgorithms.EffortModification;
@@ -211,7 +212,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             List<ResourcesPerDayModification> resourceAllocations) {
         resourceAllocations = new ArrayList<ResourcesPerDayModification>(
                 resourceAllocations);
-        sortResourceAllocations(resourceAllocations);
+        sortBySpecificFirst(resourceAllocations);
         return new AllocationsSpecified(resourceAllocations);
     }
 
@@ -223,14 +224,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * @param resourceAllocations
      *            Sorted with specific allocations before generic ones
      */
-    private static void sortResourceAllocations(
-            List<ResourcesPerDayModification> resourceAllocations) {
+    private static <T extends AllocationModification> void sortBySpecificFirst(
+            List<T> resourceAllocations) {
         Collections.sort(resourceAllocations,
-                new Comparator<ResourcesPerDayModification>() {
+                new Comparator<AllocationModification>() {
 
                     @Override
-                    public int compare(ResourcesPerDayModification o1,
-                            ResourcesPerDayModification o2) {
+                    public int compare(AllocationModification o1,
+                            AllocationModification o2) {
                         if (o1.isSpecific() && o2.isSpecific()) {
                             return 0;
                         }
@@ -448,8 +449,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public static HoursAllocationSpecified allocatingHours(
-            List<EffortModification> hoursModifications) {
-        return new HoursAllocationSpecified(hoursModifications);
+            List<EffortModification> effortsModifications) {
+        effortsModifications = new ArrayList<EffortModification>(
+                effortsModifications);
+        sortBySpecificFirst(effortsModifications);
+        return new HoursAllocationSpecified(effortsModifications);
     }
 
     /**
