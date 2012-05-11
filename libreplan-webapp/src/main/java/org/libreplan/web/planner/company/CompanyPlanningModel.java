@@ -796,6 +796,10 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
      */
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
+        public CompanyEarnedValueChartFiller() {
+            super.setEarnedValueCalculator(earnedValueCalculator);
+        }
+
         @Override
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
             setIndicatorInInterval(EarnedValueType.BCWS, interval,
@@ -815,71 +819,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             setIndicatorInInterval(EarnedValueType.BCWP, interval,
                     earnedValueCalculator
                             .calculateBudgetedCostWorkPerformed(getFilterInterval()));
-        }
-
-        @Override
-        protected void calculateCostVariance() {
-            setIndicator(EarnedValueType.CV,
-                    earnedValueCalculator.calculateCostVariance(
-                            getIndicator(EarnedValueType.BCWP),
-                            getIndicator(EarnedValueType.ACWP)));
-        }
-
-        @Override
-        protected void calculateScheduleVariance() {
-            setIndicator(EarnedValueType.SV,
-                    earnedValueCalculator.calculateScheduleVariance(
-                            getIndicator(EarnedValueType.BCWP),
-                            getIndicator(EarnedValueType.BCWS)));
-        }
-
-        @Override
-        protected void calculateSchedulePerformanceIndex() {
-            setIndicator(EarnedValueType.SPI,
-                    earnedValueCalculator.calculateSchedulePerformanceIndex(
-                            getIndicator(EarnedValueType.BCWP),
-                            getIndicator(EarnedValueType.BCWS)));
-        }
-
-        @Override
-        protected void calculateBudgetAtCompletion() {
-            setIndicator(
-                    EarnedValueType.BAC,
-                    earnedValueCalculator
-                            .calculateBudgetAtCompletion(getIndicator(EarnedValueType.BCWS)));
-        }
-
-        @Override
-        protected void calculateEstimateAtCompletion() {
-            setIndicator(EarnedValueType.EAC,
-                    earnedValueCalculator.calculateEstimateAtCompletion(
-                            getIndicator(EarnedValueType.ACWP),
-                            getIndicator(EarnedValueType.BCWP),
-                            getIndicator(EarnedValueType.BAC)));
-        }
-
-        @Override
-        protected void calculateVarianceAtCompletion() {
-            setIndicator(EarnedValueType.VAC,
-                    earnedValueCalculator.calculateVarianceAtCompletion(
-                            getIndicator(EarnedValueType.BAC),
-                            getIndicator(EarnedValueType.EAC)));
-        }
-
-        @Override
-        protected void calculateEstimatedToComplete() {
-            setIndicator(EarnedValueType.ETC,
-                    earnedValueCalculator.calculateEstimatedToComplete(
-                            getIndicator(EarnedValueType.EAC),
-                            getIndicator(EarnedValueType.ACWP)));
-        }
-
-        @Override
-        protected void calculateCostPerformanceIndex() {
-            setIndicator(EarnedValueType.CPI,
-                    earnedValueCalculator.calculateCostPerformanceIndex(
-                            getIndicator(EarnedValueType.BCWP),
-                            getIndicator(EarnedValueType.ACWP)));
         }
 
         @Override

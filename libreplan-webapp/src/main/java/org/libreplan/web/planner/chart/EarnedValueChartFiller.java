@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import org.joda.time.LocalDate;
+import org.libreplan.business.planner.entities.IEarnedValueCalculator;
 import org.libreplan.web.I18nHelper;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
@@ -54,9 +55,15 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         return start.compareTo(date) <= 0 && date.compareTo(end) < 0;
     }
 
+    private IEarnedValueCalculator earnedValueCalculator;
+
     protected Map<EarnedValueType, SortedMap<LocalDate, BigDecimal>> indicators = new HashMap<EarnedValueType, SortedMap<LocalDate, BigDecimal>>();
 
     private Interval indicatorsInterval;
+
+    protected void setEarnedValueCalculator(IEarnedValueCalculator earnedValueCalculator) {
+        this.earnedValueCalculator = earnedValueCalculator;
+    }
 
     protected Plotinfo createPlotInfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval, String lineColor) {
@@ -98,23 +105,64 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     protected abstract void calculateBudgetedCostWorkPerformed(Interval interval);
 
-    protected abstract void calculateCostVariance();
-
-    protected abstract void calculateScheduleVariance();
-
-    protected abstract void calculateBudgetAtCompletion();
-
-    protected abstract void calculateEstimateAtCompletion();
-
-    protected abstract void calculateVarianceAtCompletion();
-
-    protected abstract void calculateEstimatedToComplete();
-
-    protected abstract void calculateSchedulePerformanceIndex();
-
-    protected abstract void calculateCostPerformanceIndex();
-
     protected abstract Set<EarnedValueType> getSelectedIndicators();
+
+    private void calculateCostVariance() {
+        setIndicator(EarnedValueType.CV,
+                earnedValueCalculator.calculateCostVariance(
+                        getIndicator(EarnedValueType.BCWP),
+                        getIndicator(EarnedValueType.ACWP)));
+    }
+
+    private void calculateScheduleVariance() {
+        setIndicator(EarnedValueType.SV,
+                earnedValueCalculator.calculateScheduleVariance(
+                        getIndicator(EarnedValueType.BCWP),
+                        getIndicator(EarnedValueType.BCWS)));
+    }
+
+    private void calculateSchedulePerformanceIndex() {
+        setIndicator(EarnedValueType.SPI,
+                earnedValueCalculator.calculateSchedulePerformanceIndex(
+                        getIndicator(EarnedValueType.BCWP),
+                        getIndicator(EarnedValueType.BCWS)));
+    }
+
+    private void calculateBudgetAtCompletion() {
+        setIndicator(
+                EarnedValueType.BAC,
+                earnedValueCalculator
+                        .calculateBudgetAtCompletion(getIndicator(EarnedValueType.BCWS)));
+    }
+
+    private void calculateEstimateAtCompletion() {
+        setIndicator(EarnedValueType.EAC,
+                earnedValueCalculator.calculateEstimateAtCompletion(
+                        getIndicator(EarnedValueType.ACWP),
+                        getIndicator(EarnedValueType.BCWP),
+                        getIndicator(EarnedValueType.BAC)));
+    }
+
+    private void calculateVarianceAtCompletion() {
+        setIndicator(EarnedValueType.VAC,
+                earnedValueCalculator.calculateVarianceAtCompletion(
+                        getIndicator(EarnedValueType.BAC),
+                        getIndicator(EarnedValueType.EAC)));
+    }
+
+    private void calculateEstimatedToComplete() {
+        setIndicator(EarnedValueType.ETC,
+                earnedValueCalculator.calculateEstimatedToComplete(
+                        getIndicator(EarnedValueType.EAC),
+                        getIndicator(EarnedValueType.ACWP)));
+    }
+
+    private void calculateCostPerformanceIndex() {
+        setIndicator(EarnedValueType.CPI,
+                earnedValueCalculator.calculateCostPerformanceIndex(
+                        getIndicator(EarnedValueType.BCWP),
+                        getIndicator(EarnedValueType.ACWP)));
+    }
 
     public SortedMap<LocalDate, BigDecimal> getIndicator(EarnedValueType indicator) {
         return indicators.get(indicator);
