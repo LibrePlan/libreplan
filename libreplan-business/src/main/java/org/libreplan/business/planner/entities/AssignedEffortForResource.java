@@ -19,6 +19,7 @@
 package org.libreplan.business.planner.entities;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,9 +39,65 @@ public class AssignedEffortForResource {
                 LocalDate day);
     }
 
-    public static IAssignedEffortForResource discount(
+    public static IAssignedEffortForResource effortDiscounting(
             Collection<? extends BaseEntity> allocations) {
         return new AssignedEffortDiscounting(allocations);
+    }
+
+    public static IAssignedEffortForResource sum(
+            final IAssignedEffortForResource... assignedEffortForResources) {
+        return new IAssignedEffortForResource() {
+
+            @Override
+            public EffortDuration getAssignedDurationAt(Resource resource,
+                    LocalDate day) {
+                EffortDuration result = EffortDuration.zero();
+                for (IAssignedEffortForResource each : assignedEffortForResources) {
+                    EffortDuration e = each
+                            .getAssignedDurationAt(resource, day);
+                    if (e != null) {
+                        result = result.plus(e);
+                    }
+                }
+                return result;
+            }
+        };
+    }
+
+    public static IAssignedEffortForResource sum(
+            Collection<? extends IAssignedEffortForResource> assignedEffortForResources) {
+        return sum(assignedEffortForResources
+                .toArray(new IAssignedEffortForResource[0]));
+    }
+
+    public static WithTheLoadOf withTheLoadOf(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        return new WithTheLoadOf(allocations);
+    }
+
+    public static class WithTheLoadOf implements IAssignedEffortForResource {
+
+        private final Set<? extends ResourceAllocation<?>> allocations;
+        private final IAssignedEffortForResource implementation;
+
+        public WithTheLoadOf(
+                Collection<? extends ResourceAllocation<?>> allocations) {
+            this.allocations = new HashSet<ResourceAllocation<?>>(allocations);
+            this.implementation = sum(this.allocations);
+        }
+
+        @Override
+        public EffortDuration getAssignedDurationAt(Resource resource,
+                LocalDate day) {
+            return implementation.getAssignedDurationAt(resource, day);
+        }
+
+        public WithTheLoadOf withoutConsidering(ResourceAllocation<?> allocation) {
+            Set<ResourceAllocation<?>> copy = new HashSet<ResourceAllocation<?>>(
+                    this.allocations);
+            copy.remove(allocation);
+            return new WithTheLoadOf(copy);
+        }
     }
 
     private static class AssignedEffortDiscounting implements

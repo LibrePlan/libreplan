@@ -67,7 +67,7 @@ public class GenericDayAssignment extends DayAssignment {
         @Override
         ParentState setParent(
                 GenericResourceAllocation genericResourceAllocation) {
-            if (parent != null) {
+            if (parent != null && parent != genericResourceAllocation) {
                 throw new IllegalStateException(
                         "the allocation cannot be changed once it has been set");
             }
