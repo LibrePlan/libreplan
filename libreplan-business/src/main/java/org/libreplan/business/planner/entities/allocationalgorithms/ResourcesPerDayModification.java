@@ -329,6 +329,4 @@ public abstract class ResourcesPerDayModification extends
                 getBeingModified().getNonConsolidatedResourcePerDay());
     }
 
-    public abstract boolean isSpecific();
-
 }
