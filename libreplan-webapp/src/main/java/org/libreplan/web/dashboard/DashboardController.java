@@ -85,7 +85,6 @@ public class DashboardController extends GenericForwardComposer {
                 renderGlobalProgress();
                 renderTaskStatus();
                 renderTaskCompletationLag();
-                renderTasksSummary();
                 renderDeadlineViolation();
                 renderMarginWithDeadline();
                 renderEstimationAccuracy();
@@ -217,38 +216,33 @@ public class DashboardController extends GenericForwardComposer {
         renderChart(barChart, divId);
     }
 
-    private void renderTasksSummary() {
-        Map<TaskStatusEnum, Integer> taskStatus = dashboardModel
-                .calculateTaskStatus();
-
-        taskStatus("lblTasksFinished", taskStatus.get(TaskStatusEnum.FINISHED));
-        taskStatus("lblTasksBlocked", taskStatus.get(TaskStatusEnum.BLOCKED));
-        taskStatus("lblTasksInProgress",
-                taskStatus.get(TaskStatusEnum.IN_PROGRESS));
-        taskStatus("lblTasksReadyToStart",
-                taskStatus.get(TaskStatusEnum.READY_TO_START));
-    }
-
-    private void taskStatus(String key, Integer value) {
-        Label label = (Label) gridTasksSummary.getFellowIfAny(key);
-        if (label != null) {
-            label.setValue(String.format(_("%d tasks"), value));
-        }
+    private String statusLegend(TaskStatusEnum status,
+            Map<TaskStatusEnum, Integer> taskStatus) {
+        return status + String.format(_(" (%d tasks)"), taskStatus.get(status));
     }
 
     private void renderTaskStatus() {
         final String divId = "task-status";
 
-        PieChart<Number> taskStatus = new PieChart<Number>(_("Task Status"));
-        taskStatus.addValue(_("Finished"),
+        Map<TaskStatusEnum, Integer> taskStatus = dashboardModel
+                .calculateTaskStatus();
+        PieChart<Number> taskStatusPieChart = new PieChart<Number>(
+                _("Task Status"));
+
+        taskStatusPieChart.addValue(
+                statusLegend(TaskStatusEnum.FINISHED, taskStatus),
                 dashboardModel.getPercentageOfFinishedTasks());
-        taskStatus.addValue(_("In progress"),
+        taskStatusPieChart.addValue(
+                statusLegend(TaskStatusEnum.IN_PROGRESS, taskStatus),
                 dashboardModel.getPercentageOfInProgressTasks());
-        taskStatus.addValue(_("Ready to start"),
+        taskStatusPieChart.addValue(
+                statusLegend(TaskStatusEnum.READY_TO_START, taskStatus),
                 dashboardModel.getPercentageOfReadyToStartTasks());
-        taskStatus.addValue(_("Blocked"),
+        taskStatusPieChart.addValue(
+                statusLegend(TaskStatusEnum.BLOCKED, taskStatus),
                 dashboardModel.getPercentageOfBlockedTasks());
-        renderChart(taskStatus, divId);
+
+        renderChart(taskStatusPieChart, divId);
     }
 
     private void renderGlobalProgress() {

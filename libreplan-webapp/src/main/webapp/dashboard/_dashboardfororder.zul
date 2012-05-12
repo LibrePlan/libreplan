@@ -46,35 +46,6 @@
                     <hbox>
                         <n:div id="global-progress" style="height:200px; width:500px;"></n:div>
                         <n:div id="task-status" style="height:200px; width:400px; margin-left: 100px;"></n:div>
-
-                        <!-- Tasks summary -->
-                        <grid id="gridTasksSummary" style="margin-top: 50px;" width="300px">
-                            <auxhead>
-                                <auxheader label="${i18n:_('Tasks summary')}" colspan="2"/>
-                            </auxhead>
-                            <columns sizable="false">
-                                <column width="100px"/>
-                                <column />
-                            </columns>
-                            <rows>
-                                <row>
-                                    <label value="${i18n:_('Finished')}:"/>
-                                    <label id="lblTasksFinished" />
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Blocked')}:"/>
-                                    <label id="lblTasksBlocked" />
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('In Progress')}:"/>
-                                    <label id="lblTasksInProgress" />
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Ready to start')}:"/>
-                                    <label id="lblTasksReadyToStart" />
-                                </row>
-                            </rows>
-                        </grid>
                     </hbox>
                 </groupbox>
 
