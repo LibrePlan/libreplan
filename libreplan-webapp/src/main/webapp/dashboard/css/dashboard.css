@@ -15,11 +15,32 @@
 .dashboard-label-remarked {
     font-size: 1em;
     font-weight: bold;
-    margin-bottom: 5px;
 }
 
 .dashboard-box {
-    border: solid 2px #888;
+    border: solid 2px #9B9B9B;
     background: #fffdf6;
     box-shadow: 2px 2px 5px #AAA;
+}
+
+.jqplot-title {
+   font-size: 12px !important;
+   font-weight: bold;
+}
+
+.jqplot-legend {
+    font-size: 10px !important;
+}
+
+.jqplot-xaxis-label {
+    font-size: 12px !important;
+}
+
+.jqplot-yaxis {
+    font-size: 11px !important;
+}
+
+.jqplot-axis .jqplot-yaxis-tick {
+    white-space: normal;
+    width: 80px;
 }
