@@ -38,7 +38,7 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
     protected OrderElementTemplate createNewElement() {
         BudgetLineTemplate result = BudgetLineTemplate.createNew();
         result.setName(_("New template"));
-        result.setCode(_("New code"));
+        result.setCode("");
         result.setDescription(_("New Description"));
         return result;
     }
@@ -58,7 +58,7 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
             BudgetLineTypeEnum type) {
         BudgetLineTemplate result = BudgetLineTemplate.createNew();
         result.setName(name);
-        result.setCode(_("New code"));
+        result.setCode("");
         result.setDescription(_("New Description"));
         result.setBudgetLineType(type);
         return result;

@@ -184,6 +184,9 @@ public class TemplatesTreeController extends
                 }
             });
             addCell(textBoxCode);
+            if (textBoxCode.isValid()) {
+                model.notifyUpdate(element);
+            }
         }
 
         @Override
