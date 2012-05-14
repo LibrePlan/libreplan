@@ -18,36 +18,73 @@
 -->
 
 <!-- Cost status -->
-<grid id="${arg.id}"
-        apply="org.libreplan.web.dashboard.CostStatusController"
-        width="400px">
-    <auxhead>
-        <auxheader label="${i18n:_('Cost status')}" colspan="2"/>
-    </auxhead>
-    <columns sizable="false">
-        <column width="200px"/>
-        <column />
-    </columns>
-    <rows>
-        <row>
-            <label value="${i18n:_('CV (Cost Variance)')}:"/>
-            <label id="lblCV" />
-        </row>
-        <row>
-            <label value="${i18n:_('EAC (Estimate At Completion)')}:"/>
-            <label id="lblEAC" />
-        </row>
-        <row>
-            <label value="${i18n:_('BAC (Budget At Completion)')}:"/>
-            <label id="lblBAC" />
-        </row>
-        <row>
-            <label value="${i18n:_('VAC (Variance At Completion)')}:"/>
-            <label id="lblVAC" />
-        </row>
-        <row>
-            <label value="${i18n:_('CPI (Cost Performance Index)')}:"/>
-            <label id="lblCPI" />
-        </row>
-    </rows>
-</grid>
+<div id="${arg.id}"
+    apply="org.libreplan.web.dashboard.CostStatusController"
+    width="400px">
+
+    <hbox>
+    <vbox width="500px">
+        <hbox hflex="1" pack="center" vflex="1" style="margin-bottom:5px">
+            <label class="dashboard-title" value="${i18n:_('Current state indicators')}" />
+        </hbox>
+        <div class="dashboard-box" style="height:80px; width:450px; padding: 25px;">
+            <!-- Overtime ratio -->
+            <hbox hflex="1" vflex="1">
+                <vbox hflex="1" align="pack" vflex="1">
+                    <vbox style="margin-bottom:10px">
+                    <label class="dashboard-label"
+                        value="${i18n:_('CV (Cost Variance)')}" />
+                    <label class="dashboard-label dashboard-label-remarked" id="lblCV"/>
+                    </vbox>
+                    <label class="dashboard-label"
+                        value="${i18n:_('Hours invested')}" />
+                    <label class="dashboard-label dashboard-label-remarked" value="0" />
+                </vbox>
+                <vbox hflex="1" align="pack" vflex="1">
+                    <vbox style="margin-bottom:10px">
+                        <label class="dashboard-label"
+                            value="${i18n:_('CPI (Cost Performance Index)')}" />
+                        <label class="dashboard-label dashboard-label-remarked"
+                            id="lblCPI" />
+                    </vbox>
+                    <label class="dashboard-label"
+                        value="${i18n:_('Remaining time')}" />
+                    <label class="dashboard-label dashboard-label-remarked" value="0" />
+                </vbox>
+            </hbox>
+
+        </div>
+    </vbox>
+    <vbox width="20px" />
+    <vbox width="500px">
+        <hbox hflex="1" pack="center" vflex="1" style="margin-bottom:5px">
+            <label class="dashboard-title" value="${i18n:_('Project closing previsions')}" />
+        </hbox>
+        <div class="dashboard-box" style="height:80px; width:450px; padding: 25px;">
+            <!-- Overtime ratio -->
+            <hbox hflex="1" vflex="1">
+                <vbox hflex="1" align="pack" vflex="1">
+                    <vbox style="margin-bottom:10px">
+                        <label class="dashboard-label"
+                            value="${i18n:_('EAC (Estimate At Completion)')}" />
+                        <label class="dashboard-label dashboard-label-remarked"
+                            id="lblEAC" />
+                    </vbox>
+                    <label class="dashboard-label"
+                        value="${i18n:_('BAC (Budget At Completion)')}" />
+                    <label class="dashboard-label dashboard-label-remarked"
+                        id="lblBAC" />
+                </vbox>
+                <vbox hflex="1" align="pack" vflex="1">
+                    <label class="dashboard-label"
+                        value="${i18n:_('VAC (Variance At Completion)')}" />
+                    <label class="dashboard-label dashboard-label-remarked"
+                        id="lblVAC" />
+                </vbox>
+            </hbox>
+
+        </div>
+    </vbox>
+
+</hbox>
+</div>
