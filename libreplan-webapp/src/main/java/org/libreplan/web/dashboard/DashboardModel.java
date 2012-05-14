@@ -102,6 +102,7 @@ public class DashboardModel implements IDashboardModel {
         if (tasksAvailable()) {
             this.calculateTaskStatusStatistics();
             this.calculateTaskViolationStatusStatistics();
+            this.calculateAbsoluteMarginWithDeadLine();
             this.calculateMarginWithDeadLine();
             this.calculateFinishedTasksEstimationAccuracyHistogram();
             this.calculateLagInTaskCompletionHistogram();
@@ -243,9 +244,6 @@ public class DashboardModel implements IDashboardModel {
 
     @Override
     public Integer getAbsoluteMarginWithDeadLine() {
-        if (absoluteMarginWithDeadLine == null) {
-            calculateAbsoluteMarginWithDeadLine();
-        }
         return absoluteMarginWithDeadLine;
     }
 
