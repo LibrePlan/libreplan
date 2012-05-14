@@ -282,8 +282,8 @@ public class DashboardController extends GenericForwardComposer {
 
         private static List<Series> series = new ArrayList<Series>() {
             {
-                add(Series.create(_("Current"), "#33c"));
-                add(Series.create(_("Expected"), "#c33"));
+                add(Series.create(_("Current"), "#004469"));
+                add(Series.create(_("Expected"), "#3C90BE"));
             }
         };
 
