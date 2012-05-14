@@ -194,4 +194,12 @@ public class SettingsModel implements ISettingsModel {
         return user.getEmail();
     }
 
+    @Override
+    public boolean isBound() {
+        if (user != null) {
+            return user.isBound();
+        }
+        return false;
+    }
+
 }

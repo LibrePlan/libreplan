@@ -49,7 +49,7 @@
                             </columns>
                             <rows>
                                 <row>
-                                    <label value="${i18n:_('Login')}" />
+                                    <label value="${i18n:_('Username')}" />
                                     <textbox id="loginName"
                                         value="@{settingsController.loginName}"
                                         disabled="true"
@@ -58,12 +58,14 @@
                                 <row>
                                     <label value="${i18n:_('First name')}" />
                                     <textbox id="firstName"
-                                        value="@{settingsController.firstName}" width="300px"/>
+                                        value="@{settingsController.firstName}" width="300px"
+                                        disabled="@{settingsController.bound}" />
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Last name')}" />
                                     <textbox id="lastName"
-                                        value="@{settingsController.lastName}" width="300px"/>
+                                        value="@{settingsController.lastName}" width="300px"
+                                        disabled="@{settingsController.bound}" />
                                 </row>
                                 <row>
                                     <label value="${i18n:_('E-mail')}" />

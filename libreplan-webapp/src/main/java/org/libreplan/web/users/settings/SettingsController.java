@@ -171,4 +171,9 @@ public class SettingsController extends GenericForwardComposer {
     public String getEmail() {
         return settingsModel.getEmail();
     }
+
+    public boolean isBound() {
+        return settingsModel.isBound();
+    }
+
 }
