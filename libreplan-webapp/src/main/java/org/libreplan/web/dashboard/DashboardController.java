@@ -101,11 +101,18 @@ public class DashboardController extends GenericForwardComposer {
     private void renderOvertimeRatio() {
         lblOvertimeRatio.setValue(String.format("%.2f", dashboardModel
                 .getOvertimeRatio().doubleValue()));
+        String valueMeaning = (dashboardModel.getOvertimeRatio().doubleValue() > 1) ? "negative"
+                : "positive";
+        lblOvertimeRatio.setSclass("dashboard-label-remarked " + valueMeaning);
     }
 
     private void renderAvailabilityRatio() {
         lblAvailabilityRatio.setValue(String.format("%.2f", dashboardModel
                 .getAvailabilityRatio().doubleValue()));
+        String valueMeaning = (dashboardModel.getAvailabilityRatio()
+                .doubleValue() > 1) ? "negative" : "positive";
+        lblAvailabilityRatio.setSclass("dashboard-label-remarked "
+                + valueMeaning);
     }
 
     private void renderCostStatus(Order order) {

@@ -13,8 +13,26 @@
 }
 
 .dashboard-label-remarked {
-    font-size: 1em;
+    color: #666;
+    font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
+    font-size: 16px;
     font-weight: bold;
+}
+
+.dashboard-label-remarked.positive,
+.dashboard-label-remarked.negative {
+    background-position: 100%;
+    background-repeat: no-repeat;
+    padding-right: 25px;
+    background-size: 25px;
+}
+
+.dashboard-label-remarked.negative {
+    background-image: url('../img/value-meaning-negative.png');
+}
+
+.dashboard-label-remarked.positive {
+    background-image: url('../img/value-meaning-positive.png');
 }
 
 .dashboard-box {
