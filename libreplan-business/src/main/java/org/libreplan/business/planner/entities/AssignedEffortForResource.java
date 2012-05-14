@@ -29,21 +29,60 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
 
 /**
+ * This class contains methods to build an {@link IAssignedEffortForResource}.
+ *
  * @author Oscar Gonzalez Fernandez <ogfernandez@gmail.com>
  */
 public class AssignedEffortForResource {
 
+    /**
+     * It allows to know how much load a Resource has at the given day. It's
+     * used by {@link GenericResourceAllocation} so it distributes new load
+     * among the least loaded resources. The right object implementing this
+     * interface is built using factory methods from
+     * {@link AssignedEffortForResource}.
+     *
+     * @see AssignedEffortForResource#sum(IAssignedEffortForResource...)
+     * @see AssignedEffortForResource#withTheLoadOf(Collection)
+     */
     public interface IAssignedEffortForResource {
 
         public EffortDuration getAssignedDurationAt(Resource resource,
                 LocalDate day);
     }
 
+    private AssignedEffortForResource() {
+        // not instantiable
+    }
+
+    /**
+     * It returns a new {@link IAssignedEffortForResource} that looks into
+     * {@link Resource#dayAssignments} for knowing which load the
+     * {@link Resource} has for a given day.
+     *
+     * Sometimes we have to discount the load of some allocations that are being
+     * removed or changed. They can be provided to this method.
+     *
+     * @param allocations
+     *            The allocations whose load shouldn't be summed.
+     * @return A {@link IAssignedEffortForResource} that calculates the load
+     *         associated for all allocations but the provided ones.
+     */
     public static IAssignedEffortForResource effortDiscounting(
             Collection<? extends BaseEntity> allocations) {
         return new AssignedEffortDiscounting(allocations);
     }
 
+    /**
+     * It creates a new {@link IAssignedEffortForResource} that sums all
+     * provided {@link IAssignedEffortForResource}. Sometimes you have to
+     * combine several {@link IAssignedEffortForResource} to calculate the right
+     * effort.
+     * @param assignedEffortForResources
+     *            The {@link IAssignedEffortForResource} to sum.
+     * @return a {@link IAssignedEffortForResource} that returns the sum of
+     *         calling all provided <code>assignedEffortForResources</code>.
+     */
     public static IAssignedEffortForResource sum(
             final IAssignedEffortForResource... assignedEffortForResources) {
         return new IAssignedEffortForResource() {
@@ -64,6 +103,9 @@ public class AssignedEffortForResource {
         };
     }
 
+    /**
+     * @see AssignedEffortForResource#sum(IAssignedEffortForResource...)
+     */
     public static IAssignedEffortForResource sum(
             Collection<? extends IAssignedEffortForResource> assignedEffortForResources) {
         return sum(assignedEffortForResources
@@ -75,6 +117,12 @@ public class AssignedEffortForResource {
         return new WithTheLoadOf(allocations);
     }
 
+    /**
+     * This class allows to specify the load of some {@link ResourceAllocation
+     * resource allocations} which their {@link DayAssignment day assignments}
+     * aren't associated to a Resource yet. Without this, their load wouldn't be
+     * noticed.
+     */
     public static class WithTheLoadOf implements IAssignedEffortForResource {
 
         private final Set<? extends ResourceAllocation<?>> allocations;
@@ -92,6 +140,13 @@ public class AssignedEffortForResource {
             return implementation.getAssignedDurationAt(resource, day);
         }
 
+        /**
+         * It returns a {@link IAssignedEffortForResource} that returns the same
+         * load as <code>this</code> but without the provided
+         * <code>allocation</code>. When you're doing an allocation you don't
+         * want to consider the allocation currently being done, so it's
+         * excluded.
+         */
         public WithTheLoadOf withoutConsidering(ResourceAllocation<?> allocation) {
             Set<ResourceAllocation<?>> copy = new HashSet<ResourceAllocation<?>>(
                     this.allocations);
