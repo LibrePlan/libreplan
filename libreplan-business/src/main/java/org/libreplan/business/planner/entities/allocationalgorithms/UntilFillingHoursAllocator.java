@@ -145,8 +145,8 @@ public abstract class UntilFillingHoursAllocator {
         }
         IntraDayDate finish = adjustFinish(resourcesPerDayModification, taken,
                 biggestLastAssignment, current);
-        // we have to do it now, so the other allocations take into account. At
-        // the end it's done again with the right end date.
+        // We have to do it now, so the other allocations take it into account.
+        // At the end it's done again with the right end date.
         setNewDataForAllocation(resourcesPerDayModification, resultAssignments
                 .get(resourcesPerDayModification), finish);
         return finish;
