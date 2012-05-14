@@ -11,3 +11,15 @@
     font-weight: bold;
     padding: 5px;
 }
+
+.dashboard-label-remarked {
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.dashboard-box {
+    border: solid 2px #888;
+    background: #fffdf6;
+    box-shadow: 2px 2px 5px #AAA;
+}
