@@ -154,7 +154,29 @@ public class DashboardController extends GenericForwardComposer {
                 dashboardModel.getPercentageOfTasksWithViolatedDeadline());
         pieChart.addValue(_("No deadline"),
                 dashboardModel.getPercentageOfTasksWithNoDeadline());
-        renderChart(pieChart, divId);
+
+        // FIXME: Replace by more suitable colors
+        pieChart.addIntervalColors("red", "blue", "green");
+
+        renderPieChart(pieChart, divId);
+    }
+
+    /**
+     *
+     * Use this method to render a {@link PieChart}
+     *
+     * FIXME: jqplot4java doesn't include a method for changing the colors or a
+     * {@link PieChart}. The only way to do it is to add the colors to an
+     * Interval, generate the output Javascript code and replace the string
+     * 'intervalColors' by 'seriesColors'
+     *
+     * @param chart
+     * @param divId
+     */
+    private void renderPieChart(Chart<?> chart, String divId) {
+        String jsCode = JqPlotUtils.createJquery(chart, divId);
+        jsCode = jsCode.replace("intervalColors", "seriesColors");
+        Clients.evalJavaScript(jsCode);
     }
 
     private void renderChart(Chart<?> chart, String divId) {
@@ -236,7 +258,10 @@ public class DashboardController extends GenericForwardComposer {
                 statusLegend(TaskStatusEnum.BLOCKED, taskStatus),
                 dashboardModel.getPercentageOfBlockedTasks());
 
-        renderChart(taskStatusPieChart, divId);
+        // FIXME: Replace by more suitable colors
+        taskStatusPieChart.addIntervalColors("red", "blue", "green", "yellow");
+
+        renderPieChart(taskStatusPieChart, divId);
     }
 
     private void renderGlobalProgress() {
