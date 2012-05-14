@@ -128,7 +128,7 @@
         global_progress = {
             id: 'global-progress',
             data: [],
-            title: 'Project global progress',
+            title: 'Project progress percentage',
             seriesDefaults: {
                 renderer:$.jqplot.BarRenderer,
                 pointLabels: { show: true, location: 'e', edgeTolerance: -15 },

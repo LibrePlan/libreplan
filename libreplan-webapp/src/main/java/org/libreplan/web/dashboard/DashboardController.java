@@ -270,11 +270,11 @@ public class DashboardController extends GenericForwardComposer {
      */
     static class GlobalProgress {
 
-        public static final String ALL_TASKS_HOURS = _("All tasks (hours)");
+        public static final String ALL_TASKS_HOURS = _("By all tasks hours");
 
-        public static final String CRITICAL_PATH_HOURS = _("Critical path (hours)");
+        public static final String CRITICAL_PATH_HOURS = _("By critical path hours");
 
-        public static final String CRITICAL_PATH_DURATION = _("Critical path (duration)");
+        public static final String CRITICAL_PATH_DURATION = _("By critical path duration");
 
         private final Map<String, BigDecimal> current = new LinkedHashMap<String, BigDecimal>();
 
