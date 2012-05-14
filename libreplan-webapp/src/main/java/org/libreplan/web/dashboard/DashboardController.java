@@ -61,9 +61,9 @@ public class DashboardController extends GenericForwardComposer {
     private IDashboardModel dashboardModel;
 
     private Grid gridTasksSummary;
-    private Grid gridMarginWithDeadline;
     private Label lblOvertimeRatio;
     private Label lblAvailabilityRatio;
+    private Label lblAbsolute;
 
     private org.zkoss.zk.ui.Component costStatus;
 
@@ -119,41 +119,28 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private void renderMarginWithDeadline() {
-        marginWithDeadline(dashboardModel.getMarginWithDeadLine());
-        absoluteMarginWithDeadline(dashboardModel
-                .getAbsoluteMarginWithDeadLine());
-    }
 
-    private void marginWithDeadline(BigDecimal value) {
-        Label label = (Label) gridMarginWithDeadline
-                .getFellowIfAny("lblRelative");
-        if (label != null) {
-            if (value != null) {
-                label.setValue(String.format(_("%.2f %%"),
-                        value.doubleValue() * 100));
-            } else {
-                label.setValue(_("<No deadline>"));
-            }
-        }
-    }
+        Integer absoluteMargin = dashboardModel.getAbsoluteMarginWithDeadLine();
+        BigDecimal relativeMargin = dashboardModel.getMarginWithDeadLine();
 
-    private void absoluteMarginWithDeadline(Integer value) {
-        Label label = (Label) gridMarginWithDeadline
-                .getFellowIfAny("lblAbsolute");
-        if (label != null) {
-            if (value != null) {
-                label.setValue(String.format(_("%d days"), value));
-            } else {
-                label.setValue(_("<No deadline>"));
-            }
+        if ((lblAbsolute != null) && (absoluteMargin != null)) {
+            lblAbsolute
+                    .setValue(String
+                            .format(_("There is a margin of %d days with the project global deadline (%.2f %%)."),
+                                    absoluteMargin + 0,
+                                    relativeMargin.doubleValue() * 100));
+        } else {
+            lblAbsolute
+                    .setValue(_("It has not been defined a project deadline"));
         }
+
     }
 
     private void renderDeadlineViolation() {
         final String divId = "deadline-violation";
 
         PieChart<Number> pieChart = new PieChart<Number>(
-                _("Deadline Violation"));
+                _("Task deadline violations"));
         pieChart.addValue(_("On schedule"),
                 dashboardModel.getPercentageOfOnScheduleTasks());
         pieChart.addValue(_("Violated deadline"),

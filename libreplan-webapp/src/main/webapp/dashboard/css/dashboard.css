@@ -1,0 +1,13 @@
+.dashboard-label {
+    color: #666;
+    font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+.dashboard-title {
+    color: #666;
+    font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+}
