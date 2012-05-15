@@ -372,7 +372,7 @@ public class SaveCommandBuilder {
         private void removeTaskElementsWithTaskSourceNull() {
             List<TaskElement> toRemove = taskElementDAO
                     .getTaskElementsNoMilestonesWithoutTaskSource();
-            List<TaskElement> toRemoveLater = new ArrayList<TaskElement>();
+            List<TaskElement> parentsWithChangesToSave = new ArrayList<TaskElement>();
             for (TaskElement taskElement : toRemove) {
                 try {
                     taskElementDAO.remove(taskElement.getId());
@@ -380,7 +380,7 @@ public class SaveCommandBuilder {
                     TaskGroup parent = taskElement.getParent();
                     if (parent != null && !toRemove.contains(parent)) {
                         parent.remove(taskElement);
-                        toRemoveLater.add(parent);
+                        parentsWithChangesToSave.add(parent);
                     }
 
                     LOG.info("TaskElement removed because of TaskSource was null. "
@@ -391,7 +391,7 @@ public class SaveCommandBuilder {
                     // so if it's not in the database there isn't any problem
                 }
             }
-            for (TaskElement taskElement : toRemoveLater) {
+            for (TaskElement taskElement : parentsWithChangesToSave) {
                 taskElementDAO.save(taskElement);
             }
         }
