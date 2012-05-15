@@ -216,7 +216,7 @@ Supported entities:
 
 * Calendars:
 
-  * Service path: ``calendar``
+  * Service path: ``calendars``
   * DTO: ``org.libreplan.ws.calendars.api.BaseCalendarDTO``
   * Business class: ``org.libreplan.business.calendars.entities.BaseCalendar``
 
