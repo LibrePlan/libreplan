@@ -177,8 +177,8 @@
     <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" />
 
     <!-- Include jqPlot library and additional plugins -->
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.min.js"></n:script>
     <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
     <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
     <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
