@@ -32,7 +32,6 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
-import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
@@ -40,10 +39,9 @@ import org.libreplan.web.dashboard.DashboardController;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.orders.OrderCRUDController;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
-import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.libreplan.web.planner.company.CompanyPlanningController;
+import org.libreplan.web.planner.filming.progress.FilmingProgressController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
 import org.libreplan.web.planner.order.OrderPlanningController;
 import org.libreplan.web.planner.order.PlanningStateCreator;
@@ -63,7 +61,6 @@ import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.TabProxy;
-import org.zkoss.ganttz.resourceload.ResourcesLoadPanel.IToolbarCommand;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.ui.Executions;
@@ -71,7 +68,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
-import org.zkoss.zul.Button;
 
 /**
  * Creates and handles several tabs
@@ -160,6 +156,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     private ITab advancedAllocationTab;
 
+    private ITab filmingProgressTab;
+
     private ITab dashboardTab;
 
     private TabSwitcher tabsSwitcher;
@@ -181,6 +179,9 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private LimitingResourcesController limitingResourcesControllerGlobal;
+
+    @Autowired
+    private FilmingProgressController filmingProgresController;
 
     @Autowired
     private DashboardController dashboardController;
@@ -274,6 +275,9 @@ public class MultipleTabsPlannerController implements Composer,
         dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
                 dashboardController, breadcrumbs);
 
+        filmingProgressTab = FilmingProgressTabCreator.create(mode, planningStateCreator,
+                filmingProgresController, breadcrumbs);
+
         final boolean isMontecarloVisible = isMonteCarloVisible();
         if (isMontecarloVisible) {
             monteCarloTab = MonteCarloTabCreator.create(mode,
@@ -293,6 +297,7 @@ public class MultipleTabsPlannerController implements Composer,
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
             .add(visibleOnlyAtOrderMode(advancedAllocationTab))
+            .add(visibleOnlyAtOrderMode(filmingProgressTab))
             .add(visibleOnlyAtOrderMode(dashboardTab));
 
         if (isMontecarloVisible) {
