@@ -976,11 +976,6 @@ public abstract class OrderElement extends IntegrationEntity implements
                     .fromDateFields(this.getInitDate())));
             return true;
         }
-        if (getDeadline() != null) {
-            constraint.finishNotLaterThan(IntraDayDate.startOfDay(LocalDate
-                    .fromDateFields(this.getDeadline())));
-            return true;
-        }
         return false;
     }
 
