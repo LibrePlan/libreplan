@@ -163,8 +163,7 @@ public class DashboardController extends GenericForwardComposer {
                                     absoluteMargin + 0,
                                     relativeMargin.doubleValue() * 100));
         } else {
-            lblAbsolute
-                    .setValue(_("Project Deadline not set"));
+            lblAbsolute.setValue(_("No project deadline defined"));
         }
 
     }
@@ -228,8 +227,11 @@ public class DashboardController extends GenericForwardComposer {
         barChart.setTicks(taskCompletationData.getTicks());
         barChart.addValues(taskCompletationData.getValues());
 
-        barChart.getAxes().getXaxis()
-                .setLabel(_("Number of Days / Days Interval"));
+        barChart.getAxes()
+                .getXaxis()
+                .setLabel(
+                        _("Days Interval (Calculated as task completion end date minus estimated end date)"));
+        barChart.getAxes().getYaxis().setLabel(_("Number of tasks"));
 
         renderChart(barChart, divId);
     }
@@ -238,7 +240,8 @@ public class DashboardController extends GenericForwardComposer {
         final String divId = "estimation-accuracy";
 
         BarChart<Integer> barChart;
-        barChart = new BarChart<Integer>("Estimation Accuracy");
+        barChart = new BarChart<Integer>(
+                _("Estimation deviation on completed tasks"));
 
         barChart.setFillZero(true);
         barChart.setHighlightMouseDown(true);
@@ -253,7 +256,9 @@ public class DashboardController extends GenericForwardComposer {
         barChart.addValues(estimationAccuracyData.getValues());
 
         barChart.getAxes().getXaxis()
-                .setLabel(_("Number of Tasks / % Deviation"));
+                .setLabel(
+                        _("% Deviation interval (difference % between consumed and estimated hours)"));
+        barChart.getAxes().getYaxis().setLabel(_("Number of tasks"));
 
         renderChart(barChart, divId);
     }
