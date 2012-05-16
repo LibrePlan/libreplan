@@ -57,6 +57,9 @@
         <intercept-url pattern="/expensesheet/**" access="ROLE_ADMINISTRATION,ROLE_EXPENSE_TRACKING"/>
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
 
+        <!-- These have been added because of auto-config is false now in order
+            to use a custom authentication filter.
+            See: http://static.springsource.org/spring-security/site/docs/2.0.x/reference/ns-config.html#ns-auto-config -->
         <anonymous />
         <http-basic />
         <logout />
@@ -121,7 +124,9 @@
     <beans:bean id="ldapUserDetailsService"
         class="org.libreplan.web.users.services.LDAPUserDetailsService" />
 
-    <!-- Configured a custom authentication filter -->
+    <!-- Configured a custom authentication filter:
+        * This needs a custom authentication entry point
+        * Also a custom target URL resolver is used to determine the URL depending on the user -->
     <authentication-manager alias="authenticationManager" />
 
     <beans:bean id="customAuthenticationFilter"
@@ -131,11 +136,15 @@
         <beans:property name="defaultTargetUrl" value="/planner/index.zul" />
         <beans:property name="authenticationFailureUrl" value="/common/layout/login.zul?login_error=true" />
         <beans:property name="allowSessionCreation" value="true" />
+        <beans:property name="targetUrlResolver" ref="customTargetUrlResolver" />
     </beans:bean>
 
     <beans:bean id="customAuthenticationEntryPoint"
         class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
         <beans:property name="loginFormUrl" value="/common/layout/login.zul"/>
     </beans:bean>
+
+    <beans:bean id="customTargetUrlResolver"
+        class="org.libreplan.web.users.services.CustomTargetUrlResolver" />
 
 </beans:beans>
