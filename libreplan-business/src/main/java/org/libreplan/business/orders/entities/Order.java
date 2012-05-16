@@ -42,6 +42,7 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
+import org.libreplan.business.filmingprogress.entities.FilmingProgress;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
@@ -108,6 +109,8 @@ public class Order extends OrderLineGroup implements Comparable {
     private Set<OrderAuthorization> orderAuthorizations = new HashSet<OrderAuthorization>();
 
     private CurrentVersionInfo currentVersionInfo;
+
+    private FilmingProgress filmingProgress;
 
     public enum SchedulingMode {
         FORWARD, BACKWARDS;
@@ -582,6 +585,14 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public boolean isNeededToRecalculateSumChargedEfforts() {
         return neededToRecalculateSumChargedEfforts;
+    }
+
+    public void setFilmingProgress(FilmingProgress filmingProgress) {
+        this.filmingProgress = filmingProgress;
+    }
+
+    public FilmingProgress getFilmingProgress() {
+        return filmingProgress;
     }
 
 }

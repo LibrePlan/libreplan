@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.filmingprogress.entities" default-access="field">
+
+<!-- FilmingProgress -->
+<class name="FilmingProgress" table="filming_progress">
+    <cache usage="nonstrict-read-write"/>
+    <id name="id" column="id">
+        <generator class="foreign">
+            <param name="property">order</param>
+        </generator>
+    </id>
+    <version name="version" access="property" type="long" />
+
+    <property name="startDate" access="field" column="start_date"
+        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+    <property name="endDate" access="field" column="end_date"
+        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+
+    <property name="progressGranularity" access="field" column="progress_granularity">
+        <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.filmingprogress.entities.ProgressGranularityType</param>
+        </type>
+    </property>
+
+    <map name="initialProgressForecast" table="initial_progress_forecast" lazy="false" cascade="all" sort="natural">
+        <key column="filming_progress_id"/>
+        <map-key column="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+        <element column="scenes" type="integer"/>
+    </map>
+
+    <map name="progressForecast" table="progress_forecast" lazy="false" cascade="all" sort="natural">
+        <key column="filming_progress_id"/>
+        <map-key column="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+        <element column="scenes" type="integer"/>
+    </map>
+
+    <map name="realProgress" table="real_progress" lazy="false" cascade="all" sort="natural">
+        <key column="filming_progress_id"/>
+        <map-key column="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+        <element column="scenes" type="integer"/>
+    </map>
+
+    <one-to-one name="order" constrained="true" class="org.libreplan.business.orders.entities.Order"
+        access="field" lazy="false"/>
+</class>
+
+</hibernate-mapping>

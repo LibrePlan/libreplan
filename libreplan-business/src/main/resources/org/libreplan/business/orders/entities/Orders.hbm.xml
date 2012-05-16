@@ -141,6 +141,10 @@
                     <many-to-many column="order_version_id"
                         class="org.libreplan.business.scenarios.entities.OrderVersion"/>
                 </map>
+
+                <one-to-one name="filmingProgress" access="field" cascade="delete"
+                    class="org.libreplan.business.filmingprogress.entities.FilmingProgress" />
+
             </joined-subclass>
 
         </joined-subclass>
