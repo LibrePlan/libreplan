@@ -27,7 +27,25 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 
 <zk>
-    <window self="@{define(content)}" title="${i18n:_('My dashboard')}">
-        TODO
+    <window self="@{define(content)}" title="${i18n:_('My dashboard')}"
+        apply="org.libreplan.web.users.dashboard.UserDashboardController">
+
+        <groupbox>
+            <caption label="${i18n:_('My tasks')}" />
+
+            <grid id="listing" model="@{controller.tasks}" mold="paging"
+                pageSize="10" rowRenderer="@{controller.tasksRenderer}">
+                <columns sizable="true">
+                    <column label="${i18n:_('Name')}" />
+                    <column label="${i18n:_('Code')}" />
+                    <column label="${i18n:_('Project')}" />
+                    <column label="${i18n:_('Start date')}" />
+                    <column label="${i18n:_('End date')}" />
+                    <column label="${i18n:_('Progress')}" />
+                    <column label="${i18n:_('Work done')}" />
+                </columns>
+            </grid>
+        </groupbox>
+
     </window>
 </zk>

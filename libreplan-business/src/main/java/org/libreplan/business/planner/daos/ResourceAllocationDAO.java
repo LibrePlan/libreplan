@@ -123,8 +123,9 @@ public class ResourceAllocationDAO extends
         return query.list();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    private List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
+    public List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
             final Scenario onScenario,
             final List<Resource> resources,
             final LocalDate intervalFilterStartDate,
