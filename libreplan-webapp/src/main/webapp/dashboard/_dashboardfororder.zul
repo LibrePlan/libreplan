@@ -120,58 +120,7 @@
         var global_progress = { };
     </script>
 
-    <!-- Configure the parameters for the 'global progress' chart. The object contains a method 'render' that
-        is called from the Java file once all objects in the view have been created -->
-    <script type="text/javascript" defer="true">
-    <![CDATA[
-
-        global_progress = {
-            id: 'global-progress',
-            data: [],
-            title: 'Project progress percentage',
-            seriesDefaults: {
-                renderer:$.jqplot.BarRenderer,
-                pointLabels: { show: true, location: 'e', edgeTolerance: -15 },
-                shadowAngle: 135,
-                rendererOptions: {
-                    barDirection: 'horizontal'
-                },
-            },
-            axes: {
-                xaxis: {
-                    label: "Progress percentage per progress type"
-                },
-                yaxis: {
-                    renderer: $.jqplot.CategoryAxisRenderer,
-                    ticks: ['1','2','3'],
-                    tickOptions: {
-                        showGridline: false,
-                        markSize: 0
-                    }
-                }
-            },
-            series:[
-                {label:'Expected', color: 'blue'},
-                {label:'Actual', color: 'red'},
-            ],
-            legend: {
-                show: true,
-                location: 'e',
-                placement: 'outside',
-            },
-            render: function(data, ticks, series) {
-                if (ticks !== undefined) {
-                    this.axes.yaxis.ticks = jQuery.parseJSON(ticks);
-                }
-                if (series !== undefined) {
-                    this.series = jQuery.parseJSON(series);
-                }
-                this.plot = $.jqplot(this.id, jQuery.parseJSON(data), this);
-            }
-        };
-
-    ]]>
-    </script>
+    <include src="/dashboard/_globalProgress.zul" />
 
     <!-- Include jqPlot styles -->
     <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" />
