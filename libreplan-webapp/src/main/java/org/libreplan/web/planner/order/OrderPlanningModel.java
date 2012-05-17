@@ -270,7 +270,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private OverAllProgressContent overallProgressContent;
 
-    private String tabSelected = "load_tab";
+    private String tabSelected = "earned_value_tab";
 
     private static class NullSeparatorCommandOnTask<T> implements
             ICommandOnTask<T> {
@@ -380,7 +380,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         // Create 'Load' tab
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
-        chartTabpanels.appendChild(createLoadTimeplotTab(chartLoadTimeplot));
+        // chartTabpanels.appendChild(createLoadTimeplotTab(chartLoadTimeplot));
 
         // Create 'Earned value' tab
         Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
@@ -480,6 +480,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private Tabpanel createLoadTimeplotTab(
             Timeplot loadChart) {
         Tabpanel result = new Tabpanel();
+        result.setVisible(false);
         appendLoadChartAndLegend(result, loadChart);
         return result;
     }
@@ -761,7 +762,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void appendTabs(Tabbox chartComponent) {
         Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(createTab(_("Load"), "load_tab"));
+        // chartTabs.appendChild(createTab(_("Load"), "load_tab"));
         chartTabs.appendChild(createTab(_("Earned value"), "earned_value_tab"));
         chartTabs.appendChild(createTab(_("Overall progress"),
                 "overall_progress_tab"));
