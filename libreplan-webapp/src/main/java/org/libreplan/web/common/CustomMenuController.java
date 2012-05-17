@@ -285,12 +285,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                         globalView.goToCompanyLoad();
                     }
                 }, "01-introducion.html#id1"),
-                subItem(_("Limiting Resources Planning"), new ICapture() {
-                    @Override
-                    public void capture() {
-                        globalView.goToLimitingResources();
-                    }
-                }, "01-introducion.html"),
                 subItem(_("Budget Templates"), "/budgettemplates/templates.zul", ""));
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
