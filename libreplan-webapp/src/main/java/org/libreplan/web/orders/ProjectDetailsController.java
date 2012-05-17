@@ -301,11 +301,6 @@ public class ProjectDetailsController extends GenericForwardComposer {
         if (template == null) {
             return;
         }
-        initDate.setValue(new LocalDate().plusDays(template.getStartAsDaysFromBeginning()).toDateTimeAtStartOfDay().toDate());
-        if (template.getDeadlineAsDaysFromBeginning() != null ) {
-            deadline.setValue( new LocalDate(initDate.getValue()).plusDays(template.getDeadlineAsDaysFromBeginning()).toDateTimeAtStartOfDay().toDate());
-        } else {
-            deadline.setText("");
-        }
+        initDate.setValue(new Date());
     }
 }

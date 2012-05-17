@@ -50,18 +50,8 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Name')}" />
-                            <textbox id="name" value="@{controller.template.name}" width="500px"
+                            <textbox id="name" value="@{controller.template.name}"
                                 constraint = "@{controller.validateTemplateName}"/>
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Delay from beginning (days)')}" />
-                            <intbox
-                                value="@{controller.template.startAsDaysFromBeginning}" constraint="no negative"/>
-                        </row>
-                        <row>
-                            <label value="${i18n:_('Days from Beginning to Deadline')}" />
-                            <intbox
-                                value="@{controller.template.deadlineAsDaysFromBeginning}" constraint="no negative"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Description')}" />
@@ -69,7 +59,7 @@
                                 value="@{controller.template.description}" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Budget')}" />
+                            <label value="${i18n:_('Total budget')}" />
                             <decimalbox
                                 value="@{controller.template.budget}"
                                 disabled="@{controller.container}"

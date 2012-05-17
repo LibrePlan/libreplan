@@ -22,22 +22,14 @@
     <grid id="listing" model="@{controller.templates}" mold="paging"
         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
-            <column label="${i18n:_('Type')}" sort="auto(type)" />
             <column label="${i18n:_('Name')}" sort="auto(name)" />
-            <column label="${i18n:_('Delay from beginning (days)')}"
-                sort="auto(startAsDaysFromBeginning)" />
-            <column label="${i18n:_('Days from Beginning to Deadline')}"
-                sort="auto(endAsDaysFromBeginning)" />
             <column label="${i18n:_('Description')}"
                 sort="auto(description)" />
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_('Operations')}" width="90px"/>
         </columns>
         <rows>
             <row self="@{each='template'}" value="@{template}" onClick="controller.goToEditForm(self.value);">
-                <label value="@{template.type}" />
                 <label value="@{template.name}" />
-                <label value="@{template.startAsDaysFromBeginning}" />
-                <label value="@{template.deadlineAsDaysFromBeginning}" />
                 <label value="@{template.description}" />
                 <hbox>
                     <button sclass="icono"
