@@ -61,7 +61,7 @@ public class TemplatesTreeComponent extends TreeComponent {
     }
 
     public String getAddElementLabel() {
-        return _("New Template element");
+        return _("Add");
     }
 
     public boolean isCreateTemplateEnabled() {
