@@ -23,8 +23,7 @@
 .dashboard-label-remarked.negative {
     background-position: 100%;
     background-repeat: no-repeat;
-    padding-right: 25px;
-    background-size: 25px;
+    padding-right: 30px;
 }
 
 .dashboard-label-remarked.negative {
@@ -54,11 +53,17 @@
     font-size: 12px !important;
 }
 
+.jqplot-yaxis-label {
+    font-size: 11px !important;
+    width: 40px;
+}
+
+
 .jqplot-yaxis {
     font-size: 11px !important;
 }
 
 .jqplot-axis .jqplot-yaxis-tick {
     white-space: normal;
-    width: 80px;
+    font-size: 11px !important;
 }
