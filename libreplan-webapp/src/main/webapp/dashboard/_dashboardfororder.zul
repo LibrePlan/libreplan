@@ -62,15 +62,12 @@
                     </hbox>
                 </groupbox>
 
-                <!-- Time -->
+                <!-- Cost -->
                 <groupbox closable="false">
-                    <caption label="${i18n:_('Time')}" />
+                    <caption label="${i18n:_('Cost')}" />
                     <hbox>
-                        <n:div id="task-completation-lag" style="height:200px; width:580px;"></n:div>
-                        <vbox>
-                            <n:div id="deadline-violation" style="height:200px; width:400px;"></n:div>
-                            <label id="lblAbsolute" class="dashboard-label" />
-                        </vbox>
+                        <!-- Cost status -->
+                        <costStatus id="costStatus" />
                     </hbox>
                 </groupbox>
 
@@ -105,14 +102,19 @@
                     </hbox>
                 </groupbox>
 
-                <!-- Cost -->
+
+                <!-- Time -->
                 <groupbox closable="false">
-                    <caption label="${i18n:_('Cost')}" />
+                    <caption label="${i18n:_('Time')}" />
                     <hbox>
-                        <!-- Cost status -->
-                        <costStatus id="costStatus" />
+                        <n:div id="task-completation-lag" style="height:200px; width:580px;"></n:div>
+                        <vbox>
+                            <n:div id="deadline-violation" style="height:200px; width:400px;"></n:div>
+                            <label id="lblAbsolute" class="dashboard-label" />
+                        </vbox>
                     </hbox>
                 </groupbox>
+
 
             </div>
 
