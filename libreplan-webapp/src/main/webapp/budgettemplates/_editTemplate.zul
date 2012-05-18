@@ -26,7 +26,7 @@
 <?component name="historicalStatistics" class="org.libreplan.web.templates.historicalStatistics.OrderElementHistoricalStatisticsComponent" macroURI="/templates/_historicalStatistics.zul" ?>
 
 
-<window id="${arg.top_id}" title="${i18n:_('Edit Template')}">
+<window id="${arg.top_id}" title="${i18n:_('Edit budget template')}">
     <editTemplateWindow />
     <tabbox>
         <tabs>
