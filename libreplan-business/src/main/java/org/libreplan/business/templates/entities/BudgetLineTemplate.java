@@ -58,7 +58,8 @@ public class BudgetLineTemplate extends OrderLineTemplate {
     }
 
     public Integer getDuration() {
-        return duration;
+        // A null value means a default amount of 1 unit
+        return (duration != null) ? duration : 1;
     }
 
     public void setDuration(Integer duration) {
@@ -66,7 +67,8 @@ public class BudgetLineTemplate extends OrderLineTemplate {
     }
 
     public Integer getQuantity() {
-        return quantity;
+        // A null value means a default amount 1 unit
+        return (quantity != null) ? quantity : 1;
     }
 
     public void setQuantity(Integer quantity) {

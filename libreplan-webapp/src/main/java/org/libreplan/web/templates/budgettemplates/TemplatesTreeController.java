@@ -239,7 +239,7 @@ public class TemplatesTreeController extends
         }
 
         private void addEmptyBox() {
-            Intbox intbox = new Intbox();
+            Intbox intbox = new Intbox(0);
             intbox.setDisabled(true);
             addCell(intbox);
         }
