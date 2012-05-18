@@ -61,4 +61,12 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
         return createNewElement(name, 0);
     }
 
+    @Override
+    protected OrderElementTemplate createNewElement(String code, String name,
+            BudgetLineTypeEnum type) {
+        OrderElementTemplate orderElementTemplate = createNewElement(name, type);
+        orderElementTemplate.setCode(code);
+        return orderElementTemplate;
+    }
+
 }

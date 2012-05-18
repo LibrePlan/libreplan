@@ -31,6 +31,8 @@
         <hbox align="center" pack="center">
             <templateFinderPopup id="templateFinderPopupAtTree" />
             <label value="${i18n:_('New item')}" />
+            <textbox value="" id="newOrderElementCode" width="50px"
+                onOK="treeController.addElement(self.parent);" disabled="true" />
             <textbox value="" id="newOrderElementName" width="150px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
             <label value="${i18n:_('Type')}" />
@@ -38,6 +40,8 @@
                 onOK="treeController.addElement(self.parent);" disabled="true" />
             <button id="btnNew" label="${treeComponent.addElementLabel}"
                 onClick="treeController.addElement(self.parent);" disabled="true" />
+            <button id="btnExpand" label="Hide expand"
+                onClick="treeController.expandAll();"  />
             <button id="btnNewFromTemplate" label="${i18n:_('Add From Template')}"
                 onClick="treeController.createFromTemplate();" disabled="true"
                 visible="${treeComponent.createFromTemplateEnabled}"/>

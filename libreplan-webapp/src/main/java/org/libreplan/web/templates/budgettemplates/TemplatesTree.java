@@ -64,4 +64,15 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
         return result;
     }
 
+    @Override
+    protected OrderElementTemplate createNewElement(String code, String name,
+            BudgetLineTypeEnum type) {
+        BudgetLineTemplate result = BudgetLineTemplate.createNew();
+        result.setName(name);
+        result.setCode(code);
+        result.setDescription(_("New Description"));
+        result.setBudgetLineType(type);
+        return result;
+    }
+
 }

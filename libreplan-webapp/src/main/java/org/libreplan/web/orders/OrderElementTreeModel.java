@@ -69,4 +69,12 @@ public class OrderElementTreeModel extends EntitiesTree<OrderElement> {
         return createNewElement(name, 0);
     }
 
+    @Override
+    protected OrderElement createNewElement(String code, String name,
+            BudgetLineTypeEnum type) {
+        OrderElement orderElement = createNewElement(name, 0);
+        orderElement.setCode(code);
+        return orderElement;
+    }
+
 }

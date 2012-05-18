@@ -218,14 +218,19 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     public void addElement(Component cmp) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
-        Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
-        Combobox typeBox = (Combobox) cmp
-                .getFellow("newBudgetLineTemplateType");
 
+        Textbox code = (Textbox) cmp.getFellow("newOrderElementCode");
+        if (StringUtils.isEmpty(code.getValue())) {
+            throw new WrongValueException(code, _("cannot be empty"));
+        }
+
+        Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
         if (StringUtils.isEmpty(name.getValue())) {
             throw new WrongValueException(name, _("cannot be empty"));
         }
 
+        Combobox typeBox = (Combobox) cmp
+                .getFellow("newBudgetLineTemplateType");
         BudgetLineTypeEnum type;
         if (typeBox.getSelectedItem() == null) {
             type = null;
@@ -240,8 +245,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             if (tree.getSelectedCount() == 1) {
                 T node = getSelectedNode();
 
-                T newNode = getModel()
-                        .addElementAt(node, name.getValue(), type);
+                T newNode = getModel().addElementAt(node, code.getValue(),
+                        name.getValue(), type);
                 getRenderer().refreshHoursValueForThisNodeAndParents(newNode);
                 getRenderer().refreshBudgetValueForThisNodeAndParents(newNode);
 
@@ -250,7 +255,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     nameTextbox = getRenderer().getNameTextbox(node);
                 }
             } else {
-                getModel().addElement(name.getValue(), type);
+                getModel().addElement(code.getValue(), name.getValue(), type);
             }
             filterByPredicateIfAny();
         } catch (IllegalStateException e) {
@@ -259,12 +264,12 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         name.setValue("");
-        typeBox.setValue(null);
+        code.setValue("");
 
         if (nameTextbox != null) {
             nameTextbox.focus();
         } else {
-            name.focus();
+            code.focus();
         }
     }
 
@@ -1262,6 +1267,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             this.readOnly = readOnly;
             ((Button)orderElementTreeComponent.getFellowIfAny("btnNew")).setDisabled(readOnly);
             ((Button)orderElementTreeComponent.getFellowIfAny("btnNewFromTemplate")).setDisabled(readOnly);
+            ((Textbox)orderElementTreeComponent.getFellowIfAny("newOrderElementCode")).setDisabled(readOnly);
             ((Textbox)orderElementTreeComponent.getFellowIfAny("newOrderElementName")).setDisabled(readOnly);
             ((Combobox) orderElementTreeComponent
                     .getFellowIfAny("newBudgetLineTemplateType"))

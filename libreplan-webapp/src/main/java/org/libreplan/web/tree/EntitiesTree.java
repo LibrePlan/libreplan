@@ -109,6 +109,10 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         addElementAtImpl(tree.getRoot(), name, type);
     }
 
+    public void addElement(String code, String name, BudgetLineTypeEnum type) {
+        addElementAtImpl(tree.getRoot(), code, name, type);
+    }
+
     public void addElementAt(T node) {
         addElementAtImpl(node);
     }
@@ -121,11 +125,20 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         return addElementAtImpl(node, name, type);
     }
 
+    // Overload method to allow creation of budgetline elements with code
+    public T addElementAt(T node, String code, String name,
+            BudgetLineTypeEnum type) {
+        return addElementAtImpl(node, code, name, type);
+    }
+
     protected abstract T createNewElement();
 
     protected abstract T createNewElement(String name, int hours);
 
     protected abstract T createNewElement(String name, BudgetLineTypeEnum type);
+
+    protected abstract T createNewElement(String code, String name,
+            BudgetLineTypeEnum type);
 
     private void addElementAtImpl(T parent) {
         addOrderElementAt(parent, createNewElement());
@@ -139,6 +152,13 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
 
     private T addElementAtImpl(T parent, String name, BudgetLineTypeEnum type) {
         T newElement = createNewElement(name, type);
+        addOrderElementAt(parent, newElement);
+        return newElement;
+    }
+
+    private T addElementAtImpl(T parent, String code, String name,
+            BudgetLineTypeEnum type) {
+        T newElement = createNewElement(code, name, type);
         addOrderElementAt(parent, newElement);
         return newElement;
     }
