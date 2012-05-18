@@ -50,7 +50,7 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Name')}" />
-                            <textbox id="name" value="@{controller.template.name}"
+                            <textbox id="name" value="@{controller.template.name}" width="600px"
                                 constraint = "@{controller.validateTemplateName}"/>
                         </row>
                         <row>
