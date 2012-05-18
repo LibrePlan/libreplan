@@ -89,7 +89,7 @@
             onSelect="treeController.updateControlButtons(event)"
             mold="paging" pageSize="25"
             sclass="orderTree"
-            zclass="z-dottree">
+            zclass="z-vfiletree">
             <treecols sizable="true">
                 <treecol label="${each.label}" class="${each.cssClass}" tooltiptext="${each.tooltip}"
                     forEach="${treeComponent.columns}" hflex="${each.hflex}" />

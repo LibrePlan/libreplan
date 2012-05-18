@@ -76,8 +76,7 @@ public class TemplatesTreeComponent extends TreeComponent {
     public List<Column> getColumns() {
         List<Column> result = new ArrayList<Column>();
 
-        result.add(new Column("", "",
-                _("Position in the tree. (Drag and drop to move tasks)")) {
+        result.add(new Column("Node", "") {
 
             @Override
             public <T extends ITreeNode<T>> void doCell(
