@@ -715,7 +715,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
             Treerow result = createOrRetrieveFor(item);
             // Attach treecells to treerow
-            result.setDroppable("true");
             result.getChildren().clear();
             return result;
         }

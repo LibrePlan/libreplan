@@ -106,7 +106,6 @@ public class TemplatesTreeController extends
                     item.getTree().toggleItemSelection(item);
                 }
             });
-            cell.setDraggable("true");
         }
 
         @Override
