@@ -35,7 +35,6 @@ import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 
 import br.com.digilabs.jqplot.Chart;
@@ -56,7 +55,6 @@ public class DashboardController extends GenericForwardComposer {
 
     private IDashboardModel dashboardModel;
 
-    private Grid gridTasksSummary;
     private Label lblOvertimeRatio;
     private Label lblAvailabilityRatio;
     private Label lblAbsolute;

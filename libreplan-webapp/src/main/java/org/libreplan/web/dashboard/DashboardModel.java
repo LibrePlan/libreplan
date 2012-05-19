@@ -22,7 +22,6 @@ package org.libreplan.web.dashboard;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -55,10 +54,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * Model for UI operations related to Order Dashboard View
- *
  * @author Nacho Barrientos <nacho@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
+ *
+ *         Model for UI operations related to Order Dashboard View
+ *
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -83,10 +84,8 @@ public class DashboardModel implements IDashboardModel {
 
     private final Map<TaskStatusEnum, BigDecimal> taskStatusStats;
     private final Map<TaskDeadlineViolationStatusEnum, BigDecimal> taskDeadlineViolationStatusStats;
-    private List<Double> taskEstimationAccuracyHistogram;
     private BigDecimal marginWithDeadLine;
     private Integer absoluteMarginWithDeadLine;
-    private List<Double> lagInTaskCompletionHistogram;
 
     public DashboardModel() {
         taskStatusStats = new EnumMap<TaskStatusEnum, BigDecimal>(
@@ -104,8 +103,6 @@ public class DashboardModel implements IDashboardModel {
             this.calculateTaskViolationStatusStatistics();
             this.calculateAbsoluteMarginWithDeadLine();
             this.calculateMarginWithDeadLine();
-            this.calculateFinishedTasksEstimationAccuracyHistogram();
-            this.calculateLagInTaskCompletionHistogram();
         }
     }
 
@@ -264,86 +261,6 @@ public class DashboardModel implements IDashboardModel {
 
     private int daysBetween(LocalDate start, LocalDate end) {
         return Days.daysBetween(start, end).getDays();
-    }
-
-    /* Time KPI: Estimation accuracy */
-    @Override
-    public List<Double> getFinishedTasksEstimationAccuracyHistogram() {
-        return this.taskEstimationAccuracyHistogram;
-    }
-
-    private void calculateFinishedTasksEstimationAccuracyHistogram() {
-        if (this.getRootTask() == null) {
-            throw new RuntimeException("Root task is null");
-        }
-        CalculateFinishedTasksEstimationDeviationVisitor visitor = new CalculateFinishedTasksEstimationDeviationVisitor();
-        TaskElement rootTask = getRootTask();
-        rootTask.acceptVisitor(visitor);
-        List<Double> deviations = visitor.getDeviations();
-
-        // [-100, -90), [-90, -80), ..., [190, 200), [200, inf)
-        this.taskEstimationAccuracyHistogram = createHistogram(
-                EA_STRETCHES_MIN_VALUE, EA_STRETCHES_MAX_VALUE,
-                EA_STRETCHES_PERCENTAGE_STEP, deviations);
-    }
-
-    /* Time KPI: Lead/Lag in task completion */
-    @Override
-    public List<Double> getLagInTaskCompletionHistogram() {
-        return this.lagInTaskCompletionHistogram;
-    }
-
-    private void calculateLagInTaskCompletionHistogram() {
-        if (this.getRootTask() == null) {
-            throw new RuntimeException("Root task is null");
-        }
-        CalculateFinishedTasksLagInCompletionVisitor visitor = new CalculateFinishedTasksLagInCompletionVisitor();
-        TaskElement rootTask = getRootTask();
-        rootTask.acceptVisitor(visitor);
-        List<Double> deviations = visitor.getDeviations();
-
-        if (deviations.isEmpty()) {
-            LTC_STRETCHES_MIN_VALUE = 0;
-            LTC_STRETCHES_MAX_VALUE = 0;
-        } else {
-            LTC_STRETCHES_MIN_VALUE = Collections.min(deviations);
-            LTC_STRETCHES_MAX_VALUE = Collections.max(deviations);
-        }
-        LTC_STRETCHES_STEP = (LTC_STRETCHES_MAX_VALUE - LTC_STRETCHES_MIN_VALUE)
-                / LTC_NUMBER_OF_INTERVALS;
-        this.lagInTaskCompletionHistogram = createHistogram(
-                LTC_STRETCHES_MIN_VALUE, LTC_STRETCHES_MAX_VALUE,
-                LTC_STRETCHES_STEP, deviations);
-    }
-
-    private List<Double> createHistogram(double lowBound, double highBound,
-            double intervalStep, List<Double> values) {
-        double variableRange = highBound - lowBound;
-        /* TODO: What if highBound == lowBound? */
-        int numberOfClasses = (int) (variableRange / intervalStep);
-        int[] classes = new int[numberOfClasses + 1];
-
-        for (Double value : values) {
-            int index;
-            if (value >= highBound) {
-                index = numberOfClasses;
-            } else {
-                index = (int) (numberOfClasses * (((value.doubleValue() - lowBound)) / variableRange));
-            }
-            classes[index]++;
-        }
-
-        List<Double> histogram = new ArrayList<Double>();
-        int numberOfConsideredTasks = values.size();
-        for (int numberOfElementsInClass : classes) {
-            Double relativeCount = new Double(0.0);
-            if (numberOfConsideredTasks > 0) {
-                relativeCount = new Double(1.0 * numberOfElementsInClass
-                        / numberOfConsideredTasks);
-            }
-            histogram.add(relativeCount);
-        }
-        return histogram;
     }
 
     /**
