@@ -30,9 +30,10 @@
 
         <hbox align="center" pack="center">
             <templateFinderPopup id="templateFinderPopupAtTree" />
-            <label value="${i18n:_('New item')}" />
+            <label value="${i18n:_('New item: Code')}" />
             <textbox value="" id="newOrderElementCode" width="50px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
+            <label value="${i18n:_('name')}" />
             <textbox value="" id="newOrderElementName" width="150px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
             <label value="${i18n:_('Type')}" />

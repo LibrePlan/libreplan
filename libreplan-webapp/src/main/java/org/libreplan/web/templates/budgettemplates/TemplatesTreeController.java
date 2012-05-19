@@ -249,8 +249,13 @@ public class TemplatesTreeController extends
             BigDecimal duration = new BigDecimal(currentElement.getDuration());
             //budget field is used to store the total
             Decimalbox budgetBox = budgetDecimalboxByElement.get(currentElement);
-            budgetBox.setValue(currentElement.getCostOrSalary().
-                    multiply(quantity).multiply(duration));
+            // Calculate Total as cost * quantiy * duration
+            BigDecimal total = currentElement.getCostOrSalary()
+                    .multiply(quantity).multiply(duration);
+            // Added holidaySalary and indemnizationSalary
+            total = total.add(currentElement.getHolidaySalary()).add(
+                    currentElement.getIndemnizationSalary());
+            budgetBox.setValue(total);
             //fire change event, to update the total in the parents
             Events.sendEvent(budgetBox, new Event(Events.ON_CHANGE));
         }
