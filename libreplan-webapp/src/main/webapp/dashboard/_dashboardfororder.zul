@@ -18,6 +18,7 @@
 -->
 
 <?component name="costStatus" inline="true" macroURI="_costStatus.zul"?>
+<?component name="globalProgress" inline="true" macroURI="_globalProgress.zul"?>
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
@@ -120,7 +121,7 @@
         var global_progress = { };
     </script>
 
-    <include src="/dashboard/_globalProgress.zul" />
+    <globalProgress />
 
     <!-- Include jqPlot styles -->
     <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" />
