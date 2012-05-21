@@ -785,7 +785,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                         }
                     });
             schedulingStateToggler.afterCompose();
-            cell.setDraggable("true");
         }
 
         protected abstract SchedulingState getSchedulingStateFrom(
