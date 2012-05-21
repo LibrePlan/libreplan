@@ -40,8 +40,8 @@ Authentication
 ==============
 
 Here can be configured the property in LDAP nodes where should be found the
-given login name. The property *UserId* must be filled with the name of the
-property where the login name is stored in LDAP.
+given username. The property *UserId* must be filled with the name of the
+property where the username is stored in LDAP.
 
 The checkbox *Save passwords in database* when it is checked, means that the
 password is stored also in LibrePlan database. In this way, if LDAP is offline

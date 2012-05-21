@@ -50,6 +50,8 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.entities.AssignedEffortForResource.IAssignedEffortForResource;
+import org.libreplan.business.planner.entities.AssignedEffortForResource.WithTheLoadOf;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
@@ -365,10 +367,19 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         public static List<ResourceAllocation<?>> modified(
-                Collection<ModifiedAllocation> collection) {
+                Collection<? extends ModifiedAllocation> collection) {
             List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
             for (ModifiedAllocation modifiedAllocation : collection) {
                 result.add(modifiedAllocation.getModification());
+            }
+            return result;
+        }
+
+        public static List<ResourceAllocation<?>> originals(
+                Collection<? extends ModifiedAllocation> modifiedAllocations) {
+            List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+            for (ModifiedAllocation each : modifiedAllocations) {
+                result.add(each.getOriginal());
             }
             return result;
         }
@@ -741,6 +752,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             if (toBeModified.isEmpty()) {
                 return;
             }
+            setCustomAssignedEffortForResource(copied);
             doAllocation(strategy, direction, toBeModified);
             updateDerived(copied);
 
@@ -751,6 +763,24 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         } catch (Exception e) {
             LOG.error("reassignment for task: " + this
                     + " couldn't be completed", e);
+        }
+    }
+
+    private void setCustomAssignedEffortForResource(
+            List<ModifiedAllocation> modifiedAllocations) {
+        List<ResourceAllocation<?>> originals = ModifiedAllocation
+                .originals(modifiedAllocations);
+        IAssignedEffortForResource discounting = AssignedEffortForResource
+                .effortDiscounting(originals);
+        List<ResourceAllocation<?>> beingModified = ModifiedAllocation
+                .modified(modifiedAllocations);
+        WithTheLoadOf allNewLoad = AssignedEffortForResource
+                .withTheLoadOf(beingModified);
+        List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
+                GenericResourceAllocation.class, beingModified);
+        for (GenericResourceAllocation each : generic) {
+            each.setAssignedEffortForResource(AssignedEffortForResource.sum(
+                    allNewLoad.withoutConsidering(each), discounting));
         }
     }
 
@@ -887,7 +917,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public boolean isSubcontractedAndWasAlreadySent() {
         return (subcontractedTaskData != null)
                 && (!subcontractedTaskData.getState()
-                        .equals(SubcontractState.PENDING));
+                        .equals(SubcontractState.PENDING_INITIAL_SEND));
     }
 
     public boolean hasSomeSatisfiedAllocation() {

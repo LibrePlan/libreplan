@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,9 +25,12 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
@@ -36,6 +39,7 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -45,20 +49,26 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Groupbox;
 
 /**
  * Controller for CRUD actions over a {@link User}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @SuppressWarnings("serial")
 public class UserCRUDController extends BaseCRUDController<User> implements
         IUserCRUDController {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(UserCRUDController.class);
+
+    @Resource
+    private IWorkerCRUDControllerEntryPoints workerCRUD;
 
     private IUserModel userModel;
 
@@ -68,23 +78,55 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     private Combobox userRolesCombo;
 
+    private Groupbox boundResourceGroupbox;
+
     private Autocomplete profileAutocomplete;
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
+    private RowRenderer usersRenderer = new RowRenderer() {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            final User user = (User) data;
+            row.setValue(user);
+
+            Util.appendLabel(row, user.getLoginName());
+            Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
+            Util.appendLabel(row, user.isAdministrator() ? _("Yes") : _("No"));
+            Util.appendLabel(row, getAuthenticationType(user));
+            Util.appendLabel(row, user.isBound() ? user.getWorker()
+                    .getShortDescription() : "");
+
+            Util.appendOperationsAndOnClickEvent(row, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToEditForm(user);
+                }
+            }, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    confirmDelete(user);
+                }
+            });
+        }
+    };
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-
-        final EntryPointsHandler<IUserCRUDController> handler = URLHandlerRegistry
-                .getRedirectorFor(IUserCRUDController.class);
-        handler.register(this, page);
 
         passwordBox = (Textbox) editWindow.getFellowIfAny("password");
         passwordConfirmationBox = (Textbox) editWindow.getFellowIfAny("passwordConfirmation");
         profileAutocomplete = (Autocomplete) editWindow.getFellowIfAny("profileAutocomplete");
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRoles(userRolesCombo);
+        boundResourceGroupbox = (Groupbox) editWindow
+                .getFellowIfAny("boundResourceGroupbox");
+
+        final EntryPointsHandler<IUserCRUDController> handler = URLHandlerRegistry
+                .getRedirectorFor(IUserCRUDController.class);
+        handler.register(this, page);
     }
 
     /**
@@ -218,6 +260,23 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     @Override
+    protected boolean beforeDeleting(User user) {
+        Worker worker = user.getWorker();
+        if (worker != null) {
+            try {
+                return Messagebox
+                        .show(_("User is bound to resource \"{0}\" and it will be unbound. Do you want to continue with user removal?",
+                                worker.getShortDescription()),
+                                _("Confirm remove user"), Messagebox.YES
+                                        | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES;
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
+    }
+
+    @Override
     protected void delete(User user) throws InstanceNotFoundException {
         userModel.confirmRemove(user);
     }
@@ -257,6 +316,74 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                 row.appendChild(removeButton);
             }
         };
+    }
+
+    public String getAuthenticationType() {
+        User user = getUser();
+        if (user != null) {
+            return getAuthenticationType(user);
+        }
+        return "";
+    }
+
+    private String getAuthenticationType(User user) {
+        if (user.isLibrePlanUser()) {
+            return _("Database");
+        }
+        return _("LDAP");
+    }
+
+    public RowRenderer getUsersRenderer() {
+        return usersRenderer;
+    }
+
+    public String hasBoundResource() {
+        User user = getUser();
+        if (user != null && user.isBound()) {
+            return _("Yes");
+        }
+        return _("No");
+    }
+
+    public String getBoundResource() {
+        User user = getUser();
+        if (user != null && user.isBound()) {
+            return user.getWorker().getShortDescription();
+        }
+        return "";
+    }
+
+    public boolean isBound() {
+        User user = getUser();
+        if (user != null) {
+            return user.isBound();
+        }
+        return false;
+    }
+
+    public void goToWorkerEdition() {
+        Worker worker = getUser().getWorker();
+        if (worker != null) {
+            if (showConfirmWorkerEditionDialog() == Messagebox.OK) {
+                workerCRUD.goToEditForm(worker);
+            }
+        }
+    }
+
+    private int showConfirmWorkerEditionDialog() {
+        try {
+            return Messagebox
+                    .show(_("Unsaved changes will be lost. Would you like to continue?"),
+                            _("Confirm worker edition"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void unboundResource() {
+        userModel.unboundResource();
+        Util.reloadBindings(boundResourceGroupbox);
     }
 
 }

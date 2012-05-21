@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +29,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
@@ -38,6 +40,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.ResourceType;
 import org.libreplan.business.resources.entities.VirtualWorker;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.calendars.BaseCalendarEditionController;
 import org.libreplan.web.calendars.IBaseCalendarModel;
 import org.libreplan.web.common.BaseCRUDController.CRUDControllerState;
@@ -48,11 +51,15 @@ import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
+import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.libreplan.web.resources.search.ResourcePredicate;
+import org.libreplan.web.users.IUserCRUDController;
+import org.libreplan.web.users.services.IDBPasswordEncoderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -72,21 +79,32 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Caption;
+import org.zkoss.zul.api.Groupbox;
+import org.zkoss.zul.api.Radiogroup;
 import org.zkoss.zul.api.Window;
 
 /**
  * Controller for {@link Worker} resource <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class WorkerCRUDController extends GenericForwardComposer implements
         IWorkerCRUDControllerEntryPoints {
+
+    @Autowired
+    private IDBPasswordEncoderService dbPasswordEncoderService;
+
+    @Resource
+    private IUserCRUDController userCRUD;
 
     private Window listWindow;
 
@@ -141,6 +159,33 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private Tab costCategoryAssignmentTab;
 
     private CRUDControllerState state = CRUDControllerState.LIST;
+
+    private Groupbox userBindingGroupbox;
+
+    private Radiogroup userBindingRadiogroup;
+
+    private BandboxSearch userBandbox;
+
+    private Textbox loginNameTextbox;
+
+    private Textbox emailTextbox;
+
+    private Textbox passwordTextbox;
+
+    private Textbox passwordConfirmationTextbox;
+
+    private enum UserBindingOption {
+        NOT_BOUND(_("Not bound")),
+        EXISTING_USER(_("Existing user")),
+        CREATE_NEW_USER(_("Create new user"));
+
+        private String label;
+
+        private UserBindingOption(String label) {
+            this.label = label;
+        }
+
+    };
 
     public WorkerCRUDController() {
     }
@@ -200,6 +245,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public boolean save() {
         validateConstraints();
 
+        setUserBindingInfo();
+
         // Validate 'Cost category assignment' tab is correct
         if (resourcesCostCategoryAssignmentController != null) {
             if (!resourcesCostCategoryAssignmentController.validate()) {
@@ -226,6 +273,58 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             messages.showInvalidValues(e);
         }
         return false;
+    }
+
+    private void setUserBindingInfo() {
+        int option = userBindingRadiogroup.getSelectedIndex();
+
+        if (UserBindingOption.NOT_BOUND.ordinal() == option) {
+            getWorker().setUser(null);
+        }
+
+        if (UserBindingOption.EXISTING_USER.ordinal() == option) {
+            if (getWorker().getUser() == null) {
+                throw new WrongValueException(userBandbox,
+                        _("please select a user to bound"));
+            }
+            getWorker().updateUserData();
+        }
+
+        if (UserBindingOption.CREATE_NEW_USER.ordinal() == option) {
+            getWorker().setUser(createNewUserForBinding());
+        }
+    }
+
+    private User createNewUserForBinding() {
+        String loginName = loginNameTextbox.getValue();
+        if (StringUtils.isBlank(loginName)) {
+            throw new WrongValueException(loginNameTextbox,
+                    _("cannot be null or empty"));
+        }
+
+        String password = passwordTextbox.getValue();
+        if (StringUtils.isBlank(loginName)) {
+            throw new WrongValueException(passwordTextbox,
+                    _("cannot be null or empty"));
+        }
+
+        String passwordConfirmation = passwordConfirmationTextbox.getValue();
+        if (!password.equals(passwordConfirmation)) {
+            throw new WrongValueException(passwordConfirmationTextbox,
+                    _("passwords do not match"));
+        }
+
+        String encodedPassword = dbPasswordEncoderService.encodePassword(
+                password, loginName);
+
+        User newUser = User.create(loginName, encodedPassword,
+                emailTextbox.getValue());
+
+        Worker worker = getWorker();
+        newUser.setFirstName(worker.getFirstName());
+        newUser.setLastName(worker.getSurname());
+
+        return newUser;
     }
 
     private void validateConstraints() {
@@ -281,7 +380,27 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             editCalendar();
         }
         editAsignedCriterions();
+        updateUserBindingComponents();
         showEditWindow(_("Edit Worker: {0}", worker.getHumanId()));
+    }
+
+    private void updateUserBindingComponents() {
+        User user = getBoundUser();
+        if (user == null) {
+            userBindingRadiogroup.setSelectedIndex(UserBindingOption.NOT_BOUND
+                    .ordinal());
+        } else {
+            userBindingRadiogroup
+                    .setSelectedIndex(UserBindingOption.EXISTING_USER.ordinal());
+        }
+
+        // Reste new user fields
+        loginNameTextbox.setValue("");
+        emailTextbox.setValue("");
+        passwordTextbox.setValue("");
+        passwordConfirmationTextbox.setValue("");
+
+        Util.reloadBindings(userBindingGroupbox);
     }
 
     public void goToEditVirtualWorkerForm(Worker worker) {
@@ -312,6 +431,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
+        updateUserBindingComponents();
         showEditWindow(_("Create Worker"));
         resourceCalendarModel.cancel();
     }
@@ -337,13 +457,37 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         messages = new MessagesForUser(messagesContainer);
         setupResourcesCostCategoryAssignmentController(comp);
 
-        final EntryPointsHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
-                .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
-        handler.register(this, page);
         getVisibility().showOnly(listWindow);
         initFilterComponent();
         setupFilterLimitingResourceListbox();
         initializeTabs();
+        initUserBindingComponents();
+
+        final EntryPointsHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
+                .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
+        handler.register(this, page);
+    }
+
+    private void initUserBindingComponents() {
+        userBindingGroupbox = (Groupbox) editWindow
+                .getFellowIfAny("userBindingGroupbox");
+        userBindingRadiogroup = (Radiogroup) editWindow
+                .getFellowIfAny("userBindingRadiogroup");
+        initUserBindingOptions();
+        userBandbox = (BandboxSearch) editWindow.getFellowIfAny("userBandbox");
+        loginNameTextbox = (Textbox) editWindow.getFellowIfAny("loginName");
+        passwordTextbox = (Textbox) editWindow.getFellowIfAny("password");
+        passwordConfirmationTextbox = (Textbox) editWindow
+                .getFellowIfAny("passwordConfirmation");
+        emailTextbox = (Textbox) editWindow.getFellowIfAny("email");
+    }
+
+    private void initUserBindingOptions() {
+        UserBindingOption[] values = UserBindingOption.values();
+        for (UserBindingOption option : values) {
+            Radio radio = new Radio(option.label);
+            userBindingRadiogroup.appendChild(radio);
+        }
     }
 
     private void initializeTabs() {
@@ -778,6 +922,10 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         Worker worker = getWorker();
         if (worker != null) {
             worker.setResourceType(LimitingResourceEnum.toResourceType(option));
+            if (worker.isLimitingResource()) {
+                worker.setUser(null);
+            }
+            Util.reloadBindings(userBindingGroupbox);
         }
     }
 
@@ -800,20 +948,33 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void confirmRemove(Worker worker) {
         try {
+            if (!workerModel.canRemove(worker)) {
+                messages.showMessage(
+                        Level.WARNING,
+                        _("This worker cannot be deleted because it has assignments to projects or imputed hours"));
+                return;
+            }
+
             int status = Messagebox.show(_("Confirm deleting this worker. Are you sure?"), _("Delete"),
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
             if (Messagebox.OK != status) {
                 return;
             }
-            if(workerModel.canRemove(worker)) {
-                workerModel.confirmRemove(worker);
-                messages.showMessage(Level.INFO, _("Worker deleted"));
-                goToList();
+
+            boolean removeBoundUser = false;
+            User user = workerModel.getBoundUserFromDB(worker);
+            if (user != null && !user.isAdministrator()) {
+                removeBoundUser = Messagebox.show(
+                        _("Do you want to remove bound user \"{0}\" too?",
+                                user.getLoginName()), _("Delete bound user"),
+                        Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES;
             }
-            else {
-                messages.showMessage(Level.WARNING,
-                        _("This worker cannot be deleted because it has assignments to projects or imputed hours"));
-            }
+
+            workerModel.confirmRemove(worker, removeBoundUser);
+            messages.showMessage(Level.INFO,
+                    removeBoundUser ? _("Worker and bound user deleted")
+                            : _("Worker deleted"));
+            goToList();
         } catch (InterruptedException e) {
             messages.showMessage(
                     Level.ERROR, e.getMessage());
@@ -893,6 +1054,81 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                         "You should be in creation or edition mode to use this method");
             }
             ((Caption) editWindow.getFellow("caption")).setLabel(title);
+        }
+    }
+
+    public List<User> getPossibleUsersToBound() {
+        return workerModel.getPossibleUsersToBound();
+    }
+
+    public User getBoundUser() {
+        return workerModel.getBoundUser();
+    }
+
+    public void setBoundUser(User user) {
+        workerModel.setBoundUser(user);
+        updateUserBindingComponents();
+    }
+
+    public boolean isUserSelected() {
+        return userBandbox.getSelectedElement() != null;
+    }
+
+    public String getLoginName() {
+        User user = getBoundUser();
+        if (user != null) {
+            return user.getLoginName();
+        }
+        return "";
+    }
+
+    public String getEmail() {
+        User user = getBoundUser();
+        if (user != null) {
+            return user.getEmail();
+        }
+        return "";
+    }
+
+    public boolean isExistingUser() {
+        int option = userBindingRadiogroup.getSelectedIndex();
+        return UserBindingOption.EXISTING_USER.ordinal() == option;
+    }
+
+    public boolean isCreateNewUser() {
+        int option = userBindingRadiogroup.getSelectedIndex();
+        return UserBindingOption.CREATE_NEW_USER.ordinal() == option;
+    }
+
+    public void updateUserBindingView() {
+        Util.reloadBindings(userBindingGroupbox);
+    }
+
+    public boolean isNotLimitingOrVirtualResource() {
+        Worker worker = getWorker();
+        if (worker != null) {
+            return !(worker.isLimitingResource() || worker.isVirtual());
+        }
+        return false;
+    }
+
+    public void goToUserEdition() {
+        User user = getWorker().getUser();
+        if (user != null) {
+            if (showConfirmUserEditionDialog() == Messagebox.OK) {
+                userCRUD.goToEditForm(user);
+            }
+        }
+    }
+
+    private int showConfirmUserEditionDialog() {
+        try {
+            return Messagebox
+                    .show(_("Unsaved changes will be lost. Would you like to continue?"),
+                            _("Confirm user edition"), Messagebox.OK
+                                    | Messagebox.CANCEL, Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

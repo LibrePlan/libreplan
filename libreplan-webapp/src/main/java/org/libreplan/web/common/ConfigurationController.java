@@ -401,6 +401,14 @@ public class ConfigurationController extends GenericForwardComposer {
                 .setGenerateCodeForMaterialCategories(generateCodeForMaterialCategories);
     }
 
+    public Boolean getGenerateCodeForExpenseSheets() {
+        return configurationModel.getGenerateCodeForExpenseSheets();
+    }
+
+    public void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets) {
+        configurationModel.setGenerateCodeForExpenseSheets(generateCodeForExpenseSheets);
+    }
+
     public void reloadGeneralConfiguration() {
         reloadWindow();
     }

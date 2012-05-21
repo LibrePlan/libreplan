@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Emitter<T> {

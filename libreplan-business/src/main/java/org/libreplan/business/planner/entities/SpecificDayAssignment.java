@@ -67,12 +67,12 @@ public class SpecificDayAssignment extends DayAssignment {
 
         @Override
         ParentState setParent(
-                SpecificResourceAllocation genericResourceAllocation) {
-            if (parent != null) {
+                SpecificResourceAllocation specificResourceAllocation) {
+            if (parent != null && parent != specificResourceAllocation) {
                 throw new IllegalStateException(
                         "the allocation cannot be changed once it has been set");
             }
-            this.parent = genericResourceAllocation;
+            this.parent = specificResourceAllocation;
             return this;
         }
 

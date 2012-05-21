@@ -19,8 +19,7 @@
 
 package org.libreplan.ws.calendarexceptiontypes.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +67,9 @@ public class CalendarExceptionTypeColorConverter {
         addEquivalence(CalendarExceptionTypeColor.BLACK,
                 CalendarExceptionTypeColorDTO.BLACK);
 
+        addEquivalence(CalendarExceptionTypeColor.PURPLE,
+                CalendarExceptionTypeColorDTO.PURPLE);
+
     }
 
     private static void addEquivalence(CalendarExceptionTypeColor origin,
@@ -82,8 +84,9 @@ public class CalendarExceptionTypeColorConverter {
                 .get(resource);
 
         if (value == null) {
-            throw new RuntimeException(_("Unable to convert {0} "
-                    + "value to {1} type", resource.toString(),
+            throw new RuntimeException(MessageFormat.format(
+                    "Unable to convert {0} value to {1} type",
+                    resource.toString(),
                     CalendarExceptionTypeColorDTO.class.getName()));
         } else {
             return value;
@@ -103,7 +106,8 @@ public class CalendarExceptionTypeColorConverter {
                 .get(resource);
 
         if (value == null) {
-            throw new RuntimeException(_("Unable to convert value to {0} type",
+            throw new RuntimeException(MessageFormat.format(
+                    "Unable to convert value to {0} type",
                     CalendarExceptionTypeColor.class.getName()));
         } else {
             return value;

@@ -34,24 +34,19 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.common.AdHocTransactionService;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
-import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -59,12 +54,9 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.chart.ContiguousDaysLine;
-import org.libreplan.business.planner.chart.ContiguousDaysLine.OnDay;
-import org.libreplan.business.planner.chart.ResourceLoadChartData;
-import org.libreplan.business.planner.entities.DayAssignment;
-import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.ICostCalculator;
-import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.planner.entities.IOrderEarnedValueCalculator;
+import org.libreplan.business.planner.entities.IOrderResourceLoadCalculator;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
@@ -140,7 +132,6 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
@@ -152,6 +143,7 @@ import org.zkoss.zul.Vbox;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -262,15 +254,19 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private ICostCalculator hoursCostCalculator;
 
+    @Autowired
+    private IOrderEarnedValueCalculator earnedValueCalculator;
+
+    @Autowired
+    private IOrderResourceLoadCalculator resourceLoadCalculator;
+
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
     private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
 
     private Planner planner;
 
-    private OverAllProgressContent overallProgressContent;
-
-    private String tabSelected = "earned_value_tab";
+    private String tabSelected = "load_tab";
 
     private static class NullSeparatorCommandOnTask<T> implements
             ICommandOnTask<T> {
@@ -387,11 +383,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         this.earnedValueChartFiller = createOrderEarnedValueChartFiller(planner.getTimeTracker());
         chartTabpanels.appendChild(createEarnedValueTab(chartEarnedValueTimeplot, earnedValueChartFiller));
 
-        // Create 'Overall progress' tab
-        Hbox chartOverallProgressTimeplot = new Hbox();
-        Tabpanel overallProgressTab = createOverallProgressTab(chartOverallProgressTimeplot);
-        chartTabpanels.appendChild(overallProgressTab);
-
         // Append tab panels
         chartComponent.appendChild(chartTabpanels);
         ChangeHooker changeHooker = new ChangeHooker(configuration, saveCommand);
@@ -399,19 +390,31 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         setupLoadChart(chartLoadTimeplot, planner, changeHooker);
         setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller,
                 planner, changeHooker);
-        setupOverallProgress(planner, changeHooker);
         setupAdvanceAssignmentPlanningController(planner, advanceAssignmentPlanningController);
         PROFILING_LOG
                 .info("preparing charts and miscellaneous took: "
                         + (System.currentTimeMillis() - preparingChartsAndMisc)
                         + " ms");
 
+        // Calculate critical path progress, needed for 'Project global progress' chart in Dashboard view
         planner.addGraphChangeListenersFromConfiguration(configuration);
+        updateCriticalPathProgress();
         long overalProgressContentTime = System.currentTimeMillis();
-        overallProgressContent = new OverAllProgressContent(overallProgressTab);
-        overallProgressContent.updateAndRefresh();
         PROFILING_LOG.info("overalProgressContent took: "
                 + (System.currentTimeMillis() - overalProgressContentTime));
+    }
+
+    /**
+     * First time a project is loaded, it's needed to calculate the theoretical
+     * critical path progress and real critical path progress. These values are
+     * later updated whenever the project is saved
+     */
+    private void updateCriticalPathProgress() {
+        if (planningState.isEmpty() || planner == null) {
+            return;
+        }
+        TaskGroup rootTask = planningState.getRootTask();
+        rootTask.updateCriticalPathProgress(planner.getCriticalPath());
     }
 
     private OrderEarnedValueChartFiller earnedValueChartFiller;
@@ -419,25 +422,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private void setupAdvanceAssignmentPlanningController(final Planner planner,
             AdvanceAssignmentPlanningController advanceAssignmentPlanningController) {
 
-        advanceAssignmentPlanningController.reloadOverallProgressListener(new IReloadChartListener() {
-
-            @Override
-            public void reloadChart() {
-                Registry.getTransactionService().runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-
-                    @Override
-                    public Void execute() {
-                        if (isExecutingOutsideZKExecution()) {
-                            return null;
-                        }
-                        if (planner.isVisibleChart()) {
-                            overallProgressContent.updateAndRefresh();
-                        }
-                        return null;
-                    }
-                });
-            }
-        });
         advanceAssignmentPlanningController.setReloadEarnedValueListener(new IReloadChartListener() {
 
             @Override
@@ -460,15 +444,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 });
             }
         });
-    }
-
-    private Tabpanel createOverallProgressTab(
-            Hbox chartOverallProgressTimeplot) {
-        Tabpanel result = new Tabpanel();
-        org.zkoss.zk.ui.Component component = Executions.createComponents(
-                "/planner/_tabPanelOverallProgress.zul", result, null);
-        component.setParent(result);
-        return result;
     }
 
     private Timeplot createEmptyTimeplot() {
@@ -575,24 +550,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 earnedValueChartFiller, chartEarnedValueTimeplot, planner);
         refillLoadChartWhenNeeded(changeHooker, planner, earnedValueChart, true);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
-    }
-
-    private void setupOverallProgress(final Planner planner,
-            ChangeHooker changeHooker) {
-
-        changeHooker.withReadOnlyTransactionWraping().hookInto(
-                EnumSet.allOf(ChangeTypes.class), new IReloadChartListener() {
-
-                    @Override
-                    public void reloadChart() {
-                        if (isExecutingOutsideZKExecution()) {
-                            return;
-                        }
-                        if (planner.isVisibleChart()) {
-                            overallProgressContent.updateAndRefresh();
-                        }
-                    }
-      });
     }
 
     enum ChangeTypes {
@@ -764,8 +721,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Tabs chartTabs = new Tabs();
         // chartTabs.appendChild(createTab(_("Load"), "load_tab"));
         chartTabs.appendChild(createTab(_("Earned value"), "earned_value_tab"));
-        chartTabs.appendChild(createTab(_("Overall progress"),
-                "overall_progress_tab"));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
@@ -1131,6 +1086,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION,
                             new org.zkoss.zk.ui.event.EventListener() {
+                                @Override
                                 public void onEvent(Event evt)
                                         throws InterruptedException {
                                     if (evt.getName().equals("onOK")) {
@@ -1236,11 +1192,21 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 });
     }
 
-    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3"; // Soft
-    // green
-    public static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2"; // Soft red
-
+    /**
+     *
+     * @author Óscar González Fernández <ogonzalez@igalia.com>
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     *         Calculates 'Resource Load' values and set them in the Order
+     *         'Resource Load' chart
+     */
     private class OrderLoadChartFiller extends LoadChartFiller {
+
+        // Soft green
+        private static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3";
+
+        // Soft red
+        private static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2";
 
         private final Order order;
 
@@ -1255,25 +1221,18 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         @Override
         protected Plotinfo[] getPlotInfos(Interval interval) {
-            List<DayAssignment> orderDayAssignments = order
-                    .getDayAssignments(FilterType.WITHOUT_DERIVED);
-            ContiguousDaysLine<List<DayAssignment>> orderAssignments = ContiguousDaysLine
-                    .byDay(orderDayAssignments);
-            ContiguousDaysLine<List<DayAssignment>> allAssignments = allAssignments(orderAssignments);
-            ContiguousDaysLine<List<DayAssignment>> filteredAssignments = filterAllAssignmentsByOrderResources(
-                    allAssignments, orderAssignments);
+            resourceLoadCalculator.setOrder(order, planningState.getAssignmentsCalculator());
 
-            ContiguousDaysLine<EffortDuration> maxCapacityOnResources = orderAssignments
-                    .transform(ResourceLoadChartData
-                            .extractAvailabilityOnAssignedResources());
-            ContiguousDaysLine<EffortDuration> orderLoad = orderAssignments
-                    .transform(ResourceLoadChartData.extractLoad());
-            ContiguousDaysLine<EffortDuration> allLoad = filteredAssignments
-                    .transform(ResourceLoadChartData.extractLoad());
-            ContiguousDaysLine<EffortDuration> orderOverload = orderAssignments
-                    .transform(ResourceLoadChartData.extractOverload());
-            ContiguousDaysLine<EffortDuration> allOverload = filteredAssignments
-                    .transform(ResourceLoadChartData.extractOverload());
+            ContiguousDaysLine<EffortDuration> maxCapacityOnResources = resourceLoadCalculator
+                    .getMaxCapacityOnResources();
+            ContiguousDaysLine<EffortDuration> orderLoad = resourceLoadCalculator
+                    .getOrderLoad();
+            ContiguousDaysLine<EffortDuration> allLoad = resourceLoadCalculator
+                    .getAllLoad();
+            ContiguousDaysLine<EffortDuration> orderOverload = resourceLoadCalculator
+                    .getOrderOverload();
+            ContiguousDaysLine<EffortDuration> allOverload = resourceLoadCalculator
+                    .getAllOverload();
 
             Plotinfo plotOrderLoad = createPlotinfoFromDurations(
                     groupAsNeededByZoom(toSortedMap(ContiguousDaysLine.min(
@@ -1315,143 +1274,45 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                     plotMaxCapacity, plotOtherLoad, plotOrderLoad };
         }
 
-        private ContiguousDaysLine<List<DayAssignment>> filterAllAssignmentsByOrderResources(
-                ContiguousDaysLine<List<DayAssignment>> allAssignments,
-                ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
-            List<DayAssignment> filteredAssignments = new ArrayList<DayAssignment>();
-
-            Iterator<OnDay<List<DayAssignment>>> iterator = orderAssignments
-                    .iterator();
-            while (iterator.hasNext()) {
-                OnDay<List<DayAssignment>> onDay = iterator.next();
-                Set<Resource> resources = getResources(onDay.getValue());
-                filteredAssignments.addAll(filterAssignmentsByResource(
-                        allAssignments.get(onDay.getDay()), resources));
-            }
-            return ContiguousDaysLine.byDay(filteredAssignments);
-        }
-
-        private List<DayAssignment> filterAssignmentsByResource(
-                List<DayAssignment> list, Set<Resource> resources) {
-            List<DayAssignment> result = new ArrayList<DayAssignment>();
-            for (DayAssignment each : list) {
-                if (resources.contains(each.getResource())) {
-                    result.add(each);
-                }
-            }
-            return result;
-        }
-
-        private Set<Resource> getResources(List<DayAssignment> dayAssignments) {
-            Set<Resource> resources = new HashSet<Resource>();
-            for (DayAssignment each : dayAssignments) {
-                resources.add(each.getResource());
-            }
-            return resources;
-        }
-
-        private ContiguousDaysLine<List<DayAssignment>> allAssignments(
-                ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
-            if (orderAssignments.isNotValid()) {
-                return ContiguousDaysLine.<List<DayAssignment>> invalid();
-            }
-            return allAssignmentsOnResourcesAt(orderAssignments.getStart(),
-                    orderAssignments.getEndExclusive());
-        }
-
-        private ContiguousDaysLine<List<DayAssignment>> allAssignmentsOnResourcesAt(
-                LocalDate startInclusive, LocalDate endExclusive) {
-            AvailabilityTimeLine.Interval interval = AvailabilityTimeLine.Interval
-                    .create(startInclusive, endExclusive);
-            List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : order
-                    .getResources(FilterType.WITHOUT_DERIVED)) {
-                resourcesDayAssignments.addAll(insideInterval(interval,
-                        planningState.getAssignmentsCalculator()
-                                .getAssignments(resource)));
-            }
-            return ContiguousDaysLine.byDay(resourcesDayAssignments);
-        }
-
-        private List<DayAssignment> insideInterval(
-                AvailabilityTimeLine.Interval interval,
-                List<DayAssignment> assignments) {
-            List<DayAssignment> result = new ArrayList<DayAssignment>();
-            for (DayAssignment each : assignments) {
-                if (interval.includes(each.getDay())) {
-                    result.add(each);
-                }
-            }
-            return result;
-        }
-
     }
 
+    /**
+     *
+     * @author Manuel Rego Casasnovas <mrego@igalia.com>
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     *         Calculates 'Earned Value' indicators and set them in the Order
+     *         'Earned Valued' chart
+     *
+     */
     class OrderEarnedValueChartFiller extends EarnedValueChartFiller {
 
         private Order order;
 
         public OrderEarnedValueChartFiller(Order orderReloaded) {
             this.order = orderReloaded;
+            super.setEarnedValueCalculator(earnedValueCalculator);
         }
 
+        @Override
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            List<TaskElement> list = order
-                    .getAllChildrenAssociatedTaskElements();
-            list.add(order.getAssociatedTaskElement());
-
-            SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
-
-            for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(estimatedCost, hoursCostCalculator
-                            .getEstimatedCost((Task) taskElement));
-                }
-            }
-
-            estimatedCost = accumulateResult(estimatedCost);
-            addZeroBeforeTheFirstValue(estimatedCost);
-            indicators.put(EarnedValueType.BCWS, calculatedValueForEveryDay(
-                    estimatedCost, interval.getStart(), interval.getFinish()));
+            setIndicatorInInterval(EarnedValueType.BCWS, interval,
+                    earnedValueCalculator
+                            .calculateBudgetedCostWorkScheduled(order));
         }
 
+        @Override
         protected void calculateActualCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = order
-                    .getAllChildrenAssociatedTaskElements();
-            list.add(order.getAssociatedTaskElement());
-
-            SortedMap<LocalDate, BigDecimal> workReportCost = new TreeMap<LocalDate, BigDecimal>();
-
-            for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(workReportCost, hoursCostCalculator
-                            .getWorkReportCost((Task) taskElement));
-                }
-            }
-
-            workReportCost = accumulateResult(workReportCost);
-            addZeroBeforeTheFirstValue(workReportCost);
-            indicators.put(EarnedValueType.ACWP, calculatedValueForEveryDay(
-                    workReportCost, interval.getStart(), interval.getFinish()));
+            setIndicatorInInterval(EarnedValueType.ACWP, interval,
+                    earnedValueCalculator
+                            .calculateActualCostWorkPerformed(order));
         }
 
+        @Override
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = order
-                    .getAllChildrenAssociatedTaskElements();
-            list.add(order.getAssociatedTaskElement());
-
-            SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
-
-            for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(advanceCost, hoursCostCalculator
-                            .getAdvanceCost((Task) taskElement));
-                }
-            }
-
-            addZeroBeforeTheFirstValue(advanceCost);
-            indicators.put(EarnedValueType.BCWP, calculatedValueForEveryDay(
-                    advanceCost, interval.getStart(), interval.getFinish()));
+            setIndicatorInInterval(EarnedValueType.BCWP, interval,
+                    earnedValueCalculator
+                            .calculateBudgetedCostWorkPerformed(order));
         }
 
         @Override
@@ -1467,6 +1328,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return subcontractCommand;
     }
 
+    @Override
     public Order getOrder() {
         return planningState.getOrder();
     }
@@ -1504,151 +1366,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 forceLoadCriterionRequirements(element);
             }
         }
-    }
-
-    /**
-     *
-     * @author Diego Pino García<dpino@igalia.com>
-     *
-     * Helper class to show the content of a OverallProgress panel
-     *
-     */
-    private class OverAllProgressContent {
-
-        private Progressmeter progressCriticalPathByDuration;
-
-        private Label lbCriticalPathByDuration;
-
-        private Progressmeter progressCriticalPathByNumHours;
-
-        private Label lbCriticalPathByNumHours;
-
-        private Progressmeter progressSpread;
-
-        private Label lbProgressSpread;
-
-        private Progressmeter progressAllByNumHours;
-
-        private Label lbProgressAllByNumHours;
-
-        public OverAllProgressContent(Tabpanel tabpanel) {
-            initializeProgressCriticalPathByDuration(tabpanel);
-            initializeProgressCriticalPathByNumHours(tabpanel);
-            initializeProgressSpread(tabpanel);
-            initializeProgressAllByNumHours(tabpanel);
-
-            tabpanel.setVariable("overall_progress_content", this, true);
-        }
-
-        private void initializeProgressCriticalPathByNumHours(Tabpanel tabpanel) {
-            progressCriticalPathByNumHours = (Progressmeter) tabpanel
-                    .getFellow("progressCriticalPathByNumHours");
-            lbCriticalPathByNumHours = (Label) tabpanel
-                    .getFellow("lbCriticalPathByNumHours");
-            ((Label) tabpanel.getFellow("textCriticalPathByNumHours"))
-                    .setValue(_(ProgressType.CRITICAL_PATH_NUMHOURS.toString()));
-        }
-
-        private void initializeProgressCriticalPathByDuration(Tabpanel tabpanel) {
-            progressCriticalPathByDuration = (Progressmeter) tabpanel
-                    .getFellow("progressCriticalPathByDuration");
-            lbCriticalPathByDuration = (Label) tabpanel
-                    .getFellow("lbCriticalPathByDuration");
-            ((Label) tabpanel.getFellow("textCriticalPathByDuration"))
-                    .setValue(_(ProgressType.CRITICAL_PATH_DURATION.toString()));
-        }
-
-        public void initializeProgressSpread(Tabpanel tabpanel) {
-            progressSpread = (Progressmeter) tabpanel
-                    .getFellow("progressSpread");
-            lbProgressSpread = (Label) tabpanel.getFellow("lbProgressSpread");
-            ((Label) tabpanel.getFellow("textProgressSpread"))
-                    .setValue(_(ProgressType.SPREAD_PROGRESS.toString()));
-        }
-
-        public void initializeProgressAllByNumHours(Tabpanel tabpanel) {
-            progressAllByNumHours = (Progressmeter) tabpanel
-                    .getFellow("progressAllByNumHours");
-            lbProgressAllByNumHours = (Label) tabpanel
-                    .getFellow("lbProgressAllByNumHours");
-            ((Label) tabpanel.getFellow("textProgressAllByNumHours"))
-                    .setValue(_(ProgressType.ALL_NUMHOURS.toString()));
-        }
-
-        public void refresh() {
-            if (planningState.isEmpty()) {
-                return;
-            }
-            TaskGroup rootTask = planningState.getRootTask();
-
-            setProgressSpread(rootTask.getAdvancePercentage());
-            setProgressAllByNumHours(rootTask.getProgressAllByNumHours());
-            setCriticalPathByDuration(rootTask
-                    .getCriticalPathProgressByDuration());
-            setCriticalPathByNumHours(rootTask
-                    .getCriticalPathProgressByNumHours());
-        }
-
-        private void updateAndRefresh() {
-            if (planningState.isEmpty()) {
-                return;
-            }
-            update();
-            refresh();
-        }
-
-        private void update() {
-            TaskGroup rootTask = planningState.getRootTask();
-            updateCriticalPathProgress(rootTask);
-        }
-
-        private void updateCriticalPathProgress(TaskGroup rootTask) {
-            if (planner != null) {
-                rootTask.updateCriticalPathProgress((List<TaskElement>) planner
-                        .getCriticalPath());
-            }
-        }
-
-        private void setProgressSpread(BigDecimal value) {
-            if (value == null) {
-                value = BigDecimal.ZERO;
-            }
-            value = value.multiply(BigDecimal.valueOf(100));
-            value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-            lbProgressSpread.setValue(value.toString() + " %");
-            progressSpread.setValue(value.intValue());
-        }
-
-        private void setProgressAllByNumHours(BigDecimal value) {
-            if (value == null) {
-                value = BigDecimal.ZERO;
-            }
-            value = value.multiply(BigDecimal.valueOf(100));
-            value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-            lbProgressAllByNumHours.setValue(value.toString() + " %");
-            progressAllByNumHours.setValue(value.intValue());
-        }
-
-        public void setCriticalPathByDuration(BigDecimal value) {
-            if (value == null) {
-                value = BigDecimal.ZERO;
-            }
-            value = value.multiply(BigDecimal.valueOf(100));
-            value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-            lbCriticalPathByDuration.setValue(value.toString() + " %");
-            progressCriticalPathByDuration.setValue(value.intValue());
-        }
-
-        public void setCriticalPathByNumHours(BigDecimal value) {
-            if (value == null) {
-                value = BigDecimal.ZERO;
-            }
-            value = value.multiply(BigDecimal.valueOf(100));
-            value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-            lbCriticalPathByNumHours.setValue(value.toString() + " %");
-            progressCriticalPathByNumHours.setValue(value.intValue());
-        }
-
     }
 
 }

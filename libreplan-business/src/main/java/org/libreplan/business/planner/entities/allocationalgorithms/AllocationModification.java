@@ -120,6 +120,8 @@ public abstract class AllocationModification {
         }
     }
 
+    public abstract boolean isSpecific();
+
     protected void withNewResources(IResourcesSearcher resourcesSearcher) {
         resourcesOnWhichApplyAllocation = beingModified
                 .querySuitableResources(resourcesSearcher);

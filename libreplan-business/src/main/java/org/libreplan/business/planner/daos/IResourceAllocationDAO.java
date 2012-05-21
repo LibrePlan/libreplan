@@ -51,6 +51,10 @@ public interface IResourceAllocationDAO extends
             List<Resource> resources, LocalDate intervalFilterStartDate,
             LocalDate intervalFilterEndDate);
 
+    List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
+            Scenario onScenario, List<Resource> resources,
+            LocalDate intervalFilterStartDate, LocalDate intervalFilterEndDate);
+
     List<ResourceAllocation<?>> findAllocationsRelatedTo(Scenario onScenario,
             Resource resource,
             LocalDate intervalFilterStartDate, LocalDate intervalFilterEndDate);

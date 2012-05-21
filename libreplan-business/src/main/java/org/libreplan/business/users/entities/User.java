@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +30,7 @@ import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -41,7 +42,7 @@ import org.libreplan.business.users.daos.IUserDAO;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
- *
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class User extends BaseEntity implements IHumanIdentifiable{
 
@@ -74,6 +75,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     private String lastName = "";
 
+    private Worker worker;
+
     /**
      * Necessary for Hibernate. Please, do not call it.
      */
@@ -84,6 +87,12 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         this.loginName = loginName;
         this.password = password;
         this.roles = roles;
+    }
+
+    private User(String loginName, String password, String email) {
+        this.loginName = loginName;
+        this.password = password;
+        this.email = email;
     }
 
     public static User create(String loginName, String password,
@@ -97,7 +106,11 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return create(new User());
     }
 
-    @NotEmpty(message = "login name not specified")
+    public static User create(String loginName, String password, String email) {
+        return create(new User(loginName, password, email));
+    }
+
+    @NotEmpty(message = "username not specified")
     public String getLoginName() {
         return loginName;
     }
@@ -195,7 +208,7 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return isInRole(UserRole.ROLE_ADMINISTRATION);
     }
 
-    @AssertTrue(message = "login name is already being used by another user")
+    @AssertTrue(message = "username is already being used by another user")
     public boolean checkConstraintUniqueLoginName() {
 
         IUserDAO userDAO = Registry.getUserDAO();
@@ -286,10 +299,20 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return loginName;
     }
 
-    public String getAuthenticationType() {
-        if (isLibrePlanUser())
-            return "Database";
-        return "LDAP";
+    public Worker getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    public boolean isBound() {
+        return worker != null;
     }
 
 }

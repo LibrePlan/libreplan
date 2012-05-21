@@ -22,17 +22,12 @@ package org.libreplan.web.dashboard;
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
-import org.libreplan.web.common.Util;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -40,9 +35,7 @@ import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Window;
 
 import br.com.digilabs.jqplot.Chart;
 import br.com.digilabs.jqplot.JqPlotUtils;
@@ -62,10 +55,11 @@ public class DashboardController extends GenericForwardComposer {
 
     private IDashboardModel dashboardModel;
 
-    private Window dashboardWindow;
+    private Label lblOvertimeRatio;
+    private Label lblAvailabilityRatio;
+    private Label lblAbsolute;
 
-    private Grid gridTasksSummary;
-    private Grid gridMarginWithDeadline;
+    private org.zkoss.zk.ui.Component costStatus;
 
     private Div projectDashboardChartsDiv;
     private Div projectDashboardNoTasksWarningDiv;
@@ -76,55 +70,107 @@ public class DashboardController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
-        this.dashboardWindow = (Window) comp;
-        self.setAttribute("controller", this);
-        Util.createBindingsFor(this.dashboardWindow);
     }
 
     public void setCurrentOrder(Order order) {
         dashboardModel.setCurrentOrder(order);
         if (dashboardModel.tasksAvailable()) {
+            if (self != null) {
+                renderGlobalProgress();
+                renderTaskStatus();
+                renderTaskCompletationLag();
+                renderDeadlineViolation();
+                renderMarginWithDeadline();
+                renderEstimationAccuracy();
+                renderCostStatus(order);
+                renderOvertimeRatio();
+                renderAvailabilityRatio();
+            }
             showCharts();
         } else {
             hideCharts();
         }
-        if (this.dashboardWindow != null) {
-            renderGlobalProgress();
-            renderTaskStatus();
-            renderTaskCompletationLag();
-            renderTasksSummary();
-            renderDeadlineViolation();
-            renderMarginWithDeadline();
-        }
+    }
+
+    private void renderOvertimeRatio() {
+        lblOvertimeRatio.setValue(String.format("%.2f", dashboardModel
+                .getOvertimeRatio().doubleValue()));
+        String valueMeaning = (dashboardModel.getOvertimeRatio().doubleValue() > 1) ? "negative"
+                : "positive";
+        lblOvertimeRatio.setSclass("dashboard-label-remarked " + valueMeaning);
+    }
+
+    private void renderAvailabilityRatio() {
+        lblAvailabilityRatio.setValue(String.format("%.2f", dashboardModel
+                .getAvailabilityRatio().doubleValue()));
+        String valueMeaning = (dashboardModel.getAvailabilityRatio()
+                .doubleValue() > 1) ? "negative" : "positive";
+        lblAvailabilityRatio.setSclass("dashboard-label-remarked "
+                + valueMeaning);
+    }
+
+    private void renderCostStatus(Order order) {
+        CostStatusController costStatusController = getCostStatusController();
+        costStatusController.setOrder(order);
+        costStatusController.render();
+    }
+
+    private CostStatusController getCostStatusController() {
+        return (CostStatusController) costStatus.getAttribute("controller");
     }
 
     private void renderMarginWithDeadline() {
-        marginWithDeadline("lblRelative",
-                dashboardModel.getMarginWithDeadLine());
-        // FIXME: Calculate absolute days margin
-        marginWithDeadline("lblAbsolute", BigDecimal.ZERO);
-    }
 
-    private void marginWithDeadline(String key, BigDecimal value) {
-        Label label = (Label) gridMarginWithDeadline.getFellowIfAny(key);
-        if (label != null) {
-            value = value != null ? value : BigDecimal.ZERO;
-            label.setValue(String.format(_("%.2f days"), value.doubleValue()));
+        Integer absoluteMargin = dashboardModel.getAbsoluteMarginWithDeadLine();
+        BigDecimal relativeMargin = dashboardModel.getMarginWithDeadLine();
+
+        if ((lblAbsolute != null) && (absoluteMargin != null)) {
+            lblAbsolute
+                    .setValue(String
+                            .format(_("There is a margin of %d days with the project global deadline (%.2f %%)."),
+                                    absoluteMargin + 0,
+                                    relativeMargin.doubleValue() * 100));
+        } else {
+            lblAbsolute
+                    .setValue(_("It has not been defined a project deadline"));
         }
+
     }
 
     private void renderDeadlineViolation() {
         final String divId = "deadline-violation";
 
         PieChart<Number> pieChart = new PieChart<Number>(
-                _("Deadline Violation"));
+                _("Task deadline violations"));
         pieChart.addValue(_("On schedule"),
                 dashboardModel.getPercentageOfOnScheduleTasks());
         pieChart.addValue(_("Violated deadline"),
                 dashboardModel.getPercentageOfTasksWithViolatedDeadline());
         pieChart.addValue(_("No deadline"),
                 dashboardModel.getPercentageOfTasksWithNoDeadline());
-        renderChart(pieChart, divId);
+
+        // FIXME: Replace by more suitable colors
+        pieChart.addIntervalColors("red", "blue", "green");
+
+        renderPieChart(pieChart, divId);
+    }
+
+    /**
+     *
+     * Use this method to render a {@link PieChart}
+     *
+     * FIXME: jqplot4java doesn't include a method for changing the colors or a
+     * {@link PieChart}. The only way to do it is to add the colors to an
+     * Interval, generate the output Javascript code and replace the string
+     * 'intervalColors' by 'seriesColors'
+     *
+     * @param chart
+     * @param divId
+     */
+    private void renderPieChart(Chart<?> chart, String divId) {
+        String jsCode = JqPlotUtils.createJquery(chart, divId);
+        jsCode = jsCode.replace("intervalColors", "seriesColors");
+        Clients.evalJavaScript(jsCode);
     }
 
     private void renderChart(Chart<?> chart, String divId) {
@@ -156,59 +202,82 @@ public class DashboardController extends GenericForwardComposer {
         renderChart(barChart, divId);
     }
 
-    private void renderTasksSummary() {
-        Map<TaskStatusEnum, Integer> taskStatus = dashboardModel
-                .calculateTaskStatus();
+    private void renderEstimationAccuracy() {
+        final String divId = "estimation-accuracy";
 
-        taskStatus("lblTasksFinished", taskStatus.get(TaskStatusEnum.FINISHED));
-        taskStatus("lblTasksBlocked", taskStatus.get(TaskStatusEnum.BLOCKED));
-        taskStatus("lblTasksInProgress",
-                taskStatus.get(TaskStatusEnum.IN_PROGRESS));
-        taskStatus("lblTasksReadyToStart",
-                taskStatus.get(TaskStatusEnum.READY_TO_START));
+        BarChart<Integer> barChart;
+        barChart = new BarChart<Integer>("Estimation Accuracy");
+
+        barChart.setFillZero(true);
+        barChart.setHighlightMouseDown(true);
+        barChart.setStackSeries(false);
+        barChart.setBarMargin(30);
+
+        barChart.addSeries(new Serie("Tasks"));
+
+        EstimationAccuracy estimationAccuracyData = EstimationAccuracy
+                .create(dashboardModel);
+        barChart.setTicks(estimationAccuracyData.getTicks());
+        barChart.addValues(estimationAccuracyData.getValues());
+
+        barChart.getAxes().getXaxis()
+                .setLabel(_("Number of Tasks / % Deviation"));
+
+        renderChart(barChart, divId);
     }
 
-    private void taskStatus(String key, Integer value) {
-        Label label = (Label) gridTasksSummary.getFellowIfAny(key);
-        if (label != null) {
-            label.setValue(String.format(_("%d tasks"), value));
-        }
+    private String statusLegend(TaskStatusEnum status,
+            Map<TaskStatusEnum, Integer> taskStatus) {
+        return status + String.format(_(" (%d tasks)"), taskStatus.get(status));
     }
 
     private void renderTaskStatus() {
         final String divId = "task-status";
 
-        PieChart<Number> taskStatus = new PieChart<Number>(_("Task Status"));
-        taskStatus.addValue(_("Finished"),
+        Map<TaskStatusEnum, Integer> taskStatus = dashboardModel
+                .calculateTaskStatus();
+        PieChart<Number> taskStatusPieChart = new PieChart<Number>(
+                _("Task Status"));
+
+        taskStatusPieChart.addValue(
+                statusLegend(TaskStatusEnum.FINISHED, taskStatus),
                 dashboardModel.getPercentageOfFinishedTasks());
-        taskStatus.addValue(_("In progress"),
+        taskStatusPieChart.addValue(
+                statusLegend(TaskStatusEnum.IN_PROGRESS, taskStatus),
                 dashboardModel.getPercentageOfInProgressTasks());
-        taskStatus.addValue(_("Ready to start"),
+        taskStatusPieChart.addValue(
+                statusLegend(TaskStatusEnum.READY_TO_START, taskStatus),
                 dashboardModel.getPercentageOfReadyToStartTasks());
-        taskStatus.addValue(_("Blocked"),
+        taskStatusPieChart.addValue(
+                statusLegend(TaskStatusEnum.BLOCKED, taskStatus),
                 dashboardModel.getPercentageOfBlockedTasks());
-        renderChart(taskStatus, divId);
+
+        // FIXME: Replace by more suitable colors
+        taskStatusPieChart.addIntervalColors("red", "blue", "green", "yellow");
+
+        renderPieChart(taskStatusPieChart, divId);
     }
 
     private void renderGlobalProgress() {
-        GlobalProgress globalProgress = GlobalProgress.create();
+        GlobalProgressChart globalProgressChart = GlobalProgressChart.create();
 
         // Current values
-        globalProgress.current(GlobalProgress.CRITICAL_PATH_DURATION,
+        globalProgressChart.current(GlobalProgressChart.CRITICAL_PATH_DURATION,
                 dashboardModel.getCriticalPathProgressByDuration());
-        globalProgress.current(GlobalProgress.CRITICAL_PATH_HOURS,
+        globalProgressChart.current(GlobalProgressChart.CRITICAL_PATH_HOURS,
                 dashboardModel.getCriticalPathProgressByNumHours());
-        globalProgress.current(GlobalProgress.ALL_TASKS_HOURS,
+        globalProgressChart.current(GlobalProgressChart.ALL_TASKS_HOURS,
                 dashboardModel.getAdvancePercentageByHours());
         // Expected values
-        globalProgress.expected(GlobalProgress.CRITICAL_PATH_DURATION,
+        globalProgressChart.expected(
+                GlobalProgressChart.CRITICAL_PATH_DURATION,
                 dashboardModel.getExpectedCriticalPathProgressByDuration());
-        globalProgress.expected(GlobalProgress.CRITICAL_PATH_HOURS,
+        globalProgressChart.expected(GlobalProgressChart.CRITICAL_PATH_HOURS,
                 dashboardModel.getExpectedCriticalPathProgressByNumHours());
-        globalProgress.expected(GlobalProgress.ALL_TASKS_HOURS,
+        globalProgressChart.expected(GlobalProgressChart.ALL_TASKS_HOURS,
                 dashboardModel.getExpectedAdvancePercentageByHours());
 
-        globalProgress.render();
+        globalProgressChart.render();
     }
 
     private void showCharts() {
@@ -219,132 +288,6 @@ public class DashboardController extends GenericForwardComposer {
     private void hideCharts() {
         projectDashboardChartsDiv.setVisible(false);
         projectDashboardNoTasksWarningDiv.setVisible(true);
-    }
-
-    /**
-     *
-     * @author Diego Pino García <dpino@igalia.com>
-     *
-     */
-    static class GlobalProgress {
-
-        public static final String ALL_TASKS_HOURS = _("All tasks (hours)");
-
-        public static final String CRITICAL_PATH_HOURS = _("Critical path (hours)");
-
-        public static final String CRITICAL_PATH_DURATION = _("Critical path (duration)");
-
-        private final Map<String, BigDecimal> current = new LinkedHashMap<String, BigDecimal>();
-
-        private final Map<String, BigDecimal> expected = new LinkedHashMap<String, BigDecimal>();
-
-        private static List<Series> series = new ArrayList<Series>() {
-            {
-                add(Series.create(_("Current"), "#33c"));
-                add(Series.create(_("Expected"), "#c33"));
-            }
-        };
-
-        private GlobalProgress() {
-
-        }
-
-        public void current(String key, BigDecimal value) {
-            current.put(key, value);
-        }
-
-        public void expected(String key, BigDecimal value) {
-            expected.put(key, value);
-        }
-
-        public static GlobalProgress create() {
-            return new GlobalProgress();
-        }
-
-        public String getPercentages() {
-            return String.format("'[%s, %s]'",
-                    jsonifyPercentages(current.values()),
-                    jsonifyPercentages(expected.values()));
-        }
-
-        private String jsonifyPercentages(Collection<BigDecimal> array) {
-            List<String> result = new ArrayList<String>();
-
-            int i = 1;
-            for (BigDecimal each : array) {
-                result.add(String.format("[%.2f, %d]", each.doubleValue(), i++));
-            }
-            return String.format("[%s]", StringUtils.join(result, ","));
-        }
-
-        private String jsonify(Collection<?> list) {
-            Collection<String> result = new ArrayList<String>();
-            for (Object each : list) {
-                if (each.getClass() == String.class) {
-                    result.add(String.format("\"%s\"", each.toString()));
-                } else {
-                    result.add(String.format("%s", each.toString()));
-                }
-            }
-            return String.format("'[%s]'", StringUtils.join(result, ','));
-        }
-
-        public String getSeries() {
-            return jsonify(series);
-        }
-
-        /**
-         * The order of the ticks is taken from the keys in current
-         *
-         * @return
-         */
-        public String getTicks() {
-            return jsonify(current.keySet());
-        }
-
-        public void render() {
-            String command = String.format(
-                    "global_progress.render(%s, %s, %s);", getPercentages(),
-                    getTicks(), getSeries());
-            Clients.evalJavaScript(command);
-        }
-
-    }
-
-    /**
-     *
-     * @author Diego Pino García <dpino@igalia.com>
-     *
-     */
-    static class Series {
-
-        private String label;
-
-        private String color;
-
-        private Series() {
-
-        }
-
-        public static Series create(String label) {
-            Series series = new Series();
-            series.label = label;
-            return series;
-        }
-
-        public static Series create(String label, String color) {
-            Series series = new Series();
-            series.label = label;
-            series.color = color;
-            return series;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("{\"label\": \"%s\", \"color\": \"%s\"}",
-                    label, color);
-        }
-
     }
 
     /**
@@ -369,9 +312,53 @@ public class DashboardController extends GenericForwardComposer {
         private Map<Interval, Integer> getData() {
             if (taskCompletationData == null) {
                 taskCompletationData = dashboardModel
-                        .calculateTaskCompletation();
+                        .calculateTaskCompletion();
             }
             return taskCompletationData;
+        }
+
+        public String[] getTicks() {
+            Set<Interval> intervals = getData().keySet();
+            String[] result = new String[intervals.size()];
+            int i = 0;
+            for (Interval each : intervals) {
+                result[i++] = each.toString();
+
+            }
+            return result;
+        }
+
+        public Collection<Integer> getValues() {
+            return getData().values();
+        }
+
+    }
+
+    /**
+     *
+     * @author Diego Pino García<dpino@igalia.com>
+     *
+     */
+    static class EstimationAccuracy {
+
+        private final IDashboardModel dashboardModel;
+
+        private Map<Interval, Integer> estimationAccuracyData;
+
+        private EstimationAccuracy(IDashboardModel dashboardModel) {
+            this.dashboardModel = dashboardModel;
+        }
+
+        public static EstimationAccuracy create(IDashboardModel dashboardModel) {
+            return new EstimationAccuracy(dashboardModel);
+        }
+
+        private Map<Interval, Integer> getData() {
+            if (estimationAccuracyData == null) {
+                estimationAccuracyData = dashboardModel
+                        .calculateEstimationAccuracy();
+            }
+            return estimationAccuracyData;
         }
 
         public String[] getTicks() {

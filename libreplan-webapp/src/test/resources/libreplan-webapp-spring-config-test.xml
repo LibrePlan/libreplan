@@ -85,6 +85,9 @@
                     org/libreplan/business/planner/entities/AdvanceConsolidations.hbm.xml
                 </value>
                 <value>
+                    org/libreplan/business/planner/entities/SubcontractorCommunication.hbm.xml
+                </value>
+                <value>
                     org/libreplan/business/scenarios/entities/Scenarios.hbm.xml
                 </value>
                 <value>

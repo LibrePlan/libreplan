@@ -29,7 +29,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
+import org.libreplan.business.advance.entities.AdvanceType;
+import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
+import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.ITaskPositionConstrained;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.Task;
@@ -93,6 +98,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private Datebox startDateBox;
 
     private Datebox endDateBox;
+
+    private Datebox deadLineDateBox;
 
     private Combobox startConstraintTypes;
 
@@ -163,6 +170,12 @@ public class TaskPropertiesController extends GenericForwardComposer {
         TaskElement topTask = context.getMapper().findAssociatedDomainObject(
                 findTopMostTask(context));
         return topTask.getParent().getOrderElement().getOrder();
+    }
+
+    private OrderElement findOrderElementIn(IContextWithPlannerTask<TaskElement> context) {
+        TaskElement topTask = context.getMapper().findAssociatedDomainObject(
+                findTopMostTask(context));
+        return topTask.getOrderElement();
     }
 
     private org.zkoss.ganttz.data.Task findTopMostTask(
@@ -325,9 +338,20 @@ public class TaskPropertiesController extends GenericForwardComposer {
                         restoreOldState();
                         editTaskController.showNonPermitChangeResourceAllocationType();
                     } else {
-                        changeResourceAllocationType(oldState, newState);
-                        editTaskController.selectAssignmentTab(lbResourceAllocationType
+                        if(newState.equals(ResourceAllocationTypeEnum.SUBCONTRACT) && checkCompatibleAllocation()){
+                            changeResourceAllocationType(oldState, newState);
+                            editTaskController.selectAssignmentTab(lbResourceAllocationType
                                 .getSelectedIndex() + 1);
+                        }else{
+                            try {
+                                restoreOldState();
+                                Messagebox.show(_("This resource allocation type is incompatible. The task has an associated order element which has a progress that is of type subcontractor. "),
+                                        _("Error"), Messagebox.OK , Messagebox.ERROR);
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
                 if (oldState == null) {
@@ -347,6 +371,30 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
         });
 
+    }
+
+    private boolean checkCompatibleAllocation(){
+        OrderElement orderElement = null;
+        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR.getType();
+
+        if (this.currentContext  != null) {
+            orderElement = findOrderElementIn(this.currentContext );
+        } else {
+            orderElement = this.currentTaskElement.getOrderElement();
+        }
+        if(orderElement.getAdvanceAssignmentByType(advanceType) != null){
+                return false;
+        }
+        try {
+            DirectAdvanceAssignment newAdvanceAssignment = DirectAdvanceAssignment
+                    .create();
+            newAdvanceAssignment.setAdvanceType(advanceType);
+            orderElement.checkAncestorsNoOtherAssignmentWithSameAdvanceType(
+                    orderElement.getParent(), newAdvanceAssignment);
+        } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+            return false;
+        }
+        return true;
     }
 
     private boolean thereIsTransition(ResourceAllocationTypeEnum newState) {
@@ -638,6 +686,14 @@ public class TaskPropertiesController extends GenericForwardComposer {
         getGanttTaskDTO().beginDate = newStart.toDateTimeAtStartOfDay()
                 .toDate();
         Util.reloadBindings(startDateBox);
+    }
+
+    public TaskEditFormComposer getTaskEditFormComposer() {
+        return taskEditFormComposer;
+    }
+
+    public void refreshTaskDeadline() {
+        Util.reloadBindings(deadLineDateBox);
     }
 
     public String getMoneyFormat() {

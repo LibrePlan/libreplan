@@ -65,4 +65,6 @@ public interface ISettingsModel {
 
     String getLoginName();
 
+    boolean isBound();
+
 }

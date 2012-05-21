@@ -34,7 +34,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.entities.UserRole;
 
 /**
- * It enumerates the mandatory users (login names) for running the application.<br />
+ * It enumerates the mandatory users (usernames) for running the application.<br />
  *
  * <code>ADMIN</code> user will be always enabled, however <code>USER</code>,
  * <code>WSREADER</code> and <code>WSWRITER</code> could be disabled in

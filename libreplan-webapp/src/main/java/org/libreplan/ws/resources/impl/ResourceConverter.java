@@ -21,8 +21,7 @@
 
 package org.libreplan.ws.resources.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -152,13 +151,11 @@ public class ResourceConverter {
         CriterionSatisfactionDTO criterionSatisfactionDTO, Resource resource) {
 
         if (StringUtils.isBlank(criterionSatisfactionDTO.criterionTypeName)) {
-            throw new ValidationException(
-                _("criterion type name not specified"));
+            throw new ValidationException("criterion type name not specified");
         }
 
         if (StringUtils.isBlank(criterionSatisfactionDTO.criterionName)) {
-            throw new ValidationException(
-                _("criterion name not specified"));
+            throw new ValidationException("criterion name not specified");
         }
 
         try {
@@ -203,7 +200,7 @@ public class ResourceConverter {
                 throw new InstanceNotFoundRecoverableErrorException(
                         RESOURCE_CALENDAR_ENTITY_TYPE, e.getKey().toString());
         } catch (MultipleInstancesException e) {
-            throw new ValidationException(_(
+            throw new ValidationException(MessageFormat.format(
                     "there exist multiple resource calendars with name {0}",
                     calendarCode));
         }
@@ -221,7 +218,7 @@ public class ResourceConverter {
                 calendar.setCode(calendarDTO.code);
             } else {
                 throw new ValidationException(
-                        _("missing code in the resource calendar"));
+                        "missing code in the resource calendar");
             }
 
             if (calendarDTO.capacity != null) {
@@ -250,8 +247,7 @@ public class ResourceConverter {
         ResourcesCostCategoryAssignmentDTO assignmentDTO, Resource resource) {
 
         if (StringUtils.isBlank(assignmentDTO.costCategoryName)) {
-            throw new ValidationException(
-                _("cost category name not specified"));
+            throw new ValidationException("cost category name not specified");
         }
 
         try {
@@ -292,8 +288,8 @@ public class ResourceConverter {
 
         } else {
 
-            throw new ValidationException(
-                _("Incompatible update: stored resource is not of type: {0}",
+            throw new ValidationException(MessageFormat.format(
+                    "Incompatible update: stored resource is not of type: {0}",
                     resourceDTO.getEntityType()));
         }
 
@@ -406,8 +402,8 @@ public class ResourceConverter {
         if (!(resourceDTO instanceof MachineDTO) &&
             !(resourceDTO instanceof WorkerDTO)) {
 
-            throw new ValidationException(
-                _("Service does not manage resource of type: {0}",
+            throw new ValidationException(MessageFormat.format(
+                    "Service does not manage resource of type: {0}",
                     resourceDTO.getEntityType()));
 
         }

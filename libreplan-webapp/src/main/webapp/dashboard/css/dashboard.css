@@ -1,0 +1,64 @@
+.dashboard-label {
+    color: #666;
+    font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+}
+
+.dashboard-title {
+    color: #666;
+    font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.dashboard-label-remarked {
+    color: #666;
+    font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.dashboard-label-remarked.positive,
+.dashboard-label-remarked.negative {
+    background-position: 100%;
+    background-repeat: no-repeat;
+    padding-right: 25px;
+    background-size: 25px;
+}
+
+.dashboard-label-remarked.negative {
+    background-image: url('../img/value-meaning-negative.png');
+}
+
+.dashboard-label-remarked.positive {
+    background-image: url('../img/value-meaning-positive.png');
+}
+
+.dashboard-box {
+    border: solid 2px #9B9B9B;
+    background: #fffdf6;
+    box-shadow: 2px 2px 5px #AAA;
+}
+
+.jqplot-title {
+   font-size: 12px !important;
+   font-weight: bold;
+}
+
+.jqplot-legend {
+    font-size: 10px !important;
+}
+
+.jqplot-xaxis-label {
+    font-size: 12px !important;
+}
+
+.jqplot-yaxis {
+    font-size: 11px !important;
+}
+
+.jqplot-axis .jqplot-yaxis-tick {
+    white-space: normal;
+    width: 80px;
+}

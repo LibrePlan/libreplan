@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,9 +29,9 @@ import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
+import org.libreplan.business.resources.daos.IWorkerDAO;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.daos.IUserDAO;
-import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
@@ -45,8 +45,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link User}
+ *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -60,14 +62,16 @@ public class UserModel implements IUserModel {
     private IConfigurationDAO configurationDAO;
 
     @Autowired
-    private IOrderAuthorizationDAO orderAuthorizationDAO;
+    private IDBPasswordEncoderService dbPasswordEncoderService;
 
     @Autowired
-    private IDBPasswordEncoderService dbPasswordEncoderService;
+    private IWorkerDAO workerDAO;
 
     private User user;
 
     private String clearNewPassword;
+
+    private Worker unboundWorker;
 
     @Override
     @Transactional(readOnly = true)
@@ -114,6 +118,11 @@ public class UserModel implements IUserModel {
 
         user.validate();
         userDAO.save(user);
+
+        if (unboundWorker != null) {
+            unboundWorker.setUser(null);
+            workerDAO.save(unboundWorker);
+        }
     }
 
     @Override
@@ -124,6 +133,7 @@ public class UserModel implements IUserModel {
     @Override
     public void initCreate() {
         this.user = User.create();
+        this.unboundWorker = null;
     }
 
     @Override
@@ -132,6 +142,7 @@ public class UserModel implements IUserModel {
         Validate.notNull(user);
         this.user = getFromDB(user);
         this.setClearNewPassword(null);
+        this.unboundWorker = null;
     }
 
     @Transactional(readOnly = true)
@@ -225,20 +236,13 @@ public class UserModel implements IUserModel {
 
     @Override
     @Transactional
-    public void confirmRemove(User user)
-        throws InstanceNotFoundException {
-        List<OrderAuthorization> orderAuthorizations = getReferencedByOtherEntities(user);
-        if (!orderAuthorizations.isEmpty()) {
-            for (OrderAuthorization orderAuthorization : orderAuthorizations) {
-                orderAuthorizationDAO.remove(orderAuthorization.getId());
-            }
+    public void confirmRemove(User user) throws InstanceNotFoundException {
+        Worker worker = user.getWorker();
+        if (worker != null) {
+            worker.setUser(null);
+            workerDAO.save(worker);
         }
-        userDAO.remove(user.getId());
-    }
-
-    @Transactional(readOnly = true)
-    public List<OrderAuthorization> getReferencedByOtherEntities(User user){
-       return userDAO.getOrderAuthorizationsByUser(user);
+        userDAO.remove(user);
     }
 
     @Transactional(readOnly = true)
@@ -253,6 +257,12 @@ public class UserModel implements IUserModel {
     public boolean isLDAPRolesBeingUsed() {
         return configurationDAO.getConfiguration().getLdapConfiguration()
                 .getLdapSaveRolesDB();
+    }
+
+    @Override
+    public void unboundResource() {
+        unboundWorker = user.getWorker();
+        user.setWorker(null);
     }
 
 }

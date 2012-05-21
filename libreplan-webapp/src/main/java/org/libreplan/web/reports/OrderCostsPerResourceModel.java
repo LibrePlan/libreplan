@@ -27,17 +27,21 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -45,7 +49,10 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
+import org.libreplan.business.reports.dtos.CostExpenseSheetDTO;
+import org.libreplan.business.reports.dtos.OrderCostMasterDTO;
 import org.libreplan.business.reports.dtos.OrderCostsPerResourceDTO;
+import org.libreplan.business.reports.dtos.ReportPerOrderElementDTO;
 import org.libreplan.business.resources.daos.ICriterionTypeDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
@@ -111,51 +118,146 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     @Override
     @Transactional(readOnly = true)
-    public JRDataSource getOrderReport(final List<Order> orders,
-            Date startingDate,
+    public JRDataSource getOrderReport(final List<Order> orders, Date startingDate,
             Date endingDate, List<Label> labels, List<Criterion> criterions) {
 
         reattachLabels();
 
+        // list to the master report
+        List<OrderCostMasterDTO> listOrderCostMasterDTO = new ArrayList<OrderCostMasterDTO>();
+
+        // list to the WorkReportLine subreport
         List<OrderCostsPerResourceDTO> workingHoursPerWorkerList = orderDAO
-                .getOrderCostsPerResource(orders, startingDate, endingDate,
-                        criterions);
-
-        workingHoursPerWorkerList = filteredOrderElementsByLabels(
-                workingHoursPerWorkerList, labels);
+                .getOrderCostsPerResource(orders, startingDate, endingDate, criterions);
+        filteredOrderElementsByLabels(workingHoursPerWorkerList, labels);
         Collections.sort(workingHoursPerWorkerList);
+        Map<OrderElement, List<OrderCostsPerResourceDTO>> mapWRL = groupWorkReportLinesByOrderElment(workingHoursPerWorkerList);
 
-        if (workingHoursPerWorkerList.isEmpty()) {
-            Worker emptyWorker = createFictitiousWorker();
-            WorkReportLine wrl = createEmptyWorkReportLine(emptyWorker);
+        // list to the ExpenseSheet subreport
+        List<CostExpenseSheetDTO> costExpenseSheetList = orderDAO.getCostExpenseSheet(orders,
+                startingDate, endingDate, criterions);
+        filteredOrderElementsByLabels(costExpenseSheetList, labels);
+        Map<OrderElement, List<CostExpenseSheetDTO>> mapES = groupExpensesByOrderElment(costExpenseSheetList);
 
-            if (orders.isEmpty()) {
-                Order order = Order.create();
-                order.setName(_("All projects"));
-                workingHoursPerWorkerList.add(createEmptyDTO(order,
-                        emptyWorker, wrl));
-            } else {
-                for (Order order : orders) {
-                workingHoursPerWorkerList.add(createEmptyDTO(order,
-                        emptyWorker, wrl));
+        Set<OrderElement> listOrderElement = new HashSet<OrderElement>(mapWRL.keySet());
+        listOrderElement.addAll(mapES.keySet());
+
+        if (listOrderElement.isEmpty()) {
+            listOrderCostMasterDTO.add(createEmptyOrderCostMasterDTO());
+        } else {
+            for (OrderElement orderElement : listOrderElement) {
+                List<OrderCostsPerResourceDTO> listWorkReportLineDTO = mapWRL.get(orderElement);
+                if (listWorkReportLineDTO == null || listWorkReportLineDTO.isEmpty()) {
+                    Order order = Order.create();
+                    order.setName(_("All projects"));
+                    listWorkReportLineDTO = createEmptyWorkReportLineList(order);
                 }
+
+                JRDataSource dsWRL = new JRBeanCollectionDataSource(listWorkReportLineDTO);
+
+                List<CostExpenseSheetDTO> listExpenseSheetDTO = mapES.get(orderElement);
+                JRDataSource dsES = null;
+                if (listExpenseSheetDTO != null && !listExpenseSheetDTO.isEmpty()) {
+                    dsES = new JRBeanCollectionDataSource(listExpenseSheetDTO);
+                }
+
+                OrderCostMasterDTO orderCostMasterDTO = new OrderCostMasterDTO(orderElement, dsWRL,
+                        dsES);
+                initOrderInOrderCostMasterDTO(orderCostMasterDTO, listWorkReportLineDTO,
+                        listExpenseSheetDTO);
+                listOrderCostMasterDTO.add(orderCostMasterDTO);
             }
         }
-
-        if (workingHoursPerWorkerList != null && !workingHoursPerWorkerList.isEmpty()) {
-            return new JRBeanCollectionDataSource(workingHoursPerWorkerList);
+        if (listOrderCostMasterDTO != null && !listOrderCostMasterDTO.isEmpty()) {
+            Collections.sort(listOrderCostMasterDTO);
+            return new JRBeanCollectionDataSource(listOrderCostMasterDTO);
         } else {
             return new JREmptyDataSource();
         }
     }
 
-    private OrderCostsPerResourceDTO createEmptyDTO(Order order,
+    private void initOrderInOrderCostMasterDTO(OrderCostMasterDTO orderCostMasterDTO,
+            List<OrderCostsPerResourceDTO> listWorkReportLineDTO,
+            List<CostExpenseSheetDTO> listExpenseSheetDTO) {
+        if (listExpenseSheetDTO != null && !listExpenseSheetDTO.isEmpty()) {
+            Order order = listExpenseSheetDTO.get(0).getOrder();
+            orderCostMasterDTO.setOrderCode(order.getCode());
+            orderCostMasterDTO.setOrderName(order.getName());
+        } else if (listWorkReportLineDTO != null && !listWorkReportLineDTO.isEmpty()) {
+            orderCostMasterDTO.setOrderCode(listWorkReportLineDTO.get(0).getOrderCode());
+            orderCostMasterDTO.setOrderName(listWorkReportLineDTO.get(0).getOrderName());
+        }
+    }
+
+    private Map<OrderElement, List<OrderCostsPerResourceDTO>> groupWorkReportLinesByOrderElment(
+            List<OrderCostsPerResourceDTO> workingHoursPerWorkerList) {
+        Map<OrderElement, List<OrderCostsPerResourceDTO>> mapWRL = new HashMap<OrderElement, List<OrderCostsPerResourceDTO>>();
+        for (OrderCostsPerResourceDTO dto : workingHoursPerWorkerList) {
+            OrderElement orderElement = dto.getOrderElement();
+            if (mapWRL.get(orderElement) == null) {
+                mapWRL.put(orderElement, new ArrayList<OrderCostsPerResourceDTO>());
+            }
+            mapWRL.get(orderElement).add(dto);
+        }
+        return mapWRL;
+    }
+
+    private Map<OrderElement, List<CostExpenseSheetDTO>> groupExpensesByOrderElment(
+            List<CostExpenseSheetDTO> costExpenseSheetList) {
+        Map<OrderElement, List<CostExpenseSheetDTO>> mapES = new HashMap<OrderElement, List<CostExpenseSheetDTO>>();
+        for (CostExpenseSheetDTO dto : costExpenseSheetList) {
+            OrderElement orderElement = dto.getOrderElement();
+            if (mapES.get(orderElement) == null) {
+                mapES.put(orderElement, new ArrayList<CostExpenseSheetDTO>());
+            }
+            mapES.get(orderElement).add(dto);
+        }
+        return mapES;
+    }
+
+    private List<OrderCostsPerResourceDTO> createEmptyWorkReportLineList(Order order) {
+        List<OrderCostsPerResourceDTO> listWorkReportLineDTO = new ArrayList<OrderCostsPerResourceDTO>();
+        Worker emptyWorker = createFictitiousWorker();
+        WorkReportLine wrl = createEmptyWorkReportLine(emptyWorker);
+        listWorkReportLineDTO.add(createEmptyOrderCostsPerResourceDTO(order, emptyWorker, wrl));
+        return listWorkReportLineDTO;
+    }
+
+    private OrderCostsPerResourceDTO createEmptyOrderCostsPerResourceDTO(Order order,
             Worker emptyWorker, WorkReportLine wrl) {
-        OrderCostsPerResourceDTO emptyDTO = new OrderCostsPerResourceDTO(
-                emptyWorker, wrl);
+        OrderCostsPerResourceDTO emptyDTO = new OrderCostsPerResourceDTO(emptyWorker, wrl);
         emptyDTO.setOrderName(order.getName());
         emptyDTO.setOrderCode(order.getCode());
         emptyDTO.setCost(new BigDecimal(0));
+        return emptyDTO;
+    }
+
+    private List<CostExpenseSheetDTO> createEmptyExpenseSheetLineList(Order order) {
+        List<CostExpenseSheetDTO> listES = new ArrayList<CostExpenseSheetDTO>();
+        listES.add(createEmptyExpenseSheetDTO(order));
+        return listES;
+    }
+
+    private CostExpenseSheetDTO createEmptyExpenseSheetDTO(OrderElement orderElement) {
+        ExpenseSheetLine emptyBean = ExpenseSheetLine.create(BigDecimal.ZERO, "Expense concept",
+                new LocalDate(), orderElement);
+        CostExpenseSheetDTO emptyDTO = new CostExpenseSheetDTO(emptyBean);
+        return emptyDTO;
+    }
+
+    private OrderCostMasterDTO createEmptyOrderCostMasterDTO() {
+        // create empty order
+        Order order = Order.create();
+        order.setName(_("All projects"));
+
+        // create empty subreport to expense sheets
+        JRDataSource emptyES = new JRBeanCollectionDataSource(
+                createEmptyExpenseSheetLineList(order));
+
+        // create empty subreport to work report lines
+        JRDataSource emptyWRL = new JRBeanCollectionDataSource(createEmptyWorkReportLineList(order));
+
+        OrderCostMasterDTO emptyDTO = new OrderCostMasterDTO(order, emptyWRL, emptyES);
         return emptyDTO;
     }
 
@@ -227,22 +329,19 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
     }
 
     @Transactional(readOnly = true)
-    private List<OrderCostsPerResourceDTO> filteredOrderElementsByLabels(
-            List<OrderCostsPerResourceDTO> workingHoursPerWorkerList,
-            List<Label> labels) {
-        if (labels != null && !labels.isEmpty()) {
-            List<OrderCostsPerResourceDTO> result = new ArrayList<OrderCostsPerResourceDTO>();
-            for (OrderCostsPerResourceDTO dto : workingHoursPerWorkerList) {
-                List<Label> inheritedLabels = getInheritedLabels(dto
-                        .getOrderElement());
+    private void filteredOrderElementsByLabels(
+            List<? extends ReportPerOrderElementDTO> listExpenses, List<Label> labels) {
+        List<ReportPerOrderElementDTO> listExpensesCopy = new ArrayList<ReportPerOrderElementDTO>(
+                listExpenses);
 
-                if (containsAny(labels, inheritedLabels)) {
-                    result.add(dto);
+        if (labels != null && !labels.isEmpty()) {
+            for (ReportPerOrderElementDTO dto : listExpensesCopy) {
+                List<Label> inheritedLabels = getInheritedLabels(dto.getOrderElement());
+
+                if (!containsAny(labels, inheritedLabels)) {
+                    listExpenses.remove(dto);
                 }
             }
-            return result;
-        } else {
-            return workingHoursPerWorkerList;
         }
     }
 
@@ -324,8 +423,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
         }
     }
 
-    private static Set<Criterion> getDirectCriterions(
-            CriterionType criterionType) {
+    private static Set<Criterion> getDirectCriterions(CriterionType criterionType) {
         Set<Criterion> criterions = new HashSet<Criterion>();
         for (Criterion criterion : criterionType.getCriterions()) {
             if (criterion.getParent() == null) {
@@ -346,8 +444,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
     }
 
     private List<CriterionType> getCriterionTypes() {
-        return criterionTypeDAO
-                .getCriterionTypesByResources(applicableResources);
+        return criterionTypeDAO.getCriterionTypesByResources(applicableResources);
     }
 
     @Override
@@ -381,12 +478,10 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
             Iterator<Label> iterator = this.selectedLabels.iterator();
             if (iterator.hasNext()) {
                 this.selectedLabel = new String();
-                this.selectedLabel = this.selectedLabel.concat(iterator.next()
-                        .getName());
+                this.selectedLabel = this.selectedLabel.concat(iterator.next().getName());
             }
             while (iterator.hasNext()) {
-                this.selectedLabel = this.selectedLabel.concat(", "
-                        + iterator.next().getName());
+                this.selectedLabel = this.selectedLabel.concat(", " + iterator.next().getName());
             }
             hasChangeLabels = false;
         }
@@ -403,8 +498,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
             Iterator<Criterion> iterator = this.selectedCriterions.iterator();
             if (iterator.hasNext()) {
                 this.selectedCriteria = new String();
-                this.selectedCriteria = this.selectedCriteria.concat(iterator
-                        .next().getName());
+                this.selectedCriteria = this.selectedCriteria.concat(iterator.next().getName());
             }
             while (iterator.hasNext()) {
                 this.selectedCriteria = this.selectedCriteria.concat(", "
@@ -414,5 +508,4 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
         }
         return selectedCriteria;
     }
-
 }

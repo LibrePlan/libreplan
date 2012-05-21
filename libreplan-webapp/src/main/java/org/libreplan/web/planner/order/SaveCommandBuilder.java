@@ -53,6 +53,7 @@ import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.ISumChargedEffortRecalculator;
+import org.libreplan.business.orders.entities.ISumExpensesRecalculator;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
@@ -68,6 +69,8 @@ import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.DerivedDayAssignment;
 import org.libreplan.business.planner.entities.DerivedDayAssignmentsContainer;
 import org.libreplan.business.planner.entities.ResourceAllocation;
+import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -118,6 +121,7 @@ import org.zkoss.zul.Messagebox;
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class SaveCommandBuilder {
+
 
     private static final Log LOG = LogFactory.getLog(SaveCommandBuilder.class);
 
@@ -207,6 +211,9 @@ public class SaveCommandBuilder {
     @Autowired
     private ISumChargedEffortRecalculator sumChargedEffortRecalculator;
 
+    @Autowired
+    private ISumExpensesRecalculator sumExpensesRecalculator;
+
     private class SaveCommand implements ISaveCommand {
 
         private PlanningState state;
@@ -287,12 +294,18 @@ public class SaveCommandBuilder {
                                 }
                             });
                     dontPoseAsTransientObjectAnymore(state.getOrder());
+                    dontPoseAsTransientObjectAnymore(state.getOrder()
+                            .getEndDateCommunicationToCustomer());
                     state.getScenarioInfo().afterCommit();
 
                     if (state.getOrder()
                             .isNeededToRecalculateSumChargedEfforts()) {
                         sumChargedEffortRecalculator.recalculate(state
                                 .getOrder().getId());
+                    }
+
+                    if (state.getOrder().isNeededToRecalculateSumExpenses()) {
+                        sumExpensesRecalculator.recalculate(state.getOrder().getId());
                     }
 
                     fireAfterSave();
@@ -351,6 +364,7 @@ public class SaveCommandBuilder {
             state.synchronizeTrees();
 
             TaskGroup rootTask = state.getRootTask();
+
             if (rootTask != null) {
                 // This reattachment is needed to ensure that the root task in
                 // the state is the one associated to the transaction's session.
@@ -367,6 +381,7 @@ public class SaveCommandBuilder {
 
             updateTasksRelatedData();
             removeTasksToRemove();
+            loadDataAccessedWithNotPosedAsTransientInOrder(state.getOrder());
             loadDataAccessedWithNotPosedAsTransient(state.getOrder());
             if (state.getRootTask() != null) {
                 loadDependenciesCollectionsForTaskRoot(state.getRootTask());
@@ -383,6 +398,7 @@ public class SaveCommandBuilder {
         private void removeTaskElementsWithTaskSourceNull() {
             List<TaskElement> toRemove = taskElementDAO
                     .getTaskElementsNoMilestonesWithoutTaskSource();
+            List<TaskElement> parentsWithChangesToSave = new ArrayList<TaskElement>();
             for (TaskElement taskElement : toRemove) {
                 try {
                     taskElementDAO.remove(taskElement.getId());
@@ -390,7 +406,7 @@ public class SaveCommandBuilder {
                     TaskGroup parent = taskElement.getParent();
                     if (parent != null && !toRemove.contains(parent)) {
                         parent.remove(taskElement);
-                        taskElementDAO.save(parent);
+                        parentsWithChangesToSave.add(parent);
                     }
 
                     LOG.info("TaskElement removed because of TaskSource was null. "
@@ -400,6 +416,9 @@ public class SaveCommandBuilder {
                     // Maybe it was already removed before reaching this point
                     // so if it's not in the database there isn't any problem
                 }
+            }
+            for (TaskElement taskElement : parentsWithChangesToSave) {
+                taskElementDAO.save(taskElement);
             }
         }
 
@@ -804,6 +823,10 @@ public class SaveCommandBuilder {
             }
         }
 
+        private void loadDataAccessedWithNotPosedAsTransientInOrder(Order order) {
+            order.getEndDateCommunicationToCustomer().size();
+        }
+
         private void loadDataAccessedWithNotPosedAsTransient(
                 OrderElement orderElement) {
             orderElement.getDirectAdvanceAssignments().size();
@@ -978,6 +1001,7 @@ public class SaveCommandBuilder {
             }
             if (taskElement instanceof Task) {
                 dontPoseAsTransient(((Task) taskElement).getConsolidation());
+                dontPoseAsTransient(((Task) taskElement).getSubcontractedTaskData());
             }
             if (taskElement instanceof TaskGroup) {
                 ((TaskGroup) taskElement).dontPoseAsTransientPlanningData();
@@ -993,6 +1017,19 @@ public class SaveCommandBuilder {
                 } else {
                     dontPoseAsTransient(((NonCalculatedConsolidation) consolidation)
                             .getNonCalculatedConsolidatedValues());
+                }
+            }
+        }
+
+        private void dontPoseAsTransient(SubcontractedTaskData subcontractedTaskData) {
+            if (subcontractedTaskData != null) {
+                //dontPoseAsTransient - subcontratedTaskData
+                subcontractedTaskData.dontPoseAsTransientObjectAnymore();
+
+                for (SubcontractorDeliverDate subDeliverDate : subcontractedTaskData
+                        .getRequiredDeliveringDates()) {
+                    //dontPoseAsTransient - DeliverDate
+                    subDeliverDate.dontPoseAsTransientObjectAnymore();
                 }
             }
         }

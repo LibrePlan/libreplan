@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,8 +25,11 @@ package org.libreplan.business.resources.entities;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.Valid;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.User;
 
 /**
  * This class models a worker.
@@ -35,6 +38,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class Worker extends Resource {
 
@@ -89,6 +93,8 @@ public class Worker extends Resource {
     private String surname;
 
     private String nif;
+
+    private User user;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -200,6 +206,62 @@ public class Worker extends Resource {
             return firstName;
         }
         return firstName + " " + surname;
+    }
+
+    @Valid
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @AssertTrue(message = "User already bound to other worker")
+    public boolean checkUserNotBoundToOtherWorker() {
+        if (user == null || user.isNewObject()) {
+            return true;
+        }
+
+        IUserDAO userDAO = Registry.getUserDAO();
+        User foundUser = userDAO.findOnAnotherTransaction(user.getId());
+        if (foundUser == null) {
+            return true;
+        }
+
+        Worker worker = foundUser.getWorker();
+        if (worker == null) {
+            return true;
+        }
+
+        if (getId() == null) {
+            return false;
+        }
+
+        return getId().equals(worker.getId());
+    }
+
+    @AssertTrue(message = "Limiting resources cannot be bound to any user")
+    public boolean checkLimitingResourceNotBoundToUser() {
+        if (isLimitingResource()) {
+            return user == null;
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "Virtual resources cannot be bound to any user")
+    public boolean checkVirtualResourceNotBoundToUser() {
+        if (isVirtual()) {
+            return user == null;
+        }
+        return true;
+    }
+
+    public void updateUserData() {
+        if (user != null) {
+            user.setFirstName(firstName);
+            user.setLastName(surname);
+        }
     }
 
 }

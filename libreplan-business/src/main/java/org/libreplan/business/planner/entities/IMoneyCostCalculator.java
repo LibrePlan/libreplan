@@ -27,6 +27,7 @@ import org.libreplan.business.orders.entities.OrderElement;
  * Interface to calculate the money cost of a {@link TaskElement}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IMoneyCostCalculator {
 
@@ -44,16 +45,59 @@ public interface IMoneyCostCalculator {
      * the cost categories, the price used is the default one for the type of
      * hour.
      *
+     * In addition, it includes the costs because of expenses.
+     *
      * @param The
      *            {@link OrderElement} to calculate the money cost
-     * @return Money cost of the order element and all its children
+     * @return Money cost of the order element and all its children, including the
+     * costs because of hours and because of expenses.
      */
-    BigDecimal getMoneyCost(OrderElement orderElement);
+    BigDecimal getTotalMoneyCost(OrderElement orderElement);
 
     /**
      * Resets the map used to save cached values of money cost for each
      * {@link OrderElement}
      */
     void resetMoneyCostMap();
+
+    /**
+     * Returns the money cost of a {@link OrderElement} taking into account all
+     * its children.<br />
+     *
+     * It uses the {@link OrderElement} in order to calculate the cost using the
+     * following formula:<br />
+     * <tt>Sum of all the hours devoted to a task multiplied by the cost of
+     * each hour according to these parameters (type of hour, cost category of
+     * the resource, date of the work report)</tt><br />
+     *
+     * If there is not relationship between resource and type of hour through
+     * the cost categories, the price used is the default one for the type of
+     * hour.
+     *
+     * @param The
+     *            {@link OrderElement} to calculate the money cost according
+     *            to the hours
+     * @return Money cost of the order element and all its children
+     */
+    BigDecimal getHoursMoneyCost(OrderElement orderElement);
+
+    /**
+     * Returns the money cost of a {@link OrderElement} taking into account all
+     * its children.<br />
+     *
+     * It uses the {@link OrderElement} in order to calculate the cost using the
+     * following formula:<br />
+     * <tt>Sum of its direct expenses and its indirect expenses according to its
+     *  relationship with @{SumExpenses}
+     *
+     * If there is not relationship between orderElement and any SumExpenses
+     * the cost will be zero.
+     *
+     * @param The
+     *            {@link OrderElement} to calculate the money cost according to
+     *            the expenses.
+     * @return Money cost of the order element and all its children
+     */
+    BigDecimal getExpensesMoneyCost(OrderElement orderElement);
 
 }

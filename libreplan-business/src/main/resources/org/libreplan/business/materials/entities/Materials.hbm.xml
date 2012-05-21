@@ -68,7 +68,7 @@
         column="last_material_sequence_code" />
 
     <!-- Indexed the other side -->
-    <set name="subcategories" inverse="true" cascade="all-delete-orphan">
+    <set name="subcategories" inverse="true" cascade="all-delete-orphan" batch-size="10">
         <key column="parent_id"/>
         <one-to-many class="MaterialCategory"/>
     </set>
@@ -80,7 +80,7 @@
         index="idx_material_category_on_parent"/>
 
     <!-- Indexed the other side -->
-    <set name="materials" inverse="true" cascade="all-delete-orphan">
+    <set name="materials" inverse="true" cascade="all-delete-orphan" batch-size="10">
         <key column="category_id"/>
         <one-to-many class="Material"/>
     </set>

@@ -21,30 +21,30 @@
             column="dirty_last_advance_measurement_for_spreading" />
 
         <!-- Indexed the other side -->
-        <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
+        <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10">
             <key column="direct_order_element_id" />
             <one-to-many class="org.libreplan.business.advance.entities.DirectAdvanceAssignment" />
         </set>
 
-        <set name="labels" table="order_element_label" cascade="none">
+        <set name="labels" table="order_element_label" cascade="none" batch-size="10">
             <key column="order_element_id" not-null="true"/>
             <many-to-many column="label_id" class="org.libreplan.business.labels.entities.Label"/>
         </set>
 
         <!-- Indexed the other side -->
-        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
+        <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10">
             <key column="order_element_id" not-null="false"></key>
             <one-to-many class="org.libreplan.business.requirements.entities.CriterionRequirement"/>
         </set>
 
         <!-- Indexed the other side -->
-        <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
+        <set name="materialAssignments" cascade="all-delete-orphan" inverse="true" batch-size="10">
             <key column="order_element_id" not-null="true" />
             <one-to-many class="org.libreplan.business.materials.entities.MaterialAssignment" />
         </set>
 
         <!--  Indexed the other side -->
-        <set name="taskQualityForms" cascade="all-delete-orphan" inverse="true">
+        <set name="taskQualityForms" cascade="all-delete-orphan" inverse="true" batch-size="10">
             <key column="order_element_id" not-null="true" />
             <one-to-many class="org.libreplan.business.qualityforms.entities.TaskQualityForm" />
         </set>
@@ -77,6 +77,9 @@
         <one-to-one name="sumChargedEffort" class="SumChargedEffort"
             cascade="delete" property-ref="orderElement" />
 
+        <one-to-one name="sumExpenses" class="SumExpenses"
+            cascade="delete" property-ref="orderElement" />
+
         <joined-subclass name="OrderLineGroup"  table="order_line_group">
             <key column="order_element_id"></key>
 
@@ -88,7 +91,7 @@
             </list>
 
             <!-- Indexed the other side -->
-            <set name="indirectAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
+            <set name="indirectAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10">
                 <key column="indirect_order_element_id" />
                 <one-to-many class="org.libreplan.business.advance.entities.IndirectAdvanceAssignment" />
             </set>
@@ -129,7 +132,7 @@
                 <many-to-one name="calendar" column="base_calendar_id" cascade="none"
                     class="org.libreplan.business.calendars.entities.BaseCalendar"/>
 
-                <set name="orderAuthorizations" cascade="all-delete-orphan" inverse="true" >
+                <set name="orderAuthorizations" cascade="all-delete-orphan" inverse="true" batch-size="10">
                     <key column="order_id" />
                     <one-to-many class="org.libreplan.business.users.entities.OrderAuthorization" />
                 </set>
@@ -145,6 +148,22 @@
                 <one-to-one name="filmingProgress" access="field" cascade="delete"
                     class="org.libreplan.business.filmingprogress.entities.FilmingProgress" />
 
+                <set name="customerCommunications" cascade="delete-orphan" inverse="true" >
+                    <key column="order_id" />
+                    <one-to-many class="org.libreplan.business.externalcompanies.entities.CustomerCommunication" />
+                </set>
+
+		        <set name="deliveringDates" inverse="false" cascade="all,delete-orphan" access="field"
+	                sort="org.libreplan.business.externalcompanies.entities.DeliverDateComparator">
+	                    <key column="order_id" />
+	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.DeadlineCommunication" />
+                </set>
+
+				<set name="endDateCommunicationToCustomer" inverse="false" cascade="all,delete-orphan" access="field"
+	                sort="org.libreplan.business.externalcompanies.entities.EndDateCommunicationComparator">
+	                    <key column="order_id" />
+	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.EndDateCommunication" />
+                </set>
             </joined-subclass>
 
         </joined-subclass>
@@ -153,7 +172,7 @@
             <key column="order_element_id"></key>
 
             <!-- Indexed the other side -->
-            <set name="hoursGroups" access="field" cascade="all,delete-orphan" inverse="true">
+            <set name="hoursGroups" access="field" cascade="all,delete-orphan" inverse="true" batch-size="10">
                 <key column="parent_order_line" not-null="false"></key>
                 <one-to-many class="HoursGroup" />
             </set>
@@ -187,7 +206,7 @@
         <property name="fixedPercentage" column="fixed_percentage" access="field" />
 
         <!-- Indexed the other side -->
-        <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true">
+        <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true" batch-size="10">
             <key column="hours_group_id" not-null="false"></key>
             <one-to-many class="org.libreplan.business.requirements.entities.CriterionRequirement"/>
         </set>
@@ -232,7 +251,7 @@
         <one-to-one name="task" class="org.libreplan.business.planner.entities.TaskElement"
             constrained="true" cascade="delete" access="field" lazy="false"/>
 
-        <set name="hoursGroups" table="task_source_hours_groups" cascade="none" inverse="false" access="field">
+        <set name="hoursGroups" table="task_source_hours_groups" cascade="none" inverse="false" access="field" batch-size="10">
             <key column="task_source_id"></key>
             <many-to-many class="HoursGroup" column="hours_group_id"/>
         </set>
@@ -255,6 +274,21 @@
         <property name="indirectChargedEffort" access="field"
             column="indirect_charged_effort"
             type="org.libreplan.business.workingday.hibernate.EffortDurationType" />
+    </class>
+
+    <class name="SumExpenses" table="sum_expenses">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <many-to-one name="orderElement" column="order_element_id" cascade="none" unique="true"
+            class="OrderElement" />
+
+        <property name="totalDirectExpenses" access="field" column="total_direct_expenses"/>
+        <property name="totalIndirectExpenses" access="field" column="total_indirect_expenses"/>
     </class>
 
 </hibernate-mapping>

@@ -21,10 +21,13 @@
 
 package org.libreplan.web.orders;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
@@ -129,6 +132,16 @@ public interface IOrderModel extends IIntegrationEntityModel {
     void useSchedulingDataForCurrentScenario(Order order);
 
     PlanningState getPlanningState();
+
+    boolean hasImputedExpenseSheets(OrderElement order);
+
+    void removeAskedEndDate(EndDateCommunication endDate);
+
+    SortedSet<EndDateCommunication> getEndDates();
+
+    void addAskedEndDate(Date value);
+
+    boolean alreadyExistsRepeatedEndDate(Date value);
 
     boolean isAnyTaskWithConstraint(PositionConstraintType type);
 

@@ -21,8 +21,6 @@
 
 package org.libreplan.ws.labels.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -100,7 +98,7 @@ public final class LabelConverter {
 
             /* Step 1.1: requires each label DTO to have a code. */
             if (StringUtils.isBlank(labelDTO.code)) {
-                throw new ValidationException(_("missing code in a label"));
+                throw new ValidationException("missing code in a label");
             }
 
             try {

@@ -53,7 +53,9 @@ import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalcula
 import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Registry;
+import org.libreplan.business.planner.entities.AssignedEffortForResource.IAssignedEffortForResource;
 import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
+import org.libreplan.business.planner.entities.allocationalgorithms.AllocationModification;
 import org.libreplan.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
 import org.libreplan.business.planner.entities.allocationalgorithms.Distributor;
 import org.libreplan.business.planner.entities.allocationalgorithms.EffortModification;
@@ -83,7 +85,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
  *         Resources are allocated to planner tasks.
  */
 public abstract class ResourceAllocation<T extends DayAssignment> extends
-        BaseEntity {
+        BaseEntity implements IAssignedEffortForResource {
 
     private static final Log LOG = LogFactory.getLog(ResourceAllocation.class);
 
@@ -209,7 +211,40 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public static AllocationsSpecified allocating(
             List<ResourcesPerDayModification> resourceAllocations) {
+        resourceAllocations = new ArrayList<ResourcesPerDayModification>(
+                resourceAllocations);
+        sortBySpecificFirst(resourceAllocations);
         return new AllocationsSpecified(resourceAllocations);
+    }
+
+    /**
+     * Specific allocations should be done first in order to generic allocations
+     * selects the less charged resources if there are several allocations in
+     * the same task
+     *
+     * @param resourceAllocations
+     *            Sorted with specific allocations before generic ones
+     */
+    private static <T extends AllocationModification> void sortBySpecificFirst(
+            List<T> resourceAllocations) {
+        Collections.sort(resourceAllocations,
+                new Comparator<AllocationModification>() {
+
+                    @Override
+                    public int compare(AllocationModification o1,
+                            AllocationModification o2) {
+                        if (o1.isSpecific() && o2.isSpecific()) {
+                            return 0;
+                        }
+                        if (o1.isSpecific()) {
+                            return -1;
+                        }
+                        if (o2.isSpecific()) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                });
     }
 
     private static void checkStartLessOrEqualToEnd(IntraDayDate startInclusive,
@@ -415,8 +450,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public static HoursAllocationSpecified allocatingHours(
-            List<EffortModification> hoursModifications) {
-        return new HoursAllocationSpecified(hoursModifications);
+            List<EffortModification> effortsModifications) {
+        effortsModifications = new ArrayList<EffortModification>(
+                effortsModifications);
+        sortBySpecificFirst(effortsModifications);
+        return new HoursAllocationSpecified(effortsModifications);
     }
 
     /**
@@ -1948,6 +1986,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         List<DayAssignment> assignments = getAssingments(resource,
                 start.getDate(), endExclusive.asExclusiveEnd());
         return getAssignedDuration(assignments, start, endExclusive);
+    }
+
+    @Override
+    public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
+        IntraDayDate start = IntraDayDate.startOfDay(day);
+        return getAssignedEffort(resource, start, start.nextDayAtStart());
     }
 
     private List<DayAssignment> getAssingments(final Resource resource,

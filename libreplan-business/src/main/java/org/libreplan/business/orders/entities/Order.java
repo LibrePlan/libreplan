@@ -24,16 +24,20 @@ package org.libreplan.business.orders.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
+import org.hibernate.validator.Valid;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
@@ -41,6 +45,11 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
+import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
+import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunicationComparator;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -112,6 +121,16 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private FilmingProgress filmingProgress;
 
+    private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
+
+    @Valid
+    private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
+            new DeliverDateComparator());
+
+    @Valid
+    private SortedSet<EndDateCommunication> endDateCommunicationToCustomer = new TreeSet<EndDateCommunication>(
+            new EndDateCommunicationComparator());
+
     public enum SchedulingMode {
         FORWARD, BACKWARDS;
     }
@@ -119,6 +138,8 @@ public class Order extends OrderLineGroup implements Comparable {
     private SchedulingMode schedulingMode = SchedulingMode.FORWARD;
 
     private boolean neededToRecalculateSumChargedEfforts = false;
+
+    private boolean neededToRecalculateSumExpenses = false;
 
     public static class CurrentVersionInfo {
 
@@ -579,6 +600,63 @@ public class Order extends OrderLineGroup implements Comparable {
         return this.getName().compareToIgnoreCase(((Order) o).getName());
     }
 
+    public void setCustomerCommunications(Set<CustomerCommunication> customerCommunications) {
+        this.customerCommunications = customerCommunications;
+    }
+
+    public Set<CustomerCommunication> getCustomerCommunications() {
+        return customerCommunications;
+    }
+
+    public void setDeliveringDates(SortedSet<DeadlineCommunication> deliveringDates) {
+        this.deliveringDates = deliveringDates;
+    }
+
+    public SortedSet<DeadlineCommunication> getDeliveringDates() {
+        return deliveringDates;
+    }
+
+    public void setEndDateCommunicationToCustomer(
+            SortedSet<EndDateCommunication> endDateCommunicationToCustomer) {
+        this.endDateCommunicationToCustomer.clear();
+        this.endDateCommunicationToCustomer.addAll(endDateCommunicationToCustomer);
+    }
+
+    public SortedSet<EndDateCommunication> getEndDateCommunicationToCustomer() {
+        return Collections.unmodifiableSortedSet(this.endDateCommunicationToCustomer);
+    }
+
+
+    public void updateFirstAskedEndDate(Date communicationDate) {
+        if (this.endDateCommunicationToCustomer != null && !this.endDateCommunicationToCustomer.isEmpty()) {
+            this.endDateCommunicationToCustomer.first().setCommunicationDate(communicationDate);
+        }
+    }
+
+    public Date getLastAskedEndDate() {
+        if (this.endDateCommunicationToCustomer != null
+                && !this.endDateCommunicationToCustomer.isEmpty()) {
+            return this.endDateCommunicationToCustomer.first().getEndDate();
+        }
+        return null;
+    }
+
+    public EndDateCommunication getLastEndDateCommunicationToCustomer() {
+        if (this.endDateCommunicationToCustomer != null
+                && !this.endDateCommunicationToCustomer.isEmpty()) {
+            return this.endDateCommunicationToCustomer.first();
+        }
+        return null;
+    }
+
+    public void removeAskedEndDate(EndDateCommunication endDate) {
+        this.endDateCommunicationToCustomer.remove(endDate);
+    }
+
+    public void addAskedEndDate(EndDateCommunication endDate) {
+        this.endDateCommunicationToCustomer.add(endDate);
+    }
+
     public void markAsNeededToRecalculateSumChargedEfforts() {
         neededToRecalculateSumChargedEfforts = true;
     }
@@ -593,6 +671,14 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public FilmingProgress getFilmingProgress() {
         return filmingProgress;
+    }
+
+    public void markAsNeededToRecalculateSumExpenses() {
+        neededToRecalculateSumExpenses = true;
+    }
+
+    public boolean isNeededToRecalculateSumExpenses() {
+        return neededToRecalculateSumExpenses;
     }
 
 }

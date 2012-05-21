@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2010-2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -77,7 +79,6 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
     public void showWindow(IContextWithPlannerTask<TaskElement> context,
             TaskElement task,
             PlanningState planningState) {
-
         this.context = context;
         advanceAssignmentPlanningModel.initAdvancesFor(task, context,
                 planningState);
@@ -86,7 +87,7 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
         try {
             window.setTitle(getTitle());
             Util.reloadBindings(window);
-            this.window.doModal();
+            this.window.setMode("modal");
         } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

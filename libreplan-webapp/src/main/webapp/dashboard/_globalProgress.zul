@@ -1,0 +1,71 @@
+<!--
+    This file is part of LibrePlan
+
+    Copyright (C) 2010-2012 Igalia, S.L.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<!-- Configure the parameters for the 'global progress' chart. The object contains a method 'render' that
+    is called from the Java file once all objects in the view have been created -->
+<script type="text/javascript" defer="true">
+<![CDATA[
+
+    global_progress = {
+        id: 'global-progress',
+        data: [],
+        title: 'Project progress percentage',
+        seriesDefaults: {
+            renderer:$.jqplot.BarRenderer,
+            pointLabels: { show: true, location: 'e', edgeTolerance: -15 },
+            shadowAngle: 135,
+            rendererOptions: {
+                barDirection: 'horizontal'
+            },
+        },
+        axes: {
+            xaxis: {
+                label: "Progress percentage per progress type"
+            },
+            yaxis: {
+                renderer: $.jqplot.CategoryAxisRenderer,
+                ticks: ['1','2','3'],
+                tickOptions: {
+                    showGridline: false,
+                    markSize: 0
+                }
+            }
+        },
+        series:[
+            {label:'Expected', color: 'blue'},
+            {label:'Actual', color: 'red'},
+        ],
+        legend: {
+            show: true,
+            location: 'e',
+            placement: 'outside',
+        },
+        render: function(data, ticks, series) {
+            if (ticks !== undefined) {
+                this.axes.yaxis.ticks = jQuery.parseJSON(ticks);
+            }
+            if (series !== undefined) {
+                this.series = jQuery.parseJSON(series);
+            }
+            this.plot = $.jqplot(this.id, jQuery.parseJSON(data), this);
+        }
+    };
+
+]]>
+</script>

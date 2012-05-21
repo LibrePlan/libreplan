@@ -467,6 +467,21 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForExpenseSheets() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForExpenseSheets();
+    }
+
+    @Override
+    public void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets) {
+        if (configuration != null) {
+            configuration.setGenerateCodeForExpenseSheets(generateCodeForExpenseSheets);
+        }
+    }
+
+    @Override
     public Boolean isMonteCarloMethodTabVisible() {
         if (configuration == null) {
             return null;

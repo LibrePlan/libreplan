@@ -21,6 +21,7 @@
 
 package org.libreplan.ws.subcontract.api;
 
+import org.libreplan.web.subcontract.UpdateDeliveringDateDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 
 
@@ -33,5 +34,9 @@ public interface ISubcontractService {
 
     InstanceConstraintViolationsListDTO subcontract(
             SubcontractedTaskDataDTO subcontractedTaskDataDTO);
+
+
+    InstanceConstraintViolationsListDTO updateDeliveringDates(
+            UpdateDeliveringDateDTO updateDeliveringDateDTO);
 
 }

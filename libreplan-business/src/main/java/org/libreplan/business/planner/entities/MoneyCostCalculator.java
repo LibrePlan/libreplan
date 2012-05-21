@@ -44,6 +44,7 @@ import org.springframework.stereotype.Component;
  * be reseted when needed with method {@code resetMoneyCostMap}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -55,29 +56,78 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
     @Autowired
     private IHourCostDAO hourCostDAO;
 
-    private Map<OrderElement, BigDecimal> moneyCostMap = new HashMap<OrderElement, BigDecimal>();
+    private Map<OrderElement, MoneyCost> moneyCostTotalMap = new HashMap<OrderElement, MoneyCost>();
 
-    @Override
-    public void resetMoneyCostMap() {
-        moneyCostMap = new HashMap<OrderElement, BigDecimal>();
+    private class MoneyCost {
+        private BigDecimal costOfHours;
+        private BigDecimal costOfExpenses;
+
+        public MoneyCost() {
+        }
+
+        public void setCostOfHours(BigDecimal costOfHours) {
+            this.costOfHours = costOfHours;
+        }
+
+        public BigDecimal getCostOfHours() {
+            return costOfHours;
+        }
+
+        public void setCostOfExpenses(BigDecimal costOfExpenses) {
+            this.costOfExpenses = costOfExpenses;
+        }
+
+        public BigDecimal getCostOfExpenses() {
+            return costOfExpenses;
+        }
+
     }
 
     @Override
-    public BigDecimal getMoneyCost(OrderElement orderElement) {
-        BigDecimal result = moneyCostMap.get(orderElement);
+    public void resetMoneyCostMap() {
+        moneyCostTotalMap = new HashMap<OrderElement, MoneyCost>();
+    }
+
+    @Override
+    public BigDecimal getTotalMoneyCost(OrderElement orderElement) {
+        BigDecimal result = BigDecimal.ZERO.setScale(2);
+        BigDecimal moneyCostOfHours = getHoursMoneyCost(orderElement);
+        if (moneyCostOfHours != null) {
+            result = result.add(moneyCostOfHours);
+        }
+        BigDecimal moneyCostOfExpenses = getExpensesMoneyCost(orderElement);
+        if (moneyCostOfExpenses != null) {
+            result = result.add(moneyCostOfExpenses);
+        }
         if (result != null) {
-            return result;
+            result = result.setScale(2, RoundingMode.HALF_UP);
+        }
+        return result;
+    }
+
+    @Override
+    public BigDecimal getHoursMoneyCost(OrderElement orderElement) {
+        MoneyCost moneyCost = moneyCostTotalMap.get(orderElement);
+        if (moneyCost != null) {
+            BigDecimal result = moneyCost.getCostOfHours();
+            if (result != null) {
+                return result;
+            }
         }
 
-        result = BigDecimal.ZERO.setScale(2);
+        BigDecimal result = BigDecimal.ZERO.setScale(2);
         for (OrderElement each : orderElement.getChildren()) {
-            result = result.add(getMoneyCost(each));
+            result = result.add(getHoursMoneyCost(each));
         }
 
         result = result.add(getMoneyCostFromOwnWorkReportLines(orderElement))
                 .setScale(2, RoundingMode.HALF_UP);
 
-        moneyCostMap.put(orderElement, result);
+        if (moneyCost == null) {
+            moneyCost = new MoneyCost();
+        }
+        moneyCost.setCostOfHours(result);
+        moneyCostTotalMap.put(orderElement, moneyCost);
         return result;
     }
 
@@ -115,12 +165,36 @@ public class MoneyCostCalculator implements IMoneyCostCalculator {
      * @param budget
      * @return A BigDecimal from 0 to 1 with the proportion
      */
-    public static BigDecimal getMoneyCostProportion(BigDecimal moneyCost,
-            BigDecimal budget) {
+    public static BigDecimal getMoneyCostProportion(BigDecimal moneyCost, BigDecimal budget) {
         if (budget.compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.ZERO;
         }
         return moneyCost.divide(budget, 2, RoundingMode.HALF_UP);
+    }
+
+    @Override
+    public BigDecimal getExpensesMoneyCost(OrderElement orderElement) {
+        MoneyCost moneyCost = moneyCostTotalMap.get(orderElement);
+        if (moneyCost != null) {
+            BigDecimal result = moneyCost.getCostOfExpenses();
+            if (result != null) {
+                return result;
+            }
+        }
+
+        BigDecimal result = BigDecimal.ZERO.setScale(2);
+        if ((orderElement.getSumExpenses()) != null) {
+            result = result.add(orderElement.getSumExpenses().getTotalDirectExpenses());
+            result = result.add(orderElement.getSumExpenses().getTotalIndirectExpenses()).setScale(
+                    2, RoundingMode.HALF_UP);
+        }
+
+        if (moneyCost == null) {
+            moneyCost = new MoneyCost();
+        }
+        moneyCost.setCostOfExpenses(result);
+        moneyCostTotalMap.put(orderElement, moneyCost);
+        return result;
     }
 
 }

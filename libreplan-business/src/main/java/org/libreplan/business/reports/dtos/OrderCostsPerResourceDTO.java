@@ -27,7 +27,6 @@ import java.util.Set;
 
 import org.joda.time.LocalTime;
 import org.libreplan.business.labels.entities.Label;
-import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
@@ -36,7 +35,7 @@ import org.libreplan.business.workreports.valueobjects.DescriptionValue;
 /**
  * Note: this class has a natural ordering that is inconsistent with equals.
  */
-public class OrderCostsPerResourceDTO implements
+public class OrderCostsPerResourceDTO extends ReportPerOrderElementDTO implements
         Comparable<OrderCostsPerResourceDTO> {
 
     private String workerName;
@@ -73,13 +72,18 @@ public class OrderCostsPerResourceDTO implements
     // Attached outside the DTO
     private String orderCode;
 
-    private OrderElement orderElement;
-
     private Worker worker;
+
+    private Boolean costTypeHours = Boolean.TRUE;
+
+    /*
+     * type net.sf.jasperreports.engine.JRDataSource;
+     */
+    private Object listExpensesDTO;
 
     public OrderCostsPerResourceDTO(Worker worker,
             WorkReportLine workReportLine) {
-
+        super(workReportLine.getOrderElement());
         this.workerName = worker.getName();
         if (workReportLine.getLocalDate() != null) {
             this.date = workReportLine.getLocalDate().toDateTimeAtStartOfDay()
@@ -92,7 +96,7 @@ public class OrderCostsPerResourceDTO implements
         this.labels = labelsAsString(workReportLine.getLabels());
         this.hoursType = workReportLine.getTypeOfWorkHours().getName();
         this.hoursTypeCode = workReportLine.getTypeOfWorkHours().getCode();
-        this.orderElement = workReportLine.getOrderElement();
+
         this.orderElementCode = workReportLine.getOrderElement().getCode();
         this.orderElementName = workReportLine.getOrderElement().getName();
         this.worker = worker;
@@ -202,14 +206,6 @@ public class OrderCostsPerResourceDTO implements
         this.cost = cost;
     }
 
-    public OrderElement getOrderElement() {
-        return orderElement;
-    }
-
-    public void setOrderElement(OrderElement orderElement) {
-        this.orderElement = orderElement;
-    }
-
     public BigDecimal getCostPerHour() {
         return costPerHour;
     }
@@ -266,6 +262,22 @@ public class OrderCostsPerResourceDTO implements
 
     public String getOrderCode() {
         return orderCode;
+    }
+
+    public void setCostTypeHours(Boolean costTypeHours) {
+        this.costTypeHours = costTypeHours;
+    }
+
+    public Boolean getCostTypeHours() {
+        return costTypeHours;
+    }
+
+    public void setListExpensesDTO(Object listExpensesDTO) {
+        this.listExpensesDTO = listExpensesDTO;
+    }
+
+    public Object getListExpensesDTO() {
+        return listExpensesDTO;
     }
 
 }

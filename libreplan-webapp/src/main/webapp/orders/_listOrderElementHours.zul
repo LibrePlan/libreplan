@@ -73,7 +73,67 @@
                         </row>
                     </rows>
                 </grid>
-
+            </panelchildren>
+        </panel>
+        <panel title="${i18n:_('Imputed expenses')}">
+            <panelchildren>
+                <separator bar="false" spacing="10px" orient="horizontal"/>
+                <grid id="listExpenses"  mold="paging" pageSize="10"
+                    model="@{assignedHoursToOrderElementController.expenseSheetLines}" sclass="clickable-rows">
+                    <columns sizable="true">
+                        <column label="${i18n:_('Date')}" width="120px"/>
+                        <column label="${i18n:_('Concept')}"/>
+                        <column label="${i18n:_('Resource')}"/>
+                        <column label="${i18n:_('Value')}" width="100px"/>
+                    </columns>
+                    <rows>
+                        <row self="@{each='expenseSheetLine'}" value="@{expenseSheetLine}">
+                            <label value="@{expenseSheetLine.date, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}" />
+                            <label value="@{expenseSheetLine.concept}"/>
+                            <label value="@{expenseSheetLine.resource.getName}"/>
+                            <hbox>
+                                <label value="@{expenseSheetLine.value}"/>
+                                <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                            </hbox>
+                        </row>
+                    </rows>
+                </grid>
+                <grid style="border:0px">
+                    <columns>
+                        <column />
+                        <column width="100px" />
+                    </columns>
+                    <rows>
+                        <row style="border-top:1px solid black">
+                            <label
+                                value="${i18n:_('Sum of direct expenses')}" />
+                            <hbox>
+                                <label
+                                    value="@{assignedHoursToOrderElementController.totalDirectExpenses}" />
+                                <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                            </hbox>
+                        </row>
+                        <row>
+                            <label
+                                value="${i18n:_('Sum of expenses imputed in children tasks')}" />
+                            <hbox>
+                                <label id="totalIDE"
+                                    value="@{assignedHoursToOrderElementController.totalIndirectExpenses}" />
+                                <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                            </hbox>
+                        </row>
+                        <row
+                            style="border-top:1px solid black; font-weight: bold;">
+                            <label value="${i18n:_('Total expenses')}"
+                                style="font-weight: bold" />
+                            <hbox>
+                                <label style="font-weight: bold"
+                                    value="@{assignedHoursToOrderElementController.totalExpenses}"/>
+                                <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                            </hbox>
+                        </row>
+                    </rows>
+                </grid>
             </panelchildren>
         </panel>
     </vbox>
@@ -142,11 +202,13 @@
                         <row>
                             <grid fixedLayout="true">
                                 <columns>
+                                    <column width="20px" />
                                     <column width="200px" />
-                                    <column width="200px" />
+                                    <column align="right"/>
                                 </columns>
                                 <rows>
                                     <row>
+                                        <label/>
                                         <label
                                             value="${i18n:_('Budget in money')}:" />
                                         <hbox>
@@ -156,6 +218,30 @@
                                         </hbox>
                                     </row>
                                     <row>
+                                        <detailrow open="true">
+                                            <grid fixedLayout="true">
+                                                <columns>
+                                                    <column width="200px" />
+                                                    <column align="right"/>
+                                                </columns>
+                                                <rows>
+                                                    <row>
+                                                        <label value="${i18n:_('Because of hours')}:" />
+                                                        <hbox>
+                                                            <label value="@{assignedHoursToOrderElementController.costOfHours}" />
+                                                            <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                                                        </hbox>
+                                                    </row>
+                                                    <row>
+                                                        <label value="${i18n:_('Because of expenses')}:" />
+                                                        <hbox>
+                                                            <label value="@{assignedHoursToOrderElementController.costOfExpenses}" />
+                                                            <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
+                                                        </hbox>
+                                                    </row>
+                                                </rows>
+                                            </grid>
+                                        </detailrow>
                                         <label
                                             value="${i18n:_('Money spent')}:" />
                                         <hbox>
@@ -167,6 +253,7 @@
                                 </rows>
                             </grid>
                             <hbox>
+                                <separator bar="false" spacing="10px" orient="vertical"/>
                                 <label
                                     value="@{assignedHoursToOrderElementController.moneyCostPercentage}" />
                                 <label value="${i18n:_('%')}" />

@@ -143,8 +143,13 @@ public abstract class UntilFillingHoursAllocator {
                 current = nextDay(current);
             }
         }
-        return adjustFinish(resourcesPerDayModification, taken,
+        IntraDayDate finish = adjustFinish(resourcesPerDayModification, taken,
                 biggestLastAssignment, current);
+        // We have to do it now, so the other allocations take it into account.
+        // At the end it's done again with the right end date.
+        setNewDataForAllocation(resourcesPerDayModification, resultAssignments
+                .get(resourcesPerDayModification), finish);
+        return finish;
     }
 
     private IntraDayDate adjustFinish(
@@ -231,21 +236,21 @@ public abstract class UntilFillingHoursAllocator {
     private void setAssignmentsForEachAllocation(IntraDayDate resultDate) {
         for (Entry<ResourcesPerDayModification, List<DayAssignment>> entry : resultAssignments
                 .entrySet()) {
-            setNewDataForAllocation(entry, resultDate);
+            setNewDataForAllocation(entry.getKey(), entry.getValue(),
+                    resultDate);
         }
     }
 
     private <T extends DayAssignment> void setNewDataForAllocation(
-            Entry<ResourcesPerDayModification, List<DayAssignment>> entry,
+            ResourcesPerDayModification modification,
+            List<T> value,
             IntraDayDate resultDate) {
         @SuppressWarnings("unchecked")
-        ResourceAllocation<T> allocation = (ResourceAllocation<T>) entry
-                .getKey().getBeingModified();
-        ResourcesPerDay resourcesPerDay = entry.getKey().getGoal();
-        @SuppressWarnings("unchecked")
-        List<T> value = (List<T>) entry.getValue();
-        setNewDataForAllocation(allocation, resultDate, resourcesPerDay,
-                value);
+        ResourceAllocation<T> allocation = (ResourceAllocation<T>) modification
+                .getBeingModified();
+        ResourcesPerDay resourcesPerDay = modification.getGoal();
+        setNewDataForAllocation(allocation, resultDate,
+                resourcesPerDay, value);
     }
 
     protected Direction getDirection() {

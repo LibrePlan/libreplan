@@ -43,7 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/settings/settings.zul")
+@OnConcurrentModification(goToPage = "/myaccount/settings.zul")
 public class SettingsModel implements ISettingsModel {
 
     @Autowired
@@ -192,6 +192,14 @@ public class SettingsModel implements ISettingsModel {
     @Override
 	public String getEmail() {
         return user.getEmail();
+    }
+
+    @Override
+    public boolean isBound() {
+        if (user != null) {
+            return user.isBound();
+        }
+        return false;
     }
 
 }

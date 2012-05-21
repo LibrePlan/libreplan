@@ -35,7 +35,8 @@ public enum UserRole {
     ROLE_WS_WRITER(_("Web service writer")),
     ROLE_READ_ALL_ORDERS(_("All projects read allowed")),
     ROLE_EDIT_ALL_ORDERS(_("All projects edition allowed")),
-    ROLE_CREATE_ORDER(_("Project creation allowed"));
+    ROLE_CREATE_ORDER(_("Project creation allowed")),
+    ROLE_EXPENSE_TRACKING(_("Expenses tracking allowed"));
 
     private final String displayName;
 

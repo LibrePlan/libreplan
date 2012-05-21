@@ -20,7 +20,7 @@
     <property name="enabled"/>
 
     <!-- Indexed the other side -->
-    <set name="hourCosts" inverse="true" cascade="all-delete-orphan">
+    <set name="hourCosts" inverse="true" cascade="all-delete-orphan" batch-size="10">
         <key column="cost_category_id"/>
         <one-to-many class="HourCost"/>
     </set>

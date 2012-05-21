@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.libreplan.business.common.daos.IGenericDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.User;
@@ -33,38 +34,41 @@ import org.libreplan.business.users.entities.User;
  * DAO interface for the <code>User</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public interface IUserDAO extends IGenericDAO<User, Long>{
 
     /**
-     * NOTE: Login name comparison is case-insensitive.
+     * NOTE: Username comparison is case-insensitive.
      */
     public User findByLoginName(String loginName)
         throws InstanceNotFoundException;
 
     /**
-     * NOTE: Login name comparison is case-insensitive, and the method is
-     * executed in another transaction.
+     * NOTE: Username comparison is case-insensitive, and the method is executed
+     * in another transaction.
      */
     public User findByLoginNameAnotherTransaction(String loginName)
         throws InstanceNotFoundException;
 
     /**
-     * NOTE: Login name comparison is case-insensitive.
+     * NOTE: Username comparison is case-insensitive.
      */
     public boolean existsByLoginName(String loginName);
 
     /**
-     * NOTE: Login name comparison is case-insensitive, and the method is
-     * executed in another transaction.
+     * NOTE: Username comparison is case-insensitive, and the method is executed
+     * in another transaction.
      */
     public boolean existsByLoginNameAnotherTransaction(String loginName);
 
     /**
      * Finds a User entity by its loginName, among those with the disabled
      * attribute set to false.
-     * @param loginName loginName to perform the search. NOTE: Login name
-     * comparison is case-insensitive.
+     *
+     * @param loginName
+     *            loginName to perform the search. NOTE: Username comparison is
+     *            case-insensitive.
      * @return a {@link User} object.
      * @throws InstanceNotFoundException
      */
@@ -81,5 +85,19 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
 
     public List<User> findByLastConnectedScenario(Scenario scenario);
 
-    List<OrderAuthorization> getOrderAuthorizationsByUser(User user);
+    /**
+     * Returns the list of {@link User}s not bound to any {@link Worker} yet,
+     * plus the {@link User} bound to the {@link Worker} specified as parameter
+     * if any.
+     */
+    List<User> getUnboundUsers(Worker worker);
+
+    User findOnAnotherTransaction(Long id);
+
+    /**
+     * Removes all the {@link OrderAuthorization}s of this {@link User} and then
+     * removes the {@link User} too
+     */
+    void remove(User user) throws InstanceNotFoundException;
+
 }

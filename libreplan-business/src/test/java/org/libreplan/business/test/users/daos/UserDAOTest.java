@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,6 +39,8 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.resources.daos.IWorkerDAO;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.daos.IProfileDAO;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.Profile;
@@ -55,6 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
@@ -70,6 +73,9 @@ public class UserDAOTest {
 
     @Autowired
     IProfileDAO profileDAO;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
 
     @Test
     public void testBasicSave() throws InstanceNotFoundException {
@@ -283,4 +289,102 @@ public class UserDAOTest {
         Set<UserRole> roles = new HashSet<UserRole>();
         return Profile.create(profileName, roles);
     }
+
+    @Test
+    public void testUnoundUsers1() {
+        int previous = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
+
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                userDAO.save(createUser(getUniqueName()));
+                return null;
+            }
+        });
+
+        int size = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
+
+        assertEquals(previous + 1, size);
+    }
+
+    private Worker givenStoredWorkerRelatedTo(final User user) {
+        return transactionService
+                .runOnAnotherTransaction(new IOnTransaction<Worker>() {
+
+                    @Override
+                    public Worker execute() {
+                        Worker worker = Worker.create();
+                        worker.setFirstName("Name " + UUID.randomUUID());
+                        worker.setSurname("Surname " + UUID.randomUUID());
+                        worker.setNif("ID " + UUID.randomUUID());
+                        worker.setUser(user);
+                        workerDAO.save(worker);
+                        worker.dontPoseAsTransientObjectAnymore();
+
+                        return worker;
+                    }
+                });
+    }
+
+    @Test
+    public void testUnoundUsers2() {
+        int previous = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
+
+        User user = createUser(getUniqueName());
+        user.setWorker(givenStoredWorkerRelatedTo(user));
+
+        int size = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
+
+        assertEquals(previous, size);
+    }
+
+    @Test
+    public void testUnoundUsers3() {
+        int previous = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(null).size();
+                    }
+                });
+
+        User user = createUser(getUniqueName());
+        final Worker worker = givenStoredWorkerRelatedTo(user);
+        user.setWorker(worker);
+
+        int size = transactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return userDAO.getUnboundUsers(worker).size();
+                    }
+                });
+        assertEquals(previous + 1, size);
+    }
+
 }

@@ -22,6 +22,7 @@
 package org.libreplan.business.orders.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -128,6 +129,9 @@ public class OrderLine extends OrderElement {
         }
         if (getSumChargedEffort() != null
                 && !getSumChargedEffort().getDirectChargedEffort().isZero()) {
+            return false;
+        }
+        if (getSumExpenses() != null && !getSumExpenses().isTotalDirectExpensesZero()) {
             return false;
         }
         if (!getTaskElements().isEmpty()) {
@@ -377,7 +381,7 @@ public class OrderLine extends OrderElement {
     public void setBudget(BigDecimal budget) {
         Validate.isTrue(budget.compareTo(BigDecimal.ZERO) >= 0,
                 "budget cannot be negative");
-        this.budget = budget.setScale(2);
+        this.budget = budget.setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override

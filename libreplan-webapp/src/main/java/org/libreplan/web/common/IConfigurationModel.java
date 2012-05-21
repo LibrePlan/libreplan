@@ -155,6 +155,10 @@ public interface IConfigurationModel {
     void setAllowToGatherUsageStatsEnabled(
             boolean allowToGatherUsageStatsEnabled);
 
+    Boolean getGenerateCodeForExpenseSheets();
+
+    void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets);
+
     Set<String> getCurrencies();
 
     String getCurrencySymbol(String currencyCode);

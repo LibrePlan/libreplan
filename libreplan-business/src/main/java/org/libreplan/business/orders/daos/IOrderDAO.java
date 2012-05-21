@@ -29,6 +29,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.reports.dtos.CostExpenseSheetDTO;
 import org.libreplan.business.reports.dtos.OrderCostsPerResourceDTO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.entities.Scenario;
@@ -99,4 +100,9 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
             List<OrderElement> orderElement);
 
     boolean existsByNameAnotherTransaction(String name);
+
+    List<Order> getActiveOrders();
+
+    List<CostExpenseSheetDTO> getCostExpenseSheet(List<Order> orders, Date startingDate,
+            Date endingDate, List<Criterion> criterions);
 }

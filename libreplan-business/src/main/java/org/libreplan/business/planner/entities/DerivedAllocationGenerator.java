@@ -26,6 +26,7 @@ import static org.libreplan.business.workingday.EffortDuration.zero;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,7 +105,7 @@ public class DerivedAllocationGenerator {
             List<? extends DayAssignment> dayAssignments) {
         List<DerivedDayAssignment> result = new ArrayList<DerivedDayAssignment>();
         EffortDistributor distributor = new EffortDistributor(resourcesFound,
-                new AssignedEffortDiscounting(parent));
+                AssignedEffortForResource.effortDiscounting(Collections.singletonList(parent)));
         for (DayAssignment each : dayAssignments) {
             int durationInSeconds = alpha.multiply(
                     new BigDecimal(each.getDuration().getSeconds())).intValue();

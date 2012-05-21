@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -24,6 +26,8 @@ package org.libreplan.business.planner.daos;
 import java.util.List;
 
 import org.libreplan.business.common.daos.IGenericDAO;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 
 /**
@@ -42,4 +46,6 @@ public interface ISubcontractedTaskDataDAO extends
 
     List<SubcontractedTaskData> getAllForMasterScenario();
 
+    SubcontractedTaskData getSubcontratedTaskDataByOrderElement(
+            OrderElement orderElement) throws InstanceNotFoundException;
 }

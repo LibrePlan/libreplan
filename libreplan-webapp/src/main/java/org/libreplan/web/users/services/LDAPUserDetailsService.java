@@ -62,7 +62,7 @@ public class LDAPUserDetailsService implements UserDetailsService {
         try {
             user = userDAO.findByLoginName(loginName);
         } catch (InstanceNotFoundException e) {
-            throw new UsernameNotFoundException(_("User with login name "
+            throw new UsernameNotFoundException(_("User with username "
                     + "'{0}': not found", loginName));
         }
 

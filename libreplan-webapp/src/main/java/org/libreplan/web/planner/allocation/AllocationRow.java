@@ -42,10 +42,14 @@ import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalcula
 import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ResourcesPerDayIsZero;
 import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ThereAreNoValidPeriods;
 import org.libreplan.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ValidPeriodsDontHaveCapacity;
+import org.libreplan.business.planner.entities.AssignedEffortForResource;
+import org.libreplan.business.planner.entities.AssignedEffortForResource.IAssignedEffortForResource;
+import org.libreplan.business.planner.entities.AssignedEffortForResource.WithTheLoadOf;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.AssignmentFunction.AssignmentFunctionName;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.DerivedAllocation;
+import org.libreplan.business.planner.entities.GenericResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.Task.ModifiedAllocation;
@@ -187,9 +191,42 @@ public abstract class AllocationRow {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (AllocationRow each : rows) {
             ResourcesPerDayModification modification = each
-                    .toResourcesPerDayModification(task, requestedToRemove);
+                    .toResourcesPerDayModification(task);
             result.add(modification);
             each.setTemporal(modification.getBeingModified());
+        }
+        setCustomAssignedEffortForResource(rows, requestedToRemove);
+        return result;
+    }
+
+    private static void setCustomAssignedEffortForResource(
+            Collection<? extends AllocationRow> rows,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
+
+        List<ResourceAllocation<?>> allocationsToDiscount = getToDiscount(rows);
+        allocationsToDiscount.addAll(requestedToRemove);
+
+        final IAssignedEffortForResource effortForResource = AssignedEffortForResource
+                .effortDiscounting(allocationsToDiscount);
+        List<ResourceAllocation<?>> beingModified = AllocationRow
+                .getTemporalFrom(rows);
+        final WithTheLoadOf withTheLoadOf = AssignedEffortForResource
+                .withTheLoadOf(beingModified);
+
+        for (GenericResourceAllocation each : ResourceAllocation.getOfType(GenericResourceAllocation.class, beingModified)) {
+            IAssignedEffortForResource custom = AssignedEffortForResource.sum(
+                    withTheLoadOf.withoutConsidering(each), effortForResource);
+            each.setAssignedEffortForResource(custom);
+        }
+    }
+
+    private static List<ResourceAllocation<?>> getToDiscount(
+            Collection<? extends AllocationRow> rows) {
+        List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+        for (AllocationRow each : rows) {
+            if (each.getOrigin() != null) {
+                result.add(each.getOrigin());
+            }
         }
         return result;
     }
@@ -209,11 +246,12 @@ public abstract class AllocationRow {
             Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         List<EffortModification> result = new ArrayList<EffortModification>();
         for (AllocationRow each : currentRows) {
-            EffortModification hoursModification = each.toHoursModification(
-                    task, requestedToRemove);
+            EffortModification hoursModification = each
+                    .toHoursModification(task);
             result.add(hoursModification);
             each.setTemporal(hoursModification.getBeingModified());
         }
+        setCustomAssignedEffortForResource(currentRows, requestedToRemove);
         return result;
     }
 
@@ -242,7 +280,7 @@ public abstract class AllocationRow {
     }
 
     public static List<ResourceAllocation<?>> getTemporalFrom(
-            List<AllocationRow> rows) {
+            Collection<? extends AllocationRow> rows) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
         for (AllocationRow each : rows) {
             if (each.temporal != null) {
@@ -379,11 +417,9 @@ public abstract class AllocationRow {
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
-            Task task,
-            Collection<? extends ResourceAllocation<?>> requestedToRemove);
+            Task task);
 
-    public abstract EffortModification toHoursModification(Task task,
-            Collection<? extends ResourceAllocation<?>> requestedToRemove);
+    public abstract EffortModification toHoursModification(Task task);
 
     public boolean isCreating() {
         return origin == null;

@@ -20,7 +20,6 @@
 package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 import org.libreplan.business.orders.entities.Order;
@@ -34,6 +33,8 @@ interface IDashboardModel {
     boolean tasksAvailable();
 
     /* Progress KPI: "Number of tasks by status" */
+    Map<TaskStatusEnum, Integer> calculateTaskStatus();
+
     BigDecimal getPercentageOfFinishedTasks();
 
     BigDecimal getPercentageOfInProgressTasks();
@@ -65,14 +66,20 @@ interface IDashboardModel {
     /* Time KPI: "Margin with deadline" */
     BigDecimal getMarginWithDeadLine();
 
+    Integer getAbsoluteMarginWithDeadLine();
+
     /* Time KPI: "Estimation accuracy" */
-    List<Double> getFinishedTasksEstimationAccuracyHistogram();
+    Map<Interval, Integer> calculateEstimationAccuracy();
 
     /* Time KPI: "Lead/Lag in task completion" */
-    List<Double> getLagInTaskCompletionHistogram();
+    Map<Interval, Integer> calculateTaskCompletion();
 
-    Map<TaskStatusEnum, Integer> calculateTaskStatus();
+    /* Resources KPI: "Overtime Ratio" */
 
-    Map<Interval, Integer> calculateTaskCompletation();
+    // (Load + Overload) / Load
+    BigDecimal getOvertimeRatio();
+
+    // Load / Capacity
+    BigDecimal getAvailabilityRatio();
 
 }

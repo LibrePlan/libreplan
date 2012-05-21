@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -285,7 +287,42 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                         globalView.goToCompanyLoad();
                     }
                 }, "01-introducion.html#id1"),
-                subItem(_("Budget Templates"), "/budgettemplates/templates.zul", ""));
+                subItem(_("Budget Templates"),
+                        "/budgettemplates/templates.zul", ""),
+                subItem(_("Limiting Resources Planning"), new ICapture() {
+                    @Override
+                    public void capture() {
+                        globalView.goToLimitingResources();
+                    }
+                }, "01-introducion.html"),
+            subItem(_("Project Templates"), "/templates/templates.zul", ""));
+
+        List<CustomMenuItem> resourcesItems = new ArrayList<CustomMenuItem>();
+        resourcesItems.add(subItem(_("Workers"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"));
+        resourcesItems.add(subItem(_("Machines"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"));
+        resourcesItems.add(subItem(_("Virtual Workers Groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
+        resourcesItems.add(subItem(_("Time Tracking"), "/workreports/workReport.zul",
+                "09-partes.html#id3"));
+        if ((SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION))
+                || (SecurityUtils.isUserInRole(UserRole.ROLE_EXPENSE_TRACKING))) {
+            resourcesItems
+                    .add(subItem(_("Expense Tracking"), "/expensesheet/expenseSheet.zul", ""));
+        }
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
+            resourcesItems.add(subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""));
+        }
+        resourcesItems.add(subItem(_("Communications"), "/subcontract/subcontractedTasks.zul", "",
+                subItem(_("Send to subcontractors"), "/subcontract/subcontractedTasks.zul", ""),
+                subItem(_("Received from subcontractors"), "/subcontract/subcontractorCommunications.zul",""),
+                subItem(_("Send to customers"), "/subcontract/reportAdvances.zul", ""),
+                subItem(_("Received from customers"), "/subcontract/customerCommunications.zul","")));
+        topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
+
+        if (isScenariosVisible()) {
+        topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
+                subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
+                subItem(_("Transfer Projects Between Scenarios"), "/scenarios/transferOrders.zul", ""));
+        }
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
@@ -318,13 +355,14 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Work And Progress Per Project"),"/reports/schedulingProgressPerOrderReport.zul", "15-3-work-progress-per-project.html"),
             subItem(_("Work And Progress Per Task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
             subItem(_("Estimated/Planned Hours Per Task"),"/reports/completedEstimatedHoursPerTask.zul", "15-informes.html"),
-            subItem(_("Project Costs Per Resource"),"/reports/orderCostsPerResource.zul", "15-informes.html"),
+            subItem(_("Project Costs"), "/reports/orderCostsPerResource.zul", "15-informes.html"),
             subItem(_("Task Scheduling Status In Project"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
             subItem(_("Materials Needs At Date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
 
-        topItem(_("My account"), "/settings/settings.zul", "",
-                subItem(_("Settings"), "/settings/settings.zul", ""),
-                subItem(_("Change Password"), "/settings/changePassword.zul", ""));
+        topItem(_("My account"), "/myaccount/userDashboard.zul", "",
+                subItem(_("My dashboard"), "/myaccount/userDashboard.zul", ""),
+                subItem(_("Settings"), "/myaccount/settings.zul", ""),
+                subItem(_("Change Password"), "/myaccount/changePassword.zul", ""));
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {

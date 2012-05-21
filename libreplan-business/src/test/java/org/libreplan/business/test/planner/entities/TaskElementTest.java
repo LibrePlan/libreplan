@@ -237,18 +237,6 @@ public class TaskElementTest {
     }
 
     @Test
-    public void ifTheOrderLineHasDeadlineThePositionConstraintIsNotLaterThan() {
-        OrderLine orderLine = OrderLine.create();
-        addOrderTo(orderLine);
-        LocalDate deadline = new LocalDate(2007, 4, 4);
-        orderLine.setDeadline(asDate(deadline));
-        TaskSource taskSource = asTaskSource(orderLine);
-        Task task = Task.createTask(taskSource);
-        assertThat(task.getPositionConstraint(),
-                isOfType(PositionConstraintType.FINISH_NOT_LATER_THAN));
-    }
-
-    @Test
     @SuppressWarnings("unchecked")
     public void ifSomeParentHasInitDateThePositionConstraintIsNotEarlierThan() {
         LocalDate initDate = new LocalDate(2005, 10, 5);

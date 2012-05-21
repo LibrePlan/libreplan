@@ -657,9 +657,37 @@ public class TaskElementAdapter {
 
                             @Override
                             public BigDecimal execute() {
-                                return moneyCostCalculator
-                                        .getMoneyCost(taskElement
-                                                .getOrderElement());
+                                return moneyCostCalculator.getTotalMoneyCost(taskElement
+                                        .getOrderElement());
+                            }
+                        });
+            }
+
+            private BigDecimal getHoursMoneyCost() {
+                if ((taskElement == null) || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
+
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
+                            @Override
+                            public BigDecimal execute() {
+                                return moneyCostCalculator.getHoursMoneyCost(taskElement.getOrderElement());
+                            }
+                        });
+            }
+
+            private BigDecimal getExpensesMoneyCost() {
+                if ((taskElement == null) || (taskElement.getOrderElement() == null)) {
+                    return BigDecimal.ZERO;
+                }
+
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<BigDecimal>() {
+                            @Override
+                            public BigDecimal execute() {
+                                return moneyCostCalculator.getExpensesMoneyCost(taskElement
+                                        .getOrderElement());
                             }
                         });
             }
@@ -1034,14 +1062,19 @@ public class TaskElementAdapter {
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
                 } else {
-                    String currencySymbol = Util.getCurrencySymbol();
-                    String budget = getBudget() + " " + currencySymbol;
-                    String moneyCost = getMoneyCost() + " " + currencySymbol;
+                    String budget = Util.addCurrencySymbol(getBudget());
+                    String moneyCost = Util.addCurrencySymbol(getMoneyCost());
+
+                    String costHours = Util.addCurrencySymbol(getHoursMoneyCost());
+                    String costExpenses = Util.addCurrencySymbol(getExpensesMoneyCost());
                     result.append(
-                            _("Budget: {0}, Consumed: {1} ({2}%)", budget,
-                                    moneyCost, getMoneyCostBarPercentage()
-                                            .multiply(new BigDecimal(100))))
+                            _("Budget: {0}, Consumed: {1} ({2}%)", budget, moneyCost,
+                                    getMoneyCostBarPercentage().multiply(new BigDecimal(100))))
                             .append("<br/>");
+                    result.append(
+_(
+                            "cost because of worked hours: {0}, cost because of expenses: {1}",
+                            costHours, costExpenses));
                 }
 
                 String labels = buildLabelsText();

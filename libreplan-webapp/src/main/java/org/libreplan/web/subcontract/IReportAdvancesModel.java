@@ -53,4 +53,6 @@ public interface IReportAdvancesModel {
     boolean isAnyAdvanceMeasurementNotReported(
             DirectAdvanceAssignment directAdvanceAssignment);
 
+    String getStatus(Order order);
+
 }

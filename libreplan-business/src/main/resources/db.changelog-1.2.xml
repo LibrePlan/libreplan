@@ -4,6 +4,134 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
+	<changeSet author="smontes" id="initial-database-creation-customer-comunication">
+        <createTable tableName="customer_comunication">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="customer_comunication_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deadline" type="DATETIME"/>
+            <column name="comunication_type" type="INTEGER"/>
+            <column name="comunication_date" type="DATETIME"/>
+            <column name="reviewed" type="BOOLEAN"/>
+            <column name="order_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="smontes" id="initial-database-creation-subcontractor-comunication">
+        <createTable tableName="subcontractor_comunication">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="subcontractor_comunication_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comunication_type" type="INTEGER"/>
+            <column name="comunication_date" type="DATETIME"/>
+            <column name="reviewed" type="BOOLEAN"/>
+            <column name="subcontracted_task_data" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="smontes" id="initial-database-creation-subcontractor-comunication-value">
+        <createTable tableName="subcontrator_comunication_values">
+            <column name="subcontractor_comunication_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="DATETIME"/>
+            <column name="progress" type="DECIMAL(19,2)"/>
+            <column name="idx" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+      <changeSet id="rename-table-customer_comunication-to-customer_communication" author="smontes">
+        <comment>Rename table customer_comunication to customer_communication</comment>
+        <renameTable oldTableName="customer_comunication" newTableName="customer_communication" />
+    </changeSet>
+
+    <changeSet id="rename-column-comunication_type-to-communication_type" author="smontes">
+        <comment>Rename column comunication_type to communication_type</comment>
+        <renameColumn tableName="customer_communication" oldColumnName="comunication_type"
+        newColumnName="communication_type" columnDataType="INTEGER" />
+    </changeSet>
+
+    <changeSet id="rename-column-comunication_date-to-communication_date" author="smontes">
+        <comment>Rename column comunication_date to communication_date</comment>
+        <renameColumn tableName="customer_communication" oldColumnName="comunication_date"
+        newColumnName="communication_date" columnDataType="DATETIME" />
+    </changeSet>
+
+    <changeSet id="rename-table-subcontractor_comunication" author="smontes">
+        <comment>Rename table subcontractor_comunication to subcontractor_communication</comment>
+        <renameTable oldTableName="subcontractor_comunication" newTableName="subcontractor_communication" />
+    </changeSet>
+
+    <changeSet id="rename-column-comunication_type-on-subcontractor-communication" author="smontes">
+        <comment>Rename column comunication_type to communication_type</comment>
+        <renameColumn tableName="subcontractor_communication" oldColumnName="comunication_type"
+        newColumnName="communication_type" columnDataType="INTEGER" />
+    </changeSet>
+
+    <changeSet id="rename-column-comunication_date-on-subcontractor-communication" author="smontes">
+        <comment>Rename column comunication_date to communication_date</comment>
+        <renameColumn tableName="subcontractor_communication" oldColumnName="comunication_date"
+        newColumnName="communication_date" columnDataType="DATETIME" />
+    </changeSet>
+
+    <changeSet id="rename-table-subcontractor_comunication_values" author="smontes">
+        <comment>Rename table subcontractor_comunication_values to subcontractor_communication_values</comment>
+        <renameTable oldTableName="subcontrator_comunication_values" newTableName="subcontractor_communication_values" />
+    </changeSet>
+
+    <changeSet id="rename-column-subcontractor_comunication_id" author="smontes">
+        <comment>Rename column subcontractor_comunication_id</comment>
+        <renameColumn tableName="subcontractor_communication_values" oldColumnName="subcontractor_comunication_id"
+        newColumnName="subcontractor_communication_id" columnDataType="BIGINT" />
+    </changeSet>
+
+	<changeSet author="smontes" id="creation-deadline-communication">
+        <createTable tableName="deadline_communication">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="deadline_comunication_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="save_date" type="DATETIME"/>
+            <column name="deliver_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-delivering-date-column-to-order-entity" author="smontes">
+        <comment>Add new delivering date column to order</comment>
+        <addColumn tableName="deadline_communication">
+            <column name="order_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+	<changeSet author="smontes" id="creation-subcontractor-deliver-date">
+        <createTable tableName="subcontractor_deliver_date">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="subcontrator_deliver_date_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="save_date" type="DATETIME"/>
+            <column name="subcontractor_deliver_date" type="DATETIME"/>
+            <column name="communication_date" type="DATETIME" />
+        </createTable>
+    </changeSet>
+
+	<changeSet author="smontes" id="add-subcontracted-task-data">
+		<comment>Add the column subcontracted_task_id to maintain the relation</comment>
+		<addColumn tableName="subcontractor_deliver_date">
+			<column name="subcontracted_task_data_id" type="BIGINT"/>
+		</addColumn>
+	</changeSet>
+
     <changeSet id="add-task_end_date_effort_duration-to-consolidated_value" author="mrego">
         <comment>
             taskEndDate attribute in class ConsolidatedValue has been changed to IntraDayDate.
@@ -68,6 +196,33 @@
         author="mrego" dbms="postgresql">
         <comment>Change column description in order_element_template to TEXT</comment>
         <modifyDataType tableName="order_element_template" columnName="description" newDataType="TEXT" />
+    </changeSet>
+
+	<changeSet author="smontes" id="database-creation-table-end-date-communication-to-customer">
+        <createTable tableName="end_date_communication_to_customer">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="end_date_communication_to_customer_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="save_date" type="DATETIME"/>
+            <column name="end_date" type="DATETIME"/>
+            <column name="communication_date" type="DATETIME"/>
+            <column name="order_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="subcontracted-date-id-column-to-end-date-communication" author="smontes">
+        <comment>Add subcontracted date id column to end date communication to customer</comment>
+        <addColumn tableName="end_date_communication_to_customer">
+            <column name="subcontracted_task_data_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="rename-table-end_date_comunication-to-customer" author="smontes">
+        <comment>Rename table to end_date_communication</comment>
+        <renameTable oldTableName="end_date_communication_to_customer" newTableName="end_date_communication" />
     </changeSet>
 
     <changeSet id="change-column-description-in-to-text-in-mysql"
@@ -177,6 +332,108 @@
         <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
     </changeSet>
 
+    <changeSet author="smontes" id="creation-table-expense-sheet">
+        <createTable tableName="expense_sheet">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="expense_sheet_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code_autogenerated" type="BOOLEAN"/>
+            <column name="first_expense" type="DATETIME"/>
+            <column name="last_expense" type="DATETIME"/>
+            <column name="total" type="DECIMAL(19,2)"/>
+            <column name="description" type="TEXT"/>
+            <column name="last_expense_sheet_line_sequence_code" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="change-column-description-in-expense_sheet_to-text-in-mysql"
+        author="mrego" dbms="mysql">
+        <comment>
+            Change column description in expense_sheet to TEXT in MySQL.
+            Because of using modifyDataType convert the column in LONGTEXT and
+            this is causing some problems with Hibernate mapping.
+        </comment>
+        <sql>ALTER TABLE expense_sheet MODIFY description TEXT</sql>
+    </changeSet>
+
+    <changeSet author="smontes" id="creation-table-expense-sheet-line">
+        <createTable tableName="expense_sheet_line">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="expense_sheet_line_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="value" type="DECIMAL(19,2)"/>
+            <column name="concept" type="VARCHAR(255)"/>
+            <column name="date" type="DATETIME"/>
+            <column name="order_element_id" type="BIGINT"/>
+            <column name="resource_id" type="BIGINT"/>
+            <column name="expense_sheet_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="expense_sheet_line_order_element_fkey"
+            baseTableName="expense_sheet_line" baseColumnNames="order_element_id"
+            referencedTableName="order_element" referencedColumnNames="id" />
+        <addForeignKeyConstraint constraintName="expense_sheet_line_resource_fkey"
+            baseTableName="expense_sheet_line" baseColumnNames="resource_id"
+            referencedTableName="resource" referencedColumnNames="id" />
+        <addForeignKeyConstraint constraintName="expense_sheet_line_expense_sheet_fkey"
+            baseTableName="expense_sheet_line" baseColumnNames="expense_sheet_id"
+            referencedTableName="expense_sheet" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="add-new-column-generate-code-for-expense-sheets" author="smontes">
+        <comment>Add new column to generate the code for expense sheet in configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="generate_code_for_expense_sheets" type="BOOLEAN"/>
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="generate_code_for_expense_sheets"
+           defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="generate_code_for_expense_sheets"
+            defaultNullValue="TRUE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="modify-columns-type-in-expense-sheet-to-date" author="smontes">
+        <comment>modify columns type in expense sheet to date</comment>
+        <modifyDataType tableName="expense_sheet" columnName="first_expense" newDataType="DATE"/>
+        <modifyDataType tableName="expense_sheet" columnName="last_expense" newDataType="DATE"/>
+    </changeSet>
+
+    <changeSet id="modify-columns-type-in-expense-sheet-line-to-date" author="smontes">
+        <comment>modify columns type in expense sheet line to date</comment>
+        <modifyDataType tableName="expense_sheet_line" columnName="date" newDataType="DATE"/>
+    </changeSet>
+
+	<changeSet author="smontes" id="create3-table-sum-expenses">
+	    <comment>creation table sum_expenses</comment>
+        <createTable tableName="sum_expenses">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sum_expenses_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_element_id" type="BIGINT"/>
+            <column name="total_direct_expenses" type="DECIMAL(19,2)"/>
+            <column name="total_indirect_expenses" type="DECIMAL(19,2)"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="sum_expenses_order_element_fkey"
+            baseTableName="sum_expenses" baseColumnNames="order_element_id"
+            referencedTableName="order_element" referencedColumnNames="id" />
+    </changeSet>
+
     <changeSet id="add-new-columns-for-currency-in-configuration" author="mrego">
         <comment>Add new columns for currency in configuration table</comment>
         <addColumn tableName="configuration">
@@ -204,72 +461,16 @@
         <dropColumn tableName="order_element_template" columnName="code" />
     </changeSet>
 
-    <changeSet author="smontes" id="initial-creation-table-filming-progress">
-        <createTable tableName="filming_progress">
-            <column name="id" type="BIGINT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="filming_progress_pkey"/>
-            </column>
-            <column name="version" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="start_date" type="DATE"/>
-            <column name="end_date" type="DATE"/>
-            <column name="progress_granularity" type="INTEGER"/>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="id" baseTableName="filming_progress"
-            constraintName="fk_filming_progress_per_order" deferrable="false" initiallyDeferred="false"
-            onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="order_element_id"
-            referencedTableName="order_table" referencesUniqueColumn="false"/>
+    <changeSet id="add-relationship-between-worker-and-user" author="mrego">
+        <comment>Add column and constraints needed for relationship between worker and user</comment>
+        <addColumn tableName="worker">
+            <column name="user_id" type="BIGINT" />
+        </addColumn>
+        <addUniqueConstraint tableName="worker" columnNames="user_id"
+            constraintName="worker_user_id_key" />
+        <addForeignKeyConstraint constraintName="worker_user_fkey"
+            baseTableName="worker" baseColumnNames="user_id"
+            referencedTableName="user_table" referencedColumnNames="id" />
     </changeSet>
 
-    <changeSet author="smontes" id="initial-database-creation-initial-progress-forecast">
-        <createTable tableName="initial_progress_forecast">
-            <column name="filming_progress_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="day" type="DATE"/>
-            <column name="scenes" type="INTEGER">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addPrimaryKey columnNames="filming_progress_id, day" constraintName="scenes_per_day_pkey" tableName="initial_progress_forecast"/>
-        <addForeignKeyConstraint baseColumnNames="filming_progress_id" baseTableName="initial_progress_forecast"
-            constraintName="fk_initial_progress_forecast_per_filming" deferrable="false" initiallyDeferred="false"
-            onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="filming_progress"
-            referencesUniqueColumn="false"/>
-    </changeSet>
-
-    <changeSet author="smontes" id="initial-database-creation-progress-forecast">
-        <createTable tableName="progress_forecast">
-            <column name="filming_progress_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="day" type="DATE"/>
-            <column name="scenes" type="INTEGER">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addPrimaryKey columnNames="filming_progress_id, day" constraintName="scenes_per_day_forecast_pkey" tableName="progress_forecast"/>
-        <addForeignKeyConstraint baseColumnNames="filming_progress_id" baseTableName="progress_forecast"
-            constraintName="fk_progress_forecast_per_filming" deferrable="false" initiallyDeferred="false"
-            onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="filming_progress"
-            referencesUniqueColumn="false"/>
-    </changeSet>
-
-    <changeSet author="smontes" id="initial-database-creation-real-progress">
-        <createTable tableName="real_progress">
-            <column name="filming_progress_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="day" type="DATE"/>
-            <column name="scenes" type="INTEGER">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addPrimaryKey columnNames="filming_progress_id, day" constraintName="real_scenes_per_day_pkey" tableName="real_progress"/>
-        <addForeignKeyConstraint baseColumnNames="filming_progress_id" baseTableName="real_progress"
-            constraintName="fk_real_progress_per_filming" deferrable="false" initiallyDeferred="false"
-            onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="filming_progress"
-            referencesUniqueColumn="false"/>
-    </changeSet>
 </databaseChangeLog>

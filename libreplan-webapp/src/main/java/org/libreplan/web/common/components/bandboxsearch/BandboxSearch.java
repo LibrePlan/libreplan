@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listhead;
 import org.zkoss.zul.Listheader;
@@ -58,6 +59,13 @@ public class BandboxSearch extends HtmlMacroComponent {
         bandboxSearch.setFinder(finderClassName);
         bandboxSearch.afterCompose();
         bandboxSearch.setModel(model);
+        return bandboxSearch;
+    }
+
+    public static BandboxSearch create(String finderClassName) {
+        BandboxSearch bandboxSearch = new BandboxSearch();
+        bandboxSearch.setFinder(finderClassName);
+        bandboxSearch.afterCompose();
         return bandboxSearch;
     }
 
@@ -157,6 +165,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         final Object object = getSelectedItem().getValue();
         bandbox.setValue(finder.objectToString(object));
         setSelectedElement(object);
+        Util.getBinder(this).saveAttribute(this, "selectedElement");
     }
 
     private void clearSelectedElement() {
@@ -214,8 +223,8 @@ public class BandboxSearch extends HtmlMacroComponent {
     }
 
     public Listitem getSelectedItem() {
-        return listbox == null ? null : (Listitem) listbox.getSelectedItems()
-                .iterator().next();
+        return (listbox == null || listbox.getSelectedItems().isEmpty()) ? null
+                : (Listitem) listbox.getSelectedItems().iterator().next();
     }
 
     public String getFinder() {
@@ -224,6 +233,7 @@ public class BandboxSearch extends HtmlMacroComponent {
 
     public void setFinder(String classname) {
         finder = (IBandboxFinder) getBean(StringUtils.uncapitalize(classname));
+        finder.resetModel();
     }
 
     public List<? extends BaseEntity> getModel() {
@@ -335,5 +345,13 @@ public class BandboxSearch extends HtmlMacroComponent {
         if (bandbox != null) {
             bandbox.close();
         }
+    }
+
+    public void setBandboxConstraint(String constr) {
+        bandbox.setConstraint(constr);
+    }
+
+    public void setBandboxConstraint(Constraint constr) {
+        bandbox.setConstraint(constr);
     }
 }

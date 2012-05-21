@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="orderCostsPerResource">
+	<reportFont name="FreeSans" isDefault="true" fontName="FreeSans" size="9"/>
+	<subDataset name="dataset1"/>
+    <parameter name="currencySymbol" class="java.lang.String"/>
+	<field name="workerName" class="java.lang.String"/>
+	<field name="date" class="java.util.Date"/>
+	<field name="clockStart" class="java.util.Date"/>
+	<field name="clockFinish" class="java.util.Date"/>
+	<field name="numHours" class="java.math.BigDecimal"/>
+	<field name="orderElementCode" class="java.lang.String"/>
+	<field name="descriptionValues" class="java.lang.String"/>
+	<field name="labels" class="java.lang.String"/>
+	<field name="orderName" class="java.lang.String"/>
+	<field name="cost" class="java.math.BigDecimal"/>
+	<field name="hoursType" class="java.lang.String"/>
+	<field name="costPerHour" class="java.math.BigDecimal"/>
+	<variable name="sumHoursPerTask" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sumCostsPerTask" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sumHoursPerWorker" class="java.math.BigDecimal" resetType="Group" resetGroup="Worker" calculation="Sum">
+		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sumCosts" class="java.math.BigDecimal" resetType="Group" resetGroup="Worker" calculation="Sum">
+		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sumHoursPerWorkerandCost" class="java.math.BigDecimal" resetType="Group" resetGroup="HoursType Group" calculation="Sum">
+		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="sumCostsPerWorkerandCost" class="java.math.BigDecimal" resetType="Group" resetGroup="HoursType Group" calculation="Sum">
+		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+    <group name="Task">
+		<groupExpression><![CDATA[$F{orderElementCode}]]></groupExpression>
+		<groupHeader>
+			<band/>
+        </groupHeader>
+        <groupFooter>
+            <band height="22">
+                <line>
+                    <reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"/>
+                    <graphicElement>
+                        <pen lineWidth="0.5" lineColor="#999999"/>
+                    </graphicElement>
+                </line>
+                <textField>
+					<reportElement x="57" y="2" width="258" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.task}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00 h">
+				    <reportElement x="315" y="2" width="93" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumHoursPerTask}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="408" y="2" width="119" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumCostsPerTask}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Worker">
+		<groupExpression><![CDATA[$F{workerName}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<textField evaluationTime="Group" evaluationGroup="Worker" pattern="" isBlankWhenNull="true">
+					<reportElement x="70" y="12" width="469" height="17"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{workerName}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="408" y="29" width="119" height="21" backcolor="#E0E4FB"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column5}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="315" y="29" width="93" height="21" backcolor="#E0E4FB"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column4}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="237" y="29" width="78" height="21" backcolor="#E0E4FB"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column3}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="96" y="29" width="141" height="21" backcolor="#E0E4FB"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement mode="Opaque" x="1" y="29" width="95" height="21" backcolor="#E0E4FB"/>
+					<box>
+						<pen lineWidth="1.0"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="28">
+				<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
+					<reportElement x="408" y="2" width="119" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumCosts}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="57" y="2" width="258" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+						<font isBold="false"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.worker}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00 h">
+					<reportElement x="315" y="2" width="93" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumHoursPerWorker}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Date Group">
+		<groupExpression><![CDATA[$F{date}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="HoursType Group">
+		<groupExpression><![CDATA[$F{hoursType}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="15">
+				<textField isBlankWhenNull="true">
+					<reportElement x="409" y="0" width="119" height="14"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumCostsPerWorkerandCost}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00 h">
+					<reportElement x="316" y="0" width="93" height="14"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle"/>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumHoursPerWorkerandCost}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="238" y="0" width="78" height="14"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{costPerHour}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="96" y="0" width="141" height="14"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{hoursType}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd-MMM-yy" isBlankWhenNull="true">
+					<reportElement x="1" y="0" width="95" height="14"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression class="java.util.Date"><![CDATA[$F{date}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band/>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

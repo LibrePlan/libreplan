@@ -34,6 +34,7 @@ import org.libreplan.business.common.BaseEntity;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class Configuration extends BaseEntity {
 
@@ -91,11 +92,14 @@ public class Configuration extends BaseEntity {
 
     private Boolean allowToGatherUsageStatsEnabled = false;
 
+    private Boolean generateCodeForExpenseSheets = true;
+
     /**
      * Currency code according to ISO-4217 (3 letters)
      */
     private String currencyCode = "EUR";
     private String currencySymbol = "€";
+
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
@@ -274,6 +278,14 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForCostCategory() {
         return generateCodeForCostCategory;
+    }
+
+    public Boolean getGenerateCodeForExpenseSheets() {
+        return this.generateCodeForExpenseSheets;
+    }
+
+    public void setGenerateCodeForExpenseSheets(Boolean generateCodeForExpenseSheets) {
+        this.generateCodeForExpenseSheets = generateCodeForExpenseSheets;
     }
 
     public void setProgressType(ProgressType progressType) {

@@ -93,4 +93,9 @@ public interface IBandboxFinder {
      */
     String objectToString(Object obj);
 
+    /**
+     * Reset the model
+     */
+    void resetModel();
+
 }

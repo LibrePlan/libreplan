@@ -886,9 +886,15 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void updateBudgetFor(T element) {
             if (!readOnly && element.isLeaf()) {
                 Decimalbox decimalbox = budgetDecimalboxByElement.get(element);
-                Treecell tc = (Treecell) decimalbox.getParent();
                 decimalbox.invalidate();
                 refreshBudgetValueForThisNodeAndParents(element);
+            }
+        }
+
+        public void updateNameFor(T element) {
+            if (!readOnly) {
+                Textbox textbox = nameTextboxByElement.get(element);
+                textbox.setValue(getNameHandler().getNameFor(element));
             }
         }
 
@@ -1217,6 +1223,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     protected abstract IBudgetHandler<T> getBudgetHandler();
+
+    public interface INameHandler<T> {
+
+        String getNameFor(T element);
+
+    }
+
+    protected abstract INameHandler<T> getNameHandler();
 
     /**
      * Disable control buttons (new, up, down, indent, unindent, delete)

@@ -39,6 +39,8 @@
             column="generate_code_for_unit_types" />
         <property name="generateCodeForBaseCalendars" not-null="true"
             column="generate_code_for_base_calendars" />
+        <property name="generateCodeForExpenseSheets" not-null="true"
+            column="generate_code_for_expense_sheets" />
         <property name="monteCarloMethodTabVisible" not-null="true"
             column="monte_carlo_method_tab_visible" />
         <property name="changedDefaultAdminPassword" not-null="true"
@@ -84,7 +86,7 @@
             <property name="ldapSearchQuery" column="ldap_search_query"/>
             <property name="ldapGroupStrategy" column="ldap_group_strategy"/>
 
-            <set name="configurationRolesLdap" table="configuration_roles_ldap" lazy="false">
+            <set name="configurationRolesLdap" table="configuration_roles_ldap" lazy="false" batch-size="10">
                 <key column="id_configuration" />
                 <composite-element class="ConfigurationRolesLDAP">
                     <property name="roleLdap" column="role_ldap"

@@ -17,7 +17,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?component name="costStatus" inline="true" macroURI="_costStatus.zul"?>
+<?component name="globalProgress" inline="true" macroURI="_globalProgress.zul"?>
+
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
     <zscript>
         <![CDATA[
             dsController = arg.get("dashboardController");
@@ -31,6 +35,7 @@
     -->
 
     <div self="@{define(content)}" height="100%" style="overflow:visible">
+    <style src="/dashboard/css/dashboard.css" dynamic="true" />
 
         <div height="30px" sclass="toolbar-box" />
 
@@ -44,35 +49,6 @@
                     <hbox>
                         <n:div id="global-progress" style="height:200px; width:500px;"></n:div>
                         <n:div id="task-status" style="height:200px; width:400px; margin-left: 100px;"></n:div>
-
-                        <!-- Tasks summary -->
-                        <grid id="gridTasksSummary" style="margin-top: 50px;" width="300px">
-                            <auxhead>
-                                <auxheader label="${i18n:_('Tasks summary')}" colspan="2"/>
-                            </auxhead>
-                            <columns sizable="false">
-                                <column width="100px"/>
-                                <column />
-                            </columns>
-                            <rows>
-                                <row>
-                                    <label value="${i18n:_('Finished')}:"/>
-                                    <label id="lblTasksFinished" />
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Blocked')}:"/>
-                                    <label id="lblTasksBlocked" />
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('In Progress')}:"/>
-                                    <label id="lblTasksInProgress" />
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Ready to start')}:"/>
-                                    <label id="lblTasksReadyToStart" />
-                                </row>
-                            </rows>
-                        </grid>
                     </hbox>
                 </groupbox>
 
@@ -81,28 +57,50 @@
                     <caption label="${i18n:_('Time')}" />
                     <hbox>
                         <n:div id="task-completation-lag" style="height:200px; width:580px;"></n:div>
-                        <n:div id="deadline-violation" style="height:200px; width:400px; margin-left: 100px;"></n:div>
+                        <vbox>
+                            <n:div id="deadline-violation" style="height:200px; width:400px;"></n:div>
+                            <label id="lblAbsolute" class="dashboard-label" />
+                        </vbox>
+                    </hbox>
+                </groupbox>
 
-                        <!-- Margin with deadline -->
-                        <grid id="gridMarginWithDeadline" style="margin-top: 50px;" width="200px">
-                            <auxhead>
-                                <auxheader label="${i18n:_('Margin with deadline')}" colspan="2"/>
-                            </auxhead>
-                            <columns sizable="false">
-                                <column width="100px"/>
-                                <column />
-                            </columns>
-                            <rows>
-                                <row>
-                                    <label value="${i18n:_('Relative')}:"/>
-                                    <label id="lblRelative" />
-                                </row>
-                                <row>
-                                    <label value="${i18n:_('Absolute')}:"/>
-                                    <label id="lblAbsolute" />
-                                </row>
-                            </rows>
-                        </grid>
+                <!-- Resources -->
+                <groupbox closable="false">
+                    <caption label="${i18n:_('Resources')}" />
+                    <hbox>
+                        <n:div id="estimation-accuracy" style="height:200px; width:580px;"></n:div>
+
+                        <vbox>
+                        <hbox hflex="1" pack="center" vflex="1" style="margin-bottom:5px">
+                            <label class="dashboard-title" value="${i18n:_('Resources usage')}"/>
+                        </hbox>
+                        <n:div class="dashboard-box" style="height:40px; width:380px; padding: 25px;" >
+                       <!-- Overtime ratio -->
+                        <hbox hflex="1" vflex="1">
+                            <vbox hflex="1" align="pack" vflex="1">
+                                    <label class="dashboard-label" value="${i18n:_('Overtime ratio')}" />
+                                    <label class="dashboard-label dashboard-label-remarked" id="lblOvertimeRatio" />
+                                </vbox>
+                                <vbox hflex="1" align="pack" vflex="1">
+                                    <label class="dashboard-label" value="${i18n:_('Availability ratio')}" />
+                                    <label class="dashboard-label dashboard-label-remarked" id="lblAvailabilityRatio" />
+                                </vbox>
+                            </hbox>
+
+                        </n:div>
+                        <n:div style="height:20px"></n:div >
+                        <label class="dashboard-label"
+                        value="${i18n:_('Load percentage of resources participating in the project while they are assigned')}"/>
+                        </vbox>
+                    </hbox>
+                </groupbox>
+
+                <!-- Cost -->
+                <groupbox closable="false">
+                    <caption label="${i18n:_('Cost')}" />
+                    <hbox>
+                        <!-- Cost status -->
+                        <costStatus id="costStatus" />
                     </hbox>
                 </groupbox>
 
@@ -123,70 +121,18 @@
         var global_progress = { };
     </script>
 
-    <!-- Configure the parameters for the 'global progress' chart. The object contains a method 'render' that
-        is called from the Java file once all objects in the view have been created -->
-    <script type="text/javascript" defer="true">
-    <![CDATA[
-
-        global_progress = {
-            id: 'global-progress',
-            data: [],
-            title: 'Project global progress',
-            seriesDefaults: {
-                renderer:$.jqplot.BarRenderer,
-                pointLabels: { show: true, location: 'e', edgeTolerance: -15 },
-                shadowAngle: 135,
-                rendererOptions: {
-                    barDirection: 'horizontal'
-                },
-            },
-            axes: {
-                xaxis: {
-                    label: "Progress percentage per progress type"
-                },
-                yaxis: {
-                    renderer: $.jqplot.CategoryAxisRenderer,
-                    ticks: ['1','2','3'],
-                    tickOptions: {
-                        showGridline: false,
-                        markSize: 0
-                    }
-                }
-            },
-            series:[
-                {label:'Expected', color: 'blue'},
-                {label:'Actual', color: 'red'},
-            ],
-            legend: {
-                show: true,
-                location: 'e',
-                placement: 'outside',
-            },
-            render: function(data, ticks, series) {
-                if (ticks !== undefined) {
-                    this.axes.yaxis.ticks = jQuery.parseJSON(ticks);
-                }
-                if (series !== undefined) {
-                    this.series = jQuery.parseJSON(series);
-                }
-                this.plot = $.jqplot(this.id, jQuery.parseJSON(data), this);
-            }
-        };
-
-    ]]>
-    </script>
+    <globalProgress />
 
     <!-- Include jqPlot styles -->
     <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" />
 
     <!-- Include jqPlot library and additional plugins -->
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.min.js"></n:script>
     <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
     <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
     <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pointLabels.min.js"></n:script>
     <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pieRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.donutRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
+
 </zk>

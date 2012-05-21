@@ -137,11 +137,13 @@ public class CriterionsController extends GenericForwardComposer {
     public void forceSortGridSatisfaction() {
         Column column = (Column) listingCriterions.getColumns().getFirstChild();
         ListModelExt model = (ListModelExt) listingCriterions.getModel();
-        if ("ascending".equals(column.getSortDirection())) {
-            model.sort(column.getSortAscending(), true);
-        }
-        if ("descending".equals(column.getSortDirection())) {
-            model.sort(column.getSortDescending(), false);
+        if (model != null) {
+            if ("ascending".equals(column.getSortDirection())) {
+                model.sort(column.getSortAscending(), true);
+            }
+            if ("descending".equals(column.getSortDirection())) {
+                model.sort(column.getSortDescending(), false);
+            }
         }
     }
 

@@ -21,10 +21,9 @@
 
 package org.libreplan.ws.common.impl;
 
-import static org.libreplan.web.I18nHelper._;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -44,6 +43,7 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.materials.bootstrap.PredefinedMaterialCategories;
 import org.libreplan.business.materials.entities.Material;
@@ -75,6 +75,7 @@ import org.libreplan.ws.common.api.OrderElementDTO;
 import org.libreplan.ws.common.api.OrderLineDTO;
 import org.libreplan.ws.common.api.OrderLineGroupDTO;
 import org.libreplan.ws.common.api.ResourceEnumDTO;
+import org.libreplan.ws.subcontract.api.EndDateCommunicationToCustomerDTO;
 
 /**
  * Converter from/to {@link OrderElement} entities to/from DTOs.
@@ -271,7 +272,8 @@ public final class OrderElementConverter {
             OrderElementDTO orderElementDTO,
             String instance) {
         if (orderElementDTO.code == null) {
-            throw new ValidationException(instance + _(": code not found"));
+            throw new ValidationException(MessageFormat.format(
+                    "{0}: code not found", instance));
         }
     }
 
@@ -316,7 +318,7 @@ public final class OrderElementConverter {
                                 .addCriterionRequirement(DirectCriterionRequirement
                                         .create(criterion));
                         } catch (IllegalStateException e) {
-                            throw new ValidationException(_(e.getMessage()));
+                            throw new ValidationException(e.getMessage());
                         }
                     }
                 } else { // criterionRequirementDTO instanceof
@@ -554,10 +556,10 @@ public final class OrderElementConverter {
 
         if (orderElementDTO instanceof OrderLineDTO) {
             if (!(orderElement instanceof OrderLine)) {
-                throw new ValidationException(_(
-                        "Task {0} : Task group is incompatible type with {1}"
-                                + orderElement.getCode(), orderElement
-                                .getClass().getName()));
+                throw new ValidationException(MessageFormat.format(
+                        "Task {0}: Task group is incompatible type with {1}",
+                        orderElement.getCode(), orderElement.getClass()
+                                .getName()));
             }
 
             if (configuration.isHoursGroups()) {
@@ -577,10 +579,10 @@ public final class OrderElementConverter {
         } else { // orderElementDTO instanceof OrderLineGroupDTO
             if (orderElementDTO instanceof OrderDTO) {
                 if (!(orderElement instanceof Order)) {
-                    throw new ValidationException(_(
-                            "Task {0} : Project is incompatible type with {1}"
-                                    + orderElement.getCode(), orderElement
-                                    .getClass().getName()));
+                    throw new ValidationException(MessageFormat.format(
+                            "Task {0}: Project is incompatible type with {1}",
+                            orderElement.getCode(), orderElement.getClass()
+                                    .getName()));
 
                 }
                 Order order = (Order) orderElement;
@@ -610,10 +612,11 @@ public final class OrderElementConverter {
                 }
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 if (!(orderElement instanceof OrderLineGroup)) {
-                    throw new ValidationException(_(
-                            "Task {0} : Task group is incompatible type with {1}"
-                                    + orderElement.getCode(), orderElement
-                                    .getClass().getName()));
+                    throw new ValidationException(
+                            MessageFormat
+                                    .format("Task {0}: Task group is incompatible type with {1}",
+                                            orderElement.getCode(),
+                                            orderElement.getClass().getName()));
                 }
             }
 
@@ -622,15 +625,16 @@ public final class OrderElementConverter {
                     update(orderElement.getOrderElement(childDTO.code),
                             childDTO, configuration);
                 } else {
-                    if (checkConstraintUniqueOrderCode(orderElementDTO)) {
+                    if (checkConstraintUniqueOrderCode(childDTO)) {
                         throw new ValidationException(
-                                _("Task {0} : Duplicate code in DB"
-                                        + orderElementDTO.code));
+                                MessageFormat.format(
+                                        "Task {0}: Duplicate code in DB",
+                                        childDTO.code));
                     }
-                    if (checkConstraintUniqueHoursGroupCode(orderElementDTO)) {
-                        throw new ValidationException(
-                                _("Hours Group {0} : Duplicate code in DB"
-                                        + orderElementDTO.code));
+                    if (checkConstraintUniqueHoursGroupCode(childDTO)) {
+                        throw new ValidationException(MessageFormat.format(
+                                "Hours Group {0}: Duplicate code in DB",
+                                childDTO.code));
                     }
                     ((OrderLineGroup) orderElement).add(toEntity(childDTO,
                             configuration));
@@ -745,7 +749,7 @@ public final class OrderElementConverter {
             ConfigurationOrderElementConverter configuration) {
         if (!hoursGroup.getCode().equals(hoursGroupDTO.code)) {
             throw new ValidationException(
-                    _("Not the same hours group, impossible to update"));
+                    "Not the same hours group, impossible to update");
         }
 
         if (hoursGroupDTO.workingHours != null) {
@@ -763,7 +767,7 @@ public final class OrderElementConverter {
         if (!materialAssignment.getMaterial().getCode().equals(
                 materialAssignmentDTO.materialCode)) {
             throw new ValidationException(
-                    _("Not the same material, impossible to update"));
+                    "Not the same material, impossible to update");
         }
 
         if (materialAssignmentDTO.units != null) {
@@ -816,12 +820,13 @@ public final class OrderElementConverter {
                         .addSubcontractorAdvanceAssignment();
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
                 throw new ValidationException(
-                        _("Duplicate value true report global progress for task"
-                                + orderElement.getCode()));
+                        MessageFormat
+                                .format("Duplicate value true report global progress for task {0}",
+                                        orderElement.getCode()));
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-                throw new ValidationException(
-                        _("Duplicate progress assignment for task "
-                                + orderElement.getCode()));
+                throw new ValidationException(MessageFormat.format(
+                        "Duplicate progress assignment for task {0}",
+                        orderElement.getCode()));
             }
         }
         return directAdvanceAssignment;
@@ -841,6 +846,28 @@ public final class OrderElementConverter {
                 .toXMLGregorianCalendar(advanceMeasurement.getDate());
         return new AdvanceMeasurementDTO(date, advanceMeasurement
                 .getValue());
+    }
+
+    public static EndDateCommunication toEntity(
+            EndDateCommunicationToCustomerDTO endDateCommunicationToCustomerDTO) {
+        Date endDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.endDate);
+        Date communicationDate = DateConverter
+                .toDate(endDateCommunicationToCustomerDTO.communicationDate);
+        Date saveDate = DateConverter.toDate(endDateCommunicationToCustomerDTO.saveDate);
+        EndDateCommunication endDateCommunicationToCustomer = EndDateCommunication
+                .create(saveDate, endDate, communicationDate);
+        return endDateCommunicationToCustomer;
+    }
+
+    public static EndDateCommunicationToCustomerDTO toDTO(
+            EndDateCommunication endDateCommunicationToCustomer) {
+        XMLGregorianCalendar endDate = DateConverter
+                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getEndDate());
+        XMLGregorianCalendar saveDate = DateConverter
+                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getSaveDate());
+        XMLGregorianCalendar communicationDate = DateConverter
+                .toXMLGregorianCalendar(endDateCommunicationToCustomer.getCommunicationDate());
+        return new EndDateCommunicationToCustomerDTO(saveDate, endDate, communicationDate);
     }
 
 }

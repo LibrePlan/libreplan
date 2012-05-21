@@ -5,6 +5,8 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
+ * Copyright (C) 2011 WirelessGalicia, S.L.
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -32,6 +34,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
+import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
@@ -230,6 +233,7 @@ public class MultipleTabsPlannerController implements Composer,
                     public void goToTaskResourceAllocation(Order order,
                             TaskElement task) {
                         orderPlanningController.setShowedTask(task);
+                        orderPlanningController.setCurrentControllerToShow(orderPlanningController.getEditTaskController());
                         getTabsRegistry()
                                 .show(planningTab, changeModeTo(order));
                     }
@@ -478,6 +482,21 @@ public class MultipleTabsPlannerController implements Composer,
     @Override
     public void goToAdvancedAllocation(Order order) {
         getTabsRegistry().show(advancedAllocationTab, changeModeTo(order));
+    }
+
+    @Override
+    public void goToCreateotherOrderFromTemplate(OrderTemplate template) {
+        getTabsRegistry().show(ordersTab);
+        orderCRUDController.showCreateFormFromTemplate(template);
+    }
+
+    @Override
+    public void goToAdvanceTask(Order order,TaskElement task) {
+        orderPlanningController.setShowedTask(task);
+        orderPlanningController
+                .setCurrentControllerToShow(orderPlanningController
+                        .getAdvanceAssignmentPlanningController());
+        getTabsRegistry().show(planningTab, changeModeTo(order));
     }
 
     private IBeforeShowAction changeModeTo(final Order order) {
