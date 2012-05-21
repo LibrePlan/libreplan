@@ -1950,3 +1950,6 @@ select {
     border-left-color: transparent;
     display:none;
 }
+.reported-hours, .show-advances {
+    display: none;
+}
