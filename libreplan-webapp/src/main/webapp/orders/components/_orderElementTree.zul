@@ -41,16 +41,15 @@
                 onOK="treeController.addElement(self.parent);" disabled="true" />
             <button id="btnNew" label="${treeComponent.addElementLabel}"
                 onClick="treeController.addElement(self.parent);" disabled="true" />
-            <button id="btnExpand" label="Hide expand"
-                onClick="treeController.expandAll();"  />
             <button id="btnNewFromTemplate" label="${i18n:_('Add From Template')}"
                 onClick="treeController.createFromTemplate();" disabled="true"
                 visible="${treeComponent.createFromTemplateEnabled}"/>
         </hbox>
 
         <hbox width="100%" style="float:right" hflex="1" align="right" pack="right">
-            <button id="btnExpand" label="${i18n:_('Expand tree')}"
-                onClick="treeController.expandAll();"  />
+            <button label="${i18n:_('Expand tree')}"
+                onClick="treeController.expandAll();"
+                visible="${!treeComponent.createFromTemplateEnabled}" />
             <label value="${i18n:_('Selected node')}:" />
             <button id="editOrderElementButton" sclass="icono" image="/common/img/ico_editar1.png"
                 tooltiptext="${i18n:_('Edit selected task')}"

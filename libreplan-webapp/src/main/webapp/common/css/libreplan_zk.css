@@ -1901,3 +1901,7 @@ select {
 .bandbox-workreport-task input {
     width: 250px;
 }
+
+.scheduling-state {
+    display: none;
+}
