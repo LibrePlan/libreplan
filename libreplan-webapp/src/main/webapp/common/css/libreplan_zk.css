@@ -1932,3 +1932,7 @@ select {
 .filming-progress-area .z-grid-header{
     height: 35px;
 }
+
+.reported-hours, .show-advances {
+    display: none;
+}

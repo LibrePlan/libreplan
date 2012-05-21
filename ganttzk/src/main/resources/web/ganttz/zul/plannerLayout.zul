@@ -83,7 +83,7 @@ planner = self;
         <button id="showReportedHours" onClick="planner.showReportedHours();"
             image="/common/img/ico_costs.png"
             tooltiptext="${ganttzk_i18n:_('Show/Hide reported hours')}"
-            sclass="planner-command"/>
+            sclass="planner-command reported-hours"/>
         <separator />
 
         <button id="showMoneyCostBar" onClick="planner.showMoneyCostBar();"
