@@ -603,4 +603,16 @@ public class TemplatesTreeController extends
         }
     }
 
+    @Override
+    protected INameHandler<OrderElementTemplate> getNameHandler() {
+        return new INameHandler<OrderElementTemplate>() {
+
+            @Override
+            public String getNameFor(OrderElementTemplate element) {
+                return element.getName();
+            }
+
+        };
+    }
+
 }
