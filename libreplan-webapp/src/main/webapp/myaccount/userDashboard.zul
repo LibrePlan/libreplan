@@ -27,11 +27,14 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 
 <?component name="my-tasks-area" inline="true" macroURI="_myTasksArea.zul"?>
+<?component name="monthly-timesheets-area" inline="true" macroURI="_monthlyTimesheetsArea.zul"?>
 
 <zk>
     <window self="@{define(content)}" title="${i18n:_('My dashboard')}">
 
         <my-tasks-area />
+
+        <monthly-timesheets-area />
 
     </window>
 </zk>
