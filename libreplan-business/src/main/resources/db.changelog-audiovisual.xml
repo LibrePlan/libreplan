@@ -130,4 +130,27 @@
             onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="filming_progress"
             referencesUniqueColumn="false"/>
     </changeSet>
+
+    <changeSet id="add-table-budget-and-relation-with-order" author="jaragunde">
+        <comment>
+            A subclass of OrderTemplate called Budget has been added. It doesn't contain
+            new fields but the entity will be used to differentiate from
+            BudgetTemplates, which are also children of OrderTemplate.
+            A one-to-one relation between Budget and Order has to be set.
+        </comment>
+        <createTable tableName="budget">
+            <column name="budget_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="budget_pkey"/>
+            </column>
+            <column name="order_element_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="fk_budget_order_element_template"
+            baseTableName="budget" baseColumnNames="budget_id"
+            referencedTableName="order_element_template" referencedColumnNames="id"
+            />
+        <addForeignKeyConstraint constraintName="fk_budget_order"
+            baseTableName="budget" baseColumnNames="order_element_id"
+            referencedTableName="order_table" referencedColumnNames="order_element_id"
+            />
+    </changeSet>
 </databaseChangeLog>

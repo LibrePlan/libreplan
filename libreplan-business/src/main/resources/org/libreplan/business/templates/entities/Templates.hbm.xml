@@ -74,7 +74,12 @@
                 <many-to-one name="calendar" column="base_calendar_id" cascade="none"
                     class="org.libreplan.business.calendars.entities.BaseCalendar"/>
                 <joined-subclass name="BudgetTemplate" table="budget_template">
-	                <key column="budget_template_id"></key>
+                    <key column="budget_template_id"></key>
+                </joined-subclass>
+                <joined-subclass name="Budget" table="budget">
+                    <key column="budget_id"></key>
+                    <many-to-one name="associatedOrder" column="order_element_id" cascade="none"
+                         unique="true" class="org.libreplan.business.orders.entities.Order" />
                 </joined-subclass>
             </joined-subclass>
         </joined-subclass>

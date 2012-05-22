@@ -61,6 +61,7 @@ import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.util.deepcopy.DeepCopy;
@@ -122,6 +123,8 @@ public class Order extends OrderLineGroup implements Comparable {
     private FilmingProgress filmingProgress;
 
     private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
+
+    private Budget associatedBudgetObject;
 
     @Valid
     private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
@@ -679,6 +682,14 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public boolean isNeededToRecalculateSumExpenses() {
         return neededToRecalculateSumExpenses;
+    }
+
+    public Budget getAssociatedBudgetObject() {
+        return associatedBudgetObject;
+    }
+
+    public void setAssociatedBudgetObject(Budget associatedBudgetObject) {
+        this.associatedBudgetObject = associatedBudgetObject;
     }
 
 }
