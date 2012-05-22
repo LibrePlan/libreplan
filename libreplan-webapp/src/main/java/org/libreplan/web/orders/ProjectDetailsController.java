@@ -34,7 +34,7 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.templates.entities.OrderTemplate;
+import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
@@ -146,7 +146,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
                 tabs.goToOrdersList();
             }
             if (bdProjectTemplate.getSelectedElement() != null) {
-                OrderTemplate template = (OrderTemplate) bdProjectTemplate
+                BudgetTemplate template = (BudgetTemplate) bdProjectTemplate
                         .getSelectedElement();
                 orderController.createFromTemplate(template);
             }
@@ -297,7 +297,8 @@ public class ProjectDetailsController extends GenericForwardComposer {
     }
 
     public void calculateProjectDates() {
-        OrderTemplate template = (OrderTemplate) bdProjectTemplate.getSelectedElement();
+        BudgetTemplate template = (BudgetTemplate) bdProjectTemplate
+                .getSelectedElement();
         if (template == null) {
             return;
         }

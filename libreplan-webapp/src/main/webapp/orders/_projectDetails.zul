@@ -40,7 +40,8 @@
             </row>
             <row>
                 <label value="${i18n:_('Template')}" />
-                <bandboxSearch id="bdProjectTemplate" finder="templatesEligibleForOrder"
+                <bandboxSearch id="bdProjectTemplate" finder="budgetTemplateFinder"
+                    constraint="no empty:${i18n:_('cannot be null or empty')}"
                     widthBandbox="400px" widthListbox="500px" />
             </row>
             <row>
