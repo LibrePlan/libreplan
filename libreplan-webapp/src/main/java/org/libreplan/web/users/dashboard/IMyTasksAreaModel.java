@@ -27,11 +27,11 @@ import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.users.entities.User;
 
 /**
- * Interface for user dashboard model
+ * Interface for "My tasks" area model
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IUserDashboardModel {
+public interface IMyTasksAreaModel {
 
     /**
      * Returns the list of {@link TaskElement TaskElements} assigned to the

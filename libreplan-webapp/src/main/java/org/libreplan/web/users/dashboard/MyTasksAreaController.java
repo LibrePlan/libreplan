@@ -35,14 +35,14 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 /**
- * Controller for user dashboard
+ * Controller for "My tasks" area in the user dashboard window
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @SuppressWarnings("serial")
-public class UserDashboardController extends GenericForwardComposer {
+public class MyTasksAreaController extends GenericForwardComposer {
 
-    private IUserDashboardModel userDashboardModel;
+    private IMyTasksAreaModel myTasksAreaModel;
 
     private RowRenderer tasksRenderer = new RowRenderer() {
 
@@ -99,7 +99,7 @@ public class UserDashboardController extends GenericForwardComposer {
     }
 
     public List<Task> getTasks() {
-        return userDashboardModel.getTasks();
+        return myTasksAreaModel.getTasks();
     }
 
     public RowRenderer getTasksRenderer() {

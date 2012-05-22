@@ -39,14 +39,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Model for operations of user dashboard window
+ * Model for for "My tasks" area in the user dashboard window
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/myaccount/userDashboard.zul")
-public class UserDashboardModel implements IUserDashboardModel {
+public class MyTasksAreaModel implements IMyTasksAreaModel {
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
