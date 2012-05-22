@@ -394,7 +394,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     .getOrderElementModel(currentOrderElement);
             orderElementController.openWindow(model);
             updateNameFor(currentOrderElement);
-            updateHoursFor(currentOrderElement);
             updateBudgetFor(currentOrderElement);
         }
 
@@ -651,7 +650,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     public void refreshRow(Treeitem item) {
         try {
             getRenderer().updateNameFor((OrderElement) item.getValue());
-            getRenderer().updateHoursFor((OrderElement) item.getValue());
             getRenderer().updateBudgetFor((OrderElement) item.getValue());
             getRenderer().render(item, item.getValue());
         } catch (Exception e) {

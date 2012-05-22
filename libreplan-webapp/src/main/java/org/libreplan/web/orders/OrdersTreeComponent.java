@@ -67,16 +67,6 @@ public class OrdersTreeComponent extends TreeComponent {
         columns.add(schedulingStateColumn);
         columns.add(codeColumn);
         columns.add(nameAndDescriptionColumn);
-        columns.add(new OrdersTreeColumn(_("Hours"), "hours",
-                _("Total task hours")) {
-
-            @Override
-            protected void doCell(OrderElementTreeitemRenderer treeRenderer,
-                    OrderElement currentElement) {
-                treeRenderer.addHoursCell(currentElement);
-            }
-
-        });
         columns.add(new OrdersTreeColumn(_("Budget"), "budget",
                 _("Total task budget")) {
 
@@ -87,9 +77,9 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
-        columns.add(new OrdersTreeColumn(_("Must start after"),
+        columns.add(new OrdersTreeColumn(_("Start"),
                         "estimated_init",
-                        _("Date which the task must start after (press enter in textbox to open calendar popup or type in date directly)")) {
+                _("Cost prevision start date")) {
 
             @Override
             protected void doCell(OrderElementTreeitemRenderer treeRenderer,
@@ -98,11 +88,9 @@ public class OrdersTreeComponent extends TreeComponent {
             }
 
         });
-        columns
-                .add(new OrdersTreeColumn(
-                        _("Deadline"),
+        columns.add(new OrdersTreeColumn(_("End"),
                         "estimated_end",
-                        _("Estimated end date for the task (press enter in textbox to open calendar popup or type in date directly)")) {
+                _("Cost prevision end date")) {
 
             @Override
             protected void doCell(OrderElementTreeitemRenderer treeRenderer,

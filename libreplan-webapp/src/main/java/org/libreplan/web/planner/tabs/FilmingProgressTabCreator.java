@@ -82,7 +82,8 @@ public class FilmingProgressTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Filming progress"), "order-dashboard", componentCreator) {
+        return new CreatedOnDemandTab(_("Filming progress"),
+                "filming-progress", componentCreator) {
 
             @Override
             protected void afterShowAction() {
