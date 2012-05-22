@@ -116,7 +116,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
     private OrderedFieldsAndLabelsRowRenderer orderedFieldsAndLabesRowRenderer = new OrderedFieldsAndLabelsRowRenderer();
 
     public List<WorkReportType> getWorkReportTypes() {
-        return workReportTypeModel.getWorkReportTypes();
+        return workReportTypeModel.getWorkReportTypesExceptMonthlyTimeSheets();
     }
 
     public WorkReportType getWorkReportType() {
