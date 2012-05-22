@@ -42,7 +42,8 @@ public enum Language {
     ITALIAN_LANGUAGE("Italiano", new Locale("it")),
     FRENCH_LANGUAGE("Français", new Locale("fr")),
     DUTCH_LANGUAGE("Nederlands", new Locale("nl")),
-    POLISH_LANGUAGE("Polski", new Locale("pl"));
+    POLISH_LANGUAGE("Polski", new Locale("pl")),
+    CZECH_LANGUAGE("Čeština", new Locale("cs"));
 
     private final String displayName;
 
