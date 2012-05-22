@@ -35,6 +35,21 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add-foreign-key-constraints-budget_template" author="jaragunde">
+        <comment>
+            Add foreign key constraints between the base class OrderElementTemplate and its children
+            classes BudgetLineTemplate and BudgetTemplate.
+        </comment>
+        <addForeignKeyConstraint constraintName="fk_budget_line_template_order_element_template"
+            baseTableName="budget_line_template" baseColumnNames="budget_line_template_id"
+            referencedTableName="order_element_template" referencedColumnNames="id"
+            />
+        <addForeignKeyConstraint constraintName="fk_budget_template_order_element_template"
+            baseTableName="budget_template" baseColumnNames="budget_template_id"
+            referencedTableName="order_element_template" referencedColumnNames="id"
+            />
+    </changeSet>
+
     <changeSet id="add-code-order_element_template" author="jaragunde">
         <comment>
             The code attribute was removed from order_element_template table in master,
