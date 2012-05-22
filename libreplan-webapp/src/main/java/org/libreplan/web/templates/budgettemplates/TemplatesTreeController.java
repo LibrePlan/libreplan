@@ -198,6 +198,7 @@ public class TemplatesTreeController extends
             super.addBudgetCell(currentElement);
             //disable cell because its value cannot be changed directly
             Decimalbox box = budgetDecimalboxByElement.get(currentElement);
+            box.setClass("budgetline-total");
             box.setDisabled(true);
         }
 

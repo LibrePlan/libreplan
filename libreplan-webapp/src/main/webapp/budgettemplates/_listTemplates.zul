@@ -18,7 +18,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<window id="${arg.top_id}" title="${i18n:_('Templates List')}">
+<window id="${arg.top_id}" title="${i18n:_('Budget templates')}">
     <grid id="listing" model="@{controller.templates}" mold="paging"
         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>

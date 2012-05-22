@@ -1936,3 +1936,16 @@ select {
 .reported-hours, .show-advances {
     display: none;
 }
+.orderTree .z-treerow input.budgetline-total {
+    opacity: 1;
+    font-weight: bold;
+    background: #EEE;
+    border-right: 1px dotted #7EAAC6;
+    display:inline;
+}
+
+.orderTree input.z-intbox-disd {
+    background: #FFF;
+    border-left-color: transparent;
+    display:none;
+}
