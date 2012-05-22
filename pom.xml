@@ -626,6 +626,10 @@
                         <groupId>cglib</groupId>
                         <artifactId>cglib-full</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <!-- LibrePlan ZK Components -->
