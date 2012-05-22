@@ -708,13 +708,18 @@ public class Util {
      * {@link Row} for the edit operation.<br />
      *
      * The edit button will call the <code>editButtonListener</code> when
-     * clicked and the remove button the <code>removeButtonListener</code>.
+     * clicked and the remove button the <code>removeButtonListener</code>.<br />
+     *
+     * If <code>removeButtonListener</code> is null, it only adds the edit
+     * button and the <code>ON_CLICK</code> event.
      */
     public static void appendOperationsAndOnClickEvent(Row row,
             EventListener editButtonListener, EventListener removeButtonListener) {
         Hbox hbox = new Hbox();
         hbox.appendChild(Util.createEditButton(editButtonListener));
-        hbox.appendChild(Util.createRemoveButton(removeButtonListener));
+        if (removeButtonListener != null) {
+            hbox.appendChild(Util.createRemoveButton(removeButtonListener));
+        }
         row.appendChild(hbox);
 
         row.addEventListener(Events.ON_CLICK, editButtonListener);

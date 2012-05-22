@@ -18,14 +18,19 @@
   <http://www.gnu.org/licenses/>.
  -->
 
-<groupbox apply="org.libreplan.web.users.dashboard.MonthlyTimesheetsAreaController">
-    <caption label="${i18n:_('Monthly timesheets')}" />
+<?page id="exceptionDayTypesList" title="${i18n:_('LibrePlan: Monthly timesheet')}" ?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
-    <grid model="@{controller.monthlyTimesheets}" mold="paging"
-        pageSize="10" rowRenderer="@{controller.monthlyTimesheetsRenderer}">
-        <columns sizable="true">
-            <column label="${i18n:_('Date')}" />
-            <column label="${i18n:_('Operations')}" />
-        </columns>
-    </grid>
-</groupbox>
+<?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+
+<zk>
+    <window apply="org.libreplan.web.users.dashboard.MonthlyTimesheetController"
+        self="@{define(content)}" title="${i18n:_('Monthly timesheet')}">
+
+        <label value="@{controller.date}" />
+
+    </window>
+</zk>

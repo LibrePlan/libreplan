@@ -21,10 +21,14 @@ package org.libreplan.web.users.dashboard;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.joda.time.LocalDate;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -39,14 +43,26 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
 
     private IMonthlyTimesheetsAreaModel monthlyTimesheetsAreaModel;
 
+    @Resource
+    private IMonthlyTimesheetController monthlyTimesheetController;
+
     private RowRenderer monthlyTimesheetsRenderer = new RowRenderer() {
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            MonthlyTimesheet monthlyTimesheet = (MonthlyTimesheet) data;
+            final MonthlyTimesheet monthlyTimesheet = (MonthlyTimesheet) data;
             row.setValue(monthlyTimesheet);
 
             Util.appendLabel(row, monthlyTimesheet.getDate().toString("MMMM y"));
+
+            Util.appendOperationsAndOnClickEvent(row, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    monthlyTimesheetController.goToCreateOrEditForm(monthlyTimesheet
+                            .getDate());
+                }
+            }, null);
         }
 
     };
