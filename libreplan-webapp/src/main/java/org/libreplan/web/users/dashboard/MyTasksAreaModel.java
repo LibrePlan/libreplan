@@ -31,7 +31,6 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.UserUtil;
-import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -45,7 +44,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/myaccount/userDashboard.zul")
 public class MyTasksAreaModel implements IMyTasksAreaModel {
 
     @Autowired
