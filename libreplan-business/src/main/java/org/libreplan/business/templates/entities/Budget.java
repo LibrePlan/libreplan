@@ -38,6 +38,18 @@ public class Budget extends OrderTemplate {
         return create(beingBuilt);
     }
 
+    public static Budget createFromTemplate(BudgetTemplate template) {
+        Budget beingBuilt = new Budget();
+        beingBuilt.setName(template.getName());
+        beingBuilt.calendar = Registry.getConfigurationDAO().getConfiguration()
+                .getDefaultCalendar();
+        beingBuilt.setCode("default-code-for-budget");
+        for (OrderElementTemplate child : template.getChildren()) {
+            beingBuilt.add(child.createCopy());
+        }
+        return create(beingBuilt);
+    }
+
     public Order getAssociatedOrder() {
         return associatedOrder;
     }

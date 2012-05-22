@@ -286,4 +286,16 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         return budget;
     }
 
+    @Override
+    public OrderElementTemplate createCopy() {
+        OrderLineGroupTemplate copy = OrderLineGroupTemplate.createNew();
+        copy.setName(getName());
+        copy.setCode(getCode());
+        copy.setDescription(getDescription());
+        for (OrderElementTemplate child : getChildren()) {
+            copy.add(child.createCopy());
+        }
+        return copy;
+    }
+
 }

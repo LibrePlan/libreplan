@@ -119,4 +119,20 @@ public class BudgetLineTemplate extends OrderLineTemplate {
 
         return true;
     }
+
+    @Override
+    public OrderElementTemplate createCopy() {
+        BudgetLineTemplate copy = BudgetLineTemplate.createNew();
+        copy.setName(getName());
+        copy.setCode(getCode());
+        copy.setDescription(getDescription());
+        copy.setBudget(getBudget());
+        copy.setBudgetLineType(getBudgetLineType());
+        copy.setCostOrSalary(getCostOrSalary());
+        copy.setHolidaySalary(getHolidaySalary());
+        copy.setIndemnizationSalary(getIndemnizationSalary());
+        copy.setQuantity(getQuantity());
+
+        return copy;
+    }
 }

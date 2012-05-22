@@ -237,4 +237,10 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return budget;
     }
 
+    @Override
+    public OrderElementTemplate createCopy() {
+        // TODO Not used in this class
+        return null;
+    }
+
 }

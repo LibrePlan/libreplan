@@ -596,4 +596,6 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     public abstract BigDecimal getBudget();
 
+    public abstract OrderElementTemplate createCopy();
+
 }

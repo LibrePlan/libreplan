@@ -18,10 +18,10 @@
  */
 package org.libreplan.business.templates.entities;
 
-import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.Registry;
-import org.libreplan.business.common.entities.Configuration;
-import org.springframework.transaction.annotation.Transactional;
+import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.scenarios.entities.OrderVersion;
+import org.libreplan.business.scenarios.entities.Scenario;
 
 /**
  * Marker class intended to differentiate two different kinds of OrderTemplate:
@@ -37,6 +37,21 @@ public class BudgetTemplate extends OrderTemplate {
                 Registry.getConfigurationDAO().getConfiguration().getDefaultCalendar();
         beingBuilt.setCode("default-code-for-budget-template");
         return create(beingBuilt);
+    }
+
+    public Order createOrder(Scenario currentScenario) {
+        Order order = Order.create();
+        order.setVersionForScenario(currentScenario,
+                OrderVersion.createInitialVersion(currentScenario));
+        order.useSchedulingDataFor(currentScenario);
+        order.setCalendar(calendar);
+        order.initializeTemplate(this);
+
+        Budget budget = Budget.createFromTemplate(this);
+        budget.setAssociatedOrder(order);
+        order.setAssociatedBudgetObject(budget);
+
+        return order;
     }
 
 }
