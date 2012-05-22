@@ -19,10 +19,15 @@
 
 package org.libreplan.web.users.dashboard;
 
+import static org.libreplan.web.I18nHelper._;
+import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
+
 import org.joda.time.LocalDate;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
 
 /**
  * Controller for creation/edition of a monthly timesheet
@@ -42,8 +47,23 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
 
+        setBreadcrumbs(comp);
+
         URLHandlerRegistry.getRedirectorFor(IMonthlyTimesheetController.class)
                 .register(this, page);
+    }
+
+    private void setBreadcrumbs(Component comp) {
+        Component breadcrumbs = comp.getPage().getFellow("breadcrumbs");
+        if (breadcrumbs.getChildren() != null) {
+            breadcrumbs.getChildren().clear();
+        }
+        breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+        breadcrumbs.appendChild(new Label(_("My account")));
+        breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+        breadcrumbs.appendChild(new Label(_("My dashboard")));
+        breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+        breadcrumbs.appendChild(new Label(_("Monthly timesheet")));
     }
 
     @Override
