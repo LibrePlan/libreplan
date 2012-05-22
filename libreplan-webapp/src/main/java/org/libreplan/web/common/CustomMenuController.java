@@ -285,11 +285,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                         "/budgettemplates/templates.zul", ""));
 
         List<CustomMenuItem> resourcesItems = new ArrayList<CustomMenuItem>();
-        resourcesItems.add(subItem(_("Workers"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"));
-        resourcesItems.add(subItem(_("Machines"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"));
-        resourcesItems.add(subItem(_("Virtual Workers Groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
-        resourcesItems.add(subItem(_("Time Tracking"), "/workreports/workReport.zul",
-                "09-partes.html#id3"));
         if ((SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION))
                 || (SecurityUtils.isUserInRole(UserRole.ROLE_EXPENSE_TRACKING))) {
             resourcesItems
@@ -298,6 +293,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             resourcesItems.add(subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""));
         }
+
         resourcesItems.add(subItem(_("Communications"), "/subcontract/subcontractedTasks.zul", "",
                 subItem(_("Send to subcontractors"), "/subcontract/subcontractedTasks.zul", ""),
                 subItem(_("Received from subcontractors"), "/subcontract/subcontractorCommunications.zul",""),
@@ -320,31 +316,20 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     subItem(_("Accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
                     subItem(_("Profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles")),
                 subItem(_("Calendars"),"/calendars/calendars.zul", "03-calendarios.html"),
-                subItem(_("Materials"), "/materials/materials.zul", "11-materiales.html#administraci-n-de-materiais"),
                 subItem(_("Quality Forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
-                subItem(_("Cost Categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
                 subItem(_("Data Types"),"/advance/advanceTypes.zul", "04-avances.html#id1",
                     subItem(_("Progress"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
-                    subItem(_("Criteria"),"/resources/criterions/criterions.zul","02-criterios.html#id1"),
                     subItem(_("Exception Days"),"/excetiondays/exceptionDays.zul",""),
                     subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
-                    subItem(_("Unit Measures"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
-                    subItem(_("Work Hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
-                            subItem(_("Work Report Models"),
-                                    "/workreports/workReportTypes.zul",
-                                    "09-partes.html#id2")));
+                            subItem(_("Unit Measures"),
+                                    "/materials/unitTypes.zul",
+                                    "11-materiales.html#administraci-n-de-materiais")));
             }
 
         topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
-            subItem(_("Work Report Lines"), "/workreports/workReportQuery.zul", "09-partes.html#id4"),
-            subItem(_("Hours Worked Per Resource"),"/reports/hoursWorkedPerWorkerReport.zul","15-1-report-hours-worked-by-resource.html"),
-            subItem(_("Total Worked Hours By Resource In A Month"),"/reports/hoursWorkedPerWorkerInAMonthReport.zul","15-2-total-hours-by-resource-month.html"),
-            subItem(_("Work And Progress Per Project"),"/reports/schedulingProgressPerOrderReport.zul", "15-3-work-progress-per-project.html"),
-            subItem(_("Work And Progress Per Task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
-            subItem(_("Estimated/Planned Hours Per Task"),"/reports/completedEstimatedHoursPerTask.zul", "15-informes.html"),
-            subItem(_("Project Costs"), "/reports/orderCostsPerResource.zul", "15-informes.html"),
-            subItem(_("Task Scheduling Status In Project"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
-            subItem(_("Materials Needs At Date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
+                subItem(_("Project Costs"),
+                        "/reports/orderCostsPerResource.zul",
+                        "15-informes.html"));
 
         topItem(_("My account"), "/myaccount/userDashboard.zul", "",
                 subItem(_("My dashboard"), "/myaccount/userDashboard.zul", ""),
