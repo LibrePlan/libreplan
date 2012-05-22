@@ -412,6 +412,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
     public void remove(WorkReport workReport) {
         //before deleting the report, update OrderElement.SumChargedHours
         try {
+            workReportDAO.reattach(workReport);
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
                             .getWorkReportLines());
