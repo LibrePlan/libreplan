@@ -129,7 +129,11 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
             }
             break;
         case EDIT:
-            title = _("Edit {0}: {1}", getEntityType(), humanId);
+            if (StringUtils.isEmpty(humanId)) {
+                title = _("Edit {0}", getEntityType());
+            } else {
+                title = _("Edit {0}: {1}", getEntityType(), humanId);
+            }
             break;
         default:
             throw new IllegalStateException(

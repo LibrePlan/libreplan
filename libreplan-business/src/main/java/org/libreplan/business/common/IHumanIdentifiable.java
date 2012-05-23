@@ -28,7 +28,8 @@ package org.libreplan.business.common;
 public interface IHumanIdentifiable {
 
     /**
-     * Returns a text identifier of the entity
+     * Returns a text identifier of the entity if it can be generated a
+     * human-readable identifier or an empty string in other case.
      *
      * @return Entity human identifier
      */
