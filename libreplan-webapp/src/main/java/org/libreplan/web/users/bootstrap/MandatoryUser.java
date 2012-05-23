@@ -189,6 +189,20 @@ public enum MandatoryUser {
             return Language.POLISH_LANGUAGE;
         }
     },
+    ADMIN_CS(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
+            UserRole.ROLE_READ_ALL_ORDERS, UserRole.ROLE_EDIT_ALL_ORDERS,
+            UserRole.ROLE_CREATE_ORDER), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.CZECH_LANGUAGE;
+        }
+    },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER), Configuration
             .isExampleUsersDisabled()) {
         @Override

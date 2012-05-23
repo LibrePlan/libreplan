@@ -108,6 +108,7 @@
                     <n:option title="admin_pl">Polski</n:option>
                     <n:option title="admin_pt">Português</n:option>
                     <n:option title="admin_ru">русский</n:option>
+                    <n:option title="admin_cs">Čeština</n:option>
                 </n:select>
             </n:div></n:td>
         </n:tr>
