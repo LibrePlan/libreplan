@@ -225,6 +225,7 @@ public class PlanningStateCreator {
             }
         }
         PlanningState result = createPlanning(reload(order));
+        result.onRetrieval();
         desktop.setAttribute(ATTRIBUTE_NAME, result);
         return result;
     }

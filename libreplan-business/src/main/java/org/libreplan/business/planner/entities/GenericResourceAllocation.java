@@ -36,6 +36,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.Capacity;
 import org.libreplan.business.calendars.entities.ICalendar;
+import org.libreplan.business.planner.entities.AssignedEffortForResource.IAssignedEffortForResource;
 import org.libreplan.business.planner.entities.EffortDistributor.IResourceSelector;
 import org.libreplan.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
 import org.libreplan.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
@@ -237,19 +238,19 @@ public class GenericResourceAllocation extends
 
     }
 
-    private IAssignedEffortForResource assignedEffortCalculatorOverriden = null;
+    private IAssignedEffortForResource assignedEffortForResource = null;
 
-    public void discountAssignedHoursForResourceFrom(
-            Collection<? extends ResourceAllocation<?>> allocations) {
-        assignedEffortCalculatorOverriden = new AssignedEffortDiscounting(
-                allocations);
+    public void setAssignedEffortForResource(
+            IAssignedEffortForResource assignedEffortForResource) {
+        this.assignedEffortForResource = assignedEffortForResource;
     }
 
     private IAssignedEffortForResource getAssignedEffortForResource() {
-        if (assignedEffortCalculatorOverriden != null) {
-            return assignedEffortCalculatorOverriden;
+        if (assignedEffortForResource != null) {
+            return assignedEffortForResource;
         }
-        return new AssignedEffortDiscounting(this);
+        return AssignedEffortForResource.effortDiscounting(Collections
+                .singletonList(this));
     }
 
     @Override
@@ -286,8 +287,6 @@ public class GenericResourceAllocation extends
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
         allocation.criterions = new HashSet<Criterion>(criterions);
-        allocation.assignedEffortCalculatorOverriden = new AssignedEffortDiscounting(
-                this);
         return allocation;
     }
 

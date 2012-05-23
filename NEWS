@@ -1,6 +1,160 @@
 NEWS
 ====
 
+Version 1.2.4 (23 May 2012)
+---------------------------
+
+Summary
+~~~~~~~
+
+This is a new minor release of LibrePlan. It includes all the fixes done since
+previous version 1.2.3 together with a new language (Czech) supported in the
+application.
+
+Some highlights:
+
+* Fixed problem in "Hours Worked Per Resource" report with standard work
+  reports.
+
+* Solved small issue in project web service in order to allow add tasks to an
+  already existent project.
+
+* Remove scenarios option in configuration window.
+
+* Reviewed algorithm to do generic allocations in order to avoid any problem if
+  there are more than one generic allocation in the same task.
+
+* Added favicon in all the windows.
+
+* Improved web services documentation with the list of available services.
+
+* Fixed problem using deadlines.
+
+* LibrePlan is now translated into Czech language thanks to the work done by
+  Zbyněk Schwarz.
+
+* This is the first version when we are providing files for using MySQL
+  database. This has been possible thanks to the upgrade to Liquibase 2.0.5.
+
+
+Notes
+~~~~~
+
+If you are upgrading from any 1.1.x version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.0.sql``, ``scripts/database/upgrade_1.2.1.sql``,
+``scripts/database/upgrade_1.2.2.sql`` and ``scripts/database/upgrade_1.2.3.sql``.
+
+If you are upgrading from 1.2.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.1.sql``, ``scripts/database/upgrade_1.2.2.sql``
+and ``scripts/database/upgrade_1.2.3.sql``.
+
+If you are upgrading from 1.2.1 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.2.sql`` and ``scripts/database/upgrade_1.2.3.sql``.
+
+If you are upgrading from 1.2.2 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.2.3.sql``.
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jacobo Aragunde Pérez
+* Óscar González Fernández
+* Manuel Rego Casasnovas
+* Juan A. Suarez Romero
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [cs] Zbyněk Schwarz
+* [es] Manuel Rego Casasnovas
+* [fr] Philippe Poumaroux
+* [gl] Manuel Rego Casasnovas
+* [it] Giuseppe Zizza
+* [nl] Jeroen Baten
+
+Changes
+~~~~~~~
+
+* Add database script for MySQL
+* Bug #1423: Remove unneeded line
+* doc: Update AUTHORS file info about new Czech translator
+* i18n: Add Czech language to enum and modify pom.xml to use English userguide
+* i18n: Add Czech language
+* Bug #1448: Fix issue reattaching the work report before removing
+* Bug #1450: Fix issue rounding when setting budget scale.
+* Bug #1447: Remove the test checking the creation of NOT_LATER_THAN constraint when a deadline is set.
+* Bug #1447: Prevent the creation of NOT_LATER_THAN constraint when a deadline is set.
+* doc: Update Eclipse document with 2 new sections (Maven profiles and MySQL development)
+* Bug #1444: Renamed variable with a more meaningful name.
+* Bug #1444: Save affected parent TaskElements in the end of the process.
+* Bug #1445: Fix issue adding purple color in CalendarExceptionTypeColorConverter
+* doc: Fix wrong path in web services documentation
+* Add some Javadoc to AssignedEffortForResource class
+* Fix Sahi tests due to removal of scenarios option
+* Bug #1428: Rename customAssignedEffortForResource to setAssignedEffortForResource
+* Bug #1428: Take into account the load of the other allocations when reassigning
+* Bug #1428: Fix bug
+* Bug #1428: Bring all files related to IAssignedEffortForResource to one unique file
+* Revert "Bug #1428: Possible fix"
+* Bug #1431: Sort the EffortModifications too
+* Bug #1431: Fix problem in commit 9d5e3d88dd4dacc4fc00af544a3306d4327dd674
+* doc: Update development guide with the line for the favicon
+* doc: Improve web services documentation with the list of available services
+* i18n: Update Dutch translation
+* i18n: Update Italian translation
+* Bug #1442: Fix regression.
+* Update Liquibase to 2.0.5
+* Bug #1284: Added favicon in all the screens.
+* i18n: Fix small typo in Spanish and Galician translations.
+* Bug #1284: Added favicon.
+* Bug #1284: Fix NullPointerException.
+* Bug #1414: Reduced width of MultipleBandbox filter search
+* Bug #1421: Fixed the pagination bug when indenting nodes into containers on previous pages
+* Bug #1433: Fix the problem when there are multiple levels of tasks involved.
+* Bug #1433: Small code refactor of this bug fix.
+* Bug #1433: Make sure that old TaskSources are deleted also in the case of parent tasks.
+* Bug #1433: Make sure that old TaskSources are deleted when a task is unscheduled and re-scheduled.
+* i18n: Update French translation
+* i18n: Update Spanish and Galician translations
+* i18n: Update keys.pot files
+* Fix wrong message in deadline constraints
+* i18n: Update keys.pot files
+* Bug #1431: Fix test because of now allocations are sorted (specific before generic)
+* Bug #1431: Fix test creating a standard list instead of an unmodifiable list
+* Bug #1431: Fix issue sorting allocations (first the specific ones)
+* Bug #1428: Possible fix
+* Bug #1430: Fixing issue checking code for each child and not for the parent node
+* Bug #1430: Fix problem with error messages in OrderElementConverter
+* Remove scenarios option from configuration window
+* Bug #1425: Fix problem change wrong parentheses
+* Bug #1263: Fix issue reseting the value of the textbox
+* Bug #1388: Fix pending things that were not ready in libreplan-1.2 yet
+* Remove unused variable in TreeController.Renderer.updateBudgetFor(T)
+* Bug #1388: Fix issue updating name textbox when coming back from pop-up
+* Bug #1423: Fix bug adding root task to graph
+* Bug #1424: Fix issue loading derived allocations
+* Bug #1412: Avoid NPE if clockStart and clockFinish are not defined
+* Bug #1422: Fix issue calling onRetreival to force synchronization
+* Upgrade ZK to 5.0.11
+* rpm: Make sure all update SQL scripts are installed
+* Fix problems with Liquibase 2.0.4 and MySQL for tag modifyDataType
+* Update Liquibase to 2.0.4
+* doc: Fix some broken links to files in SourceForge.net
+* doc: Add note about removing browser cache in NEWS file
+* Corrected wrong indentation in NEWS file.
+* Bug #1384: Add validation in starting date and deadline depending on position constraints
+* Bug #1416: Reload resources text in parent tasks too
+
+
 Version 1.2.3 (19 Apr 2012)
 ---------------------------
 
@@ -22,19 +176,24 @@ included in this new release are:
 
 * Other minor enhancements and bugfixing:
 
-  * Fixed database synchronization issues which appeared on changing planning
-    points in the WBS. The problems arose when planning points were moved from
-    children to their parents or vice versa.
-  * Default users (user, wsreader and wswriter) are disabled by default.
-  * Fixed resource usage grouped by criteria load analysis that was being bad
-    calculated inside a project.
-  * Task duration was not being refreshed properly when doing an allocation and
-    you needed to apply the allocation twice to see it right.
-  * START_IN_FIXED_DATE constraint caused that the project duration was bad
-    calculated in company view.
+  * Fixed database synchronization issues which appeared on changing planning
+    points in the WBS. The problems arose when planning points were moved from
+    children to their parents or vice versa.
+  * Default users (user, wsreader and wswriter) are disabled by default.
+  * Fixed resource usage grouped by criteria load analysis that was being bad
+    calculated inside a project.
+  * Task duration was not being refreshed properly when doing an allocation and
+    you needed to apply the allocation twice to see it right.
+  * START_IN_FIXED_DATE constraint caused that the project duration was bad
+    calculated in company view.
 
 Notes
 ~~~~~
+
+.. WARNING::
+
+  Remove web browser cache to avoid any problem with changes in JavaScript
+  resources.
 
 If you are upgrading from any 1.1.x version without using the Debian package,
 you will need to manually execute on your database the SQL sentences from files:

@@ -378,6 +378,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
             textBox.setConstraint("no empty:" + _("cannot be empty"));
             addCell(cssClass, textBox);
+            putNameTextbox(orderElementForThisRow, textBox);
         }
 
         @Override
@@ -392,6 +393,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             IOrderElementModel model = orderModel
                     .getOrderElementModel(currentOrderElement);
             orderElementController.openWindow(model);
+            updateNameFor(currentOrderElement);
             updateHoursFor(currentOrderElement);
             updateBudgetFor(currentOrderElement);
         }
@@ -618,6 +620,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public void refreshRow(Treeitem item) {
         try {
+            getRenderer().updateNameFor((OrderElement) item.getValue());
             getRenderer().updateHoursFor((OrderElement) item.getValue());
             getRenderer().updateBudgetFor((OrderElement) item.getValue());
             getRenderer().render(item, item.getValue());
@@ -736,6 +739,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     OrderLine line = (OrderLine) element;
                     line.setBudget(budget);
                 }
+            }
+
+        };
+    }
+
+    @Override
+    protected INameHandler<OrderElement> getNameHandler() {
+        return new INameHandler<OrderElement>() {
+
+            @Override
+            public String getNameFor(OrderElement element) {
+                return element.getName();
             }
 
         };

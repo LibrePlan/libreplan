@@ -25,6 +25,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?page  id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
@@ -178,26 +179,9 @@
                             <row>
                                 <label
                                     value="${i18n:_('Perspectives')}" />
-                                <grid>
-                                    <columns>
-                                        <column width="50%" />
-                                        <column />
-                                    </columns>
-                                    <rows>
-                                        <row>
-                                            <checkbox
-                                                label="${i18n:_('MonteCarlo method')}"
-                                                checked="@{configurationController.monteCarloMethodTabVisible}" />
-                                        </row>
-                                        <row>
-                                            <checkbox
-                                                id="scenariosVisible"
-                                                label="${i18n:_('Enable scenarios module')}"
-                                                checked="@{configurationController.scenariosVisible}"
-                                                disabled="true" />
-                                        </row>
-                                    </rows>
-                                </grid>
+                                <checkbox
+                                    label="${i18n:_('MonteCarlo method')}"
+                                    checked="@{configurationController.monteCarloMethodTabVisible}" />
                             </row>
                         </rows>
                     </grid>

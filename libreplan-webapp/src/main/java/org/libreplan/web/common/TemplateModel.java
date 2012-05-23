@@ -482,7 +482,11 @@ public class TemplateModel implements ITemplateModel {
     @Override
     @Transactional(readOnly = true)
     public boolean isUserAdmin() {
-        return UserUtil.getUserFromSession().isAdministrator();
+        User user = UserUtil.getUserFromSession();
+        if(user == null) {
+            return false;
+        }
+        return user.isAdministrator();
     }
 
     @Override

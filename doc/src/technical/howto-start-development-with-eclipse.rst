@@ -29,7 +29,7 @@ a) Clone Git repository (recommended)::
 
 b) Download last version source code::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/files/LibrePlan/libreplan_1.2.0.tar.gz
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.tar.gz
     $ tar -xzvf libreplan_1.2.0.tar.gz
 
 You should review ``HACKING`` file to check that you have installed all the
@@ -156,6 +156,25 @@ Configure project to run
   http://localhost:8080/libreplan-webapp/
 
 
+Configure Maven profiles
+------------------------
+
+* For each opened project in the *Project Explorer* (``ganttzk``,
+  ``libreplan-business``, ``libreplan-webapp``) configure Maven profiles to save
+  compilation time (this is not mandatory):
+
+  * Right click over the project and go to *Properties*
+
+  * Look for *Maven* and set *Active Maven Profiles*:
+    ``-userguide,-reports,-i18n``
+
+.. figure:: img/libreplan-maven-profiles.png
+   :alt: Project properties window
+   :width: 100%
+
+   Project properties window
+
+
 Configure Eclipse to follow coding style guidelines
 ---------------------------------------------------
 
@@ -190,6 +209,23 @@ Configure Eclipse to follow coding style guidelines
    :width: 100%
 
    Save Actions configuration
+
+
+Develop LibrePlan in Eclipse using MySQL
+----------------------------------------
+
+* This tutorial works properly with PostgreSQL, but if you want to develop
+  LibrePlan using MySQL you have to do 2 small changes:
+
+  * In section `Configure project to run`_ you have to set the *Profiles* to:
+    ``dev,mysql,-userguide,-reports,-i18n``
+
+  * In section `Configure Maven profiles`_ you have to set *Active Maven
+    Profiles* to: ``dev,mysql,-userguide,-reports,-i18n``
+
+* Remember that the three last profiles that are being disabled is just to save
+  compilation time and not mandatory. However, to develop using MySQL you have
+  to set at least the first two: ``dev`` and ``mysql``.
 
 
 .. _LibrePlan: http://www.libreplan.com/

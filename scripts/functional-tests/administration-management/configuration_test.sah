@@ -52,7 +52,6 @@ function configChangeInCheckboxes($list) {
 
 function configCheckChangesInCheckboxes($list){
     configCheckLogin();
-    configCheckScenario();
     configCheckMonteCarlo();
     configCheckTypes($list);
 }
@@ -75,19 +74,9 @@ function configCheckMonteCarlo(){
     _assert(_isVisible(_cell("MonteCarlo Method")));
     _log("Monte Carlo is showed", "custom1");
     _click(_link("LibrePlan Configuration"));
-    _click(_checkbox(0, _near(_label("Enable scenarios module"))));
+    _click(_checkbox(0, _near(_label("MonteCarlo method"))));
     _click(_cell("Save"));
     commonDeleteProject("projectForCheckMontecarlo");
-}
-
-function configCheckScenario(){
-    _click(_link("Projects List"));
-    _assertExists(_span("scenario:"));
-    _assert(_isVisible(_span("scenario:")));
-    _log("Scenario is showed", "custom1");
-    _click(_link("LibrePlan Configuration"));
-    _click(_checkbox(0, _near(_label("Enable scenarios module"))));
-    _click(_cell("Save"));
 }
 
 function configCheckTypes($list){
@@ -212,8 +201,7 @@ function configCheckCalendarProject($name){
 /* test values */
 var $listCheckoxes = ["Criterion", "Label", "Work report", "Resources", "Types of work hours",
 "Material categories", "Unit Measures", "Calendar", "Work report types",
-"Calendar exception types", "Cost category", "MonteCarlo method", "Enable scenarios module",
-"Enable/Disable"];
+"Calendar exception types", "Cost category", "MonteCarlo method", "Enable/Disable"];
 var $listMenuOptions = ["Criteria", "Exception Days", "Labels", "Unit Measures", "Work Hours",
 "Work Report Models", "Cost Categories", "Calendars", "Workers", "Machines"];
 var $calendarName = "CalendarForConfig";

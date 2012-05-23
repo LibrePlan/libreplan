@@ -68,6 +68,9 @@ public class CalendarExceptionTypeColorConverter {
         addEquivalence(CalendarExceptionTypeColor.BLACK,
                 CalendarExceptionTypeColorDTO.BLACK);
 
+        addEquivalence(CalendarExceptionTypeColor.PURPLE,
+                CalendarExceptionTypeColorDTO.PURPLE);
+
     }
 
     private static void addEquivalence(CalendarExceptionTypeColor origin,

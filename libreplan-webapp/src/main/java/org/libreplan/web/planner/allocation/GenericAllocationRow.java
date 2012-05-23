@@ -124,35 +124,26 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     @Override
-    public ResourcesPerDayModification toResourcesPerDayModification(Task task,
-            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
-        GenericResourceAllocation newGeneric = createGenericAllocation(task,
-                requestedToRemove);
+    public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
+        GenericResourceAllocation newGeneric = createGenericAllocation(task);
         return ResourcesPerDayModification
                 .create(newGeneric, getResourcesPerDayEditedValue(), this.resources);
     }
 
-    private GenericResourceAllocation createGenericAllocation(Task task,
-            Collection<? extends ResourceAllocation<?>> allocationsRemoved) {
+    private GenericResourceAllocation createGenericAllocation(Task task) {
         GenericResourceAllocation result = GenericResourceAllocation.create(
                 task, resourceType, criterions);
         GenericResourceAllocation origin = (GenericResourceAllocation) getOrigin();
-        Set<ResourceAllocation<?>> discountFrom = new HashSet<ResourceAllocation<?>>(
-                allocationsRemoved);
         if (origin != null) {
             result.overrideConsolidatedDayAssignments(origin);
-            discountFrom.add(origin);
             result.setAssignmentFunctionWithoutApply(origin.getAssignmentFunction());
         }
-        result.discountAssignedHoursForResourceFrom(discountFrom);
         return result;
     }
 
     @Override
-    public EffortModification toHoursModification(Task task,
-            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
-        return EffortModification.create(
-                createGenericAllocation(task, requestedToRemove),
+    public EffortModification toHoursModification(Task task) {
+        return EffortModification.create(createGenericAllocation(task),
                 getEffortFromInput(), resources);
     }
 

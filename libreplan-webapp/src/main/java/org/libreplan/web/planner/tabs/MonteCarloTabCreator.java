@@ -202,7 +202,7 @@ public class MonteCarloTabCreator {
                         asLocalDate(order.getDeadline()), resourcesSearcher);
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
                 order, adapter);
-        graph.addTasks(order.getAllChildrenAssociatedTaskElements());
+        graph.addTask(order.getAssociatedTaskElement());
         addDependencies(graph, order);
         return criticalPathCalculator.calculateCriticalPath(graph);
     }

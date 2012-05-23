@@ -109,6 +109,7 @@ public class TemplatesTreeController extends
                     });
             textBox.setConstraint("no empty:" + _("cannot be null or empty"));
             addCell(textBox);
+            putNameTextbox(element, textBox);
         }
 
         @Override
@@ -296,10 +297,23 @@ public class TemplatesTreeController extends
         };
     }
 
+    @Override
+    protected INameHandler<OrderElementTemplate> getNameHandler() {
+        return new INameHandler<OrderElementTemplate>() {
+
+            @Override
+            public String getNameFor(OrderElementTemplate element) {
+                return element.getName();
+            }
+
+        };
+    }
+
     public void refreshRow(Treeitem item) {
         try {
             OrderElementTemplate orderElement = (OrderElementTemplate) item
                     .getValue();
+            getRenderer().updateNameFor(orderElement);
             getRenderer().updateHoursFor(orderElement);
             getRenderer().updateBudgetFor(orderElement);
             getRenderer().render(item, orderElement);

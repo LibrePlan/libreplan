@@ -63,6 +63,11 @@ public abstract class EffortModification extends AllocationModification {
                              .fromEndUntil(start)
                              .allocate(getEffort());
         }
+
+        @Override
+        public boolean isSpecific() {
+            return false;
+        }
     }
 
     private static class OnSpecificAllocation extends EffortModification {
@@ -83,6 +88,11 @@ public abstract class EffortModification extends AllocationModification {
         @Override
         public void allocateFromEndUntil(LocalDate start) {
             specific.fromEndUntil(start).allocate(getEffort());
+        }
+
+        @Override
+        public boolean isSpecific() {
+            return true;
         }
     }
 

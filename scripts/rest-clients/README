@@ -140,6 +140,9 @@ Example::
 
   $ get-xml-schema.sh resources
 
+You can also get it with a browser going to the following URL using a user with
+read credentials for web services: ``/ws/rest/<service-path>/?_wadl&_type=xml``
+
 
 Export scripts
 --------------
@@ -175,3 +178,119 @@ Example::
 
 
 .. _`HTTP Basic Authentication`: http://www.w3.org/Protocols/HTTP/1.0/spec.html#BasicAA
+
+
+Available web services
+----------------------
+
+Business entities
+~~~~~~~~~~~~~~~~~
+
+For each entity there are the following methods:
+
+* Export all:
+
+  * HTTP method: ``GET``
+  * No parameters
+  * URL: ``/ws/rest/<service-path>/``
+
+* Export one:
+
+  * HTTP method: ``GET``
+  * Parameter: ``entity-code``
+  * URL: ``/ws/rest/<service-path>/<entity-code>/``
+
+* Import one or more:
+
+  * HTTP method: ``POST``
+  * No parameters
+  * URL: ``/ws/rest/<service-path>/``
+
+Supported entities:
+
+* Exception Days:
+
+  * Service path: ``calendarexceptiontypes``
+  * DTO: ``org.libreplan.ws.calendarexceptiontypes.api.CalendarExceptionTypeDTO``
+  * Business class: ``org.libreplan.business.calendars.entities.CalendarExceptionType``
+
+* Calendars:
+
+  * Service path: ``calendars``
+  * DTO: ``org.libreplan.ws.calendars.api.BaseCalendarDTO``
+  * Business class: ``org.libreplan.business.calendars.entities.BaseCalendar``
+
+* Cost categories:
+
+  * Service path: ``costcategories``
+  * DTO: ``org.libreplan.ws.costcategories.api.CostCategoryDTO``
+  * Business class: ``org.libreplan.business.costcategories.entities.CostCategory``
+
+* Criteria:
+
+  * Service path: ``criteriontypes``
+  * DTO: ``org.libreplan.ws.resources.criterion.api.CriterionTypeDTO``
+  * Business class: ``org.libreplan.business.resources.entities.CriterionType``
+
+* Labels:
+
+  * Service path: ``labels``
+  * DTO: ``org.libreplan.ws.labels.api.LabelTypeDTO``
+  * Business class: ``org.libreplan.business.labels.entities.LabelType``
+
+* Materials:
+
+  * Service path: ``materialcategories``
+  * DTO: ``org.libreplan.ws.materials.api.MaterialCategoryDTO``
+  * Business class: ``org.libreplan.business.materials.entities.MaterialCategory``
+
+* Projects:
+
+  * Service path: ``orderelements``
+  * DTO: ``org.libreplan.ws.common.api.OrderDTO``
+  * Business class: ``org.libreplan.business.orders.entities.Order``
+
+* Resources:
+
+  * Service path: ``resources``
+  * DTO: ``org.libreplan.ws.resources.api.ResourceDTO``
+  * Business class: ``org.libreplan.business.resources.entities.Resource``
+
+* Work Hours:
+
+  * Service path: ``typeofworkhours``
+  * DTO: ``org.libreplan.ws.typeofworkhours.api.TypeOfWorkHoursDTO``
+  * Business class: ``org.libreplan.business.costcategories.entities.TypeOfWorkHours``
+
+* Unit Measures:
+
+  * Service path: ``unittypes``
+  * DTO: ``org.libreplan.ws.typeofworkhours.api.TypeOfWorkHoursDTO``
+  * Business class: ``org.libreplan.business.materials.entities.UnitType``
+
+* Work Reports:
+
+  * Service path: ``workreports``
+  * DTO: ``org.libreplan.ws.workreports.api.WorkReportDTO``
+  * Business class: ``org.libreplan.business.workreports.entities.WorkReport``
+
+Other
+~~~~~
+
+* Resource hours:
+
+  * Methods:
+
+    * Export all resource hours between two dates:
+
+      * HTTP method: ``GET``
+      * Parameters: ``<start-date>`` and ``<end-date>``
+      * URL: ``/ws/rest/resourceshours/<start-date>/<end-date>/``
+
+    * Export all resource hours between two dates for a specified resource:
+
+      * HTTP method: ``GET``
+      * Parameters: ``<start-date>``, ``<end-date>`` and ``<resource-code>``
+      * URL: ``/ws/rest/resourceshours/<resource-code>/<start-date>/<end-date>/``
+
+  * DTO: ``org.libreplan.ws.resources.api.ResourceWorkedHoursListDTO``

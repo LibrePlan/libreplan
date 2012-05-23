@@ -555,9 +555,9 @@ public final class OrderElementConverter {
         if (orderElementDTO instanceof OrderLineDTO) {
             if (!(orderElement instanceof OrderLine)) {
                 throw new ValidationException(_(
-                        "Task {0} : Task group is incompatible type with {1}"
-                                + orderElement.getCode(), orderElement
-                                .getClass().getName()));
+                        "Task {0}: Task group is incompatible type with {1}",
+                        orderElement.getCode(), orderElement.getClass()
+                                .getName()));
             }
 
             if (configuration.isHoursGroups()) {
@@ -578,9 +578,9 @@ public final class OrderElementConverter {
             if (orderElementDTO instanceof OrderDTO) {
                 if (!(orderElement instanceof Order)) {
                     throw new ValidationException(_(
-                            "Task {0} : Project is incompatible type with {1}"
-                                    + orderElement.getCode(), orderElement
-                                    .getClass().getName()));
+                            "Task {0}: Project is incompatible type with {1}",
+                            orderElement.getCode(), orderElement.getClass()
+                                    .getName()));
 
                 }
                 Order order = (Order) orderElement;
@@ -610,10 +610,10 @@ public final class OrderElementConverter {
                 }
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 if (!(orderElement instanceof OrderLineGroup)) {
-                    throw new ValidationException(_(
-                            "Task {0} : Task group is incompatible type with {1}"
-                                    + orderElement.getCode(), orderElement
-                                    .getClass().getName()));
+                    throw new ValidationException(
+                            _("Task {0}: Task group is incompatible type with {1}",
+                                    orderElement.getCode(), orderElement
+                                            .getClass().getName()));
                 }
             }
 
@@ -622,15 +622,15 @@ public final class OrderElementConverter {
                     update(orderElement.getOrderElement(childDTO.code),
                             childDTO, configuration);
                 } else {
-                    if (checkConstraintUniqueOrderCode(orderElementDTO)) {
+                    if (checkConstraintUniqueOrderCode(childDTO)) {
                         throw new ValidationException(
-                                _("Task {0} : Duplicate code in DB"
-                                        + orderElementDTO.code));
+                                _("Task {0}: Duplicate code in DB",
+                                        childDTO.code));
                     }
-                    if (checkConstraintUniqueHoursGroupCode(orderElementDTO)) {
-                        throw new ValidationException(
-                                _("Hours Group {0} : Duplicate code in DB"
-                                        + orderElementDTO.code));
+                    if (checkConstraintUniqueHoursGroupCode(childDTO)) {
+                        throw new ValidationException(_(
+                                "Hours Group {0}: Duplicate code in DB",
+                                childDTO.code));
                     }
                     ((OrderLineGroup) orderElement).add(toEntity(childDTO,
                             configuration));

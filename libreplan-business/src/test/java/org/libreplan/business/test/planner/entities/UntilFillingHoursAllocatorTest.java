@@ -412,8 +412,7 @@ public class UntilFillingHoursAllocatorTest {
         givenSpecificAllocations(ResourcesPerDay.amount(1), ResourcesPerDay
                 .amount(1));
         ResourceAllocation.allocating(allocations).untilAllocating(hours(64));
-        ResourceAllocation<?> generic = allocations.get(0)
-                .getBeingModified();
+        ResourceAllocation<?> generic = allocations.get(0).getBeingModified();
         ResourceAllocation<?> firstSpecific = allocations.get(1)
                 .getBeingModified();
         ResourceAllocation<?> secondSpecific = allocations.get(2)
