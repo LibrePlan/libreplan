@@ -1453,6 +1453,7 @@ display:none;
 .filter-more-options .z-caption .z-caption-l,
 .filter-more-options .z-caption .z-caption-r {
     font-size:11px;
+    padding: 2px;
 }
 
 .filter-more-options .z-groupbox-hl {
