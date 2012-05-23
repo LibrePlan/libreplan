@@ -1,0 +1,39 @@
+.perspective.filming-progress .z-button-cm,
+.perspective-active.filming-progress .z-button-cm {
+    background-image: url(../img/ico_filming-progress.png);
+}
+.reported-hours, .show-advances {
+    display: none;
+}
+
+.row .taskcontainer_completion {
+    margin-top: -10px;
+}
+
+.row .completionMoneyCostBar {
+    height: 4px;
+    background-color: orange;
+    margin-top: 3px;
+}
+
+.toolbar-box .reported-hours, .toolbar-box .show-advances,
+.toolbar-box .show-resources {
+    display: none;
+}
+
+.orderTree .z-treerow input.budgetline-total {
+    opacity: 1;
+    font-weight: bold;
+    background: #7EAAC6;
+    border-right: 1px dotted #7EAAC6;
+    display: inline;
+    color: white !important;
+}
+
+.orderTree input.z-intbox-disd {
+    background: #FFF;
+    border-left-color: transparent;
+    display:none;
+    opacity: 0.2;
+    color: #CCC !important;
+}

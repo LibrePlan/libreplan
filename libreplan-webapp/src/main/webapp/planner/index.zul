@@ -27,6 +27,7 @@
 <?link rel="stylesheet" type="text/css" href="/planner/css/ganttzk.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/audiovisual.css"?>
 <?link rel="stylesheet" type="text/css" href="/zkau/web/js/yui/2.7.0/resize/assets/skins/sam/resize.css"?>
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
