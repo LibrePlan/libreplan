@@ -30,7 +30,11 @@
 <?component name="monthly-timesheets-area" inline="true" macroURI="_monthlyTimesheetsArea.zul"?>
 
 <zk>
-    <window self="@{define(content)}" title="${i18n:_('My dashboard')}">
+
+    <window self="@{define(content)}" title="${i18n:_('My dashboard')}"
+        apply="org.libreplan.web.users.dashboard.UserDashboardController">
+
+        <vbox id="messagesContainer" />
 
         <my-tasks-area />
 

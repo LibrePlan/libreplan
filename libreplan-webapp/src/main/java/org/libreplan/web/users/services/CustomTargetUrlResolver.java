@@ -41,7 +41,7 @@ import org.springframework.security.userdetails.UserDetails;
  */
 public class CustomTargetUrlResolver extends TargetUrlResolverImpl {
 
-    private final static String USER_DASHBOARD_URL = "/myaccount/userDashboard.zul";
+    public final static String USER_DASHBOARD_URL = "/myaccount/userDashboard.zul";
 
     @Autowired
     private IUserDAO userDAO;

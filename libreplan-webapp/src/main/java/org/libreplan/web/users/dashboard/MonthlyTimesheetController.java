@@ -22,12 +22,26 @@ package org.libreplan.web.users.dashboard;
 import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 
+import java.util.List;
+
 import org.joda.time.LocalDate;
+import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Grid;
 
 /**
  * Controller for creation/edition of a monthly timesheet
@@ -41,6 +55,65 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     private IMonthlyTimesheetModel monthlyTimesheetModel;
 
     private IURLHandlerRegistry URLHandlerRegistry;
+
+    private Grid timesheet;
+
+    private Columns columns;
+
+    private RowRenderer orderElementsRenderer = new RowRenderer() {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            OrderElement orderElement = (OrderElement) data;
+            row.setValue(orderElement);
+
+            Util.appendLabel(row, orderElement.getOrder().getName());
+            Util.appendLabel(row, orderElement.getName());
+
+            appendInputsForDays(row, orderElement);
+        }
+
+        private void appendInputsForDays(Row row,
+                final OrderElement orderElement) {
+            LocalDate date = monthlyTimesheetModel.getDate();
+
+            LocalDate start = date.dayOfMonth().withMinimumValue();
+            LocalDate end = date.dayOfMonth().withMaximumValue();
+
+            for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+                    .plusDays(1)) {
+                final LocalDate textboxDate = day;
+
+                final Textbox textbox = new Textbox();
+                textbox.setWidth("30px");
+
+                Util.bind(textbox, new Util.Getter<String>() {
+                    @Override
+                    public String get() {
+                        EffortDuration effortDuration = monthlyTimesheetModel
+                                .getEffortDuration(orderElement, textboxDate);
+                        return effortDuration != null ? effortDuration
+                                .toFormattedString() : "";
+                    }
+                }, new Util.Setter<String>() {
+                    @Override
+                    public void set(String value) {
+                        EffortDuration effortDuration = EffortDuration
+                                .parseFromFormattedString(value);
+                        if (effortDuration == null) {
+                            throw new WrongValueException(textbox,
+                                    _("Not a valid effort duration"));
+                        }
+                        monthlyTimesheetModel.setEffortDuration(orderElement,
+                                textboxDate, effortDuration);
+                    }
+                });
+
+                row.appendChild(textbox);
+            }
+
+        }
+    };
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -69,10 +142,64 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     @Override
     public void goToCreateOrEditForm(LocalDate date) {
         monthlyTimesheetModel.initCreateOrEdit(date);
+        initTimesheet(date);
     }
 
-    public LocalDate getDate() {
-        return monthlyTimesheetModel.getDate();
+    private void initTimesheet(LocalDate date) {
+        columns = new Columns();
+        timesheet.appendChild(columns);
+        createColumns(date);
+    }
+
+    private void createColumns(LocalDate date) {
+        createProjectAndTaskColumns();
+        createColumnsForDays(date);
+    }
+
+    private void createProjectAndTaskColumns() {
+        columns.appendChild(new Column(_("Project")));
+        columns.appendChild(new Column(_("Task")));
+    }
+
+    private void createColumnsForDays(LocalDate date) {
+        LocalDate start = date.dayOfMonth().withMinimumValue();
+        LocalDate end = date.dayOfMonth().withMaximumValue();
+
+        for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+                .plusDays(1)) {
+            Column column = new Column(day.getDayOfMonth() + "");
+            column.setAlign("center");
+            columns.appendChild(column);
+        }
+    }
+
+    public String getDate() {
+        return monthlyTimesheetModel.getDate().toString("MMMM y");
+    }
+
+    public String getResource() {
+        return monthlyTimesheetModel.getWorker().getShortDescription();
+    }
+
+    public List<OrderElement> getOrderElements() {
+        return monthlyTimesheetModel.getOrderElements();
+    }
+
+    public RowRenderer getOrderElementsRenderer() {
+        return orderElementsRenderer;
+    }
+
+    public void save() {
+        monthlyTimesheetModel.save();
+        Executions.getCurrent().sendRedirect(
+                CustomTargetUrlResolver.USER_DASHBOARD_URL + "?timesheet_save="
+                        + monthlyTimesheetModel.getDate());
+    }
+
+    public void cancel() {
+        monthlyTimesheetModel.cancel();
+        Executions.getCurrent().sendRedirect(
+                CustomTargetUrlResolver.USER_DASHBOARD_URL);
     }
 
 }

@@ -27,7 +27,6 @@ import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.planner.daos.IResourceAllocationDAO;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
-import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.UserUtil;
@@ -62,7 +61,8 @@ public class MyTasksAreaModel implements IMyTasksAreaModel {
 
         List<SpecificResourceAllocation> resourceAllocations = resourceAllocationDAO
                 .findSpecificAllocationsRelatedTo(scenarioManager.getCurrent(),
-                        getBoundResourceAsList(user), null, null);
+                        UserDashboardUtil.getBoundResourceAsList(user), null,
+                        null);
 
         List<Task> tasks = new ArrayList<Task>();
         for (SpecificResourceAllocation each : resourceAllocations) {
@@ -85,12 +85,6 @@ public class MyTasksAreaModel implements IMyTasksAreaModel {
                 advanceMeasurement.getValue();
             }
         }
-    }
-
-    private List<Resource> getBoundResourceAsList(User user) {
-        List<Resource> resource = new ArrayList<Resource>();
-        resource.add(user.getWorker());
-        return resource;
     }
 
 }

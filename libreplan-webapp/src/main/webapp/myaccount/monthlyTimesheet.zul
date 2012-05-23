@@ -30,7 +30,40 @@
     <window apply="org.libreplan.web.users.dashboard.MonthlyTimesheetController"
         self="@{define(content)}" title="${i18n:_('Monthly timesheet')}">
 
-        <label value="@{controller.date}" />
+        <groupbox style="margin-top: 5px" closable="false">
+            <caption label="${i18n:_('Timesheet data')}" />
+            <grid fixedLayout="true">
+                <columns>
+                    <column width="200px" />
+                    <column />
+                </columns>
+                <rows>
+                    <row>
+                        <label value="${i18n:_('Date')}" />
+                        <label value="@{controller.date}" />
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Resource')}" />
+                        <label value="@{controller.resource}" />
+                    </row>
+                </rows>
+            </grid>
+        </groupbox>
+
+        <groupbox style="margin-top: 5px" closable="false">
+            <caption label="${i18n:_('Time tracking')}" />
+            <grid id="timesheet"
+                model="@{controller.orderElements}"
+                rowRenderer="@{controller.orderElementsRenderer}" />
+        </groupbox>
+
+        <button onClick="controller.save();"
+            label="${i18n:_('Save')}"
+            sclass="save-button global-action" />
+        <button onClick="controller.cancel();"
+            label="${i18n:_('Cancel')}"
+            sclass="cancel-button global-action" />
+
 
     </window>
 </zk>

@@ -19,7 +19,13 @@
 
 package org.libreplan.web.users.dashboard;
 
+import java.util.List;
+
 import org.joda.time.LocalDate;
+import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workreports.entities.WorkReport;
 
 /**
  * Interface for creation/edition of a monthly timesheet model
@@ -35,5 +41,39 @@ public interface IMonthlyTimesheetModel {
     void initCreateOrEdit(LocalDate date);
 
     LocalDate getDate();
+
+    /**
+     * Returns resource bound to current user.
+     */
+    Worker getWorker();
+
+    /**
+     * At this moment returns the list of {@link OrderElement OrderElements}
+     * where the resource bound to current user is assigned.
+     */
+    List<OrderElement> getOrderElements();
+
+    /**
+     * Returns the {@link EffortDuration} in the current monthly timesheet for
+     * the specified <code>orderElement</code> and <code>date</code>.
+     */
+    EffortDuration getEffortDuration(OrderElement orderElement, LocalDate date);
+
+    /**
+     * Sets the {@link EffortDuration} in the current monthly timesheet for the
+     * specified <code>orderElement</code> and <code>date</code>.
+     */
+    void setEffortDuration(OrderElement orderElement, LocalDate date,
+            EffortDuration effortDuration);
+
+    /**
+     * Save {@link WorkReport} for the monthly timesheet.
+     */
+    void save();
+
+    /**
+     * Cancel changes in {@link WorkReport} for the monthly timesheet.
+     */
+    void cancel();
 
 }
