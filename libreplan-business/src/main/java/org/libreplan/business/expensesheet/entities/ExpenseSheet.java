@@ -195,7 +195,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
 
     @Override
     public String getHumanId() {
-        return getCode() + (description != null ? description : "");
+        return "";
     }
 
 }
