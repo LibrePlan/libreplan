@@ -24,8 +24,8 @@
         ]]>
     </zscript>
 
-<div self="@{define(content)}" apply="${fpController}" height="100%" style="overflow:visible" class="filming-progress-layout">
-	<div id="noDataLayout" height="30px">
+<div self="@{define(content)}" apply="${fpController}" vflex="1" >
+	<div id="noDataLayout" height="30px" sclass="toolbar-box">
         <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
     </div>
 
@@ -51,11 +51,11 @@
             </hbox>
 	    </div>
 	    <div class="advanced-allocation-layout">
-		<borderlayout width="auto" class="filmingprogresslayoutlayout">
-        <center border="0">
+		<borderlayout width="100%" hflex="1" vflex="1" >
+        <north border="0" height="200px">
         <borderlayout>
             <west size="250px" flex="true" collapsible="true"
-                splittable="true" sclass="filmingprogressdetails">
+                splittable="true">
                 <div sclass="leftpanelgap" id="insertionPointLeftPanel">
                     <grid id="gridTotals"
                         model="@{fpController.rowTotals}"
@@ -65,6 +65,20 @@
                             <column label="${i18n:_('Type')}"/>
                             <column label="${i18n:_('Total')}"/>
                         </columns>
+                        <rows>
+                           <row>
+                                <label value="${i18n:_('Initial progress')}" height="20px"/>
+				                <label id="totalInitialProgress"/>
+                           </row>
+			               <row>
+				                <label value="${i18n:_('Current estimations')}" height="20px"/>
+				                <label id="totalCurrentEstimations"/>
+			               </row>
+                           <row>
+                                <label value="${i18n:_('Real progress')}" height="20px"/>
+                                <label id="totalRealProgress"/>
+                           </row>
+		                   </rows>
                     </grid>
                 </div>
             </west>
@@ -78,12 +92,32 @@
                             rowRenderer="@{fpController.progressValuesRenderer}"
                             onInitRender ="fpController.resetTotalPanel();"/>
                     </center>
+                    <south>
+                    </south>
                 </borderlayout>
             </center>
         </borderlayout>
+        </north>
+        <center>
+        <hbox style="padding:40px">
+            <div id="filmingProgressChart" style="height:200px; width:700px;" />
+        </hbox>
         </center>
         </borderlayout>
         </div>
     </div>
 </div>
+
+    <!-- Include jqPlot styles -->
+    <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" />
+
+    <!-- Include jqPlot library and additional plugins -->
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pieRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
+
 </zk>

@@ -34,8 +34,10 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
+import org.libreplan.business.filmingprogress.entities.ProgressGranularityType;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
@@ -45,9 +47,17 @@ import org.libreplan.web.planner.order.ISaveCommand;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkforge.timeplot.Plotinfo;
+import org.zkforge.timeplot.Timeplot;
+import org.zkforge.timeplot.data.PlotData;
+import org.zkforge.timeplot.data.PlotDataSource;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.util.Locales;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Auxhead;
 import org.zkoss.zul.Auxheader;
@@ -65,6 +75,11 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
+
+import br.com.digilabs.jqplot.Chart;
+import br.com.digilabs.jqplot.JqPlotUtils;
+import br.com.digilabs.jqplot.chart.LineChart;
+import br.com.digilabs.jqplot.elements.Serie;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -93,6 +108,11 @@ public class FilmingProgressController extends GenericForwardComposer {
 
     private ProgressTotalRenderer progressTotalRenderer = new ProgressTotalRenderer();
 
+    private Div filmingProgressChart;
+
+    private ProgressGranularityType progressGranularityType = ProgressGranularityType
+            .getDefault();
+
     private final static String MOLD = "paging";
 
     private final static int PAGING = 10;
@@ -111,7 +131,39 @@ public class FilmingProgressController extends GenericForwardComposer {
         noDataLayout = (Div) comp.getFellow("noDataLayout");
         onlyOneVisible = new OnlyOneVisible(normalLayout, noDataLayout);
         onlyOneVisible.showOnly(noDataLayout);
+        Timeplot plot = createEmptyTimeplot();
+        filmingProgressChart.appendChild(plot);
+    }
 
+    private Timeplot createEmptyTimeplot() {
+        Timeplot timeplot = new Timeplot();
+        Plotinfo plotinfo = new Plotinfo();
+
+        DateTime date = new DateTime();
+
+        PlotData pd = new PlotData();
+        pd.setValue((float) 5);
+        pd.setTime(date.toDate());
+        PlotData pd1 = new PlotData();
+        pd1.setValue((float) 7);
+        pd1.setTime(date.plusDays(1).toDate());
+        PlotData pd2 = new PlotData();
+        pd2.setValue((float) 15);
+        pd2.setTime(date.plusDays(2).toDate());
+        PlotData pd3 = new PlotData();
+        pd3.setValue((float) 7);
+        pd3.setTime(date.plusDays(3).toDate());
+
+        plotinfo.addPlotData(pd);
+        plotinfo.addPlotData(pd1);
+        plotinfo.addPlotData(pd2);
+        plotinfo.addPlotData(pd3);
+        plotinfo.setShowValues(true);
+        plotinfo.setFillColor("rgba(50, 100, 54, 0.2)");
+
+        timeplot.appendChild(plotinfo);
+
+        return timeplot;
     }
 
     private void reloadNormalLayout() {
