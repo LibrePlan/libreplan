@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.orders.entities.Order;
@@ -58,7 +59,29 @@ public class FilmingProgress extends BaseEntity {
     }
 
     public static FilmingProgress create(Order order) {
-        return create(new FilmingProgress(order));
+        Validate.notNull(order);
+        Validate.notNull(order.getInitDate());
+        Validate.notNull(order.getDeadline());
+        FilmingProgress filmingProgress = create(new FilmingProgress(order));
+        initIntoInterval(filmingProgress.getInitialProgressForecast(), order.getInitDate(),
+                order.getDeadline());
+        initIntoInterval(filmingProgress.getProgressForecast(), order.getInitDate(),
+                order.getDeadline());
+        initIntoInterval(filmingProgress.getRealProgress(), order.getInitDate(),
+                order.getDeadline());
+        return filmingProgress;
+    }
+
+    private static void initIntoInterval(final Map<LocalDate, Integer> scenesPerDay, Date initDate,
+            Date deadline) {
+        Validate.notNull(initDate);
+        Validate.notNull(deadline);
+        LocalDate finishDate = new LocalDate(deadline);
+        LocalDate date = new LocalDate(initDate);
+        while (date.compareTo(finishDate) <= 0) {
+            scenesPerDay.put(date, 0);
+            date = date.plusDays(1);
+        }
     }
 
     public static FilmingProgress create() {
