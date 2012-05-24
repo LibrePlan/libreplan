@@ -18,8 +18,10 @@
  */
 package org.libreplan.business.filmingprogress.entities;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
@@ -38,11 +40,11 @@ public class FilmingProgress extends BaseEntity {
 
     private ProgressGranularityType progressGranularity = ProgressGranularityType.getDefault();
 
-    private Map<LocalDate, Integer> initialProgressForecast = new HashMap<LocalDate, Integer>();
+    private SortedMap<LocalDate, Integer> initialProgressForecast = new TreeMap<LocalDate, Integer>();
 
-    private Map<LocalDate, Integer> progressForecast = new HashMap<LocalDate, Integer>();
+    private SortedMap<LocalDate, Integer> progressForecast = new TreeMap<LocalDate, Integer>();
 
-    private Map<LocalDate, Integer> realProgress = new HashMap<LocalDate, Integer>();
+    private SortedMap<LocalDate, Integer> realProgress = new TreeMap<LocalDate, Integer>();
 
     private Order order;
 
@@ -100,7 +102,7 @@ public class FilmingProgress extends BaseEntity {
         return progressGranularity;
     }
 
-    public void setInitialProgressForecast(Map<LocalDate, Integer> initialProgressForecast) {
+    public void setInitialProgressForecast(SortedMap<LocalDate, Integer> initialProgressForecast) {
         this.initialProgressForecast = initialProgressForecast;
     }
 
@@ -108,7 +110,7 @@ public class FilmingProgress extends BaseEntity {
         return initialProgressForecast;
     }
 
-    public void setProgressForecast(Map<LocalDate, Integer> progressForecast) {
+    public void setProgressForecast(SortedMap<LocalDate, Integer> progressForecast) {
         this.progressForecast = progressForecast;
     }
 
@@ -116,7 +118,7 @@ public class FilmingProgress extends BaseEntity {
         return progressForecast;
     }
 
-    public void setRealProgress(Map<LocalDate, Integer> realProgress) {
+    public void setRealProgress(SortedMap<LocalDate, Integer> realProgress) {
         this.realProgress = realProgress;
     }
 
