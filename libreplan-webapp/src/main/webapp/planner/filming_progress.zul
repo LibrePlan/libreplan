@@ -25,7 +25,7 @@
     </zscript>
 
 <div self="@{define(content)}" apply="${fpController}" height="100%" style="overflow:visible" class="advanced-allocation-layout">
-	<div id="noDataLayout" height="30px" sclass="toolbar-box">
+	<div id="noDataLayout" height="30px">
         <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
     </div>
 
@@ -34,10 +34,12 @@
 		    <hbox align="center">
                 <separator/>
                  <label>${i18n:_('Start date')}:</label>
-                 <datebox id="startDate" value="@{fpController.startDate}" />
+                 <datebox id="startDate" readonly="true" disabled="true"
+                     value="@{fpController.startDate}" />
                  <separator/>
                  <label>${i18n:_('End date')}:</label>
-                 <datebox id="endDate" value="@{fpController.endDate}" />
+                 <datebox id="endDate" readonly="true" disabled="true"
+                     value="@{fpController.endDate}" />
                  <separator/>
                  <space bar="true" />
                  <label>${i18n:_('Zoom level')}:</label>
@@ -48,7 +50,8 @@
                  <separator/>
                  <space bar="true" />
                  <button label="${i18n:_('Apply')}" id="saveButton" image="/common/img/bt_ok.png"
-                     tooltiptext="${i18n:_('Apply changes and continue edition')}" />
+                     tooltiptext="${i18n:_('Apply changes and continue edition')}"
+                     onClick="fpController.confirmUpdateProgressForecast()"/>
                  <separator/>
                  <div id="messages" />
             </hbox>
@@ -60,11 +63,8 @@
             <west size="250px" flex="true" collapsible="true"
                 splittable="true" sclass="advancedassignmentdetails">
                 <div sclass="leftpanelgap" id="insertionPointLeftPanel">
-                    <grid>
-                        <auxhead height="20px">
-                            <auxheader id="auxHeaderTableTitles" colspan="2"/>
-	                    </auxhead>
-                        <columns height="20px" sizable="true">
+                    <grid id="gridTitles">
+                        <columns height="33px" sizable="true">
                             <column label="${i18n:_('Type')}"/>
                             <column label="${i18n:_('Total')}"/>
                         </columns>
@@ -89,47 +89,7 @@
             <center sclass="taskspanel">
                 <borderlayout>
                     <center style="overflow-y:auto;overflow-x:auto;" border="0" sclass="advanced-assignment-area rightpanellayout taskspanelgap" id="insertionPointRightPanel">
-                         <grid id="">
-                             <auxhead height="20px">
-                                 <auxheader label="Enero" colspan="3"/>
-                                 <auxheader label="Febrero" colspan="2"/>
-                                 <auxheader colspan="1"/>
-                             </auxhead>
-                             <columns height="20px" sizable="true">
-                                 <column width="500px"/>
-                                 <column width="500px"/>
-                                 <column width="500px"/>
-                                 <column width="500px"/>
-                                 <column width="500px"/>
-                                 <column width="500px"/>
-                             </columns>
-                             <rows>
-                                 <row>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                 </row>
-                                 <row>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                 </row>
-                                 <row>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                     <textbox width="98%"/>
-                                 </row>
-                             </rows>
-                         </grid>
+                         <grid id="gridScenes" fixedLayout="true" rowRenderer="@{fpController.renderer}"/>
                     </center>
                 </borderlayout>
             </center>

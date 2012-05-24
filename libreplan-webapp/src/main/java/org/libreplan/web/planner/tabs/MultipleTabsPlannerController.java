@@ -184,7 +184,7 @@ public class MultipleTabsPlannerController implements Composer,
     private LimitingResourcesController limitingResourcesControllerGlobal;
 
     @Autowired
-    private FilmingProgressController filmingProgresController;
+    private FilmingProgressController filmingProgressController;
 
     @Autowired
     private DashboardController dashboardController;
@@ -279,8 +279,8 @@ public class MultipleTabsPlannerController implements Composer,
         dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
                 dashboardController, breadcrumbs);
 
-        filmingProgressTab = FilmingProgressTabCreator.create(mode, planningStateCreator,
-                filmingProgresController, breadcrumbs);
+        this.filmingProgressTab = FilmingProgressTabCreator.create(mode, planningStateCreator,
+                filmingProgressController, breadcrumbs);
 
         final boolean isMontecarloVisible = isMonteCarloVisible();
         if (isMontecarloVisible) {

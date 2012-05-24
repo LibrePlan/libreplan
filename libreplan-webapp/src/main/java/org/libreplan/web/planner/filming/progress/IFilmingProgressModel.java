@@ -19,7 +19,9 @@
 package org.libreplan.web.planner.filming.progress;
 
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
+import org.libreplan.business.filmingprogress.entities.ProgressGranularityType;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.web.planner.order.ISaveCommand;
 
 interface IFilmingProgressModel {
 
@@ -28,5 +30,20 @@ interface IFilmingProgressModel {
     Order getCurrentOrder();
 
     FilmingProgress getCurrentFilmingProgress();
+
+    ProgressType[] getProgressTypes();
+
+    ProgressType[] buildProgressTypes();
+
+    boolean isInitialProgress(ProgressType scene);
+
+    void setSaveCommand(ISaveCommand saveCommand);
+
+    void updateProgressForecast(boolean totalInitialProgressZero);
+
+    void updateValuesIntoInitialMap(
+            ProgressGranularityType progressGranularityType);
+
+    void hookIntoSaveCommand(ProgressGranularityType progressGranularityType);
 
 }

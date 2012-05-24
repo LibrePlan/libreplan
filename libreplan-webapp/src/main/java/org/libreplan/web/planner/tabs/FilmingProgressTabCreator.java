@@ -30,6 +30,7 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.planner.filming.progress.FilmingProgressController;
+import org.libreplan.web.planner.order.ISaveCommand;
 import org.libreplan.web.planner.order.PlanningStateCreator;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
@@ -87,7 +88,9 @@ public class FilmingProgressTabCreator {
             protected void afterShowAction() {
                 PlanningState planningState = getPlanningState(mode.getOrder(), getDesktop());
                 Order currentOrder = planningState.getOrder();
-                filmingProgressController.setCurrentOrder(currentOrder);
+                ISaveCommand saveCommand = planningState.getSaveCommand();
+                filmingProgressController.init(currentOrder,
+                        saveCommand);
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
