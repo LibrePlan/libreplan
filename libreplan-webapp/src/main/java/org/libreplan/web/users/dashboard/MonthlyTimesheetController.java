@@ -537,7 +537,13 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     }
 
     private void createProjectAndTaskColumns() {
-        columns.appendChild(new Column(_("Project")));
+        Column project = new Column(_("Project"));
+        project.setWidth("200px");
+        columns.appendChild(project);
+
+        Column tasks = new Column(_("Tasks"));
+        project.setStyle("min-width:300px");
+        columns.appendChild(project);
         columns.appendChild(new Column(_("Task")));
     }
 

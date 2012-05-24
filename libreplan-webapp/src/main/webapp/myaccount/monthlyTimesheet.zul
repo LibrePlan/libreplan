@@ -25,6 +25,7 @@
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/user_dashboard.css"?>
 
 <zk>
     <window apply="org.libreplan.web.users.dashboard.MonthlyTimesheetController"
@@ -106,7 +107,7 @@
 
         <groupbox style="margin-top: 5px" closable="false">
             <caption label="${i18n:_('Time tracking')}" />
-            <grid id="timesheet"
+            <grid id="timesheet" sclass="timesheet"
                 model="@{controller.rows}"
                 rowRenderer="@{controller.rowRenderer}" />
             <hbox>
