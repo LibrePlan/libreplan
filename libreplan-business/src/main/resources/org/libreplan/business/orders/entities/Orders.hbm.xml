@@ -145,7 +145,7 @@
                         class="org.libreplan.business.scenarios.entities.OrderVersion"/>
                 </map>
 
-                <one-to-one name="filmingProgress" access="field" cascade="delete"
+                <one-to-one name="filmingProgress" access="field" cascade="all"
                     class="org.libreplan.business.filmingprogress.entities.FilmingProgress" />
 
                 <set name="customerCommunications" cascade="delete-orphan" inverse="true" >
