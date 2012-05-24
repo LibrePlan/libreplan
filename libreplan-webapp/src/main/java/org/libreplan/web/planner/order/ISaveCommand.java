@@ -41,6 +41,14 @@ public interface ISaveCommand extends ICommand<TaskElement> {
 
     public void removeListener(IAfterSaveListener listener);
 
+    public interface IBeforeSaveListener {
+        void onBeforeSave();
+    }
+
+    public void addListener(IBeforeSaveListener listener);
+
+    public void removeListener(IBeforeSaveListener listener);
+
     public String getImage();
 
     public interface IBeforeSaveActions {

@@ -224,7 +224,9 @@ public class SaveCommandBuilder {
 
         private IAdapterToTaskFundamentalProperties<TaskElement> adapter;
 
-        private final List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
+        private final List<IAfterSaveListener> listenersAfter = new ArrayList<IAfterSaveListener>();
+
+        private final List<IBeforeSaveListener> listenersBefore = new ArrayList<IBeforeSaveListener>();
 
         private boolean disabled = false;
 
@@ -282,6 +284,7 @@ public class SaveCommandBuilder {
             try {
                 if (state.getScenarioInfo().isUsingTheOwnerScenario()
                         || userAcceptsCreateANewOrderVersion()) {
+                    fireBeforeSave();
                     transactionService
                             .runOnTransaction(new IOnTransaction<Void>() {
                                 @Override
@@ -336,8 +339,14 @@ public class SaveCommandBuilder {
         }
 
         private void fireAfterSave() {
-            for (IAfterSaveListener listener : listeners) {
+            for (IAfterSaveListener listener : listenersAfter) {
                 listener.onAfterSave();
+            }
+        }
+
+        private void fireBeforeSave() {
+            for (IBeforeSaveListener listener : listenersBefore) {
+                listener.onBeforeSave();
             }
         }
 
@@ -899,12 +908,22 @@ public class SaveCommandBuilder {
 
         @Override
         public void addListener(IAfterSaveListener listener) {
-            listeners.add(listener);
+            listenersAfter.add(listener);
         }
 
         @Override
         public void removeListener(IAfterSaveListener listener) {
-            listeners.remove(listener);
+            listenersAfter.remove(listener);
+        }
+
+        @Override
+        public void addListener(IBeforeSaveListener listener) {
+            listenersBefore.add(listener);
+        }
+
+        @Override
+        public void removeListener(IBeforeSaveListener listener) {
+            listenersBefore.remove(listener);
         }
 
         @Override
@@ -1061,6 +1080,5 @@ public class SaveCommandBuilder {
         public boolean isDisabled() {
             return disabled;
         }
-
     }
 }
