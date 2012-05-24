@@ -750,7 +750,6 @@ public class PlanningStateCreator {
 
         void onRetrieval() {
             cachedConfiguration = null;
-            cachedCommand = null;
             synchronizeScheduling();
             generateOrderElementCodes();
             rebuildTasksState();
