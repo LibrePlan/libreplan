@@ -25,6 +25,7 @@
     <zscript>
         <![CDATA[
             dsController = arg.get("dashboardController");
+            contextPath = org.zkoss.zk.ui.Executions.getCurrent().getContextPath();
         ]]>
     </zscript>
 
@@ -124,15 +125,15 @@
     <globalProgress />
 
     <!-- Include jqPlot styles -->
-    <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" />
+    <n:link class="include" rel="stylesheet" type="text/css" href="${contextPath}/jqplot/jquery.jqplot.min.css" />
 
     <!-- Include jqPlot library and additional plugins -->
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pieRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="${contextPath}/jqplot/jquery.min.js"></n:script>
+    <n:script type="text/javascript" src="${contextPath}/jqplot/jquery.jqplot.min.js"></n:script>
+    <n:script type="text/javascript" src="${contextPath}/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="${contextPath}/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="${contextPath}/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="${contextPath}/jqplot/plugins/jqplot.pieRenderer.min.js"></n:script>
+    <n:script type="text/javascript" src="${contextPath}/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
 
 </zk>
