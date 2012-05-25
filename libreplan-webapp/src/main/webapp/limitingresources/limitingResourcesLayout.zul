@@ -34,7 +34,13 @@
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-    <n:script type="text/javascript" src="/libreplan-webapp/js/highlightDaysInInterval.js" />
+    <zscript>
+        <![CDATA[
+            contextPath = org.zkoss.zk.ui.Executions.getCurrent().getContextPath();
+        ]]>
+    </zscript>
+
+    <n:script type="text/javascript" src="${contextPath}/js/highlightDaysInInterval.js" />
 
     <zscript><![CDATA[
         limitingResourcesPanel = self;

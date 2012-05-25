@@ -30,7 +30,13 @@
 <?component name="edition" inline="true" macroURI="_editUser.zul"?>
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-    <n:script type="text/javascript" src="/libreplan-webapp/js/defaultPasswordWarnings.js" />
+    <zscript>
+        <![CDATA[
+            contextPath = org.zkoss.zk.ui.Executions.getCurrent().getContextPath();
+        ]]>
+    </zscript>
+
+    <n:script type="text/javascript" src="${contextPath}/js/defaultPasswordWarnings.js" />
 
     <window self="@{define(content)}"
         apply="org.libreplan.web.users.UserCRUDController">
