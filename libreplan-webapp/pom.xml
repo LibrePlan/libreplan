@@ -445,5 +445,9 @@
             <groupId>br.com.digilabs.jqplot</groupId>
             <artifactId>jqplot4java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.googlecode</groupId>
+            <artifactId>mantis-java-api</artifactId>
+        </dependency>
    </dependencies>
 </project>

@@ -754,6 +754,12 @@
                 <artifactId>jqplot4java</artifactId>
                 <version>1.2.3-javascript</version>
             </dependency>
+            <!-- Mantis Java API -->
+            <dependency>
+                <groupId>com.googlecode</groupId>
+                <artifactId>mantis-java-api</artifactId>
+                <version>0.0.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
