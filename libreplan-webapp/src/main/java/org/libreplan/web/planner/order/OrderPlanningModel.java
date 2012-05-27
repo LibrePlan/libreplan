@@ -58,7 +58,6 @@ import org.libreplan.business.planner.entities.ICostCalculator;
 import org.libreplan.business.planner.entities.IOrderEarnedValueCalculator;
 import org.libreplan.business.planner.entities.IOrderResourceLoadCalculator;
 import org.libreplan.business.planner.entities.TaskElement;
-import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.scenarios.IScenarioManager;
@@ -398,23 +397,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         // Calculate critical path progress, needed for 'Project global progress' chart in Dashboard view
         planner.addGraphChangeListenersFromConfiguration(configuration);
-        updateCriticalPathProgress();
         long overalProgressContentTime = System.currentTimeMillis();
         PROFILING_LOG.info("overalProgressContent took: "
                 + (System.currentTimeMillis() - overalProgressContentTime));
-    }
-
-    /**
-     * First time a project is loaded, it's needed to calculate the theoretical
-     * critical path progress and real critical path progress. These values are
-     * later updated whenever the project is saved
-     */
-    private void updateCriticalPathProgress() {
-        if (planningState.isEmpty() || planner == null) {
-            return;
-        }
-        TaskGroup rootTask = planningState.getRootTask();
-        rootTask.updateCriticalPathProgress(planner.getCriticalPath());
     }
 
     private OrderEarnedValueChartFiller earnedValueChartFiller;

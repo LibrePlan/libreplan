@@ -25,10 +25,11 @@ import java.util.Map;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
+import org.libreplan.web.planner.order.OrderPlanningController;
 
 interface IDashboardModel {
 
-    void setCurrentOrder(Order order);
+    void setCurrentOrder(Order order, OrderPlanningController orderPlanningController);
 
     boolean tasksAvailable();
 

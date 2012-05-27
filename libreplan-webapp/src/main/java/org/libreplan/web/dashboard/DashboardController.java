@@ -29,6 +29,7 @@ import java.util.Set;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
+import org.libreplan.web.planner.order.OrderPlanningController;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -72,8 +73,8 @@ public class DashboardController extends GenericForwardComposer {
         super.doAfterCompose(comp);
     }
 
-    public void setCurrentOrder(Order order) {
-        dashboardModel.setCurrentOrder(order);
+    public void setCurrentOrder(Order order, OrderPlanningController orderPlanningController) {
+        dashboardModel.setCurrentOrder(order, orderPlanningController);
         if (dashboardModel.tasksAvailable()) {
             if (self != null) {
                 renderGlobalProgress();

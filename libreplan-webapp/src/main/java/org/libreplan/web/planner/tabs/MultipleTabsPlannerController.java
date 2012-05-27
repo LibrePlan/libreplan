@@ -271,7 +271,7 @@ public class MultipleTabsPlannerController implements Composer,
                 }, parameters);
 
         dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
-                dashboardController, breadcrumbs);
+                dashboardController, orderPlanningController, breadcrumbs);
 
         final boolean isMontecarloVisible = isMonteCarloVisible();
         if (isMontecarloVisible) {

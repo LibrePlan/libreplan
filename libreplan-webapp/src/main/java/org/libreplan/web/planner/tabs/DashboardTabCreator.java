@@ -30,8 +30,8 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.dashboard.DashboardController;
+import org.libreplan.web.planner.order.OrderPlanningController;
 import org.libreplan.web.planner.order.PlanningStateCreator;
-import org.libreplan.web.planner.order.PlanningStateCreator.IActionsOnRetrieval;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
@@ -52,23 +52,27 @@ public class DashboardTabCreator {
     public static ITab create(Mode mode,
             PlanningStateCreator planningStateCreator,
             DashboardController dashboardController,
+            OrderPlanningController orderPlanningController,
             Component breadcrumbs) {
         return new DashboardTabCreator(mode, planningStateCreator,
-                dashboardController, breadcrumbs).build();
+                dashboardController, orderPlanningController, breadcrumbs).build();
     }
 
     private final PlanningStateCreator planningStateCreator;
     private final Mode mode;
     private final DashboardController dashboardController;
+    private final OrderPlanningController orderPlanningController;
     private final Component breadcrumbs;
 
     private DashboardTabCreator(Mode mode,
             PlanningStateCreator planningStateCreator,
             DashboardController dashboardController,
+            OrderPlanningController orderPlanningController,
             Component breadcrumbs) {
         this.mode = mode;
         this.planningStateCreator = planningStateCreator;
         this.dashboardController = dashboardController;
+        this.orderPlanningController = orderPlanningController;
         this.breadcrumbs = breadcrumbs;
     }
 
@@ -100,7 +104,8 @@ public class DashboardTabCreator {
             protected void afterShowAction() {
                 PlanningState planningState = getPlanningState(mode.getOrder(), getDesktop());
                 Order currentOrder = planningState.getOrder();
-                dashboardController.setCurrentOrder(currentOrder);
+                dashboardController.setCurrentOrder(currentOrder,
+                        orderPlanningController);
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
@@ -117,6 +122,7 @@ public class DashboardTabCreator {
                 .getTransactionService();
         return transactionService
                 .runOnTransaction(new IOnTransaction<PlanningState>() {
+                    @Override
                     public PlanningState execute() {
                         return planningStateCreator.retrieveOrCreate(desktop,
                                 order);
