@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.hibernate.NonUniqueResultException;
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.daos.ISumChargedEffortDAO;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -83,7 +83,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     private ISumChargedEffortDAO sumChargedEffortDAO;
 
     @Autowired
-    private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
+    private IConfigurationDAO configurationDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -204,8 +204,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     private TypeOfWorkHours getTypeOfWorkHours() {
-        // FIXME using the first type of hours for the moment
-        return typeOfWorkHoursDAO.findAll().get(0);
+        return configurationDAO.getConfiguration()
+                .getMonthlyTimesheetsTypeOfWorkHours();
     }
 
     @Override
