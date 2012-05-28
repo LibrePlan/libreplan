@@ -28,12 +28,15 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
+import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.HourCost;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.workreports.entities.WorkReportLine;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -49,6 +52,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         implements
         ITypeOfWorkHoursDAO {
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Override
     public TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
@@ -142,6 +148,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     public void checkIsReferencedByOtherEntities(TypeOfWorkHours type) throws ValidationException {
         checkHasHourCost(type);
         checkHasWorkReportLine(type);
+        checkIsMonthlyTimesheetsTypeOfWorkHours(type);
     }
 
     private void checkHasWorkReportLine(TypeOfWorkHours type) {
@@ -163,6 +170,17 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
             throw ValidationException
                     .invalidValue(
                             "Cannot delete type of work hours. It is being used at this moment in some cost category.",
+                            type);
+        }
+    }
+
+    private void checkIsMonthlyTimesheetsTypeOfWorkHours(TypeOfWorkHours type) {
+        Configuration configuration = configurationDAO.getConfiguration();
+        if (configuration.getMonthlyTimesheetsTypeOfWorkHours().getId()
+                .equals(type.getId())) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete the type of work hours. It is configured as type of work hours for monthly timesheets.",
                             type);
         }
     }

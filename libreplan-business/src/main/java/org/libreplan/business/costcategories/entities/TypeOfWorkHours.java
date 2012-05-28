@@ -143,6 +143,19 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
         }
     }
 
+    @AssertTrue(message = "the type of work hours for monthly timesheets cannot be disabled")
+    public boolean checkMonthlyTimesheetsTypeOfWorkHoursNotDisabled() {
+        if (!isNewObject() && !getEnabled()) {
+            TypeOfWorkHours typeOfWorkHours = Registry.getConfigurationDAO()
+                    .getConfiguration().getMonthlyTimesheetsTypeOfWorkHours();
+            if (typeOfWorkHours.getId().equals(getId())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public String toString() {
         return name;
     }
