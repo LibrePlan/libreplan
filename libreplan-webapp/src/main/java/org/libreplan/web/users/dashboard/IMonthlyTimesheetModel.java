@@ -76,4 +76,10 @@ public interface IMonthlyTimesheetModel {
      */
     void cancel();
 
+    /**
+     * Returns the {@link EffortDuration} in the current monthly timesheet for
+     * the specified <code>orderElement</code>.
+     */
+    EffortDuration getEffortDuration(OrderElement orderElement);
+
 }

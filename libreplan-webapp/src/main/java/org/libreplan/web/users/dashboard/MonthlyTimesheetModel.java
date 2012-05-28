@@ -233,4 +233,15 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         workReport = null;
     }
 
+    @Override
+    public EffortDuration getEffortDuration(OrderElement orderElement) {
+        EffortDuration result = EffortDuration.zero();
+        for (WorkReportLine line : workReport.getWorkReportLines()) {
+            if (line.getOrderElement().equals(orderElement)) {
+                result = result.plus(line.getEffort());
+            }
+        }
+        return result;
+    }
+
 }

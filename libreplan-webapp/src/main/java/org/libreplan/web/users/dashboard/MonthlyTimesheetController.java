@@ -71,6 +71,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             Util.appendLabel(row, orderElement.getName());
 
             appendInputsForDays(row, orderElement);
+
+            appendTotalColumn(row, orderElement);
         }
 
         private void appendInputsForDays(Row row,
@@ -106,13 +108,35 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                         }
                         monthlyTimesheetModel.setEffortDuration(orderElement,
                                 textboxDate, effortDuration);
+                        updateTotalColumn(orderElement);
                     }
+
                 });
 
                 row.appendChild(textbox);
             }
 
         }
+
+        private void appendTotalColumn(Row row, final OrderElement orderElement) {
+            Textbox textbox = new Textbox();
+            textbox.setId(getTotalColumnTextboxId(orderElement));
+            textbox.setDisabled(true);
+            row.appendChild(textbox);
+
+            updateTotalColumn(orderElement);
+        }
+
+        private String getTotalColumnTextboxId(final OrderElement orderElement) {
+            return "textbox-total-" + orderElement.getId();
+        }
+
+        private void updateTotalColumn(OrderElement orderElement) {
+            Textbox textbox = (Textbox) timesheet.getFellow(getTotalColumnTextboxId(orderElement));
+            textbox.setValue(monthlyTimesheetModel.getEffortDuration(
+                    orderElement).toFormattedString());
+        }
+
     };
 
     @Override
@@ -154,6 +178,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     private void createColumns(LocalDate date) {
         createProjectAndTaskColumns();
         createColumnsForDays(date);
+        createTotalColumn();
     }
 
     private void createProjectAndTaskColumns() {
@@ -171,6 +196,10 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             column.setAlign("center");
             columns.appendChild(column);
         }
+    }
+
+    private void createTotalColumn() {
+        columns.appendChild(new Column(_("Total")));
     }
 
     public String getDate() {
