@@ -23,6 +23,7 @@ package org.libreplan.web.workreports;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
@@ -71,6 +72,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -85,11 +87,12 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.api.Window;
-
 /**
- * Controller for CRUD actions over a {@link WorkReport}
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ *
+ *         Controller for CRUD actions over a {@link WorkReport}
+ *
  */
 public class WorkReportCRUDController extends GenericForwardComposer implements
         IWorkReportCRUDControllerEntryPoints {
@@ -152,7 +155,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Datebox filterFinishDate;
 
-    private IPredicate predicateFilterLines;
+    private Combobox filterType;
+
+    private List<IPredicate> predicates = new ArrayList<IPredicate>();
 
     private Grid gridListQuery;
 
@@ -172,7 +177,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listWorkReportLines = (NewDataSortableGrid) createWindow
                 .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
+        comp.setAttribute("controller", this);
         initCurrentList();
         if(listType != null) {
             //listType is null in reports -> work report lines
@@ -613,6 +618,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
+    @Override
     public void goToCreateForm(WorkReportType workReportType) {
         cameBackList = false;
         workReportModel.initCreate(workReportType);
@@ -623,11 +629,13 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         Util.reloadBindings(createWindow);
     }
 
+    @Override
     public void goToEditForm(WorkReportDTO workReportDTO) {
         workReportModel.setListingQuery(false);
         goToEditForm(workReportDTO.getWorkReport());
     }
 
+    @Override
     public void goToEditForm(WorkReport workReport) {
         workReportModel.initEdit(workReport);
         createWindow.setTitle(_("Edit Work Report"));
@@ -694,6 +702,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         bandboxFilterOrderElement = (BandboxSearch) window
                 .getFellow("bandboxFilterOrderElement");
         filterHoursType = (Autocomplete) window.getFellow("filterHoursType");
+        filterType = (Combobox) window.getFellow("filterType");
         clearFilterDatesLines();
     }
     /**
@@ -985,7 +994,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void appendAutocompleteLabelsByTypeInLine(Row row,
             final Label currentLabel) {
-        final LabelType labelType = (LabelType) currentLabel.getType();
+        final LabelType labelType = currentLabel.getType();
         final WorkReportLine line = (WorkReportLine) row.getValue();
         final Autocomplete comboLabels = createAutocompleteLabels(labelType,
                 currentLabel);
@@ -1087,8 +1096,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         starting.clearErrorMessage(true);
         ending.clearErrorMessage(true);
 
-        final Date startingDate = (Date) starting.getValue();
-        final Date endingDate = (Date) ending.getValue();
+        final Date startingDate = starting.getValue();
+        final Date endingDate = ending.getValue();
 
         if (endingDate == null || startingDate == null
                 || startingDate.compareTo(endingDate) > 0) {
@@ -1236,7 +1245,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private String getWorkReportLineName(WorkReportLine workReportLine) {
-        final Resource resource = (Resource) workReportLine.getResource();
+        final Resource resource = workReportLine.getResource();
         final OrderElement orderElement = workReportLine.getOrderElement();
 
         if (resource == null || orderElement == null) {
@@ -1375,7 +1384,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void appendAutocompleteLabelsByType(Row row,
             final Label currentLabel) {
-        final LabelType labelType = (LabelType) currentLabel.getType();
+        final LabelType labelType = currentLabel.getType();
         final Autocomplete comboLabels = createAutocompleteLabels(labelType,
                 currentLabel);
         comboLabels.setParent(row);
@@ -1608,13 +1617,30 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private void createPredicateLines() {
+        String type = filterType.getValue();
+        OrderElement orderElement = getSelectedOrderElement();
         Resource resource = getSelectedResource();
+        TypeOfWorkHours hoursType = getSelectedHoursType();
         Date startDate = filterStartDateLine.getValue();
         Date finishDate = filterFinishDateLine.getValue();
-        OrderElement orderElement = getSelectedOrderElement();
-        TypeOfWorkHours hoursType = getSelectedHoursType();
-        predicateFilterLines = new WorkReportLinePredicate(resource, startDate,
-                finishDate, orderElement, hoursType);
+
+        predicates.clear();
+        if (type.equals(_("All"))) {
+            predicates.add(new WorkReportLinePredicate(resource, startDate,
+                    finishDate, orderElement, hoursType));
+            for (OrderElement each: orderElement.getChildren()) {
+                predicates.add(new WorkReportLinePredicate(resource, startDate,
+                        finishDate, each, hoursType));
+            }
+        } else if (type.equals(_("Direct"))) {
+            predicates.add(new WorkReportLinePredicate(resource, startDate,
+                    finishDate, orderElement, hoursType));
+        } else if (type.equals(_("Indirect"))) {
+            for (OrderElement each: orderElement.getChildren()) {
+                predicates.add(new WorkReportLinePredicate(resource, startDate,
+                        finishDate, each, hoursType));
+            }
+        }
     }
 
     private Resource getSelectedResource() {
@@ -1652,8 +1678,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private void filterByPredicateLines() {
-        List<WorkReportLine> filterWorkReportLines = workReportModel
-                .getFilterWorkReportLines(predicateFilterLines);
+        List<WorkReportLine> filterWorkReportLines = new ArrayList<WorkReportLine>();
+        for (IPredicate each : predicates) {
+            filterWorkReportLines.addAll(workReportModel
+                    .getFilterWorkReportLines(each));
+        }
         gridListQuery.setModel(new SimpleListModel(filterWorkReportLines
                 .toArray()));
         gridListQuery.invalidate();

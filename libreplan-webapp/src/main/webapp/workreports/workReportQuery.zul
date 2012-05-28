@@ -37,24 +37,36 @@
         <panelchildren>
         <separator bar="false" spacing="5px" orient="horizontal"/>
         <div align="center">
-        <hbox id="hboxFilter" align="end">
-          <!-- Filter work report lines -->
-          <label value="${i18n:_('Resource')}"/>
-          <autocomplete id="filterResource" buttonVisible="true"
-               finder="ResourceFinder"/>
-          <label value="${i18n:_('task')}"/>
-          <bandboxSearch id="bandboxFilterOrderElement" widthBandbox="285px" widthListbox="700px"
-              finder="OrderElementBandboxFinder" model="@{controller.orderElements}"/>
-          <label value="${i18n:_('from')}"/>
-          <datebox id="filterStartDateLine" constraint = "@{controller.checkConstraintStartDateLine}"/>
-          <label value="${i18n:_('to')}"/>
-          <datebox id="filterFinishDateLine" constraint = "@{controller.checkConstraintFinishDateLine}"/>
-          <label value="${i18n:_('hours type')}"/>
-          <autocomplete id="filterHoursType" buttonVisible="true"
-               finder="TypeOfWorkHoursFinder" width="100px"/>
-          <button label="${i18n:_('Filter')}" style="margin-top: -4px"
-                onClick="controller.onApplyFilterWorkReportLines(event)"/>
-        </hbox>
+
+            <!-- Filter work report lines -->
+            <vbox id="hboxFilter" align="end">
+                <hbox>
+                    <label value="${i18n:_('Resource')}"/>
+                    <autocomplete id="filterResource" buttonVisible="true"
+                        finder="ResourceFinder"/>
+                    <label value="${i18n:_('task')}"/>
+                    <bandboxSearch id="bandboxFilterOrderElement" widthBandbox="285px" widthListbox="700px"
+                        finder="OrderElementBandboxFinder" model="@{controller.orderElements}"/>
+                    <label value="${i18n:_('from')}"/>
+                    <datebox id="filterStartDateLine" constraint = "@{controller.checkConstraintStartDateLine}"/>
+                    <label value="${i18n:_('to')}"/>
+                    <datebox id="filterFinishDateLine" constraint = "@{controller.checkConstraintFinishDateLine}"/>
+                </hbox>
+
+                <hbox>
+                    <label value="${i18n:_('hours type')}"/>
+                    <autocomplete id="filterHoursType" buttonVisible="true"
+                        finder="TypeOfWorkHoursFinder" width="100px"/>
+                    <label value="${i18n:_('type')}"/>
+                    <combobox id="filterType" value="${i18n:_('All')}">
+                        <comboitem label="${i18n:_('All')}"/>
+                        <comboitem label="${i18n:_('Direct')}"/>
+                        <comboitem label="${i18n:_('Indirect')}"/>
+                    </combobox>
+                    <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+                        onClick="controller.onApplyFilterWorkReportLines(event)"/>
+                </hbox>
+            </vbox>
         </div>
 
         <separator bar="false" spacing="5px" orient="horizontal"/>
