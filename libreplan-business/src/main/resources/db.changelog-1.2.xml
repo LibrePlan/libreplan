@@ -473,4 +473,17 @@
             referencedTableName="user_table" referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="add-monthly_timesheets_type_of_work_hours-to-configuration" author="mrego">
+        <comment>
+            Add new column monthly_timesheets_type_of_work_hours to
+            configuration table.
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="monthly_timesheets_type_of_work_hours" type="BIGINT" />
+        </addColumn>
+        <addForeignKeyConstraint constraintName="configuration_type_of_work_hours_fkey"
+            baseTableName="configuration" baseColumnNames="monthly_timesheets_type_of_work_hours"
+            referencedTableName="type_of_work_hours" referencedColumnNames="id" />
+    </changeSet>
+
 </databaseChangeLog>

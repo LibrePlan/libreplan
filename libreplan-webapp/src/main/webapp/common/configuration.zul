@@ -69,6 +69,12 @@
                                     selectedElement="@{configurationController.defaultCalendar}" />
                             </row>
                             <row>
+                                <label value="${i18n:_('Type of hours for monthly timesheets')}" />
+                                <bandboxSearch
+                                    finder="TypeOfWorkHoursBandboxFinder"
+                                    selectedElement="@{configurationController.monthlyTimesheetsTypeOfWorkHours, access='both'}" />
+                            </row>
+                            <row>
                                 <label
                                     value="${i18n:_('Show progress')}" />
                                 <listbox id="lbTypeProgress"

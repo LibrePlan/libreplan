@@ -27,6 +27,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 
 /**
  * Application configuration variables.
@@ -99,6 +100,8 @@ public class Configuration extends BaseEntity {
      */
     private String currencyCode = "EUR";
     private String currencySymbol = "€";
+
+    private TypeOfWorkHours monthlyTimesheetsTypeOfWorkHours;
 
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
@@ -397,6 +400,15 @@ public class Configuration extends BaseEntity {
 
     public void setCurrencySymbol(String currencySymbol) {
         this.currencySymbol = currencySymbol;
+    }
+
+    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
+        return monthlyTimesheetsTypeOfWorkHours;
+    }
+
+    public void setMonthlyTimesheetsTypeOfWorkHours(
+            TypeOfWorkHours typeOfWorkHours) {
+        monthlyTimesheetsTypeOfWorkHours = typeOfWorkHours;
     }
 
 }

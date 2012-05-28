@@ -71,6 +71,9 @@
         <property name="currencyCode" not-null="true" column="currency_code" />
         <property name="currencySymbol" not-null="true" column="currency_symbol" />
 
+        <many-to-one name="monthlyTimesheetsTypeOfWorkHours" cascade="none"
+            column="monthly_timesheets_type_of_work_hours" />
+
         <component name="ldapConfiguration" class="org.libreplan.business.common.entities.LDAPConfiguration">
             <property name="ldapHost" column="ldap_Host"/>
             <property name="ldapPort" column="ldap_port"/>
