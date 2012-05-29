@@ -77,7 +77,9 @@ public interface IMonthlyTimesheetModel {
 
     /**
      * Sets the {@link EffortDuration} in the current monthly timesheet for the
-     * specified <code>orderElement</code> and <code>date</code>.
+     * specified <code>orderElement</code> and <code>date</code>.<br />
+     *
+     * Marks the current monthly timesheet as modified.
      */
     void setEffortDuration(OrderElement orderElement, LocalDate date,
             EffortDuration effortDuration);
@@ -127,5 +129,23 @@ public interface IMonthlyTimesheetModel {
      * proxy.
      */
     Order getOrder(OrderElement orderElement);
+
+    /**
+     * Returns <code>true</code> if current monthly timesheet has been modified
+     * by the user.
+     */
+    boolean isModified();
+
+    /**
+     * Checks if current monthly timesheet is the first month, that means the
+     * first activation period of the resource.
+     */
+    boolean isFirstMonth();
+
+    /**
+     * Checks if current monthly timesheet is the last month, that means the
+     * next month of current date.
+     */
+    boolean isLastMonth();
 
 }

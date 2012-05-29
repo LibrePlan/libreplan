@@ -101,6 +101,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Autowired
     private IOrderDAO orderDAO;
 
+    private boolean modified;
+
     @Override
     @Transactional(readOnly = true)
     public void initCreateOrEdit(LocalDate date) {
@@ -117,6 +119,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
         initWorkReport();
         initOrderElements();
+
+        modified = false;
     }
 
     private void initDates() {
@@ -266,6 +270,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             workReport.addWorkReportLine(workReportLine);
         }
         workReportLine.setEffort(effortDuration);
+        modified = true;
     }
 
     private WorkReportLine createWorkReportLine(OrderElement orderElement,
@@ -298,6 +303,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
                             .getWorkReportLines());
             workReportDAO.save(workReport);
         }
+        modified = false;
     }
 
     @Override
@@ -306,6 +312,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         date = null;
         orderElements = null;
         workReport = null;
+        modified = false;
     }
 
     @Override
@@ -351,6 +358,24 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Transactional(readOnly = true)
     public Order getOrder(OrderElement orderElement) {
         return orderDAO.loadOrderAvoidingProxyFor(orderElement);
+    }
+
+    @Override
+    public boolean isModified() {
+        return modified;
+    }
+
+    @Override
+    public boolean isFirstMonth() {
+        LocalDate activationDate = getWorker().getCalendar()
+                .getFistCalendarAvailability().getStartDate();
+        return firstDay.equals(activationDate.dayOfMonth().withMinimumValue());
+    }
+
+    @Override
+    public boolean isLastMonth() {
+        return firstDay.equals(new LocalDate().plusMonths(1).dayOfMonth()
+                .withMinimumValue());
     }
 
 }

@@ -25,12 +25,16 @@ import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREAD
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
+import org.libreplan.web.common.entrypoints.EntryPointsHandler;
+import org.libreplan.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.util.Assert;
@@ -38,6 +42,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
@@ -68,6 +73,13 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     private Columns columns;
 
     private BandboxSearch orderElementBandboxSearch;
+
+    private Button previousMonth;
+
+    private Button nextMonth;
+
+    @Resource
+    private IMonthlyTimesheetController monthlyTimesheetController;
 
     private RowRenderer rowRenderer = new RowRenderer() {
 
@@ -410,6 +422,43 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             orderElementBandboxSearch.setSelectedElement(null);
             Util.reloadBindings(timesheet);
         }
+    }
+
+    public boolean isFirstMonth() {
+        return monthlyTimesheetModel.isFirstMonth();
+    }
+
+    public boolean isLastMonth() {
+        return monthlyTimesheetModel.isLastMonth();
+    }
+
+    public void previousMonth() {
+        if (monthlyTimesheetModel.isModified()) {
+            throw new WrongValueException(
+                    previousMonth,
+                    _("There are unsaved changes in the current monthly timesheet, please save before moving"));
+        }
+        sendToMonthlyTimesheet(monthlyTimesheetModel.getDate().minusMonths(1));
+    }
+
+    public void nextMonth() {
+        if (monthlyTimesheetModel.isModified()) {
+            throw new WrongValueException(
+                    nextMonth,
+                    _("There are unsaved changes in the current monthly timesheet, please save before moving"));
+        }
+
+        sendToMonthlyTimesheet(monthlyTimesheetModel.getDate().plusMonths(1));
+    }
+
+    private void sendToMonthlyTimesheet(final LocalDate date) {
+        String capturePath = EntryPointsHandler.capturePath(new ICapture() {
+            @Override
+            public void capture() {
+                monthlyTimesheetController.goToCreateOrEditForm(date);
+            }
+        });
+        Executions.getCurrent().sendRedirect(capturePath);
     }
 
 }
