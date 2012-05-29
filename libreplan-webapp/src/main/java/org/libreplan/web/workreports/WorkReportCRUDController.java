@@ -1717,7 +1717,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             filterWorkReportLines.addAll(workReportModel
                     .getFilterWorkReportLines(each));
         }
-//        refreshWorkReportLines();
         gridListQuery.setModel(new SimpleListModel(filterWorkReportLines
                 .toArray()));
         gridListQuery.invalidate();
