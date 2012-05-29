@@ -55,6 +55,13 @@
             <grid id="timesheet"
                 model="@{controller.rows}"
                 rowRenderer="@{controller.rowRenderer}" />
+            <hbox>
+                <bandboxSearch
+                    id="orderElementBandboxSearch"
+                    finder="OrderElementBandboxFinder" />
+                <button onClick="controller.addOrderElement();"
+                    label="${i18n:_('Add task')}" />
+            </hbox>
         </groupbox>
 
         <button onClick="controller.save();"

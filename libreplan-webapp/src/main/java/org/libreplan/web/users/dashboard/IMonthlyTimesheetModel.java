@@ -22,6 +22,7 @@ package org.libreplan.web.users.dashboard;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
@@ -115,5 +116,16 @@ public interface IMonthlyTimesheetModel {
      * <code>date</code>.
      */
     EffortDuration getResourceCapacity(LocalDate date);
+
+    /**
+     * Adds the <code>orderElement</code> to the current monthly timehseet.
+     */
+    void addOrderElement(OrderElement orderElement);
+
+    /**
+     * Returns the {@link Order} of the <code>orderElement</code> avoiding a
+     * proxy.
+     */
+    Order getOrder(OrderElement orderElement);
 
 }

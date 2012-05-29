@@ -30,7 +30,9 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.ISumChargedEffortDAO;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.daos.IResourceAllocationDAO;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
@@ -96,6 +98,9 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Autowired
     private IConfigurationDAO configurationDAO;
 
+    @Autowired
+    private IOrderDAO orderDAO;
+
     @Override
     @Transactional(readOnly = true)
     public void initCreateOrEdit(LocalDate date) {
@@ -110,8 +115,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
         initCapacityMap();
 
-        initOrderElements();
         initWorkReport();
+        initOrderElements();
     }
 
     private void initDates() {
@@ -172,8 +177,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     private void initOrderElements() {
         List<SpecificResourceAllocation> resourceAllocations = resourceAllocationDAO
                 .findSpecificAllocationsRelatedTo(scenarioManager.getCurrent(),
-                        UserDashboardUtil.getBoundResourceAsList(user), null,
-                        null);
+                        UserDashboardUtil.getBoundResourceAsList(user),
+                        firstDay, lastDay);
 
         orderElements = new ArrayList<OrderElement>();
         for (SpecificResourceAllocation each : resourceAllocations) {
@@ -181,10 +186,27 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             forceLoad(orderElement);
             orderElements.add(orderElement);
         }
+
+        for (WorkReportLine each : workReport.getWorkReportLines()) {
+            OrderElement orderElement = each.getOrderElement();
+            if (isNotInOrderElements(orderElement)) {
+                forceLoad(orderElement);
+                orderElements.add(orderElement);
+            }
+        }
+    }
+
+    private boolean isNotInOrderElements(OrderElement orderElement) {
+        for (OrderElement each : orderElements) {
+            if (each.getId().equals(orderElement.getId())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void forceLoad(OrderElement orderElement) {
-        orderElement.getOrder().getName();
+        orderElement.getName();
     }
 
     @Override
@@ -240,13 +262,20 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             EffortDuration effortDuration) {
         WorkReportLine workReportLine = getWorkReportLine(orderElement, date);
         if (workReportLine == null) {
-            workReportLine = WorkReportLine.create(workReport);
-            workReportLine.setOrderElement(orderElement);
-            workReportLine.setDate(date.toDateTimeAtStartOfDay().toDate());
-            workReportLine.setTypeOfWorkHours(getTypeOfWorkHours());
+            workReportLine = createWorkReportLine(orderElement, date);
             workReport.addWorkReportLine(workReportLine);
         }
         workReportLine.setEffort(effortDuration);
+    }
+
+    private WorkReportLine createWorkReportLine(OrderElement orderElement,
+            LocalDate date) {
+        WorkReportLine workReportLine = WorkReportLine.create(workReport);
+        workReportLine.setOrderElement(orderElement);
+        workReportLine.setDate(date.toDateTimeAtStartOfDay().toDate());
+        workReportLine.setTypeOfWorkHours(getTypeOfWorkHours());
+        workReportLine.setEffort(EffortDuration.zero());
+        return workReportLine;
     }
 
     private TypeOfWorkHours getTypeOfWorkHours() {
@@ -309,6 +338,19 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Override
     public EffortDuration getResourceCapacity(LocalDate date) {
         return capacityMap.get(date);
+    }
+
+    @Override
+    public void addOrderElement(OrderElement orderElement) {
+        if (isNotInOrderElements(orderElement)) {
+            orderElements.add(orderElement);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Order getOrder(OrderElement orderElement) {
+        return orderDAO.loadOrderAvoidingProxyFor(orderElement);
     }
 
 }

@@ -30,6 +30,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.util.Assert;
@@ -66,6 +67,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private Columns columns;
 
+    private BandboxSearch orderElementBandboxSearch;
+
     private RowRenderer rowRenderer = new RowRenderer() {
 
         private LocalDate first;
@@ -101,7 +104,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void renderOrderElementRow(Row row, OrderElement orderElement) {
-            Util.appendLabel(row, orderElement.getOrder().getName());
+            Util.appendLabel(row, monthlyTimesheetModel.getOrder(orderElement)
+                    .getName());
             Util.appendLabel(row, orderElement.getName());
 
             appendInputsForDays(row, orderElement);
@@ -396,6 +400,16 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         monthlyTimesheetModel.cancel();
         Executions.getCurrent().sendRedirect(
                 CustomTargetUrlResolver.USER_DASHBOARD_URL);
+    }
+
+    public void addOrderElement() {
+        OrderElement orderElement = (OrderElement) orderElementBandboxSearch
+                .getSelectedElement();
+        if (orderElement != null) {
+            monthlyTimesheetModel.addOrderElement(orderElement);
+            orderElementBandboxSearch.setSelectedElement(null);
+            Util.reloadBindings(timesheet);
+        }
     }
 
 }
