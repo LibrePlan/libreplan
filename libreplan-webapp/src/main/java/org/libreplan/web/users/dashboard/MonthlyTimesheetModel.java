@@ -68,6 +68,10 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private LocalDate date;
 
+    private LocalDate firstDay;
+
+    private LocalDate lastDay;
+
     private List<OrderElement> orderElements;
 
     private WorkReport workReport;
@@ -102,21 +106,24 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         }
         this.date = date;
 
+        initDates();
+
         initCapacityMap();
 
         initOrderElements();
         initWorkReport();
     }
 
+    private void initDates() {
+        firstDay = date.dayOfMonth().withMinimumValue();
+        lastDay = date.dayOfMonth().withMaximumValue();
+    }
+
     private void initCapacityMap() {
         forceLoad(getWorker().getCalendar());
 
-        LocalDate date = getDate();
-        LocalDate start = date.dayOfMonth().withMinimumValue();
-        LocalDate end = date.dayOfMonth().withMaximumValue();
-
         capacityMap = new HashMap<LocalDate, EffortDuration>();
-        for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+        for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = day
                 .plusDays(1)) {
             capacityMap.put(
                     day,
@@ -183,6 +190,16 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Override
     public LocalDate getDate() {
         return date;
+    }
+
+    @Override
+    public LocalDate getFirstDay() {
+        return firstDay;
+    }
+
+    @Override
+    public LocalDate getLastDate() {
+        return lastDay;
     }
 
     @Override

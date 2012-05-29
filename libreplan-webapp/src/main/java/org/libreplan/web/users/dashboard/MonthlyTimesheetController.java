@@ -68,8 +68,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private RowRenderer rowRenderer = new RowRenderer() {
 
-        private LocalDate start;
-        private LocalDate end;
+        private LocalDate first;
+        private LocalDate last;
 
         @Override
         public void render(Row row, Object data) throws Exception {
@@ -96,9 +96,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void initMonthlyTimesheetDates() {
-            LocalDate date = monthlyTimesheetModel.getDate();
-            start = date.dayOfMonth().withMinimumValue();
-            end = date.dayOfMonth().withMaximumValue();
+            first = monthlyTimesheetModel.getFirstDay();
+            last = monthlyTimesheetModel.getLastDate();
         }
 
         private void renderOrderElementRow(Row row, OrderElement orderElement) {
@@ -112,7 +111,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private void appendInputsForDays(Row row,
                 final OrderElement orderElement) {
-            for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
                     .plusDays(1)) {
                 final LocalDate textboxDate = day;
 
@@ -186,7 +185,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void appendTotalForDays(Row row) {
-            for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
                     .plusDays(1)) {
                 Cell cell = getCenteredCell(getDisabledTextboxWithId(getTotalRowTextboxId(day)));
                 if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
@@ -249,7 +248,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private void appendCapcityForDaysAndTotal(Row row) {
             EffortDuration totalCapacity = EffortDuration.zero();
 
-            for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
                     .plusDays(1)) {
                 EffortDuration capacity = monthlyTimesheetModel
                         .getResourceCapacity(day);

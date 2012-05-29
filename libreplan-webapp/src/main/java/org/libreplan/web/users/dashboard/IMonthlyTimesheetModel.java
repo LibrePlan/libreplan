@@ -40,7 +40,22 @@ public interface IMonthlyTimesheetModel {
      */
     void initCreateOrEdit(LocalDate date);
 
+    /**
+     * Returns the date of the monthly timesheet (only year and month should
+     * take into account as the day is not important to define a monthly
+     * timesheet).
+     */
     LocalDate getDate();
+
+    /**
+     * Returns the first day of the month of the current monthly timesheet.
+     */
+    LocalDate getFirstDay();
+
+    /**
+     * Returns the last day of the month of the current monthly timesheet.
+     */
+    LocalDate getLastDate();
 
     /**
      * Returns resource bound to current user.
