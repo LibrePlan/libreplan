@@ -22,6 +22,7 @@ package org.libreplan.web.users.dashboard;
 import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -30,10 +31,12 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.users.services.CustomTargetUrlResolver;
+import org.springframework.util.Assert;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Image;
@@ -52,6 +55,8 @@ import org.zkoss.zul.api.Grid;
 public class MonthlyTimesheetController extends GenericForwardComposer
         implements IMonthlyTimesheetController {
 
+    private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
+
     private IMonthlyTimesheetModel monthlyTimesheetModel;
 
     private IURLHandlerRegistry URLHandlerRegistry;
@@ -60,13 +65,42 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private Columns columns;
 
-    private RowRenderer orderElementsRenderer = new RowRenderer() {
+    private RowRenderer rowRenderer = new RowRenderer() {
+
+        private LocalDate start;
+        private LocalDate end;
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            OrderElement orderElement = (OrderElement) data;
-            row.setValue(orderElement);
+            MonthlyTimesheetRow monthlyTimesheetRow = (MonthlyTimesheetRow) data;
 
+            initMonthlyTimesheetDates();
+
+            switch (monthlyTimesheetRow.getType()) {
+            case ORDER_ELEMENT:
+                renderOrderElementRow(row,
+                        monthlyTimesheetRow.getOrderElemement());
+                break;
+            case CAPACITY:
+                // TODO
+                break;
+            case TOTAL:
+                renderTotalRow(row);
+                break;
+            default:
+                throw new IllegalStateException(
+                        "Unknown MonthlyTimesheetRow type: "
+                                + monthlyTimesheetRow.getType());
+            }
+        }
+
+        private void initMonthlyTimesheetDates() {
+            LocalDate date = monthlyTimesheetModel.getDate();
+            start = date.dayOfMonth().withMinimumValue();
+            end = date.dayOfMonth().withMaximumValue();
+        }
+
+        private void renderOrderElementRow(Row row, OrderElement orderElement) {
             Util.appendLabel(row, orderElement.getOrder().getName());
             Util.appendLabel(row, orderElement.getName());
 
@@ -77,17 +111,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private void appendInputsForDays(Row row,
                 final OrderElement orderElement) {
-            LocalDate date = monthlyTimesheetModel.getDate();
-
-            LocalDate start = date.dayOfMonth().withMinimumValue();
-            LocalDate end = date.dayOfMonth().withMaximumValue();
-
             for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                     .plusDays(1)) {
                 final LocalDate textboxDate = day;
 
                 final Textbox textbox = new Textbox();
-                textbox.setWidth("30px");
+                textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
 
                 Util.bind(textbox, new Util.Getter<String>() {
                     @Override
@@ -108,7 +137,14 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                         }
                         monthlyTimesheetModel.setEffortDuration(orderElement,
                                 textboxDate, effortDuration);
+                        updateTotals(orderElement, textboxDate);
+                    }
+
+                    private void updateTotals(OrderElement orderElement,
+                            LocalDate date) {
                         updateTotalColumn(orderElement);
+                        updateTotalRow(date);
+                        updateTotalColumn();
                     }
 
                 });
@@ -120,6 +156,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private void appendTotalColumn(Row row, final OrderElement orderElement) {
             Textbox textbox = new Textbox();
+            textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
             textbox.setId(getTotalColumnTextboxId(orderElement));
             textbox.setDisabled(true);
             row.appendChild(textbox);
@@ -135,6 +172,65 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             Textbox textbox = (Textbox) timesheet.getFellow(getTotalColumnTextboxId(orderElement));
             textbox.setValue(monthlyTimesheetModel.getEffortDuration(
                     orderElement).toFormattedString());
+        }
+
+        private void renderTotalRow(Row row) {
+            appendTotalLabel(row);
+            appendTotalForDays(row);
+            appendTotalColumn(row);
+        }
+
+        private void appendTotalLabel(Row row) {
+            Label label = new Label(_("Total"));
+            Cell cell = new Cell();
+            cell.setColspan(2);
+            cell.appendChild(label);
+            row.appendChild(cell);
+        }
+
+        private void appendTotalForDays(Row row) {
+            for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+                    .plusDays(1)) {
+                Textbox textbox = new Textbox();
+                textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
+                textbox.setId(getTotalRowTextboxId(day));
+                textbox.setDisabled(true);
+                row.appendChild(textbox);
+
+                updateTotalRow(day);
+            }
+        }
+
+        private String getTotalRowTextboxId(LocalDate date) {
+            return "textbox-total-row-" + date;
+        }
+
+        private void updateTotalRow(LocalDate date) {
+            Textbox textbox = (Textbox) timesheet
+                    .getFellow(getTotalRowTextboxId(date));
+            textbox.setValue(monthlyTimesheetModel.getEffortDuration(date)
+                    .toFormattedString());
+        }
+
+        private void appendTotalColumn(Row row) {
+            Textbox textbox = new Textbox();
+            textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
+            textbox.setId(getTotalTextboxId());
+            textbox.setDisabled(true);
+            row.appendChild(textbox);
+
+            updateTotalColumn();
+        }
+
+        private String getTotalTextboxId() {
+            return "textbox-total";
+        }
+
+        private void updateTotalColumn() {
+            Textbox textbox = (Textbox) timesheet
+                    .getFellow(getTotalTextboxId());
+            textbox.setValue(monthlyTimesheetModel.getTotalEffortDuration()
+                    .toFormattedString());
         }
 
     };
@@ -210,12 +306,16 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         return monthlyTimesheetModel.getWorker().getShortDescription();
     }
 
-    public List<OrderElement> getOrderElements() {
-        return monthlyTimesheetModel.getOrderElements();
+    public List<MonthlyTimesheetRow> getRows() {
+        List<MonthlyTimesheetRow> result = MonthlyTimesheetRow
+                .wrap(monthlyTimesheetModel
+                .getOrderElements());
+        result.add(MonthlyTimesheetRow.createTotalRow());
+        return result;
     }
 
-    public RowRenderer getOrderElementsRenderer() {
-        return orderElementsRenderer;
+    public RowRenderer getRowRenderer() {
+        return rowRenderer;
     }
 
     public void save() {
@@ -229,6 +329,59 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         monthlyTimesheetModel.cancel();
         Executions.getCurrent().sendRedirect(
                 CustomTargetUrlResolver.USER_DASHBOARD_URL);
+    }
+
+}
+
+/**
+ * Simple class to represent the the rows in the monthly timesheet grid.<br />
+ *
+ * This is used to mark the special rows like capacity and total.
+ */
+class MonthlyTimesheetRow {
+    enum MonthlyTimesheetRowType {
+        ORDER_ELEMENT, CAPACITY, TOTAL
+    };
+
+    private MonthlyTimesheetRowType type;
+    private OrderElement orderElemement;
+
+    public static MonthlyTimesheetRow createOrderElementRow(
+            OrderElement orderElemement) {
+        MonthlyTimesheetRow row = new MonthlyTimesheetRow(
+                MonthlyTimesheetRowType.ORDER_ELEMENT);
+        Assert.notNull(orderElemement);
+        row.orderElemement = orderElemement;
+        return row;
+    }
+
+    public static MonthlyTimesheetRow createCapacityRow() {
+        return new MonthlyTimesheetRow(MonthlyTimesheetRowType.CAPACITY);
+    }
+
+    public static MonthlyTimesheetRow createTotalRow() {
+        return new MonthlyTimesheetRow(MonthlyTimesheetRowType.TOTAL);
+    }
+
+    public static List<MonthlyTimesheetRow> wrap(
+            List<OrderElement> orderElements) {
+        List<MonthlyTimesheetRow> result = new ArrayList<MonthlyTimesheetRow>();
+        for (OrderElement each : orderElements) {
+            result.add(createOrderElementRow(each));
+        }
+        return result;
+    }
+
+    private MonthlyTimesheetRow(MonthlyTimesheetRowType type) {
+        this.type = type;
+    }
+
+    public MonthlyTimesheetRowType getType() {
+        return type;
+    }
+
+    public OrderElement getOrderElemement() {
+        return orderElemement;
     }
 
 }

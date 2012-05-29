@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,6 +39,7 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
@@ -46,6 +47,7 @@ import org.libreplan.business.workreports.valueobjects.DescriptionValue;
 /**
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class WorkReport extends IntegrationEntity implements
         IWorkReportsElements {
@@ -453,6 +455,14 @@ public class WorkReport extends IntegrationEntity implements
     @NotNull(message = "last order element sequence code not specified")
     public Integer getLastWorkReportLineSequenceCode() {
         return lastWorkReportLineSequenceCode;
+    }
+
+    public EffortDuration getTotalEffortDuration() {
+        EffortDuration result = EffortDuration.zero();
+        for (WorkReportLine line : workReportLines) {
+            result = result.plus(line.getEffort());
+        }
+        return result;
     }
 
 }

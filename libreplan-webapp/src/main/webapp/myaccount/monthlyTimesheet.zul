@@ -53,8 +53,8 @@
         <groupbox style="margin-top: 5px" closable="false">
             <caption label="${i18n:_('Time tracking')}" />
             <grid id="timesheet"
-                model="@{controller.orderElements}"
-                rowRenderer="@{controller.orderElementsRenderer}" />
+                model="@{controller.rows}"
+                rowRenderer="@{controller.rowRenderer}" />
         </groupbox>
 
         <button onClick="controller.save();"

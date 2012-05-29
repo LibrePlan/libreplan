@@ -244,4 +244,20 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         return result;
     }
 
+    @Override
+    public EffortDuration getEffortDuration(LocalDate date) {
+        EffortDuration result = EffortDuration.zero();
+        for (WorkReportLine line : workReport.getWorkReportLines()) {
+            if (LocalDate.fromDateFields(line.getDate()).equals(date)) {
+                result = result.plus(line.getEffort());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public EffortDuration getTotalEffortDuration() {
+        return workReport.getTotalEffortDuration();
+    }
+
 }

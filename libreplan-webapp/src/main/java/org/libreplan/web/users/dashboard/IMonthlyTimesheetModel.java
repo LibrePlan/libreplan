@@ -82,4 +82,17 @@ public interface IMonthlyTimesheetModel {
      */
     EffortDuration getEffortDuration(OrderElement orderElement);
 
+    /**
+     * Returns the {@link EffortDuration} for all the {@link OrderElement
+     * OrderElements} in the current monthly timesheet in the specified
+     * <code>date</code>.
+     */
+    EffortDuration getEffortDuration(LocalDate date);
+
+    /**
+     * Returns the total {@link EffortDuration} for the currently monthly
+     * timesheet.
+     */
+    EffortDuration getTotalEffortDuration();
+
 }
