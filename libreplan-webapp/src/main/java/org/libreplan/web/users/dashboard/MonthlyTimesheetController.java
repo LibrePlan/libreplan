@@ -25,6 +25,7 @@ import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREAD
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.workingday.EffortDuration;
@@ -123,14 +124,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                     public String get() {
                         EffortDuration effortDuration = monthlyTimesheetModel
                                 .getEffortDuration(orderElement, textboxDate);
-                        return effortDuration != null ? effortDuration
-                                .toFormattedString() : "";
+                        return effortDurationToString(effortDuration);
                     }
                 }, new Util.Setter<String>() {
                     @Override
                     public void set(String value) {
-                        EffortDuration effortDuration = EffortDuration
-                                .parseFromFormattedString(value);
+                        EffortDuration effortDuration = effortDurationFromString(value);
                         if (effortDuration == null) {
                             throw new WrongValueException(textbox,
                                     _("Not a valid effort duration"));
@@ -169,8 +168,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private void updateTotalColumn(OrderElement orderElement) {
             Textbox textbox = (Textbox) timesheet.getFellow(getTotalColumnTextboxId(orderElement));
-            textbox.setValue(monthlyTimesheetModel.getEffortDuration(
-                    orderElement).toFormattedString());
+            textbox.setValue(effortDurationToString(monthlyTimesheetModel
+                    .getEffortDuration(orderElement)));
         }
 
         private void renderTotalRow(Row row) {
@@ -202,7 +201,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private Textbox getDisabledTextbox(EffortDuration effort) {
             Textbox textbox = new Textbox();
             textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
-            textbox.setValue(effort.toFormattedString());
+            textbox.setValue(effortDurationToString(effort));
             textbox.setDisabled(true);
             return textbox;
         }
@@ -222,8 +221,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private void updateTotalRow(LocalDate date) {
             Textbox textbox = (Textbox) timesheet
                     .getFellow(getTotalRowTextboxId(date));
-            textbox.setValue(monthlyTimesheetModel.getEffortDuration(date)
-                    .toFormattedString());
+            textbox.setValue(effortDurationToString(monthlyTimesheetModel
+                    .getEffortDuration(date)));
         }
 
         private void appendTotalColumn(Row row) {
@@ -238,8 +237,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private void updateTotalColumn() {
             Textbox textbox = (Textbox) timesheet
                     .getFellow(getTotalTextboxId());
-            textbox.setValue(monthlyTimesheetModel.getTotalEffortDuration()
-                    .toFormattedString());
+            textbox.setValue(effortDurationToString(monthlyTimesheetModel
+                    .getTotalEffortDuration()));
         }
 
         private void renderCapacityRow(Row row) {
@@ -283,6 +282,22 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private void setBackgroundNonCapacityCell(Cell cell) {
             cell.setStyle("background-color: #FFEEEE");
+        }
+
+        private String effortDurationToString(EffortDuration effort) {
+            if (effort == null || effort.isZero()) {
+                return "";
+            }
+
+            return effort.toFormattedString();
+        }
+
+        private EffortDuration effortDurationFromString(String effort) {
+            if (StringUtils.isBlank(effort)) {
+                return EffortDuration.zero();
+            }
+
+            return EffortDuration.parseFromFormattedString(effort);
         }
 
     };
