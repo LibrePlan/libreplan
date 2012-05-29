@@ -20,14 +20,17 @@ BuildArch:      noarch
 #BuildRequires:	jpackage-utils
 #BuildRequires:  postgresql-server
 
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?centos}
 Requires:       postgresql-jdbc
 %endif
 Requires:       java-1.6.0-openjdk
 Requires:       postgresql
 Requires:       postgresql-server
 Requires:       tomcat6
+%if 0%{?centos}
+%else
 Requires:       cutycapt
+%endif
 %if 0%{?suse_version}
 Requires:       freefont
 %else
