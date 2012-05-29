@@ -149,17 +149,17 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
                 });
 
+                Cell cell = getCenteredCell(textbox);
                 if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
-                    row.appendChild(getNonCapacityCell(textbox));
-                } else {
-                    row.appendChild(textbox);
+                    setBackgroundNonCapacityCell(cell);
                 }
+                row.appendChild(cell);
             }
 
         }
 
         private void appendTotalColumn(Row row, final OrderElement orderElement) {
-            row.appendChild(getDisabledTextbox(getTotalColumnTextboxId(orderElement)));
+            row.appendChild(getDisabledTextboxWithId(getTotalColumnTextboxId(orderElement)));
             updateTotalColumn(orderElement);
         }
 
@@ -189,18 +189,25 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private void appendTotalForDays(Row row) {
             for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                     .plusDays(1)) {
-                Textbox textbox = getDisabledTextbox(getTotalRowTextboxId(day));
+                Cell cell = getCenteredCell(getDisabledTextboxWithId(getTotalRowTextboxId(day)));
                 if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
-                    row.appendChild(getNonCapacityCell(textbox));
-                } else {
-                    row.appendChild(textbox);
+                    setBackgroundNonCapacityCell(cell);
                 }
+                row.appendChild(cell);
 
                 updateTotalRow(day);
             }
         }
 
-        private Textbox getDisabledTextbox(String id) {
+        private Textbox getDisabledTextbox(EffortDuration effort) {
+            Textbox textbox = new Textbox();
+            textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
+            textbox.setValue(effort.toFormattedString());
+            textbox.setDisabled(true);
+            return textbox;
+        }
+
+        private Textbox getDisabledTextboxWithId(String id) {
             Textbox textbox = new Textbox();
             textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
             textbox.setId(id);
@@ -220,7 +227,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void appendTotalColumn(Row row) {
-            row.appendChild(getAlignLeftCell(getDisabledTextbox(getTotalTextboxId())));
+            row.appendChild(getAlignLeftCell(getDisabledTextboxWithId(getTotalTextboxId())));
             updateTotalColumn();
         }
 
@@ -247,18 +254,17 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                     .plusDays(1)) {
                 EffortDuration capacity = monthlyTimesheetModel
                         .getResourceCapacity(day);
-                Label label = new Label(capacity.toFormattedString());
+
+                Cell cell = getCenteredCell(getDisabledTextbox(capacity));
                 if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
-                    row.appendChild(getNonCapacityCell(label));
-                } else {
-                    row.appendChild(label);
+                    setBackgroundNonCapacityCell(cell);
                 }
+                row.appendChild(cell);
 
                 totalCapacity = totalCapacity.plus(capacity);
             }
 
-            row.appendChild(getAlignLeftCell(new Label(totalCapacity
-                    .toFormattedString())));
+            row.appendChild(getAlignLeftCell(getDisabledTextbox(totalCapacity)));
         }
 
         private Cell getCenteredCell(Component component) {
@@ -275,10 +281,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             return cell;
         }
 
-        private Cell getNonCapacityCell(Component component) {
-            Cell cell = getCenteredCell(component);
+        private void setBackgroundNonCapacityCell(Cell cell) {
             cell.setStyle("background-color: #FFEEEE");
-            return cell;
         }
 
     };
