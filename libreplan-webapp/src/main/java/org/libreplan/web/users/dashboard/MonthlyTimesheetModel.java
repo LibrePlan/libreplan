@@ -20,7 +20,9 @@
 package org.libreplan.web.users.dashboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.NonUniqueResultException;
 import org.joda.time.LocalDate;
@@ -70,6 +72,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private WorkReport workReport;
 
+    private Map<LocalDate, EffortDuration> capacityMap;
+
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
@@ -96,12 +100,29 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             throw new RuntimeException(
                     "This page only can be used by users bound to a resource");
         }
-        forceLoad(getWorker().getCalendar());
-
         this.date = date;
+
+        initCapacityMap();
 
         initOrderElements();
         initWorkReport();
+    }
+
+    private void initCapacityMap() {
+        forceLoad(getWorker().getCalendar());
+
+        LocalDate date = getDate();
+        LocalDate start = date.dayOfMonth().withMinimumValue();
+        LocalDate end = date.dayOfMonth().withMaximumValue();
+
+        capacityMap = new HashMap<LocalDate, EffortDuration>();
+        for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+                .plusDays(1)) {
+            capacityMap.put(
+                    day,
+                    getWorker().getCalendar().getCapacityOn(
+                            PartialDay.wholeDay(day)));
+        }
     }
 
     private void forceLoad(ResourceCalendar calendar) {
@@ -270,8 +291,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     @Override
     public EffortDuration getResourceCapacity(LocalDate date) {
-        return getWorker().getCalendar().getCapacityOn(
-                PartialDay.wholeDay(date));
+        return capacityMap.get(date);
     }
 
 }

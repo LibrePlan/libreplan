@@ -149,7 +149,11 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
                 });
 
-                row.appendChild(textbox);
+                if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
+                    row.appendChild(getNonCapacityCell(textbox));
+                } else {
+                    row.appendChild(textbox);
+                }
             }
 
         }
@@ -185,7 +189,13 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private void appendTotalForDays(Row row) {
             for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                     .plusDays(1)) {
-                row.appendChild(getCenteredCell(getDisabledTextbox(getTotalRowTextboxId(day))));
+                Textbox textbox = getDisabledTextbox(getTotalRowTextboxId(day));
+                if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
+                    row.appendChild(getNonCapacityCell(textbox));
+                } else {
+                    row.appendChild(textbox);
+                }
+
                 updateTotalRow(day);
             }
         }
@@ -237,8 +247,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                     .plusDays(1)) {
                 EffortDuration capacity = monthlyTimesheetModel
                         .getResourceCapacity(day);
-                row.appendChild(getCenteredCell(new Label(capacity
-                        .toFormattedString())));
+                Label label = new Label(capacity.toFormattedString());
+                if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
+                    row.appendChild(getNonCapacityCell(label));
+                } else {
+                    row.appendChild(label);
+                }
 
                 totalCapacity = totalCapacity.plus(capacity);
             }
@@ -258,6 +272,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             Cell cell = new Cell();
             cell.setAlign("left");
             cell.appendChild(component);
+            return cell;
+        }
+
+        private Cell getNonCapacityCell(Component component) {
+            Cell cell = getCenteredCell(component);
+            cell.setStyle("background-color: #FFEEEE");
             return cell;
         }
 
