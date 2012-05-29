@@ -359,6 +359,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private void initTimesheet(LocalDate date) {
         columns = new Columns();
+        timesheet.getChildren().clear();
         timesheet.appendChild(columns);
         createColumns(date);
     }
@@ -416,6 +417,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         Executions.getCurrent().sendRedirect(
                 CustomTargetUrlResolver.USER_DASHBOARD_URL + "?timesheet_save="
                         + monthlyTimesheetModel.getDate());
+    }
+
+    public void saveAndContinue() {
+        monthlyTimesheetModel.save();
+        goToCreateOrEditForm(monthlyTimesheetModel.getDate());
+        Util.reloadBindings(timesheet);
     }
 
     public void cancel() {
