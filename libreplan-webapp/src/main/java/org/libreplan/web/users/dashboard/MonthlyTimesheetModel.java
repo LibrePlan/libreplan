@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.hibernate.NonUniqueResultException;
 import org.joda.time.LocalDate;
+import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
@@ -35,6 +36,7 @@ import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.PredefinedWorkReportTypes;
@@ -42,6 +44,7 @@ import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.web.UserUtil;
+import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -93,11 +96,16 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             throw new RuntimeException(
                     "This page only can be used by users bound to a resource");
         }
+        forceLoad(getWorker().getCalendar());
 
         this.date = date;
 
         initOrderElements();
         initWorkReport();
+    }
+
+    private void forceLoad(ResourceCalendar calendar) {
+        BaseCalendarModel.forceLoadBaseCalendar(calendar);
     }
 
     private void initWorkReport() {
@@ -258,6 +266,12 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Override
     public EffortDuration getTotalEffortDuration() {
         return workReport.getTotalEffortDuration();
+    }
+
+    @Override
+    public EffortDuration getResourceCapacity(LocalDate date) {
+        return getWorker().getCalendar().getCapacityOn(
+                PartialDay.wholeDay(date));
     }
 
 }

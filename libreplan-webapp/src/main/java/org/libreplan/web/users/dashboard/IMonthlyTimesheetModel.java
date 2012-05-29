@@ -95,4 +95,10 @@ public interface IMonthlyTimesheetModel {
      */
     EffortDuration getTotalEffortDuration();
 
+    /**
+     * Returns the capacity of the current resource for the specified
+     * <code>date</code>.
+     */
+    EffortDuration getResourceCapacity(LocalDate date);
+
 }

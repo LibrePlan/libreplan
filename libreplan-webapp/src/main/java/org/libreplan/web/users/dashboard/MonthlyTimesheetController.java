@@ -82,7 +82,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                         monthlyTimesheetRow.getOrderElemement());
                 break;
             case CAPACITY:
-                // TODO
+                renderCapacityRow(row);
                 break;
             case TOTAL:
                 renderTotalRow(row);
@@ -175,16 +175,15 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void renderTotalRow(Row row) {
-            appendTotalLabel(row);
+            appendLabelSpaningTwoColumns(row, _("Total"));
             appendTotalForDays(row);
             appendTotalColumn(row);
         }
 
-        private void appendTotalLabel(Row row) {
-            Label label = new Label(_("Total"));
+        private void appendLabelSpaningTwoColumns(Row row, String label) {
             Cell cell = new Cell();
             cell.setColspan(2);
-            cell.appendChild(label);
+            cell.appendChild(new Label(label));
             row.appendChild(cell);
         }
 
@@ -231,6 +230,26 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                     .getFellow(getTotalTextboxId());
             textbox.setValue(monthlyTimesheetModel.getTotalEffortDuration()
                     .toFormattedString());
+        }
+
+        private void renderCapacityRow(Row row) {
+            appendLabelSpaningTwoColumns(row, _("Capacity"));
+            appendCapcityForDaysAndTotal(row);
+        }
+
+        private void appendCapcityForDaysAndTotal(Row row) {
+            EffortDuration totalCapacity = EffortDuration.zero();
+
+            for (LocalDate day = start; day.compareTo(end) <= 0; day = day
+                    .plusDays(1)) {
+                EffortDuration capacity = monthlyTimesheetModel
+                        .getResourceCapacity(day);
+                Util.appendLabel(row, capacity.toFormattedString());
+
+                totalCapacity = totalCapacity.plus(capacity);
+            }
+
+            Util.appendLabel(row, totalCapacity.toFormattedString());
         }
 
     };
@@ -310,6 +329,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         List<MonthlyTimesheetRow> result = MonthlyTimesheetRow
                 .wrap(monthlyTimesheetModel
                 .getOrderElements());
+        result.add(MonthlyTimesheetRow.createCapacityRow());
         result.add(MonthlyTimesheetRow.createTotalRow());
         return result;
     }
