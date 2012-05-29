@@ -21,8 +21,10 @@ package org.libreplan.web.users.dashboard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.NonUniqueResultException;
 import org.joda.time.LocalDate;
@@ -80,6 +82,10 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private Map<LocalDate, EffortDuration> capacityMap;
 
+    private boolean modified;
+
+    private Map<OrderElement, Set<LocalDate>> modifiedMap;
+
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
@@ -101,8 +107,6 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Autowired
     private IOrderDAO orderDAO;
 
-    private boolean modified;
-
     @Override
     @Transactional(readOnly = true)
     public void initCreateOrEdit(LocalDate date) {
@@ -121,6 +125,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         initOrderElements();
 
         modified = false;
+        modifiedMap = new HashMap<OrderElement, Set<LocalDate>>();
     }
 
     private void initDates() {
@@ -271,6 +276,14 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         }
         workReportLine.setEffort(effortDuration);
         modified = true;
+        markAsModified(orderElement, date);
+    }
+
+    private void markAsModified(OrderElement orderElement, LocalDate date) {
+        if (modifiedMap.get(orderElement) == null) {
+            modifiedMap.put(orderElement, new HashSet<LocalDate>());
+        }
+        modifiedMap.get(orderElement).add(date);
     }
 
     private WorkReportLine createWorkReportLine(OrderElement orderElement,
@@ -303,7 +316,13 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
                             .getWorkReportLines());
             workReportDAO.save(workReport);
         }
+
+        resetModifiedFields();
+    }
+
+    private void resetModifiedFields() {
         modified = false;
+        modifiedMap = new HashMap<OrderElement, Set<LocalDate>>();
     }
 
     @Override
@@ -312,7 +331,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         date = null;
         orderElements = null;
         workReport = null;
-        modified = false;
+        resetModifiedFields();
     }
 
     @Override
@@ -376,6 +395,12 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     public boolean isLastMonth() {
         return firstDay.equals(new LocalDate().plusMonths(1).dayOfMonth()
                 .withMinimumValue());
+    }
+
+    @Override
+    public boolean wasModified(OrderElement orderElement, LocalDate date) {
+        Set<LocalDate> dates = modifiedMap.get(orderElement);
+        return (dates != null) && dates.contains(date);
     }
 
 }

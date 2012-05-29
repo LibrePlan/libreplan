@@ -148,4 +148,10 @@ public interface IMonthlyTimesheetModel {
      */
     boolean isLastMonth();
 
+    /**
+     * Returns true if the value for the specified <code>orderElement</code> in
+     * a given <code>date</date> has been modified by the user.
+     */
+    boolean wasModified(OrderElement orderElement, LocalDate date);
+
 }

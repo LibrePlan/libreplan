@@ -151,6 +151,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                         }
                         monthlyTimesheetModel.setEffortDuration(orderElement,
                                 textboxDate, effortDuration);
+                        markAsModified(textbox);
                         updateTotals(orderElement, textboxDate);
                     }
 
@@ -163,6 +164,11 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
                 });
 
+                if (monthlyTimesheetModel
+                        .wasModified(orderElement, textboxDate)) {
+                    markAsModified(textbox);
+                }
+
                 Cell cell = getCenteredCell(textbox);
                 if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
                     setBackgroundNonCapacityCell(cell);
@@ -170,6 +176,10 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 row.appendChild(cell);
             }
 
+        }
+
+        private void markAsModified(final Textbox textbox) {
+            textbox.setStyle("border-color: red;");
         }
 
         private void appendTotalColumn(Row row, final OrderElement orderElement) {
