@@ -73,6 +73,7 @@
         </panelchildren>
             </panel>
             <separator bar="false" spacing="20px" orient="horizontal"/>
+
             <grid id="gridListQuery"  mold="paging" pageSize="15"
                 model="@{controller.queryWorkReportLines}"
                 onInitRender ="controller.sortQueryWorkReportLines();"
@@ -120,6 +121,24 @@
                 </row>
                 </rows>
             </grid>
+
+            <separator bar="false" spacing="20px" orient="horizontal"/>
+
+            <grid id="gridSummary">
+                <columns>
+                    <column label="${i18n:_('Resource')}" align="center"/>
+                    <column label="${i18n:_('Task')}" align="center"/>
+                    <column label="${i18n:_('From')}" align="center"/>
+                    <column label="${i18n:_('To')}" align="center"/>
+                    <column label="${i18n:_('Hours type')}" align="center"/>
+                    <column label="${i18n:_('Type')}" align="center"/>
+                    <column label="${i18n:_('Total tasks')}" align="center"/>
+                    <column label="${i18n:_('Total hours')}" align="center"/>
+                </columns>
+                <rows>
+                </rows>
+            </grid>
+
         </window>
 
         <window id="createWindow" title="${i18n:_('Edit work report')}">

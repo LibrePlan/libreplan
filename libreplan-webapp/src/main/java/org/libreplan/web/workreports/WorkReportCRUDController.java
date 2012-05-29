@@ -133,6 +133,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private ListModel allHoursType;
 
+    private List<WorkReportLine> filterWorkReportLines = new ArrayList<WorkReportLine>();
+
     private final static String MOLD = "paging";
 
     private final static int PAGING = 10;
@@ -160,6 +162,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private List<IPredicate> predicates = new ArrayList<IPredicate>();
 
     private Grid gridListQuery;
+
+    private Grid gridSummary;
 
     private Autocomplete filterResource;
 
@@ -695,6 +699,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void loadComponentslistLines(Component window) {
         gridListQuery = (Grid) window.getFellow("gridListQuery");
+        gridSummary = (Grid) window.getFellow("gridSummary");
         filterResource = (Autocomplete) window.getFellow("filterResource");
         filterStartDateLine = (Datebox) window.getFellow("filterStartDateLine");
         filterFinishDateLine = (Datebox) window
@@ -1586,7 +1591,35 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
 
     public List<WorkReportLine> getQueryWorkReportLines() {
-        return workReportModel.getAllWorkReportLines();
+        List<WorkReportLine> result = workReportModel.getAllWorkReportLines();
+        updateSummary(result);
+        return result;
+    }
+
+    private void updateSummary() {
+        updateSummary(filterWorkReportLines);
+    }
+
+    private void updateSummary(List<WorkReportLine> workReportLines) {
+        WorkReportLineSummary summary = new WorkReportLineSummary(totalTasks(workReportLines), totalHours(workReportLines));
+
+        // Remove row if it exists
+        if (gridSummary.getRows().getFirstChild() != null) {
+            gridSummary.getRows().getFirstChild().detach();
+        }
+        gridSummary.getRows().appendChild(summary.toRow());
+    }
+
+    private Integer totalTasks(List<WorkReportLine> workReportLines) {
+        return Integer.valueOf(workReportLines.size());
+    }
+
+    private EffortDuration totalHours(List<WorkReportLine> workReportLines) {
+        EffortDuration result = EffortDuration.zero();
+        for (WorkReportLine each: workReportLines) {
+            result = result.sum(result, each.getEffort());
+        }
+        return result;
     }
 
     public void sortQueryWorkReportLines() {
@@ -1614,6 +1647,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     public void onApplyFilterWorkReportLines(Event event) {
         createPredicateLines();
         filterByPredicateLines();
+        updateSummary();
     }
 
     private void createPredicateLines() {
@@ -1678,11 +1712,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private void filterByPredicateLines() {
-        List<WorkReportLine> filterWorkReportLines = new ArrayList<WorkReportLine>();
+        filterWorkReportLines.clear();
         for (IPredicate each : predicates) {
             filterWorkReportLines.addAll(workReportModel
                     .getFilterWorkReportLines(each));
         }
+//        refreshWorkReportLines();
         gridListQuery.setModel(new SimpleListModel(filterWorkReportLines
                 .toArray()));
         gridListQuery.invalidate();
@@ -1786,5 +1821,90 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         Util.reloadBindings(createWindow);
         reloadWorkReportLines();
     }
+
+    /**
+    *
+    * @author Diego Pino García <dpino@igalia.com>
+    *
+    */
+   class WorkReportLineSummary {
+
+       private Resource resource;
+
+       private OrderElement task;
+
+       private Date startDate;
+
+       private Date finishDate;
+
+       private TypeOfWorkHours hoursType;
+
+       private String type;
+
+       private Integer totalTasks;
+
+       private EffortDuration totalHours;
+
+       private WorkReportLineSummary(Integer totalTasks, EffortDuration totalHours) {
+           this.resource = getSelectedResource();
+           this.task = getSelectedOrderElement();
+           this.startDate = filterStartDateLine.getValue();
+           this.finishDate = filterFinishDateLine.getValue();
+           this.hoursType = getSelectedHoursType();
+           this.type = filterType.getValue();
+           this.totalTasks = totalTasks;
+           this.totalHours = totalHours;
+       }
+
+       public String getResource() {
+           return resource != null ? resource.getShortDescription() : "";
+       }
+
+       public String getTask() {
+           return task != null ? task.getName() : "";
+       }
+
+       public String getStartDate() {
+           return startDate != null ? startDate.toString() : "";
+       }
+
+       public String getFinishDate() {
+           return finishDate != null ? finishDate.toString() : "";
+       }
+
+       public String getHoursType() {
+           return hoursType != null ? hoursType.getName() : "";
+       }
+
+       public String getType() {
+           return type;
+       }
+
+       public String getTotalTasks() {
+           return totalTasks.toString();
+       }
+
+       public String getTotalHours() {
+           return totalHours.toFormattedString();
+       }
+
+       public Row toRow() {
+           Row result = new Row();
+           result.appendChild(label(getResource()));
+           result.appendChild(label(getTask()));
+           result.appendChild(label(getStartDate()));
+           result.appendChild(label(getFinishDate()));
+           result.appendChild(label(getHoursType()));
+           result.appendChild(label(getType()));
+           result.appendChild(label(getTotalTasks()));
+           result.appendChild(label(getTotalHours()));
+           return result;
+       }
+
+       private org.zkoss.zul.Label label(String value) {
+           return new org.zkoss.zul.Label(value);
+       }
+
+   }
 
 }
