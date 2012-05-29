@@ -73,7 +73,7 @@
         </panelchildren>
             </panel>
             <separator bar="false" spacing="20px" orient="horizontal"/>
-            <grid id="gridListQuery"  mold="paging" pageSize="10"
+            <grid id="gridListQuery"  mold="paging" pageSize="15"
                 model="@{controller.queryWorkReportLines}"
                 onInitRender ="controller.sortQueryWorkReportLines();"
                 sizedByContent="true" span="true">
