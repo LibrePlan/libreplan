@@ -1909,3 +1909,26 @@ select {
 .communication-not-reviewed div.z-row-cnt .z-label{ font-weight: bold; }
 
 .current-delivery-date div.z-row-cnt .z-label{ font-weight: bold; }
+
+.filming-progress-area td .z-intbox,
+.filming-progress-area td .z-textbox {
+    height: 20px;
+    background: #3C90BE;
+    color: white;
+    border-right: solid 1px white;
+}
+
+.filming-progress-area td .z-intbox[value="0"],
+.filming-progress-area td .z-textbox[value="0"] {
+    background: #ABCDE1;
+    color: #555555;
+}
+
+.filming-progress-area > .z-center-body {
+    overflow: visible !important;
+    overflow: visible !important;
+}
+
+.filming-progress-area .z-grid-header{
+    height: 35px;
+}

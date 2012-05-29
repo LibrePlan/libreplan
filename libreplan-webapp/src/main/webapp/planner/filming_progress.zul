@@ -24,7 +24,7 @@
         ]]>
     </zscript>
 
-<div self="@{define(content)}" apply="${fpController}" height="100%" style="overflow:visible" class="advanced-allocation-layout">
+<div self="@{define(content)}" apply="${fpController}" height="100%" style="overflow:visible" class="filming-progress-layout">
 	<div id="noDataLayout" height="30px">
         <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
     </div>
@@ -42,54 +42,41 @@
                      value="@{fpController.endDate}" />
                  <separator/>
                  <space bar="true" />
-                 <label>${i18n:_('Zoom level')}:</label>
-                 <listbox mold="select" rows="1" id="filmingProgressZoomLevel"
-                     model="${fpController.zoomLevels}"
-                     onSelect="fpController.setZoomLevel(self.selectedItem.value);" >
-                 </listbox>
-                 <separator/>
-                 <space bar="true" />
-                 <button label="${i18n:_('Apply')}" id="saveButton" image="/common/img/bt_ok.png"
-                     tooltiptext="${i18n:_('Apply changes and continue edition')}"
-                     onClick="fpController.confirmUpdateProgressForecast()"/>
+                 <button label="${i18n:_('Add new unit measure')}" id="unitMeasureButton"
+                     tooltiptext="${i18n:_('Add new unit measure')}"
+                     onClick="fpController.addUnitMeasure()"
+                     disabled ="@{fpController.disableAddUnitMeasure}"/>
                  <separator/>
                  <div id="messages" />
             </hbox>
 	    </div>
 	    <div class="advanced-allocation-layout">
-		<borderlayout width="auto" class="advancedallocationlayout">
+		<borderlayout width="auto" class="filmingprogresslayoutlayout">
         <center border="0">
         <borderlayout>
             <west size="250px" flex="true" collapsible="true"
-                splittable="true" sclass="advancedassignmentdetails">
+                splittable="true" sclass="filmingprogressdetails">
                 <div sclass="leftpanelgap" id="insertionPointLeftPanel">
-                    <grid id="gridTitles">
-                        <columns height="33px" sizable="true">
+                    <grid id="gridTotals"
+                        model="@{fpController.rowTotals}"
+                        rowRenderer="@{fpController.progressTotalRenderer}">
+                        <columns height="35px" sizable="true">
+                            <column label="${i18n:_('Unit measure')}"/>
                             <column label="${i18n:_('Type')}"/>
                             <column label="${i18n:_('Total')}"/>
                         </columns>
-                        <rows>
-                           <row>
-                                <label value="${i18n:_('Initial progress')}"/>
-				                <label id="totalInitialProgress"/>
-                           </row>
-			               <row>
-				                <label value="${i18n:_('Current estimations')}"/>
-				                <label id="totalCurrentEstimations"/>
-			               </row>
-                           <row>
-                                <label value="${i18n:_('Real progress')}"/>
-                                <label id="totalRealProgress"/>
-                           </row>
-		                   </rows>
                     </grid>
                 </div>
             </west>
 
             <center sclass="taskspanel">
                 <borderlayout>
-                    <center style="overflow-y:auto;overflow-x:auto;" border="0" sclass="advanced-assignment-area rightpanellayout taskspanelgap" id="insertionPointRightPanel">
-                         <grid id="gridScenes" fixedLayout="true" rowRenderer="@{fpController.renderer}"/>
+                    <center style="overflow-y:auto;overflow-x:auto;" border="0"
+                        sclass="filming-progress-area rightpanellayout taskspanelgap"
+                        id="insertionPointRightPanel">
+                        <grid id="gridValuesPerDay" fixedLayout="true"
+                            rowRenderer="@{fpController.progressValuesRenderer}"
+                            onInitRender ="fpController.resetTotalPanel();"/>
                     </center>
                 </borderlayout>
             </center>

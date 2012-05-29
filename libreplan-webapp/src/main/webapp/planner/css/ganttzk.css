@@ -1374,3 +1374,107 @@ div.z-grid-header .second_level_ tr {
     opacity: 1 !important;
     font-size: 12px;
 }
+
+.filming-progress-layout {
+    height: 100%;
+}
+
+.filmingprogresslayout .name {
+    min-width:200px;
+}
+
+.filmingprogresslayout .second_level_ {
+    border-collapse: collapse;
+}
+
+.filmingprogresslayout .second_level_ th {
+    width:150px;
+}
+.filmingprogresslayout .taskspanelgap td.z-row-inner {
+    padding:0 !important;
+}
+.filmingprogresslayout .taskspanelgap td.z-row-inner input {
+    padding-top: 1px;
+    padding-bottom:1px;
+}
+
+.filmingprogresslayout .taskspanelgap .z-label {
+  margin-left:3px;
+}
+
+.filmingprogresslayout .taskspanelgap .level1 {
+  margin-left:8px;
+}
+
+
+.taskspanelgap table {
+    border-collapse: collapse;
+}
+
+.filmingprogresslayout .taskspanelgap input {
+    width: 100%;
+    heigth: 21px;
+}
+
+.filmingprogresslayout .taskspanelgap tr.z-grid-odd td.z-row-inner, tr.z-grid-odd,
+.filmingprogresslayout .taskspanelgap tr.z-row {
+    background: #f2f2f2;
+}
+
+.filmingprogresslayout .calculated-hours.z-label {
+    font-weight: bold;
+    color: #555555;
+    cursor: default;
+}
+.filmingprogresslayout .unmodifiable-hours.z-label {
+    color: #555555;
+}
+.filmingprogresslayout .consolidated-hours.z-label {
+    color: #75d9b0;
+}
+.filmingprogresslayout .z-row .z-intbox-disd {
+    color: 0 !important;
+}
+
+
+.filmingprogresslayout .taskspanelgap input {
+    widht: 100%;
+}
+
+.taskspanelgap input {
+    border: 0;
+    height: 19px;
+}
+
+.filmingprogressdetails tr.z-row,
+.taskspanelgap tr.z-row {
+    height: 29px;
+}
+
+.filmingprogressdetails td {
+    overflow:hidden;
+    white-space: nowrap;
+}
+
+.filmingprogressdetails .level1 {
+  margin-left:12px;
+}
+
+.filmingprogressdetails .level0 {
+  font-weight:bold;
+}
+
+.filmingprogresslayout .leftpanelgap .z-grid-header {
+    /* padding-bottom: 3px; */
+    border-bottom: solid 1px #DDDDDD;
+    background: #FFFFFF;
+}
+
+.filmingprogresslayout div.z-row-cnt {
+    padding: 0;
+}
+
+.filmingprogresslayout .leftpanelgap td.z-row-inner {
+    padding-top:0;
+    padding-bottom:0;
+}

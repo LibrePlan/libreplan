@@ -21,12 +21,12 @@ package org.libreplan.web.planner.filming.progress;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.text.DateFormatSymbols;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,10 +36,8 @@ import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
-import org.libreplan.business.filmingprogress.entities.ProgressGranularityType;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.IMessagesForUser;
-import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
@@ -47,24 +45,26 @@ import org.libreplan.web.planner.order.ISaveCommand;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.util.Locales;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Auxhead;
 import org.zkoss.zul.Auxheader;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.Window;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -85,24 +85,17 @@ public class FilmingProgressController extends GenericForwardComposer {
     private org.zkoss.zk.ui.Component normalLayout;
 
     private IMessagesForUser messages;
-    private Listbox filmingProgressZoomLevel;
-    private Grid gridScenes;
-    private Grid gridTitles;
+    private Grid gridValuesPerDay;
+    private Grid gridTotals;
+    private Button unitMeasureButton;
 
-    private Label totalInitialProgress;
-    private Label totalCurrentEstimations;
-    private Label totalRealProgress;
+    private ProgressValuesPerDayRenderer valuesPerDayRenderer = new ProgressValuesPerDayRenderer();
 
-    private ProgressGranularityType progressGranularityType = ProgressGranularityType
-            .getDefault();
-
-    private ScenePerDayRenderer scenePerDayRenderer = new ScenePerDayRenderer();
+    private ProgressTotalRenderer progressTotalRenderer = new ProgressTotalRenderer();
 
     private final static String MOLD = "paging";
 
     private final static int PAGING = 10;
-
-    private Map<ProgressType, Label> panelTotalByScene = new HashMap<ProgressType, Label>();
 
     public FilmingProgressController() {
     }
@@ -127,7 +120,7 @@ public class FilmingProgressController extends GenericForwardComposer {
 
     public void init(Order order, ISaveCommand saveCommand) {
         filmingProgressModel.setSaveCommand(saveCommand);
-        filmingProgressModel.hookIntoSaveCommand(this.progressGranularityType);
+        filmingProgressModel.hookIntoSaveCommand();
         filmingProgressModel.setCurrentOrder(order);
         if (this.mainComponent != null) {
             loadAndInitializeComponents();
@@ -149,119 +142,13 @@ public class FilmingProgressController extends GenericForwardComposer {
     }
 
     private void createComponents() {
-        filmingProgressZoomLevel = (Listbox) mainComponent.getFellow("filmingProgressZoomLevel");
-        setZoomFromFilmingProgress();
-        initScenes();
         prepareFilmingProgressList();
-        createMapTotals();
+        refreshTotalPanel();
         reloadNormalLayout();
-    }
-
-    private void createMapTotals() {
-        if (getScenes().length == 3) {
-            panelTotalByScene.put(getScenes()[0], this.totalInitialProgress);
-            panelTotalByScene.put(getScenes()[1], this.totalCurrentEstimations);
-            panelTotalByScene.put(getScenes()[2], this.totalRealProgress);
-        }
-        calculatePanelTotal();
-    }
-
-    private void calculatePanelTotal() {
-        for (Entry<ProgressType, Label> entry : panelTotalByScene.entrySet()) {
-            calculatePanelTotalByScene(entry.getKey(), entry.getValue());
-        }
-    }
-
-    private void calculatePanelTotalByScene(ProgressType scene, Label totalComp) {
-        Integer total = 0;
-        for (Entry<DateInChunks, GroupByScene> entry : scene.getValuesBy(
-                progressGranularityType).entrySet()) {
-            total = total + entry.getValue().getValue();
-        }
-        totalComp.setValue(total.toString());
-    }
-
-    private void updatePanelTotalByScene(ProgressType scene, Integer oldValue, Integer newValue) {
-        Label totalComp = panelTotalByScene.get(scene);
-        Integer total = Integer.valueOf(totalComp.getValue());
-        if (oldValue >= newValue) {
-            Integer diff = oldValue - newValue;
-            total = total - diff;
-            totalComp.setValue(total.toString());
-        } else {
-            Integer diff = newValue - oldValue;
-            total = total + diff;
-            totalComp.setValue(total.toString());
-        }
-    }
-
-    public void setZoomLevel(ProgressGranularityType zoom) {
-        this.getFilmingProgress().setProgressGranularity(zoom);
-        updateValuesIntoInitialMap();
-        this.progressGranularityType = zoom;
-        prepareFilmingProgressList();
-        reloadNormalLayout();
-    }
-
-    private void setZoomFromFilmingProgress() {
-        int index = ProgressGranularityType.getDefault().ordinal();
-        if (this.getFilmingProgress() != null) {
-            this.progressGranularityType = this.getFilmingProgress().getProgressGranularity();
-            index = this.progressGranularityType.ordinal();
-        }
-        filmingProgressZoomLevel.setSelectedIndex(index);
-    }
-
-    private ProgressGranularityType getZoomLevel() {
-        return this.progressGranularityType;
     }
 
     private FilmingProgress getFilmingProgress() {
         return this.filmingProgressModel.getCurrentFilmingProgress();
-    }
-
-    private void updateValuesIntoInitialMap() {
-        this.filmingProgressModel
-                .updateValuesIntoInitialMap(this.progressGranularityType);
-    }
-
-    public void confirmUpdateProgressForecast() {
-        try {
-            if (Messagebox
-                    .show(_("This operation overwrite all the values of forecast progress row with the values in the row of the real progress. Are you sure?"),
-                            _("Confirm"), Messagebox.OK | Messagebox.CANCEL,
-                            Messagebox.QUESTION) == Messagebox.CANCEL) {
-                return;
-            }
-        } catch (InterruptedException e) {
-            this.messages.showMessage(Level.ERROR, e.getMessage());
-        }
-        updateProgressForecast();
-    }
-
-    public void updateProgressForecast(){
-        for (ProgressType scene : getScenes()) {
-            scene.setAllTypeUpdates(false);
-        }
-        updateValuesIntoInitialMap();
-        filmingProgressModel
-                .updateProgressForecast(isTotalInitialProgressZero());
-        prepareFilmingProgressList();
-        calculatePanelTotal();
-        reloadNormalLayout();
-    }
-
-    private boolean isTotalInitialProgressZero() {
-        if (this.totalInitialProgress != null) {
-            try {
-                Integer total = Integer
-                        .valueOf(totalInitialProgress.getValue());
-                return (total == 0);
-            } catch (Exception e) {
-                return false;
-            }
-        }
-        return false;
     }
 
     /*
@@ -272,12 +159,6 @@ public class FilmingProgressController extends GenericForwardComposer {
             return getFilmingProgress().getStartDate().toDateTimeAtStartOfDay().toDate();
         }
         return null;
-    }
-
-    public void setStartDate(Date date) {
-        if (getFilmingProgress() != null && date != null) {
-            getFilmingProgress().setStartDate(new LocalDate(date));
-        }
     }
 
     public Date getEndDate() {
@@ -293,8 +174,21 @@ public class FilmingProgressController extends GenericForwardComposer {
         }
     }
 
-    public ListModel getZoomLevels() {
-        return new SimpleListModel(ProgressGranularityType.values());
+    public ListModel getUnitMeasures() {
+        return new SimpleListModel(getUnitMeasuresNotAdded());
+    }
+
+    private List<UnitMeasureFilmingProgress> getUnitMeasuresNotAdded() {
+        List<UnitMeasureFilmingProgress> measures = new ArrayList<UnitMeasureFilmingProgress>(
+                Arrays.asList(UnitMeasureFilmingProgress.values()));
+        for(ProgressValue pgValue :this.getProgressValues()){
+            measures.remove(pgValue.unitMeasure);
+        }
+        return measures;
+    }
+
+    public boolean isDisableAddUnitMeasure() {
+        return getUnitMeasuresNotAdded().size() == 0;
     }
 
     private void prepareFilmingProgressList() {
@@ -303,19 +197,20 @@ public class FilmingProgressController extends GenericForwardComposer {
          * and children The paging component cannot be removed manually. It is
          * removed automatically when changing the mold
          */
-        gridScenes.setMold(null);
-        gridScenes.getChildren().clear();
+        gridValuesPerDay.setMold(null);
+        gridValuesPerDay.getChildren().clear();
 
         // Set mold and pagesize
-        gridScenes.setMold(MOLD);
-        gridScenes.setPageSize(PAGING);
+        gridValuesPerDay.setMold(MOLD);
+        gridValuesPerDay.setPageSize(PAGING);
 
-        appendColumns(gridTitles, gridScenes);
+        appendColumns(gridValuesPerDay);
 
-        gridScenes.setModel(new SimpleListModel(getScenes()));
+        gridValuesPerDay.setModel(new SimpleListModel(getProgressValues()));
+        gridValuesPerDay.renderAll();
     }
 
-    private void appendColumns(Grid gridLeft, Grid gridRight) {
+    private void appendColumns(Grid gridRight) {
         // Delete the auxHeaders and columns in gridRight
         gridRight.getHeads().clear();
         Columns columns = gridRight.getColumns();
@@ -328,198 +223,337 @@ public class FilmingProgressController extends GenericForwardComposer {
         columns.getChildren().clear();
         columns.setSizable(true);
 
-        // Add static headers
-        if (filmingProgressModel.getProgressTypes() != null && filmingProgressModel.getProgressTypes().length > 0) {
-            Map<DateInChunks, GroupByScene> values = filmingProgressModel.getProgressTypes()[0]
-                    .getValuesBy(this.getZoomLevel());
+        List<ProgressValue> progressValues = filmingProgressModel
+                .getProgressValues();
+        if (progressValues.size() > 0) {
 
-            appendAuxhead(gridLeft, gridRight);
+            ProgressValue progressValue = progressValues.get(0);
+            if (progressValue != null && progressValue.getValues() != null) {
+                Set<LocalDate> dates = progressValue.getValues().keySet();
 
-            for (DateInChunks keyValue : values.keySet()) {
-                Column column = new Column();
-                column.setAlign("center");
-                column.setWidth("30px");
-                column.setHeight("19px");
-                column.setLabel(getTitle(keyValue));
-                columns.appendChild(column);
+                // Add static headers
+                appendAuxhead(gridRight, dates);
+
+                for (LocalDate keyValue : dates) {
+                    Column column = new Column();
+                    column.setAlign("center");
+                    column.setWidth("40px");
+                    column.setHeight("15px");
+                    column.setLabel(Integer.toString(keyValue.getDayOfMonth()));
+                    columns.appendChild(column);
+                }
+                columns.setParent(gridRight);
             }
-            columns.setParent(gridRight);
         }
     }
 
-    private String getTitle(DateInChunks keyValue) {
-        if (this.progressGranularityType.equals(ProgressGranularityType.MONTH)) {
-            return this.getMonthForInt(keyValue.granularityValue);
-        }
-        return keyValue.granularityValue.toString();
-    }
-
-    private void appendAuxhead(Grid gridLeft, Grid gridRight) {
+    private void appendAuxhead(Grid grid, Set<LocalDate> dates) {
         // it builds the auxheaders in gridRight
-        List<CustomHeader> listHeaders = new ArrayList<CustomHeader>();
-
-        switch (this.progressGranularityType) {
-        case DAY:
-            listHeaders = createFrom(
-                    filmingProgressModel.getProgressTypes()[0].getValuesBy(ProgressGranularityType.WEEK),
-                    new SimpleDateFormat("w,MMM yyyy"));
-            break;
-        case WEEK:
-            listHeaders = createFrom(
-                    filmingProgressModel.getProgressTypes()[0].getValuesBy(ProgressGranularityType.MONTH),
-                    new SimpleDateFormat("MMMM,yyyy"));
-            break;
-        case MONTH:
-            listHeaders = groupByYear(
-                    filmingProgressModel.getProgressTypes()[0].getValuesBy(ProgressGranularityType.MONTH),
-                    new SimpleDateFormat("yyyy"));
-            break;
-        }
+        List<CustomHeader> listHeaders = groupByWeek(dates);
 
         Auxhead auxhead = new Auxhead();
         for (CustomHeader customHeader : listHeaders) {
             Auxheader auxHeader = new Auxheader(customHeader.title);
             auxHeader.setAlign("center");
-            auxHeader.setHeight("19px");
             auxHeader.setStyle("font-weight:bold;");
             auxHeader.setColspan(customHeader.colspan);
             auxhead.appendChild(auxHeader);
         }
-        auxhead.setParent(gridRight);
-
+        auxhead.setParent(grid);
     }
 
-    private List<CustomHeader> createFrom(
-            SortedMap<DateInChunks, GroupByScene> valuesBy,
-            SimpleDateFormat dateConverter) {
-        List<CustomHeader> list = new ArrayList<CustomHeader>();
-        for (DateInChunks key : valuesBy.keySet()) {
-            if (valuesBy.get(key).getDates().size() > 0) {
-                Date date = valuesBy.get(key).getDates().get(0).toDateTimeAtStartOfDay().toDate();
-                String title = dateConverter.format(date);
-                list.add(new CustomHeader(title, calculateColspanByZoom(valuesBy.get(key)
-                        .getDates())));
-            }
-        }
-        return list;
-    }
-
-    private List<CustomHeader> groupByYear(
-            SortedMap<DateInChunks, GroupByScene> valuesBy,
-            SimpleDateFormat dateConverter) {
-
+    private List<CustomHeader> groupByWeek(Set<LocalDate> dates) {
         List<CustomHeader> list = new ArrayList<CustomHeader>();
 
         // this Map represent a year and the number of month according that year
-        SortedMap<Integer, List<LocalDate>> mapByYear = new TreeMap<Integer, List<LocalDate>>();
-        for (Entry<DateInChunks, GroupByScene> entry : valuesBy.entrySet()) {
-            if (mapByYear.get(entry.getKey().year) == null) {
-                mapByYear.put(entry.getKey().year, new ArrayList<LocalDate>());
+        SortedMap<Integer, List<LocalDate>> mapByWeek = new TreeMap<Integer, List<LocalDate>>();
+        for (LocalDate date : dates) {
+            Integer key = date.getWeekOfWeekyear();
+            if (mapByWeek.get(key) == null) {
+                mapByWeek.put(key, new ArrayList<LocalDate>());
             }
-            mapByYear.get(entry.getKey().year).addAll(entry.getValue().getDates());
+            mapByWeek.get(key).add(date);
         }
 
-        for (Integer year : mapByYear.keySet()) {
-            if (mapByYear.get(year).size() > 0) {
-                Date date = mapByYear.get(year).get(0).toDateTimeAtStartOfDay().toDate();
-                String title = dateConverter.format(date);
-                list.add(new CustomHeader(title, calculateColspanByZoom(mapByYear.get(year))));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("w,MMM yyyy");
+        for (Integer week : mapByWeek.keySet()) {
+            Date date = mapByWeek.get(week).get(0).toDateTimeAtStartOfDay()
+                        .toDate();
+            String title = dateFormat.format(date);
+            list.add(new CustomHeader(title, mapByWeek.get(week).size()));
             }
-        }
         return list;
     }
 
-    private int calculateColspanByZoom(List<LocalDate> list) {
-        if (list != null) {
-            Set<Integer> set = new HashSet<Integer>();
-            switch (this.progressGranularityType) {
-            case DAY:
-                return list.size();
-            case WEEK:
-                for (LocalDate date : list) {
-                    int week = date.getWeekOfWeekyear();
-                    set.add(week);
-                }
-                return set.size();
-            case MONTH:
-                for (LocalDate date : list) {
-                    int month = date.getMonthOfYear();
-                    set.add(month);
-                }
-                return set.size();
-            }
-        }
-        return 0;
+    public List<ProgressValue> getProgressValues() {
+        return filmingProgressModel.getProgressValues();
     }
 
-    private ProgressType[] getScenes() {
-        return filmingProgressModel.getProgressTypes();
+    private void addNewUnitMeasure(UnitMeasureFilmingProgress unitMeasure,
+            BigDecimal maxValue) {
+        filmingProgressModel.addNewUnitMeasure(unitMeasure, maxValue);
+
     }
 
-    private ProgressType[] initScenes() {
-        return filmingProgressModel.buildProgressTypes();
-    }
-
-    public ScenePerDayRenderer getRenderer() {
-        return scenePerDayRenderer;
+    public ProgressValuesPerDayRenderer getProgressValuesRenderer() {
+        return valuesPerDayRenderer;
     }
 
     /**
      * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
      */
-    public class ScenePerDayRenderer implements RowRenderer {
+    public class ProgressValuesPerDayRenderer implements RowRenderer {
+
+        private Map<Row, RowTotal> panelTotal = new HashMap<Row, RowTotal>();
 
         @Override
-        public void render(Row row, Object data) {
-            final ProgressType scene = (ProgressType) data;
-            row.setValue(scene);
-            boolean readOnly = isInitialProgress(scene);
+        public void render(final Row row, Object data) {
+            final ProgressValue progressValue = (ProgressValue) data;
+            row.setValue(progressValue);
 
-            Map<DateInChunks, GroupByScene> map = scene.getValuesBy(getZoomLevel());
-            for (final GroupByScene groupedScene : map.values()) {
-                Intbox intbox = new Intbox();
-                Util.bind(intbox, new Util.Getter<Integer>() {
+            panelTotal.put(row, calculateRowTotal(row));
+
+            for (final Entry<LocalDate, BigDecimal> entry : progressValue
+                    .getValues().entrySet()) {
+
+                Decimalbox valuebox = new Decimalbox();
+
+                Util.bind(valuebox, new Util.Getter<BigDecimal>() {
 
                     @Override
-                    public Integer get() {
-                        return groupedScene.getValue();
+                    public BigDecimal get() {
+                        return entry.getValue();
                     }
 
-                }, new Util.Setter<Integer>() {
+                }, new Util.Setter<BigDecimal>() {
 
                     @Override
-                    public void set(Integer newValue) {
-                        updatePanelTotalByScene(scene, groupedScene.getValue(), newValue);
-                        groupedScene.setValue(newValue);
-                    }
-                });
-
-                intbox.addEventListener("onChange", new EventListener() {
-                    @Override
-                    public void onEvent(Event event) {
-                        scene.setAllTypeUpdates(false);
+                    public void set(BigDecimal newValue) {
+                        updatePanelTotal(row, entry.getValue(), newValue);
+                        entry.setValue(newValue);
                     }
                 });
 
-                intbox.setReadonly(readOnly);
-                row.appendChild(intbox);
+                row.appendChild(valuebox);
+            }
+        }
+
+        private void updatePanelTotal(Row row, BigDecimal oldValue,
+                BigDecimal newValue) {
+            RowTotal rowTotal = panelTotal.get(row);
+
+            BigDecimal total = rowTotal.getTotal();
+             if (oldValue.compareTo(newValue)  >= 0) {
+                 BigDecimal diff = oldValue.subtract(newValue);
+                total = total.subtract(diff);
+                rowTotal.setTotal(total);
+             } else {
+                BigDecimal diff = newValue.subtract(oldValue);
+                total = total.add(diff);
+                rowTotal.setTotal(total);
+            }
+        }
+
+        private RowTotal calculateRowTotal(Row row) {
+            ProgressValue progressValue = (ProgressValue) row.getValue();
+            BigDecimal total = BigDecimal.ZERO;
+            for (final Entry<LocalDate, BigDecimal> entry : progressValue
+                    .getValues().entrySet()) {
+                total = total.add(entry.getValue());
+            }
+            return new RowTotal(progressValue.unitMeasure,
+                    progressValue.progressType.toString(), total);
+        }
+    }
+
+    private void refreshTotalPanel() {
+        Util.reloadBindings(gridTotals);
+    }
+
+    public void resetTotalPanel() {
+        getProgressValuesRenderer().panelTotal = new HashMap<Row, RowTotal>();
+    }
+
+    public List<RowTotal> getRowTotals(){
+        Map<Row, RowTotal> panelTotal = getProgressValuesRenderer().panelTotal;
+        List<RowTotal> list = new ArrayList<RowTotal>(panelTotal.values());
+        return list;
+    }
+
+    public ProgressTotalRenderer getProgressTotalRenderer() {
+        return this.progressTotalRenderer;
+    }
+
+    /**
+     * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+     */
+    public class ProgressTotalRenderer implements RowRenderer {
+
+        @Override
+        public void render(final Row row, Object data) {
+            final RowTotal rowTotal = (RowTotal) data;
+            row.setValue(rowTotal);
+
+            String unitMeasureLabel = "";
+            if (rowTotal.getUnitMeasure() != null) {
+                unitMeasureLabel = rowTotal.getUnitMeasure().toString();
+            }
+
+            row.appendChild(new Label(unitMeasureLabel));
+            row.appendChild(rowTotal.getLbTitle());
+            row.appendChild(rowTotal.getLbTotal());
+        }
+    }
+
+    /**
+     * functions to manage the popup with what add a new unit measure
+     */
+    private Window windowAddUnitMeasure;
+
+    private Decimalbox maxValueBox;
+
+    private Listbox unitMeasureListBox;
+
+    public void addUnitMeasure() {
+        try {
+            windowAddUnitMeasure = getWindowUnitMeasures();
+            loadComponents();
+            windowAddUnitMeasure.doModal();
+            Util.reloadBindings(windowAddUnitMeasure);
+            Util.reloadBindings(unitMeasureListBox);
+        } catch (SuspendNotAllowedException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Window getWindowUnitMeasures() {
+        if (windowAddUnitMeasure == null) {
+            Map<String, Object> arguments = new HashMap<String, Object>();
+            arguments.put("filmingProgressController", this);
+            org.zkoss.zk.ui.Component popup = Executions.createComponents(
+                    "popup_add_unit_measure.zul", normalLayout, arguments);
+            return (Window) popup.getFellowIfAny("windowAddUnitMeasure");
+        }
+        return windowAddUnitMeasure;
+    }
+
+    public void loadComponents() {
+        if (windowAddUnitMeasure != null) {
+            unitMeasureListBox = (Listbox) windowAddUnitMeasure
+                    .getFellowIfAny("unitMeasureListBox");
+            unitMeasureListBox.setModel(getUnitMeasures());
+            if (unitMeasureListBox.getItemCount() > 0) {
+                unitMeasureListBox.setSelectedIndex(0);
+            }
+            maxValueBox = (Decimalbox) windowAddUnitMeasure
+                    .getFellowIfAny("maxValueBox");
+        }
+    }
+
+    public void accept() {
+        if (windowAddUnitMeasure != null) {
+            if (unitMeasureListBox.getSelectedItem() != null) {
+                UnitMeasureFilmingProgress unitMeasure = (UnitMeasureFilmingProgress) unitMeasureListBox
+                        .getSelectedItem().getValue();
+                checkConstraintMaxValue().validate(maxValueBox,
+                        maxValueBox.getValue());
+                BigDecimal maxValue = maxValueBox.getValue().setScale(2);
+                addNewUnitMeasure(unitMeasure, maxValue);
+                close();
+                createComponents();
+            } else {
+                throw new WrongValueException(unitMeasureListBox,
+                        _("must select an unit measuare"));
             }
         }
     }
 
-    private boolean isInitialProgress(ProgressType scene) {
-        return filmingProgressModel.isInitialProgress(scene);
+    public void cancel() {
+        close();
     }
 
-    String getMonthForInt(int m) {
-        int num_month = m - 1;
-        String month = "invalid";
-        DateFormatSymbols dfs = new DateFormatSymbols(Locales.getCurrent());
-        String[] months = dfs.getMonths();
-        if (num_month >= 0 && num_month <= 11) {
-            month = months[num_month];
+    private void close() {
+        if (windowAddUnitMeasure != null) {
+            windowAddUnitMeasure.setVisible(false);
         }
-        return month;
+        Util.reloadBindings(unitMeasureButton);
+    }
+
+    public Constraint checkConstraintMaxValue() {
+        return new Constraint() {
+            @Override
+            public void validate(org.zkoss.zk.ui.Component comp, Object value)
+                    throws WrongValueException {
+                BigDecimal maxValue = (BigDecimal) value;
+                if (maxValue == null) {
+                    throw new WrongValueException(comp, _("must be no empty"));
+                } else if (maxValue.compareTo(BigDecimal.ZERO) < 0) {
+                    throw new WrongValueException(comp,
+                            _("must be greater or equal than 0"));
+                }
+            }
+        };
+    }
+
+}
+
+class RowTotal{
+    private UnitMeasureFilmingProgress unitMeasure;
+    private String title = "";
+    private BigDecimal total = BigDecimal.ZERO;
+
+    private Label lbTitle = new Label();
+    private Label lbTotal = new Label();
+
+    public RowTotal(UnitMeasureFilmingProgress unitMeasure, String title,
+            BigDecimal total) {
+        this.setTitle(title);
+        this.setTotal(total);
+        this.setUnitMeasure(unitMeasure);
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        this.lbTitle.setValue(title);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+        this.lbTotal.setValue(total.toPlainString());
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setLbTitle(Label lbTitle) {
+        this.lbTitle = lbTitle;
+    }
+
+    public Label getLbTitle() {
+        return lbTitle;
+    }
+
+    public void setLbTotal(Label lbTotal) {
+        this.lbTotal = lbTotal;
+    }
+
+    public Label getLbTotal() {
+        return lbTotal;
+    }
+
+    public void setUnitMeasure(UnitMeasureFilmingProgress unitMeasure) {
+        this.unitMeasure = unitMeasure;
+    }
+
+    public UnitMeasureFilmingProgress getUnitMeasure() {
+        return unitMeasure;
     }
 }
 

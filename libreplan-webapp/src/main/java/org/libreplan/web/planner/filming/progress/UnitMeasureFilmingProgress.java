@@ -16,30 +16,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.libreplan.web.planner.filming.progress;
 
-import java.math.BigDecimal;
-import java.util.List;
+import static org.libreplan.business.i18n.I18nHelper._;
 
-import org.libreplan.business.filmingprogress.entities.FilmingProgress;
-import org.libreplan.business.orders.entities.Order;
-import org.libreplan.web.planner.order.ISaveCommand;
+/**
+ * Represents the unit measure in which the filming progress is measured.
+ *
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ */
+public enum UnitMeasureFilmingProgress {
 
-interface IFilmingProgressModel {
+    SCENES(_("scenes")), MINUTES(_("minutes")), PAGES(_("script pages"));
 
-    void setCurrentOrder(Order order);
+    private String description;
 
-    Order getCurrentOrder();
+    UnitMeasureFilmingProgress(String description) {
+        this.description = description;
+    }
 
-    FilmingProgress getCurrentFilmingProgress();
-
-    void setSaveCommand(ISaveCommand saveCommand);
-
-    void hookIntoSaveCommand();
-
-    List<ProgressValue> getProgressValues();
-
-    void addNewUnitMeasure(UnitMeasureFilmingProgress unitMeasure,
-            BigDecimal maxValue);
-
+    @Override
+    public String toString() {
+        return description;
+    }
 }

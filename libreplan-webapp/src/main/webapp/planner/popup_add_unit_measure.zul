@@ -1,0 +1,61 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2012 Wireless Galicia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+<zk>
+<zscript>
+        <![CDATA[
+            fpController = arg.get("filmingProgressController");
+        ]]>
+</zscript>
+<window id="windowAddUnitMeasure"
+        title="${i18n:_('Add new measure')}"
+        width="350px"
+        closable="true"
+        onClose="self.visible = false; event.stopPropagation();">
+    <div>
+        <separator/>
+        <hbox>
+            <label value="${i18n:_('Select unit measure')}" />
+            <separator orient="vertical" spacing="20px"/>
+            <listbox mold="select" rows="1" id="unitMeasureListBox"
+                     model="${fpController.unitMeasures}" />
+        </hbox>
+        <separator/>
+        <hbox>
+            <label value="${i18n:_('Set the maximum value')}" />
+            <separator orient="vertical" spacing="10px"/>
+            <decimalbox id="maxValueBox" width="200px" scale="2"
+                constraint="@{fpController.checkConstraintMaxValue}"/>
+        </hbox>
+    </div>
+
+
+    <!-- Control buttons -->
+    <div>
+        <hbox>
+            <button label="${i18n:_('Accept')}" onClick="fpController.accept();"
+                sclass="save-button global-action" />
+            <button label="${i18n:_('Cancel')}" onClick="fpController.cancel();"
+                sclass="cancel-button global-action" />
+        </hbox>
+        <separator/>
+    </div>
+</window>
+</zk>
