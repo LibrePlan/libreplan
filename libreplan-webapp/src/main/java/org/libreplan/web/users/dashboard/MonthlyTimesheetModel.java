@@ -20,6 +20,8 @@
 package org.libreplan.web.users.dashboard;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -239,7 +241,23 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderElement> getOrderElements() {
+        Collections.sort(orderElements, new Comparator<OrderElement>() {
+
+            @Override
+            public int compare(OrderElement o1, OrderElement o2) {
+                Order order1 = getOrder(o1);
+                Order order2 = getOrder(o2);
+
+                int compareOrderName = order1.getName().compareTo(
+                        order2.getName());
+                if (compareOrderName != 0) {
+                    return compareOrderName;
+                }
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         return orderElements;
     }
 
