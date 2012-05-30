@@ -26,6 +26,7 @@
         <columns sizable="true">
             <column label="${i18n:_('Date')}" />
             <column label="${i18n:_('Total work')}" />
+            <column label="${i18n:_('Number of tasks')}" />
             <column label="${i18n:_('Operations')}" />
         </columns>
     </grid>

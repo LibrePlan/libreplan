@@ -55,6 +55,7 @@ import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.web.UserUtil;
 import org.libreplan.web.calendars.BaseCalendarModel;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -216,12 +217,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     private boolean isNotInOrderElements(OrderElement orderElement) {
-        for (OrderElement each : orderElements) {
-            if (each.getId().equals(orderElement.getId())) {
-                return false;
-            }
-        }
-        return true;
+        return !Util.contains(orderElements, orderElement);
     }
 
     private void forceLoad(OrderElement orderElement) {

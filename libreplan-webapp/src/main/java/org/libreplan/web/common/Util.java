@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
@@ -723,6 +724,21 @@ public class Util {
         row.appendChild(hbox);
 
         row.addEventListener(Events.ON_CLICK, editButtonListener);
+    }
+
+    /**
+     * Checks if the <code>entity</code> is contained in the provided
+     * <code>list</code>.
+     */
+    public static boolean contains(List<? extends BaseEntity> list,
+            BaseEntity entity) {
+        for (BaseEntity each : list) {
+            if (each.getId() != null && entity.getId() != null
+                    && each.getId().equals(entity.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -25,13 +25,16 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.web.UserUtil;
+import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -95,6 +98,24 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
     private LocalDate getActivationDate(Worker worker) {
         return worker.getCalendar().getFistCalendarAvailability()
                 .getStartDate();
+    }
+
+    @Override
+    public int getNumberOfOrderElementsWithTrackedTime(WorkReport workReport) {
+        if (workReport == null) {
+            return 0;
+        }
+
+        List<OrderElement> orderElements = new ArrayList<OrderElement>();
+        for (WorkReportLine line : workReport.getWorkReportLines()) {
+            if (!line.getEffort().isZero()) {
+                OrderElement orderElement = line.getOrderElement();
+                if (!Util.contains(orderElements, orderElement)) {
+                    orderElements.add(orderElement);
+                }
+            }
+        }
+        return orderElements.size();
     }
 
 }

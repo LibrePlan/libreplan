@@ -59,6 +59,11 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
             Util.appendLabel(row, workReport.getTotalEffortDuration()
                     .toFormattedString());
 
+            Util.appendLabel(
+                    row,
+                    monthlyTimesheetsAreaModel
+                            .getNumberOfOrderElementsWithTrackedTime(workReport) + "");
+
             Util.appendOperationsAndOnClickEvent(row, new EventListener() {
 
                 @Override
