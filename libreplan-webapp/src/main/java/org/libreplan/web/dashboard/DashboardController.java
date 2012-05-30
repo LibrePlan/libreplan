@@ -21,6 +21,10 @@ package org.libreplan.web.dashboard;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Map;
@@ -71,6 +75,18 @@ public class DashboardController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
+    }
+
+    public String loadResourceFile(String filename) throws IOException {
+        StringBuffer result = new StringBuffer();
+        String line;
+
+        InputStream stream = BarChart.class.getClassLoader().getResourceAsStream(filename);
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+        while ((line = br.readLine()) != null) {
+            result.append(line);
+        }
+        return result.toString();
     }
 
     public void setCurrentOrder(Order order, OrderPlanningController orderPlanningController) {

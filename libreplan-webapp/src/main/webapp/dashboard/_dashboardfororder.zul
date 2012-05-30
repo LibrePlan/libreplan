@@ -25,7 +25,16 @@
     <zscript>
         <![CDATA[
             dsController = arg.get("dashboardController");
-            contextPath = org.zkoss.zk.ui.Executions.getCurrent().getContextPath();
+
+            // Load jqPlot CSS and Javascript files
+            jquery_jqplot_min_css = dsController.loadResourceFile("/jqplot/jquery.jqplot.min.css");
+            jquery_min_js = dsController.loadResourceFile("/jqplot/jquery.min.js");
+            jquery_jqplot_min_js = dsController.loadResourceFile("/jqplot/jquery.jqplot.min.js");
+            jqplot_canvasTextRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.canvasTextRenderer.min.js");
+            jqplot_canvasAxisLabelRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js");
+            jqplot_barRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.barRenderer.min.js");
+            jqplot_pieRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.pieRenderer.min.js");
+            jqplot_categoryAxisRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.categoryAxisRenderer.min.js");
         ]]>
     </zscript>
 
@@ -125,15 +134,19 @@
     <globalProgress />
 
     <!-- Include jqPlot styles -->
-    <n:link class="include" rel="stylesheet" type="text/css" href="${contextPath}/jqplot/jquery.jqplot.min.css" />
+    <n:style rel="stylesheet" type="text/css">
+        ${jquery_jqplot_min_css}
+    </n:style>
 
     <!-- Include jqPlot library and additional plugins -->
-    <n:script type="text/javascript" src="${contextPath}/jqplot/jquery.min.js"></n:script>
-    <n:script type="text/javascript" src="${contextPath}/jqplot/jquery.jqplot.min.js"></n:script>
-    <n:script type="text/javascript" src="${contextPath}/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="${contextPath}/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="${contextPath}/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="${contextPath}/jqplot/plugins/jqplot.pieRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="${contextPath}/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
+    <n:script type="text/javascript">
+        ${jquery_min_js}
+        ${jquery_jqplot_min_js}
+        ${jqplot_canvasTextRenderer_min_js}
+        ${jqplot_canvasAxisLabelRenderer_min_js}
+        ${jqplot_barRenderer_min_js}
+        ${jqplot_pieRenderer_min_js}
+        ${jqplot_categoryAxisRenderer_min_js}
+    </n:script>
 
 </zk>

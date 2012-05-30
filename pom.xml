@@ -752,7 +752,7 @@
             <dependency>
                 <groupId>br.com.digilabs.jqplot</groupId>
                 <artifactId>jqplot4java</artifactId>
-                <version>1.2.0</version>
+                <version>1.2.3-javascript</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
