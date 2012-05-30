@@ -67,7 +67,9 @@
             <hbox>
                 <bandboxSearch
                     id="orderElementBandboxSearch"
-                    finder="OrderElementBandboxFinder" />
+                    finder="OrderElementBandboxFinder"
+                    widthBandbox="300px"
+                    widthListbox="600px" />
                 <button onClick="controller.addOrderElement();"
                     label="${i18n:_('Add task')}" />
             </hbox>
