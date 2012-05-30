@@ -24,6 +24,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.joda.time.LocalDate;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
@@ -54,11 +55,12 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
             row.setValue(monthlyTimesheet);
 
             Util.appendLabel(row, monthlyTimesheet.getDate().toString("MMMM y"));
+            Util.appendLabel(row, monthlyTimesheet.getResourceCapacity()
+                    .toFormattedString());
 
             WorkReport workReport = monthlyTimesheet.getWorkReport();
             Util.appendLabel(row, workReport.getTotalEffortDuration()
                     .toFormattedString());
-
             Util.appendLabel(
                     row,
                     monthlyTimesheetsAreaModel
@@ -104,6 +106,8 @@ class MonthlyTimesheet {
 
     private WorkReport workReport;
 
+    private EffortDuration resourceCapacity;
+
     /**
      * @param date
      *            Only the year and month are used, the day is reseted to first
@@ -111,10 +115,15 @@ class MonthlyTimesheet {
      * @param workReport
      *            The work report of the monthly timesheet, it could be
      *            <code>null</code> if it doesn't exist yet.
+     * @param resourceCapacity
+     *            The capacity of the resource bound to current user in the
+     *            month of this timesheet.
      */
-    MonthlyTimesheet(LocalDate date, WorkReport workReport) {
+    MonthlyTimesheet(LocalDate date, WorkReport workReport,
+            EffortDuration resourceCapacity) {
         this.date = date.dayOfMonth().withMaximumValue();
         this.workReport = workReport;
+        this.resourceCapacity = resourceCapacity;
     }
 
     public LocalDate getDate() {
@@ -123,6 +132,10 @@ class MonthlyTimesheet {
 
     public WorkReport getWorkReport() {
         return workReport;
+    }
+
+    public EffortDuration getResourceCapacity() {
+        return resourceCapacity;
     }
 
 }

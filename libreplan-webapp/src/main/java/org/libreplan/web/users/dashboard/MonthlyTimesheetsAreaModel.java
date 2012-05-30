@@ -29,11 +29,14 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.web.UserUtil;
+import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -60,6 +63,8 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
         if (!user.isBound()) {
             return Collections.emptyList();
         }
+        Resource resource = user.getWorker();
+        BaseCalendarModel.forceLoadBaseCalendar(resource.getCalendar());
 
         LocalDate activationDate = getActivationDate(user.getWorker());
         LocalDate currentDate = new LocalDate();
@@ -77,13 +82,30 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
         // monthly timesheets at the beginning
         for (int i = months; i >= 0; i--) {
             LocalDate date = start.plusMonths(i);
-            WorkReport workReport = workReportDAO
-                    .getMonthlyTimesheetWorkReport(resource, date);
-            forceLoad(workReport);
-            result.add(new MonthlyTimesheet(date, workReport));
+            result.add(new MonthlyTimesheet(date,
+                    getWorkReport(resource, date), getResourceCapcity(resource,
+                            date)));
         }
 
         return result;
+    }
+
+    private WorkReport getWorkReport(Resource resource, LocalDate date) {
+        WorkReport workReport = workReportDAO.getMonthlyTimesheetWorkReport(
+                resource, date);
+        forceLoad(workReport);
+        return workReport;
+    }
+
+    private EffortDuration getResourceCapcity(Resource resource, LocalDate date) {
+        EffortDuration capacity = EffortDuration.zero();
+        for (LocalDate day = date.dayOfMonth().withMinimumValue(); day
+                .compareTo(date.dayOfMonth().withMaximumValue()) <= 0; day = day
+                .plusDays(1)) {
+            capacity = capacity.plus(resource.getCalendar().getCapacityOn(
+                    PartialDay.wholeDay(day)));
+        }
+        return capacity;
     }
 
     private void forceLoad(WorkReport workReport) {
