@@ -103,6 +103,9 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             case TOTAL:
                 renderTotalRow(row);
                 break;
+            case EXTRA:
+                renderExtraRow(row);
+                break;
             default:
                 throw new IllegalStateException(
                         "Unknown MonthlyTimesheetRow type: "
@@ -159,7 +162,9 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                             LocalDate date) {
                         updateTotalColumn(orderElement);
                         updateTotalRow(date);
+                        updateExtraRow(date);
                         updateTotalColumn();
+                        updateTotalExtraColumn();
                     }
 
                 });
@@ -183,16 +188,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void appendTotalColumn(Row row, final OrderElement orderElement) {
-            row.appendChild(getDisabledTextboxWithId(getTotalColumnTextboxId(orderElement)));
+            row.appendChild(getDisabledTextbox(getTotalRowTextboxId(orderElement)));
             updateTotalColumn(orderElement);
         }
 
-        private String getTotalColumnTextboxId(final OrderElement orderElement) {
-            return "textbox-total-" + orderElement.getId();
-        }
-
         private void updateTotalColumn(OrderElement orderElement) {
-            Textbox textbox = (Textbox) timesheet.getFellow(getTotalColumnTextboxId(orderElement));
+            Textbox textbox = (Textbox) timesheet.getFellow(getTotalRowTextboxId(orderElement));
             textbox.setValue(effortDurationToString(monthlyTimesheetModel
                     .getEffortDuration(orderElement)));
         }
@@ -213,7 +214,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private void appendTotalForDays(Row row) {
             for (LocalDate day = first; day.compareTo(last) <= 0; day = day
                     .plusDays(1)) {
-                Cell cell = getCenteredCell(getDisabledTextboxWithId(getTotalRowTextboxId(day)));
+                Cell cell = getCenteredCell(getDisabledTextbox(getTotalColumnTextboxId(day)));
                 if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
                     setBackgroundNonCapacityCell(cell);
                 }
@@ -223,40 +224,16 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             }
         }
 
-        private Textbox getDisabledTextbox(EffortDuration effort) {
-            Textbox textbox = new Textbox();
-            textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
-            textbox.setValue(effortDurationToString(effort));
-            textbox.setDisabled(true);
-            return textbox;
-        }
-
-        private Textbox getDisabledTextboxWithId(String id) {
-            Textbox textbox = new Textbox();
-            textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
-            textbox.setId(id);
-            textbox.setDisabled(true);
-            return textbox;
-        }
-
-        private String getTotalRowTextboxId(LocalDate date) {
-            return "textbox-total-row-" + date;
-        }
-
         private void updateTotalRow(LocalDate date) {
             Textbox textbox = (Textbox) timesheet
-                    .getFellow(getTotalRowTextboxId(date));
+                    .getFellow(getTotalColumnTextboxId(date));
             textbox.setValue(effortDurationToString(monthlyTimesheetModel
                     .getEffortDuration(date)));
         }
 
         private void appendTotalColumn(Row row) {
-            row.appendChild(getAlignLeftCell(getDisabledTextboxWithId(getTotalTextboxId())));
+            row.appendChild(getAlignLeftCell(getDisabledTextbox(getTotalTextboxId())));
             updateTotalColumn();
-        }
-
-        private String getTotalTextboxId() {
-            return "textbox-total";
         }
 
         private void updateTotalColumn() {
@@ -279,7 +256,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 EffortDuration capacity = monthlyTimesheetModel
                         .getResourceCapacity(day);
 
-                Cell cell = getCenteredCell(getDisabledTextbox(capacity));
+                Cell cell = getCenteredCell(getDisabledTextbox(
+                        getCapcityColumnTextboxId(day), capacity));
                 if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
                     setBackgroundNonCapacityCell(cell);
                 }
@@ -288,7 +266,109 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 totalCapacity = totalCapacity.plus(capacity);
             }
 
-            row.appendChild(getAlignLeftCell(getDisabledTextbox(totalCapacity)));
+            row.appendChild(getAlignLeftCell(getDisabledTextbox(
+                    getTotalCapacityTextboxId(), totalCapacity)));
+        }
+
+        private void renderExtraRow(Row row) {
+            appendLabelSpaningTwoColumns(row, _("Extra"));
+            appendExtraForDays(row);
+            appendTotalExtra(row);
+        }
+
+        private void appendExtraForDays(Row row) {
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
+                    .plusDays(1)) {
+                Cell cell = getCenteredCell(getDisabledTextbox(getExtraColumnTextboxId(day)));
+                if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
+                    setBackgroundNonCapacityCell(cell);
+                }
+                row.appendChild(cell);
+
+                updateExtraRow(day);
+            }
+
+        }
+
+        private void updateExtraRow(LocalDate date) {
+            EffortDuration total = getEffortDuration(getTotalColumnTextboxId(date));
+            EffortDuration capacity = getEffortDuration(getCapcityColumnTextboxId(date));
+
+            EffortDuration extra = EffortDuration.zero();
+            if (total.compareTo(capacity) > 0) {
+                extra = total.minus(capacity);
+            }
+
+            Textbox textbox = (Textbox) timesheet
+                    .getFellow(getExtraColumnTextboxId(date));
+            textbox.setValue(effortDurationToString(extra));
+        }
+
+        private EffortDuration getEffortDuration(String textboxId) {
+            String value = ((Textbox) timesheet.getFellow(textboxId))
+                    .getValue();
+            return effortDurationFromString(value);
+        }
+
+        private void appendTotalExtra(Row row) {
+            row.appendChild(getAlignLeftCell(getDisabledTextbox(getTotalExtraTextboxId())));
+            updateTotalExtraColumn();
+        }
+
+        private void updateTotalExtraColumn() {
+            EffortDuration total = getEffortDuration(getTotalTextboxId());
+            EffortDuration capacity = getEffortDuration(getTotalCapacityTextboxId());
+
+            EffortDuration extra = EffortDuration.zero();
+            if (total.compareTo(capacity) > 0) {
+                extra = total.minus(capacity);
+            }
+
+            Textbox textbox = (Textbox) timesheet
+                    .getFellow(getTotalExtraTextboxId());
+            textbox.setValue(effortDurationToString(extra));
+        }
+
+        private String getTotalRowTextboxId(final OrderElement orderElement) {
+            return "textbox-total-row" + orderElement.getId();
+        }
+
+        private String getTotalColumnTextboxId(LocalDate date) {
+            return "textbox-total-column-" + date;
+        }
+
+        private String getTotalTextboxId() {
+            return "textbox-total";
+        }
+
+        private String getCapcityColumnTextboxId(LocalDate date) {
+            return "textbox-capacity-column-" + date;
+        }
+
+        private String getTotalCapacityTextboxId() {
+            return "textbox-total-capacity";
+        }
+
+        private String getExtraColumnTextboxId(LocalDate date) {
+            return "textbox-extra-column-" + date;
+        }
+
+        private String getTotalExtraTextboxId() {
+            return "textbox-total-extra";
+        }
+
+        private Textbox getDisabledTextbox(String id) {
+            Textbox textbox = new Textbox();
+            textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
+            textbox.setId(id);
+            textbox.setDisabled(true);
+            return textbox;
+        }
+
+        private Textbox getDisabledTextbox(String id, EffortDuration effort) {
+            Textbox textbox = getDisabledTextbox(id);
+            textbox.setValue(effortDurationToString(effort));
+            return textbox;
         }
 
         private Cell getCenteredCell(Component component) {
@@ -405,6 +485,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 .getOrderElements());
         result.add(MonthlyTimesheetRow.createCapacityRow());
         result.add(MonthlyTimesheetRow.createTotalRow());
+        result.add(MonthlyTimesheetRow.createExtraRow());
         return result;
     }
 
@@ -487,7 +568,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
  */
 class MonthlyTimesheetRow {
     enum MonthlyTimesheetRowType {
-        ORDER_ELEMENT, CAPACITY, TOTAL
+        ORDER_ELEMENT, CAPACITY, TOTAL, EXTRA
     };
 
     private MonthlyTimesheetRowType type;
@@ -508,6 +589,10 @@ class MonthlyTimesheetRow {
 
     public static MonthlyTimesheetRow createTotalRow() {
         return new MonthlyTimesheetRow(MonthlyTimesheetRowType.TOTAL);
+    }
+
+    public static MonthlyTimesheetRow createExtraRow() {
+        return new MonthlyTimesheetRow(MonthlyTimesheetRowType.EXTRA);
     }
 
     public static List<MonthlyTimesheetRow> wrap(
