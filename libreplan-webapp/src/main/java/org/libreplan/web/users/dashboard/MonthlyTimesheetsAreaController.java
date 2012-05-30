@@ -55,6 +55,10 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
 
             Util.appendLabel(row, monthlyTimesheet.getDate().toString("MMMM y"));
 
+            WorkReport workReport = monthlyTimesheet.getWorkReport();
+            Util.appendLabel(row, workReport.getTotalEffortDuration()
+                    .toFormattedString());
+
             Util.appendOperationsAndOnClickEvent(row, new EventListener() {
 
                 @Override
@@ -90,17 +94,30 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
  * {@link WorkReport}.
  */
 class MonthlyTimesheet {
+
     private LocalDate date;
 
+    private WorkReport workReport;
+
     /**
-     * Only the year and month are used, the day is reseted to first day of the
-     * month. As there's only one timesheet per month.
+     * @param date
+     *            Only the year and month are used, the day is reseted to first
+     *            day of the month. As there's only one timesheet per month.
+     * @param workReport
+     *            The work report of the monthly timesheet, it could be
+     *            <code>null</code> if it doesn't exist yet.
      */
-    MonthlyTimesheet(LocalDate date) {
-        this.date = new LocalDate(date.getYear(), date.getMonthOfYear(), 1);
+    MonthlyTimesheet(LocalDate date, WorkReport workReport) {
+        this.date = date.dayOfMonth().withMaximumValue();
+        this.workReport = workReport;
     }
 
     public LocalDate getDate() {
         return date;
     }
+
+    public WorkReport getWorkReport() {
+        return workReport;
+    }
+
 }

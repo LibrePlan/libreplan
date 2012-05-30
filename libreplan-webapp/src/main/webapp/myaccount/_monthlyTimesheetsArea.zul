@@ -25,6 +25,7 @@
         pageSize="10" rowRenderer="@{controller.monthlyTimesheetsRenderer}">
         <columns sizable="true">
             <column label="${i18n:_('Date')}" />
+            <column label="${i18n:_('Total work')}" />
             <column label="${i18n:_('Operations')}" />
         </columns>
     </grid>

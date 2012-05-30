@@ -25,9 +25,14 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
+import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.business.workreports.entities.WorkReport;
+import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.web.UserUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -42,6 +47,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
 
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
     @Override
     @Transactional(readOnly = true)
     public List<MonthlyTimesheet> getMonthlyTimesheets() {
@@ -52,10 +60,11 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
 
         LocalDate activationDate = getActivationDate(user.getWorker());
         LocalDate currentDate = new LocalDate();
-        return getMonthlyTimesheets(activationDate, currentDate.plusMonths(1));
+        return getMonthlyTimesheets(user.getWorker(), activationDate,
+                currentDate.plusMonths(1));
     }
 
-    private List<MonthlyTimesheet> getMonthlyTimesheets(
+    private List<MonthlyTimesheet> getMonthlyTimesheets(Resource resource,
             LocalDate start, LocalDate end) {
         int months = Months.monthsBetween(start, end).getMonths();
 
@@ -64,10 +73,23 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
         // In decreasing order to provide a list sorted with the more recent
         // monthly timesheets at the beginning
         for (int i = months; i >= 0; i--) {
-            result.add(new MonthlyTimesheet(start.plusMonths(i)));
+            LocalDate date = start.plusMonths(i);
+            WorkReport workReport = workReportDAO
+                    .getMonthlyTimesheetWorkReport(resource, date);
+            forceLoad(workReport);
+            result.add(new MonthlyTimesheet(date, workReport));
         }
 
         return result;
+    }
+
+    private void forceLoad(WorkReport workReport) {
+        if (workReport != null) {
+            WorkReportType workReportType = workReport.getWorkReportType();
+            workReportType.getLineFields().size();
+            workReportType.getWorkReportLabelTypeAssigments().size();
+            workReportType.getHeadingFields().size();
+        }
     }
 
     private LocalDate getActivationDate(Worker worker) {

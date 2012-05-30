@@ -48,7 +48,9 @@ public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
 
     /**
      * Returns the {@link WorkReport} of the predefined type monthly timesheet
-     * for the given <code>resource</code> in the specified <code>date</code>.
+     * for the given <code>resource</code> in the specified <code>date</code>.<br />
+     *
+     * If there isn't any, it returns <code>null</code>.
      */
     WorkReport getMonthlyTimesheetWorkReport(Resource resource, LocalDate date);
 
