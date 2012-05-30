@@ -90,9 +90,16 @@ public class TypeOfWorkHoursServiceTest {
 
     @Before
     public void loadRequiredData() {
-        configurationBootstrap.loadRequiredData();
-        typeOfWorkHoursBootstrap.loadRequiredData();
-        monthlyTimesheetsTypeOfWorkHoursBootstrap.loadRequiredData();
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                configurationBootstrap.loadRequiredData();
+                typeOfWorkHoursBootstrap.loadRequiredData();
+                monthlyTimesheetsTypeOfWorkHoursBootstrap.loadRequiredData();
+                return null;
+            }
+        });
     }
 
     @Test
