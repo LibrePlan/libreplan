@@ -95,13 +95,7 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForExpenseSheets = true;
 
-    private Boolean mantisEnabled = false;
-
-    private String mantisUser;
-
-    private String mantisPassword;
-
-    private String mantisEndpoint;
+    private MantisConfiguration mantisConfiguration;
 
     /**
      * Currency code according to ISO-4217 (3 letters)
@@ -419,36 +413,12 @@ public class Configuration extends BaseEntity {
         monthlyTimesheetsTypeOfWorkHours = typeOfWorkHours;
     }
 
-    public Boolean getMantisEnabled() {
-        return mantisEnabled;
+    public MantisConfiguration getMantisConfiguration() {
+        return mantisConfiguration;
     }
 
-    public void setMantisEnabled(Boolean mantisEnabled) {
-        this.mantisEnabled = mantisEnabled;
-    }
-
-    public String getMantisUser() {
-        return mantisUser;
-    }
-
-    public void setMantisUser(String mantisUser) {
-        this.mantisUser = mantisUser;
-    }
-
-    public String getMantisPassword() {
-        return mantisPassword;
-    }
-
-    public void setMantisPassword(String mantisPassword) {
-        this.mantisPassword = mantisPassword;
-    }
-
-    public String getMantisEndpoint() {
-        return mantisEndpoint;
-    }
-
-    public void setMantisEndpoint(String mantisEndpoint) {
-        this.mantisEndpoint = mantisEndpoint;
+    public void setMantisConfiguration(MantisConfiguration mantisConfiguration) {
+        this.mantisConfiguration = mantisConfiguration;
     }
 
 }

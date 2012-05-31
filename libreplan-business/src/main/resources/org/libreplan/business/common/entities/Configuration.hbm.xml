@@ -101,10 +101,12 @@
 
         </component>
 
-        <property name="mantisEnabled" not-null="true" column="mantis_enabled" />
-        <property name="mantisUser" column="mantis_user" />
-        <property name="mantisPassword" column="mantis_password" />
-        <property name="mantisEndpoint" column="mantis_endpoint" />
+        <component name="mantisConfiguration" class="org.libreplan.business.common.entities.MantisConfiguration">
+            <property name="mantisEnabled" not-null="true" column="mantis_enabled" />
+            <property name="mantisUser" column="mantis_user" />
+            <property name="mantisPassword" column="mantis_password" />
+            <property name="mantisEndpoint" column="mantis_endpoint" />
+        </component>
 
     </class>
 
