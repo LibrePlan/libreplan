@@ -316,17 +316,16 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void updateTotalExtraColumn() {
-            EffortDuration total = getEffortDuration(getTotalTextboxId());
-            EffortDuration capacity = getEffortDuration(getTotalCapacityTextboxId());
-
-            EffortDuration extra = EffortDuration.zero();
-            if (total.compareTo(capacity) > 0) {
-                extra = total.minus(capacity);
+            EffortDuration totalExtra = EffortDuration.zero();
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
+                    .plusDays(1)) {
+                EffortDuration extra = getEffortDuration(getExtraColumnTextboxId(day));
+                totalExtra = totalExtra.plus(extra);
             }
 
             Textbox textbox = (Textbox) timesheet
                     .getFellow(getTotalExtraTextboxId());
-            textbox.setValue(effortDurationToString(extra));
+            textbox.setValue(effortDurationToString(totalExtra));
         }
 
         private String getTotalRowTextboxId(final OrderElement orderElement) {
