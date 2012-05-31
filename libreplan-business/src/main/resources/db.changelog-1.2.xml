@@ -486,4 +486,34 @@
             referencedTableName="type_of_work_hours" referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="add-mantis_enabled-field" author="jtoja">
+        <comment>Add new column to know if Mantis integration is enabled</comment>
+        <addColumn tableName="configuration">
+            <column name="mantis_enabled" type="BOOLEAN"/>
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="mantis_enabled"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="mantis_enabled"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-columns-for-mantis-user-and-password" author="jtoja">
+        <comment>Add new columns for Mantis user and password</comment>
+        <addColumn tableName="configuration">
+            <column name="mantis_user" type="VARCHAR(255)" />
+        </addColumn>
+        <addColumn tableName="configuration">
+            <column name="mantis_password" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-for-mantis_endpoint" author="jtoja">
+        <comment>Add new column for Mantis endpoint</comment>
+        <addColumn tableName="configuration">
+            <column name="mantis_endpoint" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
