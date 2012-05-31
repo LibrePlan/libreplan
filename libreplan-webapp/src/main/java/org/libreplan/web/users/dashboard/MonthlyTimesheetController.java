@@ -204,10 +204,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             appendTotalColumn(row);
         }
 
-        private void appendLabelSpaningTwoColumns(Row row, String label) {
+        private void appendLabelSpaningTwoColumns(Row row, String text) {
             Cell cell = new Cell();
             cell.setColspan(2);
-            cell.appendChild(new Label(label));
+            Label label = new Label(text);
+            label.setStyle("font-weight: bold;");
+            cell.appendChild(label);
             row.appendChild(cell);
         }
 
