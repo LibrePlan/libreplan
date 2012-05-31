@@ -153,4 +153,9 @@
             referencedTableName="order_table" referencedColumnNames="order_element_id"
             />
     </changeSet>
+
+    <changeSet id="remove-calendar-from-order_template" author="jaragunde">
+        <comment>Remove column base_calendar_id in order_template table</comment>
+        <dropColumn tableName="order_template" columnName="base_calendar_id" />
+    </changeSet>
 </databaseChangeLog>

@@ -18,7 +18,7 @@
  */
 package org.libreplan.business.templates.entities;
 
-import org.libreplan.business.common.Registry;
+import org.hibernate.validator.AssertTrue;
 import org.libreplan.business.orders.entities.Order;
 
 /**
@@ -32,8 +32,6 @@ public class Budget extends OrderTemplate {
 
     public static Budget create() {
         Budget beingBuilt = new Budget();
-        beingBuilt.calendar = Registry.getConfigurationDAO().getConfiguration()
-                .getDefaultCalendar();
         beingBuilt.setCode("default-code-for-budget");
         return create(beingBuilt);
     }
@@ -41,8 +39,6 @@ public class Budget extends OrderTemplate {
     public static Budget createFromTemplate(BudgetTemplate template) {
         Budget beingBuilt = new Budget();
         beingBuilt.setName(template.getName());
-        beingBuilt.calendar = Registry.getConfigurationDAO().getConfiguration()
-                .getDefaultCalendar();
         beingBuilt.setCode("default-code-for-budget");
         for (OrderElementTemplate child : template.getChildren()) {
             beingBuilt.add(child.createCopy());

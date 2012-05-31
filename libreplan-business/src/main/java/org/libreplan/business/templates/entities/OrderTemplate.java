@@ -22,11 +22,6 @@ package org.libreplan.business.templates.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
-import java.util.Date;
-
-import org.hibernate.validator.NotNull;
-import org.joda.time.LocalDate;
-import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
@@ -41,12 +36,8 @@ public class OrderTemplate extends OrderLineGroupTemplate {
 
     public static OrderTemplate create(Order order) {
         OrderTemplate beingBuilt = new OrderTemplate();
-        beingBuilt.calendar = order.getCalendar();
         return create(beingBuilt, order);
     }
-
-    @NotNull(message = "project calendar not specified")
-    protected BaseCalendar calendar;
 
     @Override
     public OrderElement createElement(OrderLineGroup parent) {
@@ -58,7 +49,6 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         order.setVersionForScenario(currentScenario, OrderVersion
                 .createInitialVersion(currentScenario));
         order.useSchedulingDataFor(currentScenario);
-        order.setCalendar(calendar);
         order.initializeTemplate(this);
         return setupGroupParts(setupSchedulingStateType(order));
     }

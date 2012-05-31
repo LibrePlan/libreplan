@@ -18,7 +18,6 @@
  */
 package org.libreplan.business.templates.entities;
 
-import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
@@ -33,8 +32,6 @@ public class BudgetTemplate extends OrderTemplate {
 
     public static BudgetTemplate create() {
         BudgetTemplate beingBuilt = new BudgetTemplate();
-        beingBuilt.calendar =
-                Registry.getConfigurationDAO().getConfiguration().getDefaultCalendar();
         beingBuilt.setCode("default-code-for-budget-template");
         return create(beingBuilt);
     }
@@ -44,7 +41,6 @@ public class BudgetTemplate extends OrderTemplate {
         order.setVersionForScenario(currentScenario,
                 OrderVersion.createInitialVersion(currentScenario));
         order.useSchedulingDataFor(currentScenario);
-        order.setCalendar(calendar);
         order.initializeTemplate(this);
 
         Budget budget = Budget.createFromTemplate(this);
@@ -53,5 +49,4 @@ public class BudgetTemplate extends OrderTemplate {
 
         return order;
     }
-
 }

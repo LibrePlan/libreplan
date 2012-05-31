@@ -71,8 +71,6 @@
             <joined-subclass name="OrderTemplate" table="order_template">
                 <key column="order_template_id"></key>
                 <!-- Not indexed -->
-                <many-to-one name="calendar" column="base_calendar_id" cascade="none"
-                    class="org.libreplan.business.calendars.entities.BaseCalendar"/>
                 <joined-subclass name="BudgetTemplate" table="budget_template">
                     <key column="budget_template_id"></key>
                 </joined-subclass>
