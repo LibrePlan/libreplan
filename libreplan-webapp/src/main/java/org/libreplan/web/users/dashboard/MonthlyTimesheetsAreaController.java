@@ -59,12 +59,15 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
                     .toFormattedString());
 
             WorkReport workReport = monthlyTimesheet.getWorkReport();
-            Util.appendLabel(row, workReport.getTotalEffortDuration()
-                    .toFormattedString());
-            Util.appendLabel(
-                    row,
-                    monthlyTimesheetsAreaModel
-                            .getNumberOfOrderElementsWithTrackedTime(workReport) + "");
+            EffortDuration hours = EffortDuration.zero();
+            int tasksNumber = 0;
+            if (workReport != null) {
+                hours = workReport.getTotalEffortDuration();
+                tasksNumber = monthlyTimesheetsAreaModel
+                        .getNumberOfOrderElementsWithTrackedTime(workReport);
+            }
+            Util.appendLabel(row, hours.toFormattedString());
+            Util.appendLabel(row, tasksNumber + "");
 
             Util.appendOperationsAndOnClickEvent(row, new EventListener() {
 
