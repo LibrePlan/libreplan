@@ -42,6 +42,7 @@
                 <tab label="${i18n:_('Main preferences')}" />
                 <tab label="${i18n:_('Entity sequences')}" />
                 <tab label="${i18n:_('LDAP configuration')}" />
+                <tab label="${i18n:_('Mantis configuration')}" />
             </tabs>
             <tabpanels>
                 <tabpanel id="panelConfiguration">
@@ -393,6 +394,47 @@
                         </vbox>
                     </groupbox>
                 </tabpanel>
+
+                <tabpanel id="panelMantisConfiguration">
+                    <!-- Activation -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Activation')}" />
+                        <label value="${i18n:_('Enable Mantis integration')}" />
+                        <checkbox checked="@{configurationController.mantisConfiguration.mantisEnabled}" />
+                    </groupbox>
+
+                    <!-- Configuration -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Configuration')}" />
+                        <grid>
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('User')}" />
+                                    <textbox width="300px"
+                                        value="@{configurationController.mantisConfiguration.mantisUser}" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Password')}" />
+                                    <textbox type="password"  width="300px"
+                                        value="@{configurationController.mantisConfiguration.mantisPassword}" />
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Endpoint')}" />
+                                    <hbox>
+                                        <textbox width="300px"
+                                            value="@{configurationController.mantisConfiguration.mantisEndpoint}" />
+                                        <label value="${i18n:__('Example: {0}', 'http://localhost/mantisbt/')}" />
+                                    </hbox>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+                </tabpanel>
+
             </tabpanels>
         </tabbox>
         <hbox>

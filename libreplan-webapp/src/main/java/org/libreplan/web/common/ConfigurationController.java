@@ -40,6 +40,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.MantisConfiguration;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
@@ -876,6 +877,10 @@ public class ConfigurationController extends GenericForwardComposer {
     public void setMonthlyTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
         configurationModel.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+    }
+
+    public MantisConfiguration getMantisConfiguration() {
+        return configurationModel.getMantisConfiguration();
     }
 
 }

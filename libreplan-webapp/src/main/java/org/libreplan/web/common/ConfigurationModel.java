@@ -43,6 +43,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.MantisConfiguration;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -102,6 +103,7 @@ public class ConfigurationModel implements IConfigurationModel {
         this.configuration = getCurrentConfiguration();
         initEntitySequences();
         initLdapConfiguration();
+        initMantisConfiguration();
     }
 
     private void initEntitySequences() {
@@ -118,6 +120,12 @@ public class ConfigurationModel implements IConfigurationModel {
     private void initLdapConfiguration() {
         if (null == configuration.getLdapConfiguration()) {
             configuration.setLdapConfiguration(LDAPConfiguration.create());
+        }
+    }
+
+    private void initMantisConfiguration() {
+        if (configuration.getMantisConfiguration() == null) {
+            configuration.setMantisConfiguration(new MantisConfiguration());
         }
     }
 
@@ -632,6 +640,11 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
         }
+    }
+
+    @Override
+    public MantisConfiguration getMantisConfiguration() {
+        return configuration.getMantisConfiguration();
     }
 
 }
