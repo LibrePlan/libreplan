@@ -46,6 +46,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
+import org.mantis.ta.MantisManager;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.DefaultDirObjectFactory;
@@ -881,6 +882,29 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public MantisConfiguration getMantisConfiguration() {
         return configurationModel.getMantisConfiguration();
+    }
+
+    public void testMantisConnection() {
+        MantisConfiguration mantisConfiguration = configurationModel
+                .getMantisConfiguration();
+
+        MantisManager mantisManager = new MantisManager(
+                mantisConfiguration.getMantisEndpoint(),
+                mantisConfiguration.getMantisUser(),
+                mantisConfiguration.getMantisPassword());
+
+        try {
+            // Check connection with Mantis server
+            // If user is not authenticated next method will throw an exception
+            mantisManager.getCurrentUser();
+            messages.showMessage(Level.INFO,
+                    _("Connection to Mantis server has been successful"));
+        } catch (Exception e) {
+            LOG.info(e);
+            messages.showMessage(
+                    Level.ERROR,
+                    _("Cannot connect to Mantis server, please check your configuration fields"));
+        }
     }
 
 }

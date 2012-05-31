@@ -432,6 +432,9 @@
                                 </row>
                             </rows>
                         </grid>
+                        <separator />
+                        <button label="${i18n:_('Test Mantis connection')}"
+                            onClick="configurationController.testMantisConnection()" />
                     </groupbox>
                 </tabpanel>
 
