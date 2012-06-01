@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +26,11 @@ import java.util.Date;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 
+/**
+ * DTO used to show the list of {@link WorkReport WorkReports}.
+ *
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ */
 public class WorkReportDTO {
 
     public WorkReportDTO(WorkReport workReport) {
@@ -47,32 +52,16 @@ public class WorkReportDTO {
         return workReport;
     }
 
-    public void setWorkReport(WorkReport workReport) {
-        this.workReport = workReport;
-    }
-
     public Date getDateStart() {
         return dateStart;
-    }
-
-    public void setDateStart(Date dateStart) {
-        this.dateStart = dateStart;
     }
 
     public Date getDateFinish() {
         return dateFinish;
     }
 
-    public void setDateFinish(Date dateFinish) {
-        this.dateFinish = dateFinish;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public Date getDateStartWorkReport(WorkReport workReport) {
@@ -127,7 +116,4 @@ public class WorkReportDTO {
         return workReport.getCode();
     }
 
-    public void setCode(String code) {
-        workReport.setCode(code);
-    }
 }
