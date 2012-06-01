@@ -84,6 +84,7 @@ import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueDep
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.workingday.IntraDayDate;
@@ -185,6 +186,9 @@ public class SaveCommandBuilder {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IOrderElementTemplateDAO orderElementTemplateDAO;
 
     @Autowired
     private IScenarioDAO scenarioDAO;
@@ -381,6 +385,9 @@ public class SaveCommandBuilder {
                 // NonUniqueObjectException later
                 taskElementDAO.reattach(rootTask);
             }
+            orderElementTemplateDAO.save(order.getAssociatedBudgetObject());
+            order.getAssociatedBudgetObject()
+                    .dontPoseAsTransientObjectAnymore();
             orderDAO.save(order);
 
             saveDerivedScenarios(order);
