@@ -32,6 +32,7 @@ import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
@@ -245,4 +246,9 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
     void generateWorkReportLinesIfIsNecessary();
 
     List<TypeOfWorkHours> getAllHoursType();
+
+    /**
+     * Returns the list of {@link Worker Workers} bound to any {@link User}.
+     */
+    List<Worker> getBoundWorkers();
 }

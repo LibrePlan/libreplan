@@ -41,6 +41,7 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.HoursManagementEnum;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -85,6 +86,7 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
@@ -181,6 +183,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @javax.annotation.Resource
     private IMonthlyTimesheetController monthlyTimesheetController;
+
+    private Popup monthlyTimesheetsPopup;
+
+    private Datebox monthlyTimesheetsDatebox;
+
+    private BandboxSearch monthlyTimesheetsBandboxSearch;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -642,13 +650,17 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToCreateForm(WorkReportType workReportType) {
-        cameBackList = false;
-        workReportModel.initCreate(workReportType);
-        prepareWorkReportList();
-        createWindow.setTitle(_("Create Work Report"));
-        getVisibility().showOnly(createWindow);
-        loadComponents(createWindow);
-        Util.reloadBindings(createWindow);
+        if (workReportType.isMonthlyTimesheetsType()) {
+            monthlyTimesheetsPopup.open(listTypeToAssign);
+        } else {
+            cameBackList = false;
+            workReportModel.initCreate(workReportType);
+            prepareWorkReportList();
+            createWindow.setTitle(_("Create Work Report"));
+            getVisibility().showOnly(createWindow);
+            loadComponents(createWindow);
+            Util.reloadBindings(createWindow);
+        }
     }
 
     @Override
@@ -660,11 +672,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     @Override
     public void goToEditForm(WorkReport workReport) {
         if (workReport.getWorkReportType().isMonthlyTimesheetsType()) {
-            Date date = workReport.getWorkReportLines().iterator().next()
-                    .getDate();
-            Resource resource = workReport.getResource();
-            monthlyTimesheetController.goToCreateOrEditForm(
-                    LocalDate.fromDateFields(date), resource);
+            goToEditMonthlyTimeSheet(workReport);
         } else {
             workReportModel.initEdit(workReport);
             createWindow.setTitle(_("Edit Work Report"));
@@ -673,6 +681,13 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             getVisibility().showOnly(createWindow);
             Util.reloadBindings(createWindow);
         }
+    }
+
+    private void goToEditMonthlyTimeSheet(WorkReport workReport) {
+        Date date = workReport.getWorkReportLines().iterator().next().getDate();
+        Resource resource = workReport.getResource();
+        monthlyTimesheetController.goToCreateOrEditForm(
+                LocalDate.fromDateFields(date), resource);
     }
 
     private void loadComponents(Component window) {
@@ -720,6 +735,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listTypeToAssign = (Listbox) window.getFellow("listTypeToAssign");
         filterStartDate = (Datebox) window.getFellow("filterStartDate");
         filterFinishDate = (Datebox) window.getFellow("filterFinishDate");
+        monthlyTimesheetsPopup = (Popup) window
+                .getFellow("monthlyTimesheetsPopup");
+        monthlyTimesheetsDatebox = (Datebox) window
+                .getFellow("monthlyTimesheetsDatebox");
+        monthlyTimesheetsBandboxSearch = (BandboxSearch) window
+                .getFellow("monthlyTimesheetsBandboxSearch");
         clearFilterDates();
     }
 
@@ -1931,5 +1952,26 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
        }
 
    }
+
+    public List<Worker> getBoundWorkers() {
+        return workReportModel.getBoundWorkers();
+    }
+
+    public void createOrEditMonthlyTimesheet() {
+        Date date = monthlyTimesheetsDatebox.getValue();
+        if (date == null) {
+            throw new WrongValueException(monthlyTimesheetsDatebox,
+                    _("Please set a date"));
+        }
+        Resource resource = (Resource) monthlyTimesheetsBandboxSearch
+                .getSelectedElement();
+        if (resource == null) {
+            throw new WrongValueException(monthlyTimesheetsBandboxSearch,
+                    _("Please select a worker"));
+        }
+
+        monthlyTimesheetController.goToCreateOrEditForm(
+                LocalDate.fromDateFields(date), resource);
+    }
 
 }

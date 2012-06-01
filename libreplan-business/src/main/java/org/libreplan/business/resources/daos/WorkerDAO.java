@@ -191,4 +191,12 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         return query.list();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Worker> getBound() {
+        Criteria criteria = getSession().createCriteria(Worker.class);
+        criteria.add(Restrictions.isNotNull("user"));
+        return criteria.list();
+    }
+
 }

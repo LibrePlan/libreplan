@@ -632,4 +632,10 @@ public class WorkReportModel extends IntegrationEntityModel implements
         return typeOfWorkHoursDAO.hoursTypeByNameAsc();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Worker> getBoundWorkers() {
+        return workerDAO.getBound();
+    }
+
 }

@@ -105,6 +105,30 @@
                         onClick="controller.onCreateNewWorkReport()"/>
                 </hbox>
                 </div>
+            <popup id="monthlyTimesheetsPopup" width="300px">
+                <grid>
+                    <columns>
+                        <column width="50px"/>
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Date')}" />
+                            <datebox id="monthlyTimesheetsDatebox" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Worker')}" />
+                            <bandboxSearch id="monthlyTimesheetsBandboxSearch"
+                                finder="ResourceBandboxFinder"
+                                model="@{controller.boundWorkers}"
+                                widthBandbox="200px"
+                                widthListbox="400px" />
+                        </row>
+                    </rows>
+                </grid>
+                <button onClick="controller.createOrEditMonthlyTimesheet();"
+                    label="${i18n:_('Go to monthly timesheet')}" />
+            </popup>
         </window>
 
         <window id="createWindow">
