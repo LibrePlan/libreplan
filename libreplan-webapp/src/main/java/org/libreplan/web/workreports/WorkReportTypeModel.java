@@ -151,7 +151,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     @Override
     @Transactional(readOnly = true)
     public void initEdit(WorkReportType workReportType) {
-        if (isMonthlyTimesheetsWorkReportType(workReportType)) {
+        if (workReportType.isMonthlyTimesheetsType()) {
             throw new IllegalArgumentException(
                     "Monthly timesheets work report type cannot be edited");
         }
@@ -164,12 +164,6 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         this.workReportType = getFromDB(workReportType);
         loadCollections(this.workReportType);
         initOldCodes();
-    }
-
-    private boolean isMonthlyTimesheetsWorkReportType(
-            WorkReportType workReportType) {
-        return workReportType.getName().equals(
-                PredefinedWorkReportTypes.MONTHLY_TIMESHEETS.getName());
     }
 
     private WorkReportType getFromDB(WorkReportType workReportType) {
@@ -226,7 +220,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     @Override
     @Transactional
     public void confirmRemove(WorkReportType workReportType) {
-        if (isMonthlyTimesheetsWorkReportType(workReportType)) {
+        if (workReportType.isMonthlyTimesheetsType()) {
             throw new IllegalArgumentException(
                     "Monthly timesheets work report type cannot be removed");
         }

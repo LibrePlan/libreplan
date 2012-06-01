@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
@@ -522,4 +523,13 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     public String getHumanId() {
         return name;
     }
+
+    public boolean isMonthlyTimesheetsType() {
+        if (StringUtils.isBlank(name)) {
+            return false;
+        }
+        return name.equals(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                .getName());
+    }
+
 }
