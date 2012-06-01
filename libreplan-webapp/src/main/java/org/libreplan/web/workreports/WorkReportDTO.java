@@ -25,6 +25,7 @@ import java.util.Date;
 
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
+import org.libreplan.business.workreports.entities.WorkReportType;
 
 /**
  * DTO used to show the list of {@link WorkReport WorkReports}.
@@ -37,7 +38,12 @@ public class WorkReportDTO {
         this.workReport = workReport;
         this.dateStart = this.getDateStartWorkReport(workReport);
         this.dateFinish = this.getDateFinishWorkReport(workReport);
-        this.type = workReport.getWorkReportType().getName();
+
+        WorkReportType workReportType = workReport.getWorkReportType();
+        this.type = workReportType.getName();
+        if (workReportType.isMonthlyTimesheetsType()) {
+            this.type += " - " + workReport.getResource().getShortDescription();
+        }
     }
 
     private WorkReport workReport;
