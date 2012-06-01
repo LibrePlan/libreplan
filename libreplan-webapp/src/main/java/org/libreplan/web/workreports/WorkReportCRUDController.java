@@ -30,8 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
@@ -59,9 +61,11 @@ import org.libreplan.web.common.components.NewDataSortableGrid;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.users.dashboard.IMonthlyTimesheetController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -175,12 +179,17 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Autocomplete filterHoursType;
 
+    @javax.annotation.Resource
+    private IMonthlyTimesheetController monthlyTimesheetController;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         listWorkReportLines = (NewDataSortableGrid) createWindow
                 .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
+        showMessageIfMonthlyTimesheetWasSaved();
+
         comp.setAttribute("controller", this);
         initCurrentList();
         if(listType != null) {
@@ -191,6 +200,15 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         final EntryPointsHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
         handler.register(this, page);
+    }
+
+    private void showMessageIfMonthlyTimesheetWasSaved() {
+        String timesheetSave = Executions.getCurrent().getParameter(
+                "timesheet_save");
+        if (!StringUtils.isBlank(timesheetSave)) {
+            messagesForUser.showMessage(Level.INFO,
+                    _("Monthly timesheet saved"));
+        }
     }
 
     private void initializeHoursType() {
@@ -641,12 +659,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToEditForm(WorkReport workReport) {
-        workReportModel.initEdit(workReport);
-        createWindow.setTitle(_("Edit Work Report"));
-        loadComponents(createWindow);
-        prepareWorkReportList();
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+        if (workReport.getWorkReportType().isMonthlyTimesheetsType()) {
+            Date date = workReport.getWorkReportLines().iterator().next()
+                    .getDate();
+            Resource resource = workReport.getResource();
+            monthlyTimesheetController.goToCreateOrEditForm(
+                    LocalDate.fromDateFields(date), resource);
+        } else {
+            workReportModel.initEdit(workReport);
+            createWindow.setTitle(_("Edit Work Report"));
+            loadComponents(createWindow);
+            prepareWorkReportList();
+            getVisibility().showOnly(createWindow);
+            Util.reloadBindings(createWindow);
+        }
     }
 
     private void loadComponents(Component window) {

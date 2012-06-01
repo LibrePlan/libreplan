@@ -42,8 +42,10 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.daos.IResourceAllocationDAO;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
+import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
@@ -115,14 +117,24 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
 
+    @Autowired
+    private IUserDAO userDAO;
+
+    private boolean currentUser;
+
     @Override
     @Transactional(readOnly = true)
     public void initCreateOrEdit(LocalDate date) {
+        currentUser = true;
         user = UserUtil.getUserFromSession();
         if (!user.isBound()) {
             throw new RuntimeException(
                     "This page only can be used by users bound to a resource");
         }
+        initFields(date);
+    }
+
+    private void initFields(LocalDate date) {
         this.date = date;
 
         initDates();
@@ -134,6 +146,18 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
         modified = false;
         modifiedMap = new HashMap<OrderElement, Set<LocalDate>>();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initCreateOrEdit(LocalDate date, Resource resource) {
+        currentUser = false;
+        try {
+            user = userDAO.find(((Worker) resource).getUser().getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        initFields(date);
     }
 
     private void initDates() {
@@ -426,6 +450,11 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     public boolean wasModified(OrderElement orderElement, LocalDate date) {
         Set<LocalDate> dates = modifiedMap.get(orderElement);
         return (dates != null) && dates.contains(date);
+    }
+
+    @Override
+    public boolean isCurrentUser() {
+        return currentUser;
     }
 
 }

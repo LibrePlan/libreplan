@@ -30,14 +30,20 @@
     <window apply="org.libreplan.web.users.dashboard.MonthlyTimesheetController"
         self="@{define(content)}" title="${i18n:_('Monthly timesheet')}">
 
-        <button id="previousMonth"
-            onClick="controller.previousMonth();"
-            label="${i18n:_('Previous')}"
-            disabled="@{controller.firstMonth}" />
-        <button id="nextMonth"
-            onClick="controller.nextMonth();"
-            label="${i18n:_('Next')}"
-            disabled="@{controller.lastMonth}" />
+        <div visible="@{controller.notCurrentUser}" class="footer-messages-area">
+            <label value="${i18n:_('Warning: Editing from work reports page')}" />
+        </div>
+
+        <div visible="@{controller.currentUser}">
+            <button id="previousMonth"
+                onClick="controller.previousMonth();"
+                label="${i18n:_('Previous')}"
+                disabled="@{controller.firstMonth}" />
+            <button id="nextMonth"
+                onClick="controller.nextMonth();"
+                label="${i18n:_('Next')}"
+                disabled="@{controller.lastMonth}" />
+        </div>
 
         <groupbox style="margin-top: 5px" closable="false">
             <caption label="${i18n:_('Timesheet data')}" />

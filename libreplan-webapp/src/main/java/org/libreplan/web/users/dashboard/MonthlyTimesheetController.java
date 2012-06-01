@@ -64,6 +64,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
 
+    private final static String WORK_REPORTS_URL = "/workreports/workReport.zul";
+
     private IMonthlyTimesheetModel monthlyTimesheetModel;
 
     private IURLHandlerRegistry URLHandlerRegistry;
@@ -438,6 +440,13 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         initTimesheet(date);
     }
 
+    @Override
+    public void goToCreateOrEditForm(LocalDate date,
+            org.libreplan.business.resources.entities.Resource resource) {
+        monthlyTimesheetModel.initCreateOrEdit(date, resource);
+        initTimesheet(date);
+    }
+
     private void initTimesheet(LocalDate date) {
         columns = new Columns();
         timesheet.getChildren().clear();
@@ -496,21 +505,32 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     public void save() {
         monthlyTimesheetModel.save();
-        Executions.getCurrent().sendRedirect(
-                CustomTargetUrlResolver.USER_DASHBOARD_URL + "?timesheet_save="
-                        + monthlyTimesheetModel.getDate());
+        String url = CustomTargetUrlResolver.USER_DASHBOARD_URL
+                + "?timesheet_save=" + monthlyTimesheetModel.getDate();
+        if (!monthlyTimesheetModel.isCurrentUser()) {
+            url = WORK_REPORTS_URL + "?timesheet_save=true";
+        }
+        Executions.getCurrent().sendRedirect(url);
     }
 
     public void saveAndContinue() {
         monthlyTimesheetModel.save();
-        goToCreateOrEditForm(monthlyTimesheetModel.getDate());
+        if (monthlyTimesheetModel.isCurrentUser()) {
+            goToCreateOrEditForm(monthlyTimesheetModel.getDate());
+        } else {
+            goToCreateOrEditForm(monthlyTimesheetModel.getDate(),
+                    monthlyTimesheetModel.getWorker());
+        }
         Util.reloadBindings(timesheet);
     }
 
     public void cancel() {
         monthlyTimesheetModel.cancel();
-        Executions.getCurrent().sendRedirect(
-                CustomTargetUrlResolver.USER_DASHBOARD_URL);
+        String url = CustomTargetUrlResolver.USER_DASHBOARD_URL;
+        if (!monthlyTimesheetModel.isCurrentUser()) {
+            url = WORK_REPORTS_URL;
+        }
+        Executions.getCurrent().sendRedirect(url);
     }
 
     public void addOrderElement() {
@@ -558,6 +578,14 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             }
         });
         Executions.getCurrent().sendRedirect(capturePath);
+    }
+
+    public boolean isCurrentUser() {
+        return monthlyTimesheetModel.isCurrentUser();
+    }
+
+    public boolean isNotCurrentUser() {
+        return !monthlyTimesheetModel.isCurrentUser();
     }
 
 }

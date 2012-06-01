@@ -20,6 +20,7 @@
 package org.libreplan.web.users.dashboard;
 
 import org.joda.time.LocalDate;
+import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.web.common.entrypoints.EntryPoint;
 import org.libreplan.web.common.entrypoints.EntryPoints;
 
@@ -31,7 +32,10 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 @EntryPoints(page = "/myaccount/monthlyTimesheet.zul", registerAs = "monthlyTimesheetController")
 public interface IMonthlyTimesheetController {
 
-    @EntryPoint("edit")
+    @EntryPoint("date")
     void goToCreateOrEditForm(LocalDate date);
+
+    @EntryPoint({ "date", "resource" })
+    void goToCreateOrEditForm(LocalDate date, Resource resource);
 
 }

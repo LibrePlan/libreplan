@@ -24,6 +24,7 @@ import java.util.List;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -36,10 +37,18 @@ import org.libreplan.business.workreports.entities.WorkReport;
 public interface IMonthlyTimesheetModel {
 
     /**
-     * Edits the monthly timesheet for the specified date and resource bound to
-     * current user or creates a new one if it doesn't exist yet.
+     * Edits the monthly timesheet for the specified <code>date</code> and
+     * resource bound to current user or creates a new one if it doesn't exist
+     * yet.
      */
     void initCreateOrEdit(LocalDate date);
+
+    /**
+     * Edits the monthly timesheet for the specified <code>date</code> and
+     * resource bound to the {@link Worker} specified by the
+     * <code>resource</code> or creates a new one if it doesn't exist yet.
+     */
+    void initCreateOrEdit(LocalDate date, Resource resource);
 
     /**
      * Returns the date of the monthly timesheet (only year and month should
@@ -153,5 +162,18 @@ public interface IMonthlyTimesheetModel {
      * a given <code>date</date> has been modified by the user.
      */
     boolean wasModified(OrderElement orderElement, LocalDate date);
+
+    /**
+     * Returns <code>true</code> or <code>false</code> depending on if it's
+     * editing a monthly timesheet of the current user or not.<br />
+     *
+     * That means if you entered via:
+     * <ul>
+     * <li>{@link #initCreateOrEdit(LocalDate)}: It returns <code>true</code>.</li>
+     * <li>{@link #initCreateOrEdit(LocalDate, Resource)}: It returns
+     * <code>false</code>.</li>
+     * </ul>
+     */
+    boolean isCurrentUser();
 
 }
