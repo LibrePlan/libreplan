@@ -73,6 +73,7 @@ import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
+import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
@@ -426,6 +427,29 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         newOrder.setName(getOrder().getName());
         newOrder.setCustomer(((Order) getOrder()).getCustomer());
         newOrder.setCalendar(getCalendar());
+
+        newOrder.setInitDate(getOrder().getInitDate());
+        if (getOrder().getDeadline() != null) {
+            newOrder.setDeadline(getOrder().getDeadline());
+        }
+
+        planningState = planningStateCreator.createOn(desktop, newOrder);
+        forceLoadAdvanceAssignmentsAndMeasurements(planningState.getOrder());
+        initializeOrder();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void prepareBudgetCreationFrom(BudgetTemplate template, Desktop desktop) {
+        loadNeededDataForConversation();
+        Order newOrder = createOrderFrom((BudgetTemplate) templateDAO
+                .findExistingEntity(template.getId()));
+
+        newOrder.setName(getOrder().getName());
+        newOrder.setCustomer(((Order) getOrder()).getCustomer());
+        newOrder.setCalendar(getCalendar());
+        newOrder.getAssociatedBudgetObject().setName(
+                getOrder().getName() + " " + getOrder().getCode());
 
         newOrder.setInitDate(getOrder().getInitDate());
         if (getOrder().getDeadline() != null) {
