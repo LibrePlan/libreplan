@@ -63,6 +63,7 @@
                     <column id="columnDateStart" label="${i18n:_('Date Start')}" sort="auto(dateStart, dateFinish)" sortDirection="ascending"/>
                     <column id="columnDateFinish" label="${i18n:_('Date Finish')}" sort="auto(dateFinish, dateStart)" sortDirection="ascending"/>
                     <column label="${i18n:_('Type')}" sort="auto(type)"/>
+                    <column label="${i18n:_('Total work')}" sort="auto(hours)" />
                     <column label="${i18n:_('Code')}" />
                     <column label="${i18n:_('Actions')}" />
                 </columns>
@@ -71,6 +72,7 @@
                         <label value="@{workReportDTO.dateStart, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
                         <label value="@{workReportDTO.dateFinish, converter='org.libreplan.web.common.typeconverters.DateConverter'}"/>
                         <label value="@{workReportDTO.type}" />
+                        <label value="@{workReportDTO.hours.toFormattedString}" />
                         <label value="@{workReportDTO.code}" />
 
                         <hbox>

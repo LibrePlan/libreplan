@@ -23,6 +23,7 @@ package org.libreplan.web.workreports;
 
 import java.util.Date;
 
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
@@ -44,6 +45,8 @@ public class WorkReportDTO {
         if (workReportType.isMonthlyTimesheetsType()) {
             this.type += " - " + workReport.getResource().getShortDescription();
         }
+
+        this.hours = workReport.getTotalEffortDuration();
     }
 
     private WorkReport workReport;
@@ -53,6 +56,8 @@ public class WorkReportDTO {
     private Date dateFinish;
 
     private String type;
+
+    private EffortDuration hours;
 
     public WorkReport getWorkReport() {
         return workReport;
@@ -120,6 +125,10 @@ public class WorkReportDTO {
 
     public String getCode() {
         return workReport.getCode();
+    }
+
+    public EffortDuration getHours() {
+        return hours;
     }
 
 }
