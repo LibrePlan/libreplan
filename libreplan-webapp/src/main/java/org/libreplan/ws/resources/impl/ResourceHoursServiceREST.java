@@ -34,6 +34,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.libreplan.business.resources.daos.IWorkerDAO;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.ws.resources.api.IResourceHoursService;
 import org.libreplan.ws.resources.api.ResourceWorkedHoursDTO;
 import org.libreplan.ws.resources.api.ResourceWorkedHoursListDTO;
@@ -97,7 +98,8 @@ public class ResourceHoursServiceREST implements IResourceHoursService {
 
         for (Object[] pair : hoursPerWorker) {
             ResourceWorkedHoursDTO resourceWorkedHoursDTO = new ResourceWorkedHoursDTO(
-                    (String) pair[0], ((Long) pair[1]).intValue());
+                    (String) pair[0], EffortDuration.seconds(
+                            ((Long) pair[1]).intValue()).toFormattedString());
             result.add(resourceWorkedHoursDTO);
         }
 

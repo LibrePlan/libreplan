@@ -148,7 +148,7 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
     @Transactional(readOnly = true)
     public List<Object[]> getWorkingHoursGroupedPerWorker(
             List<String> workerNifs, Date startingDate, Date endingDate) {
-        String strQuery = "SELECT worker.nif, SUM(wrl.numHours) "
+        String strQuery = "SELECT worker.nif, SUM(wrl.effort) "
                 + "FROM Worker worker, WorkReportLine wrl "
                 + "LEFT OUTER JOIN wrl.resource resource "
                 + "WHERE resource.id = worker.id ";
