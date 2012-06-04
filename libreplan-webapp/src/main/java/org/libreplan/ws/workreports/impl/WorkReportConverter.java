@@ -38,7 +38,6 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
-import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
@@ -98,9 +97,9 @@ public final class WorkReportConverter {
 
         if (workReportDTO.resource != null) {
             try {
-                Worker worker = Registry.getWorkerDAO().findUniqueByNif(
+                Resource resource = Registry.getResourceDAO().findByCode(
                         workReportDTO.resource);
-                workReport.setResource(worker);
+                workReport.setResource(resource);
             } catch (InstanceNotFoundException e) {
                 workReport.setResource(null);
                 throw new ValidationException(
@@ -162,9 +161,9 @@ public final class WorkReportConverter {
 
         if (workReportLineDTO.resource != null) {
             try {
-            Worker worker = Registry.getWorkerDAO().findUniqueByNif(
-                    workReportLineDTO.resource);
-            workReportLine.setResource(worker);
+                Resource resource = Registry.getResourceDAO().findByCode(
+                        workReportLineDTO.resource);
+                workReportLine.setResource(resource);
             } catch (InstanceNotFoundException e) {
                 workReportLine.setResource(null);
                 throw new ValidationException(
@@ -233,16 +232,9 @@ public final class WorkReportConverter {
         String orderElementCode = bindingStrategy
                 .getOrderElementCodesBound(workReport);
 
-        String resourceNif = null;
+        String resourceCode = null;
         if ((workReport.getResource() != null)) {
-            try {
-                Worker worker = Registry.getWorkerDAO().findByCode(
-                        workReport.getResource().getCode());
-                resourceNif = worker.getNif();
-            } catch (InstanceNotFoundException e) {
-                throw new ValidationException(
-                        "missing worker code in the work report");
-            }
+            resourceCode = workReport.getResource().getCode();
         }
 
         Set<LabelReferenceDTO> labelDTOs = LabelReferenceConverter
@@ -266,7 +258,7 @@ public final class WorkReportConverter {
             workReportLineDTOs = null;
         }
 
-        return new WorkReportDTO(code, workReportTypeCode, date, resourceNif,
+        return new WorkReportDTO(code, workReportTypeCode, date, resourceCode,
                 orderElementCode, labelDTOs, descriptionValuesDTOs,
                 workReportLineDTOs);
 
@@ -278,8 +270,8 @@ public final class WorkReportConverter {
                 .getDate());
 
         String resource = null;
-        if((line.getResource() != null) && (line.getResource() instanceof Worker)){
-            resource = ((Worker)line.getResource()).getNif();
+        if (line.getResource() != null) {
+            resource = line.getResource().getCode();
         }
 
         String orderElement = bindingStrategy.getOrderElementCodesBound(line);
@@ -425,11 +417,11 @@ public final class WorkReportConverter {
         workReport.setDate(date);
 
         /* Step 4.2: Update the resource. */
-        String resourceNif = workReportDTO.resource;
-        if ((resourceNif != null) && (!resourceNif.isEmpty())) {
+        String resourceCode = workReportDTO.resource;
+        if ((resourceCode != null) && (!resourceCode.isEmpty())) {
             try {
-                Resource resource = Registry.getWorkerDAO().findUniqueByNif(
-                        resourceNif);
+                Resource resource = Registry.getResourceDAO().findByCode(
+                        resourceCode);
                 workReport.setResource(resource);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
@@ -490,10 +482,10 @@ public final class WorkReportConverter {
         workReportLine.setDate(date);
 
         /* Step 3.2: Update the resource. */
-        String resourceNif = workReportLineDTO.resource;
+        String resourceCode = workReportLineDTO.resource;
         try {
-            Resource resource = Registry.getWorkerDAO().findUniqueByNif(
-                    resourceNif);
+            Resource resource = Registry.getResourceDAO().findByCode(
+                    resourceCode);
             workReportLine.setResource(resource);
         } catch (InstanceNotFoundException e) {
             throw new ValidationException("There is no resource with this ID");
