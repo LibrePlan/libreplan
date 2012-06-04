@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotEmpty;
@@ -34,6 +35,7 @@ import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
 
 /**
@@ -196,6 +198,24 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
     @Override
     public String getHumanId() {
         return getCode() + (description != null ? description : "");
+    }
+
+    public ExpenseSheetLine getExpenseSheetLineByCode(String code)
+            throws InstanceNotFoundException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new InstanceNotFoundException(code,
+                    ExpenseSheetLine.class.getName());
+        }
+
+        for (ExpenseSheetLine l : this.expenseSheetLines) {
+            if (l.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return l;
+            }
+        }
+
+        throw new InstanceNotFoundException(code,
+                ExpenseSheetLine.class.getName());
     }
 
 }
