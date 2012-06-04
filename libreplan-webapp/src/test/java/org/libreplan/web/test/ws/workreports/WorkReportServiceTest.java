@@ -157,6 +157,7 @@ public class WorkReportServiceTest {
     @Rollback(false)
     public void givenWorkerStored() {
         Worker worker = Worker.create("Firstname", "Surname", resourceCode);
+        worker.setCode(resourceCode);
         workerDAO.save(worker);
         workerDAO.flush();
         sessionFactory.getCurrentSession().evict(worker);
