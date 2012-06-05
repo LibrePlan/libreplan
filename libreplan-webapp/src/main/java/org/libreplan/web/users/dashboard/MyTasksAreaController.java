@@ -24,6 +24,9 @@ import static org.libreplan.web.I18nHelper._;
 import java.text.MessageFormat;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -32,7 +35,10 @@ import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
@@ -45,6 +51,9 @@ import org.zkoss.zul.RowRenderer;
 public class MyTasksAreaController extends GenericForwardComposer {
 
     private IMyTasksAreaModel myTasksAreaModel;
+
+    @Resource
+    private IMonthlyTimesheetController monthlyTimesheetController;
 
     private RowRenderer tasksRenderer = new RowRenderer() {
 
@@ -65,6 +74,8 @@ public class MyTasksAreaController extends GenericForwardComposer {
             Util.appendLabel(row, getProgress(orderElement));
 
             Util.appendLabel(row, getEffort(orderElement));
+
+            appendTimeTrackingButton(row, task);
         }
 
         private String getEffort(OrderElement orderElement) {
@@ -94,6 +105,60 @@ public class MyTasksAreaController extends GenericForwardComposer {
             }
             return advanceAssignment
                     .getLastAdvanceMeasurement();
+        }
+
+        private void appendTimeTrackingButton(Row row, final Task task) {
+            Button button = Util.createEditButton(new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    monthlyTimesheetController
+                            .goToCreateOrEditForm(getMonthlyTimesheetDateForTask(task));
+                }
+
+                private LocalDate getMonthlyTimesheetDateForTask(Task task) {
+                    LocalDate start = task.getStartAsLocalDate();
+                    LocalDate end = task.getEndAsLocalDate();
+
+                    LocalDate currentDate = new LocalDate();
+                    LocalDate min = currentDate.dayOfMonth().withMinimumValue();
+                    LocalDate max = currentDate.dayOfMonth().withMaximumValue();
+
+                    if (dateBetween(start, min, max)) {
+                        return start;
+                    }
+
+                    if (dateBetween(end, min, max)) {
+                        return end;
+                    }
+
+                    if (dateBetween(currentDate, start, end)) {
+                        return currentDate;
+                    }
+
+                    if (end.compareTo(min) < 0) {
+                        return end;
+                    }
+
+                    if (start.compareTo(max) > 0) {
+                        return start;
+                    }
+
+                    return currentDate;
+                }
+
+                private boolean dateBetween(LocalDate date, LocalDate start,
+                        LocalDate end) {
+                    if ((date.compareTo(start) >= 0)
+                            && (date.compareTo(end) <= 0)) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+
+            button.setTooltiptext(_("Track time"));
+
+            row.appendChild(button);
         }
 
     };

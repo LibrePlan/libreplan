@@ -38,6 +38,7 @@
                 sort="auto(orderElement.advancePercentage)" />
             <column label="${i18n:_('Work done')}"
                 sort="auto(orderElement.sumChargedEffort.totalChargedEffort)" />
+            <column label="${i18n:_('Operations')}" />
         </columns>
     </grid>
 </groupbox>
