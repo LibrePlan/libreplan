@@ -30,6 +30,8 @@
     <window apply="org.libreplan.web.users.dashboard.MonthlyTimesheetController"
         self="@{define(content)}" title="${i18n:_('Monthly timesheet')}">
 
+        <div id="messagesContainer" />
+
         <div visible="@{controller.notCurrentUser}" class="footer-messages-area">
             <label value="${i18n:_('Warning: Editing from work reports page')}" />
         </div>

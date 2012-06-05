@@ -31,6 +31,9 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.Level;
+import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
@@ -79,6 +82,10 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     private Button previousMonth;
 
     private Button nextMonth;
+
+    private Component messagesContainer;
+
+    private IMessagesForUser messagesForUser;
 
     @Resource
     private IMonthlyTimesheetController monthlyTimesheetController;
@@ -416,6 +423,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         comp.setAttribute("controller", this);
 
         setBreadcrumbs(comp);
+        messagesForUser = new MessagesForUser(messagesContainer);
 
         URLHandlerRegistry.getRedirectorFor(IMonthlyTimesheetController.class)
                 .register(this, page);
@@ -521,6 +529,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             goToCreateOrEditFormForResource(monthlyTimesheetModel.getDate(),
                     monthlyTimesheetModel.getWorker());
         }
+        messagesForUser.showMessage(Level.INFO, _("Monthly timesheet saved"));
         Util.reloadBindings(timesheet);
     }
 
