@@ -36,6 +36,6 @@ public interface IMonthlyTimesheetController {
     void goToCreateOrEditForm(LocalDate date);
 
     @EntryPoint({ "date", "resource" })
-    void goToCreateOrEditForm(LocalDate date, Resource resource);
+    void goToCreateOrEditFormForResource(LocalDate date, Resource resource);
 
 }

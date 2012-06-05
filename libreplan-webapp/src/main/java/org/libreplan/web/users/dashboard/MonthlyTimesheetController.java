@@ -441,7 +441,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     }
 
     @Override
-    public void goToCreateOrEditForm(LocalDate date,
+    public void goToCreateOrEditFormForResource(LocalDate date,
             org.libreplan.business.resources.entities.Resource resource) {
         monthlyTimesheetModel.initCreateOrEdit(date, resource);
         initTimesheet(date);
@@ -518,7 +518,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         if (monthlyTimesheetModel.isCurrentUser()) {
             goToCreateOrEditForm(monthlyTimesheetModel.getDate());
         } else {
-            goToCreateOrEditForm(monthlyTimesheetModel.getDate(),
+            goToCreateOrEditFormForResource(monthlyTimesheetModel.getDate(),
                     monthlyTimesheetModel.getWorker());
         }
         Util.reloadBindings(timesheet);
