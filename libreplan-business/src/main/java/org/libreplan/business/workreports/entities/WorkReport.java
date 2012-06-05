@@ -31,6 +31,8 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDate.Property;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -39,6 +41,7 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
@@ -463,6 +466,65 @@ public class WorkReport extends IntegrationEntity implements
             result = result.plus(line.getEffort());
         }
         return result;
+    }
+
+    @AssertTrue(message = "only one work report line per day is allowed in monthly timesheets")
+    public boolean checkConstraintOnlyOneWorkReportLinePerDayInMonthlyTimesheet() {
+        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+            return true;
+        }
+
+        Set<LocalDate> days = new HashSet<LocalDate>();
+        for (WorkReportLine line : workReportLines) {
+            LocalDate date = LocalDate.fromDateFields(line.getDate());
+            if (days.contains(date)) {
+                return false;
+            }
+            days.add(date);
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "all work report lines have to be in the same month in monthly timesheets")
+    public boolean checkConstraintAllWorkReportLinesInTheSameMonthInMonthlyTimesheet() {
+        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+            return true;
+        }
+
+        if (workReportLines.isEmpty()) {
+            return true;
+        }
+
+        Property dayOfMonth = LocalDate.fromDateFields(
+                workReportLines.iterator().next().getDate()).dayOfMonth();
+        LocalDate min = dayOfMonth.withMinimumValue();
+        LocalDate max = dayOfMonth.withMaximumValue();
+
+        for (WorkReportLine line : workReportLines) {
+            LocalDate date = LocalDate.fromDateFields(line.getDate());
+            if ((date.compareTo(min) < 0) || (date.compareTo(max) > 0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "resource has to be bound to a user in monthly timesheets")
+    public boolean checkConstraintResourceIsBoundInMonthlyTimesheet() {
+        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+            return true;
+        }
+
+        if (resource != null) {
+            try {
+                Worker worker = Registry.getWorkerDAO().find(resource.getId());
+                return worker.getUser() != null;
+            } catch (InstanceNotFoundException e) {
+                // Do nothing
+            }
+        }
+
+        return false;
     }
 
 }
