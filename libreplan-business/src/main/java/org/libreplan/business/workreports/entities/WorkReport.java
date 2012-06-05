@@ -23,7 +23,9 @@ package org.libreplan.business.workreports.entities;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -468,19 +470,24 @@ public class WorkReport extends IntegrationEntity implements
         return result;
     }
 
-    @AssertTrue(message = "only one work report line per day is allowed in monthly timesheets")
-    public boolean checkConstraintOnlyOneWorkReportLinePerDayInMonthlyTimesheet() {
+    @AssertTrue(message = "only one work report line per day and task is allowed in monthly timesheets")
+    public boolean checkConstraintOnlyOneWorkReportLinePerDayAndOrderElementInMonthlyTimesheet() {
         if (!getWorkReportType().isMonthlyTimesheetsType()) {
             return true;
         }
 
-        Set<LocalDate> days = new HashSet<LocalDate>();
+        Map<OrderElement, Set<LocalDate>> map = new HashMap<OrderElement, Set<LocalDate>>();
         for (WorkReportLine line : workReportLines) {
+            OrderElement orderElement = line.getOrderElement();
+            if (map.get(orderElement) == null) {
+                map.put(orderElement, new HashSet<LocalDate>());
+            }
+
             LocalDate date = LocalDate.fromDateFields(line.getDate());
-            if (days.contains(date)) {
+            if (map.get(orderElement).contains(date)) {
                 return false;
             }
-            days.add(date);
+            map.get(orderElement).add(date);
         }
         return true;
     }
