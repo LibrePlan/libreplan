@@ -52,6 +52,7 @@ import org.libreplan.ws.workreports.api.OneOrderElementPerWorkReportLine;
 import org.libreplan.ws.workreports.api.WorkReportDTO;
 import org.libreplan.ws.workreports.api.WorkReportLineDTO;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.lang.Strings;
 
 /**
  * Converter from/to work report related entities to/from DTOs.
@@ -103,7 +104,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReport.setResource(null);
                 throw new ValidationException(
-                        "There is no resource with this ID");
+                        "There is no resource with this code");
             }
         }
 
@@ -167,7 +168,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReportLine.setResource(null);
                 throw new ValidationException(
-                        "There is no resource with this ID");
+                        "There is no resource with this code");
             }
         }
 
@@ -418,14 +419,14 @@ public final class WorkReportConverter {
 
         /* Step 4.2: Update the resource. */
         String resourceCode = workReportDTO.resource;
-        if ((resourceCode != null) && (!resourceCode.isEmpty())) {
+        if (!Strings.isBlank(resourceCode)) {
             try {
                 Resource resource = Registry.getResourceDAO().findByCode(
                         resourceCode);
                 workReport.setResource(resource);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        "There is no resource with this ID");
+                        "There is no resource with this code");
             }
         }
 
@@ -483,12 +484,15 @@ public final class WorkReportConverter {
 
         /* Step 3.2: Update the resource. */
         String resourceCode = workReportLineDTO.resource;
-        try {
-            Resource resource = Registry.getResourceDAO().findByCode(
-                    resourceCode);
-            workReportLine.setResource(resource);
-        } catch (InstanceNotFoundException e) {
-            throw new ValidationException("There is no resource with this ID");
+        if (!Strings.isBlank(resourceCode)) {
+            try {
+                Resource resource = Registry.getResourceDAO().findByCode(
+                        resourceCode);
+                workReportLine.setResource(resource);
+            } catch (InstanceNotFoundException e) {
+                throw new ValidationException(
+                        "There is no resource with this code");
+            }
         }
 
         /* Step 3.3: Update the order element. */
