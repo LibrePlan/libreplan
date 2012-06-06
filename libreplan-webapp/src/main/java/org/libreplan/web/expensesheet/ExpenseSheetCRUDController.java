@@ -74,12 +74,6 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
     private static final String ITEM = "item";
 
     /*
-     * components listWindow
-     */
-
-    private Grid listing;
-
-    /*
      * components editWindow
      */
 
