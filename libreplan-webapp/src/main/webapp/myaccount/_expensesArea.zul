@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
  -->
 
-<groupbox>
+<groupbox apply="org.libreplan.web.users.dashboard.ExpensesAreaController">
     <caption label="${i18n:_('Expenses')}" />
 
     <grid mold="paging" pageSize="10">
@@ -32,6 +32,7 @@
         </columns>
     </grid>
 
-    <button label="${i18n:_('New expense sheet')}" />
+    <button label="${i18n:_('New expense sheet')}"
+        onClick="controller.newExpenseSheet();" />
 
 </groupbox>

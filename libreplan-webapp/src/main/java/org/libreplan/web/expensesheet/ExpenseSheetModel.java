@@ -44,6 +44,9 @@ import org.libreplan.business.orders.daos.ISumExpensesDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.web.UserUtil;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.libreplan.web.resources.worker.WorkerModel;
@@ -89,6 +92,8 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     private Order selectedProject;
 
     private Set<ExpenseSheetLine> deletedExpenseSheetLinesSet = new HashSet<ExpenseSheetLine>();
+
+    private Resource resource;
 
     public void setExpenseSheet(ExpenseSheet expenseSheet) {
         this.expenseSheet = expenseSheet;
@@ -142,7 +147,7 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
 
     @Override
     @Transactional(readOnly = true)
-    public void initCreate() {
+    public void initCreate(boolean personal) {
         this.setSelectedProject(null);
         resetExpenseSheetLineDTO();
         this.expenseSheet = ExpenseSheet.create();
@@ -155,6 +160,28 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
             setDefaultCode();
         }
         deletedExpenseSheetLinesSet = new HashSet<ExpenseSheetLine>();
+
+        expenseSheet.setPersonal(personal);
+        resource = initResource();
+    }
+
+    private Resource initResource() {
+        if (expenseSheet.isNotPersonal()) {
+            return null;
+        }
+
+        SortedSet<ExpenseSheetLine> expenseSheetLines = expenseSheet
+                .getExpenseSheetLines();
+        if (!expenseSheetLines.isEmpty()) {
+            return expenseSheetLines.iterator().next().getResource();
+        }
+
+        User user = UserUtil.getUserFromSession();
+        if (user.isBound()) {
+            return user.getWorker();
+        }
+
+        return null;
     }
 
     @Override
@@ -166,6 +193,7 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
         this.expenseSheet = getFromDB(expenseSheet);
         initOldCodes();
         deletedExpenseSheetLinesSet = new HashSet<ExpenseSheetLine>();
+        resource = initResource();
     }
 
     @Transactional(readOnly = true)
@@ -252,9 +280,13 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
 
     @Override
     public void addExpenseSheetLine() {
-        if (getExpenseSheet() != null) {
-            this.getExpenseSheetLineDTO().setExpenseSheet(getExpenseSheet());
-            getExpenseSheet().add(this.getExpenseSheetLineDTO());
+        if (expenseSheet != null) {
+            ExpenseSheetLine line = this.getExpenseSheetLineDTO();
+            line.setExpenseSheet(expenseSheet);
+            if (expenseSheet.isPersonal()) {
+                line.setResource(resource);
+            }
+            expenseSheet.add(line);
         }
         this.resetExpenseSheetLineDTO();
     }
@@ -314,6 +346,11 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
     @Override
     public Order getSelectedProject() {
         return selectedProject;
+    }
+
+    @Override
+    public Resource getResource() {
+        return resource;
     }
 
 }

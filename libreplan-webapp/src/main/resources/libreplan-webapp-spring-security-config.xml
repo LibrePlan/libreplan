@@ -54,7 +54,8 @@
             access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/workreports/workReportTypes.zul"
             access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/expensesheet/**" access="ROLE_ADMINISTRATION,ROLE_EXPENSE_TRACKING"/>
+        <!-- FIXME review when role for bound users is set -->
+        <!-- intercept-url pattern="/expensesheet/**" access="ROLE_ADMINISTRATION,ROLE_EXPENSE_TRACKING"/ -->
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
 
         <!-- These have been added because of auto-config is false now in order

@@ -40,6 +40,7 @@ import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
+import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -63,7 +64,8 @@ import org.zkoss.zul.Textbox;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet> {
+public class ExpenseSheetCRUDController extends
+        BaseCRUDController<ExpenseSheet> implements IExpenseSheetCRUDController {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(ExpenseSheetCRUDController.class);
@@ -88,6 +90,15 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
     private Textbox tbConcept;
 
     private ExpenseSheetLineRenderer expenseSheetLineRenderer = new ExpenseSheetLineRenderer();
+
+    private IURLHandlerRegistry URLHandlerRegistry;
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        URLHandlerRegistry.getRedirectorFor(IExpenseSheetCRUDController.class)
+                .register(this, page);
+    }
 
     @Override
     public void save() throws ValidationException {
@@ -525,8 +536,7 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
 
     @Override
     protected void initCreate() {
-        expenseSheetModel.initCreate();
-        loadComponentsEditWindow();
+        initCreate(false);
     }
 
     @Override
@@ -561,6 +571,23 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
 
     public String getMoneyFormat() {
         return Util.getMoneyFormat();
+    }
+
+    @Override
+    public void goToCreatePersonalExpenseSheet() {
+        state = CRUDControllerState.CREATE;
+        initCreate(true);
+        showEditWindow();
+    }
+
+    private void initCreate(boolean personal) {
+        expenseSheetModel.initCreate(personal);
+        loadComponentsEditWindow();
+    }
+
+    public String getResource() {
+        Resource resource = expenseSheetModel.getResource();
+        return resource == null ? "" : resource.getShortDescription();
     }
 
 }

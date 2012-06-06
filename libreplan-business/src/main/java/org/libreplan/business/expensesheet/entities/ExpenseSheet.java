@@ -228,4 +228,8 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
         this.personal = personal;
     }
 
+    public boolean isNotPersonal() {
+        return !personal;
+    }
+
 }
