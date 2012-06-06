@@ -71,8 +71,6 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
     @Autowired
     private IExpenseSheetModel expenseSheetModel;
 
-    private static final String ITEM = "item";
-
     /*
      * components editWindow
      */
@@ -198,7 +196,7 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
                 return _("expense line of the ") + task.getName() + " - " + date;
             }
         }
-        return ITEM;
+        return _("item");
     }
 
     private void reloadExpenseSheetLines() {
