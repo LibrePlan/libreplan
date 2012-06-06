@@ -98,7 +98,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private boolean otherReports;
 
-    private Map<OrderElement, EffortDuration> otherEffortPerOrderElement;
+    private Map<Long, EffortDuration> otherEffortPerOrderElement;
 
     private Map<LocalDate, EffortDuration> otherEffortPerDay;
 
@@ -269,7 +269,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
         otherReports = !workReportLines.isEmpty();
 
-        otherEffortPerOrderElement = new HashMap<OrderElement, EffortDuration>();
+        otherEffortPerOrderElement = new HashMap<Long, EffortDuration>();
         otherEffortPerDay = new HashMap<LocalDate, EffortDuration>();
 
         for (WorkReportLine line : workReportLines) {
@@ -277,8 +277,9 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             EffortDuration effort = line.getEffort();
             LocalDate date = LocalDate.fromDateFields(line.getDate());
 
-            initMapKey(otherEffortPerOrderElement, orderElement);
-            increaseMap(otherEffortPerOrderElement, orderElement, effort);
+            initMapKey(otherEffortPerOrderElement, orderElement.getId());
+            increaseMap(otherEffortPerOrderElement, orderElement.getId(),
+                    effort);
 
             initMapKey(otherEffortPerDay, date);
             increaseMap(otherEffortPerDay, date, effort);
@@ -290,15 +291,14 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         }
     }
 
-    private void initMapKey(Map<OrderElement, EffortDuration> map,
-            OrderElement key) {
+    private void initMapKey(Map<Long, EffortDuration> map, Long key) {
         if (map.get(key) == null) {
             map.put(key, EffortDuration.zero());
         }
     }
 
-    private void increaseMap(Map<OrderElement, EffortDuration> map,
-            OrderElement key, EffortDuration valueToIncrease) {
+    private void increaseMap(Map<Long, EffortDuration> map, Long key,
+            EffortDuration valueToIncrease) {
         map.put(key, map.get(key).plus(valueToIncrease));
     }
 
@@ -529,7 +529,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     @Override
     public EffortDuration getOtherEffortDuration(OrderElement orderElement) {
-        EffortDuration effort = otherEffortPerOrderElement.get(orderElement);
+        EffortDuration effort = otherEffortPerOrderElement.get(orderElement
+                .getId());
         return effort == null ? EffortDuration.zero() : effort;
     }
 
