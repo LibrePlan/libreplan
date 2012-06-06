@@ -129,16 +129,7 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
         expenseSheetModel.generateExpenseSheetLineCodesIfIsNecessary();
     }
 
-    public void cancel() {
-        goToList();
-    }
-
-    private void goToEditWindow() {
-        showEditWindow();
-        loadComponentsEditWindow();
-    }
-
-     private void loadComponentsEditWindow() {
+    private void loadComponentsEditWindow() {
         tbConcept = (Textbox) editWindow.getFellowIfAny("tbConcept");
         dateboxExpenseDate = (Datebox) editWindow.getFellowIfAny("dateboxExpenseDate");
         dboxValue = (Decimalbox) editWindow.getFellowIfAny("dboxValue");
@@ -592,13 +583,13 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
     @Override
     protected void initCreate() {
         expenseSheetModel.initCreate();
-        goToEditWindow();
+        loadComponentsEditWindow();
     }
 
     @Override
     protected void initEdit(ExpenseSheet expenseSheet) {
         expenseSheetModel.prepareToEdit(expenseSheet);
-        goToEditWindow();
+        loadComponentsEditWindow();
     }
 
     @Override
