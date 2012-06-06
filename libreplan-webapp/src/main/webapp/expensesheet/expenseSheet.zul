@@ -141,7 +141,7 @@
                     <label value="${i18n:_('Value')}" />
                     <decimalbox id="dboxValue"
                         value="@{controller.expenseSheetLineDTO.value}"
-                        scale="2"
+                        format="@{controller.moneyFormat}"
                         constraint="@{controller.checkConstraintExpenseValue}"/>
 
 					<separator bar="false" spacing="10px" orient="vertical"/>

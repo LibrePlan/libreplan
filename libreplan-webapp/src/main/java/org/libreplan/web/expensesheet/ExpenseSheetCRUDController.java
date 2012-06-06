@@ -561,4 +561,8 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
         return Util.getCurrencySymbol();
     }
 
+    public String getMoneyFormat() {
+        return Util.getMoneyFormat();
+    }
+
 }
