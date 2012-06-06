@@ -31,7 +31,8 @@
             <column label="${i18n:_('Project')}"
                 sort="auto(orderElement.order.name)" />
             <column label="${i18n:_('Start date')}"
-                sort="auto(startDate)" />
+                sort="auto(startDate)"
+                sortDirection="descending" />
             <column label="${i18n:_('End date')}"
                 sort="auto(endDate)" />
             <column label="${i18n:_('Progress')}"

@@ -20,6 +20,8 @@
 package org.libreplan.web.users.dashboard;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
@@ -70,7 +72,21 @@ public class MyTasksAreaModel implements IMyTasksAreaModel {
             forceLoad(task);
             tasks.add(task);
         }
+
+        sortTasksDescendingByStartDate(tasks);
+
         return tasks;
+    }
+
+    private void sortTasksDescendingByStartDate(List<Task> tasks) {
+        Collections.sort(tasks, new Comparator<Task>() {
+
+            @Override
+            public int compare(Task o1, Task o2) {
+                return o2.getIntraDayStartDate().compareTo(
+                        o1.getIntraDayStartDate());
+            }
+        });
     }
 
     private void forceLoad(Task task) {
