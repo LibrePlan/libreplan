@@ -43,23 +43,16 @@
                 model="@{controller.expenseSheets}" sclass="clickable-rows">
                 <columns sizable="true">
                     <column id="columnFirstExpense" label="${i18n:_('First expense')}"
-                        sort="auto(firstExpense, lastExpense)"
-                        sortDirection="ascending"
-                        width="200px"/>
+                        sort="auto(firstExpense, lastExpense)" />
                     <column id="columnLastExpense" label="${i18n:_('Last expense')}"
-                        sort="auto(lastExpense, firstExpense)"
-                        sortDirection="ascending"
-                        width="200px"/>
+                        sort="auto(lastExpense, firstExpense)" />
                     <column label="${i18n:_('Total')}"
-                        sort="auto(total)"
-                        sortDirection="ascending"
-                        width="200px"/>
+                        sort="auto(total)" />
                     <column label="${i18n:_('Code')}"
-                        sort="auto(code)"
-                        sortDirection="ascending"
-                        width="260px"/>
-                    <column label="${i18n:_('Description')}" width="286px"/>
-                    <column label="${i18n:_('Actions')}" width="80px" align="center"/>
+                        sort="auto(code)" />
+                    <column label="${i18n:_('Description')}"
+                        sort="auto(description)" />
+                    <column label="${i18n:_('Operations')}" />
                 </columns>
                 <rows>
                     <row self="@{each='expensesheet'}" value="@{expensesheet}" onClick="controller.goToEditForm(self.value);">
@@ -172,14 +165,14 @@
                 <grid id="gridExpenseLines" mold="paging" pageSize="10"
                     model="@{controller.expenseSheetLines}" width="100%"
                     rowRenderer="@{controller.expenseSheetLineRenderer}">
-                    <columns>
-                        <column label="${i18n:_('Task')}" width="275px"/>
-                        <column label="${i18n:_('Value')}" width="100px"/>
-                        <column label="${i18n:_('Concept')}" width="172px"/>
-                        <column label="${i18n:_('Date')}" width="118px"/>
-                        <column label="${i18n:_('Resource')}" width="275px"/>
-                        <column label="${i18n:_('Code')}" width="182px"/>
-                        <column label="${i18n:_('Operation')}" align="center"/>
+                    <columns sizable="true">
+                        <column label="${i18n:_('Task')}" width="275px" />
+                        <column label="${i18n:_('Value')}" />
+                        <column label="${i18n:_('Concept')}" />
+                        <column label="${i18n:_('Date')}" />
+                        <column label="${i18n:_('Resource')}" width="275px" />
+                        <column label="${i18n:_('Code')}" />
+                        <column label="${i18n:_('Operations')}" />
                     </columns>
                 </grid>
             </groupbox>
