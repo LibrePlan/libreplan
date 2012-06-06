@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.UserUtil;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
@@ -357,10 +358,16 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Task Scheduling Status In Project"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
             subItem(_("Materials Needs At Date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
 
-        topItem(_("My account"), "/myaccount/userDashboard.zul", "",
-                subItem(_("My dashboard"), "/myaccount/userDashboard.zul", ""),
-                subItem(_("Settings"), "/myaccount/settings.zul", ""),
-                subItem(_("Change Password"), "/myaccount/changePassword.zul", ""));
+        if (UserUtil.getUserFromSession().isBound()) {
+            topItem(_("My account"), "/myaccount/userDashboard.zul", "",
+                    subItem(_("My dashboard"), "/myaccount/userDashboard.zul", ""),
+                    subItem(_("Settings"), "/myaccount/settings.zul", ""),
+                    subItem(_("Change Password"), "/myaccount/changePassword.zul", ""));
+        } else {
+            topItem(_("My account"), "/myaccount/settings.zul", "",
+                    subItem(_("Settings"), "/myaccount/settings.zul", ""),
+                    subItem(_("Change Password"), "/myaccount/changePassword.zul", ""));
+        }
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
