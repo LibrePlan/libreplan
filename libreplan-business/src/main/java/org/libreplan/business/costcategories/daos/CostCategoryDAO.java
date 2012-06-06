@@ -102,8 +102,7 @@ public class CostCategoryDAO extends IntegrationEntityDAO<CostCategory>
 
         for (ResourcesCostCategoryAssignment each : resource
                 .getResourcesCostCategoryAssignments()) {
-            if ((date.isAfter(each.getInitDate()))
-                    && (!date.isBefore(each.getInitDate()))) {
+            if (each.isActiveAtDate(date)) {
                 for (HourCost hourCost : each.getCostCategory().getHourCosts()) {
                     if (hourCost.isActiveAtDate(date)
                             && hourCost.getType().getCode().equals(type)) {
