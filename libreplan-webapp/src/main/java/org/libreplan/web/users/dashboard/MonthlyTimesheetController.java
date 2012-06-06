@@ -87,6 +87,18 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private IMessagesForUser messagesForUser;
 
+    private Label summaryTotalMonthlyTimesheet;
+
+    private Label summaryTotalOther;
+
+    private Label summaryTotal;
+
+    private Label summaryTotalCapacity;
+
+    private Label summaryTotalExtraPerDay;
+
+    private Label summaryTotalExtra;
+
     @Resource
     private IMonthlyTimesheetController monthlyTimesheetController;
 
@@ -117,6 +129,9 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 break;
             case EXTRA:
                 renderExtraRow(row);
+
+                // This is the last row so we can load the info in the summary
+                updateSummary();
                 break;
             default:
                 throw new IllegalStateException(
@@ -181,6 +196,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                         updateExtraRow(date);
                         updateTotalColumn();
                         updateTotalExtraColumn();
+                        updateSummary();
                     }
 
                 });
@@ -406,46 +422,6 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             textbox.setValue(effortDurationToString(totalExtra));
         }
 
-        private String getTotalRowTextboxId(final OrderElement orderElement) {
-            return "textbox-total-row" + orderElement.getId();
-        }
-
-        private String getTotalColumnTextboxId(LocalDate date) {
-            return "textbox-total-column-" + date;
-        }
-
-        private String getTotalTextboxId() {
-            return "textbox-total";
-        }
-
-        private String getOtherRowTextboxId(final OrderElement orderElement) {
-            return "textbox-other-row" + orderElement.getId();
-        }
-
-        private String getOtherColumnTextboxId(LocalDate date) {
-            return "textbox-other-column-" + date;
-        }
-
-        private String getTotalOtherTextboxId() {
-            return "textbox-other-capacity";
-        }
-
-        private String getCapcityColumnTextboxId(LocalDate date) {
-            return "textbox-capacity-column-" + date;
-        }
-
-        private String getTotalCapacityTextboxId() {
-            return "textbox-total-capacity";
-        }
-
-        private String getExtraColumnTextboxId(LocalDate date) {
-            return "textbox-extra-column-" + date;
-        }
-
-        private String getTotalExtraTextboxId() {
-            return "textbox-total-extra";
-        }
-
         private Textbox getDisabledTextbox(String id) {
             Textbox textbox = new Textbox();
             textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
@@ -476,22 +452,6 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private void setBackgroundNonCapacityCell(Cell cell) {
             cell.setStyle("background-color: #FFEEEE");
-        }
-
-        private String effortDurationToString(EffortDuration effort) {
-            if (effort == null || effort.isZero()) {
-                return "";
-            }
-
-            return effort.toFormattedString();
-        }
-
-        private EffortDuration effortDurationFromString(String effort) {
-            if (StringUtils.isBlank(effort)) {
-                return EffortDuration.zero();
-            }
-
-            return EffortDuration.parseFromFormattedString(effort);
         }
 
     };
@@ -683,6 +643,98 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     public boolean isNotCurrentUser() {
         return !monthlyTimesheetModel.isCurrentUser();
+    }
+
+    private static String getTotalRowTextboxId(final OrderElement orderElement) {
+        return "textbox-total-row" + orderElement.getId();
+    }
+
+    private static String getTotalColumnTextboxId(LocalDate date) {
+        return "textbox-total-column-" + date;
+    }
+
+    private static String getTotalTextboxId() {
+        return "textbox-total";
+    }
+
+    private static String getOtherRowTextboxId(final OrderElement orderElement) {
+        return "textbox-other-row" + orderElement.getId();
+    }
+
+    private static String getOtherColumnTextboxId(LocalDate date) {
+        return "textbox-other-column-" + date;
+    }
+
+    private static String getTotalOtherTextboxId() {
+        return "textbox-other-capacity";
+    }
+
+    private static String getCapcityColumnTextboxId(LocalDate date) {
+        return "textbox-capacity-column-" + date;
+    }
+
+    private static String getTotalCapacityTextboxId() {
+        return "textbox-total-capacity";
+    }
+
+    private static String getExtraColumnTextboxId(LocalDate date) {
+        return "textbox-extra-column-" + date;
+    }
+
+    private static String getTotalExtraTextboxId() {
+        return "textbox-total-extra";
+    }
+
+    private static String effortDurationToString(EffortDuration effort) {
+        if (effort == null || effort.isZero()) {
+            return "";
+        }
+
+        return effort.toFormattedString();
+    }
+
+    private static EffortDuration effortDurationFromString(String effort) {
+        if (StringUtils.isBlank(effort)) {
+            return EffortDuration.zero();
+        }
+
+        return EffortDuration.parseFromFormattedString(effort);
+    }
+
+    public void updateSummary() {
+        EffortDuration total = getEffortDurationFromTextbox(getTotalTextboxId());
+        EffortDuration other = EffortDuration.zero();
+        if (monthlyTimesheetModel.hasOtherReports()) {
+            other = getEffortDurationFromTextbox(getTotalOtherTextboxId());
+        }
+        EffortDuration capacity = getEffortDurationFromTextbox(getTotalCapacityTextboxId());
+        EffortDuration extraPerDay = getEffortDurationFromTextbox(getTotalExtraTextboxId());
+
+        EffortDuration timesheet = total.minus(other);
+        EffortDuration extra = EffortDuration.zero();
+        if (total.compareTo(capacity) > 0) {
+            extra = total.minus(capacity);
+        }
+
+        if (monthlyTimesheetModel.hasOtherReports()) {
+            summaryTotalMonthlyTimesheet
+                    .setValue(timesheet.toFormattedString());
+            summaryTotalOther.setValue(other.toFormattedString());
+        }
+
+        summaryTotal.setValue(total.toFormattedString());
+        summaryTotalCapacity.setValue(capacity.toFormattedString());
+        summaryTotalExtraPerDay.setValue(extraPerDay.toFormattedString());
+        summaryTotalExtra.setValue(extra.toFormattedString());
+    }
+
+    private EffortDuration getEffortDurationFromTextbox(String id) {
+        return effortDurationFromString(((Textbox) timesheet.getFellow(id))
+                .getValue());
+    }
+
+    public boolean hasOtherReports() {
+        return monthlyTimesheetModel.hasOtherReports();
     }
 
 }

@@ -47,25 +47,62 @@
                 disabled="@{controller.lastMonth}" />
         </div>
 
-        <groupbox style="margin-top: 5px" closable="false">
-            <caption label="${i18n:_('Timesheet data')}" />
-            <grid fixedLayout="true">
-                <columns>
-                    <column width="200px" />
-                    <column />
-                </columns>
-                <rows>
-                    <row>
-                        <label value="${i18n:_('Date')}" />
-                        <label value="@{controller.date}" />
-                    </row>
-                    <row>
-                        <label value="${i18n:_('Resource')}" />
-                        <label value="@{controller.resource}" />
-                    </row>
-                </rows>
-            </grid>
-        </groupbox>
+        <hbox>
+            <groupbox style="margin-top: 5px" closable="false">
+                <caption label="${i18n:_('Timesheet data')}" />
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Date')}" />
+                            <label value="@{controller.date}" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Resource')}" />
+                            <label value="@{controller.resource}" />
+                        </row>
+                    </rows>
+                </grid>
+            </groupbox>
+            <groupbox style="margin-top: 5px" closable="false">
+                <caption label="${i18n:_('Timesheet summary')}" />
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row visible="@{controller.hasOtherReports}">
+                            <label value="${i18n:_('Total monthly timesheet')}" />
+                            <label id="summaryTotalMonthlyTimesheet" />
+                        </row>
+                        <row visible="@{controller.hasOtherReports}">
+                            <label value="${i18n:_('Total other')}" />
+                            <label id="summaryTotalOther" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total')}" />
+                            <label id="summaryTotal" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total capacity')}" />
+                            <label id="summaryTotalCapacity" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total extra per day')}" />
+                            <label id="summaryTotalExtraPerDay" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total extra')}" />
+                            <label id="summaryTotalExtra" />
+                        </row>
+                    </rows>
+                </grid>
+            </groupbox>
+        </hbox>
 
         <groupbox style="margin-top: 5px" closable="false">
             <caption label="${i18n:_('Time tracking')}" />
