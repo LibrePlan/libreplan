@@ -176,4 +176,31 @@ public interface IMonthlyTimesheetModel {
      */
     boolean isCurrentUser();
 
+    /**
+     * Returns <code>true</code> if the resource of the current monthly
+     * timesheet has any effort reported in other {@link WorkReport WorkReports}
+     * in the month of the timesheet.
+     */
+    boolean hasOtherReports();
+
+    /**
+     * Returns the {@link EffortDuration} of the specified
+     * <code>orderElement</code> from other {@link WorkReport WorkReports} for
+     * the current resource in the month of the timesheet.<br />
+     */
+    EffortDuration getOtherEffortDuration(OrderElement orderElement);
+
+    /**
+     * Returns the {@link EffortDuration} in the specified <code>date</code>
+     * from other {@link WorkReport WorkReports} for the current resource in the
+     * month of the timesheet.
+     */
+    EffortDuration getOtherEffortDuration(LocalDate date);
+
+    /**
+     * Returns the total {@link EffortDuration} from other {@link WorkReport
+     * WorkReports} for the current resource in the month of the timesheet.
+     */
+    EffortDuration getTotalOtherEffortDuration();
+
 }

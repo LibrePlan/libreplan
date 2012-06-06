@@ -106,6 +106,9 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 renderOrderElementRow(row,
                         monthlyTimesheetRow.getOrderElemement());
                 break;
+            case OTHER:
+                renderOtherRow(row);
+                break;
             case CAPACITY:
                 renderCapacityRow(row);
                 break;
@@ -133,6 +136,10 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             Util.appendLabel(row, orderElement.getName());
 
             appendInputsForDays(row, orderElement);
+
+            if (monthlyTimesheetModel.hasOtherReports()) {
+                appendOtherColumn(row, orderElement);
+            }
 
             appendTotalColumn(row, orderElement);
         }
@@ -196,15 +203,26 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             textbox.setStyle("border-color: red;");
         }
 
+        private void appendOtherColumn(Row row, final OrderElement orderElement) {
+            Textbox other = getDisabledTextbox(getOtherRowTextboxId(orderElement));
+            other.setValue(effortDurationToString(monthlyTimesheetModel.getOtherEffortDuration(orderElement)));
+            row.appendChild(getCenteredCell(other));
+        }
+
         private void appendTotalColumn(Row row, final OrderElement orderElement) {
-            row.appendChild(getDisabledTextbox(getTotalRowTextboxId(orderElement)));
+            row.appendChild(getCenteredCell(getDisabledTextbox(getTotalRowTextboxId(orderElement))));
             updateTotalColumn(orderElement);
         }
 
         private void updateTotalColumn(OrderElement orderElement) {
-            Textbox textbox = (Textbox) timesheet.getFellow(getTotalRowTextboxId(orderElement));
-            textbox.setValue(effortDurationToString(monthlyTimesheetModel
-                    .getEffortDuration(orderElement)));
+            EffortDuration effort = monthlyTimesheetModel
+                    .getEffortDuration(orderElement);
+            effort = effort.plus(monthlyTimesheetModel
+                    .getOtherEffortDuration(orderElement));
+
+            Textbox textbox = (Textbox) timesheet
+                    .getFellow(getTotalRowTextboxId(orderElement));
+            textbox.setValue(effortDurationToString(effort));
         }
 
         private void renderTotalRow(Row row) {
@@ -236,22 +254,63 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void updateTotalRow(LocalDate date) {
+            EffortDuration effort = monthlyTimesheetModel
+                    .getEffortDuration(date);
+            effort = effort.plus(monthlyTimesheetModel
+                    .getOtherEffortDuration(date));
+
             Textbox textbox = (Textbox) timesheet
                     .getFellow(getTotalColumnTextboxId(date));
-            textbox.setValue(effortDurationToString(monthlyTimesheetModel
-                    .getEffortDuration(date)));
+            textbox.setValue(effortDurationToString(effort));
         }
 
         private void appendTotalColumn(Row row) {
-            row.appendChild(getAlignLeftCell(getDisabledTextbox(getTotalTextboxId())));
+            Cell totalCell = getCenteredCell(getDisabledTextbox(getTotalTextboxId()));
+            if (monthlyTimesheetModel.hasOtherReports()) {
+                totalCell.setColspan(2);
+            }
+            row.appendChild(totalCell);
             updateTotalColumn();
         }
 
         private void updateTotalColumn() {
+            EffortDuration effort = monthlyTimesheetModel
+                    .getTotalEffortDuration();
+            effort = effort.plus(monthlyTimesheetModel
+                    .getTotalOtherEffortDuration());
+
             Textbox textbox = (Textbox) timesheet
                     .getFellow(getTotalTextboxId());
-            textbox.setValue(effortDurationToString(monthlyTimesheetModel
-                    .getTotalEffortDuration()));
+            textbox.setValue(effortDurationToString(effort));
+        }
+
+        private void renderOtherRow(Row row) {
+            appendLabelSpaningTwoColumns(row, _("Other"));
+            appendOtherForDaysAndTotal(row);
+        }
+
+        private void appendOtherForDaysAndTotal(Row row) {
+            EffortDuration totalOther = EffortDuration.zero();
+
+            for (LocalDate day = first; day.compareTo(last) <= 0; day = day
+                    .plusDays(1)) {
+                EffortDuration other = monthlyTimesheetModel
+                        .getOtherEffortDuration(day);
+
+                Cell cell = getCenteredCell(getDisabledTextbox(
+                        getOtherColumnTextboxId(day), other));
+                if (monthlyTimesheetModel.getResourceCapacity(day).isZero()) {
+                    setBackgroundNonCapacityCell(cell);
+                }
+                row.appendChild(cell);
+
+                totalOther = totalOther.plus(other);
+            }
+
+            Cell totalOtherCell = getCenteredCell(getDisabledTextbox(
+                    getTotalOtherTextboxId(), totalOther));
+            totalOtherCell.setColspan(2);
+            row.appendChild(totalOtherCell);
         }
 
         private void renderCapacityRow(Row row) {
@@ -277,8 +336,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 totalCapacity = totalCapacity.plus(capacity);
             }
 
-            row.appendChild(getAlignLeftCell(getDisabledTextbox(
-                    getTotalCapacityTextboxId(), totalCapacity)));
+            Cell totalCapacityCell = getCenteredCell(getDisabledTextbox(
+                    getTotalCapacityTextboxId(), totalCapacity));
+            if (monthlyTimesheetModel.hasOtherReports()) {
+                totalCapacityCell.setColspan(2);
+            }
+            row.appendChild(totalCapacityCell);
         }
 
         private void renderExtraRow(Row row) {
@@ -322,7 +385,11 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void appendTotalExtra(Row row) {
-            row.appendChild(getAlignLeftCell(getDisabledTextbox(getTotalExtraTextboxId())));
+            Cell totalExtraCell = getCenteredCell(getDisabledTextbox(getTotalExtraTextboxId()));
+            if (monthlyTimesheetModel.hasOtherReports()) {
+                totalExtraCell.setColspan(2);
+            }
+            row.appendChild(totalExtraCell);
             updateTotalExtraColumn();
         }
 
@@ -349,6 +416,18 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private String getTotalTextboxId() {
             return "textbox-total";
+        }
+
+        private String getOtherRowTextboxId(final OrderElement orderElement) {
+            return "textbox-other-row" + orderElement.getId();
+        }
+
+        private String getOtherColumnTextboxId(LocalDate date) {
+            return "textbox-other-column-" + date;
+        }
+
+        private String getTotalOtherTextboxId() {
+            return "textbox-other-capacity";
         }
 
         private String getCapcityColumnTextboxId(LocalDate date) {
@@ -465,6 +544,9 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     private void createColumns(LocalDate date) {
         createProjectAndTaskColumns();
         createColumnsForDays(date);
+        if (monthlyTimesheetModel.hasOtherReports()) {
+            createOtherColumn();
+        }
         createTotalColumn();
     }
 
@@ -480,9 +562,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                 .plusDays(1)) {
             Column column = new Column(day.getDayOfMonth() + "");
-            column.setAlign("center");
             columns.appendChild(column);
         }
+    }
+
+    private void createOtherColumn() {
+        columns.appendChild(new Column(_("Other")));
     }
 
     private void createTotalColumn() {
@@ -501,6 +586,9 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         List<MonthlyTimesheetRow> result = MonthlyTimesheetRow
                 .wrap(monthlyTimesheetModel
                 .getOrderElements());
+        if (monthlyTimesheetModel.hasOtherReports()) {
+            result.add(MonthlyTimesheetRow.createOtherRow());
+        }
         result.add(MonthlyTimesheetRow.createCapacityRow());
         result.add(MonthlyTimesheetRow.createTotalRow());
         result.add(MonthlyTimesheetRow.createExtraRow());
@@ -606,7 +694,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
  */
 class MonthlyTimesheetRow {
     enum MonthlyTimesheetRowType {
-        ORDER_ELEMENT, CAPACITY, TOTAL, EXTRA
+        ORDER_ELEMENT, OTHER, CAPACITY, TOTAL, EXTRA
     };
 
     private MonthlyTimesheetRowType type;
@@ -619,6 +707,10 @@ class MonthlyTimesheetRow {
         Assert.notNull(orderElemement);
         row.orderElemement = orderElemement;
         return row;
+    }
+
+    public static MonthlyTimesheetRow createOtherRow() {
+        return new MonthlyTimesheetRow(MonthlyTimesheetRowType.OTHER);
     }
 
     public static MonthlyTimesheetRow createCapacityRow() {

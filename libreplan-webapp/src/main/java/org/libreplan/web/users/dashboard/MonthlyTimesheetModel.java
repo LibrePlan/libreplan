@@ -50,6 +50,7 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.PredefinedWorkReportTypes;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -93,6 +94,14 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private Map<OrderElement, Set<LocalDate>> modifiedMap;
 
+    private boolean currentUser;
+
+    private boolean otherReports;
+
+    private Map<OrderElement, EffortDuration> otherEffortPerOrderElement;
+
+    private Map<LocalDate, EffortDuration> otherEffortPerDay;
+
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
@@ -120,7 +129,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Autowired
     private IUserDAO userDAO;
 
-    private boolean currentUser;
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -143,6 +153,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
         initWorkReport();
         initOrderElements();
+
+        initOtherMaps();
 
         modified = false;
         modifiedMap = new HashMap<OrderElement, Set<LocalDate>>();
@@ -246,6 +258,59 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private void forceLoad(OrderElement orderElement) {
         orderElement.getName();
+    }
+
+    private void initOtherMaps() {
+        List<WorkReportLine> workReportLines = workReportLineDAO
+                .findByResourceFilteredByDateNotInWorkReport(
+                getWorker(), firstDay.toDateTimeAtStartOfDay().toDate(),
+                lastDay.toDateTimeAtStartOfDay().toDate(),
+                workReport.isNewObject() ? null : workReport);
+
+        otherReports = !workReportLines.isEmpty();
+
+        otherEffortPerOrderElement = new HashMap<OrderElement, EffortDuration>();
+        otherEffortPerDay = new HashMap<LocalDate, EffortDuration>();
+
+        for (WorkReportLine line : workReportLines) {
+            OrderElement orderElement = line.getOrderElement();
+            EffortDuration effort = line.getEffort();
+            LocalDate date = LocalDate.fromDateFields(line.getDate());
+
+            initMapKey(otherEffortPerOrderElement, orderElement);
+            increaseMap(otherEffortPerOrderElement, orderElement, effort);
+
+            initMapKey(otherEffortPerDay, date);
+            increaseMap(otherEffortPerDay, date, effort);
+
+            if (isNotInOrderElements(orderElement)) {
+                forceLoad(orderElement);
+                orderElements.add(orderElement);
+            }
+        }
+    }
+
+    private void initMapKey(Map<OrderElement, EffortDuration> map,
+            OrderElement key) {
+        if (map.get(key) == null) {
+            map.put(key, EffortDuration.zero());
+        }
+    }
+
+    private void increaseMap(Map<OrderElement, EffortDuration> map,
+            OrderElement key, EffortDuration valueToIncrease) {
+        map.put(key, map.get(key).plus(valueToIncrease));
+    }
+
+    private void initMapKey(Map<LocalDate, EffortDuration> map, LocalDate key) {
+        if (map.get(key) == null) {
+            map.put(key, EffortDuration.zero());
+        }
+    }
+
+    private void increaseMap(Map<LocalDate, EffortDuration> map, LocalDate key,
+            EffortDuration valueToIncrease) {
+        map.put(key, map.get(key).plus(valueToIncrease));
     }
 
     @Override
@@ -455,6 +520,32 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     @Override
     public boolean isCurrentUser() {
         return currentUser;
+    }
+
+    @Override
+    public boolean hasOtherReports() {
+        return otherReports;
+    }
+
+    @Override
+    public EffortDuration getOtherEffortDuration(OrderElement orderElement) {
+        EffortDuration effort = otherEffortPerOrderElement.get(orderElement);
+        return effort == null ? EffortDuration.zero() : effort;
+    }
+
+    @Override
+    public EffortDuration getOtherEffortDuration(LocalDate date) {
+        EffortDuration effort = otherEffortPerDay.get(date);
+        return effort == null ? EffortDuration.zero() : effort;
+    }
+
+    @Override
+    public EffortDuration getTotalOtherEffortDuration() {
+        EffortDuration result = EffortDuration.zero();
+        for (EffortDuration effort : otherEffortPerOrderElement.values()) {
+            result = result.plus(effort);
+        }
+        return result;
     }
 
 }
