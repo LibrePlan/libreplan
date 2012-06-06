@@ -21,7 +21,7 @@
 <groupbox apply="org.libreplan.web.users.dashboard.MyTasksAreaController">
     <caption label="${i18n:_('My tasks')}" />
 
-    <grid id="listing" model="@{controller.tasks}" mold="paging"
+    <grid model="@{controller.tasks}" mold="paging"
         pageSize="10" rowRenderer="@{controller.tasksRenderer}">
         <columns sizable="true">
             <column label="${i18n:_('Name')}"

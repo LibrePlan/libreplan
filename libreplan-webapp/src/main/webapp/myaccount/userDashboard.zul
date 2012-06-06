@@ -28,6 +28,7 @@
 
 <?component name="my-tasks-area" inline="true" macroURI="_myTasksArea.zul"?>
 <?component name="monthly-timesheets-area" inline="true" macroURI="_monthlyTimesheetsArea.zul"?>
+<?component name="expenses-area" inline="true" macroURI="_expensesArea.zul"?>
 
 <zk>
 
@@ -39,6 +40,8 @@
         <my-tasks-area />
 
         <monthly-timesheets-area />
+
+        <expenses-area />
 
     </window>
 </zk>
