@@ -77,15 +77,11 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
      * components editWindow
      */
 
-    private BandboxSearch bandboxSelectOrder;
-
     private Datebox dateboxExpenseDate;
 
     private Grid gridExpenseLines;
 
     private BandboxSearch bandboxTasks;
-
-    private Order orderEmpty;
 
     private Decimalbox dboxValue;
 
@@ -94,29 +90,6 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
     private Textbox tbConcept;
 
     private ExpenseSheetLineRenderer expenseSheetLineRenderer = new ExpenseSheetLineRenderer();
-
-    private EventListener eventListenerUpdateResource = new EventListener() {
-        @Override
-        public void onEvent(Event event) {
-            expenseSheetModel.getExpenseSheetLineDTO().setResource(
-                    (Resource) bandboxResource.getSelectedElement());
-        }
-    };
-
-    private EventListener eventListenerUpdateTask = new EventListener() {
-        @Override
-        public void onEvent(Event event) {
-            OrderElement orderElement = (OrderElement) bandboxTasks.getSelectedElement();
-            expenseSheetModel.getExpenseSheetLineDTO().setOrderElement(orderElement);
-        }
-    };
-
-    private EventListener eventListenerUpdateProject = new EventListener() {
-        @Override
-        public void onEvent(Event event) {
-            setProject((Order) bandboxSelectOrder.getSelectedElement());
-        }
-    };
 
     @Override
     public void save() throws ValidationException {
@@ -136,28 +109,6 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
         gridExpenseLines = (Grid) editWindow.getFellowIfAny("gridExpenseLines");
         bandboxResource = (BandboxSearch) editWindow.getFellowIfAny("bandboxResource");
         bandboxTasks = (BandboxSearch) editWindow.getFellowIfAny("bandboxTasks");
-        bandboxSelectOrder = (BandboxSearch) editWindow.getFellowIfAny("bandboxSelectOrder");
-
-        if (bandboxSelectOrder != null) {
-            bandboxSelectOrder
-                    .setListboxEventListener(Events.ON_SELECT, eventListenerUpdateProject);
-            bandboxSelectOrder.setListboxEventListener(Events.ON_OK, eventListenerUpdateProject);
-            bandboxSelectOrder.setBandboxEventListener(Events.ON_CHANGING,
-                    eventListenerUpdateProject);
-        }
-
-        if (bandboxTasks != null) {
-            bandboxTasks.setListboxEventListener(Events.ON_SELECT, eventListenerUpdateTask);
-            bandboxTasks.setListboxEventListener(Events.ON_OK, eventListenerUpdateTask);
-            bandboxTasks.setBandboxEventListener(Events.ON_CHANGING, eventListenerUpdateTask);
-        }
-
-        if (bandboxResource != null) {
-            bandboxResource.setListboxEventListener(Events.ON_SELECT, eventListenerUpdateResource);
-            bandboxResource.setListboxEventListener(Events.ON_OK, eventListenerUpdateResource);
-            bandboxResource
-                    .setBandboxEventListener(Events.ON_CHANGING, eventListenerUpdateResource);
-        }
     }
 
     /*
@@ -275,9 +226,7 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
     }
 
     public List<Order> getOrders() {
-        List<Order> orders = expenseSheetModel.getOrders();
-        orders.add(getProjectDefault());
-        return orders;
+        return expenseSheetModel.getOrders();
     }
 
     public List<OrderElement> getTasks() {
@@ -291,10 +240,6 @@ public class ExpenseSheetCRUDController extends BaseCRUDController<ExpenseSheet>
 
     public Order getProject() {
         return expenseSheetModel.getSelectedProject();
-    }
-
-    public Order getProjectDefault() {
-        return orderEmpty;
     }
 
     public ExpenseSheetLineRenderer getExpenseSheetLineRenderer() {

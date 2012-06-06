@@ -115,7 +115,7 @@
                             widthBandbox="480px"
                             widthListbox="500px"
                             model="@{controller.orders}"
-                            selectedElement="@{controller.projectDefault}"/>
+                            selectedElement="@{controller.project, access='both'}"/>
                     </hbox>
                     <hbox>
                         <label value="${i18n:_('Expense date')}" />
@@ -134,7 +134,7 @@
                         widthListbox="400px"
                         finder="OrderElementInExpenseSheetBandboxFinder"
                         model="@{controller.tasks}"
-                        selectedElement="@{controller.expenseSheetLineDTO.orderElement}"/>
+                        selectedElement="@{controller.expenseSheetLineDTO.orderElement, access='both'}"/>
 
 					<separator bar="false" spacing="10px" orient="vertical"/>
 
@@ -156,7 +156,7 @@
                         widthBandbox="285px"
                         widthListbox="400px"
                         finder="ResourceInExpenseSheetBandboxFinder"
-                        selectedElement="@{controller.expenseSheetLineDTO.resource}"/>
+                        selectedElement="@{controller.expenseSheetLineDTO.resource, access='both'}"/>
 
                     <separator bar="false" spacing="10px" orient="vertical"/>
                     <button onClick="controller.addExpenseSheetLine();" label="${i18n:_('New')}"/>

@@ -42,6 +42,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.ListModel;
@@ -178,6 +179,11 @@ public class BandboxSearch extends HtmlMacroComponent {
             bandbox.setValue(finder.objectToString(obj));
         } else {
             bandbox.setValue("");
+        }
+
+        DataBinder binder = Util.getBinder(this);
+        if (binder != null) {
+            binder.saveAttribute(this, "selectedElement");
         }
     }
 
