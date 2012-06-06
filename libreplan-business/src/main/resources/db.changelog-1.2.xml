@@ -486,4 +486,18 @@
             referencedTableName="type_of_work_hours" referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="add-new-column-personal-to-expense_sheet-table" author="mrego">
+        <comment>
+            Add new column personal with default value FALSE to expense_sheet
+            table
+        </comment>
+        <addColumn tableName="expense_sheet">
+            <column name="personal" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="expense_sheet" columnName="personal"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="expense_sheet" columnName="personal"
+            defaultNullValue="FALSE" columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>

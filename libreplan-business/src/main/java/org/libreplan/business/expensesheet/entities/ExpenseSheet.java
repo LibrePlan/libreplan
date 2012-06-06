@@ -53,6 +53,8 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
 
     private String description;
 
+    private boolean personal = false;
+
     @Valid
     private SortedSet<ExpenseSheetLine> expenseSheetLines = new TreeSet<ExpenseSheetLine>(
             new ExpenseSheetLineComparator());
@@ -216,6 +218,14 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
 
         throw new InstanceNotFoundException(code,
                 ExpenseSheetLine.class.getName());
+    }
+
+    public boolean isPersonal() {
+        return personal;
+    }
+
+    public void setPersonal(boolean personal) {
+        this.personal = personal;
     }
 
 }
