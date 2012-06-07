@@ -24,39 +24,18 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
-import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.orders.entities.TaskSource;
-import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
-import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.web.common.TemplateModel.DependencyWithVisibility;
-import org.libreplan.web.common.TemplateModelAdapter;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.planner.order.OrderPlanningController;
 import org.libreplan.web.planner.order.PlanningStateCreator;
-import org.libreplan.web.planner.order.PlanningStateCreator.IActionsOnRetrieval;
-import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
-import org.zkoss.ganttz.adapters.PlannerConfiguration;
-import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
-import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
@@ -159,100 +138,11 @@ public class MonteCarloTabCreator {
         };
     }
 
-    List<TaskElement> getCriticalPath(final Order order, final Desktop desktop) {
-        IAdHocTransactionService transactionService = Registry
-                .getTransactionService();
-        return transactionService
-                .runOnTransaction(new IOnTransaction<List<TaskElement>>() {
-                    public List<TaskElement> execute() {
-                        PlanningState state = retrieveOrCreate();
-                        return getCriticalPathFor(state.getCurrentScenario(),
-                                state.getOrder());
-                    }
-
-                    private PlanningState retrieveOrCreate() {
-                        return planningStateCreator.retrieveOrCreate(desktop,
-                                order, new IActionsOnRetrieval() {
-
-                                    @Override
-                                    public void onRetrieval(
-                                            PlanningState planningState) {
-                                        planningState.reattach();
-                                    }
-                                });
-                    }
-                });
+    private List<TaskElement> getCriticalPath(final Order order, final Desktop desktop) {
+        CriticalPathBuilder builder = CriticalPathBuilder.create(
+                planningStateCreator, resourcesSearcher);
+        return builder.getCriticalPath(order, desktop);
     }
-
-    /**
-     * Calculate critical path tasks in order
-     *
-     * To calculate the tasks that are in the critical path is necesary to
-     * create an empy graph filled with the tasks and dependencies of this order
-     *
-     * @param order
-     * @return
-     */
-    public List<TaskElement> getCriticalPathFor(Scenario currentScenario,
-            Order order) {
-        CriticalPathCalculator<TaskElement, DependencyWithVisibility> criticalPathCalculator = CriticalPathCalculator
-                .create(order.getDependenciesConstraintsHavePriority());
-        IAdapter<TaskElement, DependencyWithVisibility> adapter = TemplateModelAdapter
-                .create(currentScenario, asLocalDate(order.getInitDate()),
-                        asLocalDate(order.getDeadline()), resourcesSearcher);
-        GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
-                order, adapter);
-        graph.addTask(order.getAssociatedTaskElement());
-        addDependencies(graph, order);
-        return criticalPathCalculator.calculateCriticalPath(graph);
-    }
-
-    private LocalDate asLocalDate(Date date) {
-        return date != null ? LocalDate.fromDateFields(date) : null;
-    }
-
-    private void addDependencies(
-                    GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph,
-            Order order) {
-        for (Dependency each : getAllDependencies(order)) {
-            graph.addWithoutEnforcingConstraints(DependencyWithVisibility
-                    .existent(each));
-        }
-            }
-
-    private Set<Dependency> getAllDependencies(Order order) {
-        Set<Dependency> dependencies = new HashSet<Dependency>();
-        for (TaskElement each : getTaskElementsFrom(order)) {
-                    Set<Dependency> dependenciesWithThisOrigin = each
-                    .getDependenciesWithThisOrigin();
-                    dependencies.addAll(dependenciesWithThisOrigin);
-        }
-        return dependencies;
-            }
-
-    private List<TaskElement> getTaskElementsFrom(Order order) {
-                List<TaskElement> result = new ArrayList<TaskElement>();
-        for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
-            result.add(each.getTask());
-                }
-        return result;
-    }
-
-    private GanttDiagramGraph<TaskElement, DependencyWithVisibility> createFor(
-            Order order, IAdapter<TaskElement, DependencyWithVisibility> adapter) {
-        GanttDate orderStart = GanttDate.createFrom(order.getInitDate());
-        List<Constraint<GanttDate>> startConstraints = PlannerConfiguration
-                .getStartConstraintsGiven(orderStart);
-        GanttDate deadline = GanttDate.createFrom(order.getDeadline());
-        List<Constraint<GanttDate>> endConstraints = PlannerConfiguration
-                .getEndConstraintsGiven(deadline);
-        GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
-                .create(order.isScheduleBackwards(), adapter, startConstraints,
-                        endConstraints,
-                        order.getDependenciesConstraintsHavePriority());
-        return result;
-    }
-
 
     private ITab createGlobalMonteCarloTab() {
 
