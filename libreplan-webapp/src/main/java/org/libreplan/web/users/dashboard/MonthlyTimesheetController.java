@@ -562,9 +562,9 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     public void save() {
         monthlyTimesheetModel.save();
         String url = CustomTargetUrlResolver.USER_DASHBOARD_URL
-                + "?timesheet_save=" + monthlyTimesheetModel.getDate();
+                + "?timesheet_saved=" + monthlyTimesheetModel.getDate();
         if (!monthlyTimesheetModel.isCurrentUser()) {
-            url = WORK_REPORTS_URL + "?timesheet_save=true";
+            url = WORK_REPORTS_URL + "?timesheet_saved=true";
         }
         Executions.getCurrent().sendRedirect(url);
     }

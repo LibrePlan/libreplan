@@ -212,7 +212,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void showMessageIfMonthlyTimesheetWasSaved() {
         String timesheetSave = Executions.getCurrent().getParameter(
-                "timesheet_save");
+                "timesheet_saved");
         if (!StringUtils.isBlank(timesheetSave)) {
             messagesForUser.showMessage(Level.INFO,
                     _("Monthly timesheet saved"));

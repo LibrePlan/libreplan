@@ -52,7 +52,7 @@ public class UserDashboardController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
 
         String timesheetSave = Executions.getCurrent().getParameter(
-                "timesheet_save");
+                "timesheet_saved");
         if (!StringUtils.isBlank(timesheetSave)) {
             String monthlyTimesheet = new LocalDate(timesheetSave)
                     .toString("MMMM y");
