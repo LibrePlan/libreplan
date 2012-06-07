@@ -232,13 +232,4 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
         return !personal;
     }
 
-    @AssertTrue(message = "a personal expenses must have at least one line")
-    public boolean checkConstraintPersonalExpenseMustHaveAtLeastOneLine() {
-        if (!personal) {
-            return true;
-        }
-
-        return !expenseSheetLines.isEmpty();
-    }
-
 }
