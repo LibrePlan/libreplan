@@ -19,11 +19,17 @@
 
 package org.libreplan.web.users.dashboard;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.libreplan.business.expensesheet.entities.ExpenseSheet;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.expensesheet.IExpenseSheetCRUDController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 /**
  * Controller for "Expenses" area in the user dashboard window
@@ -36,6 +42,24 @@ public class ExpensesAreaController extends GenericForwardComposer {
     @Resource
     private IExpenseSheetCRUDController expenseSheetCRUDController;
 
+    private IExpensesAreaModel expensesAreaModel;
+
+    private RowRenderer expenseSheetsRenderer = new RowRenderer() {
+
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            ExpenseSheet expenseSheet = (ExpenseSheet) data;
+            row.setValue(expenseSheet);
+
+            Util.appendLabel(row, expenseSheet.getDescription());
+            Util.appendLabel(row, expenseSheet.getCode());
+            Util.appendLabel(row,
+                    Util.addCurrencySymbol(expenseSheet.getTotal()));
+            Util.appendLabel(row, expenseSheet.getFirstExpense().toString());
+            Util.appendLabel(row, expenseSheet.getLastExpense().toString());
+        }
+    };
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -44,6 +68,14 @@ public class ExpensesAreaController extends GenericForwardComposer {
 
     public void newExpenseSheet() {
         expenseSheetCRUDController.goToCreatePersonalExpenseSheet();
+    }
+
+    public List<ExpenseSheet> getPersonalExpenseSheets() {
+        return expensesAreaModel.getPersonalExpenseSheets();
+    }
+
+    public RowRenderer getExpenseSheetsRenderer() {
+        return expenseSheetsRenderer;
     }
 
 }

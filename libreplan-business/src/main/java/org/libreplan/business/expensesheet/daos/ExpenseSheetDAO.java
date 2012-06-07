@@ -21,8 +21,10 @@ package org.libreplan.business.expensesheet.daos;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
+import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -39,6 +41,22 @@ public class ExpenseSheetDAO extends IntegrationEntityDAO<ExpenseSheet> implemen
     @Override
     public List<ExpenseSheet> getAll() {
         return list(ExpenseSheet.class);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<ExpenseSheet> getPersonalExpenseSheetsByResource(
+            Resource resource) {
+        String hqlQuery = "SELECT DISTINCT sheet "
+                + "FROM ExpenseSheet sheet "
+                + "JOIN sheet.expenseSheetLines line "
+                + "WHERE sheet.personal = TRUE "
+                + "AND line.resource = :resource";
+
+        Query query = getSession().createQuery(hqlQuery);
+        query.setParameter("resource", resource);
+
+        return query.list();
     }
 
 }

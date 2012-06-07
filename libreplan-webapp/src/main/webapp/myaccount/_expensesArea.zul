@@ -21,7 +21,9 @@
 <groupbox apply="org.libreplan.web.users.dashboard.ExpensesAreaController">
     <caption label="${i18n:_('Expenses')}" />
 
-    <grid mold="paging" pageSize="10">
+    <grid mold="paging" pageSize="10"
+        model="@{controller.personalExpenseSheets}"
+        rowRenderer="@{controller.expenseSheetsRenderer}">
         <columns sizable="true">
             <column label="${i18n:_('Description')}" />
             <column label="${i18n:_('Code')}" />
