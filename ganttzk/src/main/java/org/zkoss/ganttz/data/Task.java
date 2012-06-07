@@ -538,4 +538,9 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.isRoot();
     }
 
+    public void updateSizeDueToDateChanges(GanttDate previousStart, GanttDate previousEnd) {
+        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd,
+                getBeginDate());
+    }
+
 }
