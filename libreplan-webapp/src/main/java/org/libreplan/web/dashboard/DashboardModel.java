@@ -48,6 +48,7 @@ import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksEs
 import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksLagInCompletionVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -96,7 +97,11 @@ public class DashboardModel implements IDashboardModel {
     }
 
     @Override
-    public void setCurrentOrder(Order order, List<TaskElement> criticalPath) {
+    public void setCurrentOrder(PlanningState planningState, List<TaskElement> criticalPath) {
+        final Order order = planningState.getOrder();
+
+        resourceLoadCalculator.setOrder(order,
+                planningState.getAssignmentsCalculator());
         this.currentOrder = order;
         this.criticalPath = criticalPath;
         this.taskCount = null;

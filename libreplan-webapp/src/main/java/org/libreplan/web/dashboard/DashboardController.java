@@ -34,6 +34,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -101,8 +102,10 @@ public class DashboardController extends GenericForwardComposer {
         return sb.toString();
     }
 
-    public void setCurrentOrder(Order order, List<TaskElement> criticalPath) {
-        dashboardModel.setCurrentOrder(order, criticalPath);
+    public void setCurrentOrder(PlanningState planningState, List<TaskElement> criticalPath) {
+        final Order order = planningState.getOrder();
+
+        dashboardModel.setCurrentOrder(planningState, criticalPath);
         if (dashboardModel.tasksAvailable()) {
             if (self != null) {
                 renderGlobalProgress();
