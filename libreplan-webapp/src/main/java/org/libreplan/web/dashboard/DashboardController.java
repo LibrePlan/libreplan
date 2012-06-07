@@ -23,7 +23,6 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -35,7 +34,10 @@ import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
 import org.libreplan.web.planner.order.OrderPlanningController;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -77,16 +79,25 @@ public class DashboardController extends GenericForwardComposer {
         super.doAfterCompose(comp);
     }
 
-    public String loadResourceFile(String filename) throws IOException {
-        StringBuffer result = new StringBuffer();
-        String line;
+    public String loadResourceFile(String filename) {
+        final String newline = "\n";
 
-        InputStream stream = BarChart.class.getClassLoader().getResourceAsStream(filename);
-        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-        while ((line = br.readLine()) != null) {
-            result.append(line);
+        ApplicationContext ctx = new ClassPathXmlApplicationContext();
+        Resource res = ctx.getResource(filename);
+        BufferedReader reader;
+        StringBuilder sb = new StringBuilder();
+        try {
+           reader = new BufferedReader(new InputStreamReader(res.getInputStream()));
+           String line;
+
+           while ((line = reader.readLine()) != null) {
+              sb.append(line);
+              sb.append(newline);
+           }
+        } catch (IOException e) {
+            System.out.println(e);
         }
-        return result.toString();
+        return sb.toString();
     }
 
     public void setCurrentOrder(Order order, OrderPlanningController orderPlanningController) {
