@@ -22,7 +22,8 @@
     <caption label="${i18n:_('Monthly timesheets')}" />
 
     <grid model="@{controller.monthlyTimesheets}" mold="paging"
-        pageSize="10" rowRenderer="@{controller.monthlyTimesheetsRenderer}">
+        pageSize="10" rowRenderer="@{controller.monthlyTimesheetsRenderer}"
+         sclass="clickable-rows">
         <columns sizable="true">
             <column label="${i18n:_('Date')}" />
             <column label="${i18n:_('Available hours')}" />

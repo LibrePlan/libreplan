@@ -37,6 +37,7 @@ import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Row;
@@ -108,7 +109,7 @@ public class MyTasksAreaController extends GenericForwardComposer {
         }
 
         private void appendTimeTrackingButton(Row row, final Task task) {
-            Button button = Util.createEditButton(new EventListener() {
+            EventListener trackTimeButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     monthlyTimesheetController
@@ -154,7 +155,10 @@ public class MyTasksAreaController extends GenericForwardComposer {
                     }
                     return false;
                 }
-            });
+            };
+
+            Button button = Util.createEditButton(trackTimeButtonListener);
+            row.addEventListener(Events.ON_CLICK, trackTimeButtonListener);
 
             button.setTooltiptext(_("Track time"));
 
