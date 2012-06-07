@@ -59,6 +59,13 @@ public class UserDashboardController extends GenericForwardComposer {
             messagesForUser.showMessage(Level.INFO,
                     _("Monthly timesheet \"{0}\" saved", monthlyTimesheet));
         }
+
+        String expenseSheetSaved = Executions.getCurrent().getParameter(
+                "expense_sheet_saved");
+        if (!StringUtils.isBlank(expenseSheetSaved)) {
+            messagesForUser.showMessage(Level.INFO,
+                    _("Expense sheet \"{0}\" saved", expenseSheetSaved));
+        }
     }
 
 }

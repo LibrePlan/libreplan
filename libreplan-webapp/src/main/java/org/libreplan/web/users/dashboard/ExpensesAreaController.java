@@ -27,6 +27,8 @@ import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.expensesheet.IExpenseSheetCRUDController;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -48,7 +50,7 @@ public class ExpensesAreaController extends GenericForwardComposer {
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            ExpenseSheet expenseSheet = (ExpenseSheet) data;
+            final ExpenseSheet expenseSheet = (ExpenseSheet) data;
             row.setValue(expenseSheet);
 
             Util.appendLabel(row, expenseSheet.getDescription());
@@ -57,6 +59,14 @@ public class ExpensesAreaController extends GenericForwardComposer {
                     Util.addCurrencySymbol(expenseSheet.getTotal()));
             Util.appendLabel(row, expenseSheet.getFirstExpense().toString());
             Util.appendLabel(row, expenseSheet.getLastExpense().toString());
+
+            Util.appendOperationsAndOnClickEvent(row, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    expenseSheetCRUDController
+                            .goToEditPersonalExpenseSheet(expenseSheet);
+                }
+            }, null);
         }
     };
 

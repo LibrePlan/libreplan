@@ -41,8 +41,10 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -92,6 +94,10 @@ public class ExpenseSheetCRUDController extends
     private ExpenseSheetLineRenderer expenseSheetLineRenderer = new ExpenseSheetLineRenderer();
 
     private IURLHandlerRegistry URLHandlerRegistry;
+
+    private boolean fromUserDashboard = false;
+
+    private boolean cancel = false;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -551,7 +557,8 @@ public class ExpenseSheetCRUDController extends
     }
 
     @Override
-    protected void delete(ExpenseSheet expenseSheet) throws InstanceNotFoundException {
+    public void delete(ExpenseSheet expenseSheet)
+            throws InstanceNotFoundException {
         expenseSheetModel.removeExpenseSheet(expenseSheet);
     }
 
@@ -578,6 +585,7 @@ public class ExpenseSheetCRUDController extends
         state = CRUDControllerState.CREATE;
         initCreate(true);
         showEditWindow();
+        fromUserDashboard = true;
     }
 
     private void initCreate(boolean personal) {
@@ -588,6 +596,31 @@ public class ExpenseSheetCRUDController extends
     public String getResource() {
         Resource resource = expenseSheetModel.getResource();
         return resource == null ? "" : resource.getShortDescription();
+    }
+
+    @Override
+    public void goToEditPersonalExpenseSheet(ExpenseSheet expenseSheet) {
+        goToEditForm(expenseSheet);
+        fromUserDashboard = true;
+    }
+
+    @Override
+    protected void showListWindow() {
+        if (fromUserDashboard) {
+            String url = CustomTargetUrlResolver.USER_DASHBOARD_URL;
+            if (!cancel) {
+                url += "?expense_sheet_saved="
+                        + expenseSheetModel.getExpenseSheet().getCode();
+            }
+            Executions.getCurrent().sendRedirect(url);
+        } else {
+            super.showListWindow();
+        }
+    }
+
+    @Override
+    protected void cancel() {
+        cancel = true;
     }
 
 }

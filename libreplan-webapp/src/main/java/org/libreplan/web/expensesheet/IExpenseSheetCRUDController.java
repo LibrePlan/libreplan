@@ -35,6 +35,6 @@ public interface IExpenseSheetCRUDController {
     void goToCreatePersonalExpenseSheet();
 
     @EntryPoint("edit")
-    void goToEditForm(ExpenseSheet expenseSheet);
+    void goToEditPersonalExpenseSheet(ExpenseSheet expenseSheet);
 
 }
