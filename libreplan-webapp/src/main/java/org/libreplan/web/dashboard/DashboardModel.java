@@ -48,7 +48,6 @@ import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksEs
 import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksLagInCompletionVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.web.planner.order.OrderPlanningController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -81,7 +80,7 @@ public class DashboardModel implements IDashboardModel {
     public static double LTC_STRETCHES_MAX_VALUE = 0;
 
     private Order currentOrder;
-    private OrderPlanningController orderPlanningController;
+    private List<TaskElement> criticalPath;
     private Integer taskCount = null;
 
     private final Map<TaskStatusEnum, BigDecimal> taskStatusStats;
@@ -97,9 +96,9 @@ public class DashboardModel implements IDashboardModel {
     }
 
     @Override
-    public void setCurrentOrder(Order order, OrderPlanningController orderPlanningController) {
+    public void setCurrentOrder(Order order, List<TaskElement> criticalPath) {
         this.currentOrder = order;
-        this.orderPlanningController = orderPlanningController;
+        this.criticalPath = criticalPath;
         this.taskCount = null;
         if (tasksAvailable()) {
             this.calculateGlobalProgress();
@@ -156,8 +155,7 @@ public class DashboardModel implements IDashboardModel {
         if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        rootTask.updateCriticalPathProgress(orderPlanningController
-                .getCriticalPath());
+        rootTask.updateCriticalPathProgress(criticalPath);
     }
 
     @Override

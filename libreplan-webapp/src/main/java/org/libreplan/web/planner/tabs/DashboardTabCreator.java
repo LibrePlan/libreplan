@@ -23,12 +23,15 @@ import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREAD
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.web.dashboard.DashboardController;
 import org.libreplan.web.planner.order.OrderPlanningController;
 import org.libreplan.web.planner.order.PlanningStateCreator;
@@ -53,9 +56,11 @@ public class DashboardTabCreator {
             PlanningStateCreator planningStateCreator,
             DashboardController dashboardController,
             OrderPlanningController orderPlanningController,
-            Component breadcrumbs) {
+            Component breadcrumbs,
+            IResourcesSearcher resourcesSearcher) {
         return new DashboardTabCreator(mode, planningStateCreator,
-                dashboardController, orderPlanningController, breadcrumbs).build();
+                dashboardController, orderPlanningController, breadcrumbs,
+                resourcesSearcher).build();
     }
 
     private final PlanningStateCreator planningStateCreator;
@@ -63,17 +68,20 @@ public class DashboardTabCreator {
     private final DashboardController dashboardController;
     private final OrderPlanningController orderPlanningController;
     private final Component breadcrumbs;
+    private final IResourcesSearcher resourcesSearcher;
 
     private DashboardTabCreator(Mode mode,
             PlanningStateCreator planningStateCreator,
             DashboardController dashboardController,
             OrderPlanningController orderPlanningController,
-            Component breadcrumbs) {
+            Component breadcrumbs,
+            IResourcesSearcher resourcesSearcher) {
         this.mode = mode;
         this.planningStateCreator = planningStateCreator;
         this.dashboardController = dashboardController;
         this.orderPlanningController = orderPlanningController;
         this.breadcrumbs = breadcrumbs;
+        this.resourcesSearcher = resourcesSearcher;
     }
 
     private ITab build() {
@@ -102,10 +110,15 @@ public class DashboardTabCreator {
 
             @Override
             protected void afterShowAction() {
+                List<TaskElement> criticalPath = orderPlanningController.getCriticalPath();
+                if (criticalPath == null) {
+                    criticalPath = getCriticalPath(mode.getOrder(),
+                            getDesktop());
+                }
                 PlanningState planningState = getPlanningState(mode.getOrder(), getDesktop());
                 Order currentOrder = planningState.getOrder();
                 dashboardController.setCurrentOrder(currentOrder,
-                        orderPlanningController);
+                        criticalPath);
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
@@ -115,6 +128,12 @@ public class DashboardTabCreator {
                 breadcrumbs.appendChild(new Label(currentOrder.getName()));
             }
         };
+    }
+
+    private List<TaskElement> getCriticalPath(final Order order, final Desktop desktop) {
+        CriticalPathBuilder builder = CriticalPathBuilder.create(
+                planningStateCreator, resourcesSearcher);
+        return builder.getCriticalPath(order, desktop);
     }
 
     PlanningState getPlanningState(final Order order, final Desktop desktop) {

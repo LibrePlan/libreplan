@@ -26,13 +26,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
-import org.libreplan.web.planner.order.OrderPlanningController;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -100,8 +101,8 @@ public class DashboardController extends GenericForwardComposer {
         return sb.toString();
     }
 
-    public void setCurrentOrder(Order order, OrderPlanningController orderPlanningController) {
-        dashboardModel.setCurrentOrder(order, orderPlanningController);
+    public void setCurrentOrder(Order order, List<TaskElement> criticalPath) {
+        dashboardModel.setCurrentOrder(order, criticalPath);
         if (dashboardModel.tasksAvailable()) {
             if (self != null) {
                 renderGlobalProgress();
@@ -121,9 +122,9 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private void renderOvertimeRatio() {
-        lblOvertimeRatio.setValue(String.format("%.2f", dashboardModel
-                .getOvertimeRatio().doubleValue()));
-        String valueMeaning = (dashboardModel.getOvertimeRatio().doubleValue() > 1) ? "negative"
+        BigDecimal overtimeRatio = dashboardModel.getOvertimeRatio();
+        lblOvertimeRatio.setValue(String.format("%.2f", overtimeRatio.doubleValue()));
+        String valueMeaning = (overtimeRatio.doubleValue() > 1) ? "negative"
                 : "positive";
         lblOvertimeRatio.setSclass("dashboard-label-remarked " + valueMeaning);
     }
