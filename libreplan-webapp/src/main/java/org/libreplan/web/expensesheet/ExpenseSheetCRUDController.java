@@ -623,4 +623,47 @@ public class ExpenseSheetCRUDController extends
         cancel = true;
     }
 
+    public String getType() {
+        return getType(expenseSheetModel.getExpenseSheet());
+    }
+
+    private String getType(ExpenseSheet expenseSheet) {
+        if (expenseSheet != null && expenseSheet.isPersonal()) {
+            return _("Personal");
+        }
+        return _("Regular");
+    }
+
+    public RowRenderer getExpenseSheetsRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final ExpenseSheet expenseSheet = (ExpenseSheet) data;
+                row.setValue(expenseSheet);
+
+                Util.appendLabel(row, expenseSheet.getFirstExpense().toString());
+                Util.appendLabel(row, expenseSheet.getLastExpense().toString());
+                Util.appendLabel(row,
+                        Util.addCurrencySymbol(expenseSheet.getTotal()));
+                Util.appendLabel(row, expenseSheet.getCode());
+                Util.appendLabel(row, expenseSheet.getDescription());
+                Util.appendLabel(row, getType(expenseSheet));
+
+                Util.appendOperationsAndOnClickEvent(row, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditForm(expenseSheet);
+                    }
+                }, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        confirmDelete(expenseSheet);
+                    }
+                });
+
+            }
+        };
+    }
+
 }

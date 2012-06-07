@@ -40,7 +40,8 @@
 
             <separator bar="false" spacing="10px" orient="horizontal"/>
             <grid id="listing"  mold="paging" pageSize="10"
-                model="@{controller.expenseSheets}" sclass="clickable-rows">
+                model="@{controller.expenseSheets}" sclass="clickable-rows"
+                rowRenderer="@{controller.expenseSheetsRenderer}">
                 <columns sizable="true">
                     <column id="columnFirstExpense" label="${i18n:_('First expense')}"
                         sort="auto(firstExpense, lastExpense)" />
@@ -52,33 +53,10 @@
                         sort="auto(code)" />
                     <column label="${i18n:_('Description')}"
                         sort="auto(description)" />
+                    <column label="${i18n:_('Type')}"
+                        sort="auto(personal)" />
                     <column label="${i18n:_('Operations')}" />
                 </columns>
-                <rows>
-                    <row self="@{each='expensesheet'}" value="@{expensesheet}" onClick="controller.goToEditForm(self.value);">
-                        <label value="@{expensesheet.firstExpense, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}" />
-                        <label value="@{expensesheet.lastExpense, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}"/>
-                        <hbox>
-                            <label value="@{expensesheet.total}" />
-                            <label value="@{controller.currencySymbol}" />
-                        </hbox>
-                        <label value="@{expensesheet.code}" />
-                        <label value="@{expensesheet.description}" />
-                        <hbox>
-                            <button sclass="icono" image="/common/img/ico_editar1.png"
-                                hoverImage="/common/img/ico_editar.png"
-                                tooltiptext="${i18n:_('Edit')}"
-                                onClick="controller.goToEditForm(self.parent.parent.value);">
-                            </button>
-
-                            <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                hoverImage="/common/img/ico_borrar.png"
-                                tooltiptext="${i18n:_('Delete')}"
-                                onClick="controller.confirmDelete(self.parent.parent.value);">
-                            </button>
-                        </hbox>
-                    </row>
-                </rows>
             </grid>
         </window>
 
@@ -108,6 +86,10 @@
                             <row>
                                 <label value="${i18n:_('Description')}" />
                                 <textbox width="400px" value="@{controller.expenseSheet.description}"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Type')}" />
+                                <label value="@{controller.type}" />
                             </row>
                             <row visible="@{controller.expenseSheet.personal}">
                                 <label value="${i18n:_('Resource')}" />
