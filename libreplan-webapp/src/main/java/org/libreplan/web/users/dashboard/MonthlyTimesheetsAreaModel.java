@@ -58,7 +58,7 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MonthlyTimesheet> getMonthlyTimesheets() {
+    public List<MonthlyTimesheetDTO> getMonthlyTimesheets() {
         User user = UserUtil.getUserFromSession();
         if (!user.isBound()) {
             return Collections.emptyList();
@@ -72,19 +72,28 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
                 currentDate.plusMonths(1));
     }
 
-    private List<MonthlyTimesheet> getMonthlyTimesheets(Resource resource,
+    private List<MonthlyTimesheetDTO> getMonthlyTimesheets(Resource resource,
             LocalDate start, LocalDate end) {
         int months = Months.monthsBetween(start, end).getMonths();
 
-        List<MonthlyTimesheet> result = new ArrayList<MonthlyTimesheet>();
+        List<MonthlyTimesheetDTO> result = new ArrayList<MonthlyTimesheetDTO>();
 
         // In decreasing order to provide a list sorted with the more recent
         // monthly timesheets at the beginning
         for (int i = months; i >= 0; i--) {
             LocalDate date = start.plusMonths(i);
-            result.add(new MonthlyTimesheet(date,
-                    getWorkReport(resource, date), getResourceCapcity(resource,
-                            date)));
+
+            WorkReport workReport = getWorkReport(resource, date);
+
+            EffortDuration hours = EffortDuration.zero();
+            int tasksNumber = 0;
+            if (workReport != null) {
+                hours = workReport.getTotalEffortDuration();
+                tasksNumber = getNumberOfOrderElementsWithTrackedTime(workReport);
+            }
+
+            result.add(new MonthlyTimesheetDTO(date, workReport,
+                    getResourceCapcity(resource, date), hours, tasksNumber));
         }
 
         return result;

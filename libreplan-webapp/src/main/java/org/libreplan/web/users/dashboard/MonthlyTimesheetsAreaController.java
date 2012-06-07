@@ -23,9 +23,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.joda.time.LocalDate;
-import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -51,23 +48,15 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            final MonthlyTimesheet monthlyTimesheet = (MonthlyTimesheet) data;
+            final MonthlyTimesheetDTO monthlyTimesheet = (MonthlyTimesheetDTO) data;
             row.setValue(monthlyTimesheet);
 
             Util.appendLabel(row, monthlyTimesheet.getDate().toString("MMMM y"));
             Util.appendLabel(row, monthlyTimesheet.getResourceCapacity()
                     .toFormattedString());
-
-            WorkReport workReport = monthlyTimesheet.getWorkReport();
-            EffortDuration hours = EffortDuration.zero();
-            int tasksNumber = 0;
-            if (workReport != null) {
-                hours = workReport.getTotalEffortDuration();
-                tasksNumber = monthlyTimesheetsAreaModel
-                        .getNumberOfOrderElementsWithTrackedTime(workReport);
-            }
-            Util.appendLabel(row, hours.toFormattedString());
-            Util.appendLabel(row, tasksNumber + "");
+            Util.appendLabel(row, monthlyTimesheet.getTotalHours()
+                    .toFormattedString());
+            Util.appendLabel(row, monthlyTimesheet.getTasksNumber() + "");
 
             Util.appendOperationsAndOnClickEvent(row, new EventListener() {
 
@@ -87,58 +76,12 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
         comp.setAttribute("controller", this);
     }
 
-    public List<MonthlyTimesheet> getMonthlyTimesheets() {
+    public List<MonthlyTimesheetDTO> getMonthlyTimesheets() {
         return monthlyTimesheetsAreaModel.getMonthlyTimesheets();
     }
 
     public RowRenderer getMonthlyTimesheetsRenderer() {
         return monthlyTimesheetsRenderer;
-    }
-
-}
-
-/**
- * Simple class to represent the monthly timesheets to be shown in the list.<br />
- *
- * This is only a simple class for the UI, everything will be saved using
- * {@link WorkReport}.
- */
-class MonthlyTimesheet {
-
-    private LocalDate date;
-
-    private WorkReport workReport;
-
-    private EffortDuration resourceCapacity;
-
-    /**
-     * @param date
-     *            Only the year and month are used, the day is reseted to first
-     *            day of the month. As there's only one timesheet per month.
-     * @param workReport
-     *            The work report of the monthly timesheet, it could be
-     *            <code>null</code> if it doesn't exist yet.
-     * @param resourceCapacity
-     *            The capacity of the resource bound to current user in the
-     *            month of this timesheet.
-     */
-    MonthlyTimesheet(LocalDate date, WorkReport workReport,
-            EffortDuration resourceCapacity) {
-        this.date = date.dayOfMonth().withMaximumValue();
-        this.workReport = workReport;
-        this.resourceCapacity = resourceCapacity;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public WorkReport getWorkReport() {
-        return workReport;
-    }
-
-    public EffortDuration getResourceCapacity() {
-        return resourceCapacity;
     }
 
 }

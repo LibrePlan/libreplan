@@ -34,18 +34,18 @@ import org.libreplan.business.workreports.entities.WorkReport;
 public interface IMonthlyTimesheetsAreaModel {
 
     /**
-     * Returns the list of {@link MonthlyTimesheet MonthlyTimesheets} for the
+     * Returns the list of {@link MonthlyTimesheetDTO MonthlyTimesheets} for the
      * resource bound to current {@link User}.<br />
      *
      * There's no need that a {@link WorkReport} is saved in order to a
-     * {@link MonthlyTimesheet} exists for a month.<br />
+     * {@link MonthlyTimesheetDTO} exists for a month.<br />
      *
-     * The list of {@link MonthlyTimesheet MonthlyTimesheets} will be since the
+     * The list of {@link MonthlyTimesheetDTO MonthlyTimesheets} will be since the
      * date the resource is activated in the system (checking
      * {@link CalendarAvailability} for the resource) to next month of current
      * date.
      */
-    List<MonthlyTimesheet> getMonthlyTimesheets();
+    List<MonthlyTimesheetDTO> getMonthlyTimesheets();
 
     /**
      * Returns the number of different {@link OrderElement OrderElements} with
