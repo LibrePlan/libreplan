@@ -37,6 +37,7 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
+import org.libreplan.business.resources.entities.Resource;
 
 /**
  * ExpenseSheet Entity
@@ -230,6 +231,25 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
 
     public boolean isNotPersonal() {
         return !personal;
+    }
+
+    @AssertTrue(message = "a personal expense sheet must have the same resource in all the lines")
+    public boolean checkConstraintPersonalExpenseSheetMustHaveTheSameResourceInAllLines() {
+        if (!personal) {
+            return true;
+        }
+
+        Resource resource = expenseSheetLines.iterator().next().getResource();
+
+        for (ExpenseSheetLine line : expenseSheetLines) {
+            Resource resourceLine = line.getResource();
+            if ((resourceLine == null)
+                    || (!resourceLine.getId().equals(resource.getId()))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
