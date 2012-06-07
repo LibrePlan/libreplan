@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -82,7 +83,7 @@ public class GlobalProgressChart {
 
         int i = 1;
         for (BigDecimal each : array) {
-            result.add(String.format("[%.2f, %d]", each.doubleValue(), i++));
+            result.add(String.format(Locale.ROOT, "[%.2f, %d]", each.doubleValue(), i++));
         }
         return String.format("[%s]", StringUtils.join(result, ","));
     }
