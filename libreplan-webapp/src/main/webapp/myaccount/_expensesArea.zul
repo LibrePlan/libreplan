@@ -25,11 +25,17 @@
         model="@{controller.personalExpenseSheets}"
         rowRenderer="@{controller.expenseSheetsRenderer}">
         <columns sizable="true">
-            <column label="${i18n:_('Description')}" />
-            <column label="${i18n:_('Code')}" />
-            <column label="${i18n:_('Total')}" />
-            <column label="${i18n:_('First expense')}" />
-            <column label="${i18n:_('Last expense')}" />
+            <column label="${i18n:_('Description')}"
+                sort="auto(description)" />
+            <column label="${i18n:_('Code')}"
+                sort="auto(code)" />
+            <column label="${i18n:_('Total')}"
+                sort="auto(total)" />
+            <column label="${i18n:_('First expense')}"
+                sort="auto(firstExpense)"
+                sortDirection="descending" />
+            <column label="${i18n:_('Last expense')}"
+                sort="auto(lastExpense)" />
             <column label="${i18n:_('Operations')}" />
         </columns>
     </grid>

@@ -20,6 +20,8 @@
 package org.libreplan.web.users.dashboard;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
@@ -52,8 +54,21 @@ public class ExpensesAreaModel implements IExpensesAreaModel {
             return new ArrayList<ExpenseSheet>();
         }
 
-        return expenseSheetDAO.getPersonalExpenseSheetsByResource(user
-                .getWorker());
+        List<ExpenseSheet> expenseSheets = expenseSheetDAO
+                .getPersonalExpenseSheetsByResource(user.getWorker());
+        sortExpenseSheetsDescendingByFirstExpense(expenseSheets);
+
+        return expenseSheets;
+    }
+
+    private void sortExpenseSheetsDescendingByFirstExpense(
+            List<ExpenseSheet> expenseSheets) {
+        Collections.sort(expenseSheets, new Comparator<ExpenseSheet>() {
+            @Override
+            public int compare(ExpenseSheet o1, ExpenseSheet o2) {
+                return o2.getFirstExpense().compareTo(o1.getFirstExpense());
+            }
+        });
     }
 
 }
