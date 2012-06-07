@@ -248,17 +248,15 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
 
     @Override
     @Transactional
-    public void removeExpenseSheet(ExpenseSheet expenseSheet) {
+    public void removeExpenseSheet(ExpenseSheet expenseSheet)
+            throws InstanceNotFoundException {
         Validate.notNull(expenseSheet);
         expenseSheet = getFromDB(expenseSheet);
-        try {
-            sumExpensesDAO.updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(expenseSheet
-                    .getExpenseSheetLines());
 
-            expenseSheetDAO.remove(expenseSheet.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        sumExpensesDAO
+                .updateRelatedSumExpensesWithDeletedExpenseSheetLineSet(expenseSheet
+                        .getExpenseSheetLines());
+        expenseSheetDAO.remove(expenseSheet.getId());
     }
 
     @Override

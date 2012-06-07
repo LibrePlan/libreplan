@@ -19,17 +19,26 @@
 
 package org.libreplan.web.users.dashboard;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
+import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.Level;
+import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.expensesheet.IExpenseSheetCRUDController;
+import org.libreplan.web.expensesheet.IExpenseSheetModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
@@ -45,6 +54,12 @@ public class ExpensesAreaController extends GenericForwardComposer {
     private IExpenseSheetCRUDController expenseSheetCRUDController;
 
     private IExpensesAreaModel expensesAreaModel;
+
+    private IExpenseSheetModel expenseSheetModel;
+
+    private IMessagesForUser messagesForUser;
+
+    private Grid expenseSheetsList;
 
     private RowRenderer expenseSheetsRenderer = new RowRenderer() {
 
@@ -66,7 +81,35 @@ public class ExpensesAreaController extends GenericForwardComposer {
                     expenseSheetCRUDController
                             .goToEditPersonalExpenseSheet(expenseSheet);
                 }
-            }, null);
+            }, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    try {
+                        if (Messagebox
+                                .show(_("Delete expense sheet \"{0}\". Are you sure?",
+                                        expenseSheet.getHumanId()),
+                                        _("Confirm"), Messagebox.OK
+                                                | Messagebox.CANCEL,
+                                        Messagebox.QUESTION) == Messagebox.OK) {
+                            expenseSheetModel.removeExpenseSheet(expenseSheet);
+                            messagesForUser.showMessage(
+                                    Level.INFO,
+                                    _("Expense sheet \"{0}\" deleted",
+                                            expenseSheet.getHumanId()));
+                            Util.reloadBindings(expenseSheetsList);
+                        }
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (InstanceNotFoundException ie) {
+                        messagesForUser
+                                .showMessage(
+                                        Level.ERROR,
+                                        _("Expense sheet \"{1}\" could not be deleted, it was already removed",
+                                                expenseSheet.getHumanId()));
+                    }
+                }
+            });
         }
     };
 
@@ -74,6 +117,9 @@ public class ExpensesAreaController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
+
+        messagesForUser = new MessagesForUser(
+                comp.getFellow("messagesContainer"));
     }
 
     public void newExpenseSheet() {

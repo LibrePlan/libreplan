@@ -22,6 +22,7 @@ package org.libreplan.web.expensesheet;
 import java.util.List;
 import java.util.SortedSet;
 
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.Order;
@@ -47,7 +48,8 @@ public interface IExpenseSheetModel extends IIntegrationEntityModel {
 
     List<ExpenseSheet> getExpenseSheets();
 
-    void removeExpenseSheet(ExpenseSheet expenseSheet);
+    void removeExpenseSheet(ExpenseSheet expenseSheet)
+            throws InstanceNotFoundException;
 
     ExpenseSheet getExpenseSheet();
 
