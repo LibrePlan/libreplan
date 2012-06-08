@@ -52,7 +52,6 @@ import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
-import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.IMessagesForUser;
@@ -975,8 +974,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderTemplates.goToCreateTemplateFrom(order);
     }
 
-    public void createFromTemplate(BudgetTemplate template) {
-        orderModel.prepareBudgetCreationFrom(template, getDesktop());
+    public void createFromTemplate(OrderTemplate template) {
+        orderModel.prepareCreationFrom(template, getDesktop());
     }
 
     private Runnable onUp;
