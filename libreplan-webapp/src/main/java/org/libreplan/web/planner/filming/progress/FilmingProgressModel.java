@@ -77,7 +77,8 @@ public class FilmingProgressModel implements IFilmingProgressModel {
             this.currentFilming = this.currentOrder.getFilmingProgress();
 
             if (currentFilming == null) {
-                this.currentFilming = FilmingProgress.create(order);
+                this.currentFilming = FilmingProgress.create(order,
+                        FilmingProgressTypeEnum.SCENES);
                 order.setFilmingProgress(currentFilming);
                 progressValues = new ArrayList<ProgressValue>();
             } else {

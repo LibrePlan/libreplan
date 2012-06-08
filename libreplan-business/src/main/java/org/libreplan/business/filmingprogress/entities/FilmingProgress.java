@@ -49,20 +49,25 @@ public class FilmingProgress extends BaseEntity {
 
     private Order order;
 
+    private FilmingProgressTypeEnum type;
+
     protected FilmingProgress() {
 
     }
 
-    private FilmingProgress(Order order) {
+    private FilmingProgress(Order order, FilmingProgressTypeEnum type) {
+        this.setType(type);
         this.setOrder(order);
         resetDatesByOrder();
     }
 
-    public static FilmingProgress create(Order order) {
+    public static FilmingProgress create(Order order,
+            FilmingProgressTypeEnum type) {
         Validate.notNull(order);
         Validate.notNull(order.getInitDate());
         Validate.notNull(order.getDeadline());
-        FilmingProgress filmingProgress = create(new FilmingProgress(order));
+        FilmingProgress filmingProgress = create(new FilmingProgress(order,
+                type));
         initIntoInterval(filmingProgress.getInitialProgressForecast(), order.getInitDate(),
                 order.getDeadline());
         initIntoInterval(filmingProgress.getProgressForecast(), order.getInitDate(),
@@ -155,5 +160,13 @@ public class FilmingProgress extends BaseEntity {
 
     public Order getOrder() {
         return order;
+    }
+
+    public void setType(FilmingProgressTypeEnum type) {
+        this.type = type;
+    }
+
+    public FilmingProgressTypeEnum getType() {
+        return type;
     }
 }

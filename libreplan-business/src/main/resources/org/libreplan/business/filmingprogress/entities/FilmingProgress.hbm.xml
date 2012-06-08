@@ -23,6 +23,12 @@
         </type>
     </property>
 
+	<property name="type" access="field" column="type">
+        <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum</param>
+        </type>
+    </property>
+
     <map name="initialProgressForecast" table="initial_progress_forecast" lazy="false" cascade="all" sort="natural">
         <key column="filming_progress_id"/>
         <map-key column="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>

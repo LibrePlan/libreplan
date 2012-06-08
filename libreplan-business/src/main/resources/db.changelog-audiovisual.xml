@@ -158,4 +158,11 @@
         <comment>Remove column base_calendar_id in order_template table</comment>
         <dropColumn tableName="order_template" columnName="base_calendar_id" />
     </changeSet>
+
+	<changeSet id="add-column-type-in-filming-progress-table" author="smontes">
+        <comment>add column type in filming_progress table</comment>
+        <addColumn tableName="filming_progress">
+            <column name="type" type="INTEGER"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
