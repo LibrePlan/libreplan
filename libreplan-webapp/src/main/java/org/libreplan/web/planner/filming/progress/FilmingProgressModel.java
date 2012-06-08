@@ -34,6 +34,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
+import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.planner.order.ISaveCommand;
@@ -62,8 +63,8 @@ public class FilmingProgressModel implements IFilmingProgressModel {
 
     private ISaveCommand saveCommand;
 
-    private Map<UnitMeasureFilmingProgress, SortedMap<LocalDate, BigDecimal>> progressForecast = new HashMap<UnitMeasureFilmingProgress, SortedMap<LocalDate, BigDecimal>>();
-    private Map<UnitMeasureFilmingProgress, SortedMap<LocalDate, BigDecimal>> realProgress = new HashMap<UnitMeasureFilmingProgress, SortedMap<LocalDate, BigDecimal>>();
+    private Map<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>> progressForecast = new HashMap<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>>();
+    private Map<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>> realProgress = new HashMap<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>>();
 
     List<ProgressValue> progressValues = new ArrayList<ProgressValue>();
 
@@ -156,12 +157,12 @@ public class FilmingProgressModel implements IFilmingProgressModel {
     }
 
     @Override
-    public void addNewUnitMeasure(UnitMeasureFilmingProgress unitMeasure,
+    public void addNewUnitMeasure(FilmingProgressTypeEnum unitMeasure,
             BigDecimal maxValue) {
         buildProgressValueBy(unitMeasure, maxValue);
     }
 
-    private void buildProgressValueBy(UnitMeasureFilmingProgress unitMeasure,
+    private void buildProgressValueBy(FilmingProgressTypeEnum unitMeasure,
             BigDecimal maxValue) {
         for (ProgressType type : ProgressType.values()) {
             getProgressMapByType(type).put(unitMeasure,
@@ -202,7 +203,7 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         return map;
     }
 
-    private Map<UnitMeasureFilmingProgress, SortedMap<LocalDate, BigDecimal>> getProgressMapByType(
+    private Map<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>> getProgressMapByType(
             ProgressType type) {
         switch (type) {
         case FORECAST:
@@ -222,7 +223,7 @@ class ProgressValue {
 
     ProgressType progressType;
 
-    UnitMeasureFilmingProgress unitMeasure;
+    FilmingProgressTypeEnum unitMeasure;
 
     private SortedMap<LocalDate, BigDecimal> values = new TreeMap<LocalDate, BigDecimal>();
 
@@ -231,7 +232,7 @@ class ProgressValue {
     }
 
     public ProgressValue(ProgressType type,
-            UnitMeasureFilmingProgress unitMeasure,
+            FilmingProgressTypeEnum unitMeasure,
             SortedMap<LocalDate, BigDecimal> values) {
         this.progressType = type;
         this.unitMeasure = unitMeasure;

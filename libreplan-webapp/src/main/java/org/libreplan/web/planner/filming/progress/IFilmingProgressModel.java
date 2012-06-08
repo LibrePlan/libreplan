@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
+import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.planner.order.ISaveCommand;
 
@@ -39,7 +40,7 @@ interface IFilmingProgressModel {
 
     List<ProgressValue> getProgressValues();
 
-    void addNewUnitMeasure(UnitMeasureFilmingProgress unitMeasure,
+    void addNewUnitMeasure(FilmingProgressTypeEnum unitMeasure,
             BigDecimal maxValue);
 
 }

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.planner.filming.progress;
+package org.libreplan.business.filmingprogress.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
@@ -26,13 +26,13 @@ import static org.libreplan.business.i18n.I18nHelper._;
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public enum UnitMeasureFilmingProgress {
+public enum FilmingProgressTypeEnum {
 
     SCENES(_("scenes")), MINUTES(_("minutes")), PAGES(_("script pages"));
 
     private String description;
 
-    UnitMeasureFilmingProgress(String description) {
+    FilmingProgressTypeEnum(String description) {
         this.description = description;
     }
 

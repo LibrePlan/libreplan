@@ -37,7 +37,7 @@ import java.util.TreeMap;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
-import org.libreplan.business.filmingprogress.entities.ProgressGranularityType;
+import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
@@ -50,14 +50,9 @@ import org.springframework.stereotype.Component;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.data.PlotData;
-import org.zkforge.timeplot.data.PlotDataSource;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.util.Locales;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Auxhead;
 import org.zkoss.zul.Auxheader;
@@ -75,11 +70,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
-
-import br.com.digilabs.jqplot.Chart;
-import br.com.digilabs.jqplot.JqPlotUtils;
-import br.com.digilabs.jqplot.chart.LineChart;
-import br.com.digilabs.jqplot.elements.Serie;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -230,9 +220,9 @@ public class FilmingProgressController extends GenericForwardComposer {
         return new SimpleListModel(getUnitMeasuresNotAdded());
     }
 
-    private List<UnitMeasureFilmingProgress> getUnitMeasuresNotAdded() {
-        List<UnitMeasureFilmingProgress> measures = new ArrayList<UnitMeasureFilmingProgress>(
-                Arrays.asList(UnitMeasureFilmingProgress.values()));
+    private List<FilmingProgressTypeEnum> getUnitMeasuresNotAdded() {
+        List<FilmingProgressTypeEnum> measures = new ArrayList<FilmingProgressTypeEnum>(
+                Arrays.asList(FilmingProgressTypeEnum.values()));
         for(ProgressValue pgValue :this.getProgressValues()){
             measures.remove(pgValue.unitMeasure);
         }
@@ -341,7 +331,7 @@ public class FilmingProgressController extends GenericForwardComposer {
         return filmingProgressModel.getProgressValues();
     }
 
-    private void addNewUnitMeasure(UnitMeasureFilmingProgress unitMeasure,
+    private void addNewUnitMeasure(FilmingProgressTypeEnum unitMeasure,
             BigDecimal maxValue) {
         filmingProgressModel.addNewUnitMeasure(unitMeasure, maxValue);
 
@@ -507,7 +497,7 @@ public class FilmingProgressController extends GenericForwardComposer {
     public void accept() {
         if (windowAddUnitMeasure != null) {
             if (unitMeasureListBox.getSelectedItem() != null) {
-                UnitMeasureFilmingProgress unitMeasure = (UnitMeasureFilmingProgress) unitMeasureListBox
+                FilmingProgressTypeEnum unitMeasure = (FilmingProgressTypeEnum) unitMeasureListBox
                         .getSelectedItem().getValue();
                 checkConstraintMaxValue().validate(maxValueBox,
                         maxValueBox.getValue());
@@ -552,14 +542,14 @@ public class FilmingProgressController extends GenericForwardComposer {
 }
 
 class RowTotal{
-    private UnitMeasureFilmingProgress unitMeasure;
+    private FilmingProgressTypeEnum unitMeasure;
     private String title = "";
     private BigDecimal total = BigDecimal.ZERO;
 
     private Label lbTitle = new Label();
     private Label lbTotal = new Label();
 
-    public RowTotal(UnitMeasureFilmingProgress unitMeasure, String title,
+    public RowTotal(FilmingProgressTypeEnum unitMeasure, String title,
             BigDecimal total) {
         this.setTitle(title);
         this.setTotal(total);
@@ -600,11 +590,11 @@ class RowTotal{
         return lbTotal;
     }
 
-    public void setUnitMeasure(UnitMeasureFilmingProgress unitMeasure) {
+    public void setUnitMeasure(FilmingProgressTypeEnum unitMeasure) {
         this.unitMeasure = unitMeasure;
     }
 
-    public UnitMeasureFilmingProgress getUnitMeasure() {
+    public FilmingProgressTypeEnum getUnitMeasure() {
         return unitMeasure;
     }
 }
