@@ -63,7 +63,34 @@
             if (series !== undefined) {
                 this.series = jQuery.parseJSON(series);
             }
-            this.plot = $.jqplot(this.id, jQuery.parseJSON(data), this);
+            data = jQuery.parseJSON(data);
+            this.plot = $.jqplot(this.id, data, this);
+            this.attachTooltip();
+        },
+        attachTooltip: function() {
+            var node = $('#' + this.id);
+            node.bind('jqplotDataHighlight',
+                function (ev, seriesIndex, pointIndex, data) {
+                    var x = ev.pageX - node.offset().left;
+                    var y = ev.pageY - node.offset().top;
+
+                    var tooltip = $('<span class="tooltip"></span>');
+
+                    tooltip.text(data[0]).appendTo(node);
+                    tooltip.css({'top': y, 'left': x, 'position': 'absolute'});
+                    tooltip.fadeIn('slow');
+                }
+            );
+            node.bind('jqplotDataUnhighlight',
+                function (ev) {
+                    $('.tooltip').remove();
+                }
+            );
+            node.mousemove(function(ev) {
+                var x = ev.pageX - node.offset().left;
+                var y = ev.pageY - node.offset().top;
+                $('.tooltip').css({'top': y, 'left': x, 'position': 'absolute'})
+            });
         }
     };
 

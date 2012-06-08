@@ -131,6 +131,19 @@
         var global_progress = { };
     </script>
 
+    <n:style type="text/css">
+        .tooltip {
+            display:none;
+            position:absolute;
+            border:1px solid #333;
+            background-color:#161616;
+            border-radius:5px;
+            padding:10px;
+            color:#fff;
+            font-size:12px Arial;
+        }
+    </n:style>
+
     <globalProgress />
 
     <!-- Include jqPlot styles -->
