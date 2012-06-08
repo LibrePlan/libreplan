@@ -22,6 +22,7 @@ package org.libreplan.web.expensesheet;
 import java.util.List;
 import java.util.SortedSet;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
@@ -82,5 +83,7 @@ public interface IExpenseSheetModel extends IIntegrationEntityModel {
      * and if not it tries to get it from bound {@link User}.
      */
     Resource getResource();
+
+    void keepSortedExpenseSheetLines(ExpenseSheetLine expenseSheetLine, LocalDate newDate);
 
 }

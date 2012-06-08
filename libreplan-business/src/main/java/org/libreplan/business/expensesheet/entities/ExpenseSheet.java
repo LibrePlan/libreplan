@@ -161,6 +161,13 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
         lastExpenseSheetLineSequenceCode++;
     }
 
+    public void keepSortedExpenseSheetLines(ExpenseSheetLine expenseSheetLine,
+            LocalDate newDate) {
+        this.expenseSheetLines.remove(expenseSheetLine);
+        expenseSheetLine.setDate(newDate);
+        this.expenseSheetLines.add(expenseSheetLine);
+    }
+
     public void updateCalculatedProperties() {
         updateFistAndLastExpenseDate();
         updateTotal();

@@ -351,4 +351,12 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
         return resource;
     }
 
+    public void keepSortedExpenseSheetLines(ExpenseSheetLine expenseSheetLine,
+            LocalDate newDate) {
+        if (getExpenseSheet() != null) {
+            this.expenseSheet.keepSortedExpenseSheetLines(expenseSheetLine,
+                    newDate);
+        }
+    }
+
 }

@@ -331,10 +331,13 @@ public class ExpenseSheetCRUDController extends
                         if (value != null) {
                             newDate = LocalDate.fromDateFields(value);
                         }
-                        expenseSheetLine.setDate(newDate);
+                        expenseSheetModel.keepSortedExpenseSheetLines(expenseSheetLine,
+                                newDate);
+                        reloadExpenseSheetLines();
                     }
                 }
             });
+
             dateboxExpense.setConstraint("no empty:" + _("cannot be null or empty"));
             row.appendChild(dateboxExpense);
         }
