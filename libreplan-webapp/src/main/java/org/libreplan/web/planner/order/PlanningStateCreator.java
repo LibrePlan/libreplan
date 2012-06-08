@@ -395,7 +395,7 @@ public class PlanningStateCreator {
     }
 
     private static void forceLoadOfSubcontractedTaskData(TaskElement taskElement){
-        if(taskElement.isLeaf()){
+        if(taskElement.isTask()){
             if(((Task)taskElement).getSubcontractedTaskData() != null){
                 for (SubcontractorDeliverDate subDeliverDate : ((Task) taskElement)
                         .getSubcontractedTaskData()
