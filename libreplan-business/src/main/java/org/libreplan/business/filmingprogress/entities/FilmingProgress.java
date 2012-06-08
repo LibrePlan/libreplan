@@ -39,8 +39,6 @@ public class FilmingProgress extends BaseEntity {
 
     private LocalDate endDate;
 
-    private ProgressGranularityType progressGranularity = ProgressGranularityType.getDefault();
-
     private SortedMap<LocalDate, Integer> initialProgressForecast = new TreeMap<LocalDate, Integer>();
 
     private SortedMap<LocalDate, Integer> progressForecast = new TreeMap<LocalDate, Integer>();
@@ -120,14 +118,6 @@ public class FilmingProgress extends BaseEntity {
 
     public LocalDate getEndDate() {
         return endDate;
-    }
-
-    public void setProgressGranularity(ProgressGranularityType progressGranularity) {
-        this.progressGranularity = progressGranularity;
-    }
-
-    public ProgressGranularityType getProgressGranularity() {
-        return progressGranularity;
     }
 
     public void setInitialProgressForecast(SortedMap<LocalDate, Integer> initialProgressForecast) {

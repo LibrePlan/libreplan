@@ -165,4 +165,9 @@
             <column name="type" type="INTEGER"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="remove-progress-granularity-from-filming-progress" author="smontes">
+        <comment>Remove column progress_granularity in filming_progress table</comment>
+        <dropColumn tableName="filming_progress" columnName="progress_granularity" />
+    </changeSet>
 </databaseChangeLog>

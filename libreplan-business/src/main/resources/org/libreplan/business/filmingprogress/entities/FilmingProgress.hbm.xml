@@ -17,12 +17,6 @@
     <property name="endDate" access="field" column="end_date"
         type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
 
-    <property name="progressGranularity" access="field" column="progress_granularity">
-        <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.libreplan.business.filmingprogress.entities.ProgressGranularityType</param>
-        </type>
-    </property>
-
 	<property name="type" access="field" column="type">
         <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum</param>
