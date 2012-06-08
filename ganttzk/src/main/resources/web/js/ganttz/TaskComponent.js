@@ -231,10 +231,10 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
         jq('#'+ this.uuid + ' .task-resources').hide();
     },
     showLabels : function(){
-        jq('.task-labels',this.$n()).show();
+        jq('#'+ this.uuid + ' .task-labels').show();
     },
     hideLabels : function(){
-        jq('.task-labels',this.$n()).hide();
+        jq('#'+ this.uuid + ' .task-labels').hide();
     },
     setClass : function(cssClass){
         jq(this.$n()).removeClass().addClass(cssClass);
