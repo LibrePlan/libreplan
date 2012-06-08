@@ -300,6 +300,9 @@ public class DashboardController extends GenericForwardComposer {
                 dashboardModel.getCriticalPathProgressByNumHours());
         globalProgressChart.current(GlobalProgressChart.ALL_TASKS_HOURS,
                 dashboardModel.getAdvancePercentageByHours());
+        globalProgressChart.current(GlobalProgressChart.SPREAD_PROGRESS,
+                dashboardModel.getSpreadProgress());
+
         // Expected values
         globalProgressChart.expected(
                 GlobalProgressChart.CRITICAL_PATH_DURATION,
@@ -308,6 +311,8 @@ public class DashboardController extends GenericForwardComposer {
                 dashboardModel.getExpectedCriticalPathProgressByNumHours());
         globalProgressChart.expected(GlobalProgressChart.ALL_TASKS_HOURS,
                 dashboardModel.getExpectedAdvancePercentageByHours());
+        globalProgressChart.expected(GlobalProgressChart.SPREAD_PROGRESS,
+                dashboardModel.getExpectedSpreadProgress());
 
         globalProgressChart.render();
     }

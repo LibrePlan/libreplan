@@ -39,6 +39,8 @@ import org.zkoss.zk.ui.util.Clients;
 */
 public class GlobalProgressChart {
 
+    public static final String SPREAD_PROGRESS = _("Spreading progress");
+
     public static final String ALL_TASKS_HOURS = _("By all tasks hours");
 
     public static final String CRITICAL_PATH_HOURS = _("By critical path hours");

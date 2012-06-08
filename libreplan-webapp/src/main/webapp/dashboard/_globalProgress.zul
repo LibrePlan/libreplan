@@ -40,7 +40,7 @@
             },
             yaxis: {
                 renderer: $.jqplot.CategoryAxisRenderer,
-                ticks: ['1','2','3'],
+                ticks: ['1','2','3','4'],
                 tickOptions: {
                     showGridline: false,
                     markSize: 0
