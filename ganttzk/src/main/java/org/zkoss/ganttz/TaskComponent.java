@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
@@ -63,8 +61,6 @@ import org.zkoss.zul.Div;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class TaskComponent extends Div implements AfterCompose {
-
-    private static final Log LOG = LogFactory.getLog(TaskComponent.class);
 
     private static final int HEIGHT_PER_TASK = 10;
     private static final int CONSOLIDATED_MARK_HALF_WIDTH = 3;
@@ -581,10 +577,6 @@ public class TaskComponent extends Div implements AfterCompose {
         this.progressType = progressType;
     }
 
-    private GanttPanel getGanntPanel() {
-        return getTaskList().getGanttPanel();
-    }
-
     private boolean isInPage() {
         return getPage() != null;
     }
@@ -620,18 +612,8 @@ public class TaskComponent extends Div implements AfterCompose {
         return task.getLabelsText();
     }
 
-    public String getLabelsDisplay() {
-        Planner planner = getTaskList().getGanttPanel().getPlanner();
-        return planner.isShowingLabels() ? "inline" : "none";
-    }
-
     public String getResourcesText() {
         return task.getResourcesText();
-    }
-
-    public String getResourcesDisplay() {
-        Planner planner = getTaskList().getGanttPanel().getPlanner();
-        return planner.isShowingResources() ? "inline" : "none";
     }
 
     public boolean isSubcontracted() {
