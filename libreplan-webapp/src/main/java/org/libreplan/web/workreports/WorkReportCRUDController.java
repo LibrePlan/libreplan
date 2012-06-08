@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
@@ -1636,7 +1637,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     /**
      * Method to manage the query work report lines
      */
-
     public List<WorkReportLine> getQueryWorkReportLines() {
         List<WorkReportLine> result = workReportModel.getAllWorkReportLines();
         updateSummary(result);
@@ -1692,14 +1692,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @param event
      */
     public void onApplyFilterWorkReportLines(Event event) {
-        createPredicateLines();
-        filterByPredicateLines();
-        updateSummary();
+        OrderElement selectedOrder = getSelectedOrderElement();
+        if (selectedOrder == null) {
+            // Show all work report lines
+            Util.reloadBindings(gridListQuery);
+        } else {
+            createPredicateLines(selectedOrder);
+            filterByPredicateLines();
+            updateSummary();
+        }
     }
 
-    private void createPredicateLines() {
+    private void createPredicateLines(OrderElement orderElement) {
+        Validate.notNull(orderElement);
         String type = filterType.getValue();
-        OrderElement orderElement = getSelectedOrderElement();
         Resource resource = getSelectedResource();
         TypeOfWorkHours hoursType = getSelectedHoursType();
         Date startDate = filterStartDateLine.getValue();
