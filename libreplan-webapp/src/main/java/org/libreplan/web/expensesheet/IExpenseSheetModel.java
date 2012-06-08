@@ -59,7 +59,7 @@ public interface IExpenseSheetModel extends IIntegrationEntityModel {
 
     void addExpenseSheetLine();
 
-    ExpenseSheetLine getExpenseSheetLineDTO();
+    ExpenseSheetLine getNewExpenseSheetLine();
 
     List<Order> getOrders();
 

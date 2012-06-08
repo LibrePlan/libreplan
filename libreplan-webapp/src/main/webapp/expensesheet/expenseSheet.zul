@@ -130,20 +130,20 @@
                         widthListbox="400px"
                         finder="OrderElementInExpenseSheetBandboxFinder"
                         model="@{controller.tasks}"
-                        selectedElement="@{controller.expenseSheetLineDTO.orderElement, access='both'}"/>
+                        selectedElement="@{controller.newExpenseSheetLine.orderElement, access='both'}"/>
 
 					<separator bar="false" spacing="10px" orient="vertical"/>
 
                     <label value="${i18n:_('Value')}" />
                     <decimalbox id="dboxValue"
-                        value="@{controller.expenseSheetLineDTO.value}"
+                        value="@{controller.newExpenseSheetLine.value}"
                         format="@{controller.moneyFormat}"
                         constraint="@{controller.checkConstraintExpenseValue}"/>
 
 					<separator bar="false" spacing="10px" orient="vertical"/>
 
                     <label value="${i18n:_('Concept')}" />
-                    <textbox id="tbConcept" width="200px" value="@{controller.expenseSheetLineDTO.concept}" />
+                    <textbox id="tbConcept" width="200px" value="@{controller.newExpenseSheetLine.concept}" />
 
                     <separator bar="false" spacing="10px" orient="vertical"/>
 
@@ -153,7 +153,7 @@
                             widthBandbox="285px"
                             widthListbox="400px"
                             finder="ResourceInExpenseSheetBandboxFinder"
-                            selectedElement="@{controller.expenseSheetLineDTO.resource, access='both'}"/>
+                            selectedElement="@{controller.newExpenseSheetLine.resource, access='both'}"/>
                     </div>
 
                     <separator bar="false" spacing="10px" orient="vertical"/>

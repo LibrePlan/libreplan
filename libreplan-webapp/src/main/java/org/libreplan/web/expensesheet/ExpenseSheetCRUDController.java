@@ -152,7 +152,7 @@ public class ExpenseSheetCRUDController extends
      * @param rows
      */
     public void addExpenseSheetLine() {
-        if (validateLineDTO()) {
+        if (validateNewLine()) {
             expenseSheetModel.addExpenseSheetLine();
             reloadExpenseSheetLines();
             reloadComponentsNewLine();
@@ -166,17 +166,17 @@ public class ExpenseSheetCRUDController extends
         Util.reloadBindings(dboxValue);
     }
 
-    private boolean validateLineDTO() {
+    private boolean validateNewLine() {
         boolean result = true;
-        if (expenseSheetModel.getExpenseSheetLineDTO().getDate() == null) {
+        if (expenseSheetModel.getNewExpenseSheetLine().getDate() == null) {
             result = false;
             throw new WrongValueException(this.dateboxExpenseDate, _("must be not empty"));
         }
-        if (expenseSheetModel.getExpenseSheetLineDTO().getOrderElement() == null) {
+        if (expenseSheetModel.getNewExpenseSheetLine().getOrderElement() == null) {
             result = false;
             throw new WrongValueException(this.bandboxTasks, _("must be not empty"));
         }
-        BigDecimal value = expenseSheetModel.getExpenseSheetLineDTO().getValue();
+        BigDecimal value = expenseSheetModel.getNewExpenseSheetLine().getValue();
         if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
             result = false;
             throw new WrongValueException(this.dboxValue,
@@ -236,8 +236,8 @@ public class ExpenseSheetCRUDController extends
         reloadExpenseSheetLines();
     }
 
-    public ExpenseSheetLine getExpenseSheetLineDTO() {
-        return expenseSheetModel.getExpenseSheetLineDTO();
+    public ExpenseSheetLine getNewExpenseSheetLine() {
+        return expenseSheetModel.getNewExpenseSheetLine();
     }
 
     public List<Order> getOrders() {
@@ -522,21 +522,21 @@ public class ExpenseSheetCRUDController extends
     }
 
     public Date getExpenseSheetLineDate() {
-        if (expenseSheetModel.getExpenseSheetLineDTO() != null) {
-            return (expenseSheetModel.getExpenseSheetLineDTO().getDate() != null) ? expenseSheetModel
-                    .getExpenseSheetLineDTO().getDate().toDateTimeAtStartOfDay().toDate()
+        if (expenseSheetModel.getNewExpenseSheetLine() != null) {
+            return (expenseSheetModel.getNewExpenseSheetLine().getDate() != null) ? expenseSheetModel
+                    .getNewExpenseSheetLine().getDate().toDateTimeAtStartOfDay().toDate()
                     : null;
         }
         return null;
     }
 
     public void setExpenseSheetLineDate(Date date) {
-        if (expenseSheetModel.getExpenseSheetLineDTO() != null) {
+        if (expenseSheetModel.getNewExpenseSheetLine() != null) {
             LocalDate localDate = null;
             if (date != null) {
                 localDate = LocalDate.fromDateFields(date);
             }
-            expenseSheetModel.getExpenseSheetLineDTO().setDate(localDate);
+            expenseSheetModel.getNewExpenseSheetLine().setDate(localDate);
         }
     }
 
