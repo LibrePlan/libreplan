@@ -5,11 +5,12 @@
 <!-- FilmingProgress -->
 <class name="FilmingProgress" table="filming_progress">
     <cache usage="nonstrict-read-write"/>
-    <id name="id" column="id">
-        <generator class="foreign">
-            <param name="property">order</param>
+    <id name="id" access="property" type="long">
+        <generator class="hilo" >
+            <param name="max_lo">100</param>
         </generator>
     </id>
+
     <version name="version" access="property" type="long" />
 
     <property name="startDate" access="field" column="start_date"
@@ -41,8 +42,8 @@
         <element column="value" type="big_decimal"/>
     </map>
 
-    <one-to-one name="order" constrained="true" class="org.libreplan.business.orders.entities.Order"
-        access="field" lazy="false"/>
+    <many-to-one name="order" class="org.libreplan.business.orders.entities.Order" column="order_id" />
+
 </class>
 
 </hibernate-mapping>

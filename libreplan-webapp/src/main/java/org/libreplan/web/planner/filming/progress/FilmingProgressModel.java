@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -59,7 +60,7 @@ public class FilmingProgressModel implements IFilmingProgressModel {
 
     private Order currentOrder;
 
-    private FilmingProgress currentFilming;
+    private Map<FilmingProgressTypeEnum, FilmingProgress> currentFilmingProgessMap = new HashMap<FilmingProgressTypeEnum, FilmingProgress>();
 
     private ISaveCommand saveCommand;
 
@@ -74,25 +75,33 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         this.currentOrder = order;
         if (currentOrder != null) {
             orderDAO.reattach(currentOrder);
-            this.currentFilming = this.currentOrder.getFilmingProgress();
+            loadDataFromFilmingProgressSet();
 
-            if (currentFilming == null) {
-                this.currentFilming = FilmingProgress.create(order,
-                        FilmingProgressTypeEnum.SCENES);
-                order.setFilmingProgress(currentFilming);
-                progressValues = new ArrayList<ProgressValue>();
-            } else {
-                loadDataFromFilmingProgess();
-            }
-
+            createMap(order.getFilmingProgressSet());
+            progressValues = new ArrayList<ProgressValue>();
         }
     }
 
-    private void loadDataFromFilmingProgess() {
-        this.currentFilming.getEndDate();
-        loadDataInMaps(this.currentFilming.getInitialProgressForecast());
-        loadDataInMaps(this.currentFilming.getProgressForecast());
-        loadDataInMaps(this.currentFilming.getRealProgress());
+    private void createMap(Set<FilmingProgress> filmingProgressSet) {
+        this.currentFilmingProgessMap = new HashMap<FilmingProgressTypeEnum, FilmingProgress>();
+        for (FilmingProgress filmingProgress : filmingProgressSet) {
+            currentFilmingProgessMap.put(filmingProgress.getType(), filmingProgress);
+        }
+    }
+
+    private void loadDataFromFilmingProgressSet() {
+        Set<FilmingProgress> filmingProgressSet = this.currentOrder
+                .getFilmingProgressSet();
+        for (FilmingProgress filmingProgress : filmingProgressSet) {
+            loadDataFromFilmingProgress(filmingProgress);
+        }
+    }
+
+    private void loadDataFromFilmingProgress(FilmingProgress filmingProgress) {
+        filmingProgress.getEndDate();
+        loadDataInMaps(filmingProgress.getInitialProgressForecast());
+        loadDataInMaps(filmingProgress.getProgressForecast());
+        loadDataInMaps(filmingProgress.getRealProgress());
     }
 
     private void loadDataInMaps(Map<LocalDate, BigDecimal> map) {
@@ -108,13 +117,17 @@ public class FilmingProgressModel implements IFilmingProgressModel {
 
     @Override
     public FilmingProgress getCurrentFilmingProgress() {
-        return this.currentFilming;
+        return null;
     }
 
     private void checkOutDontSaveEmptyFilmingProgress() {
-        if (this.getCurrentFilmingProgress().isNewObject()
-                && isEmptyFilmingProgress()) {
-            this.getCurrentOrder().setFilmingProgress(null);
+        for (FilmingProgress filmingProgress : this.currentFilmingProgessMap
+                .values()) {
+            if (filmingProgress.isNewObject()
+                    && isEmptyFilmingProgress(filmingProgress)) {
+                this.getCurrentOrder().getFilmingProgressSet()
+                        .remove(filmingProgress);
+            }
         }
     }
 
@@ -163,14 +176,22 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         buildProgressValueBy(unitMeasure, maxValue);
     }
 
-    private void buildProgressValueBy(FilmingProgressTypeEnum unitMeasure,
+    private void buildProgressValueBy(FilmingProgressTypeEnum type,
             BigDecimal maxValue) {
-        for (ProgressType type : ProgressType.values()) {
-            getProgressMapByType(type).put(unitMeasure,
-                    new TreeMap<LocalDate, BigDecimal>());
-            initSortedMap(getProgressMapByType(type).get(unitMeasure), maxValue);
-            progressValues.add(new ProgressValue(type, unitMeasure,
-                    getProgressMapByType(type).get(unitMeasure)));
+
+        FilmingProgress filmingProgress = FilmingProgress.create(currentOrder, type);
+        this.currentOrder.getFilmingProgressSet().add(filmingProgress);
+
+        createInitialProgressForecastBy(filmingProgress.getInitialProgressForecast(), maxValue);
+
+        this.currentFilmingProgessMap.put(type, filmingProgress);
+    }
+
+    private void createInitialProgressForecastBy(
+            SortedMap<LocalDate, BigDecimal> map, BigDecimal maxValue) {
+        if (this.getCurrentOrder() != null) {
+            createIntoInterval(map, getCurrentOrder().getInitDate(),
+                    getCurrentOrder().getDeadline(), maxValue);
         }
     }
 

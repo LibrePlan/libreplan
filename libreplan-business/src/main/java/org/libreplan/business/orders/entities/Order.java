@@ -120,7 +120,7 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private CurrentVersionInfo currentVersionInfo;
 
-    private FilmingProgress filmingProgress;
+    private Set<FilmingProgress> filmingProgressSet = new HashSet<FilmingProgress>();
 
     private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
 
@@ -668,12 +668,12 @@ public class Order extends OrderLineGroup implements Comparable {
         return neededToRecalculateSumChargedEfforts;
     }
 
-    public void setFilmingProgress(FilmingProgress filmingProgress) {
-        this.filmingProgress = filmingProgress;
+    public void setFilmingProgressSet(Set<FilmingProgress> filmingProgressSet) {
+        this.filmingProgressSet = filmingProgressSet;
     }
 
-    public FilmingProgress getFilmingProgress() {
-        return filmingProgress;
+    public Set<FilmingProgress> getFilmingProgressSet() {
+        return filmingProgressSet;
     }
 
     public void markAsNeededToRecalculateSumExpenses() {

@@ -145,8 +145,10 @@
                         class="org.libreplan.business.scenarios.entities.OrderVersion"/>
                 </map>
 
-                <one-to-one name="filmingProgress" access="field" cascade="all"
-                    class="org.libreplan.business.filmingprogress.entities.FilmingProgress" />
+                <set name="filmingProgressSet" inverse="false" cascade="all,delete-orphan" access="field">
+                    <key column="order_id" />
+                    <one-to-many class="org.libreplan.business.filmingprogress.entities.FilmingProgress" />
+                </set>
 
                 <set name="customerCommunications" cascade="delete-orphan" inverse="true" >
                     <key column="order_id" />
