@@ -26,19 +26,19 @@
     <map name="initialProgressForecast" table="initial_progress_forecast" lazy="false" cascade="all" sort="natural">
         <key column="filming_progress_id"/>
         <map-key column="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
-        <element column="scenes" type="integer"/>
+        <element column="value" type="big_decimal"/>
     </map>
 
     <map name="progressForecast" table="progress_forecast" lazy="false" cascade="all" sort="natural">
         <key column="filming_progress_id"/>
         <map-key column="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
-        <element column="scenes" type="integer"/>
+        <element column="value" type="big_decimal"/>
     </map>
 
     <map name="realProgress" table="real_progress" lazy="false" cascade="all" sort="natural">
         <key column="filming_progress_id"/>
         <map-key column="day" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
-        <element column="scenes" type="integer"/>
+        <element column="value" type="big_decimal"/>
     </map>
 
     <one-to-one name="order" constrained="true" class="org.libreplan.business.orders.entities.Order"

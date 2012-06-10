@@ -18,6 +18,7 @@
  */
 package org.libreplan.business.filmingprogress.entities;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 import java.util.SortedMap;
@@ -39,11 +40,11 @@ public class FilmingProgress extends BaseEntity {
 
     private LocalDate endDate;
 
-    private SortedMap<LocalDate, Integer> initialProgressForecast = new TreeMap<LocalDate, Integer>();
+    private SortedMap<LocalDate, BigDecimal> initialProgressForecast = new TreeMap<LocalDate, BigDecimal>();
 
-    private SortedMap<LocalDate, Integer> progressForecast = new TreeMap<LocalDate, Integer>();
+    private SortedMap<LocalDate, BigDecimal> progressForecast = new TreeMap<LocalDate, BigDecimal>();
 
-    private SortedMap<LocalDate, Integer> realProgress = new TreeMap<LocalDate, Integer>();
+    private SortedMap<LocalDate, BigDecimal> realProgress = new TreeMap<LocalDate, BigDecimal>();
 
     private Order order;
 
@@ -75,14 +76,15 @@ public class FilmingProgress extends BaseEntity {
         return filmingProgress;
     }
 
-    private static void initIntoInterval(final Map<LocalDate, Integer> scenesPerDay, Date initDate,
+    private static void initIntoInterval(
+            final Map<LocalDate, BigDecimal> scenesPerDay, Date initDate,
             Date deadline) {
         Validate.notNull(initDate);
         Validate.notNull(deadline);
         LocalDate finishDate = new LocalDate(deadline);
         LocalDate date = new LocalDate(initDate);
         while (date.compareTo(finishDate) <= 0) {
-            scenesPerDay.put(date, 0);
+            scenesPerDay.put(date, BigDecimal.ZERO);
             date = date.plusDays(1);
         }
     }
@@ -120,27 +122,29 @@ public class FilmingProgress extends BaseEntity {
         return endDate;
     }
 
-    public void setInitialProgressForecast(SortedMap<LocalDate, Integer> initialProgressForecast) {
+    public void setInitialProgressForecast(
+            SortedMap<LocalDate, BigDecimal> initialProgressForecast) {
         this.initialProgressForecast = initialProgressForecast;
     }
 
-    public Map<LocalDate, Integer> getInitialProgressForecast() {
+    public SortedMap<LocalDate, BigDecimal> getInitialProgressForecast() {
         return initialProgressForecast;
     }
 
-    public void setProgressForecast(SortedMap<LocalDate, Integer> progressForecast) {
+    public void setProgressForecast(
+            SortedMap<LocalDate, BigDecimal> progressForecast) {
         this.progressForecast = progressForecast;
     }
 
-    public Map<LocalDate, Integer> getProgressForecast() {
+    public SortedMap<LocalDate, BigDecimal> getProgressForecast() {
         return progressForecast;
     }
 
-    public void setRealProgress(SortedMap<LocalDate, Integer> realProgress) {
+    public void setRealProgress(SortedMap<LocalDate, BigDecimal> realProgress) {
         this.realProgress = realProgress;
     }
 
-    public Map<LocalDate, Integer> getRealProgress() {
+    public SortedMap<LocalDate, BigDecimal> getRealProgress() {
         return realProgress;
     }
 

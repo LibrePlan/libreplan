@@ -170,4 +170,22 @@
         <comment>Remove column progress_granularity in filming_progress table</comment>
         <dropColumn tableName="filming_progress" columnName="progress_granularity" />
     </changeSet>
+
+    <changeSet id="modify-columns-type-in-filming-progress-maps" author="smontes">
+        <comment>modify columns type in filming progress maps</comment>
+        <modifyDataType tableName="initial_progress_forecast" columnName="scenes" newDataType="DECIMAL(19,2)"/>
+        <modifyDataType tableName="progress_forecast" columnName="scenes" newDataType="DECIMAL(19,2)"/>
+        <modifyDataType tableName="real_progress" columnName="scenes" newDataType="DECIMAL(19,2)"/>
+    </changeSet>
+
+    <changeSet id="rename-column-scenes-on-filming-progress-maps" author="smontes">
+        <comment>Rename column scenes on filming progress maps</comment>
+        <renameColumn tableName="initial_progress_forecast" oldColumnName="scenes"
+            newColumnName="value" columnDataType="DECIMAL(19,2)" />
+        <renameColumn tableName="progress_forecast" oldColumnName="scenes"
+            newColumnName="value" columnDataType="DECIMAL(19,2)" />
+        <renameColumn tableName="real_progress" oldColumnName="scenes"
+            newColumnName="value" columnDataType="DECIMAL(19,2)" />
+    </changeSet>
+
 </databaseChangeLog>

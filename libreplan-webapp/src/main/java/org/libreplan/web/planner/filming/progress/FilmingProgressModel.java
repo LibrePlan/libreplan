@@ -95,8 +95,8 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         loadDataInMaps(this.currentFilming.getRealProgress());
     }
 
-    private void loadDataInMaps(Map<LocalDate, Integer> map) {
-        for (Entry<LocalDate, Integer> entry : map.entrySet()) {
+    private void loadDataInMaps(Map<LocalDate, BigDecimal> map) {
+        for (Entry<LocalDate, BigDecimal> entry : map.entrySet()) {
             entry.getKey();
         }
     }
@@ -118,17 +118,17 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         }
     }
 
-    private boolean isEmptyFilmingProgress() {
-        return (calculateTotal(this.getCurrentFilmingProgress()
-                .getRealProgress()) == 0)
-                && (calculateTotal(this.getCurrentFilmingProgress()
-                        .getProgressForecast()) == 0);
+    private boolean isEmptyFilmingProgress(FilmingProgress filmingProgress) {
+        return (calculateTotal(filmingProgress.getRealProgress()).compareTo(
+                BigDecimal.ZERO) == 0)
+                && (calculateTotal(filmingProgress.getProgressForecast())
+                        .compareTo(BigDecimal.ZERO) == 0);
     }
 
-    private Integer calculateTotal(Map<LocalDate, Integer> progressValues) {
-        Integer total = 0;
-        for (Integer value : progressValues.values()) {
-            total = total + value;
+    private BigDecimal calculateTotal(Map<LocalDate, BigDecimal> progressValues) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (BigDecimal value : progressValues.values()) {
+            total = total.add(value);
         }
         return total;
     }
