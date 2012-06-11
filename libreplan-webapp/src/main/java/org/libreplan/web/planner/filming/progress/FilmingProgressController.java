@@ -44,6 +44,7 @@ import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.ISaveCommand;
+import org.libreplan.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -68,6 +69,7 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
 
@@ -117,7 +119,8 @@ public class FilmingProgressController extends GenericForwardComposer {
         self.setAttribute("controller", this);
         Util.createBindingsFor(this.mainComponent);
 
-        normalLayout = (org.zkoss.zk.ui.Component) comp.getFellow("normalLayout");
+        normalLayout = (org.zkoss.zk.ui.Component) comp
+                .getFellow("normalLayout");
         noDataLayout = (Div) comp.getFellow("noDataLayout");
         onlyOneVisible = new OnlyOneVisible(normalLayout, noDataLayout);
         onlyOneVisible.showOnly(noDataLayout);
@@ -160,9 +163,20 @@ public class FilmingProgressController extends GenericForwardComposer {
         Util.createBindingsFor(normalLayout);
     }
 
-    public void init(Order order, ISaveCommand saveCommand) {
+    public void init(final Order order, ISaveCommand saveCommand) {
         filmingProgressModel.setSaveCommand(saveCommand);
-        filmingProgressModel.hookIntoSaveCommand();
+
+        IAfterSaveListener afterSaveListener = new IAfterSaveListener() {
+            @Override
+            public void onAfterSave() {
+                filmingProgressModel.setCurrentOrder(order);
+                prepareFilmingProgressList();
+                gridTotals.setModel(new SimpleListModel(getRowTotals()));
+                gridTotals.renderAll();
+            }
+        };
+
+        filmingProgressModel.hookIntoSaveCommand(afterSaveListener);
         filmingProgressModel.setCurrentOrder(order);
         if (this.mainComponent != null) {
             loadAndInitializeComponents();
@@ -197,15 +211,19 @@ public class FilmingProgressController extends GenericForwardComposer {
      * functions to manage the datebox
      */
     public Date getStartDate() {
-        if (getFilmingProgress() != null && getFilmingProgress().getStartDate() != null) {
-            return getFilmingProgress().getStartDate().toDateTimeAtStartOfDay().toDate();
+        if (getFilmingProgress() != null
+                && getFilmingProgress().getStartDate() != null) {
+            return getFilmingProgress().getStartDate().toDateTimeAtStartOfDay()
+                    .toDate();
         }
         return null;
     }
 
     public Date getEndDate() {
-        if (getFilmingProgress() != null && getFilmingProgress().getEndDate() != null) {
-            return getFilmingProgress().getEndDate().toDateTimeAtStartOfDay().toDate();
+        if (getFilmingProgress() != null
+                && getFilmingProgress().getEndDate() != null) {
+            return getFilmingProgress().getEndDate().toDateTimeAtStartOfDay()
+                    .toDate();
         }
         return null;
     }
@@ -223,8 +241,8 @@ public class FilmingProgressController extends GenericForwardComposer {
     private List<FilmingProgressTypeEnum> getUnitMeasuresNotAdded() {
         List<FilmingProgressTypeEnum> measures = new ArrayList<FilmingProgressTypeEnum>(
                 Arrays.asList(FilmingProgressTypeEnum.values()));
-        for(ProgressValue pgValue :this.getProgressValues()){
-            measures.remove(pgValue.unitMeasure);
+        for (ProgressValue pgValue : this.getProgressValues()) {
+            measures.remove(pgValue.progressType);
         }
         return measures;
     }
@@ -248,6 +266,7 @@ public class FilmingProgressController extends GenericForwardComposer {
 
         appendColumns(gridValuesPerDay);
 
+        resetTotalPanel();
         gridValuesPerDay.setModel(new SimpleListModel(getProgressValues()));
         gridValuesPerDay.renderAll();
     }
@@ -295,7 +314,7 @@ public class FilmingProgressController extends GenericForwardComposer {
 
         Auxhead auxhead = new Auxhead();
         for (CustomHeader customHeader : listHeaders) {
-            Auxheader auxHeader = new Auxheader(customHeader.title);
+            Auxheader auxHeader = new Auxheader(customHeader.type);
             auxHeader.setAlign("center");
             auxHeader.setStyle("font-weight:bold;");
             auxHeader.setColspan(customHeader.colspan);
@@ -320,10 +339,10 @@ public class FilmingProgressController extends GenericForwardComposer {
         SimpleDateFormat dateFormat = new SimpleDateFormat("w,MMM yyyy");
         for (Integer week : mapByWeek.keySet()) {
             Date date = mapByWeek.get(week).get(0).toDateTimeAtStartOfDay()
-                        .toDate();
-            String title = dateFormat.format(date);
-            list.add(new CustomHeader(title, mapByWeek.get(week).size()));
-            }
+                    .toDate();
+            String type = dateFormat.format(date);
+            list.add(new CustomHeader(type, mapByWeek.get(week).size()));
+        }
         return list;
     }
 
@@ -359,6 +378,8 @@ public class FilmingProgressController extends GenericForwardComposer {
                     .getValues().entrySet()) {
 
                 Decimalbox valuebox = new Decimalbox();
+                valuebox.setReadonly(isReadOnlyByDay(
+                        progressValue.forecastLevel, entry.getKey()));
 
                 Util.bind(valuebox, new Util.Getter<BigDecimal>() {
 
@@ -380,19 +401,34 @@ public class FilmingProgressController extends GenericForwardComposer {
             }
         }
 
+        private boolean isReadOnlyByDay(ForecastLevelEnum forecastLevel,
+                LocalDate date) {
+            return ((ForecastLevelEnum.REAL.equals(forecastLevel) && date
+                    .isAfter(new LocalDate())) || (ForecastLevelEnum.FORECAST
+                    .equals(forecastLevel) && date.isBefore(new LocalDate()
+                    .plusDays(1))));
+        }
+
         private void updatePanelTotal(Row row, BigDecimal oldValue,
                 BigDecimal newValue) {
             RowTotal rowTotal = panelTotal.get(row);
 
             BigDecimal total = rowTotal.getTotal();
-             if (oldValue.compareTo(newValue)  >= 0) {
-                 BigDecimal diff = oldValue.subtract(newValue);
-                total = total.subtract(diff);
-                rowTotal.setTotal(total);
-             } else {
+            if (oldValue == null) {
+                oldValue = BigDecimal.ZERO;
+            }
+            if (newValue == null) {
+                newValue = BigDecimal.ZERO;
+            }
+            if (oldValue.compareTo(newValue) < 0) {
                 BigDecimal diff = newValue.subtract(oldValue);
                 total = total.add(diff);
                 rowTotal.setTotal(total);
+            } else {
+                BigDecimal diff = oldValue.subtract(newValue);
+                total = total.subtract(diff);
+                rowTotal.setTotal(total);
+
             }
         }
 
@@ -401,10 +437,12 @@ public class FilmingProgressController extends GenericForwardComposer {
             BigDecimal total = BigDecimal.ZERO;
             for (final Entry<LocalDate, BigDecimal> entry : progressValue
                     .getValues().entrySet()) {
-                total = total.add(entry.getValue());
+                if (entry.getValue() != null) {
+                    total = total.add(entry.getValue());
+                }
             }
-            return new RowTotal(progressValue.unitMeasure,
-                    progressValue.progressType.toString(), total);
+            return new RowTotal(progressValue.progressType,
+                    progressValue.forecastLevel.toString(), total);
         }
     }
 
@@ -416,9 +454,18 @@ public class FilmingProgressController extends GenericForwardComposer {
         getProgressValuesRenderer().panelTotal = new HashMap<Row, RowTotal>();
     }
 
-    public List<RowTotal> getRowTotals(){
+    public List<RowTotal> getRowTotals() {
         Map<Row, RowTotal> panelTotal = getProgressValuesRenderer().panelTotal;
-        List<RowTotal> list = new ArrayList<RowTotal>(panelTotal.values());
+        List<RowTotal> list = new ArrayList<RowTotal>();
+        if (gridValuesPerDay != null) {
+            Rows rows = this.gridValuesPerDay.getRows();
+            if (rows != null) {
+                List<Row> listRow = rows.getChildren();
+                for (Row row : listRow) {
+                    list.add(panelTotal.get(row));
+                }
+            }
+        }
         return list;
     }
 
@@ -436,13 +483,7 @@ public class FilmingProgressController extends GenericForwardComposer {
             final RowTotal rowTotal = (RowTotal) data;
             row.setValue(rowTotal);
 
-            String unitMeasureLabel = "";
-            if (rowTotal.getUnitMeasure() != null) {
-                unitMeasureLabel = rowTotal.getUnitMeasure().toString();
-            }
-
-            row.appendChild(new Label(unitMeasureLabel));
-            row.appendChild(rowTotal.getLbTitle());
+            row.appendChild(rowTotal.getLbType());
             row.appendChild(rowTotal.getLbTotal());
         }
     }
@@ -541,28 +582,25 @@ public class FilmingProgressController extends GenericForwardComposer {
 
 }
 
-class RowTotal{
-    private FilmingProgressTypeEnum unitMeasure;
-    private String title = "";
+class RowTotal {
+    private String type = "";
     private BigDecimal total = BigDecimal.ZERO;
 
-    private Label lbTitle = new Label();
+    private Label lbType = new Label();
     private Label lbTotal = new Label();
 
-    public RowTotal(FilmingProgressTypeEnum unitMeasure, String title,
-            BigDecimal total) {
-        this.setTitle(title);
+    public RowTotal(FilmingProgressTypeEnum type, String level, BigDecimal total) {
+        this.setType(type.toString() + " (" + level + ")");
         this.setTotal(total);
-        this.setUnitMeasure(unitMeasure);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-        this.lbTitle.setValue(title);
+    public void setType(String type) {
+        this.type = type;
+        this.lbType.setValue(type);
     }
 
-    public String getTitle() {
-        return title;
+    public String getType() {
+        return type;
     }
 
     public void setTotal(BigDecimal total) {
@@ -574,12 +612,12 @@ class RowTotal{
         return total;
     }
 
-    public void setLbTitle(Label lbTitle) {
-        this.lbTitle = lbTitle;
+    public void setLbType(Label lbType) {
+        this.lbType = lbType;
     }
 
-    public Label getLbTitle() {
-        return lbTitle;
+    public Label getLbType() {
+        return lbType;
     }
 
     public void setLbTotal(Label lbTotal) {
@@ -589,22 +627,14 @@ class RowTotal{
     public Label getLbTotal() {
         return lbTotal;
     }
-
-    public void setUnitMeasure(FilmingProgressTypeEnum unitMeasure) {
-        this.unitMeasure = unitMeasure;
-    }
-
-    public FilmingProgressTypeEnum getUnitMeasure() {
-        return unitMeasure;
-    }
 }
 
 class CustomHeader {
-    String title = "";
+    String type = "";
     int colspan = 0;
 
-    CustomHeader(String title, int colspan) {
-        this.title = title;
+    CustomHeader(String type, int colspan) {
+        this.type = type;
         this.colspan = colspan;
     }
 }

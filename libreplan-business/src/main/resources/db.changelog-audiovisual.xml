@@ -188,4 +188,24 @@
             newColumnName="value" columnDataType="DECIMAL(19,2)" />
     </changeSet>
 
+    <changeSet id="add-column-order_id-in-filming-progress-table"
+        author="smontes">
+        <comment>add column order_id in filming_progress table</comment>
+        <addColumn tableName="filming_progress">
+            <column name="order_id" type="BIGINT" />
+        </addColumn>
+        <dropForeignKeyConstraint constraintName="fk_filming_progress_per_order"
+            baseTableName="filming_progress" />
+        <addForeignKeyConstraint constraintName="fk_filming_progress_order"
+            baseTableName="filming_progress" baseColumnNames="order_id"
+            referencedTableName="order_table" referencedColumnNames="order_element_id" />
+    </changeSet>
+
+    <changeSet id="drop-not-null-constraint-column-value-on-filming-progress-maps" author="smontes">
+        <comment>drop not null constraint in column value on filming progress maps</comment>
+        <dropNotNullConstraint tableName="initial_progress_forecast" columnName="value"/>
+        <dropNotNullConstraint tableName="progress_forecast" columnName="value"/>
+        <dropNotNullConstraint tableName="real_progress" columnName="value"/>
+    </changeSet>
+
 </databaseChangeLog>

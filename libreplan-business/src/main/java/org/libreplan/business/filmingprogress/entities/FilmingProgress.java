@@ -19,10 +19,7 @@
 package org.libreplan.business.filmingprogress.entities;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Map;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -40,11 +37,11 @@ public class FilmingProgress extends BaseEntity {
 
     private LocalDate endDate;
 
-    private SortedMap<LocalDate, BigDecimal> initialProgressForecast = new TreeMap<LocalDate, BigDecimal>();
+    private SortedMap<LocalDate, BigDecimal> initialProgressForecast;
 
-    private SortedMap<LocalDate, BigDecimal> progressForecast = new TreeMap<LocalDate, BigDecimal>();
+    private SortedMap<LocalDate, BigDecimal> progressForecast;
 
-    private SortedMap<LocalDate, BigDecimal> realProgress = new TreeMap<LocalDate, BigDecimal>();
+    private SortedMap<LocalDate, BigDecimal> realProgress;
 
     private Order order;
 
@@ -67,26 +64,7 @@ public class FilmingProgress extends BaseEntity {
         Validate.notNull(order.getDeadline());
         FilmingProgress filmingProgress = create(new FilmingProgress(order,
                 type));
-        initIntoInterval(filmingProgress.getInitialProgressForecast(), order.getInitDate(),
-                order.getDeadline());
-        initIntoInterval(filmingProgress.getProgressForecast(), order.getInitDate(),
-                order.getDeadline());
-        initIntoInterval(filmingProgress.getRealProgress(), order.getInitDate(),
-                order.getDeadline());
         return filmingProgress;
-    }
-
-    private static void initIntoInterval(
-            final Map<LocalDate, BigDecimal> scenesPerDay, Date initDate,
-            Date deadline) {
-        Validate.notNull(initDate);
-        Validate.notNull(deadline);
-        LocalDate finishDate = new LocalDate(deadline);
-        LocalDate date = new LocalDate(initDate);
-        while (date.compareTo(finishDate) <= 0) {
-            scenesPerDay.put(date, BigDecimal.ZERO);
-            date = date.plusDays(1);
-        }
     }
 
     public static FilmingProgress create() {

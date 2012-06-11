@@ -25,6 +25,7 @@ import org.libreplan.business.filmingprogress.entities.FilmingProgress;
 import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.planner.order.ISaveCommand;
+import org.libreplan.web.planner.order.ISaveCommand.IAfterSaveListener;
 
 interface IFilmingProgressModel {
 
@@ -36,7 +37,7 @@ interface IFilmingProgressModel {
 
     void setSaveCommand(ISaveCommand saveCommand);
 
-    void hookIntoSaveCommand();
+    void hookIntoSaveCommand(IAfterSaveListener afterSaveListener);
 
     List<ProgressValue> getProgressValues();
 

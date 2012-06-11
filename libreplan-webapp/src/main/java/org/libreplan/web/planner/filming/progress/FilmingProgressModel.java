@@ -22,11 +22,7 @@ package org.libreplan.web.planner.filming.progress;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -39,6 +35,7 @@ import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.planner.order.ISaveCommand;
+import org.libreplan.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.libreplan.web.planner.order.ISaveCommand.IBeforeSaveListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -60,12 +57,7 @@ public class FilmingProgressModel implements IFilmingProgressModel {
 
     private Order currentOrder;
 
-    private Map<FilmingProgressTypeEnum, FilmingProgress> currentFilmingProgessMap = new HashMap<FilmingProgressTypeEnum, FilmingProgress>();
-
     private ISaveCommand saveCommand;
-
-    private Map<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>> progressForecast = new HashMap<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>>();
-    private Map<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>> realProgress = new HashMap<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>>();
 
     List<ProgressValue> progressValues = new ArrayList<ProgressValue>();
 
@@ -75,38 +67,73 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         this.currentOrder = order;
         if (currentOrder != null) {
             orderDAO.reattach(currentOrder);
-            loadDataFromFilmingProgressSet();
-
-            createMap(order.getFilmingProgressSet());
             progressValues = new ArrayList<ProgressValue>();
-        }
-    }
-
-    private void createMap(Set<FilmingProgress> filmingProgressSet) {
-        this.currentFilmingProgessMap = new HashMap<FilmingProgressTypeEnum, FilmingProgress>();
-        for (FilmingProgress filmingProgress : filmingProgressSet) {
-            currentFilmingProgessMap.put(filmingProgress.getType(), filmingProgress);
+            if (currentOrder.getFilmingProgressSet() != null
+                    && !currentOrder.getFilmingProgressSet().isEmpty()) {
+                loadDataFromFilmingProgressSet();
+            }
         }
     }
 
     private void loadDataFromFilmingProgressSet() {
-        Set<FilmingProgress> filmingProgressSet = this.currentOrder
-                .getFilmingProgressSet();
-        for (FilmingProgress filmingProgress : filmingProgressSet) {
-            loadDataFromFilmingProgress(filmingProgress);
+        if (this.currentOrder.getFilmingProgressSet() != null) {
+            Set<FilmingProgress> filmingProgressSet = this.currentOrder
+                    .getFilmingProgressSet();
+            for (FilmingProgress filmingProgress : filmingProgressSet) {
+                loadDataFromFilmingProgress(filmingProgress);
+            }
         }
     }
 
     private void loadDataFromFilmingProgress(FilmingProgress filmingProgress) {
         filmingProgress.getEndDate();
-        loadDataInMaps(filmingProgress.getInitialProgressForecast());
-        loadDataInMaps(filmingProgress.getProgressForecast());
-        loadDataInMaps(filmingProgress.getRealProgress());
+        loadMaps(filmingProgress);
+
+        if (filmingProgress.getInitialProgressForecast() != null) {
+            progressValues.add(new ProgressValue(
+                    ForecastLevelEnum.INITIAL_FORECAST, filmingProgress
+                            .getType(), filmingProgress
+                            .getInitialProgressForecast()));
+
+            if (filmingProgress.getRealProgress() == null) {
+                filmingProgress.setRealProgress(createIntoIntervalWithValue(
+                        filmingProgress.getStartDate(),
+                        filmingProgress.getEndDate(), null));
+            }
+
+        }
+        if (filmingProgress.getProgressForecast() != null) {
+            progressValues.add(new ProgressValue(ForecastLevelEnum.FORECAST,
+                    filmingProgress.getType(), filmingProgress
+                            .getProgressForecast()));
+        }
+        if (filmingProgress.getRealProgress() != null) {
+            progressValues.add(new ProgressValue(ForecastLevelEnum.REAL,
+                    filmingProgress.getType(), filmingProgress
+                            .getRealProgress()));
+        }
     }
 
-    private void loadDataInMaps(Map<LocalDate, BigDecimal> map) {
-        for (Entry<LocalDate, BigDecimal> entry : map.entrySet()) {
-            entry.getKey();
+    private void loadMaps(FilmingProgress filmingProgress) {
+        loadEmptyValues(filmingProgress.getInitialProgressForecast(),
+                filmingProgress.getStartDate(), filmingProgress.getEndDate());
+        loadEmptyValues(filmingProgress.getProgressForecast(),
+                filmingProgress.getStartDate(), filmingProgress.getEndDate());
+        loadEmptyValues(filmingProgress.getRealProgress(),
+                filmingProgress.getStartDate(), filmingProgress.getEndDate());
+    }
+
+    private void loadEmptyValues(SortedMap<LocalDate, BigDecimal> map,
+            LocalDate startDate, LocalDate endDate) {
+        if (map != null && !map.values().isEmpty()) {
+            Validate.notNull(startDate);
+            Validate.notNull(endDate);
+            while (startDate.compareTo(endDate) <= 0) {
+                if (map.get(startDate) == null) {
+                    map.put(startDate, null);
+                }
+                startDate = startDate.plusDays(1);
+            }
         }
     }
 
@@ -120,32 +147,6 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         return null;
     }
 
-    private void checkOutDontSaveEmptyFilmingProgress() {
-        for (FilmingProgress filmingProgress : this.currentFilmingProgessMap
-                .values()) {
-            if (filmingProgress.isNewObject()
-                    && isEmptyFilmingProgress(filmingProgress)) {
-                this.getCurrentOrder().getFilmingProgressSet()
-                        .remove(filmingProgress);
-            }
-        }
-    }
-
-    private boolean isEmptyFilmingProgress(FilmingProgress filmingProgress) {
-        return (calculateTotal(filmingProgress.getRealProgress()).compareTo(
-                BigDecimal.ZERO) == 0)
-                && (calculateTotal(filmingProgress.getProgressForecast())
-                        .compareTo(BigDecimal.ZERO) == 0);
-    }
-
-    private BigDecimal calculateTotal(Map<LocalDate, BigDecimal> progressValues) {
-        BigDecimal total = BigDecimal.ZERO;
-        for (BigDecimal value : progressValues.values()) {
-            total = total.add(value);
-        }
-        return total;
-    }
-
     public void setSaveCommand(ISaveCommand saveCommand) {
         this.saveCommand = saveCommand;
     }
@@ -154,15 +155,16 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         return this.saveCommand;
     }
 
-    public void hookIntoSaveCommand() {
+    public void hookIntoSaveCommand(IAfterSaveListener afterSaveListener) {
         if (getSaveCommand() != null) {
             IBeforeSaveListener beforeSaveListener = new IBeforeSaveListener() {
                 @Override
                 public void onBeforeSave() {
-                    checkOutDontSaveEmptyFilmingProgress();
+                    createMapsProgressForecast();
                 }
             };
             getSaveCommand().addListener(beforeSaveListener);
+            getSaveCommand().addListener(afterSaveListener);
         }
     }
 
@@ -179,73 +181,138 @@ public class FilmingProgressModel implements IFilmingProgressModel {
     private void buildProgressValueBy(FilmingProgressTypeEnum type,
             BigDecimal maxValue) {
 
-        FilmingProgress filmingProgress = FilmingProgress.create(currentOrder, type);
+        // create a new filming progress
+        FilmingProgress filmingProgress = FilmingProgress.create(currentOrder,
+                type);
         this.currentOrder.getFilmingProgressSet().add(filmingProgress);
 
-        createInitialProgressForecastBy(filmingProgress.getInitialProgressForecast(), maxValue);
+        // init the initial progress forecast with the max value
+        createInitialProgressForecastBy(filmingProgress, maxValue);
 
-        this.currentFilmingProgessMap.put(type, filmingProgress);
+        // init the real progress with value zero
+        filmingProgress.setRealProgress(createIntoIntervalWithValue(
+                filmingProgress.getStartDate(), filmingProgress.getEndDate(),
+                null));
+
+        // add the maps in the progress values list
+        progressValues.add(new ProgressValue(
+                ForecastLevelEnum.INITIAL_FORECAST, type, filmingProgress
+                        .getInitialProgressForecast()));
+        progressValues.add(new ProgressValue(ForecastLevelEnum.REAL, type,
+                filmingProgress.getRealProgress()));
     }
 
-    private void createInitialProgressForecastBy(
-            SortedMap<LocalDate, BigDecimal> map, BigDecimal maxValue) {
-        if (this.getCurrentOrder() != null) {
-            createIntoInterval(map, getCurrentOrder().getInitDate(),
-                    getCurrentOrder().getDeadline(), maxValue);
-        }
-    }
-
-    private void initSortedMap(SortedMap<LocalDate, BigDecimal> map,
-            BigDecimal maxValue) {
-        if (this.getCurrentOrder() != null) {
-            createIntoInterval(map, getCurrentOrder().getInitDate(),
-                    getCurrentOrder().getDeadline(), maxValue);
-        }
-    }
-
-    private SortedMap<LocalDate, BigDecimal> createIntoInterval(
-            SortedMap<LocalDate, BigDecimal> map, Date initDate,
-            Date deadline, BigDecimal maxValue) {
-        Validate.notNull(initDate);
-        Validate.notNull(deadline);
-        LocalDate finishDate = new LocalDate(deadline);
-        LocalDate date = new LocalDate(initDate);
-
-        int days = Days.daysBetween(date, finishDate).getDays();
-        BigDecimal value = BigDecimal.ZERO.setScale(2);
-        if (days > 0) {
-            value = maxValue.divide(new BigDecimal(days), 2,
-                    RoundingMode.HALF_UP);
-        }
-
-        for (int i = 0; i < days; i++) {
-            map.put(date, value);
-            date = date.plusDays(1);
+    private SortedMap<LocalDate, BigDecimal> createIntoIntervalWithValue(
+            LocalDate startDate, LocalDate endDate, BigDecimal value) {
+        SortedMap<LocalDate, BigDecimal> map = new TreeMap<LocalDate, BigDecimal>();
+        Validate.notNull(startDate);
+        Validate.notNull(endDate);
+        while (startDate.compareTo(endDate) <= 0) {
+            map.put(startDate, value);
+            startDate = startDate.plusDays(1);
         }
         return map;
     }
 
-    private Map<FilmingProgressTypeEnum, SortedMap<LocalDate, BigDecimal>> getProgressMapByType(
-            ProgressType type) {
-        switch (type) {
-        case FORECAST:
-            return progressForecast;
-        case REAL:
-        default:
-            return realProgress;
+    private void createMapsProgressForecast() {
+        for (FilmingProgress filmingProgress : this.currentOrder
+                .getFilmingProgressSet()) {
+            if (filmingProgress.getProgressForecast() == null) {
+                filmingProgress
+                        .setProgressForecast(createMapProgressForecast(filmingProgress));
+            }
         }
     }
+
+    private SortedMap<LocalDate, BigDecimal> createMapProgressForecast(
+            FilmingProgress filmingProgress) {
+        if (hasValues(filmingProgress.getRealProgress())) {
+            SortedMap<LocalDate, BigDecimal> toMap = new TreeMap<LocalDate, BigDecimal>();
+            LocalDate today = new LocalDate();
+
+            initMapIntoIntervalWithValue_(toMap,
+                    filmingProgress.getStartDate(), today,
+                    filmingProgress.getRealProgress());
+            initMapIntoIntervalWithValue_(toMap, today.plusDays(1),
+                    filmingProgress.getEndDate(),
+                    filmingProgress.getInitialProgressForecast());
+            return toMap;
+        }
+        return null;
+    }
+
+    private boolean hasValues(SortedMap<LocalDate, BigDecimal> realProgress) {
+        if (realProgress != null) {
+            for (BigDecimal value : realProgress.values()) {
+                if (value != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private SortedMap<LocalDate, BigDecimal> initMapIntoIntervalWithValue_(
+            SortedMap<LocalDate, BigDecimal> toMap, LocalDate startDate,
+            LocalDate endDate, SortedMap<LocalDate, BigDecimal> fromMap) {
+        Validate.notNull(startDate);
+        Validate.notNull(endDate);
+        while (startDate.compareTo(endDate) <= 0) {
+            toMap.put(startDate, fromMap.get(startDate));
+            startDate = startDate.plusDays(1);
+        }
+        return toMap;
+    }
+
+    private void createInitialProgressForecastBy(
+            FilmingProgress filmingProgress, BigDecimal maxValue) {
+        SortedMap<LocalDate, BigDecimal> map = new TreeMap<LocalDate, BigDecimal>();
+        if (this.getCurrentOrder() != null) {
+            createIntoInterval(map, filmingProgress.getStartDate(),
+                    filmingProgress.getEndDate(), maxValue);
+        }
+        filmingProgress.setInitialProgressForecast(map);
+    }
+
+    private SortedMap<LocalDate, BigDecimal> createIntoInterval(
+            SortedMap<LocalDate, BigDecimal> map, LocalDate initDate,
+            LocalDate finishDate, BigDecimal maxValue) {
+        Validate.notNull(initDate);
+        Validate.notNull(finishDate);
+
+        LocalDate date = initDate;
+        int days = Days.daysBetween(date, finishDate).getDays() + 1;
+        BigDecimal value = BigDecimal.ZERO.setScale(2);
+        BigDecimal total = BigDecimal.ZERO.setScale(2);
+
+        if (days > 0) {
+            value = maxValue.divide(new BigDecimal(days), 2,
+                    RoundingMode.HALF_DOWN);
+        } else {
+            return map;
+        }
+
+        for (int i = 0; i < days; i++) {
+            map.put(date, value);
+            total = total.add(value);
+            date = date.plusDays(1);
+        }
+        BigDecimal rest = maxValue.subtract(total);
+        map.put(finishDate, map.get(finishDate).add(rest));
+        return map;
+    }
+
 }
 
-enum ProgressType {
-    FORECAST, REAL;
+enum ForecastLevelEnum {
+    INITIAL_FORECAST, FORECAST, REAL;
 }
 
 class ProgressValue {
 
-    ProgressType progressType;
+    ForecastLevelEnum forecastLevel;
 
-    FilmingProgressTypeEnum unitMeasure;
+    FilmingProgressTypeEnum progressType;
 
     private SortedMap<LocalDate, BigDecimal> values = new TreeMap<LocalDate, BigDecimal>();
 
@@ -253,11 +320,11 @@ class ProgressValue {
 
     }
 
-    public ProgressValue(ProgressType type,
-            FilmingProgressTypeEnum unitMeasure,
+    public ProgressValue(ForecastLevelEnum forecastLevel,
+            FilmingProgressTypeEnum type,
             SortedMap<LocalDate, BigDecimal> values) {
+        this.forecastLevel = forecastLevel;
         this.progressType = type;
-        this.unitMeasure = unitMeasure;
         this.values = values;
     }
 
