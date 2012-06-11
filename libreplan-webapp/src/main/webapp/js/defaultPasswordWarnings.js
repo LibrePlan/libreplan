@@ -19,13 +19,14 @@
 
 function showOrHideDefaultPasswordWarnings(adminNotDefaultPassword,
     userNotDefaultPassword, wsreaderNotDefaultPassword,
-    wswriterNotDefaultPassword) {
+    wswriterNotDefaultPassword, wssubcontractingNotDefaultPassword) {
 
     setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdadmin"),
         adminNotDefaultPassword);
 
     var otherDefaultPassword = adminNotDefaultPassword &&
-        (!userNotDefaultPassword || !wsreaderNotDefaultPassword || !wswriterNotDefaultPassword);
+        (!userNotDefaultPassword || !wsreaderNotDefaultPassword ||
+                !wswriterNotDefaultPassword || !wssubcontractingNotDefaultPassword);
     setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdOthers"),
         !otherDefaultPassword);
 
@@ -36,6 +37,8 @@ function showOrHideDefaultPasswordWarnings(adminNotDefaultPassword,
             wsreaderNotDefaultPassword);
         setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwswriter"),
             wswriterNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwssubcontracting"),
+                wssubcontractingNotDefaultPassword);
     }
 }
 

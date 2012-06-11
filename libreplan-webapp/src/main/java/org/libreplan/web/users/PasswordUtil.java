@@ -54,6 +54,12 @@ public class PasswordUtil {
             checkIfChangeDefaultPasswd(MandatoryUser.WSWRITER, clearPassword);
             return;
         }
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.WSSUBCONTRACTING.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.WSSUBCONTRACTING,
+                    clearPassword);
+            return;
+        }
     }
 
     private static void checkIfChangeDefaultPasswd(MandatoryUser user,
@@ -84,11 +90,15 @@ public class PasswordUtil {
                 .hasChangedDefaultPasswordOrDisabled();
         boolean wswriterNotDefaultPassword = MandatoryUser.WSWRITER
                 .hasChangedDefaultPasswordOrDisabled();
+        boolean wssubcontractingNotDefaultPassword = MandatoryUser.WSSUBCONTRACTING
+                .hasChangedDefaultPasswordOrDisabled();
 
         Clients.evalJavaScript("showOrHideDefaultPasswordWarnings("
-                + adminNotDefaultPassword + ", " + userNotDefaultPassword
-                + ", " + wsreaderNotDefaultPassword + ", "
-                + wswriterNotDefaultPassword + ");");
+                + adminNotDefaultPassword + ", "
+                + userNotDefaultPassword + ", "
+                + wsreaderNotDefaultPassword + ", "
+                + wswriterNotDefaultPassword + ", "
+                + wssubcontractingNotDefaultPassword + ");");
     }
 
 }

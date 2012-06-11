@@ -39,6 +39,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     idUser = templateController.getIdUser();
     idWsreader = templateController.getIdWsreaderUser();
     idWswriter = templateController.getIdWswriterUser();
+    idWssubcontracting = templateController.getIdWssubcontractingUser();
 ]]>
 </zscript>
 
@@ -151,6 +152,9 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idWswriter}"
                     id="warningDefaultPasswdwswriter"
                     style="display:${templateCtrl.defaultPasswdWswriterVisible}">[wswriter]</n:a>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idWssubcontracting}"
+                    id="warningDefaultPasswdwssubcontracting"
+                    style="display:${templateCtrl.defaultPasswdWssubcontractingVisible}">[wssubcontracting]</n:a>
                 <n:span class="footer-messages-area">
                     ${i18n:_('default password were not changed')}.
                 </n:span>

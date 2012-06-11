@@ -147,6 +147,10 @@ public class TemplateController extends GenericForwardComposer {
         return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSWRITER);
     }
 
+    public String getDefaultPasswdWssubcontractingVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSSUBCONTRACTING);
+    }
+
     private String notChangedPasswordWarningDisplayPropertyFor(
             MandatoryUser mandatoryUser) {
         return asDisplayProperty(templateModel
@@ -177,6 +181,11 @@ public class TemplateController extends GenericForwardComposer {
 
     public String getIdWswriterUser() {
         return templateModel.getIdUser(MandatoryUser.WSWRITER.getLoginName());
+    }
+
+    public String getIdWssubcontractingUser() {
+        return templateModel.getIdUser(MandatoryUser.WSSUBCONTRACTING
+                .getLoginName());
     }
 
     public boolean isUserAdmin() {

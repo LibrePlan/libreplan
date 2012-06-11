@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,12 +27,14 @@ import static org.libreplan.business.i18n.I18nHelper._;
  * Available user roles.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public enum UserRole {
 
     ROLE_ADMINISTRATION(_("Administration")),
     ROLE_WS_READER(_("Web service reader")),
     ROLE_WS_WRITER(_("Web service writer")),
+    ROLE_WS_SUBCONTRACTING(_("Web service subcontracting")),
     ROLE_READ_ALL_ORDERS(_("All projects read allowed")),
     ROLE_EDIT_ALL_ORDERS(_("All projects edition allowed")),
     ROLE_CREATE_ORDER(_("Project creation allowed")),

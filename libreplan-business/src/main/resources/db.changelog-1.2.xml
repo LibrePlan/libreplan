@@ -500,4 +500,22 @@
             defaultNullValue="FALSE" columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="add-new-column-changed_default_wssubcontracting_password" author="mrego">
+        <comment>
+            Add new column changed_default_wssubcontracting_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_wssubcontracting_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_wssubcontracting_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_wssubcontracting_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>

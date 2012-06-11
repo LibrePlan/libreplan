@@ -51,6 +51,8 @@
             column="changed_default_wsreader_password" />
         <property name="changedDefaultWswriterPassword" not-null="true"
             column="changed_default_wswriter_password" />
+        <property name="changedDefaultWssubcontractingPassword" not-null="true"
+            column="changed_default_wssubcontracting_password" />
         <property name="autocompleteLogin" not-null="true"
             column="enabled_autocomplete_login" />
         <property name="checkNewVersionEnabled" not-null="true"

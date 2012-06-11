@@ -79,6 +79,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean changedDefaultWswriterPassword = false;
 
+    private Boolean changedDefaultWssubcontractingPassword = false;
+
     private Boolean autocompleteLogin = true;
 
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
@@ -347,6 +349,16 @@ public class Configuration extends BaseEntity {
 
     public Boolean getChangedDefaultWswriterPassword() {
         return changedDefaultWswriterPassword != null ? changedDefaultWswriterPassword
+                : false;
+    }
+
+    public void setChangedDefaultWssubcontractingPassword(
+            Boolean changedDefaultWssubcontractingPassword) {
+        this.changedDefaultWssubcontractingPassword = changedDefaultWssubcontractingPassword;
+    }
+
+    public Boolean getChangedDefaultWssubcontractingPassword() {
+        return changedDefaultWssubcontractingPassword != null ? changedDefaultWssubcontractingPassword
                 : false;
     }
 

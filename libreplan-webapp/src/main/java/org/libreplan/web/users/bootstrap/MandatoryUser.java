@@ -75,6 +75,14 @@ public enum MandatoryUser {
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultWswriterPassword();
         }
+    },
+    WSSUBCONTRACTING(Arrays.asList(UserRole.ROLE_WS_SUBCONTRACTING),
+            Configuration.isExampleUsersDisabled()) {
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration()
+                    .getChangedDefaultWssubcontractingPassword();
+        }
     };
 
     public static boolean adminChangedAndSomeOtherNotChanged() {
