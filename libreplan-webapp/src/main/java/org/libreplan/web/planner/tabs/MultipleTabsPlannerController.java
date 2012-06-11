@@ -450,7 +450,7 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     @Override
-    public void goToOrderElementDetails(OrderElement orderElement, Order order) {
+    public void goToOrderElementDetails(Order order, OrderElement orderElement) {
         getTabsRegistry().show(ordersTab, changeModeTo(order));
         orderCRUDController.highLight(orderElement);
     }

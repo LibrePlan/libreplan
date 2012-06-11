@@ -53,8 +53,8 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint("order")
     public void goToOrder(Order order);
 
-    @EntryPoint( { "orderElement", "order" })
-    public void goToOrderElementDetails(OrderElement orderElement, Order order);
+    @EntryPoint({ "order", "orderElement" })
+    public void goToOrderElementDetails(Order order, OrderElement orderElement);
 
     @EntryPoint("limiting_resources")
     void goToCompanyLimitingResources();

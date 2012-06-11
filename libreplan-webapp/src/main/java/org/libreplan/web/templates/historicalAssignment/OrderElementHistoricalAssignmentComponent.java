@@ -132,7 +132,7 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
         OrderElement orderElement = dto.getOrderElement();
         Order order = dto.getOrder();
         if (model.getCurrentScenario().contains(order)) {
-            globalView.goToOrderElementDetails(orderElement, order);
+            globalView.goToOrderElementDetails(order, orderElement);
         } else {
             try {
                 String scenarios = "";
