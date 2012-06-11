@@ -24,14 +24,17 @@ package org.libreplan.web.workreports;
 import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
@@ -166,7 +169,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Combobox filterType;
 
-    private List<IPredicate> predicates = new ArrayList<IPredicate>();
+    private Set<IPredicate> predicates = new HashSet<IPredicate>();
 
     private Grid gridListQuery;
 
@@ -1688,46 +1691,77 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Apply filter to work report lines
+     * Apply filter on all workReportLines
+     *
+     * First, all workReportLines are retrieved. Then a series of predicates are
+     * created containing the conditions of the filter.
+     *
+     * In the case that there's no order filtered, the predicate filter
+     * contains the order of the retrieved workReportLines so it can apply the
+     * rest of the parameters of the filter
+     *
      * @param event
      */
     public void onApplyFilterWorkReportLines(Event event) {
         OrderElement selectedOrder = getSelectedOrderElement();
+        List<WorkReportLine> workReportLines = workReportModel.getAllWorkReportLines();
+
         if (selectedOrder == null) {
-            // Show all work report lines
-            Util.reloadBindings(gridListQuery);
+            createPredicateLines(filterOrderElements(workReportLines));
         } else {
-            createPredicateLines(selectedOrder);
-            filterByPredicateLines();
-            updateSummary();
+            createPredicateLines(Collections.singletonList(selectedOrder));
+        }
+        filterByPredicateLines();
+        updateSummary();
+    }
+
+    private Collection<OrderElement> filterOrderElements(
+            List<WorkReportLine> workReportLines) {
+        Collection<OrderElement> result = new HashSet<OrderElement>();
+        for (WorkReportLine each: workReportLines) {
+            result.add(each.getOrderElement());
+        }
+        return result;
+    }
+
+    private void createPredicateLines(Collection<OrderElement> orderElements) {
+        String type = filterType.getValue();
+        Resource resource = getSelectedResource();
+        Date startDate = filterStartDateLine.getValue();
+        Date finishDate = filterFinishDateLine.getValue();
+        TypeOfWorkHours hoursType = getSelectedHoursType();
+
+        predicates.clear();
+        for (OrderElement each: orderElements) {
+            predicates.addAll(createWRLPredicates(type, resource, startDate,
+                    finishDate, each, hoursType));
         }
     }
 
-    private void createPredicateLines(OrderElement orderElement) {
-        Validate.notNull(orderElement);
-        String type = filterType.getValue();
-        Resource resource = getSelectedResource();
-        TypeOfWorkHours hoursType = getSelectedHoursType();
-        Date startDate = filterStartDateLine.getValue();
-        Date finishDate = filterFinishDateLine.getValue();
+    private Collection<? extends WorkReportLinePredicate> createWRLPredicates(
+            String type, Resource resource, Date startDate, Date finishDate,
+            OrderElement orderElement, TypeOfWorkHours hoursType) {
 
-        predicates.clear();
+        Set<WorkReportLinePredicate> result = new HashSet<WorkReportLinePredicate>();
         if (type.equals(_("All"))) {
-            predicates.add(new WorkReportLinePredicate(resource, startDate,
-                    finishDate, orderElement, hoursType));
-            for (OrderElement each: orderElement.getChildren()) {
-                predicates.add(new WorkReportLinePredicate(resource, startDate,
-                        finishDate, each, hoursType));
+            result.add(new WorkReportLinePredicate(resource,
+                    startDate, finishDate, orderElement, hoursType));
+            if (orderElement != null) {
+                for (OrderElement each : orderElement.getChildren()) {
+                    result.add(new WorkReportLinePredicate(resource, startDate,
+                            finishDate, each, hoursType));
+                }
             }
         } else if (type.equals(_("Direct"))) {
-            predicates.add(new WorkReportLinePredicate(resource, startDate,
-                    finishDate, orderElement, hoursType));
-        } else if (type.equals(_("Indirect"))) {
-            for (OrderElement each: orderElement.getChildren()) {
-                predicates.add(new WorkReportLinePredicate(resource, startDate,
-                        finishDate, each, hoursType));
+            result.add(new WorkReportLinePredicate(resource,
+                    startDate, finishDate, orderElement, hoursType));
+        } else if (type.equals(_("Indirect")) && orderElement != null) {
+            for (OrderElement each : orderElement.getChildren()) {
+                result.add(new WorkReportLinePredicate(
+                        resource, startDate, finishDate, each, hoursType));
             }
         }
+        return result;
     }
 
     private Resource getSelectedResource() {
