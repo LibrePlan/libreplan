@@ -220,7 +220,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
         try {
             WebClient client = WebClient.create(externalCompany.getAppURI());
-            client.path("ws/rest/subcontract/update");
+            client.path("ws/rest/subcontracting/subcontract/update");
 
             Util.addAuthorizationHeader(client,
                     externalCompany.getOurCompanyLogin(),
@@ -267,7 +267,7 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
         try {
             WebClient client = WebClient.create(externalCompany.getAppURI());
 
-            client.path("ws/rest/subcontract/create");
+            client.path("ws/rest/subcontracting/subcontract/create");
 
             Util.addAuthorizationHeader(client, externalCompany
                     .getOurCompanyLogin(), externalCompany
