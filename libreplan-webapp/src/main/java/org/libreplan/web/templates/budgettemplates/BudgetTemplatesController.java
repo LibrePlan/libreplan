@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,16 +21,12 @@ package org.libreplan.web.templates.budgettemplates;
 import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -42,12 +36,9 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
-import org.libreplan.web.templates.advances.AdvancesAssignmentComponent;
-import org.libreplan.web.templates.criterionrequirements.CriterionRequirementTemplateComponent;
 import org.libreplan.web.templates.historicalAssignment.OrderElementHistoricalAssignmentComponent;
 import org.libreplan.web.templates.historicalStatistics.OrderElementHistoricalStatisticsComponent;
 import org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent;
-import org.libreplan.web.templates.materials.MaterialAssignmentTemplateComponent;
 import org.libreplan.web.templates.quality.QualityFormAssignerComponent;
 import org.libreplan.web.tree.TreeComponent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,13 +59,11 @@ import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
-import org.zkoss.zul.Treechildren;
-import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
