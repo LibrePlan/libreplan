@@ -21,19 +21,14 @@
 
 package org.libreplan.web.planner.tabs;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.orders.entities.TaskSource;
-import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.scenarios.entities.Scenario;
@@ -42,11 +37,8 @@ import org.libreplan.web.common.TemplateModelAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator;
 import org.libreplan.web.planner.order.PlanningStateCreator.IActionsOnRetrieval;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
-import org.zkoss.ganttz.adapters.PlannerConfiguration;
-import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
-import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.zk.ui.Desktop;
 
@@ -108,63 +100,18 @@ public class CriticalPathBuilder {
         final Order order = state.getOrder();
         final Scenario currentScenario = state.getCurrentScenario();
 
-        CriticalPathCalculator<TaskElement, DependencyWithVisibility> criticalPathCalculator = CriticalPathCalculator
-                .create(order.getDependenciesConstraintsHavePriority());
         IAdapter<TaskElement, DependencyWithVisibility> adapter = TemplateModelAdapter
                 .create(currentScenario, asLocalDate(order.getInitDate()),
                         asLocalDate(order.getDeadline()), resourcesSearcher);
-        GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
-                order, adapter);
-        TaskSource taskSource = order.getTaskSource();
-        graph.addTopLevel(taskSource.getTask());
-        addDependencies(graph, order);
+        GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = GanttDiagramBuilder
+                .createForcingDependencies(order, adapter);
+        CriticalPathCalculator<TaskElement, DependencyWithVisibility> criticalPathCalculator = CriticalPathCalculator
+                .create(order.getDependenciesConstraintsHavePriority());
         return criticalPathCalculator.calculateCriticalPath(graph);
     }
 
     private LocalDate asLocalDate(Date date) {
         return date != null ? LocalDate.fromDateFields(date) : null;
-    }
-
-    private void addDependencies(
-            GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph,
-            Order order) {
-        for (Dependency each : getAllDependencies(order)) {
-            graph.addWithoutEnforcingConstraints(DependencyWithVisibility
-                    .existent(each));
-        }
-    }
-
-    private Set<Dependency> getAllDependencies(Order order) {
-        Set<Dependency> dependencies = new HashSet<Dependency>();
-        for (TaskElement each : getTaskElementsFrom(order)) {
-            Set<Dependency> dependenciesWithThisOrigin = each
-                    .getDependenciesWithThisOrigin();
-            dependencies.addAll(dependenciesWithThisOrigin);
-        }
-        return dependencies;
-    }
-
-    private List<TaskElement> getTaskElementsFrom(Order order) {
-        List<TaskElement> result = new ArrayList<TaskElement>();
-        for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
-            result.add(each.getTask());
-        }
-        return result;
-    }
-
-    private GanttDiagramGraph<TaskElement, DependencyWithVisibility> createFor(
-            Order order, IAdapter<TaskElement, DependencyWithVisibility> adapter) {
-        GanttDate orderStart = GanttDate.createFrom(order.getInitDate());
-        List<Constraint<GanttDate>> startConstraints = PlannerConfiguration
-                .getStartConstraintsGiven(orderStart);
-        GanttDate deadline = GanttDate.createFrom(order.getDeadline());
-        List<Constraint<GanttDate>> endConstraints = PlannerConfiguration
-                .getEndConstraintsGiven(deadline);
-        GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
-                .create(order.isScheduleBackwards(), adapter, startConstraints,
-                        endConstraints,
-                        order.getDependenciesConstraintsHavePriority());
-        return result;
     }
 
 }

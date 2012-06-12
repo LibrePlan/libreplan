@@ -25,7 +25,6 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -52,6 +51,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.UserUtil;
+import org.libreplan.web.planner.tabs.GanttDiagramBuilder;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.bootstrap.MandatoryUser;
 import org.libreplan.web.users.services.CustomUser;
@@ -60,13 +60,10 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.ConstraintCalculator;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.util.LongOperationFeedback;
@@ -134,14 +131,17 @@ public class TemplateModel implements ITemplateModel {
             return visible;
         }
 
+        @Override
         public TaskElement getSource() {
             return source;
         }
 
+        @Override
         public TaskElement getDestination() {
             return destination;
         }
 
+        @Override
         public DependencyType getType() {
             return type;
         }
@@ -369,9 +369,10 @@ public class TemplateModel implements ITemplateModel {
 
     private void doReassignationsOn(Order order, Scenario from, Scenario to) {
         copyAssignments(order, from, to);
-        installDependenciesEnforcer(order, TemplateModelAdapter.create(to,
-                asLocalDate(order.getInitDate()),
-                asLocalDate(order.getDeadline()), resourcesSearcher));
+        GanttDiagramBuilder.createForcingDependencies(order,
+                TemplateModelAdapter.create(to,
+                        asLocalDate(order.getInitDate()),
+                        asLocalDate(order.getDeadline()), resourcesSearcher));
         doReassignations(order, to);
         doTheSaving(order);
     }
@@ -384,39 +385,6 @@ public class TemplateModel implements ITemplateModel {
         for (Task each : getTasksFrom(order)) {
             each.copyAssignmentsFromOneScenarioToAnother(from, to);
         }
-    }
-
-    private void installDependenciesEnforcer(Order order, TemplateModelAdapter adapter) {
-        GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(order, adapter);
-        TaskSource taskSource = order.getTaskSource();
-        graph.addTopLevel(taskSource.getTask());
-        for (Dependency each : getAllDependencies(order)) {
-            graph.addWithoutEnforcingConstraints(DependencyWithVisibility
-                    .existent(each));
-        }
-    }
-
-    private GanttDiagramGraph<TaskElement, DependencyWithVisibility> createFor(
-            Order order, IAdapter<TaskElement, DependencyWithVisibility> adapter) {
-        List<Constraint<GanttDate>> startConstraints = PlannerConfiguration
-                .getStartConstraintsGiven((GanttDate) GanttDate.createFrom(order.getInitDate()));
-        List<Constraint<GanttDate>> endConstraints = PlannerConfiguration
-                .getEndConstraintsGiven((GanttDate) GanttDate.createFrom(order.getDeadline()));
-        GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
-                .create(order.isScheduleBackwards(), adapter, startConstraints,
-                        endConstraints,
-                        order.getDependenciesConstraintsHavePriority());
-        return result;
-    }
-
-    private Set<Dependency> getAllDependencies(Order order) {
-        Set<Dependency> dependencies = new HashSet<Dependency>();
-        for (TaskElement each : getTaskElementsFrom(order)) {
-            Set<Dependency> dependenciesWithThisOrigin = each
-                    .getDependenciesWithThisOrigin();
-            dependencies.addAll(dependenciesWithThisOrigin);
-        }
-        return dependencies;
     }
 
     private void doReassignations(Order order, Scenario scenario) {
