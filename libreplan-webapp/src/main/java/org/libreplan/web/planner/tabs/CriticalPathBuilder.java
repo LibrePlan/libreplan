@@ -115,7 +115,8 @@ public class CriticalPathBuilder {
                         asLocalDate(order.getDeadline()), resourcesSearcher);
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
                 order, adapter);
-        graph.addTask(order.getAssociatedTaskElement());
+        TaskSource taskSource = order.getTaskSource();
+        graph.addTopLevel(taskSource.getTask());
         addDependencies(graph, order);
         return criticalPathCalculator.calculateCriticalPath(graph);
     }
