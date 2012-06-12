@@ -201,11 +201,4 @@
             referencedTableName="order_table" referencedColumnNames="order_element_id" />
     </changeSet>
 
-    <changeSet id="drop-not-null-constraint-column-value-on-filming-progress-maps" author="smontes">
-        <comment>drop not null constraint in column value on filming progress maps</comment>
-        <dropNotNullConstraint tableName="initial_progress_forecast" columnName="value"/>
-        <dropNotNullConstraint tableName="progress_forecast" columnName="value"/>
-        <dropNotNullConstraint tableName="real_progress" columnName="value"/>
-    </changeSet>
-
 </databaseChangeLog>
