@@ -24,86 +24,71 @@
         ]]>
     </zscript>
 
-<div self="@{define(content)}" apply="${fpController}" vflex="1" >
-	<div id="noDataLayout" height="30px" sclass="toolbar-box">
+<div self="@{define(content)}" apply="${fpController}" height="100%" style="overflow:visible" class="filming-progress-layout">
+	<div id="noDataLayout" height="30px">
         <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
     </div>
 
 	<div id="normalLayout">
 	    <div height="30px" sclass="toolbar-box">
-		    <hbox align="center">
-                <separator/>
-                 <label>${i18n:_('Start date')}:</label>
-                 <datebox id="startDate" readonly="true" disabled="true"
-                     value="@{fpController.startDate}" />
-                 <separator/>
-                 <label>${i18n:_('End date')}:</label>
-                 <datebox id="endDate" readonly="true" disabled="true"
-                     value="@{fpController.endDate}" />
-                 <separator/>
-                 <space bar="true" />
-                 <button label="${i18n:_('Add new unit measure')}" id="unitMeasureButton"
-                     tooltiptext="${i18n:_('Add new unit measure')}"
-                     onClick="fpController.addUnitMeasure()"
-                     disabled ="@{fpController.disableAddUnitMeasure}"/>
-                 <separator/>
-                 <div id="messages" />
-            </hbox>
+		<hbox align="center">
+                    <separator/>
+                    <label>${i18n:_('Start date')}:</label>
+                    <datebox id="startDate" readonly="true" disabled="true"
+                        value="@{fpController.startDate}" />
+                    <separator/>
+                    <label>${i18n:_('End date')}:</label>
+                    <datebox id="endDate" readonly="true" disabled="true"
+                        value="@{fpController.endDate}" />
+                    <separator/>
+                    <space bar="true" />
+                    <button label="${i18n:_('Add new unit measure')}" id="unitMeasureButton"
+                        tooltiptext="${i18n:_('Add new unit measure')}"
+                        onClick="fpController.addUnitMeasure()"
+                        disabled ="@{fpController.disableAddUnitMeasure}"/>
+                    <separator/>
+                    <div id="messages" />
+                </hbox>
 	    </div>
 	    <div class="advanced-allocation-layout">
-		<borderlayout width="100%" hflex="1" vflex="1" >
-        <north border="0" height="200px">
-        <borderlayout>
-            <west size="250px" flex="true" collapsible="true"
-                splittable="true">
-                <div sclass="leftpanelgap" id="insertionPointLeftPanel">
-                    <grid id="gridTotals"
-                        model="@{fpController.rowTotals}"
-                        rowRenderer="@{fpController.progressTotalRenderer}">
-                        <columns height="35px" sizable="true">
-                            <column label="${i18n:_('Op.')}" width="30px"/>
-                            <column label="${i18n:_('Type')}" width="170px"/>
-                            <column label="${i18n:_('Total')}"/>
-                        </columns>
-                        <rows>
-                           <row>
-                                <label value="${i18n:_('Initial progress')}" height="20px"/>
-				                <label id="totalInitialProgress"/>
-                           </row>
-			               <row>
-				                <label value="${i18n:_('Current estimations')}" height="20px"/>
-				                <label id="totalCurrentEstimations"/>
-			               </row>
-                           <row>
-                                <label value="${i18n:_('Real progress')}" height="20px"/>
-                                <label id="totalRealProgress"/>
-                           </row>
-		                   </rows>
-                    </grid>
-                </div>
-            </west>
+		<borderlayout width="100%" hflex="1" vflex="1" class="filmingprogresslayoutlayout">
+                    <north border="0" height="200px">
+                        <borderlayout>
+                            <west size="250px" flex="true" collapsible="true" splittable="true" sclass="filmingprogressdetails">
+                                <div sclass="leftpanelgap" id="insertionPointLeftPanel">
+                                    <grid id="gridTotals"
+                                        model="@{fpController.rowTotals}"
+                                        rowRenderer="@{fpController.progressTotalRenderer}">
+                                        <columns height="35px" sizable="true">
+                                            <column label="${i18n:_('Op.')}" width="30px"/>
+                                            <column label="${i18n:_('Type')}" width="170px"/>
+                                            <column label="${i18n:_('Total')}"/>
+                                        </columns>
+                                    </grid>
+                                </div>
+                            </west>
 
-            <center sclass="taskspanel">
-                <borderlayout>
-                    <center style="overflow-y:auto;overflow-x:auto;" border="0"
-                        sclass="filming-progress-area rightpanellayout taskspanelgap"
-                        id="insertionPointRightPanel">
-                        <grid id="gridValuesPerDay" fixedLayout="true"
-                            rowRenderer="@{fpController.progressValuesRenderer}"/>
+                           <center sclass="taskspanel">
+                               <borderlayout>
+                                   <center style="overflow-y:auto;overflow-x:auto;" border="0"
+                                       sclass="filming-progress-area rightpanellayout taskspanelgap"
+                                       id="insertionPointRightPanel">
+                                       <grid id="gridValuesPerDay" fixedLayout="true"
+                                           rowRenderer="@{fpController.progressValuesRenderer}"/>
+                                   </center>
+                                   <south>
+                                   </south>
+                               </borderlayout>
+                           </center>
+                       </borderlayout>
+                    </north>
+                    <center>
+                        <hbox style="padding:40px">
+                            <div id="filmingProgressChart" style="height:200px; width:700px;" />
+                        </hbox>
                     </center>
-                    <south>
-                    </south>
                 </borderlayout>
-            </center>
-        </borderlayout>
-        </north>
-        <center>
-        <hbox style="padding:40px">
-            <div id="filmingProgressChart" style="height:200px; width:700px;" />
-        </hbox>
-        </center>
-        </borderlayout>
-        </div>
+            </div>
     </div>
 </div>
 
