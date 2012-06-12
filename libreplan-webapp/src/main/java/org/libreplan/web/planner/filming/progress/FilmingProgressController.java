@@ -265,7 +265,10 @@ public class FilmingProgressController extends GenericForwardComposer {
         gridValuesPerDay.setPageSize(PAGING);
 
         appendColumns(gridValuesPerDay);
+        renderAllValuesPerDay();
+    }
 
+    private void renderAllValuesPerDay() {
         resetTotalPanel();
         gridValuesPerDay.setModel(new SimpleListModel(getProgressValues()));
         gridValuesPerDay.renderAll();
@@ -394,10 +397,28 @@ public class FilmingProgressController extends GenericForwardComposer {
                     public void set(BigDecimal newValue) {
                         updatePanelTotal(row, entry.getValue(), newValue);
                         entry.setValue(newValue);
+
+                        if (progressValue.forecastLevel
+                                .equals(ForecastLevelEnum.REAL)) {
+                            updateValue(progressValue, entry.getKey(), newValue);
+                        }
+
                     }
                 });
 
                 row.appendChild(valuebox);
+            }
+        }
+
+        private void updateValue(ProgressValue progressValue, LocalDate date,
+                BigDecimal newValue) {
+            FilmingProgress filmingProgress = progressValue
+                    .getFilmingProgress();
+            if (filmingProgress.getProgressForecast() != null
+                    && !filmingProgress.getProgressForecast().isEmpty()) {
+                filmingProgress.getProgressForecast().put(date, newValue);
+                renderAllValuesPerDay();
+                refreshTotalPanel();
             }
         }
 

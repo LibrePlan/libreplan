@@ -90,7 +90,7 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         loadMaps(filmingProgress);
 
         if (filmingProgress.getInitialProgressForecast() != null) {
-            progressValues.add(new ProgressValue(
+            progressValues.add(new ProgressValue(filmingProgress,
                     ForecastLevelEnum.INITIAL_FORECAST, filmingProgress
                             .getType(), filmingProgress
                             .getInitialProgressForecast()));
@@ -103,12 +103,12 @@ public class FilmingProgressModel implements IFilmingProgressModel {
 
         }
         if (filmingProgress.getProgressForecast() != null) {
-            progressValues.add(new ProgressValue(ForecastLevelEnum.FORECAST,
+            progressValues.add(new ProgressValue(filmingProgress, ForecastLevelEnum.FORECAST,
                     filmingProgress.getType(), filmingProgress
                             .getProgressForecast()));
         }
         if (filmingProgress.getRealProgress() != null) {
-            progressValues.add(new ProgressValue(ForecastLevelEnum.REAL,
+            progressValues.add(new ProgressValue(filmingProgress, ForecastLevelEnum.REAL,
                     filmingProgress.getType(), filmingProgress
                             .getRealProgress()));
         }
@@ -180,7 +180,6 @@ public class FilmingProgressModel implements IFilmingProgressModel {
 
     private void buildProgressValueBy(FilmingProgressTypeEnum type,
             BigDecimal maxValue) {
-
         // create a new filming progress
         FilmingProgress filmingProgress = FilmingProgress.create(currentOrder,
                 type);
@@ -195,11 +194,12 @@ public class FilmingProgressModel implements IFilmingProgressModel {
                 null));
 
         // add the maps in the progress values list
-        progressValues.add(new ProgressValue(
+        progressValues.add(new ProgressValue(filmingProgress,
                 ForecastLevelEnum.INITIAL_FORECAST, type, filmingProgress
                         .getInitialProgressForecast()));
-        progressValues.add(new ProgressValue(ForecastLevelEnum.REAL, type,
-                filmingProgress.getRealProgress()));
+        progressValues
+                .add(new ProgressValue(filmingProgress, ForecastLevelEnum.REAL,
+                        type, filmingProgress.getRealProgress()));
     }
 
     private SortedMap<LocalDate, BigDecimal> createIntoIntervalWithValue(
@@ -314,18 +314,22 @@ class ProgressValue {
 
     FilmingProgressTypeEnum progressType;
 
+    private FilmingProgress filmingProgress;
+
     private SortedMap<LocalDate, BigDecimal> values = new TreeMap<LocalDate, BigDecimal>();
 
     ProgressValue() {
 
     }
 
-    public ProgressValue(ForecastLevelEnum forecastLevel,
+    public ProgressValue(FilmingProgress filmingProgress,
+            ForecastLevelEnum forecastLevel,
             FilmingProgressTypeEnum type,
             SortedMap<LocalDate, BigDecimal> values) {
         this.forecastLevel = forecastLevel;
         this.progressType = type;
         this.values = values;
+        this.filmingProgress = filmingProgress;
     }
 
     public void setValues(SortedMap<LocalDate, BigDecimal> values) {
@@ -334,5 +338,13 @@ class ProgressValue {
 
     public SortedMap<LocalDate, BigDecimal> getValues() {
         return values;
+    }
+
+    public void setFilmingProgress(FilmingProgress filmingProgress) {
+        this.filmingProgress = filmingProgress;
+    }
+
+    public FilmingProgress getFilmingProgress() {
+        return filmingProgress;
     }
 }
