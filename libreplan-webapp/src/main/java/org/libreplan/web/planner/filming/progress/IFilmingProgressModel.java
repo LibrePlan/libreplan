@@ -48,4 +48,6 @@ interface IFilmingProgressModel {
 
     void loadDataFromOrder();
 
+    void dontPoseAsTransientObjectAnymore();
+
 }

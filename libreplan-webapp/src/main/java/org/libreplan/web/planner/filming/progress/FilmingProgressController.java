@@ -175,6 +175,7 @@ public class FilmingProgressController extends GenericForwardComposer {
         IAfterSaveListener afterSaveListener = new IAfterSaveListener() {
             @Override
             public void onAfterSave() {
+                filmingProgressModel.dontPoseAsTransientObjectAnymore();
                 filmingProgressModel.loadDataFromOrder();
                 renderAllValuesPerDay();
                 gridTotals.setModel(new SimpleListModel(getRowTotals()));

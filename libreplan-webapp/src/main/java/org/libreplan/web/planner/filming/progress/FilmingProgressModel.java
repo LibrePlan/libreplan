@@ -315,6 +315,15 @@ public class FilmingProgressModel implements IFilmingProgressModel {
             currentOrder.getFilmingProgressSet().remove(filmingProgress);
         }
     }
+
+    @Override
+    public void dontPoseAsTransientObjectAnymore() {
+        if (this.currentOrder != null)
+            for (FilmingProgress entity : this.currentOrder
+                    .getFilmingProgressSet()) {
+                entity.dontPoseAsTransientObjectAnymore();
+            }
+    }
 }
 
 enum ForecastLevelEnum {

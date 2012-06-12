@@ -20,7 +20,6 @@
  */
 
 package org.libreplan.web.planner.order;
-
 import static org.libreplan.business.planner.limiting.entities.LimitingResourceQueueDependency.toQueueDependencyType;
 import static org.libreplan.web.I18nHelper._;
 
@@ -299,8 +298,6 @@ public class SaveCommandBuilder {
                     dontPoseAsTransientObjectAnymore(state.getOrder());
                     dontPoseAsTransientObjectAnymore(state.getOrder()
                             .getEndDateCommunicationToCustomer());
-                    dontPoseAsTransientObjectAnymore(state.getOrder()
-                            .getFilmingProgressSet());
                     state.getScenarioInfo().afterCommit();
 
                     if (state.getOrder()
