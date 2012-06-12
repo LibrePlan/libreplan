@@ -61,6 +61,7 @@
                         model="@{fpController.rowTotals}"
                         rowRenderer="@{fpController.progressTotalRenderer}">
                         <columns height="35px" sizable="true">
+                            <column label="${i18n:_('Op.')}" width="30px"/>
                             <column label="${i18n:_('Type')}" width="170px"/>
                             <column label="${i18n:_('Total')}"/>
                         </columns>

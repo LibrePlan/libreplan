@@ -44,4 +44,8 @@ interface IFilmingProgressModel {
     void addNewUnitMeasure(FilmingProgressTypeEnum unitMeasure,
             BigDecimal maxValue);
 
+    void removeFilmingProgress(FilmingProgress filmingProgress);
+
+    void loadDataFromOrder();
+
 }

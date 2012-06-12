@@ -34,12 +34,14 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
 import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
@@ -54,10 +56,14 @@ import org.zkforge.timeplot.data.PlotData;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Auxhead;
 import org.zkoss.zul.Auxheader;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Constraint;
@@ -67,6 +73,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
@@ -95,6 +102,9 @@ public class FilmingProgressController extends GenericForwardComposer {
     private Grid gridValuesPerDay;
     private Grid gridTotals;
     private Button unitMeasureButton;
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(FilmingProgressController.class);
 
     private ProgressValuesPerDayRenderer valuesPerDayRenderer = new ProgressValuesPerDayRenderer();
 
@@ -169,8 +179,8 @@ public class FilmingProgressController extends GenericForwardComposer {
         IAfterSaveListener afterSaveListener = new IAfterSaveListener() {
             @Override
             public void onAfterSave() {
-                filmingProgressModel.setCurrentOrder(order);
-                prepareFilmingProgressList();
+                filmingProgressModel.loadDataFromOrder();
+                renderAllValuesPerDay();
                 gridTotals.setModel(new SimpleListModel(getRowTotals()));
                 gridTotals.renderAll();
             }
@@ -242,7 +252,7 @@ public class FilmingProgressController extends GenericForwardComposer {
         List<FilmingProgressTypeEnum> measures = new ArrayList<FilmingProgressTypeEnum>(
                 Arrays.asList(FilmingProgressTypeEnum.values()));
         for (ProgressValue pgValue : this.getProgressValues()) {
-            measures.remove(pgValue.progressType);
+            measures.remove(pgValue.getProgressType());
         }
         return measures;
     }
@@ -382,7 +392,7 @@ public class FilmingProgressController extends GenericForwardComposer {
 
                 Decimalbox valuebox = new Decimalbox();
                 valuebox.setReadonly(isReadOnlyByDay(
-                        progressValue.forecastLevel, entry.getKey()));
+                        progressValue.getForecastLevel(), entry.getKey()));
 
                 Util.bind(valuebox, new Util.Getter<BigDecimal>() {
 
@@ -398,11 +408,10 @@ public class FilmingProgressController extends GenericForwardComposer {
                         updatePanelTotal(row, entry.getValue(), newValue);
                         entry.setValue(newValue);
 
-                        if (progressValue.forecastLevel
+                        if (progressValue.getForecastLevel()
                                 .equals(ForecastLevelEnum.REAL)) {
                             updateValue(progressValue, entry.getKey(), newValue);
                         }
-
                     }
                 });
 
@@ -462,8 +471,8 @@ public class FilmingProgressController extends GenericForwardComposer {
                     total = total.add(entry.getValue());
                 }
             }
-            return new RowTotal(progressValue.progressType,
-                    progressValue.forecastLevel.toString(), total);
+            return new RowTotal(progressValue.getProgressType(), progressValue
+                    .getForecastLevel().toString(), total);
         }
     }
 
@@ -490,6 +499,16 @@ public class FilmingProgressController extends GenericForwardComposer {
         return list;
     }
 
+    private Row getRowBy(RowTotal rowTotalToFind) {
+        Map<Row, RowTotal> panelTotal = getProgressValuesRenderer().panelTotal;
+        for (Entry<Row, RowTotal> entry : panelTotal.entrySet()) {
+            if (rowTotalToFind.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     public ProgressTotalRenderer getProgressTotalRenderer() {
         return this.progressTotalRenderer;
     }
@@ -504,8 +523,47 @@ public class FilmingProgressController extends GenericForwardComposer {
             final RowTotal rowTotal = (RowTotal) data;
             row.setValue(rowTotal);
 
+            Row rowValues = getRowBy(rowTotal);
+            if (rowValues != null) {
+                ProgressValue progressValue = (ProgressValue) rowValues
+                        .getValue();
+                if (progressValue.getForecastLevel().equals(
+                        ForecastLevelEnum.INITIAL_FORECAST)) {
+                    Cell cell = new Cell();
+                    cell.setAlign("center");
+                    cell.setValign("center");
+                    cell.setRowspan(calculateRowspan(progressValue.getProgressType()));
+                cell.appendChild(createRemoveButton(progressValue));
+                row.appendChild(cell);
+                }
+            }
+
             row.appendChild(rowTotal.getLbType());
             row.appendChild(rowTotal.getLbTotal());
+        }
+
+        private int calculateRowspan(FilmingProgressTypeEnum type) {
+            int rowspan = 0;
+            for (ProgressValue progressValue : getProgressValues()) {
+                if (progressValue.getProgressType().equals(type)) {
+                    rowspan++;
+                }
+            }
+            return rowspan;
+        }
+
+        private Button createRemoveButton(final ProgressValue progressValue) {
+            Button delete = new Button("", "/common/img/ico_borrar1.png");
+            delete.setHoverImage("/common/img/ico_borrar.png");
+            delete.setSclass("icono");
+            delete.setTooltiptext(_("Delete"));
+            delete.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    confirmRemove(progressValue);
+                }
+            });
+            return delete;
         }
     }
 
@@ -601,6 +659,29 @@ public class FilmingProgressController extends GenericForwardComposer {
         };
     }
 
+    public void confirmRemove(ProgressValue progressValue) {
+        try {
+            int status = Messagebox.show(_(
+                    "Confirm deleting filming progress {0}. Are you sure?",
+                    progressValue.getFilmingProgress().getType(), _("Delete"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION));
+            if (Messagebox.OK == status) {
+                removeFilmingProgress(progressValue.getFilmingProgress());
+            }
+        } catch (InterruptedException e) {
+            messages.showMessage(Level.ERROR, e.getMessage());
+            LOG.error(
+                    _("Error on showing removing element: ", progressValue
+                            .getFilmingProgress().getId()), e);
+        }
+    }
+
+    private void removeFilmingProgress(FilmingProgress filmingProgress) {
+        filmingProgressModel.removeFilmingProgress(filmingProgress);
+        filmingProgressModel.loadDataFromOrder();
+        renderAllValuesPerDay();
+        refreshTotalPanel();
+    }
 }
 
 class RowTotal {

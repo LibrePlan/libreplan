@@ -67,11 +67,17 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         this.currentOrder = order;
         if (currentOrder != null) {
             orderDAO.reattach(currentOrder);
-            progressValues = new ArrayList<ProgressValue>();
-            if (currentOrder.getFilmingProgressSet() != null
-                    && !currentOrder.getFilmingProgressSet().isEmpty()) {
-                loadDataFromFilmingProgressSet();
-            }
+            loadDataFromOrder();
+        }
+    }
+
+    @Override
+    public void loadDataFromOrder() {
+        progressValues = new ArrayList<ProgressValue>();
+        if (currentOrder != null
+                && currentOrder.getFilmingProgressSet() != null
+                && !currentOrder.getFilmingProgressSet().isEmpty()) {
+            loadDataFromFilmingProgressSet();
         }
     }
 
@@ -302,6 +308,11 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         return map;
     }
 
+    public void removeFilmingProgress(FilmingProgress filmingProgress) {
+        if (this.currentOrder != null) {
+            currentOrder.getFilmingProgressSet().remove(filmingProgress);
+        }
+    }
 }
 
 enum ForecastLevelEnum {
@@ -310,9 +321,9 @@ enum ForecastLevelEnum {
 
 class ProgressValue {
 
-    ForecastLevelEnum forecastLevel;
+    private ForecastLevelEnum forecastLevel;
 
-    FilmingProgressTypeEnum progressType;
+    private FilmingProgressTypeEnum progressType;
 
     private FilmingProgress filmingProgress;
 
@@ -346,5 +357,13 @@ class ProgressValue {
 
     public FilmingProgress getFilmingProgress() {
         return filmingProgress;
+    }
+
+    public ForecastLevelEnum getForecastLevel() {
+        return forecastLevel;
+    }
+
+    public FilmingProgressTypeEnum getProgressType() {
+        return progressType;
     }
 }
