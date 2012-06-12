@@ -43,6 +43,7 @@ import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.montecarlo.MonteCarloController;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
+import org.libreplan.web.planner.budget.BudgetController;
 import org.libreplan.web.planner.company.CompanyPlanningController;
 import org.libreplan.web.planner.filming.progress.FilmingProgressController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
@@ -159,6 +160,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     private ITab advancedAllocationTab;
 
+    private ITab budgetTab;
+
     private ITab filmingProgressTab;
 
     private ITab dashboardTab;
@@ -182,6 +185,9 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private LimitingResourcesController limitingResourcesControllerGlobal;
+
+    @Autowired
+    private BudgetController budgetController;
 
     @Autowired
     private FilmingProgressController filmingProgressController;
@@ -279,6 +285,8 @@ public class MultipleTabsPlannerController implements Composer,
         dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
                 dashboardController, breadcrumbs);
 
+        this.budgetTab = BudgetTabCreator.create(mode, planningStateCreator,
+                budgetController, breadcrumbs);
         this.filmingProgressTab = FilmingProgressTabCreator.create(mode, planningStateCreator,
                 filmingProgressController, breadcrumbs);
 
@@ -301,6 +309,7 @@ public class MultipleTabsPlannerController implements Composer,
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
             .add(visibleOnlyAtOrderMode(advancedAllocationTab))
+            .add(visibleOnlyAtOrderMode(budgetTab))
             .add(visibleOnlyAtOrderMode(filmingProgressTab))
             .add(visibleOnlyAtOrderMode(dashboardTab));
 
