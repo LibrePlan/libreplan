@@ -55,8 +55,6 @@ interface IDashboardModel {
     /* Progress KPI: "Global Progress of the Project" */
     BigDecimal getSpreadProgress();
 
-    BigDecimal getExpectedSpreadProgress();
-
     BigDecimal getAdvancePercentageByHours();
 
     BigDecimal getExpectedAdvancePercentageByHours();

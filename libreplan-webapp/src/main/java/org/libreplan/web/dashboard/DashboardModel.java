@@ -174,12 +174,6 @@ public class DashboardModel implements IDashboardModel {
     }
 
     @Override
-    public BigDecimal getExpectedSpreadProgress() {
-        return asPercentage(getRootTask()
-                .getTheoreticalAdvancePercentageUntilDate(new Date()));
-    }
-
-    @Override
     public BigDecimal getAdvancePercentageByHours() {
         return asPercentage(getRootTask().getProgressAllByNumHours());
     }

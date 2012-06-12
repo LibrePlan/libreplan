@@ -312,7 +312,7 @@ public class DashboardController extends GenericForwardComposer {
         globalProgressChart.expected(GlobalProgressChart.ALL_TASKS_HOURS,
                 dashboardModel.getExpectedAdvancePercentageByHours());
         globalProgressChart.expected(GlobalProgressChart.SPREAD_PROGRESS,
-                dashboardModel.getExpectedSpreadProgress());
+                BigDecimal.ZERO);
 
         globalProgressChart.render();
     }
