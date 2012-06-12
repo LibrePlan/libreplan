@@ -230,6 +230,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
 
     private void initalizeOrderElement(OrderElement orderElement) {
         Hibernate.initialize(orderElement);
+        Hibernate.initialize(orderElement.getChildren());
         initalizeOrder(orderElement);
     }
 
