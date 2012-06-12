@@ -22,6 +22,7 @@ package org.libreplan.web.planner.filming.progress;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -175,6 +176,7 @@ public class FilmingProgressModel implements IFilmingProgressModel {
     }
 
     public List<ProgressValue> getProgressValues() {
+        Collections.sort(progressValues);
         return progressValues;
     }
 
@@ -319,7 +321,7 @@ enum ForecastLevelEnum {
     INITIAL_FORECAST, FORECAST, REAL;
 }
 
-class ProgressValue {
+class ProgressValue implements Comparable<ProgressValue> {
 
     private ForecastLevelEnum forecastLevel;
 
@@ -365,5 +367,13 @@ class ProgressValue {
 
     public FilmingProgressTypeEnum getProgressType() {
         return progressType;
+    }
+
+    @Override
+    public int compareTo(ProgressValue o) {
+        if (this.progressType.equals(o.getProgressType())) {
+            return (this.forecastLevel.compareTo(o.getForecastLevel()));
+        }
+        return this.progressType.compareTo(o.getProgressType());
     }
 }

@@ -76,7 +76,6 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
 
@@ -111,9 +110,6 @@ public class FilmingProgressController extends GenericForwardComposer {
     private ProgressTotalRenderer progressTotalRenderer = new ProgressTotalRenderer();
 
     private Div filmingProgressChart;
-
-    private ProgressGranularityType progressGranularityType = ProgressGranularityType
-            .getDefault();
 
     private final static String MOLD = "paging";
 
@@ -378,19 +374,21 @@ public class FilmingProgressController extends GenericForwardComposer {
      */
     public class ProgressValuesPerDayRenderer implements RowRenderer {
 
-        private Map<Row, RowTotal> panelTotal = new HashMap<Row, RowTotal>();
+        private SortedMap<RowTotal, Row> panelTotal = new TreeMap<RowTotal, Row>();
 
         @Override
         public void render(final Row row, Object data) {
             final ProgressValue progressValue = (ProgressValue) data;
             row.setValue(progressValue);
 
-            panelTotal.put(row, calculateRowTotal(row));
+            final RowTotal rowTotal = calculateRowTotal(row);
+            panelTotal.put(rowTotal, row);
 
             for (final Entry<LocalDate, BigDecimal> entry : progressValue
                     .getValues().entrySet()) {
 
                 Decimalbox valuebox = new Decimalbox();
+                valuebox.setScale(2);
                 valuebox.setReadonly(isReadOnlyByDay(
                         progressValue.getForecastLevel(), entry.getKey()));
 
@@ -405,7 +403,7 @@ public class FilmingProgressController extends GenericForwardComposer {
 
                     @Override
                     public void set(BigDecimal newValue) {
-                        updatePanelTotal(row, entry.getValue(), newValue);
+                        updatePanelTotal(rowTotal, entry.getValue(), newValue);
                         entry.setValue(newValue);
 
                         if (progressValue.getForecastLevel()
@@ -439,10 +437,8 @@ public class FilmingProgressController extends GenericForwardComposer {
                     .plusDays(1))));
         }
 
-        private void updatePanelTotal(Row row, BigDecimal oldValue,
+        private void updatePanelTotal(RowTotal rowTotal, BigDecimal oldValue,
                 BigDecimal newValue) {
-            RowTotal rowTotal = panelTotal.get(row);
-
             BigDecimal total = rowTotal.getTotal();
             if (oldValue == null) {
                 oldValue = BigDecimal.ZERO;
@@ -458,7 +454,6 @@ public class FilmingProgressController extends GenericForwardComposer {
                 BigDecimal diff = oldValue.subtract(newValue);
                 total = total.subtract(diff);
                 rowTotal.setTotal(total);
-
             }
         }
 
@@ -471,8 +466,8 @@ public class FilmingProgressController extends GenericForwardComposer {
                     total = total.add(entry.getValue());
                 }
             }
-            return new RowTotal(progressValue.getProgressType(), progressValue
-                    .getForecastLevel().toString(), total);
+            return new RowTotal(progressValue.getProgressType(),
+                    progressValue.getForecastLevel(), total);
         }
     }
 
@@ -481,32 +476,15 @@ public class FilmingProgressController extends GenericForwardComposer {
     }
 
     public void resetTotalPanel() {
-        getProgressValuesRenderer().panelTotal = new HashMap<Row, RowTotal>();
+        getProgressValuesRenderer().panelTotal = new TreeMap<RowTotal, Row>();
     }
 
     public List<RowTotal> getRowTotals() {
-        Map<Row, RowTotal> panelTotal = getProgressValuesRenderer().panelTotal;
-        List<RowTotal> list = new ArrayList<RowTotal>();
-        if (gridValuesPerDay != null) {
-            Rows rows = this.gridValuesPerDay.getRows();
-            if (rows != null) {
-                List<Row> listRow = rows.getChildren();
-                for (Row row : listRow) {
-                    list.add(panelTotal.get(row));
-                }
-            }
-        }
-        return list;
+        return new ArrayList(getProgressValuesRenderer().panelTotal.keySet());
     }
 
     private Row getRowBy(RowTotal rowTotalToFind) {
-        Map<Row, RowTotal> panelTotal = getProgressValuesRenderer().panelTotal;
-        for (Entry<Row, RowTotal> entry : panelTotal.entrySet()) {
-            if (rowTotalToFind.equals(entry.getValue())) {
-                return entry.getKey();
-            }
-        }
-        return null;
+        return getProgressValuesRenderer().panelTotal.get(rowTotalToFind);
     }
 
     public ProgressTotalRenderer getProgressTotalRenderer() {
@@ -532,9 +510,10 @@ public class FilmingProgressController extends GenericForwardComposer {
                     Cell cell = new Cell();
                     cell.setAlign("center");
                     cell.setValign("center");
-                    cell.setRowspan(calculateRowspan(progressValue.getProgressType()));
-                cell.appendChild(createRemoveButton(progressValue));
-                row.appendChild(cell);
+                    cell.setRowspan(calculateRowspan(progressValue
+                            .getProgressType()));
+                    cell.appendChild(createRemoveButton(progressValue));
+                    row.appendChild(cell);
                 }
             }
 
@@ -684,24 +663,28 @@ public class FilmingProgressController extends GenericForwardComposer {
     }
 }
 
-class RowTotal {
-    private String type = "";
+class RowTotal implements Comparable<RowTotal> {
+
     private BigDecimal total = BigDecimal.ZERO;
+    private ForecastLevelEnum forecastLevelEnum;
+    private FilmingProgressTypeEnum type;
 
     private Label lbType = new Label();
     private Label lbTotal = new Label();
 
-    public RowTotal(FilmingProgressTypeEnum type, String level, BigDecimal total) {
-        this.setType(type.toString() + " (" + level + ")");
+    public RowTotal(FilmingProgressTypeEnum type, ForecastLevelEnum level,
+            BigDecimal total) {
+        this.forecastLevelEnum = level;
+        this.setType(type);
         this.setTotal(total);
+        this.lbType.setValue(type + " (" + forecastLevelEnum + ")");
     }
 
-    public void setType(String type) {
+    private void setType(FilmingProgressTypeEnum type) {
         this.type = type;
-        this.lbType.setValue(type);
     }
 
-    public String getType() {
+    public FilmingProgressTypeEnum getType() {
         return type;
     }
 
@@ -729,6 +712,19 @@ class RowTotal {
     public Label getLbTotal() {
         return lbTotal;
     }
+
+    public ForecastLevelEnum getForecastLevelEnum() {
+        return forecastLevelEnum;
+    }
+
+    @Override
+    public int compareTo(RowTotal o) {
+        if (this.type.equals(o.getType())) {
+            return (this.forecastLevelEnum.compareTo(o.getForecastLevelEnum()));
+        }
+        return this.type.compareTo(o.getType());
+    }
+
 }
 
 class CustomHeader {
