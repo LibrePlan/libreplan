@@ -35,7 +35,7 @@ class TemplateElementOperations extends TreeElementOperationsController<OrderEle
 
     private TemplatesTreeController treeController;
 
-    private BudgetTemplatesController orderTemplatesController;
+    private IEditionSubwindowController orderTemplatesController;
 
     public static TemplateElementOperations build() {
         return new TemplateElementOperations();
@@ -55,9 +55,9 @@ class TemplateElementOperations extends TreeElementOperationsController<OrderEle
         return this;
     }
 
-    public TemplateElementOperations orderTemplatesController(
-            BudgetTemplatesController orderTemplatesController) {
-        this.orderTemplatesController = orderTemplatesController;
+    public TemplateElementOperations setIEditionSubwindowController(
+            IEditionSubwindowController editionSubwindowController) {
+        this.orderTemplatesController = editionSubwindowController;
         return this;
     }
 

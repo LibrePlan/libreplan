@@ -19,6 +19,7 @@
 
 <?component name="orderElementTree" macroURI="/orders/components/_orderElementTree.zul"
     class="org.libreplan.web.templates.budgettemplates.TemplatesTreeComponent"?>
+<?component name="editTemplateWindow" macroURI="/budgettemplates/_editTemplateWindow.zul" inline="true"?>
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
     <zscript>
@@ -29,6 +30,7 @@
 
     <div id="editWindow" self="@{define(content)}" apply="${bController}" height="100%" style="overflow:visible">
         <vbox id="messagesContainer" />
+        <editTemplateWindow />
 
         <tabbox>
             <tabs>

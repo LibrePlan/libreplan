@@ -79,7 +79,7 @@ import org.zkoss.zul.Window;
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class BudgetTemplatesController extends GenericForwardComposer implements
-        IBudgetTemplatesControllerEntryPoints {
+        IBudgetTemplatesControllerEntryPoints, IEditionSubwindowController {
 
     @Autowired
     private IBudgetTemplatesModel model;

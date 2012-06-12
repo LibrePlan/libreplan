@@ -20,8 +20,11 @@
 package org.libreplan.web.planner.budget;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.planner.order.ISaveCommand;
+import org.libreplan.web.templates.budgettemplates.EditTemplateWindowController;
 import org.libreplan.web.templates.budgettemplates.IBudgetTemplatesModel;
+import org.libreplan.web.templates.budgettemplates.IEditionSubwindowController;
 import org.libreplan.web.templates.budgettemplates.TemplatesTreeController;
 import org.libreplan.web.tree.TreeComponent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Tree;
+import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Div;
 
 /**
@@ -39,7 +43,8 @@ import org.zkoss.zul.api.Div;
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class BudgetController extends GenericForwardComposer {
+public class BudgetController extends GenericForwardComposer implements
+        IEditionSubwindowController {
 
     @Autowired
     private IBudgetTemplatesModel model;
@@ -47,6 +52,8 @@ public class BudgetController extends GenericForwardComposer {
     private TreeComponent treeComponent;
 
     private Div editWindow;
+
+    private EditTemplateWindowController editTemplateController;
 
     public void init(Order order, ISaveCommand saveCommand) {
         model.initEdit(order.getAssociatedBudgetObject());
@@ -56,12 +63,20 @@ public class BudgetController extends GenericForwardComposer {
     private void showEditWindow() {
         // openTemplateTree is not called if it's the first tab shown
         bindTemplatesTreeWithModel();
+        bindEditTemplateWindowWithController();
+    }
+
+    private void bindEditTemplateWindowWithController() {
+        Window editTemplateWindow = (Window) editWindow
+                .getFellow("editTemplateWindow");
+        editTemplateController = EditTemplateWindowController.bindTo(model,
+                editTemplateWindow);
     }
 
     public void openTemplateTree() {
         if (treeComponent == null) {
             final TemplatesTreeController treeController = new TemplatesTreeController(
-                    model, null);
+                    model, this);
             treeComponent = (TreeComponent) editWindow
                     .getFellow("orderElementTree");
             treeComponent.useController(treeController);
@@ -99,5 +114,9 @@ public class BudgetController extends GenericForwardComposer {
             return;
         }
         treeComponent.getController().bindModelIfNeeded();
+    }
+
+    public void showEditionFor(OrderElementTemplate template) {
+        editTemplateController.open(template);
     }
 }

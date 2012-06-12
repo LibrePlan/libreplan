@@ -65,7 +65,7 @@ public class TemplatesTreeController extends
 
     private final IBudgetTemplatesModel model;
 
-    private final BudgetTemplatesController orderTemplatesController;
+    private final IEditionSubwindowController orderTemplatesController;
 
     private TemplateElementOperations operationsForOrderTemplate;
 
@@ -419,7 +419,7 @@ public class TemplatesTreeController extends
     }
 
     public TemplatesTreeController(IBudgetTemplatesModel model,
-            BudgetTemplatesController orderTemplatesController) {
+            IEditionSubwindowController orderTemplatesController) {
         super(OrderElementTemplate.class);
         this.model = model;
         this.orderTemplatesController = orderTemplatesController;
@@ -433,7 +433,7 @@ public class TemplatesTreeController extends
     private void initializeOperationsForOrderTemplate() {
         operationsForOrderTemplate = TemplateElementOperations.build()
             .treeController(this)
-            .orderTemplatesController(this.orderTemplatesController);
+            .setIEditionSubwindowController(this.orderTemplatesController);
     }
 
     @Override
