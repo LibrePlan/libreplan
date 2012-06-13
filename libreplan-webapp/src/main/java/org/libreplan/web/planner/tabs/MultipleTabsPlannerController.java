@@ -127,10 +127,8 @@ public class MultipleTabsPlannerController implements Composer,
         }
     }
 
-    public final String PLANNIFICATION = _("Scheduling");
-
     public static String getSchedulingLabel() {
-        return _("Scheduling");
+        return _("Planning");
     };
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";

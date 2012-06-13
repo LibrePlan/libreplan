@@ -36,12 +36,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.libreplan.business.common.Registry;
-import org.libreplan.business.users.entities.UserRole;
-import org.libreplan.web.UserUtil;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
-import org.libreplan.web.security.SecurityUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
@@ -259,115 +256,151 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 helpLink);
     }
 
-    private CustomMenuItem subItem(String name, String url, String helpLink,
-            CustomMenuItem... children) {
-        CustomMenuItem parent = subItem(name, url, helpLink);
-        for (CustomMenuItem child : children) {
-            parent.appendChildren(child);
-        }
-        return parent;
-    }
-
     public void initializeMenu() {
-        topItem(_("Scheduling"), "/planner/index.zul", "",
-                subItem(_("Projects Planning"), new ICapture() {
-                    @Override
-                    public void capture() {
-                        globalView.goToCompanyScheduling();
-                    }
-                }, "01-introducion.html"),
-                subItem(_("Projects List"), new ICapture() {
-                    @Override
-                    public void capture() {
-                        globalView.goToOrdersList();
-                    }
-                }, "01-introducion.html#id2"),
-                subItem(_("Resource Usage"), new ICapture() {
-                    @Override
-                    public void capture() {
-                        globalView.goToCompanyLoad();
-                    }
-                }, "01-introducion.html#id1"),
-                subItem(_("Limiting Resources Planning"), new ICapture() {
-                    @Override
-                    public void capture() {
-                        globalView.goToLimitingResources();
-                    }
-                }, "01-introducion.html"),
-            subItem(_("Project Templates"), "/templates/templates.zul", ""));
+        List<CustomMenuItem> planningItems = new ArrayList<CustomMenuItem>();
+        planningItems.add(subItem(_("Company view"), new ICapture() {
+            @Override
+            public void capture() {
+                globalView.goToCompanyScheduling();
+            }
+        }, "01-introducion.html"));
+        planningItems.add(subItem(_("Projects"), new ICapture() {
+            @Override
+            public void capture() {
+                globalView.goToOrdersList();
+            }
+        }, "01-introducion.html#id2"));
+        planningItems.add(subItem(_("Resource Load"), new ICapture() {
+            @Override
+            public void capture() {
+                globalView.goToCompanyLoad();
+            }
+        }, "01-introducion.html#id1"));
+        planningItems.add(subItem(_("Limiting Resources"), new ICapture() {
+            @Override
+            public void capture() {
+                globalView.goToLimitingResources();
+            }
+        }, "01-introducion.html"));
+        planningItems.add(subItem(_("Templates"), "/templates/templates.zul",
+                ""));
+        topItem(_("Planning"), "/planner/index.zul", "", planningItems);
 
         List<CustomMenuItem> resourcesItems = new ArrayList<CustomMenuItem>();
-        resourcesItems.add(subItem(_("Workers"), "/resources/worker/worker.zul","05-recursos.html#xesti-n-de-traballadores"));
-        resourcesItems.add(subItem(_("Machines"), "/resources/machine/machines.zul","05-recursos.html#xesti-n-de-m-quinas"));
-        resourcesItems.add(subItem(_("Virtual Workers Groups"),"/resources/worker/virtualWorkers.zul","05-recursos.html#xesti-n-de-traballadores"));
-        resourcesItems.add(subItem(_("Time Tracking"), "/workreports/workReport.zul",
-                "09-partes.html#id3"));
-        if ((SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION))
-                || (SecurityUtils.isUserInRole(UserRole.ROLE_EXPENSE_TRACKING))) {
-            resourcesItems
-                    .add(subItem(_("Expense Tracking"), "/expensesheet/expenseSheet.zul", ""));
-        }
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
-            resourcesItems.add(subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""));
-        }
-        resourcesItems.add(subItem(_("Communications"), "/subcontract/subcontractedTasks.zul", "",
-                subItem(_("Send to subcontractors"), "/subcontract/subcontractedTasks.zul", ""),
-                subItem(_("Received from subcontractors"), "/subcontract/subcontractorCommunications.zul",""),
-                subItem(_("Send to customers"), "/subcontract/reportAdvances.zul", ""),
-                subItem(_("Received from customers"), "/subcontract/customerCommunications.zul","")));
-        topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
+        resourcesItems.add(subItem(_("Workers"),
+                "/resources/worker/worker.zul",
+                "05-recursos.html#xesti-n-de-traballadores"));
+        resourcesItems.add(subItem(_("Machines"),
+                "/resources/machine/machines.zul",
+                "05-recursos.html#xesti-n-de-m-quinas"));
+        resourcesItems.add(subItem(_("Virtual Workers"),
+                "/resources/worker/virtualWorkers.zul",
+                "05-recursos.html#xesti-n-de-traballadores"));
+        resourcesItems.add(subItem(_("Calendars"), "/calendars/calendars.zul",
+                "03-calendarios.html"));
+        resourcesItems.add(subItem(_("Calendar Exception Days"),
+                "/excetiondays/exceptionDays.zul", ""));
+        resourcesItems
+                .add(subItem(_("Criteria"),
+                        "/resources/criterions/criterions.zul",
+                        "02-criterios.html#id1"));
+        resourcesItems.add(subItem(_("Progress Types"),
+                "/advance/advanceTypes.zul",
+                "04-avances.html#id1"));
+        resourcesItems.add(subItem(_("Labels"), "/labels/labelTypes.zul",
+                "10-etiquetas.html"));
+        resourcesItems.add(subItem(_("Materials"), "/materials/materials.zul",
+                "11-materiales.html#administraci-n-de-materiais"));
+        resourcesItems.add(subItem(_("Material Units"),
+                "/materials/unitTypes.zul",
+                "11-materiales.html#administraci-n-de-materiais"));
+        resourcesItems
+                .add(subItem(_("Quality Forms"),
+                        "/qualityforms/qualityForms.zul",
+                        "12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"));
+        topItem(_("Resources"), "/resources/worker/worker.zul", "",
+                resourcesItems);
 
-        if (isScenariosVisible()) {
-        topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
-                subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
-                subItem(_("Transfer Projects Between Scenarios"), "/scenarios/transferOrders.zul", ""));
-        }
+        List<CustomMenuItem> costItems = new ArrayList<CustomMenuItem>();
+        costItems.add(subItem(_("Timesheets"),
+                "/workreports/workReport.zul", "09-partes.html#id3"));
+        costItems.add(subItem(_("Timesheets Templates"),
+                "/workreports/workReportTypes.zul", "09-partes.html#id2"));
+        costItems.add(subItem(_("Expenses"),
+                "/expensesheet/expenseSheet.zul", ""));
+        costItems.add(subItem(_("Cost Categories"),
+                "/costcategories/costCategory.zul",
+                "14-custos.html#categor-as-de-custo"));
+        costItems.add(subItem(_("Hours Types"),
+                "/costcategories/typeOfWorkHours.zul",
+                "14-custos.html#administraci-n-de-horas-traballadas"));
+        topItem(_("Cost"), "/workreports/workReport.zul", "",
+                costItems);
 
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
-            topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
-                    subItem(_("LibrePlan Configuration"),
-                            "/common/configuration.zul",
-                            "16-ldap-authentication.html"),
-                subItem(_("Users"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios",
-                    subItem(_("Accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
-                    subItem(_("Profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles")),
-                subItem(_("Calendars"),"/calendars/calendars.zul", "03-calendarios.html"),
-                subItem(_("Materials"), "/materials/materials.zul", "11-materiales.html#administraci-n-de-materiais"),
-                subItem(_("Quality Forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
-                subItem(_("Cost Categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
-                subItem(_("Data Types"),"/advance/advanceTypes.zul", "04-avances.html#id1",
-                    subItem(_("Progress"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
-                    subItem(_("Criteria"),"/resources/criterions/criterions.zul","02-criterios.html#id1"),
-                    subItem(_("Exception Days"),"/excetiondays/exceptionDays.zul",""),
-                    subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
-                    subItem(_("Unit Measures"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
-                    subItem(_("Work Hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
-                            subItem(_("Work Report Models"),
-                                    "/workreports/workReportTypes.zul",
-                                    "09-partes.html#id2")));
-            }
+        List<CustomMenuItem> configurationItems = new ArrayList<CustomMenuItem>();
+        configurationItems.add(subItem(_("Main Settings"),
+                "/common/configuration.zul", "16-ldap-authentication.html"));
+        configurationItems.add(subItem(_("User Accounts"), "/users/users.zul",
+                "13-usuarios.html#administraci-n-de-usuarios"));
+        configurationItems.add(subItem(_("Profiles"), "/users/profiles.zul",
+                "13-usuarios.html#administraci-n-de-perfiles"));
+        topItem(_("Configuration"), "/common/configuration.zul", "",
+                configurationItems);
 
+        List<CustomMenuItem> communicationsItems = new ArrayList<CustomMenuItem>();
+        communicationsItems.add(subItem(_("Companies"),
+                "/externalcompanies/externalcompanies.zul", ""));
+        communicationsItems.add(subItem(_("Send To Subcontractors"),
+                "/subcontract/subcontractedTasks.zul", ""));
+        communicationsItems.add(subItem(_("Received From Subcontractors"),
+                "/subcontract/subcontractorCommunications.zul", ""));
+        communicationsItems.add(subItem(_("Send To Customers"),
+                "/subcontract/reportAdvances.zul", ""));
+        communicationsItems.add(subItem(_("Received From Customers"),
+                "/subcontract/customerCommunications.zul", ""));
+        topItem(_("Communications"),
+                "/externalcompanies/externalcompanies.zul", "",
+                communicationsItems);
+
+        List<CustomMenuItem> reportsItems = new ArrayList<CustomMenuItem>();
+        reportsItems.add(subItem(_("Work Report Lines"),
+                "/workreports/workReportQuery.zul", "09-partes.html#id4"));
+        reportsItems.add(subItem(_("Hours Worked Per Resource"),
+                "/reports/hoursWorkedPerWorkerReport.zul",
+                "15-1-report-hours-worked-by-resource.html"));
+        reportsItems.add(subItem(
+                _("Total Worked Hours By Resource In A Month"),
+                "/reports/hoursWorkedPerWorkerInAMonthReport.zul",
+                "15-2-total-hours-by-resource-month.html"));
+        reportsItems.add(subItem(_("Work And Progress Per Project"),
+                "/reports/schedulingProgressPerOrderReport.zul",
+                "15-3-work-progress-per-project.html"));
+        reportsItems
+                .add(subItem(_("Work And Progress Per Task"),
+                        "/reports/workingProgressPerTaskReport.zul",
+                        "15-informes.html"));
+        reportsItems.add(subItem(_("Estimated/Planned Hours Per Task"),
+                "/reports/completedEstimatedHoursPerTask.zul",
+                "15-informes.html"));
+        reportsItems.add(subItem(_("Project Costs"),
+                "/reports/orderCostsPerResource.zul", "15-informes.html"));
+        reportsItems.add(subItem(_("Task Scheduling Status In Project"),
+                "/reports/workingArrangementsPerOrderReport.zul",
+                "15-informes.html"));
+        reportsItems.add(subItem(_("Materials Needs At Date"),
+                "/reports/timeLineMaterialReport.zul", "15-informes.html"));
         topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
-            subItem(_("Work Report Lines"), "/workreports/workReportQuery.zul", "09-partes.html#id4"),
-            subItem(_("Hours Worked Per Resource"),"/reports/hoursWorkedPerWorkerReport.zul","15-1-report-hours-worked-by-resource.html"),
-            subItem(_("Total Worked Hours By Resource In A Month"),"/reports/hoursWorkedPerWorkerInAMonthReport.zul","15-2-total-hours-by-resource-month.html"),
-            subItem(_("Work And Progress Per Project"),"/reports/schedulingProgressPerOrderReport.zul", "15-3-work-progress-per-project.html"),
-            subItem(_("Work And Progress Per Task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
-            subItem(_("Estimated/Planned Hours Per Task"),"/reports/completedEstimatedHoursPerTask.zul", "15-informes.html"),
-            subItem(_("Project Costs"), "/reports/orderCostsPerResource.zul", "15-informes.html"),
-            subItem(_("Task Scheduling Status In Project"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
-            subItem(_("Materials Needs At Date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
+                reportsItems);
 
-        if (UserUtil.getUserFromSession().isBound()) {
-            topItem(_("My account"), "/myaccount/userDashboard.zul", "",
-                    subItem(_("My dashboard"), "/myaccount/userDashboard.zul", ""),
-                    subItem(_("Settings"), "/myaccount/settings.zul", ""),
-                    subItem(_("Change Password"), "/myaccount/changePassword.zul", ""));
-        } else {
-            topItem(_("My account"), "/myaccount/settings.zul", "",
-                    subItem(_("Settings"), "/myaccount/settings.zul", ""),
-                    subItem(_("Change Password"), "/myaccount/changePassword.zul", ""));
-        }
+        List<CustomMenuItem> personalAreaItems = new ArrayList<CustomMenuItem>();
+        personalAreaItems.add(subItem(_("Home"),
+                "/myaccount/userDashboard.zul", ""));
+        personalAreaItems.add(subItem(_("Preferences"),
+                "/myaccount/settings.zul", ""));
+        personalAreaItems.add(subItem(_("Change Password"),
+                "/myaccount/changePassword.zul", ""));
+        topItem(_("Personal area"), "/myaccount/userDashboard.zul", "",
+                personalAreaItems);
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
@@ -382,7 +415,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         List<CustomMenuItem> breadcrumbsPath = new ArrayList<CustomMenuItem>();
         for (CustomMenuItem ci : this.firstLevel) {
             if (ci.isActiveParent()) {
-                if ((ci.name != null) && (ci.name != _("Scheduling"))) {
+                if ((ci.name != null) && (ci.name != _("Planning"))) {
                     breadcrumbsPath.add(ci);
                     for (CustomMenuItem child : ci.children) {
                         if (child.isActiveParent()) {
