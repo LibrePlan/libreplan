@@ -19,7 +19,7 @@
 
 package org.libreplan.web.planner.budget;
 
-import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.planner.order.ISaveCommand;
 import org.libreplan.web.templates.budgettemplates.EditTemplateWindowController;
@@ -55,8 +55,8 @@ public class BudgetController extends GenericForwardComposer implements
 
     private EditTemplateWindowController editTemplateController;
 
-    public void init(Order order, ISaveCommand saveCommand) {
-        model.initEdit(order.getAssociatedBudgetObject());
+    public void init(Budget budget, ISaveCommand saveCommand) {
+        model.initEdit(budget);
         showEditWindow();
     }
 

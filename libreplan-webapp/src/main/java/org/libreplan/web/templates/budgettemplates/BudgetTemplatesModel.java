@@ -190,7 +190,8 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
     @Transactional(readOnly = true)
     public void initEdit(OrderElementTemplate template) {
         initializeAcompanyingObjectsOnConversation();
-        this.template = dao.findExistingEntity(template.getId());
+        dao.reattach(template);
+        this.template = template;
         loadAssociatedData(this.template);
         treeModel = new TemplatesTree(this.template);
     }

@@ -79,6 +79,7 @@ import org.libreplan.business.scenarios.daos.IOrderVersionDAO;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.ProfileOrderAuthorization;
@@ -700,6 +701,8 @@ public class PlanningStateCreator {
 
         private final Order order;
 
+        private Budget budget;
+
         private ArrayList<TaskElement> initial;
 
         private Set<TaskElement> toRemove = new HashSet<TaskElement>();
@@ -719,6 +722,7 @@ public class PlanningStateCreator {
                 Scenario currentScenario) {
             Validate.notNull(order);
             this.order = order;
+            this.budget = order.getAssociatedBudgetObject();
             rebuildTasksState();
             this.scenarioInfo = new ChangeScenarioInfoOnSave(
                     buildScenarioInfo(order), order);
@@ -784,6 +788,10 @@ public class PlanningStateCreator {
 
         public Order getOrder() {
             return order;
+        }
+
+        public Budget getBudget() {
+            return budget;
         }
 
         public boolean isEmpty() {
