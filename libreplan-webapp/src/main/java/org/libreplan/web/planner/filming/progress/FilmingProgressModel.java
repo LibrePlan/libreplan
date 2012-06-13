@@ -103,19 +103,22 @@ public class FilmingProgressModel implements IFilmingProgressModel {
                             .getType(), filmingProgress
                             .getInitialProgressForecast()));
 
-            if (filmingProgress.getRealProgress() == null) {
+            if (filmingProgress.getRealProgress() == null
+                    || filmingProgress.getRealProgress().isEmpty()) {
                 filmingProgress.setRealProgress(createIntoIntervalWithValue(
                         filmingProgress.getStartDate(),
                         filmingProgress.getEndDate(), null));
             }
 
         }
-        if (filmingProgress.getProgressForecast() != null) {
+        if (filmingProgress.getProgressForecast() != null
+                && !filmingProgress.getProgressForecast().isEmpty()) {
             progressValues.add(new ProgressValue(filmingProgress, ForecastLevelEnum.FORECAST,
                     filmingProgress.getType(), filmingProgress
                             .getProgressForecast()));
         }
-        if (filmingProgress.getRealProgress() != null) {
+        if (filmingProgress.getRealProgress() != null
+                && !filmingProgress.getRealProgress().isEmpty()) {
             progressValues.add(new ProgressValue(filmingProgress, ForecastLevelEnum.REAL,
                     filmingProgress.getType(), filmingProgress
                             .getRealProgress()));
