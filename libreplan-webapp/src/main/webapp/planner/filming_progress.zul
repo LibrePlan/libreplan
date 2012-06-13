@@ -34,12 +34,14 @@
 		<hbox align="center">
                     <separator/>
                     <label>${i18n:_('Start date')}:</label>
-                    <datebox id="startDate" readonly="true" disabled="true"
-                        value="@{fpController.startDate}" />
+                    <datebox id="startDate" value="@{fpController.startDate}"
+                        onChange="fpController.changeStartDate(self)"
+                        constraint="@{fpController.checkConstraintStartDate}"/>
                     <separator/>
                     <label>${i18n:_('End date')}:</label>
-                    <datebox id="endDate" readonly="true" disabled="true"
-                        value="@{fpController.endDate}" />
+                    <datebox id="endDate" value="@{fpController.endDate}"
+                        onChange="fpController.changeEndDate(self)"
+                        constraint="@{fpController.checkConstraintEndDate}"/>
                     <separator/>
                     <space bar="true" />
                     <button label="${i18n:_('Add new unit measure')}" id="unitMeasureButton"

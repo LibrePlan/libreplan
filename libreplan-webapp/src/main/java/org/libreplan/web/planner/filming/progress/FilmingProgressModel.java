@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -145,12 +146,58 @@ public class FilmingProgressModel implements IFilmingProgressModel {
     }
 
     @Override
+    public void removeDays() {
+        if (this.currentOrder != null
+                && this.currentOrder.getFilmingProgressSet() != null) {
+            for (FilmingProgress filmingProgress : currentOrder
+                    .getFilmingProgressSet()) {
+                removeDaysInFilminProgress(filmingProgress);
+            }
+        }
+    }
+
+    private void removeDaysInFilminProgress(FilmingProgress filmingProgress) {
+        LocalDate endDate = filmingProgress.getEndDate();
+        LocalDate startDate = filmingProgress.getStartDate();
+
+        removeDaysInValues(startDate, endDate,
+                filmingProgress.getInitialProgressForecast());
+        removeDaysInValues(startDate, endDate,
+                filmingProgress.getProgressForecast());
+        removeDaysInValues(startDate, endDate,
+                filmingProgress.getRealProgress());
+    }
+
+    private void removeDaysInValues(LocalDate startDate, LocalDate endDate,
+            SortedMap<LocalDate, BigDecimal> map) {
+        if (map != null && !map.isEmpty()) {
+            SortedMap<LocalDate, BigDecimal> mapCopy = new TreeMap<LocalDate, BigDecimal>(
+                    map);
+            for (LocalDate date : mapCopy.keySet()) {
+                if (date.compareTo(startDate) < 0
+                        || date.compareTo(endDate) > 0) {
+                    map.remove(date);
+                }
+            }
+        }
+    }
+
+    @Override
     public Order getCurrentOrder() {
         return this.currentOrder;
     }
 
     @Override
-    public FilmingProgress getCurrentFilmingProgress() {
+    public FilmingProgress getFirstFilmingProgress() {
+        if (this.currentOrder != null
+                && this.currentOrder.getFilmingProgressSet() != null
+                && !this.currentOrder.getFilmingProgressSet().isEmpty()) {
+            Iterator<FilmingProgress> iterator = this.currentOrder
+                    .getFilmingProgressSet().iterator();
+            while (iterator.hasNext()) {
+                return iterator.next();
+            }
+        }
         return null;
     }
 
@@ -191,6 +238,11 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         // create a new filming progress
         FilmingProgress filmingProgress = FilmingProgress.create(currentOrder,
                 type);
+        if (getFirstFilmingProgress() != null) {
+            filmingProgress.setEndDate(getFirstFilmingProgress().getEndDate());
+            filmingProgress.setStartDate(getFirstFilmingProgress()
+                    .getStartDate());
+        }
         this.currentOrder.getFilmingProgressSet().add(filmingProgress);
 
         // init the initial progress forecast with the max value
@@ -323,6 +375,31 @@ public class FilmingProgressModel implements IFilmingProgressModel {
                     .getFilmingProgressSet()) {
                 entity.dontPoseAsTransientObjectAnymore();
             }
+    }
+
+    @Override
+    public void updateStartDate(LocalDate startDate) {
+        if (this.currentOrder != null
+                && this.currentOrder.getFilmingProgressSet() != null
+                && !this.currentOrder.getFilmingProgressSet().isEmpty()) {
+            for (FilmingProgress filmingProgress : this.currentOrder
+                    .getFilmingProgressSet()) {
+                filmingProgress.setStartDate(startDate);
+            }
+        }
+
+    }
+
+    @Override
+    public void updateEndDate(LocalDate endDate) {
+        if (this.currentOrder != null
+                && this.currentOrder.getFilmingProgressSet() != null
+                && !this.currentOrder.getFilmingProgressSet().isEmpty()) {
+            for (FilmingProgress filmingProgress : this.currentOrder
+                    .getFilmingProgressSet()) {
+                filmingProgress.setEndDate(endDate);
+            }
+        }
     }
 }
 

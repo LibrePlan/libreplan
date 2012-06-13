@@ -21,6 +21,7 @@ package org.libreplan.web.planner.filming.progress;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
 import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
 import org.libreplan.business.orders.entities.Order;
@@ -33,7 +34,7 @@ interface IFilmingProgressModel {
 
     Order getCurrentOrder();
 
-    FilmingProgress getCurrentFilmingProgress();
+    FilmingProgress getFirstFilmingProgress();
 
     void setSaveCommand(ISaveCommand saveCommand);
 
@@ -49,5 +50,11 @@ interface IFilmingProgressModel {
     void loadDataFromOrder();
 
     void dontPoseAsTransientObjectAnymore();
+
+    void updateStartDate(LocalDate localDate);
+
+    void updateEndDate(LocalDate localDate);
+
+    void removeDays();
 
 }

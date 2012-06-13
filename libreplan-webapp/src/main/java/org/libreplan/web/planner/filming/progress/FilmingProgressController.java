@@ -36,6 +36,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
 import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
@@ -67,6 +68,7 @@ import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
@@ -102,6 +104,9 @@ public class FilmingProgressController extends GenericForwardComposer {
     private Grid gridTotals;
     private Button unitMeasureButton;
 
+    private Datebox endDate;
+    private Datebox startDate;
+
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(FilmingProgressController.class);
 
@@ -110,6 +115,10 @@ public class FilmingProgressController extends GenericForwardComposer {
     private ProgressTotalRenderer progressTotalRenderer = new ProgressTotalRenderer();
 
     private Div filmingProgressChart;
+
+    private Date endDateFilming;
+
+    private Date startDateFilming;
 
     private final static String MOLD = "paging";
 
@@ -176,10 +185,7 @@ public class FilmingProgressController extends GenericForwardComposer {
             @Override
             public void onAfterSave() {
                 filmingProgressModel.dontPoseAsTransientObjectAnymore();
-                filmingProgressModel.loadDataFromOrder();
-                renderAllValuesPerDay();
-                gridTotals.setModel(new SimpleListModel(getRowTotals()));
-                gridTotals.renderAll();
+                loadAndRefressAllData();
             }
         };
 
@@ -188,6 +194,13 @@ public class FilmingProgressController extends GenericForwardComposer {
         if (this.mainComponent != null) {
             loadAndInitializeComponents();
         }
+    }
+
+    private void loadAndRefressAllData() {
+        filmingProgressModel.loadDataFromOrder();
+        prepareFilmingProgressList();
+        gridTotals.setModel(new SimpleListModel(getRowTotals()));
+        gridTotals.renderAll();
     }
 
     private Order getCurrentOrder() {
@@ -207,38 +220,161 @@ public class FilmingProgressController extends GenericForwardComposer {
     private void createComponents() {
         prepareFilmingProgressList();
         refreshTotalPanel();
+        updatesDates();
         reloadNormalLayout();
     }
 
     private FilmingProgress getFilmingProgress() {
-        return this.filmingProgressModel.getCurrentFilmingProgress();
+        return this.filmingProgressModel.getFirstFilmingProgress();
     }
 
     /*
      * functions to manage the datebox
      */
     public Date getStartDate() {
-        if (getFilmingProgress() != null
-                && getFilmingProgress().getStartDate() != null) {
-            return getFilmingProgress().getStartDate().toDateTimeAtStartOfDay()
-                    .toDate();
-        }
-        return null;
+        return this.startDateFilming;
+    }
+
+    public void setStartDate(Date date) {
+        startDateFilming = date;
     }
 
     public Date getEndDate() {
-        if (getFilmingProgress() != null
-                && getFilmingProgress().getEndDate() != null) {
-            return getFilmingProgress().getEndDate().toDateTimeAtStartOfDay()
-                    .toDate();
-        }
-        return null;
+        return this.endDateFilming;
     }
 
     public void setEndDate(Date date) {
-        if (getFilmingProgress() != null && date != null) {
-            getFilmingProgress().setEndDate(new LocalDate(date));
+        endDateFilming = date;
+    }
+
+    private void updatesDates() {
+        this.endDateFilming = null;
+        if (getFilmingProgress() != null
+                && getFilmingProgress().getEndDate() != null) {
+            this.endDateFilming = getFilmingProgress().getEndDate()
+                    .toDateTimeAtStartOfDay().toDate();
         }
+        this.startDateFilming = null;
+        if (getFilmingProgress() != null
+                && getFilmingProgress().getEndDate() != null) {
+            this.startDateFilming = getFilmingProgress().getStartDate()
+                    .toDateTimeAtStartOfDay().toDate();
+        }
+        Util.createBindingsFor(endDate);
+        Util.createBindingsFor(startDate);
+    }
+
+    public boolean confirmChangeDate() {
+        try {
+            int status = Messagebox
+                    .show(_("Confirm changing end date in all filming progress. Are you sure?"),
+                            _("Question"), Messagebox.OK | Messagebox.CANCEL,
+                            Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                return true;
+            }
+        } catch (InterruptedException e) {
+            messages.showMessage(Level.ERROR, e.getMessage());
+            LOG.error(_("Error on updating dates in filming progress"), e);
+        }
+        return false;
+    }
+
+    public void changeEndDate(Datebox datebox) {
+        if (getFilmingProgress() != null
+                && datebox.getValue() != null
+                && getFilmingProgress().getEndDate().compareTo(
+                        new LocalDate(datebox.getValue())) != 0) {
+            if (confirmChangeDate()) {
+                filmingProgressModel.updateEndDate(new LocalDate(datebox
+                        .getValue()));
+                filmingProgressModel.removeDays();
+                loadAndRefressAllData();
+            } else {
+                this.endDateFilming = getFilmingProgress().getEndDate()
+                        .toDateTimeAtStartOfDay().toDate();
+                Util.createBindingsFor(datebox);
+            }
+        }
+    }
+
+    public void changeStartDate(Datebox datebox) {
+        if (getFilmingProgress() != null
+                && datebox.getValue() != null
+                && getFilmingProgress().getStartDate().compareTo(
+                        new LocalDate(datebox.getValue())) != 0) {
+            if (confirmChangeDate()) {
+                filmingProgressModel.updateStartDate(new LocalDate(datebox
+                        .getValue()));
+                filmingProgressModel.removeDays();
+                loadAndRefressAllData();
+            } else {
+                startDateFilming = getFilmingProgress().getStartDate()
+                        .toDateTimeAtStartOfDay().toDate();
+                Util.createBindingsFor(datebox);
+            }
+        }
+    }
+
+    public Constraint checkConstraintEndDate() {
+        return new Constraint() {
+            @Override
+            public void validate(org.zkoss.zk.ui.Component comp, Object value)
+                    throws WrongValueException {
+                if (value == null) {
+                    throw new WrongValueException(comp,
+                            _("the value cannot be empty."));
+                }
+                if (getFilmingProgress() != null
+                        && filmingProgressModel.getCurrentOrder() != null) {
+                    LocalDate newEndDate = new LocalDate((Date) value);
+                    LocalDate startDateFilming = getFilmingProgress()
+                            .getStartDate();
+                    if (isDecreasingAndOutRange(startDateFilming, newEndDate)) {
+                        throw new WrongValueException(
+                                comp,
+                                _("if the time period is lower the end date must be previous than the initial finish date."));
+                    }
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintStartDate() {
+        return new Constraint() {
+            @Override
+            public void validate(org.zkoss.zk.ui.Component comp, Object value)
+                    throws WrongValueException {
+                if (value == null) {
+                    throw new WrongValueException(comp,
+                            _("the value cannot be empty."));
+                }
+                if (getFilmingProgress() != null
+                        && filmingProgressModel.getCurrentOrder() != null) {
+                    LocalDate newStartDate = new LocalDate((Date) value);
+                    LocalDate endDateFilming = getFilmingProgress()
+                            .getEndDate();
+                    if (isDecreasingAndOutRange(newStartDate, endDateFilming)) {
+                        throw new WrongValueException(
+                                comp,
+                                _("if the time period is lower the start date must be posterior than the initial start date."));
+                    }
+                }
+            }
+        };
+    }
+
+    private boolean isDecreasingAndOutRange(LocalDate startDate,
+            LocalDate endDate) {
+        LocalDate initialStartDate = new LocalDate(filmingProgressModel
+                .getCurrentOrder().getInitDate());
+        LocalDate initialEndDate = new LocalDate(filmingProgressModel
+                .getCurrentOrder().getDeadline());
+        int oldDays = Days.daysBetween(initialStartDate, initialEndDate)
+                .getDays();
+        int newDays = Days.daysBetween(startDate, endDate).getDays();
+        return ((oldDays > newDays) && (endDate.compareTo(initialEndDate) > 0 || startDate
+                .compareTo(initialStartDate) < 0));
     }
 
     public ListModel getUnitMeasures() {
@@ -641,10 +777,11 @@ public class FilmingProgressController extends GenericForwardComposer {
 
     public void confirmRemove(ProgressValue progressValue) {
         try {
-            int status = Messagebox.show(_(
-                    "Confirm deleting filming progress {0}. Are you sure?",
-                    progressValue.getFilmingProgress().getType(), _("Delete"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION));
+            int status = Messagebox.show(
+                    _("Confirm deleting filming progress {0}. Are you sure?",
+                            progressValue.getFilmingProgress().getType()),
+                    _("Delete"), Messagebox.OK | Messagebox.CANCEL,
+                    Messagebox.QUESTION);
             if (Messagebox.OK == status) {
                 removeFilmingProgress(progressValue.getFilmingProgress());
             }
@@ -661,6 +798,7 @@ public class FilmingProgressController extends GenericForwardComposer {
         filmingProgressModel.loadDataFromOrder();
         renderAllValuesPerDay();
         refreshTotalPanel();
+        updatesDates();
     }
 }
 
