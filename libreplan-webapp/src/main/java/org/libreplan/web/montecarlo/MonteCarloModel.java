@@ -26,7 +26,6 @@ import static org.libreplan.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,7 +45,6 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
-import org.libreplan.business.planner.entities.TaskGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -60,18 +58,6 @@ import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
  *         Calculates the MonteCarlo function for a list of tasks. Usually this
  *         list of tasks represents a critical path. There could be many
  *         critical paths in scheduling.
- *
- *         A big chunk of code goes for determining all the possible critical
- *         paths, departing from a list of elements that contains all the tasks
- *         which are in the critical path. The algorithm determines first all
- *         the possible starting tasks and navigates them forward until reaching
- *         an end.
- *
- *         Navigating from a task to a taskgroup is a bit cumbersome. The
- *         algorithm considers than when there is a link between a task a
- *         taskgroup, the task is connected with all the taskgroup's children
- *         which have: a) no incoming dependencies b) has no incoming
- *         dependencies from a task that it's not a children of that taskgroup.
  *
  */
 @Component
@@ -121,6 +107,13 @@ public class MonteCarloModel implements IMonteCarloModel {
             criticalPaths.put(CRITICAL_PATH + " " + i++,
                     toMonteCarloTaskList(path));
         }
+    }
+
+    private List<List<Task>> buildAllPossibleCriticalPaths(
+            List<Task> tasksInCriticalPath) {
+        MonteCarloCriticalPathBuilder criticalPathBuilder = MonteCarloCriticalPathBuilder
+                .create(tasksInCriticalPath);
+        return criticalPathBuilder.buildAllPossibleCriticalPaths();
     }
 
     /**
@@ -181,219 +174,6 @@ public class MonteCarloModel implements IMonteCarloModel {
     private List<Task> onlyTasks(List<TaskElement> tasks) {
         List<Task> result = new ArrayList<Task>();
         for (TaskElement each : tasks) {
-            if (each instanceof Task) {
-                result.add((Task) each);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Constructs all possible paths starting from those tasks in the critical
-     * path have no incoming dependencies or have incoming dependencies to other
-     * tasks not in the critical path.
-     *
-     * Once all possible path were constructed, filter only those paths which
-     * all their tasks are in the list of tasks in the critical path
-     *
-     * @param tasksInCriticalPath
-     * @return
-     */
-    private List<List<Task>> buildAllPossibleCriticalPaths(
-            List<Task> tasksInCriticalPath) {
-
-        List<List<Task>> result = new ArrayList<List<Task>>();
-        List<List<Task>> allPaths = new ArrayList<List<Task>>();
-
-        for (Task each : getStartingTasks(tasksInCriticalPath)) {
-            buildAllPossiblePaths(each, new ArrayList<Task>(), allPaths);
-        }
-        for (List<Task> path : allPaths) {
-            if (isCriticalPath(path)) {
-                result.add(path);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns the list of starting tasks
-     *
-     * A task is a starting task if a) has no incoming dependencies b) the only
-     * incoming dependencies that it has are to other tasks which are no tasks in
-     * the critical path
-     *
-     * @param tasks
-     * @return
-     */
-    private List<Task> getStartingTasks(List<Task> tasks) {
-        List<Task> result = new ArrayList<Task>();
-        for (Task each : tasks) {
-            List<Task> origins = getOriginsFrom(each);
-            if (onlyTasksInCriticalPath(origins).isEmpty()) {
-                result.add(each);
-            }
-        }
-        return result;
-    }
-
-    private List<Task> getOriginsFrom(Task task) {
-        List<Task> result = new ArrayList<Task>(), tasks;
-
-        tasks = getOriginsFrom(task.getDependenciesWithThisDestination());
-        if (!tasks.isEmpty()) {
-            result.addAll(tasks);
-        } else {
-            tasks = getOriginsFrom(task.getParent()
-                    .getDependenciesWithThisDestination());
-            if (!tasks.isEmpty()) {
-                result.addAll(tasks);
-            }
-        }
-        return result;
-    }
-
-    private List<Task> getOriginsFrom(Set<Dependency> dependencies) {
-        List<Task> result = new ArrayList<Task>();
-        for (Dependency each : dependencies) {
-            TaskElement taskElement = each.getOrigin();
-            if (taskElement instanceof TaskGroup) {
-                final TaskGroup taskGroup = (TaskGroup) taskElement;
-                List<TaskElement> children = onlyTasksInCriticalPath(taskGroup
-                        .getChildren());
-                result.addAll(toTaskIfNecessary(children));
-            }
-            if (taskElement instanceof Task) {
-                result.add((Task) taskElement);
-            }
-        }
-        return result;
-    }
-
-    private List<TaskElement> onlyTasksInCriticalPath(
-            List<? extends TaskElement> tasks) {
-        return onlyTasksInGroup(tasks, tasksInCriticalPath);
-    }
-
-    private List<TaskElement> onlyTasksInGroup(
-            List<? extends TaskElement> tasks, List<? extends TaskElement> group) {
-        List<TaskElement> result = new ArrayList<TaskElement>();
-        for (TaskElement each : tasks) {
-            if (inTaskList(each, group)) {
-                result.add(each);
-            }
-        }
-        return result;
-    }
-
-    private boolean inTaskList(TaskElement task, List<? extends TaskElement> tasks) {
-        for (TaskElement each : tasks) {
-            if (isSameTask(task, each)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isSameTask(TaskElement task1, TaskElement task2) {
-        return task1.getOrderElement().getCode()
-                .equals(task2.getOrderElement().getCode());
-    }
-
-    private boolean isCriticalPath(List<Task> path) {
-        for (Task each : path) {
-            if (!inTaskList(each, tasksInCriticalPath)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void buildAllPossiblePaths(Task task, List<Task> path,
-            List<List<Task>> allPaths) {
-        List<Task> destinations = getDestinationsFrom(task);
-        if (destinations.size() == 0) {
-            path.add(task);
-            allPaths.add(path);
-            return;
-        }
-        for (Task each : destinations) {
-            List<Task> oldPath = copyPath(path);
-            path.add(task);
-            buildAllPossiblePaths((Task) each, path, allPaths);
-            path = oldPath;
-        }
-    }
-
-    private List<Task> copyPath(List<Task> path) {
-        List<Task> result = new ArrayList<Task>();
-        for (Task each : path) {
-            result.add(each);
-        }
-        return result;
-    }
-
-    private List<Task> getDestinationsFrom(Task task) {
-        List<Task> result = new ArrayList<Task>(), tasks;
-
-        tasks = getDestinationsFrom(task.getDependenciesWithThisOrigin());
-        if (!tasks.isEmpty()) {
-            result.addAll(tasks);
-        } else {
-            tasks = getDestinationsFrom(task.getParent()
-                    .getDependenciesWithThisOrigin());
-            if (!tasks.isEmpty()) {
-                result.addAll(tasks);
-            }
-        }
-        return result;
-    }
-
-    private List<Task> getDestinationsFrom(Set<Dependency> dependencies) {
-        List<Task> result = new ArrayList<Task>();
-        for (Dependency each : dependencies) {
-            TaskElement taskElement = each.getDestination();
-            if (taskElement instanceof TaskGroup) {
-                final TaskGroup taskGroup = (TaskGroup) taskElement;
-                List<TaskElement> tasks = onlyTasksWithIncomingDependenciesToOtherTasksNotInThisGroup(taskGroup
-                        .getChildren());
-                result.addAll(toTaskIfNecessary(tasks));
-            }
-            if (taskElement instanceof Task) {
-                result.add((Task) taskElement);
-            }
-        }
-        return result;
-    }
-
-    private List<TaskElement> onlyTasksWithIncomingDependenciesToOtherTasksNotInThisGroup(
-            List<TaskElement> tasks) {
-        List<TaskElement> result = new ArrayList<TaskElement>();
-        for (TaskElement each : tasks) {
-            Set<Dependency> dependencies = each
-                    .getDependenciesWithThisDestination();
-            if (dependencies.isEmpty()) {
-                result.add(each);
-                continue;
-            }
-            for (Dependency dependency : dependencies) {
-                TaskElement origin = dependency.getOrigin();
-                if (origin instanceof Task && !inTaskList(origin, tasks)) {
-                    result.add(origin);
-                }
-            }
-        }
-        return result;
-    }
-
-    private Collection<? extends Task> toTaskIfNecessary(
-            List<TaskElement> taskElements) {
-        List<Task> result = new ArrayList<Task>();
-        for (TaskElement each : taskElements) {
-            if (each instanceof TaskGroup) {
-                final TaskGroup taskGroup = (TaskGroup) each;
-                result.addAll(toTaskIfNecessary(taskGroup.getChildren()));
-            }
             if (each instanceof Task) {
                 result.add((Task) each);
             }
