@@ -20,6 +20,8 @@ package org.libreplan.business.templates.entities;
 
 import java.math.BigDecimal;
 
+import org.libreplan.business.labels.entities.Label;
+
 /**
  * Subclass of OrderLineTemplate with specific fields for LibrePlan audiovisual
  * templates.
@@ -132,6 +134,9 @@ public class BudgetLineTemplate extends OrderLineTemplate {
         copy.setHolidaySalary(getHolidaySalary());
         copy.setIndemnizationSalary(getIndemnizationSalary());
         copy.setQuantity(getQuantity());
+        for (Label label : getLabels()) {
+            copy.addLabel(label);
+        }
 
         return copy;
     }

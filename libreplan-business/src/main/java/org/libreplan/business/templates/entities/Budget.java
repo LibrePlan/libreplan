@@ -18,7 +18,7 @@
  */
 package org.libreplan.business.templates.entities;
 
-import org.hibernate.validator.AssertTrue;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 
 /**
@@ -40,6 +40,9 @@ public class Budget extends OrderTemplate {
         Budget beingBuilt = new Budget();
         beingBuilt.setName(template.getName());
         beingBuilt.setCode("default-code-for-budget");
+        for (Label label : template.getLabels()) {
+            beingBuilt.addLabel(label);
+        }
         for (OrderElementTemplate child : template.getChildren()) {
             beingBuilt.add(child.createCopy());
         }

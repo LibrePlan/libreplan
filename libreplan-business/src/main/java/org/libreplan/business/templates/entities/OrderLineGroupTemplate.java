@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.hibernate.validator.Valid;
 import org.libreplan.business.i18n.I18nHelper;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.CriterionRequirementOrderElementHandler;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -292,6 +293,9 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         copy.setName(getName());
         copy.setCode(getCode());
         copy.setDescription(getDescription());
+        for (Label label : getLabels()) {
+            copy.addLabel(label);
+        }
         for (OrderElementTemplate child : getChildren()) {
             copy.add(child.createCopy());
         }
