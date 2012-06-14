@@ -47,6 +47,26 @@ public final class SecurityUtils {
         return Executions.getCurrent().isUserInRole(role.name());
     }
 
+    /**
+     * Returns <code>true</code> if current user:
+     *
+     * <ul>
+     * <li>Has role {@link UserRole#ROLE_SUPERUSER}</li>
+     * <li>Or has at least one of the <code>roles</code> provided as parameters.
+     * </ul>
+     */
+    public final static boolean isSuperuserOrUserInRoles(UserRole... roles) {
+        if (isUserInRole(UserRole.ROLE_SUPERUSER)) {
+            return true;
+        }
+        for (UserRole role : roles) {
+            if (isUserInRole(role)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public final static String getSessionUserLoginName() {
         HttpServletRequest request = (HttpServletRequest)Executions
             .getCurrent().getNativeRequest();
