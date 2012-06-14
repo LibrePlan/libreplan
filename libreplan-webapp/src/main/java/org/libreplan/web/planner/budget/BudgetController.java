@@ -21,15 +21,18 @@ package org.libreplan.web.planner.budget;
 
 import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.ISaveCommand;
 import org.libreplan.web.templates.budgettemplates.EditTemplateWindowController;
 import org.libreplan.web.templates.budgettemplates.IBudgetTemplatesModel;
 import org.libreplan.web.templates.budgettemplates.IEditionSubwindowController;
 import org.libreplan.web.templates.budgettemplates.TemplatesTreeController;
+import org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent;
 import org.libreplan.web.tree.TreeComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -63,7 +66,10 @@ public class BudgetController extends GenericForwardComposer implements
     private void showEditWindow() {
         // openTemplateTree is not called if it's the first tab shown
         openTemplateTree();
+        bindLabelsControllerWithCurrentTemplate();
         bindEditTemplateWindowWithController();
+
+        Util.createBindingsFor(editWindow);
     }
 
     private void bindEditTemplateWindowWithController() {
@@ -108,6 +114,10 @@ public class BudgetController extends GenericForwardComposer implements
                 .getRenderer());
     }
 
+    private <T extends Component> T findAtEditWindow(String id, Class<T> type) {
+        return type.cast(editWindow.getFellow(id));
+    }
+
     private void bindTemplatesTreeWithModel() {
         if (treeComponent == null) {
             // if the tree is not initialized yet no bind has to be done
@@ -118,5 +128,12 @@ public class BudgetController extends GenericForwardComposer implements
 
     public void showEditionFor(OrderElementTemplate template) {
         editTemplateController.open(template);
+    }
+
+    private void bindLabelsControllerWithCurrentTemplate() {
+        LabelsAssignmentToTemplateComponent c = findAtEditWindow(
+                "listOrderElementLabels",
+                LabelsAssignmentToTemplateComponent.class);
+        c.getController().openWindow(model);
     }
 }
