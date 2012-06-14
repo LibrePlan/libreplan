@@ -34,6 +34,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.orders.entities.TreeNodeOnListWithSchedulingState;
+import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
 import org.libreplan.business.trees.ITreeParentNode;
@@ -295,6 +296,9 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         copy.setDescription(getDescription());
         for (Label label : getLabels()) {
             copy.addLabel(label);
+        }
+        for (QualityForm form : getQualityForms()) {
+            copy.addQualityForm(form);
         }
         for (OrderElementTemplate child : getChildren()) {
             copy.add(child.createCopy());

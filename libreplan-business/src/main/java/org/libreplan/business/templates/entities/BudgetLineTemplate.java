@@ -21,6 +21,7 @@ package org.libreplan.business.templates.entities;
 import java.math.BigDecimal;
 
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.qualityforms.entities.QualityForm;
 
 /**
  * Subclass of OrderLineTemplate with specific fields for LibrePlan audiovisual
@@ -136,6 +137,9 @@ public class BudgetLineTemplate extends OrderLineTemplate {
         copy.setQuantity(getQuantity());
         for (Label label : getLabels()) {
             copy.addLabel(label);
+        }
+        for (QualityForm form : getQualityForms()) {
+            copy.addQualityForm(form);
         }
 
         return copy;

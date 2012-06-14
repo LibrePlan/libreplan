@@ -20,6 +20,7 @@ package org.libreplan.business.templates.entities;
 
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.qualityforms.entities.QualityForm;
 
 /**
  * Marker class intended to differentiate two different kinds of OrderTemplate:
@@ -42,6 +43,9 @@ public class Budget extends OrderTemplate {
         beingBuilt.setCode("default-code-for-budget");
         for (Label label : template.getLabels()) {
             beingBuilt.addLabel(label);
+        }
+        for (QualityForm form : template.getQualityForms()) {
+            beingBuilt.addQualityForm(form);
         }
         for (OrderElementTemplate child : template.getChildren()) {
             beingBuilt.add(child.createCopy());
