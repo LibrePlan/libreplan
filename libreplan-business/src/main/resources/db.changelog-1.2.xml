@@ -329,6 +329,7 @@
         <addForeignKeyConstraint constraintName="sum_charged_effort_order_element_fkey"
             baseTableName="sum_charged_effort" baseColumnNames="order_element"
             referencedTableName="order_element" referencedColumnNames="id" />
+        <dropForeignKeyConstraint baseTableName="order_element" constraintName="sum_charged_effort_id_fkey"/>
         <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
     </changeSet>
 
