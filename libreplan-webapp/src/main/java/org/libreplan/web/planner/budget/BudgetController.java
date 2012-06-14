@@ -28,6 +28,7 @@ import org.libreplan.web.templates.budgettemplates.IBudgetTemplatesModel;
 import org.libreplan.web.templates.budgettemplates.IEditionSubwindowController;
 import org.libreplan.web.templates.budgettemplates.TemplatesTreeController;
 import org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent;
+import org.libreplan.web.templates.quality.QualityFormAssignerComponent;
 import org.libreplan.web.tree.TreeComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -67,6 +68,7 @@ public class BudgetController extends GenericForwardComposer implements
         // openTemplateTree is not called if it's the first tab shown
         openTemplateTree();
         bindLabelsControllerWithCurrentTemplate();
+        bindQualityFormWithCurrentTemplate();
         bindEditTemplateWindowWithController();
 
         Util.createBindingsFor(editWindow);
@@ -135,5 +137,11 @@ public class BudgetController extends GenericForwardComposer implements
                 "listOrderElementLabels",
                 LabelsAssignmentToTemplateComponent.class);
         c.getController().openWindow(model);
+    }
+
+    private void bindQualityFormWithCurrentTemplate() {
+        QualityFormAssignerComponent c = findAtEditWindow(
+                "assignedQualityForms", QualityFormAssignerComponent.class);
+        c.useModel(model);
     }
 }

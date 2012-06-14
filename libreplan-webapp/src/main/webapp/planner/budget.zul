@@ -21,6 +21,8 @@
     class="org.libreplan.web.templates.budgettemplates.TemplatesTreeComponent"?>
 <?component name="listOrderElementLabels" macroURI="/orders/components/_listOrderElementLabels.zul"
     class="org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent"?>
+<?component name="assignedQualityForms" macroURI="/templates/_assignedQualityForms.zul"
+    class="org.libreplan.web.templates.quality.QualityFormAssignerComponent"?>
 <?component name="editTemplateWindow" macroURI="/budgettemplates/_editTemplateWindow.zul" inline="true"?>
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native">
@@ -39,6 +41,7 @@
                 <tab label="${i18n:_('Template Tree')}"
                     onSelect="bController.openTemplateTree()" />
                 <tab label="${i18n:_('Labels')}" />
+                <tab label="${i18n:_('Quality Forms')}" />
             </tabs>
             <tabpanels>
                 <tabpanel sclass="template-tree-tabpanel">
@@ -46,6 +49,9 @@
                 </tabpanel>
                 <tabpanel>
                     <listOrderElementLabels id="listOrderElementLabels"/>
+                </tabpanel>
+                <tabpanel>
+                    <assignedQualityForms id="assignedQualityForms"/>
                 </tabpanel>
             </tabpanels>
         </tabbox>
