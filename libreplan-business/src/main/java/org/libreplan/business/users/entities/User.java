@@ -204,8 +204,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return disabled;
     }
 
-    public boolean isAdministrator() {
-        return isInRole(UserRole.ROLE_ADMINISTRATION);
+    public boolean isSuperuser() {
+        return isInRole(UserRole.ROLE_SUPERUSER);
     }
 
     @AssertTrue(message = "username is already being used by another user")

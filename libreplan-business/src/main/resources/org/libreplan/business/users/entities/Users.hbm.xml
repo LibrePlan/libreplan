@@ -42,7 +42,7 @@
         <!-- Index created in a database-object section -->
         <set name="roles" table="roles_table" lazy="false">
             <key column="user_id"/>
-            <element>
+            <element column="role">
                 <type name="org.hibernate.type.EnumType">
                     <param name="enumClass">org.libreplan.business.users.entities.UserRole</param>
                     <!-- 12 is java.sql.Types.VARCHAR -->
@@ -79,7 +79,7 @@
         <!-- Index created in a database-object section -->
         <set name="roles" table="profile_roles">
             <key column="profile_id"/>
-            <element>
+            <element column="role">
                 <type name="org.hibernate.type.EnumType">
                     <param name="enumClass">org.libreplan.business.users.entities.UserRole</param>
                     <!-- 12 is java.sql.Types.VARCHAR -->

@@ -768,12 +768,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public boolean userCanRead(Order order, String loginName) {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_ORDERS) ||
-                SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_PROJECTS) ||
+                SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
         if (order.isNewObject()
-                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
             return true;
         }
         try {
@@ -798,11 +798,11 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public boolean userCanWrite(Order order, String loginName) {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
         if (order.isNewObject()
-                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
             return true;
         }
         try {

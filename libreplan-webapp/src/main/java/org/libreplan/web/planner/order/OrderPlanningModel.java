@@ -959,7 +959,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             // STORED orders can't be saved, independently of user permissions
             return false;
         }
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
         return thereIsWriteAuthorizationFor(planningState.getOrder());

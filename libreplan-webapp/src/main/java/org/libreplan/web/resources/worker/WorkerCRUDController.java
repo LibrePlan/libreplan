@@ -963,7 +963,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
             boolean removeBoundUser = false;
             User user = workerModel.getBoundUserFromDB(worker);
-            if (user != null && !user.isAdministrator()) {
+            if (user != null && !user.isSuperuser()) {
                 removeBoundUser = Messagebox.show(
                         _("Do you want to remove bound user \"{0}\" too?",
                                 user.getLoginName()), _("Delete bound user"),

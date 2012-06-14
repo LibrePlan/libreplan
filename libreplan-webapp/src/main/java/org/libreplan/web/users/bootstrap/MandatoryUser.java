@@ -52,10 +52,10 @@ public enum MandatoryUser {
             return getConfiguration().getChangedDefaultUserPassword();
         }
     },
-    ADMIN(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
-        UserRole.ROLE_READ_ALL_ORDERS,
-        UserRole.ROLE_EDIT_ALL_ORDERS,
-            UserRole.ROLE_CREATE_ORDER), false) {
+    ADMIN(Arrays.asList(UserRole.ROLE_SUPERUSER,
+        UserRole.ROLE_READ_ALL_PROJECTS,
+        UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
 
         @Override
         public boolean hasChangedDefaultPassword() {

@@ -31,14 +31,13 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum UserRole {
 
-    ROLE_ADMINISTRATION(_("Administration")),
+    ROLE_SUPERUSER(_("Superuser")),
     ROLE_WS_READER(_("Web service reader")),
     ROLE_WS_WRITER(_("Web service writer")),
-    ROLE_WS_SUBCONTRACTING(_("Web service subcontracting")),
-    ROLE_READ_ALL_ORDERS(_("All projects read allowed")),
-    ROLE_EDIT_ALL_ORDERS(_("All projects edition allowed")),
-    ROLE_CREATE_ORDER(_("Project creation allowed")),
-    ROLE_EXPENSE_TRACKING(_("Expenses tracking allowed"));
+    ROLE_WS_SUBCONTRACTING(_("Web service subcontractor operations")),
+    ROLE_READ_ALL_PROJECTS(_("Read all projects")),
+    ROLE_EDIT_ALL_PROJECTS(_("Edit all projects")),
+    ROLE_CREATE_PROJECTS(_("Create projects"));
 
     private final String displayName;
 

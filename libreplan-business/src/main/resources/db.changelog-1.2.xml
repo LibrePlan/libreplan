@@ -519,4 +519,56 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="rename-column-elt-in-roles_table-to-role" author="mrego">
+        <comment>Rename column elt in roles_table to role</comment>
+        <renameColumn tableName="roles_table" oldColumnName="elt"
+            newColumnName="role" columnDataType="VARCHAR(255)" />
+    </changeSet>
+
+    <changeSet id="rename-roles-in-roles_table" author="mrego">
+        <comment>Rename roles in roles_table</comment>
+        <update tableName="roles_table">
+            <column name="role" value="ROLE_SUPERUSER"/>
+            <where>role='ROLE_ADMINISTRATION'</where>
+        </update>
+        <update tableName="roles_table">
+            <column name="role" value="ROLE_READ_ALL_PROJECTS"/>
+            <where>role='ROLE_READ_ALL_ORDERS'</where>
+        </update>
+        <update tableName="roles_table">
+            <column name="role" value="ROLE_EDIT_ALL_PROJECTS"/>
+            <where>role='ROLE_EDIT_ALL_ORDERS'</where>
+        </update>
+        <update tableName="roles_table">
+            <column name="role" value="ROLE_CREATE_PROJECTS"/>
+            <where>role='ROLE_CREATE_ORDER'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="rename-column-elt-in-profile_roles-to-role" author="mrego">
+        <comment>Rename column elt in profile_roles to role</comment>
+        <renameColumn tableName="profile_roles" oldColumnName="elt"
+            newColumnName="role" columnDataType="VARCHAR(255)" />
+    </changeSet>
+
+    <changeSet id="rename-roles-in-profile_roles" author="mrego">
+        <comment>Rename roles in profile_roles</comment>
+        <update tableName="profile_roles">
+            <column name="role" value="ROLE_SUPERUSER"/>
+            <where>role='ROLE_ADMINISTRATION'</where>
+        </update>
+        <update tableName="profile_roles">
+            <column name="role" value="ROLE_READ_ALL_PROJECTS"/>
+            <where>role='ROLE_READ_ALL_ORDERS'</where>
+        </update>
+        <update tableName="profile_roles">
+            <column name="role" value="ROLE_EDIT_ALL_PROJECTS"/>
+            <where>role='ROLE_EDIT_ALL_ORDERS'</where>
+        </update>
+        <update tableName="profile_roles">
+            <column name="role" value="ROLE_CREATE_PROJECTS"/>
+            <where>role='ROLE_CREATE_ORDER'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

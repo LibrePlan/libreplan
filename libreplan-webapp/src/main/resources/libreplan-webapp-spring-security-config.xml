@@ -40,24 +40,22 @@
         <intercept-url pattern="/common/layout/timeout.zul"
             access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
-        <intercept-url pattern="/advance/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/advance/**" access="ROLE_SUPERUSER" />
         <intercept-url pattern="/resources/criterions/**"
-            access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/calendars/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/labels/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/materials/**" access="ROLE_ADMINISTRATION" />
+            access="ROLE_SUPERUSER" />
+        <intercept-url pattern="/calendars/**" access="ROLE_SUPERUSER" />
+        <intercept-url pattern="/labels/**" access="ROLE_SUPERUSER" />
+        <intercept-url pattern="/materials/**" access="ROLE_SUPERUSER" />
         <intercept-url pattern="/costcategories/**"
-            access="ROLE_ADMINISTRATION" />
+            access="ROLE_SUPERUSER" />
         <intercept-url pattern="/common/configuration.zul"
-            access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/qualityforms/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/users/**" access="ROLE_ADMINISTRATION" />
+            access="ROLE_SUPERUSER" />
+        <intercept-url pattern="/qualityforms/**" access="ROLE_SUPERUSER" />
+        <intercept-url pattern="/users/**" access="ROLE_SUPERUSER" />
         <intercept-url pattern="/externalcompanies/**"
-            access="ROLE_ADMINISTRATION" />
+            access="ROLE_SUPERUSER" />
         <intercept-url pattern="/workreports/workReportTypes.zul"
-            access="ROLE_ADMINISTRATION" />
-        <!-- FIXME review when role for bound users is set -->
-        <!-- intercept-url pattern="/expensesheet/**" access="ROLE_ADMINISTRATION,ROLE_EXPENSE_TRACKING"/ -->
+            access="ROLE_SUPERUSER" />
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
 
         <!-- These have been added because of auto-config is false now in order

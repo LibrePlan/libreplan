@@ -454,7 +454,7 @@ public class TemplateModel implements ITemplateModel {
         if(user == null) {
             return false;
         }
-        return user.isAdministrator();
+        return user.isSuperuser();
     }
 
     @Override
