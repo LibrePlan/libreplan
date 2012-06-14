@@ -34,40 +34,11 @@
 
         <tabbox>
             <tabs>
-                <tab id="tabGeneralData" label="${i18n:_('General data')}"
-                    onSelect="bController.reloadBudget()" />
                 <tab label="${i18n:_('Template Tree')}"
                     disabled="@{bController.templateTreeDisabled}"
                     onSelect="bController.openTemplateTree()" />
             </tabs>
             <tabpanels>
-                <tabpanel id="tabPanelGeneralData">
-                    <grid fixedLayout="true">
-                        <columns>
-                            <column width="200px" />
-                            <column  />
-                        </columns>
-                        <rows>
-                            <row>
-                                <label value="${i18n:_('Name')}" />
-                                <textbox id="name" value="@{bController.template.name}" width="600px"
-                                    constraint = "@{bController.validateTemplateName}"/>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Description')}" />
-                                <textbox rows="3" width="600px"
-                                    value="@{bController.template.description}" />
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Total budget')}" />
-                                <decimalbox
-                                    value="@{bController.template.budget}"
-                                    disabled="@{bController.container}"
-                                    constraint="no negative:${i18n:_('Budget value cannot be negative')}" />
-                            </row>
-                        </rows>
-                    </grid>
-                </tabpanel>
                 <tabpanel sclass="template-tree-tabpanel">
                     <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
                 </tabpanel>

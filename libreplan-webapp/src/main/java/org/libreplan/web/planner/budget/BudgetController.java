@@ -62,7 +62,7 @@ public class BudgetController extends GenericForwardComposer implements
 
     private void showEditWindow() {
         // openTemplateTree is not called if it's the first tab shown
-        bindTemplatesTreeWithModel();
+        openTemplateTree();
         bindEditTemplateWindowWithController();
     }
 
