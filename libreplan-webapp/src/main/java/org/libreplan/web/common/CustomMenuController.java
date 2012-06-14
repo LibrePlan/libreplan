@@ -312,7 +312,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         resourcesItems.add(subItem(_("Materials"), "/materials/materials.zul",
                 "11-materiales.html#administraci-n-de-materiais"));
         resourcesItems.add(subItem(_("Material Units"),
-                "/materials/unitTypes.zul",
+                "/unittypes/unitTypes.zul",
                 "11-materiales.html#administraci-n-de-materiais"));
         resourcesItems
                 .add(subItem(_("Quality Forms"),
@@ -332,7 +332,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 "/costcategories/costCategory.zul",
                 "14-custos.html#categor-as-de-custo"));
         costItems.add(subItem(_("Hours Types"),
-                "/costcategories/typeOfWorkHours.zul",
+                "/typeofworkhours/typeOfWorkHours.zul",
                 "14-custos.html#administraci-n-de-horas-traballadas"));
         topItem(_("Cost"), "/workreports/workReport.zul", "",
                 costItems);
@@ -342,7 +342,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 "/common/configuration.zul", "16-ldap-authentication.html"));
         configurationItems.add(subItem(_("User Accounts"), "/users/users.zul",
                 "13-usuarios.html#administraci-n-de-usuarios"));
-        configurationItems.add(subItem(_("Profiles"), "/users/profiles.zul",
+        configurationItems.add(subItem(_("Profiles"), "/profiles/profiles.zul",
                 "13-usuarios.html#administraci-n-de-perfiles"));
         topItem(_("Configuration"), "/common/configuration.zul", "",
                 configurationItems);

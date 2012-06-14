@@ -46,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/users/profiles.zul")
+@OnConcurrentModification(goToPage = "/profiles/profiles.zul")
 public class ProfileModel implements IProfileModel {
 
     private Profile profile;

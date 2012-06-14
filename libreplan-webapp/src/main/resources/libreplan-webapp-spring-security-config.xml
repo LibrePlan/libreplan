@@ -13,13 +13,17 @@
         entry-point-ref="customAuthenticationEntryPoint">
 
         <!-- Web services -->
-        <intercept-url pattern="/ws/rest/subcontracting/**" access="ROLE_WS_SUBCONTRACTING"
+        <intercept-url pattern="/ws/rest/subcontracting/**"
+            access="ROLE_WS_SUBCONTRACTING"
             method="GET" />
-        <intercept-url pattern="/ws/rest/subcontracting/**" access="ROLE_WS_SUBCONTRACTING"
+        <intercept-url pattern="/ws/rest/subcontracting/**"
+            access="ROLE_WS_SUBCONTRACTING"
             method="POST" />
-        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_READER"
+        <intercept-url pattern="/ws/rest/**"
+            access="ROLE_WS_READER"
             method="GET" />
-        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER"
+        <intercept-url pattern="/ws/rest/**"
+            access="ROLE_WS_WRITER"
             method="POST" />
 
         <!-- Web application -->
@@ -40,22 +44,76 @@
         <intercept-url pattern="/common/layout/timeout.zul"
             access="IS_AUTHENTICATED_ANONYMOUSLY" />
 
-        <intercept-url pattern="/advance/**" access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/resources/criterions/**"
-            access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/calendars/**" access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/labels/**" access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/materials/**" access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/costcategories/**"
-            access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/common/configuration.zul"
-            access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/qualityforms/**" access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/users/**" access="ROLE_SUPERUSER" />
-        <intercept-url pattern="/externalcompanies/**"
-            access="ROLE_SUPERUSER" />
+        <!-- Pages -->
+        <intercept-url pattern="/templates/*"
+            access="ROLE_SUPERUSER,ROLE_TEMPLATES" />
+        <intercept-url pattern="/resources/worker/worker.zul"
+            access="ROLE_SUPERUSER,ROLE_WORKERS" />
+        <intercept-url pattern="/resources/machine/*"
+            access="ROLE_SUPERUSER,ROLE_MACHINES" />
+        <intercept-url pattern="/resources/worker/virtualWorkers.zul"
+            access="ROLE_SUPERUSER,ROLE_VIRTUAL_WORKERS" />
+        <intercept-url pattern="/calendars/*"
+            access="ROLE_SUPERUSER,ROLE_CALENDARS" />
+        <intercept-url pattern="/excetiondays/*"
+            access="ROLE_SUPERUSER,ROLE_CALENDAR_EXCEPTION_DAYS" />
+        <intercept-url pattern="/resources/criterions/*"
+            access="ROLE_SUPERUSER,ROLE_CRITERIA" />
+        <intercept-url pattern="/advance/*"
+            access="ROLE_SUPERUSER,ROLE_PROGRESS_TYPES" />
+        <intercept-url pattern="/labels/*"
+            access="ROLE_SUPERUSER,ROLE_LABELS" />
+        <intercept-url pattern="/materials/*"
+            access="ROLE_SUPERUSER,ROLE_MATERIALS" />
+        <intercept-url pattern="/unittypes/*"
+            access="ROLE_SUPERUSER,ROLE_MATERIAL_UNITS" />
+        <intercept-url pattern="/qualityforms/*"
+            access="ROLE_SUPERUSER,ROLE_QUALITY_FORMS" />
+        <intercept-url pattern="/workreports/workReport.zul"
+            access="ROLE_SUPERUSER,ROLE_TIMESHEETS" />
         <intercept-url pattern="/workreports/workReportTypes.zul"
-            access="ROLE_SUPERUSER" />
+            access="ROLE_SUPERUSER,ROLE_TIMESHEETS_TEMPLATES" />
+        <intercept-url pattern="/expensesheet/*"
+            access="ROLE_SUPERUSER,ROLE_EXPENSES" />
+        <intercept-url pattern="/costcategories/*"
+            access="ROLE_SUPERUSER,ROLE_COST_CATEGORIES" />
+        <intercept-url pattern="/typeofworkhours/*"
+            access="ROLE_SUPERUSER,ROLE_HOURS_TYPES" />
+        <intercept-url pattern="/common/configuration.zul"
+            access="ROLE_SUPERUSER,ROLE_MAIN_SETTINGS" />
+        <intercept-url pattern="/users/*"
+            access="ROLE_SUPERUSER,ROLE_USER_ACCOUNTS" />
+        <intercept-url pattern="/profiles/*"
+            access="ROLE_SUPERUSER,ROLE_PROFILES" />
+        <intercept-url pattern="/externalcompanies/*"
+            access="ROLE_SUPERUSER,ROLE_COMPANIES" />
+        <intercept-url pattern="/subcontract/subcontractedTasks.zul"
+            access="ROLE_SUPERUSER,ROLE_SEND_TO_SUBCONTRACTORS" />
+        <intercept-url pattern="/subcontract/subcontractorCommunications.zul"
+            access="ROLE_SUPERUSER,ROLE_RECEIVED_FROM_SUBCONTRACTORS" />
+        <intercept-url pattern="/subcontract/reportAdvances.zul"
+            access="ROLE_SUPERUSER,ROLE_SEND_TO_CUSTOMERS" />
+        <intercept-url pattern="/subcontract/customerCommunications.zul"
+            access="ROLE_SUPERUSER,ROLE_RECEIVED_FROM_CUSTOMERS" />
+        <intercept-url pattern="/workreports/workReportQuery.zul"
+            access="ROLE_SUPERUSER,ROLE_WORK_REPORT_LINES_REPORT" />
+        <intercept-url pattern="/reports/hoursWorkedPerWorkerReport.zul"
+            access="ROLE_SUPERUSER,ROLE_HOURS_WORKED_PER_RESOURCE_REPORT" />
+        <intercept-url pattern="/reports/hoursWorkedPerWorkerInAMonthReport.zul"
+            access="ROLE_SUPERUSER,ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT" />
+        <intercept-url pattern="/reports/schedulingProgressPerOrderReport.zul"
+            access="ROLE_SUPERUSER,ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT" />
+        <intercept-url pattern="/reports/workingProgressPerTaskReport.zul"
+            access="ROLE_SUPERUSER,ROLE_WORK_AND_PROGRESS_PER_TASK_REPORT" />
+        <intercept-url pattern="/reports/completedEstimatedHoursPerTask.zul"
+            access="ROLE_SUPERUSER,ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT" />
+        <intercept-url pattern="/reportsorderCostsPerResource/.zul"
+            access="ROLE_SUPERUSER,ROLE_PROJECT_COSTS_REPORT" />
+        <intercept-url pattern="/reports/workingArrangementsPerOrderReport.zul"
+            access="ROLE_SUPERUSER,ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT" />
+        <intercept-url pattern="/reports/timeLineMaterialReport.zul"
+            access="ROLE_SUPERUSER,ROLE_MATERIALS_NEED_AT_DATE_REPORT" />
+
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
 
         <!-- These have been added because of auto-config is false now in order
