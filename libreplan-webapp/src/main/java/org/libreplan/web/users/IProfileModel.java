@@ -61,11 +61,6 @@ public interface IProfileModel {
     void confirmSave() throws ValidationException;
 
     /**
-     * Returns a list of the available user roles in the system.
-     */
-    List<UserRole> getAllRoles();
-
-    /**
      * Gets the current {@link Profile}.
      *
      * @return A {@link Profile}

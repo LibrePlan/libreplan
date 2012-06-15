@@ -23,6 +23,8 @@ package org.libreplan.web.users;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -121,7 +123,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         passwordConfirmationBox = (Textbox) editWindow.getFellowIfAny("passwordConfirmation");
         profileAutocomplete = (Autocomplete) editWindow.getFellowIfAny("profileAutocomplete");
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
-        appendAllUserRoles(userRolesCombo);
+        appendAllUserRolesExceptRoleBoundUser(userRolesCombo);
         boundResourceGroupbox = (Groupbox) editWindow
                 .getFellowIfAny("boundResourceGroupbox");
 
@@ -134,8 +136,12 @@ public class UserCRUDController extends BaseCRUDController<User> implements
      * Appends the existing UserRoles to the Combobox passed.
      * @param combo
      */
-    private void appendAllUserRoles(Combobox combo) {
-        for(UserRole role : UserRole.values()) {
+    private void appendAllUserRolesExceptRoleBoundUser(Combobox combo) {
+        List<UserRole> roles = new ArrayList<UserRole>(Arrays.asList(UserRole
+                .values()));
+        roles.remove(UserRole.ROLE_BOUND_USER);
+
+        for (UserRole role : roles) {
             Comboitem item = combo.appendItem(_(role.getDisplayName()));
             item.setValue(role);
         }
@@ -313,7 +319,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                         removeRole(role);
                     }
                 });
-                removeButton.setDisabled(getLdapUserRolesLdapConfiguration());
+                removeButton.setDisabled(getLdapUserRolesLdapConfiguration()
+                        || role.equals(UserRole.ROLE_BOUND_USER));
                 row.appendChild(removeButton);
             }
         };

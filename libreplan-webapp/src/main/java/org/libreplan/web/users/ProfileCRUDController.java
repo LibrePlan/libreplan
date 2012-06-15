@@ -23,6 +23,8 @@ package org.libreplan.web.users;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
@@ -61,15 +63,19 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
-        appendAllUserRoles(userRolesCombo);
+        appendAllUserRolesExceptRoleBoundUser(userRolesCombo);
     }
 
     /**
      * Appends the existing UserRoles to the Combobox passed.
      * @param combo
      */
-    private void appendAllUserRoles(Combobox combo) {
-        for(UserRole role : getAllRoles()) {
+    private void appendAllUserRolesExceptRoleBoundUser(Combobox combo) {
+        List<UserRole> roles = new ArrayList<UserRole>(Arrays.asList(UserRole
+                .values()));
+        roles.remove(UserRole.ROLE_BOUND_USER);
+
+        for (UserRole role : roles) {
             Comboitem item = combo.appendItem(_(role.getDisplayName()));
             item.setValue(role);
         }
@@ -85,10 +91,6 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
 
     public Profile getProfile() {
         return profileModel.getProfile();
-    }
-
-    public List<UserRole> getAllRoles() {
-        return profileModel.getAllRoles();
     }
 
     public void addSelectedRole() {

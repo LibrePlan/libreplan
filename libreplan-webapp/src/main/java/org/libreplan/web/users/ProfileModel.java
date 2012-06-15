@@ -101,15 +101,6 @@ public class ProfileModel implements IProfileModel {
     }
 
     @Override
-    public List<UserRole> getAllRoles() {
-        List<UserRole> list = new ArrayList<UserRole>();
-        for(UserRole role : UserRole.values()) {
-            list.add(role);
-        }
-        return list;
-    }
-
-    @Override
     public void addRole(UserRole role) {
         profile.addRole(role);
     }
