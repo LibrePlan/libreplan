@@ -325,7 +325,7 @@ public class SubcontractController extends GenericForwardComposer {
             if (lastEndDateReported != null) {
                 if (lastEndDateReported.equals(endDateFromSubcontractor)) {
                     Date newEndDate = lastEndDateReported.getEndDate();
-                    Date endDateTask = taskEditFormComposer.getTaskDTO().deadlineDate;
+                    Date endDateTask = taskEditFormComposer.getTaskDTO().endDate;
                     if (endDateTask != null) {
                         return (newEndDate.compareTo(endDateTask) != 0);
                     }
@@ -338,8 +338,9 @@ public class SubcontractController extends GenericForwardComposer {
     }
 
     public void updateTaskEnd(Date date) {
+        this.subcontractModel.setEndDate(date);
         if (taskEditFormComposer != null) {
-            taskEditFormComposer.getTaskDTO().deadlineDate = date;
+            taskEditFormComposer.getTaskDTO().endDate = date;
         }
         refressGridEndDates();
     }

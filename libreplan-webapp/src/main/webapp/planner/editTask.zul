@@ -63,7 +63,7 @@
         <tabbox id="editTaskTabbox">
             <tabs>
                 <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}"
-                    onSelect = "propertiesController.refreshTaskDeadline();"/>
+                    onSelect = "propertiesController.refreshTaskEndDate();"/>
                 <tab id="resourceAllocationTab" label="${i18n:_('Non limiting resource allocation')}" />
                 <tab id="limitingResourceAllocationTab" label="${i18n:_('Limiting resource allocation')}" />
                 <tab id="subcontractTab" label="${i18n:_('Subcontract')}"

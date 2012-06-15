@@ -99,8 +99,6 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private Datebox endDateBox;
 
-    private Datebox deadLineDateBox;
-
     private Combobox startConstraintTypes;
 
     private Datebox startConstraintDate;
@@ -114,6 +112,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private Listbox lbResourceAllocationType;
 
     private ResourceAllocationTypeEnum originalState;
+
+    private boolean disabledConstraintsAndAllocations = false;
 
     public void init(final EditTaskController editTaskController,
             IContextWithPlannerTask<TaskElement> context,
@@ -134,15 +134,16 @@ public class TaskPropertiesController extends GenericForwardComposer {
         originalState = getResourceAllocationType(currentTaskElement);
         setOldState(originalState);
 
-        boolean disabled = currentTaskElement
+        disabledConstraintsAndAllocations = currentTaskElement
                 .isSubcontractedAndWasAlreadySent()
                 || currentTaskElement.isLimitingAndHasDayAssignments();
-        if (!disabled && (currentTaskElement.isTask())) {
-            disabled = ((Task) currentTaskElement).isManualAnyAllocation();
+        if (!disabledConstraintsAndAllocations && (currentTaskElement.isTask())) {
+            disabledConstraintsAndAllocations = ((Task) currentTaskElement)
+                    .isManualAnyAllocation();
         }
-        startConstraintTypes.setDisabled(disabled);
-        startConstraintDate.setDisabled(disabled);
-        lbResourceAllocationType.setDisabled(disabled);
+        startConstraintTypes.setDisabled(disabledConstraintsAndAllocations);
+        startConstraintDate.setDisabled(disabledConstraintsAndAllocations);
+        lbResourceAllocationType.setDisabled(disabledConstraintsAndAllocations);
 
         if (context != null) {
             taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
@@ -414,7 +415,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
             ok = saveConstraintChanges();
         }
         if (ok) {
-            taskEditFormComposer.acceptWithoutCopyingDates();
+            if (disabledConstraintsAndAllocations) {
+                taskEditFormComposer.accept();
+            } else {
+                taskEditFormComposer.acceptWithoutCopyingDates();
+            }
         }
     }
 
@@ -692,8 +697,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         return taskEditFormComposer;
     }
 
-    public void refreshTaskDeadline() {
-        Util.reloadBindings(deadLineDateBox);
+    public void refreshTaskEndDate() {
+        Util.reloadBindings(endDateBox);
     }
 
     public String getMoneyFormat() {
