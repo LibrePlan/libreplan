@@ -74,7 +74,7 @@
         <intercept-url pattern="/workreports/workReportTypes.zul"
             access="ROLE_SUPERUSER,ROLE_TIMESHEETS_TEMPLATES" />
         <intercept-url pattern="/expensesheet/*"
-            access="ROLE_SUPERUSER,ROLE_EXPENSES" />
+            access="ROLE_SUPERUSER,ROLE_EXPENSES,ROLE_BOUND_USER" />
         <intercept-url pattern="/costcategories/*"
             access="ROLE_SUPERUSER,ROLE_COST_CATEGORIES" />
         <intercept-url pattern="/typeofworkhours/*"
@@ -113,6 +113,10 @@
             access="ROLE_SUPERUSER,ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT" />
         <intercept-url pattern="/reports/timeLineMaterialReport.zul"
             access="ROLE_SUPERUSER,ROLE_MATERIALS_NEED_AT_DATE_REPORT" />
+        <intercept-url pattern="/myaccount/userDashboard.zul"
+            access="ROLE_BOUND_USER" />
+        <intercept-url pattern="/myaccount/monthlyTimesheet.zul"
+            access="ROLE_SUPERUSER,ROLE_TIMESHEETS,ROLE_BOUND_USER" />
 
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
 

@@ -495,8 +495,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         List<CustomMenuItem> personalAreaItems = new ArrayList<CustomMenuItem>();
-        personalAreaItems.add(subItem(_("Home"),
-                "/myaccount/userDashboard.zul", ""));
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)) {
+            personalAreaItems.add(subItem(_("Home"),
+                    "/myaccount/userDashboard.zul", ""));
+        }
         personalAreaItems.add(subItem(_("Preferences"),
                 "/myaccount/settings.zul", ""));
         personalAreaItems.add(subItem(_("Change Password"),
