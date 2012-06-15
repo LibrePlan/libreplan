@@ -61,6 +61,7 @@ import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.web.calendars.IBaseCalendarModel;
 import org.libreplan.web.common.IntegrationEntityModel;
@@ -100,6 +101,8 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             PredefinedCriterionTypes.CATEGORY, PredefinedCriterionTypes.SKILL };
 
     private Worker worker;
+
+    private User boundUser;
 
     private ResourceCalendar calendarToRemove = null;
 
@@ -146,6 +149,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     @Transactional
     public void save() throws ValidationException {
         removeCalendarIfNeeded();
+        resetRoleInOriginalBoundUser();
         resourceDAO.save(worker);
         if (worker.getCalendar() != null) {
             baseCalendarModel.checkInvalidValuesCalendar(worker.getCalendar());
@@ -155,6 +159,17 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             assignedCriterionsModel.confirm();
         }
         localizationsAssigner = null;
+    }
+
+    private void resetRoleInOriginalBoundUser() {
+        if (boundUser != null) {
+            User user = worker.getUser();
+            if (user == null || user.getId() == null
+                    || !user.getId().equals(boundUser.getId())) {
+                boundUser.removeRole(UserRole.ROLE_BOUND_USER);
+                userDAO.save(boundUser);
+            }
+        }
     }
 
     private void removeCalendarIfNeeded() {
@@ -221,6 +236,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
         }
         localizationsAssigner = new MultipleCriterionActiveAssigner(
                 criterionDAO, worker, PredefinedCriterionTypes.LOCATION);
+        boundUser = null;
     }
 
     @Override
@@ -232,6 +248,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             forceLoadSatisfactions(this.worker);
             forceLoadCalendar(this.worker);
             forceLoadUser(this.worker);
+            this.boundUser = this.worker.getUser();
             localizationsAssigner = new MultipleCriterionActiveAssigner(
                     criterionDAO, this.worker,
                     PredefinedCriterionTypes.LOCATION);
@@ -609,8 +626,15 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     public void confirmRemove(Worker worker, boolean removeBoundUser)
             throws InstanceNotFoundException {
         resourceDAO.remove(worker.getId());
+
+        User user = getBoundUserFromDB(worker);
         if (removeBoundUser) {
-            userDAO.remove(worker.getUser());
+            userDAO.remove(user);
+        } else {
+            if (user != null) {
+                user.removeRole(UserRole.ROLE_BOUND_USER);
+                userDAO.save(user);
+            }
         }
     }
 

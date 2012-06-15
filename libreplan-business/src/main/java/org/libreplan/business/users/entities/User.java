@@ -305,6 +305,11 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public void setWorker(Worker worker) {
         this.worker = worker;
+        if (worker == null) {
+            roles.remove(UserRole.ROLE_BOUND_USER);
+        } else {
+            roles.add(UserRole.ROLE_BOUND_USER);
+        }
     }
 
     public String getFullName() {
