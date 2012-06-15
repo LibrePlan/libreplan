@@ -40,6 +40,7 @@ import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
+import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -384,6 +385,17 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     public void unboundResource() {
         userModel.unboundResource();
         Util.reloadBindings(boundResourceGroupbox);
+    }
+
+    public boolean isNoRoleWorkers() {
+        return !SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_WORKERS);
+    }
+
+    public String getWorkerEditionButtonTooltip() {
+        if (isNoRoleWorkers()) {
+            return _("You do not have permissions to go to worker edition window");
+        }
+        return "";
     }
 
 }

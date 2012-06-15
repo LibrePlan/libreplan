@@ -124,7 +124,9 @@
                             </grid>
                             <button label="${i18n:_('Go to user edition window')}"
                                 onClick="controller.goToUserEdition();"
-                                visible="@{controller.userSelected}" />
+                                visible="@{controller.userSelected}"
+                                disabled="@{controller.noRoleUserAccounts}"
+                                tooltiptext="@{controller.userEditionButtonTooltip}" />
                         </panelchildren>
                     </panel>
                     <panel title="${i18n:_('New user')}" border="normal"

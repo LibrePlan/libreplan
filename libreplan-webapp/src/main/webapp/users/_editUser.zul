@@ -113,7 +113,9 @@
                     </grid>
                     <button label="${i18n:_('Go to worker edition window')}"
                         onClick="controller.goToWorkerEdition();"
-                        visible="@{controller.bound}" />
+                        visible="@{controller.bound}"
+                        disabled="@{controller.noRoleWorkers}"
+                        tooltiptext="@{controller.workerEditionButtonTooltip}" />
                     <button label="${i18n:_('Unbound resource')}"
                         onClick="controller.unboundResource();"
                         visible="@{controller.bound}" />
