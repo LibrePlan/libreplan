@@ -58,6 +58,7 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
@@ -439,6 +440,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         newOrder.setName(getOrder().getName());
         newOrder.setCustomer(((Order) getOrder()).getCustomer());
         newOrder.setCalendar(getCalendar());
+        newOrder.setState(OrderStatusEnum.BUDGET);
         newOrder.getAssociatedBudgetObject().setName(
                 getOrder().getName() + " " + getOrder().getCode());
 
