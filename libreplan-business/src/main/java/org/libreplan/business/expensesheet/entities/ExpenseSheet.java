@@ -35,7 +35,7 @@ import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
 import org.libreplan.business.resources.entities.Resource;
 
@@ -211,11 +211,11 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
     }
 
     public ExpenseSheetLine getExpenseSheetLineByCode(String code)
-            throws InstanceNotFoundException {
+            throws ValidationException {
 
         if (StringUtils.isBlank(code)) {
-            throw new InstanceNotFoundException(code,
-                    ExpenseSheetLine.class.getName());
+            throw new ValidationException(
+                    "missing the code with which find the expense sheet line");
         }
 
         for (ExpenseSheetLine l : this.expenseSheetLines) {
@@ -223,9 +223,7 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
                 return l;
             }
         }
-
-        throw new InstanceNotFoundException(code,
-                ExpenseSheetLine.class.getName());
+        return null;
     }
 
     public boolean isPersonal() {

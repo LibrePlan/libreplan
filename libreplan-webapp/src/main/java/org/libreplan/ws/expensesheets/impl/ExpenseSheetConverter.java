@@ -201,13 +201,14 @@ public final class ExpenseSheetConverter {
                         "missing code in a expense sheet line");
             }
 
-            try {
-                ExpenseSheetLine line = expenseSheet
-                        .getExpenseSheetLineByCode(lineDTO.code);
+            ExpenseSheetLine line = expenseSheet
+                    .getExpenseSheetLineByCode(lineDTO.code);
+            if (line != null) {
                 updateExpenseSheetLine(line, lineDTO);
-            } catch (InstanceNotFoundException e) {
+            } else {
                 expenseSheet.add(toEntity(lineDTO, expenseSheet));
             }
+
         }
     }
 
