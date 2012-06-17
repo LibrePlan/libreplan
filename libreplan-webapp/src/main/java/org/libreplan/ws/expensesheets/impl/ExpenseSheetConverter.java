@@ -61,25 +61,12 @@ public final class ExpenseSheetConverter {
     }
 
     public final static ExpenseSheetDTO toDTO(ExpenseSheet expenseSheet) {
-        String code = expenseSheet.getCode();
-        if (StringUtils.isBlank(code)) {
-            throw new ValidationException("missing code in the expense sheet");
-        }
-
         List<ExpenseSheetLineDTO> lineDTOs = new ArrayList<ExpenseSheetLineDTO>();
-
-        if (expenseSheet.getExpenseSheetLines() == null
-                || expenseSheet.getExpenseSheetLines().isEmpty()) {
-            throw new ValidationException(
-                    "the expense sheet must have least a expense sheet line.");
-        }
-
         for (ExpenseSheetLine line : expenseSheet.getExpenseSheetLines()) {
             lineDTOs.add(toDTO(line));
         }
-
-        return new ExpenseSheetDTO(code, expenseSheet.getDescription(),
-                lineDTOs);
+        return new ExpenseSheetDTO(expenseSheet.getCode(),
+                expenseSheet.getDescription(), lineDTOs);
     }
 
     private static ExpenseSheetLineDTO toDTO(ExpenseSheetLine line) {
