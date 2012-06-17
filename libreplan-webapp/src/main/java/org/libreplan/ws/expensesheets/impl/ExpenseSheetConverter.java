@@ -79,8 +79,8 @@ public final class ExpenseSheetConverter {
             }
 
             BigDecimal value = line.getValue();
-            if (value != null && value.compareTo(BigDecimal.ZERO) > 0) {
-
+            if (value == null || value.compareTo(BigDecimal.ZERO) < 0) {
+                value = BigDecimal.ZERO;
             }
             String resourceCode = null;
             if (line.getResource() != null) {
