@@ -143,7 +143,7 @@ public class ExpenseSheetServiceREST extends
     @GET
     @Path("/{code}/")
     @Transactional(readOnly = true)
-    public Response getLabel(@PathParam("code") String code) {
+    public Response getExpenseSheet(@PathParam("code") String code) {
         return getDTOByCode(code);
     }
 

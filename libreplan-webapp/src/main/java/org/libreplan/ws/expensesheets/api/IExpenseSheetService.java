@@ -36,6 +36,6 @@ public interface IExpenseSheetService {
     InstanceConstraintViolationsListDTO addExpenseSheets(
             ExpenseSheetListDTO expenseSheetListDTO);
 
-    Response getLabel(String code);
+    Response getExpenseSheet(String code);
 
 }
