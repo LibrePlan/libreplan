@@ -27,9 +27,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
@@ -62,56 +60,11 @@ public class ExpenseSheetServiceREST extends
     @Autowired
     private IExpenseSheetDAO expenseSheetDAO;
 
-    /**
-     * It saves (inserts or updates) an entity DTO by using a new transaction.
-     *
-     * @throws ValidationException if validations are not passed
-     * @throws RecoverableErrorException if a recoverable error occurs
-     * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
-     *
-     */
-    protected void insertOrUpdate(final ExpenseSheetDTO entityDTO)
-            throws ValidationException, RecoverableErrorException {
-        /*
-         * NOTE: ValidationException and RecoverableErrorException are runtime
-         * exceptions. In consequence, if any of them occurs, transaction is
-         * automatically rolled back.
-         */
-
-        IOnTransaction<Void> save = new IOnTransaction<Void>() {
-
-            @Override
-            public Void execute() {
-
-                ExpenseSheet entity = null;
-                IIntegrationEntityDAO<ExpenseSheet> entityDAO = getIntegrationEntityDAO();
-
-                /* Insert or update? */
-                try {
-                    entity = entityDAO.findByCode(entityDTO.code);
-                    updateEntity(entity, entityDTO);
-                } catch (InstanceNotFoundException e) {
-                    entity = toEntity(entityDTO);
-                }
-
-                /*
-                 * Validate and save (insert or update) the entity.
-                 */
-                entity.validate();
-                sumExpensesDAO
-                        .updateRelatedSumExpensesWithExpenseSheetLineSet(entity
-                                .getExpenseSheetLines());
-                entity.updateCalculatedProperties();
-
-                entityDAO.saveWithoutValidating(entity);
-
-                return null;
-
-            }
-
-        };
-
-        transactionService.runOnAnotherTransaction(save);
+    @Override
+    protected void beforeSaving(ExpenseSheet entity) {
+        sumExpensesDAO.updateRelatedSumExpensesWithExpenseSheetLineSet(entity
+                .getExpenseSheetLines());
+        entity.updateCalculatedProperties();
     }
 
     @Override
