@@ -274,6 +274,12 @@ Supported entities:
   * DTO: ``org.libreplan.ws.workreports.api.WorkReportDTO``
   * Business class: ``org.libreplan.business.workreports.entities.WorkReport``
 
+* Expense Sheets:
+
+  * Service path: ``expenses``
+  * DTO: ``org.libreplan.ws.expensesheets.api.ExpenseSheetListDTO``
+  * Business class: ``org.libreplan.business.expensesheet.entities.ExpenseSheet``
+
 Other
 ~~~~~
 
