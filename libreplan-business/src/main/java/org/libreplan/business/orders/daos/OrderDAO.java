@@ -439,13 +439,13 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             strQuery += "AND orderElement.parent IN (:orders) ";
         }
         if (startingDate != null && endingDate != null) {
-            strQuery += "AND wrl.date BETWEEN :startingDate AND :endingDate ";
+            strQuery += "AND expense.date BETWEEN :startingDate AND :endingDate ";
         }
         if (startingDate != null && endingDate == null) {
-            strQuery += "AND wrl.date >= :startingDate ";
+            strQuery += "AND expense.date >= :startingDate ";
         }
         if (startingDate == null && endingDate != null) {
-            strQuery += "AND wrl.date <= :endingDate ";
+            strQuery += "AND expense.date <= :endingDate ";
         }
 
         // Order by date
@@ -458,10 +458,10 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             query.setParameterList("orders", orders);
         }
         if (startingDate != null) {
-            query.setParameter("startingDate", startingDate);
+            query.setParameter("startingDate", new LocalDate(startingDate));
         }
         if (endingDate != null) {
-            query.setParameter("endingDate", endingDate);
+            query.setParameter("endingDate", new LocalDate(endingDate));
         }
 
         List<CostExpenseSheetDTO> list = query.list();
