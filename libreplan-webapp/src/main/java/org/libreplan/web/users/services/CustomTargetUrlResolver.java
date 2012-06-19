@@ -47,9 +47,9 @@ public class CustomTargetUrlResolver extends TargetUrlResolverImpl {
 
     public final static String USER_DASHBOARD_URL = "/myaccount/userDashboard.zul";
 
-    private static final String PLANNING_URL = "/planner/index.zul";
+    public static final String PLANNING_URL = "/planner/index.zul";
 
-    private static final String SETTINGS_URL = "/myaccount/settings.zul";
+    public static final String SETTINGS_URL = "/myaccount/settings.zul";
 
     @Autowired
     private IUserDAO userDAO;
