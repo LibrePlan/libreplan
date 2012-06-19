@@ -92,7 +92,7 @@
                     <autocomplete id="cbLabelType" onChange="txtLabelName.clearErrorMessage()"
                         finder="LabelTypeFinder" buttonVisible="true" />
                     <textbox id="txtLabelName" />
-                    <button style="margin-top: -4px"
+                    <button id="buttonCreateAndAssign" style="margin-top: -4px"
                         label="${i18n:_('Create &amp; Assign')}"
                         onClick="assignedLabelsController.onCreateAndAssign()" />
                 </hbox>

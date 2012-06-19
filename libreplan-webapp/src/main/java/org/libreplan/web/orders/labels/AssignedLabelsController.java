@@ -26,12 +26,15 @@ import java.util.List;
 
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.orders.IOrderElementModel;
+import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Textbox;
@@ -50,6 +53,8 @@ public abstract class AssignedLabelsController<T, M> extends
     private Textbox txtLabelName;
 
     private BandboxSearch bdLabels;
+
+    private Button buttonCreateAndAssign;
 
     public void openWindow(M model) {
         setOuterModel(model);
@@ -101,6 +106,12 @@ public abstract class AssignedLabelsController<T, M> extends
      * labels
      */
     public void onCreateAndAssign() {
+        // Check if user has permissions to create labels
+        if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_LABELS)) {
+            throw new WrongValueException(buttonCreateAndAssign,
+                    _("you do not have permissions to create new labels"));
+        }
+
         // Check LabelType is not null
         final Comboitem comboitem = cbLabelType.getSelectedItem();
         if (comboitem == null || comboitem.getValue() == null) {
