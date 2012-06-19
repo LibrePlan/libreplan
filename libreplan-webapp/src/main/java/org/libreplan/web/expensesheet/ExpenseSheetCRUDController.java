@@ -21,11 +21,16 @@ package org.libreplan.web.expensesheet;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -36,11 +41,14 @@ import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.common.entrypoints.MatrixParameters;
+import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
@@ -102,8 +110,24 @@ public class ExpenseSheetCRUDController extends
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        checkUserHasProperRoleOrSendForbiddenCode();
         URLHandlerRegistry.getRedirectorFor(IExpenseSheetCRUDController.class)
                 .register(this, page);
+    }
+
+    private void checkUserHasProperRoleOrSendForbiddenCode() throws IOException {
+        HttpServletRequest request = (HttpServletRequest) Executions
+                .getCurrent().getNativeRequest();
+        Map<String, String> matrixParams = MatrixParameters.extract(request);
+
+        // If it doesn't come from a entry point
+        if (matrixParams.isEmpty()) {
+            if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EXPENSES)) {
+                HttpServletResponse response = (HttpServletResponse) Executions
+                        .getCurrent().getNativeResponse();
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            }
+        }
     }
 
     @Override
