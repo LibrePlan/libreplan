@@ -74,4 +74,7 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint({"order","task"})
     void goToAdvanceTask(Order order,TaskElement task);
 
+    @EntryPoint("budget")
+    void goToBudget(Order order);
+
 }

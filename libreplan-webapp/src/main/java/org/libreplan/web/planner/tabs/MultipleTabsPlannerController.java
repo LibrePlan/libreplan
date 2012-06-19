@@ -32,6 +32,7 @@ import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.templates.entities.OrderTemplate;
@@ -264,7 +265,13 @@ public class MultipleTabsPlannerController implements Composer,
 
                     @Override
                     public void goToOrderDetails(Order order) {
-                        getTabsRegistry().show(ordersTab, changeModeTo(order));
+                        if (order.getState().equals(OrderStatusEnum.BUDGET)) {
+                            getTabsRegistry().show(budgetTab,
+                                    changeModeTo(order));
+                        } else {
+                            getTabsRegistry().show(ordersTab,
+                                    changeModeTo(order));
+                        }
                     }
 
                     @Override
@@ -536,11 +543,20 @@ public class MultipleTabsPlannerController implements Composer,
         getTabsRegistry().show(planningTab, changeModeTo(order));
     }
 
+    @Override
+    public void goToBudget(Order order) {
+        getTabsRegistry().show(budgetTab, changeModeTo(order));
+    }
+
     private IBeforeShowAction changeModeTo(final Order order) {
         return new IBeforeShowAction() {
             @Override
             public void doAction() {
-                mode.goToOrderMode(order);
+                if (order.getState().equals(OrderStatusEnum.BUDGET)) {
+                    mode.goToBudgetMode(order);
+                } else {
+                    mode.goToOrderMode(order);
+                }
             }
         };
     }

@@ -33,6 +33,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.company.CompanyPlanningController;
@@ -142,7 +143,11 @@ public class PlanningTabCreator {
                         OrderElement orderElement = task.getOrderElement();
                         if (orderElement instanceof Order) {
                             Order order = (Order) orderElement;
-                            mode.goToOrderMode(order);
+                            if (order.getState().equals(OrderStatusEnum.BUDGET)) {
+                                tabsController.goToBudget(order);
+                            } else {
+                                mode.goToOrderMode(order);
+                            }
                         }
                     }
 
@@ -173,7 +178,11 @@ public class PlanningTabCreator {
                         OrderElement orderElement = task.getOrderElement();
                         if (orderElement instanceof Order) {
                             Order order = (Order) orderElement;
-                            tabsController.goToOrderDetails(order);
+                            if (order.getState().equals(OrderStatusEnum.BUDGET)) {
+                                tabsController.goToBudget(order);
+                            } else {
+                                tabsController.goToOrderDetails(order);
+                            }
                         }
                     }
 
