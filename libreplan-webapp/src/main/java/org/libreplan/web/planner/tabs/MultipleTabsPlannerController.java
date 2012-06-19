@@ -287,10 +287,16 @@ public class MultipleTabsPlannerController implements Composer,
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
-            .add(tabWithNameReloading(ordersTab, typeChanged))
-            .add(tabWithNameReloading(resourceLoadTab, typeChanged))
-            .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
-            .add(visibleOnlyAtOrderMode(advancedAllocationTab))
+            .add(tabWithNameReloading(ordersTab, typeChanged));
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+            tabsConfiguration.add(
+                    tabWithNameReloading(resourceLoadTab, typeChanged)).add(
+                    tabWithNameReloading(limitingResourcesTab, typeChanged));
+        } else {
+            tabsConfiguration.add(visibleOnlyAtOrderModeWithNameReloading(
+                    resourceLoadTab, typeChanged));
+        }
+        tabsConfiguration.add(visibleOnlyAtOrderMode(advancedAllocationTab))
             .add(visibleOnlyAtOrderMode(dashboardTab));
 
         if (isMontecarloVisible) {
@@ -364,8 +370,18 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     private ChangeableTab visibleOnlyAtOrderMode(ITab tab) {
+        return visibleOnlyAtOrderModeWithNameReloading(tab, null);
+    }
+
+    private ChangeableTab visibleOnlyAtOrderModeWithNameReloading(ITab tab,
+            final State<Void> typeChanged) {
         final State<Boolean> state = State.create(mode.isOf(ModeType.ORDER));
-        ChangeableTab result = configure(tab).visibleOn(state);
+        ChangeableTab result;
+        if (typeChanged == null) {
+            result = configure(tab).visibleOn(state);
+        } else {
+            result = configure(tab).visibleOn(state).reloadNameOn(typeChanged);
+        }
         mode.addListener(new ModeTypeChangedListener() {
 
             @Override

@@ -260,7 +260,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     public void initializeMenu() {
         List<CustomMenuItem> planningItems = new ArrayList<CustomMenuItem>();
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+        if (SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
             planningItems.add(subItem(_("Company view"), new ICapture() {
                 @Override
                 public void capture() {
@@ -273,6 +273,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     globalView.goToOrdersList();
                 }
             }, "01-introducion.html#id2"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
             planningItems.add(subItem(_("Resource Load"), new ICapture() {
                 @Override
                 public void capture() {

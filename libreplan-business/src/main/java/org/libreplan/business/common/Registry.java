@@ -55,6 +55,7 @@ import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
+import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.daos.IProfileDAO;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
@@ -198,6 +199,9 @@ public class Registry {
 
     @Autowired
     private IExpenseSheetLineDAO expenseSheetLineDAO;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     @Autowired
     private IAdHocTransactionService transactionServiceDAO;
@@ -370,4 +374,9 @@ public class Registry {
     public static IExpenseSheetLineDAO getExpenseSheetLineDAO() {
         return getInstance().expenseSheetLineDAO;
     }
+
+    public static IOrderAuthorizationDAO getOrderAuthorizationDAO() {
+        return getInstance().orderAuthorizationDAO;
+    }
+
 }

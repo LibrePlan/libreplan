@@ -25,6 +25,10 @@ import java.security.Principal;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.users.bootstrap.MandatoryUser;
 import org.libreplan.web.users.services.CustomUser;
@@ -95,4 +99,37 @@ public final class SecurityUtils {
     private static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
+
+    /**
+     * Returns <code>true</code> if current user:
+     *
+     * <ul>
+     * <li>Has role {@link UserRole#ROLE_SUPERUSER}</li>
+     * <li>Or has role {@link UserRole#ROLE_PLANNING}</li>
+     * <li>Or has any {@link OrderAuthorization} over any project</li>
+     * </ul>
+     */
+    public final static boolean isSuperuserOrRolePlanningOrHasAnyAuthorization() {
+        if (isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+            return true;
+        }
+
+        return Registry.getTransactionService().runOnReadOnlyTransaction(
+                new IOnTransaction<Boolean>() {
+                    @Override
+                    public Boolean execute() {
+                        try {
+                            return Registry
+                                    .getOrderAuthorizationDAO()
+                                    .userOrItsProfilesHaveAnyAuthorization(
+                                            Registry.getUserDAO()
+                                                    .findByLoginName(
+                                                            getSessionUserLoginName()));
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+    }
+
 }
