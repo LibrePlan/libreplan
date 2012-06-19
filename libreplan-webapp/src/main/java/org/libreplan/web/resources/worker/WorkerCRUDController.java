@@ -1069,7 +1069,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void setBoundUser(User user) {
         workerModel.setBoundUser(user);
-        updateUserBindingComponents();
+        Util.reloadBindings(userBindingGroupbox.getFellow("existingUserPanel"));
     }
 
     public boolean isUserSelected() {

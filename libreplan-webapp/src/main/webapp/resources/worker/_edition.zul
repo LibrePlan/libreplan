@@ -101,7 +101,9 @@
                     <caption label="${i18n:_('Bound user')}" />
                     <radiogroup id="userBindingRadiogroup"
                         onCheck="controller.updateUserBindingView();" />
-                    <panel title="${i18n:_('Existing user')}" border="normal"
+                    <panel title="${i18n:_('Existing user')}"
+                        id="existingUserPanel"
+                        border="normal"
                         visible="@{controller.existingUser}">
                         <panelchildren>
                             <grid fixedLayout="true">
