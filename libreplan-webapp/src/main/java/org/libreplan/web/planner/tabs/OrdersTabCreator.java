@@ -24,13 +24,17 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.libreplan.web.common.Util;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -101,6 +105,20 @@ public class OrdersTabCreator {
     private ITab createGlobalOrdersTab() {
         return new CreatedOnDemandTab(_("Projects List"), "orders",
                 ordersTabCreator) {
+            @Override
+            protected void beforeShowAction() {
+                if (!SecurityUtils
+                        .isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
+                    HttpServletResponse response = (HttpServletResponse) Executions
+                            .getCurrent().getNativeResponse();
+                    try {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
             @Override
             protected void afterShowAction() {
                 orderCRUDController.goToList();

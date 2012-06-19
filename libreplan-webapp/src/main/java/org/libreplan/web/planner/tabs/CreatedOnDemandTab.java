@@ -72,6 +72,7 @@ public class CreatedOnDemandTab implements ITab {
 
     @Override
     public void show() {
+        beforeShowAction();
         if (component == null) {
             component = componentCreator.create(parent);
         }
@@ -84,6 +85,9 @@ public class CreatedOnDemandTab implements ITab {
             return null;
         }
         return component.getDesktop();
+    }
+
+    protected void beforeShowAction() {
     }
 
     protected void afterShowAction() {

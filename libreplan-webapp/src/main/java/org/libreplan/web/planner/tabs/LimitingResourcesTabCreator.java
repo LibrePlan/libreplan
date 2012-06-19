@@ -24,11 +24,16 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -132,6 +137,20 @@ public class LimitingResourcesTabCreator {
         return new CreatedOnDemandTab(_("Limiting Resources Planning"),
                 "limiting-resources",
                 componentCreator) {
+            @Override
+            protected void beforeShowAction() {
+                if (!SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+                    HttpServletResponse response = (HttpServletResponse) Executions
+                            .getCurrent().getNativeResponse();
+                    try {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
             @Override
             protected void afterShowAction() {
                 limitingResourcesControllerGlobal.reload();
