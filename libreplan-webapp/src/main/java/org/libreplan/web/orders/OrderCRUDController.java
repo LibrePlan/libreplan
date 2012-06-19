@@ -1345,6 +1345,11 @@ public class OrderCRUDController extends GenericForwardComposer {
                 createTemplate(order);
             }
         });
+        if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
+            buttonDerived.setDisabled(true);
+            buttonDerived
+                    .setTooltiptext(_("You do not have permissions to create templates"));
+        }
         hbox.appendChild(buttonDerived);
     }
 

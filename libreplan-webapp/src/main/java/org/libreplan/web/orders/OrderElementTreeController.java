@@ -43,6 +43,7 @@ import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
@@ -51,6 +52,7 @@ import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
+import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.libreplan.web.tree.TreeController;
 import org.zkoss.ganttz.IPredicate;
@@ -271,6 +273,21 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 .getFellow("templateFinderPopupAtTree");
         operationsForOrderElement.tree(tree)
                 .orderTemplates(this.orderTemplates);
+
+        disableCreateTemplateButtonIfNeeded(comp);
+    }
+
+    private void disableCreateTemplateButtonIfNeeded(Component comp) {
+        Button createTemplateButton = (Button) comp
+                .getFellowIfAny("createTemplateButton");
+        if (createTemplateButton != null) {
+            if (!SecurityUtils
+                    .isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
+                createTemplateButton.setDisabled(true);
+                createTemplateButton
+                        .setTooltiptext(_("You do not have permissions to create templates"));
+            }
+        }
     }
 
     private void appendExpandCollapseButton() {
