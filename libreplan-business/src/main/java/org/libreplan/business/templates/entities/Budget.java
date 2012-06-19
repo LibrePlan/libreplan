@@ -18,6 +18,7 @@
  */
 package org.libreplan.business.templates.entities;
 
+import org.hibernate.validator.AssertTrue;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.qualityforms.entities.QualityForm;
@@ -59,6 +60,17 @@ public class Budget extends OrderTemplate {
 
     public void setAssociatedOrder(Order associatedOrder) {
         this.associatedOrder = associatedOrder;
+    }
+
+    @AssertTrue(message = "template name is already being used")
+    public boolean checkConstraintUniqueRootTemplateName() {
+        // We are not interested in keeping the unicity constraint in the case
+        // of Budget objects. We are setting them an auto-generated name so the
+        // chances to save a repeated name are low.
+        // TODO: We might have to review how we check this constraint in the
+        // future, to have a better, more general solution.
+
+        return true;
     }
 
 }
