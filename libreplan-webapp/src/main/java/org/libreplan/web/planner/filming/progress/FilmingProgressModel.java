@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -204,6 +205,16 @@ public class FilmingProgressModel implements IFilmingProgressModel {
         return null;
     }
 
+    @Override
+    public Set<FilmingProgress> getFilmingProgressSet() {
+        if (this.currentOrder != null
+                && this.currentOrder.getFilmingProgressSet() != null
+                && !this.currentOrder.getFilmingProgressSet().isEmpty()) {
+            return this.currentOrder.getFilmingProgressSet();
+        }
+        return new HashSet<FilmingProgress>();
+    }
+
     public void setSaveCommand(ISaveCommand saveCommand) {
         this.saveCommand = saveCommand;
     }
@@ -280,7 +291,8 @@ public class FilmingProgressModel implements IFilmingProgressModel {
     private void createMapsProgressForecast() {
         for (FilmingProgress filmingProgress : this.currentOrder
                 .getFilmingProgressSet()) {
-            if (filmingProgress.getProgressForecast() == null) {
+            if (filmingProgress.getProgressForecast() == null
+                    || filmingProgress.getProgressForecast().isEmpty()) {
                 filmingProgress
                         .setProgressForecast(createMapProgressForecast(filmingProgress));
             }

@@ -85,8 +85,10 @@
                        </borderlayout>
                     </north>
                     <center>
-                        <hbox style="padding:40px">
-                            <div id="filmingProgressChart" style="height:200px; width:700px;" />
+                        <hbox style="padding:5px" height="600px">
+                            <div id="filmingProgressChartScenes" style="height:200px; width:500px;"/>
+                            <div id="filmingProgressChartMinutes" style="height:150px; width:500px;" />
+                            <div id="filmingProgressChartPages" style="height:150px; width:500px;" />
                         </hbox>
                     </center>
                 </borderlayout>

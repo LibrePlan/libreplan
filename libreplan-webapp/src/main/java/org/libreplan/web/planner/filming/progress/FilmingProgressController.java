@@ -35,7 +35,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
@@ -54,6 +53,11 @@ import org.springframework.stereotype.Component;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.data.PlotData;
+import org.zkforge.timeplot.geometry.DefaultTimeGeometry;
+import org.zkforge.timeplot.geometry.DefaultValueGeometry;
+import org.zkforge.timeplot.geometry.TimeGeometry;
+import org.zkforge.timeplot.geometry.ValueGeometry;
+import org.zkoss.zk.ui.AbstractComponent;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -74,6 +78,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
@@ -114,11 +119,15 @@ public class FilmingProgressController extends GenericForwardComposer {
 
     private ProgressTotalRenderer progressTotalRenderer = new ProgressTotalRenderer();
 
-    private Div filmingProgressChart;
-
     private Date endDateFilming;
 
     private Date startDateFilming;
+
+    private Div filmingProgressChartScenes;
+
+    private Div filmingProgressChartMinutes;
+
+    private Div filmingProgressChartPages;
 
     private final static String MOLD = "paging";
 
@@ -139,39 +148,62 @@ public class FilmingProgressController extends GenericForwardComposer {
         noDataLayout = (Div) comp.getFellow("noDataLayout");
         onlyOneVisible = new OnlyOneVisible(normalLayout, noDataLayout);
         onlyOneVisible.showOnly(noDataLayout);
-        Timeplot plot = createEmptyTimeplot();
-        filmingProgressChart.appendChild(plot);
     }
 
-    private Timeplot createEmptyTimeplot() {
-        Timeplot timeplot = new Timeplot();
-        Plotinfo plotinfo = new Plotinfo();
+    private void createTimePlots() {
+        clearPlots();
 
-        DateTime date = new DateTime();
+        Timeplot timeplotScenes = new Timeplot();
+        Timeplot timeplotPages = new Timeplot();
+        Timeplot timeplotMinutes = new Timeplot();
 
-        PlotData pd = new PlotData();
-        pd.setValue((float) 5);
-        pd.setTime(date.toDate());
-        PlotData pd1 = new PlotData();
-        pd1.setValue((float) 7);
-        pd1.setTime(date.plusDays(1).toDate());
-        PlotData pd2 = new PlotData();
-        pd2.setValue((float) 15);
-        pd2.setTime(date.plusDays(2).toDate());
-        PlotData pd3 = new PlotData();
-        pd3.setValue((float) 7);
-        pd3.setTime(date.plusDays(3).toDate());
+        ValueGeometry vg = new DefaultValueGeometry();
+        vg.setGridColor("#000000");
+        vg.setMin(0);
+        vg.setGridSpacing(20);
+        TimeGeometry tg = new DefaultTimeGeometry();
+        tg.setAxisLabelsPlacement("bottom");
 
-        plotinfo.addPlotData(pd);
-        plotinfo.addPlotData(pd1);
-        plotinfo.addPlotData(pd2);
-        plotinfo.addPlotData(pd3);
-        plotinfo.setShowValues(true);
-        plotinfo.setFillColor("rgba(50, 100, 54, 0.2)");
+        SortedMap<ProgressValue, ListModelList> map = this.getProgressValuesRenderer().mapCharts;
 
-        timeplot.appendChild(plotinfo);
+        for(ProgressValue progressValue : this.getProgressValues()){
 
-        return timeplot;
+            Plotinfo plotinfo = new Plotinfo();
+            plotinfo.setDataModel(map.get(progressValue));
+            plotinfo.setShowValues(true);
+            plotinfo.setFillColor("rgba(50, 100, 54, 0.2)");
+            plotinfo.setValueGeometry(vg);
+            plotinfo.setTimeGeometry(tg);
+
+            switch(progressValue.getProgressType()){
+            case SCENES :
+                timeplotScenes.appendChild(plotinfo);
+                break;
+            case MINUTES:
+                timeplotMinutes.appendChild(plotinfo);
+                break;
+            case PAGES :
+                timeplotPages.appendChild(plotinfo);
+            }
+        }
+
+        filmingProgressChartScenes.appendChild(timeplotScenes);
+        filmingProgressChartMinutes.appendChild(timeplotMinutes);
+        filmingProgressChartPages.appendChild(timeplotPages);
+    }
+
+    private void clearPlots() {
+        clearPlot(filmingProgressChartScenes);
+        clearPlot(filmingProgressChartMinutes);
+        clearPlot(filmingProgressChartPages);
+    }
+
+    private void clearPlot(Div divChart) {
+        List<AbstractComponent> children = new ArrayList<AbstractComponent>(
+                divChart.getChildren());
+        for (AbstractComponent child : children) {
+            divChart.removeChild(child);
+        }
     }
 
     private void reloadNormalLayout() {
@@ -199,6 +231,7 @@ public class FilmingProgressController extends GenericForwardComposer {
     private void loadAndRefressAllData() {
         filmingProgressModel.loadDataFromOrder();
         prepareFilmingProgressList();
+        createTimePlots();
         gridTotals.setModel(new SimpleListModel(getRowTotals()));
         gridTotals.renderAll();
     }
@@ -221,11 +254,16 @@ public class FilmingProgressController extends GenericForwardComposer {
         prepareFilmingProgressList();
         refreshTotalPanel();
         updatesDates();
+        createTimePlots();
         reloadNormalLayout();
     }
 
     private FilmingProgress getFilmingProgress() {
         return this.filmingProgressModel.getFirstFilmingProgress();
+    }
+
+    private Set<FilmingProgress> getFilmingProgressSet() {
+        return this.filmingProgressModel.getFilmingProgressSet();
     }
 
     /*
@@ -513,10 +551,15 @@ public class FilmingProgressController extends GenericForwardComposer {
 
         private SortedMap<RowTotal, Row> panelTotal = new TreeMap<RowTotal, Row>();
 
+        private SortedMap<ProgressValue, ListModelList> mapCharts = new TreeMap<ProgressValue, ListModelList>();
+
         @Override
         public void render(final Row row, Object data) {
             final ProgressValue progressValue = (ProgressValue) data;
             row.setValue(progressValue);
+
+            ListModelList lm = new ListModelList();
+            mapCharts.put(progressValue, lm);
 
             final RowTotal rowTotal = calculateRowTotal(row);
             panelTotal.put(rowTotal, row);
@@ -528,6 +571,11 @@ public class FilmingProgressController extends GenericForwardComposer {
                 valuebox.setScale(2);
                 valuebox.setReadonly(isReadOnlyByDay(
                         progressValue.getForecastLevel(), entry.getKey()));
+
+                //create the point to represent it in the chart
+                final PlotData pd = createPlotData(entry.getKey(),
+                        entry.getValue());
+                lm.add(pd);
 
                 Util.bind(valuebox, new Util.Getter<BigDecimal>() {
 
@@ -547,11 +595,37 @@ public class FilmingProgressController extends GenericForwardComposer {
                                 .equals(ForecastLevelEnum.REAL)) {
                             updateValue(progressValue, entry.getKey(), newValue);
                         }
+                        updateChart(progressValue, pd, newValue);
                     }
                 });
 
                 row.appendChild(valuebox);
             }
+        }
+
+        private void updateChart(ProgressValue pg, PlotData pd, BigDecimal value) {
+            float newValue = 0;
+            if(value != null){
+                newValue = value.floatValue();
+            }
+            pd.setValue(newValue);
+            ListModelList lm = this.mapCharts.get(pg);
+            lm.remove(pd);
+            lm.add(pd);
+        }
+
+        private PlotData createPlotData(LocalDate date, BigDecimal value) {
+            PlotData pd = new PlotData();
+            float newValue = 0;
+            if (value != null) {
+                newValue = value.floatValue();
+            }
+            if (date != null) {
+                pd.setFormat("d/MM/yy");
+                pd.setTime(date.toDateTimeAtStartOfDay().toDate());
+            }
+            pd.setValue(newValue);
+            return pd;
         }
 
         private void updateValue(ProgressValue progressValue, LocalDate date,
@@ -799,6 +873,7 @@ public class FilmingProgressController extends GenericForwardComposer {
         renderAllValuesPerDay();
         refreshTotalPanel();
         updatesDates();
+        createTimePlots();
     }
 }
 

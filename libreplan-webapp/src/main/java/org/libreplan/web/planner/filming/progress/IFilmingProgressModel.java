@@ -20,6 +20,7 @@ package org.libreplan.web.planner.filming.progress;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
@@ -56,5 +57,7 @@ interface IFilmingProgressModel {
     void updateEndDate(LocalDate localDate);
 
     void removeDays();
+
+    Set<FilmingProgress> getFilmingProgressSet();
 
 }
