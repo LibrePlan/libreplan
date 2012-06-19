@@ -99,6 +99,7 @@ public class PlanningTabCreator {
         return TabOnModeType.forMode(mode)
                     .forType(ModeType.GLOBAL, createGlobalPlanningTab())
                     .forType(ModeType.ORDER, createOrderPlanningTab())
+                    .forType(ModeType.BUDGET, createOrderPlanningTab())
                     .create();
     }
 

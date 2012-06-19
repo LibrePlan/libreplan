@@ -66,8 +66,11 @@ public class FilmingProgressTabCreator {
     }
 
     private ITab build() {
-        return TabOnModeType.forMode(mode).forType(ModeType.GLOBAL, createFilmingProgressTab())
-                .forType(ModeType.ORDER, createFilmingProgressTab()).create();
+        return TabOnModeType.forMode(mode)
+                .forType(ModeType.GLOBAL, createFilmingProgressTab())
+                .forType(ModeType.ORDER, createFilmingProgressTab())
+                .forType(ModeType.BUDGET, createFilmingProgressTab())
+                .create();
     }
 
     private ITab createFilmingProgressTab() {

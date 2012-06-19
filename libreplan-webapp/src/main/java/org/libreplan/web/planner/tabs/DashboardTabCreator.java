@@ -88,6 +88,7 @@ public class DashboardTabCreator {
         return TabOnModeType.forMode(mode)
             .forType(ModeType.GLOBAL, createDashboardTab())
             .forType(ModeType.ORDER, createDashboardTab())
+            .forType(ModeType.BUDGET, createDashboardTab())
             .create();
     }
 

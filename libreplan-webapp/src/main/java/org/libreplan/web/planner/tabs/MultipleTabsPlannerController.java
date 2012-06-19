@@ -314,8 +314,8 @@ public class MultipleTabsPlannerController implements Composer,
                     resourceLoadTab, typeChanged));
         }
         tabsConfiguration.add(visibleOnlyAtOrderMode(advancedAllocationTab))
-                .add(visibleOnlyAtOrderMode(budgetTab))
-                .add(visibleOnlyAtOrderMode(filmingProgressTab))
+            .add(visibleOnlyAtBudgetMode(budgetTab))
+            .add(visibleOnlyAtOrderMode(filmingProgressTab))
             .add(visibleOnlyAtOrderMode(dashboardTab));
 
         if (isMontecarloVisible) {
@@ -406,6 +406,19 @@ public class MultipleTabsPlannerController implements Composer,
             @Override
             public void typeChanged(ModeType oldType, ModeType newType) {
                 state.changeValueTo(ModeType.ORDER == newType);
+            }
+        });
+        return result;
+    }
+
+    private ChangeableTab visibleOnlyAtBudgetMode(ITab tab) {
+        final State<Boolean> state = State.create(mode.isOf(ModeType.BUDGET));
+        ChangeableTab result = configure(tab).visibleOn(state);
+        mode.addListener(new ModeTypeChangedListener() {
+
+            @Override
+            public void typeChanged(ModeType oldType, ModeType newType) {
+                state.changeValueTo(ModeType.BUDGET == newType);
             }
         });
         return result;

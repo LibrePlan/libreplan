@@ -82,6 +82,7 @@ public class ResourcesLoadTabCreator {
         return TabOnModeType.forMode(mode)
             .forType(ModeType.GLOBAL, createGlobalResourcesLoadTab())
             .forType(ModeType.ORDER, createOrderResourcesLoadTab())
+            .forType(ModeType.BUDGET, createOrderResourcesLoadTab())
             .create();
     }
 

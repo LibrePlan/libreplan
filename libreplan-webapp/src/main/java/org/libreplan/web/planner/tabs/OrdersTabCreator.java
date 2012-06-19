@@ -94,9 +94,11 @@ public class OrdersTabCreator {
     }
 
     private ITab build() {
-        return TabOnModeType.forMode(mode).forType(ModeType.GLOBAL,
-                createGlobalOrdersTab()).forType(ModeType.ORDER,
-                createOrderOrdersTab()).create();
+        return TabOnModeType.forMode(mode)
+                .forType(ModeType.GLOBAL, createGlobalOrdersTab())
+                .forType(ModeType.ORDER, createOrderOrdersTab())
+                .forType(ModeType.BUDGET, createOrderOrdersTab())
+                .create();
     }
 
     private ITab createGlobalOrdersTab() {

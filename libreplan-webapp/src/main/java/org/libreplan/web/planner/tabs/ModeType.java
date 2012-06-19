@@ -25,6 +25,6 @@ package org.libreplan.web.planner.tabs;
  */
 public enum ModeType {
 
-    GLOBAL, ORDER;
+    GLOBAL, ORDER, BUDGET;
 
 }

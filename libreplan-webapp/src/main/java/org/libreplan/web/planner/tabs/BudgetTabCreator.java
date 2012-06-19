@@ -73,7 +73,9 @@ public class BudgetTabCreator {
     private ITab build() {
         return TabOnModeType.forMode(mode)
                 .forType(ModeType.GLOBAL, createFilmingProgressTab())
-                .forType(ModeType.ORDER, createFilmingProgressTab()).create();
+                .forType(ModeType.ORDER, createFilmingProgressTab())
+                .forType(ModeType.BUDGET, createFilmingProgressTab())
+                .create();
     }
 
     private ITab createFilmingProgressTab() {

@@ -81,6 +81,10 @@ public class Mode {
         changeTo(current.createOrderMode(order));
     }
 
+    public void goToBudgetMode(Order order) {
+        changeTo(current.createBudgetMode(order));
+    }
+
     private void changeTo(ModeCase newCase) {
         if (current == newCase) {
             return;
@@ -124,15 +128,16 @@ abstract class ModeCase {
 
     abstract ModeCase up();
 
-    abstract ModeCase createOrderMode(Order order);
-}
-
-class GlobalCase extends ModeCase {
-
-    @Override
     ModeCase createOrderMode(Order order) {
         return new OrderCase(order);
     }
+
+    ModeCase createBudgetMode(Order order) {
+        return new BudgetCase(order);
+    }
+}
+
+class GlobalCase extends ModeCase {
 
     @Override
     Order getOrder() throws UnsupportedOperationException {
@@ -161,11 +166,6 @@ class OrderCase extends ModeCase {
     }
 
     @Override
-    ModeCase createOrderMode(Order order) {
-        return new OrderCase(order);
-    }
-
-    @Override
     Order getOrder() throws UnsupportedOperationException {
         return order;
     }
@@ -178,6 +178,19 @@ class OrderCase extends ModeCase {
     @Override
     ModeCase up() {
         return new GlobalCase();
+    }
+
+}
+
+class BudgetCase extends OrderCase {
+
+    public BudgetCase(Order order) {
+        super(order);
+    }
+
+    @Override
+    public ModeType getModeType() {
+        return ModeType.BUDGET;
     }
 
 }

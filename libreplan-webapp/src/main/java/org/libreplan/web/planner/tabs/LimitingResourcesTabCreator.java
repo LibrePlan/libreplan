@@ -76,10 +76,10 @@ public class LimitingResourcesTabCreator {
 
     private ITab build() {
         return TabOnModeType.forMode(mode)
-.forType(ModeType.GLOBAL,
-                createGlobalLimitingResourcesTab()).forType(ModeType.ORDER,
-                createOrderLimitingResourcesTab())
-            .create();
+                .forType(ModeType.GLOBAL, createGlobalLimitingResourcesTab())
+                .forType(ModeType.ORDER, createOrderLimitingResourcesTab())
+                .forType(ModeType.BUDGET, createOrderLimitingResourcesTab())
+                .create();
     }
 
     private ITab createOrderLimitingResourcesTab() {
