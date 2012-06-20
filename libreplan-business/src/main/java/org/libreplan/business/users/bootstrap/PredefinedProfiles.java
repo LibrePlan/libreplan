@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libreplan.business.users.entities;
+package org.libreplan.business.users.bootstrap;
 
 import static org.libreplan.business.users.entities.UserRole.ROLE_CALENDARS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_CALENDAR_EXCEPTION_DAYS;
@@ -59,6 +59,9 @@ import static org.libreplan.business.users.entities.UserRole.ROLE_WORK_REPORT_LI
 
 import java.util.Arrays;
 import java.util.HashSet;
+
+import org.libreplan.business.users.entities.Profile;
+import org.libreplan.business.users.entities.UserRole;
 
 /**
  * Defines the default {@link org.libreplan.business.users.entities.Profile
