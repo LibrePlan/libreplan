@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,6 +62,11 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
                 "javax.servlet.error.status_code");
         if (code != null) {
             errorMessage += " [Status Code: " + code + "]";
+            if (code == HttpServletResponse.SC_FORBIDDEN) {
+                String uri = (String) Executions.getCurrent().getAttribute(
+                        "javax.servlet.error.request_uri");
+                errorMessage += " [Request URI: " + uri + "]";
+            }
         }
         LOG.error(errorMessage, exception);
     }
