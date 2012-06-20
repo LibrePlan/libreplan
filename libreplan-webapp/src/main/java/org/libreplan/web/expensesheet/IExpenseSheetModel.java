@@ -86,4 +86,11 @@ public interface IExpenseSheetModel extends IIntegrationEntityModel {
 
     void keepSortedExpenseSheetLines(ExpenseSheetLine expenseSheetLine, LocalDate newDate);
 
+    /**
+     * Returns <code>true</code> if the {@link ExpenseSheet} is
+     * <strong>personal</strong> and belongs to the worker associated to current
+     * user.
+     */
+    boolean isPersonalAndBelognsToCurrentUser(ExpenseSheet expenseSheet);
+
 }

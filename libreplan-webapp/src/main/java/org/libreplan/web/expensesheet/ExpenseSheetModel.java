@@ -359,4 +359,19 @@ public class ExpenseSheetModel extends IntegrationEntityModel implements IExpens
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isPersonalAndBelognsToCurrentUser(ExpenseSheet expenseSheet) {
+        if (!expenseSheet.isPersonal()) {
+            return false;
+        }
+
+        SortedSet<ExpenseSheetLine> expenseSheetLines = getFromDB(expenseSheet)
+                .getExpenseSheetLines();
+        Resource resource = expenseSheetLines.iterator().next().getResource();
+
+        User user = UserUtil.getUserFromSession();
+        return user.getWorker().getId().equals(resource.getId());
+    }
+
 }

@@ -115,7 +115,7 @@ public class ExpenseSheetCRUDController extends
                 .register(this, page);
     }
 
-    private void checkUserHasProperRoleOrSendForbiddenCode() throws IOException {
+    private void checkUserHasProperRoleOrSendForbiddenCode() {
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
         Map<String, String> matrixParams = MatrixParameters.extract(request);
@@ -123,10 +123,18 @@ public class ExpenseSheetCRUDController extends
         // If it doesn't come from a entry point
         if (matrixParams.isEmpty()) {
             if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EXPENSES)) {
-                HttpServletResponse response = (HttpServletResponse) Executions
-                        .getCurrent().getNativeResponse();
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                sendForbiddenStatusCodeInHttpServletResponse();
             }
+        }
+    }
+
+    private void sendForbiddenStatusCodeInHttpServletResponse() {
+        try {
+            HttpServletResponse response = (HttpServletResponse) Executions
+                    .getCurrent().getNativeResponse();
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -609,6 +617,10 @@ public class ExpenseSheetCRUDController extends
 
     @Override
     public void goToCreatePersonalExpenseSheet() {
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)) {
+            sendForbiddenStatusCodeInHttpServletResponse();
+        }
+
         state = CRUDControllerState.CREATE;
         initCreate(true);
         showEditWindow();
@@ -627,6 +639,11 @@ public class ExpenseSheetCRUDController extends
 
     @Override
     public void goToEditPersonalExpenseSheet(ExpenseSheet expenseSheet) {
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)
+                || !expenseSheetModel
+                        .isPersonalAndBelognsToCurrentUser(expenseSheet)) {
+            sendForbiddenStatusCodeInHttpServletResponse();
+        }
         goToEditForm(expenseSheet);
         fromUserDashboard = true;
     }
