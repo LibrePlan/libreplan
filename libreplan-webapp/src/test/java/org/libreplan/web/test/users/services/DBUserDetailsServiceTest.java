@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
 import org.libreplan.web.users.bootstrap.MandatoryUser;
@@ -96,15 +97,27 @@ public class DBUserDetailsServiceTest {
 
         for (MandatoryUser u : MandatoryUser.values()) {
 
-            UserDetails userDetails =
-                userDetailsService.loadUserByUsername(u.getLoginName());
-
+            UserDetails userDetails = userDetailsService.loadUserByUsername(u
+                    .getLoginName());
             assertEquals(u.getLoginName(), userDetails.getUsername());
 
-            assertEquals(u.getInitialRoles(), getUserRoles(userDetails));
+            assertEquals(getUserRoles(u), getUserRoles(userDetails));
 
         }
 
+    }
+
+    private Object getUserRoles(MandatoryUser u) {
+        Set<UserRole> userRoles = new HashSet<UserRole>();
+
+        userRoles.addAll(u.getInitialRoles());
+
+        Set<Profile> initialProfiles = u.getInitialProfiles();
+        for (Profile profile : initialProfiles) {
+            userRoles.addAll(profile.getRoles());
+        }
+
+        return userRoles;
     }
 
     private Set<UserRole> getUserRoles(UserDetails userDetails) {

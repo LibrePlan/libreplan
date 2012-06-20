@@ -43,8 +43,10 @@ public class ProfilesBootstrap implements IProfileBootstrap {
     @Transactional
     public void loadRequiredData() {
         if (profileDAO.list(Profile.class).isEmpty()) {
-            for (PredefinedProfiles profile : PredefinedProfiles.values()) {
-                profileDAO.save(profile.createProfile());
+            for (PredefinedProfiles each : PredefinedProfiles.values()) {
+                Profile profile = each.createProfile();
+                profileDAO.save(profile);
+                profile.dontPoseAsTransientObjectAnymore();
             }
         }
     }

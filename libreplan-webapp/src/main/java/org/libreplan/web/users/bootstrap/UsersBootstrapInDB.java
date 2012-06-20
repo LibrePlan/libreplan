@@ -21,6 +21,7 @@
 
 package org.libreplan.web.users.bootstrap;
 
+import org.libreplan.business.BootstrapOrder;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.services.IDBPasswordEncoderService;
@@ -34,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Transactional
+@BootstrapOrder(1)
 public class UsersBootstrapInDB implements IUsersBootstrapInDB {
 
     @Autowired

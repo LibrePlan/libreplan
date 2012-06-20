@@ -31,11 +31,13 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.bootstrap.IProfileBootstrap;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
 import org.libreplan.web.users.bootstrap.MandatoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,22 +56,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class UsersBootstrapInDBTest {
 
     @Autowired
+    private IProfileBootstrap profileBootstrap;
+
+    @Autowired
     private IUsersBootstrapInDB usersBootstrap;
 
     @Autowired
     private IUserDAO userDAO;
 
     @Test
+    @Rollback(false)
     public void testMandatoryUsersCreated() throws InstanceNotFoundException {
+        profileBootstrap.loadRequiredData();
 
-       checkLoadRequiredData();
+        checkLoadRequiredData();
 
-        /*
-         * Load data again to verify that a second load does not cause
-         * problems.
-         */
-       checkLoadRequiredData();
-
+        // Load data again to verify that a second load does not cause problems
+        checkLoadRequiredData();
     }
 
     private void checkLoadRequiredData() throws InstanceNotFoundException {
@@ -82,6 +85,7 @@ public class UsersBootstrapInDBTest {
 
             assertEquals(u.getLoginName(), user.getLoginName());
             assertEquals(u.getInitialRoles(), user.getRoles());
+            assertEquals(u.getInitialProfiles(), user.getProfiles());
 
         }
 
