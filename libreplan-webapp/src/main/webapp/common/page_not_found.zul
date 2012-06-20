@@ -3,7 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
-  Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2010-2012 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,23 +18,38 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <?page title="${i18n:_('LibrePlan: Page not found')}" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
-<zk>
+
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+    <zscript>
+    <![CDATA[
+        contextPath = Executions.getCurrent().getContextPath();
+    ]]>
+    </zscript>
+
     <window self="@{define(content)}" >
 
         <vbox apply="org.libreplan.web.error.PageForErrorOnEvent"
             sclass="errorbox">
-            <vbox>A páxina que está solicitando non existe.</vbox>
-            <vbox>Se introduciu a dirección directamente na barra de navegación
-            do navegador revísea ou pulse na seguinte ligazón para ir á páxina
-            inicial: Ir a inicio</vbox>
-            <vbox>Se chegou a esta páxina dende outra páxina do portal
-            rogámoslle nolo notifique para que sexa subsanado no menor
-            intervalo de tempo posible.</vbox>
-            <vbox>Desculpe as molestias.</vbox>
+
+            <label value="${i18n:_('The page that you are requesting does not exist.')}" />
+
+            <hbox>
+                <label value="${i18n:_('If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: ')}" />
+                <n:a href="${contextPath}/">
+                    <label value="${i18n:_('Go to init')}" />
+                </n:a>
+            </hbox>
+
+            <label value="${i18n:_('If you reached this page from another page of LibrePlan please notify us in order to fix it as soon as possible.')}" />
+
+            <label value="${i18n:_('Sorry for the inconvenience.')}" />
+
         </vbox>
     </window>
 </zk>
