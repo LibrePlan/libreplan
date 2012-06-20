@@ -21,7 +21,6 @@ package org.libreplan.web.expensesheet;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
@@ -30,7 +29,6 @@ import java.util.Map;
 import java.util.SortedSet;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -123,18 +121,8 @@ public class ExpenseSheetCRUDController extends
         // If it doesn't come from a entry point
         if (matrixParams.isEmpty()) {
             if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EXPENSES)) {
-                sendForbiddenStatusCodeInHttpServletResponse();
+                Util.sendForbiddenStatusCodeInHttpServletResponse();
             }
-        }
-    }
-
-    private void sendForbiddenStatusCodeInHttpServletResponse() {
-        try {
-            HttpServletResponse response = (HttpServletResponse) Executions
-                    .getCurrent().getNativeResponse();
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -618,7 +606,7 @@ public class ExpenseSheetCRUDController extends
     @Override
     public void goToCreatePersonalExpenseSheet() {
         if (!SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)) {
-            sendForbiddenStatusCodeInHttpServletResponse();
+            Util.sendForbiddenStatusCodeInHttpServletResponse();
         }
 
         state = CRUDControllerState.CREATE;
@@ -642,7 +630,7 @@ public class ExpenseSheetCRUDController extends
         if (!SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)
                 || !expenseSheetModel
                         .isPersonalAndBelognsToCurrentUser(expenseSheet)) {
-            sendForbiddenStatusCodeInHttpServletResponse();
+            Util.sendForbiddenStatusCodeInHttpServletResponse();
         }
         goToEditForm(expenseSheet);
         fromUserDashboard = true;

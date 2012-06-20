@@ -24,11 +24,8 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.libreplan.web.common.Util;
 import org.libreplan.web.orders.OrderCRUDController;
@@ -109,13 +106,7 @@ public class OrdersTabCreator {
             protected void beforeShowAction() {
                 if (!SecurityUtils
                         .isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
-                    HttpServletResponse response = (HttpServletResponse) Executions
-                            .getCurrent().getNativeResponse();
-                    try {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Util.sendForbiddenStatusCodeInHttpServletResponse();
                 }
             }
 

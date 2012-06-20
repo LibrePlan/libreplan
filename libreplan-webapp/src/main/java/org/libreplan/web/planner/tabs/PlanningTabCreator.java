@@ -24,13 +24,10 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -204,13 +201,7 @@ public class PlanningTabCreator {
             protected void beforeShowAction() {
                 if (!SecurityUtils
                         .isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
-                    HttpServletResponse response = (HttpServletResponse) Executions
-                            .getCurrent().getNativeResponse();
-                    try {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Util.sendForbiddenStatusCodeInHttpServletResponse();
                 }
             }
 

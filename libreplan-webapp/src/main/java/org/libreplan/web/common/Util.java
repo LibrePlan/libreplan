@@ -23,12 +23,15 @@ package org.libreplan.web.common;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +41,8 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -739,6 +744,21 @@ public class Util {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets the {@link HttpServletResponse} from the current {@link Execution}
+     * and uses the method {@link HttpServletResponse#sendError(int)} with the
+     * code {@link HttpServletResponse#SC_FORBIDDEN}.
+     */
+    public static void sendForbiddenStatusCodeInHttpServletResponse() {
+        try {
+            HttpServletResponse response = (HttpServletResponse) Executions
+                    .getCurrent().getNativeResponse();
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

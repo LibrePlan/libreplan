@@ -24,14 +24,12 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.libreplan.web.resourceload.ResourceLoadController;
@@ -143,13 +141,7 @@ public class ResourcesLoadTabCreator {
             protected void beforeShowAction() {
                 if (!SecurityUtils
                         .isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
-                    HttpServletResponse response = (HttpServletResponse) Executions
-                            .getCurrent().getNativeResponse();
-                    try {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    Util.sendForbiddenStatusCodeInHttpServletResponse();
                 }
             }
 
