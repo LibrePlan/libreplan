@@ -51,6 +51,14 @@
             column="changed_default_wswriter_password" />
         <property name="changedDefaultWssubcontractingPassword" not-null="true"
             column="changed_default_wssubcontracting_password" />
+        <property name="changedDefaultManagerPassword" not-null="true"
+            column="changed_default_manager_password" />
+        <property name="changedDefaultHresourcesPassword" not-null="true"
+            column="changed_default_hresources_password" />
+        <property name="changedDefaultOutsourcingPassword" not-null="true"
+            column="changed_default_outsourcing_password" />
+        <property name="changedDefaultReportsPassword" not-null="true"
+            column="changed_default_reports_password" />
         <property name="autocompleteLogin" not-null="true"
             column="enabled_autocomplete_login" />
         <property name="checkNewVersionEnabled" not-null="true"

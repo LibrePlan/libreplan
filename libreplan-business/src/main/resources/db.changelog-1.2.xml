@@ -578,4 +578,76 @@
             columnName="changed_default_user_password" />
     </changeSet>
 
+    <changeSet id="add-new-column-changed_default_manager_password" author="mrego">
+        <comment>
+            Add new column changed_default_manager_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_manager_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_manager_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_manager_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_hresources_password" author="mrego">
+        <comment>
+            Add new column changed_default_hresources_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_hresources_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_hresources_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_hresources_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_outsourcing_password" author="mrego">
+        <comment>
+            Add new column changed_default_outsourcing_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_outsourcing_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_outsourcing_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_outsourcing_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_reports_password" author="mrego">
+        <comment>
+            Add new column changed_default_reports_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_reports_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_reports_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_reports_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>

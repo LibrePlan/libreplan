@@ -30,6 +30,8 @@ import java.util.Set;
 import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.bootstrap.PredefinedProfiles;
+import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.UserRole;
 
 /**
@@ -76,6 +78,37 @@ public enum MandatoryUser {
             return getConfiguration()
                     .getChangedDefaultWssubcontractingPassword();
         }
+    },
+    MANAGER(null,
+            Arrays.asList(PredefinedProfiles.PROJECT_MANAGER.getFromDB()),
+            Configuration.isExampleUsersDisabled()) {
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration()
+                    .getChangedDefaultManagerPassword();
+        }
+    },
+    HRESOURCES(null, Arrays
+            .asList(PredefinedProfiles.HUMAN_RESOURCES_AND_COSTS_MANAGER
+                    .getFromDB()), Configuration.isExampleUsersDisabled()) {
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultManagerPassword();
+        }
+    },
+    OUTSOURCING(null, Arrays.asList(PredefinedProfiles.OUTSOURCING_MANAGER
+            .getFromDB()), Configuration.isExampleUsersDisabled()) {
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultManagerPassword();
+        }
+    },
+    REPORTS(null, Arrays.asList(PredefinedProfiles.REPORTS_RESPONSIBLE
+            .getFromDB()), Configuration.isExampleUsersDisabled()) {
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultManagerPassword();
+        }
     };
 
     public static boolean adminChangedAndSomeOtherNotChanged() {
@@ -98,13 +131,25 @@ public enum MandatoryUser {
                 .getConfigurationWithReadOnlyTransaction();
     }
 
-    private Set<UserRole> initialRoles;
+    private Set<UserRole> initialRoles = new HashSet<UserRole>();
+
+    private Set<Profile> initialProfiles = new HashSet<Profile>();
 
     private final boolean userDisabled;
 
     private MandatoryUser(Collection<UserRole> initialUserRoles,
             boolean userDisabled) {
-        this.initialRoles = new HashSet<UserRole>(initialUserRoles);
+        this(initialUserRoles, null, userDisabled);
+    }
+
+    private MandatoryUser(Collection<UserRole> initialUserRoles,
+            Collection<Profile> initialProfiles, boolean userDisabled) {
+        if (initialUserRoles != null) {
+            this.initialRoles = new HashSet<UserRole>(initialUserRoles);
+        }
+        if (initialProfiles != null) {
+            this.initialProfiles = new HashSet<Profile>(initialProfiles);
+        }
         this.userDisabled = userDisabled;
     }
 
@@ -128,6 +173,10 @@ public enum MandatoryUser {
 
     public Set<UserRole> getInitialRoles() {
         return initialRoles;
+    }
+
+    public Set<Profile> getInitialProfiles() {
+        return initialProfiles;
     }
 
     public static EnumSet<MandatoryUser> allExcept(MandatoryUser mandatoryUser) {

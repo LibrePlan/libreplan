@@ -55,6 +55,26 @@ public class PasswordUtil {
                     clearPassword);
             return;
         }
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.MANAGER.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.MANAGER, clearPassword);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.HRESOURCES.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.HRESOURCES, clearPassword);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.OUTSOURCING.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.OUTSOURCING, clearPassword);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.REPORTS.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.REPORTS, clearPassword);
+            return;
+        }
     }
 
     private static void checkIfChangeDefaultPasswd(MandatoryUser user,
@@ -85,12 +105,24 @@ public class PasswordUtil {
                 .hasChangedDefaultPasswordOrDisabled();
         boolean wssubcontractingNotDefaultPassword = MandatoryUser.WSSUBCONTRACTING
                 .hasChangedDefaultPasswordOrDisabled();
+        boolean managerNotDefaultPassword = MandatoryUser.MANAGER
+                .hasChangedDefaultPasswordOrDisabled();
+        boolean hresourcesNotDefaultPassword = MandatoryUser.HRESOURCES
+                .hasChangedDefaultPasswordOrDisabled();
+        boolean outsourcingNotDefaultPassword = MandatoryUser.OUTSOURCING
+                .hasChangedDefaultPasswordOrDisabled();
+        boolean reportsNotDefaultPassword = MandatoryUser.REPORTS
+                .hasChangedDefaultPasswordOrDisabled();
 
         Clients.evalJavaScript("showOrHideDefaultPasswordWarnings("
                 + adminNotDefaultPassword + ", "
                 + wsreaderNotDefaultPassword + ", "
                 + wswriterNotDefaultPassword + ", "
-                + wssubcontractingNotDefaultPassword + ");");
+                + wssubcontractingNotDefaultPassword + ", "
+                + managerNotDefaultPassword + ", "
+                + hresourcesNotDefaultPassword + ", "
+                + outsourcingNotDefaultPassword + ", "
+                + reportsNotDefaultPassword + ");");
     }
 
 }

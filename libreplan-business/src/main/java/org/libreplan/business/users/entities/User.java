@@ -83,10 +83,12 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     public User() {
     }
 
-    private User(String loginName, String password, Set<UserRole> roles) {
+    private User(String loginName, String password, Set<UserRole> roles,
+            Set<Profile> profiles) {
         this.loginName = loginName;
         this.password = password;
         this.roles = roles;
+        this.profiles = profiles;
     }
 
     private User(String loginName, String password, String email) {
@@ -97,9 +99,12 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public static User create(String loginName, String password,
             Set<UserRole> roles) {
+        return create(loginName, password, roles, new HashSet<Profile>());
+    }
 
-        return create(new User(loginName, password, roles));
-
+    public static User create(String loginName, String password,
+            Set<UserRole> roles, Set<Profile> profiles) {
+        return create(new User(loginName, password, roles, profiles));
     }
 
     public static User create() {

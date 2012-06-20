@@ -147,6 +147,22 @@ public class TemplateController extends GenericForwardComposer {
         return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSSUBCONTRACTING);
     }
 
+    public String getDefaultPasswdManagerVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.MANAGER);
+    }
+
+    public String getDefaultPasswdHresourcesVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.HRESOURCES);
+    }
+
+    public String getDefaultPasswdOutsourcingVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.OUTSOURCING);
+    }
+
+    public String getDefaultPasswdReportsVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.REPORTS);
+    }
+
     private String notChangedPasswordWarningDisplayPropertyFor(
             MandatoryUser mandatoryUser) {
         return asDisplayProperty(templateModel
@@ -178,6 +194,23 @@ public class TemplateController extends GenericForwardComposer {
     public String getIdWssubcontractingUser() {
         return templateModel.getIdUser(MandatoryUser.WSSUBCONTRACTING
                 .getLoginName());
+    }
+
+    public String getIdManagerUser() {
+        return templateModel.getIdUser(MandatoryUser.MANAGER.getLoginName());
+    }
+
+    public String getIdHresourcesUser() {
+        return templateModel.getIdUser(MandatoryUser.HRESOURCES.getLoginName());
+    }
+
+    public String getIdOutsourcingUser() {
+        return templateModel
+                .getIdUser(MandatoryUser.OUTSOURCING.getLoginName());
+    }
+
+    public String getIdReportsUser() {
+        return templateModel.getIdUser(MandatoryUser.REPORTS.getLoginName());
     }
 
     public boolean isUserAdmin() {

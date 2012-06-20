@@ -60,6 +60,8 @@ import static org.libreplan.business.users.entities.UserRole.ROLE_WORK_REPORT_LI
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.UserRole;
 
@@ -124,6 +126,14 @@ public enum PredefinedProfiles {
     public Profile createProfile() {
         return Profile
                 .create(name, new HashSet<UserRole>(Arrays.asList(roles)));
+    }
+
+    public Profile getFromDB() {
+        try {
+            return Registry.getProfileDAO().findByProfileName(name);
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
     }
 
 }

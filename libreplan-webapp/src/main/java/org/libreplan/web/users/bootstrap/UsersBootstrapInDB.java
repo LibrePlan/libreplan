@@ -61,7 +61,7 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
 
         if (!userDAO.existsByLoginName(u.getLoginName())) {
             User user = User.create(u.getLoginName(), getEncodedPassword(u),
-                    u.getInitialRoles());
+                    u.getInitialRoles(), u.getInitialProfiles());
             user.setDisabled(u.isUserDisabled());
 
             userDAO.save(user);

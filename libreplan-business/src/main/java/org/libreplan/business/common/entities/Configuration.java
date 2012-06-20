@@ -79,6 +79,14 @@ public class Configuration extends BaseEntity {
 
     private Boolean changedDefaultWssubcontractingPassword = false;
 
+    private Boolean changedDefaultManagerPassword = false;
+
+    private Boolean changedDefaultHresourcesPassword = false;
+
+    private Boolean changedDefaultOutsourcingPassword = false;
+
+    private Boolean changedDefaultReportsPassword = false;
+
     private Boolean autocompleteLogin = true;
 
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
@@ -348,6 +356,46 @@ public class Configuration extends BaseEntity {
 
     public Boolean getChangedDefaultWssubcontractingPassword() {
         return changedDefaultWssubcontractingPassword != null ? changedDefaultWssubcontractingPassword
+                : false;
+    }
+
+    public void setChangedDefaultManagerPassword(
+            Boolean changedDefaultManagerPassword) {
+        this.changedDefaultManagerPassword = changedDefaultManagerPassword;
+    }
+
+    public Boolean getChangedDefaultManagerPassword() {
+        return changedDefaultManagerPassword != null ? changedDefaultManagerPassword
+                : false;
+    }
+
+    public void setChangedDefaultHresourcesPassword(
+            Boolean changedDefaultHresourcesPassword) {
+        this.changedDefaultHresourcesPassword = changedDefaultHresourcesPassword;
+    }
+
+    public Boolean getChangedDefaultHresourcesPassword() {
+        return changedDefaultHresourcesPassword != null ? changedDefaultHresourcesPassword
+                : false;
+    }
+
+    public void setChangedDefaultOutsourcingPassword(
+            Boolean changedDefaultOutsourcingPassword) {
+        this.changedDefaultOutsourcingPassword = changedDefaultOutsourcingPassword;
+    }
+
+    public Boolean getChangedDefaultOutsourcingPassword() {
+        return changedDefaultOutsourcingPassword != null ? changedDefaultOutsourcingPassword
+                : false;
+    }
+
+    public void setChangedDefaultReportsPassword(
+            Boolean changedDefaultReportsPassword) {
+        this.changedDefaultReportsPassword = changedDefaultReportsPassword;
+    }
+
+    public Boolean getChangedDefaultReportsPassword() {
+        return changedDefaultReportsPassword != null ? changedDefaultReportsPassword
                 : false;
     }
 

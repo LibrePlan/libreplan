@@ -21,24 +21,41 @@ function showOrHideDefaultPasswordWarnings(
         adminNotDefaultPassword,
         wsreaderNotDefaultPassword,
         wswriterNotDefaultPassword,
-        wssubcontractingNotDefaultPassword) {
+        wssubcontractingNotDefaultPassword,
+        managerNotDefaultPassword,
+        hresourcesNotDefaultPassword,
+        outsourcingNotDefaultPassword,
+        reportsNotDefaultPassword) {
 
     setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdadmin"),
         adminNotDefaultPassword);
 
-    var otherDefaultPassword = adminNotDefaultPassword &&
-        (!wsreaderNotDefaultPassword ||
-                !wswriterNotDefaultPassword || !wssubcontractingNotDefaultPassword);
+    var otherDefaultPassword = adminNotDefaultPassword && (
+            !wsreaderNotDefaultPassword ||
+            !wswriterNotDefaultPassword ||
+            !wssubcontractingNotDefaultPassword ||
+            !managerNotDefaultPassword ||
+            !hresourcesNotDefaultPassword ||
+            !outsourcingNotDefaultPassword ||
+            !reportsNotDefaultPassword);
     setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdOthers"),
         !otherDefaultPassword);
 
     if (otherDefaultPassword) {
-        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwsreader"),
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdWsreader"),
             wsreaderNotDefaultPassword);
-        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwswriter"),
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdWswriter"),
             wswriterNotDefaultPassword);
-        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwssubcontracting"),
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdWssubcontracting"),
                 wssubcontractingNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdManager"),
+                managerNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdHresources"),
+                hresourcesNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdOutsourcing"),
+                outsourcingNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdReports"),
+                reportsNotDefaultPassword);
     }
 }
 
