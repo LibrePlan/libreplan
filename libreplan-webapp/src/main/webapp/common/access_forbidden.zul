@@ -1,0 +1,51 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2012 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Page not found')}" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+    <zscript>
+    <![CDATA[
+        contextPath = Executions.getCurrent().getContextPath();
+    ]]>
+    </zscript>
+
+    <window self="@{define(content)}" >
+
+        <vbox apply="org.libreplan.web.error.PageForErrorOnEvent"
+            sclass="errorbox">
+
+            <label value="${i18n:_('You do not have permissions to access to this page.')}" />
+
+            <label value="${i18n:_('Please try to contact with any administrator in order to review your permissions in LibrePlan.')}" />
+
+            <hbox>
+                <label value="${i18n:_('If you want to go to the initial page you can use the following link: ')}" />
+                <n:a href="${contextPath}/">
+                    <label value="${i18n:_('Go to init')}" />
+                </n:a>
+            </hbox>
+
+        </vbox>
+    </window>
+</zk>
