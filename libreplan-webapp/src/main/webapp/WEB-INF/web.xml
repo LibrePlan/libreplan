@@ -139,7 +139,7 @@
     </session-config>
 
     <welcome-file-list>
-        <welcome-file>/index.zul</welcome-file>
+        <welcome-file>/common/index.zul</welcome-file>
     </welcome-file-list>
 
     <error-page>
