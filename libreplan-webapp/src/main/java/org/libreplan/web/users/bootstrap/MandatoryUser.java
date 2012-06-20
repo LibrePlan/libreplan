@@ -21,7 +21,6 @@
 
 package org.libreplan.web.users.bootstrap;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -46,12 +45,6 @@ import org.libreplan.business.users.entities.UserRole;
  */
 public enum MandatoryUser {
 
-    USER(new ArrayList<UserRole>(), Configuration.isExampleUsersDisabled()) {
-        @Override
-        public boolean hasChangedDefaultPassword() {
-            return getConfiguration().getChangedDefaultUserPassword();
-        }
-    },
     ADMIN(Arrays.asList(UserRole.ROLE_SUPERUSER,
         UserRole.ROLE_READ_ALL_PROJECTS,
         UserRole.ROLE_EDIT_ALL_PROJECTS,

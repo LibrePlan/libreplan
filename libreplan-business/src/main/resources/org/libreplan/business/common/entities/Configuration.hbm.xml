@@ -45,8 +45,6 @@
             column="monte_carlo_method_tab_visible" />
         <property name="changedDefaultAdminPassword" not-null="true"
             column="changed_default_admin_password" />
-        <property name="changedDefaultUserPassword" not-null="true"
-            column="changed_default_user_password" />
         <property name="changedDefaultWsreaderPassword" not-null="true"
             column="changed_default_wsreader_password" />
         <property name="changedDefaultWswriterPassword" not-null="true"

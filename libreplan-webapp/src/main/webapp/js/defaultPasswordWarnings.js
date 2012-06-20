@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,22 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function showOrHideDefaultPasswordWarnings(adminNotDefaultPassword,
-    userNotDefaultPassword, wsreaderNotDefaultPassword,
-    wswriterNotDefaultPassword, wssubcontractingNotDefaultPassword) {
+function showOrHideDefaultPasswordWarnings(
+        adminNotDefaultPassword,
+        wsreaderNotDefaultPassword,
+        wswriterNotDefaultPassword,
+        wssubcontractingNotDefaultPassword) {
 
     setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdadmin"),
         adminNotDefaultPassword);
 
     var otherDefaultPassword = adminNotDefaultPassword &&
-        (!userNotDefaultPassword || !wsreaderNotDefaultPassword ||
+        (!wsreaderNotDefaultPassword ||
                 !wswriterNotDefaultPassword || !wssubcontractingNotDefaultPassword);
     setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdOthers"),
         !otherDefaultPassword);
 
     if (otherDefaultPassword) {
-        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswduser"),
-            userNotDefaultPassword);
         setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwsreader"),
             wsreaderNotDefaultPassword);
         setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwswriter"),

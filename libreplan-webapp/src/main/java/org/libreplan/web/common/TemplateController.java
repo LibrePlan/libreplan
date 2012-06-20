@@ -135,10 +135,6 @@ public class TemplateController extends GenericForwardComposer {
         return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.ADMIN);
     }
 
-    public String getDefaultPasswdUserVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.USER);
-    }
-
     public String getDefaultPasswdWsreaderVisible() {
         return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSREADER);
     }
@@ -171,10 +167,6 @@ public class TemplateController extends GenericForwardComposer {
         return templateModel.getIdUser(MandatoryUser.ADMIN.getLoginName());
     }
 
-    public String getIdUser() {
-        return templateModel.getIdUser(MandatoryUser.USER.getLoginName());
-    }
-
     public String getIdWsreaderUser() {
         return templateModel.getIdUser(MandatoryUser.WSREADER.getLoginName());
     }
@@ -199,6 +191,10 @@ public class TemplateController extends GenericForwardComposer {
 
         return VersionInformation.isNewVersionAvailable(templateModel
                 .isAllowToGatherUsageStatsEnabled());
+    }
+
+    public String getUsername() {
+        return SecurityUtils.getLoggedUser().getUsername();
     }
 
 }

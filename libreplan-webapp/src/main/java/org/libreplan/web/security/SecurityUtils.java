@@ -30,7 +30,6 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.UserRole;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
 import org.libreplan.web.users.services.CustomUser;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
@@ -76,7 +75,7 @@ public final class SecurityUtils {
             .getCurrent().getNativeRequest();
         Principal principal = request.getUserPrincipal();
         if (principal == null) {
-            return MandatoryUser.USER.getLoginName();
+            return null;
         }
         return principal.getName();
     }
@@ -119,12 +118,13 @@ public final class SecurityUtils {
                     @Override
                     public Boolean execute() {
                         try {
+                            String username = getLoggedUser().getUsername();
                             return Registry
                                     .getOrderAuthorizationDAO()
                                     .userOrItsProfilesHaveAnyAuthorization(
                                             Registry.getUserDAO()
                                                     .findByLoginName(
-                                                            getSessionUserLoginName()));
+                                                            username));
                         } catch (InstanceNotFoundException e) {
                             throw new RuntimeException(e);
                         }

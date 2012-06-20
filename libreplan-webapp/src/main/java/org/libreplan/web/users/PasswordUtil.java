@@ -40,11 +40,6 @@ public class PasswordUtil {
             return;
         }
         if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.USER.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.USER, clearPassword);
-            return;
-        }
-        if (user.getLoginName().equalsIgnoreCase(
                 MandatoryUser.WSREADER.getLoginName())) {
             checkIfChangeDefaultPasswd(MandatoryUser.WSREADER, clearPassword);
             return;
@@ -84,8 +79,6 @@ public class PasswordUtil {
     public static void showOrHideDefaultPasswordWarnings() {
         boolean adminNotDefaultPassword = MandatoryUser.ADMIN
                 .hasChangedDefaultPasswordOrDisabled();
-        boolean userNotDefaultPassword = MandatoryUser.USER
-                .hasChangedDefaultPasswordOrDisabled();
         boolean wsreaderNotDefaultPassword = MandatoryUser.WSREADER
                 .hasChangedDefaultPasswordOrDisabled();
         boolean wswriterNotDefaultPassword = MandatoryUser.WSWRITER
@@ -95,7 +88,6 @@ public class PasswordUtil {
 
         Clients.evalJavaScript("showOrHideDefaultPasswordWarnings("
                 + adminNotDefaultPassword + ", "
-                + userNotDefaultPassword + ", "
                 + wsreaderNotDefaultPassword + ", "
                 + wswriterNotDefaultPassword + ", "
                 + wssubcontractingNotDefaultPassword + ");");

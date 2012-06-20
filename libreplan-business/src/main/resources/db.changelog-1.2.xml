@@ -571,4 +571,11 @@
         </update>
     </changeSet>
 
+    <changeSet id="drop-column-changed_default_user_password-in-configuration"
+        author="mrego">
+        <comment>Drop column code in configuration table</comment>
+        <dropColumn tableName="configuration"
+            columnName="changed_default_user_password" />
+    </changeSet>
+
 </databaseChangeLog>

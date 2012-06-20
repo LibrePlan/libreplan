@@ -73,8 +73,6 @@ public class Configuration extends BaseEntity {
 
     private Boolean changedDefaultAdminPassword = false;
 
-    private Boolean changedDefaultUserPassword = false;
-
     private Boolean changedDefaultWsreaderPassword = false;
 
     private Boolean changedDefaultWswriterPassword = false;
@@ -321,15 +319,6 @@ public class Configuration extends BaseEntity {
     public Boolean getChangedDefaultAdminPassword() {
         return changedDefaultAdminPassword == null ? false
                 : changedDefaultAdminPassword;
-    }
-
-    public void setChangedDefaultUserPassword(Boolean changedDefaultUserPassword) {
-        this.changedDefaultUserPassword = changedDefaultUserPassword;
-    }
-
-    public Boolean getChangedDefaultUserPassword() {
-        return changedDefaultUserPassword != null ? changedDefaultUserPassword
-                : false;
     }
 
     public void setChangedDefaultWsreaderPassword(
