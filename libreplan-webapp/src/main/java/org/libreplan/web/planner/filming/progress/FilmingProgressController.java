@@ -119,6 +119,8 @@ public class FilmingProgressController extends GenericForwardComposer {
 
     private ProgressTotalRenderer progressTotalRenderer = new ProgressTotalRenderer();
 
+    private SortedMap<ProgressValue, Plotinfo> mapCharts = new TreeMap<ProgressValue, Plotinfo>();
+
     private Date endDateFilming;
 
     private Date startDateFilming;
@@ -151,7 +153,9 @@ public class FilmingProgressController extends GenericForwardComposer {
     }
 
     private void createTimePlots() {
+
         clearPlots();
+        resetMapCharts();
 
         Timeplot timeplotScenes = new Timeplot();
         Timeplot timeplotPages = new Timeplot();
@@ -164,16 +168,17 @@ public class FilmingProgressController extends GenericForwardComposer {
         TimeGeometry tg = new DefaultTimeGeometry();
         tg.setAxisLabelsPlacement("bottom");
 
-        SortedMap<ProgressValue, ListModelList> map = this.getProgressValuesRenderer().mapCharts;
 
         for(ProgressValue progressValue : this.getProgressValues()){
 
             Plotinfo plotinfo = new Plotinfo();
-            plotinfo.setDataModel(map.get(progressValue));
+            plotinfo.setDataModel(createListModel(progressValue));
             plotinfo.setShowValues(true);
             plotinfo.setFillColor("rgba(50, 100, 54, 0.2)");
             plotinfo.setValueGeometry(vg);
             plotinfo.setTimeGeometry(tg);
+
+            this.mapCharts.put(progressValue, plotinfo);
 
             switch(progressValue.getProgressType()){
             case SCENES :
@@ -190,6 +195,70 @@ public class FilmingProgressController extends GenericForwardComposer {
         filmingProgressChartScenes.appendChild(timeplotScenes);
         filmingProgressChartMinutes.appendChild(timeplotMinutes);
         filmingProgressChartPages.appendChild(timeplotPages);
+    }
+
+    private ListModel createListModel(ProgressValue progressValue) {
+        ListModelList lm = new ListModelList();
+        BigDecimal sumProgressValues = BigDecimal.ZERO;
+
+        for (Entry<LocalDate, BigDecimal> entry : progressValue.getValues()
+                .entrySet()) {
+            // create the point to represent it in the chart
+            if (entry.getValue() != null) {
+                sumProgressValues = sumProgressValues.add(entry.getValue());
+            }
+            final PlotData pd = createPlotData(entry.getKey(),
+                    sumProgressValues);
+            lm.add(pd);
+        }
+        return lm;
+    }
+
+    private void updateChart(ProgressValue pg, LocalDate date, BigDecimal oldValue,
+            BigDecimal value) {
+        // Calculate the difference to update
+        BigDecimal diff = BigDecimal.ZERO;
+        if (value != null) {
+            diff = value;
+            if (oldValue != null) {
+                diff = value.subtract(oldValue);
+            }
+        }
+
+        // Update from the changed point until the end
+        Plotinfo plotinfo = mapCharts.get(pg);
+        if(plotinfo != null){
+            ListModelList lm = (ListModelList) plotinfo.getDataModel();
+            ListModelList lmToList = new ListModelList(lm);
+
+            int index = 0;
+            Date time = date.toDateTimeAtStartOfDay().toDate();
+
+            while (index < lmToList.getSize()) {
+                PlotData point = (PlotData) lmToList.get(index);
+                if (point.getTime().compareTo(time) >= 0) {
+                    float newValue = point.getValue() + diff.floatValue();
+                    point.setValue(newValue);
+                    lm.remove(point);
+                    lm.add(point);
+                }
+                index++;
+            }
+        }
+    }
+
+    private PlotData createPlotData(LocalDate date, BigDecimal value) {
+        PlotData pd = new PlotData();
+        float newValue = 0;
+        if (value != null) {
+            newValue = value.floatValue();
+        }
+        pd.setValue(newValue);
+
+        if (date != null) {
+            pd.setTime(date.toDateTimeAtStartOfDay().toDate());
+        }
+        return pd;
     }
 
     private void clearPlots() {
@@ -551,15 +620,10 @@ public class FilmingProgressController extends GenericForwardComposer {
 
         private SortedMap<RowTotal, Row> panelTotal = new TreeMap<RowTotal, Row>();
 
-        private SortedMap<ProgressValue, ListModelList> mapCharts = new TreeMap<ProgressValue, ListModelList>();
-
         @Override
         public void render(final Row row, Object data) {
             final ProgressValue progressValue = (ProgressValue) data;
             row.setValue(progressValue);
-
-            ListModelList lm = new ListModelList();
-            mapCharts.put(progressValue, lm);
 
             final RowTotal rowTotal = calculateRowTotal(row);
             panelTotal.put(rowTotal, row);
@@ -571,11 +635,6 @@ public class FilmingProgressController extends GenericForwardComposer {
                 valuebox.setScale(2);
                 valuebox.setReadonly(isReadOnlyByDay(
                         progressValue.getForecastLevel(), entry.getKey()));
-
-                //create the point to represent it in the chart
-                final PlotData pd = createPlotData(entry.getKey(),
-                        entry.getValue());
-                lm.add(pd);
 
                 Util.bind(valuebox, new Util.Getter<BigDecimal>() {
 
@@ -589,43 +648,20 @@ public class FilmingProgressController extends GenericForwardComposer {
                     @Override
                     public void set(BigDecimal newValue) {
                         updatePanelTotal(rowTotal, entry.getValue(), newValue);
-                        entry.setValue(newValue);
+                        updateChart(progressValue, entry.getKey(),
+                                entry.getValue(), newValue);
 
+                        entry.setValue(newValue);
                         if (progressValue.getForecastLevel()
                                 .equals(ForecastLevelEnum.REAL)) {
                             updateValue(progressValue, entry.getKey(), newValue);
                         }
-                        updateChart(progressValue, pd, newValue);
+
                     }
                 });
 
                 row.appendChild(valuebox);
             }
-        }
-
-        private void updateChart(ProgressValue pg, PlotData pd, BigDecimal value) {
-            float newValue = 0;
-            if(value != null){
-                newValue = value.floatValue();
-            }
-            pd.setValue(newValue);
-            ListModelList lm = this.mapCharts.get(pg);
-            lm.remove(pd);
-            lm.add(pd);
-        }
-
-        private PlotData createPlotData(LocalDate date, BigDecimal value) {
-            PlotData pd = new PlotData();
-            float newValue = 0;
-            if (value != null) {
-                newValue = value.floatValue();
-            }
-            if (date != null) {
-                pd.setFormat("d/MM/yy");
-                pd.setTime(date.toDateTimeAtStartOfDay().toDate());
-            }
-            pd.setValue(newValue);
-            return pd;
         }
 
         private void updateValue(ProgressValue progressValue, LocalDate date,
@@ -682,12 +718,30 @@ public class FilmingProgressController extends GenericForwardComposer {
         }
     }
 
+    private void refreshChart(ProgressValue pg) {
+        switch (pg.getProgressType()) {
+        case SCENES:
+            Util.reloadBindings(this.filmingProgressChartScenes);
+            break;
+        case MINUTES:
+            Util.reloadBindings(this.filmingProgressChartMinutes);
+            break;
+        case PAGES:
+            Util.reloadBindings(this.filmingProgressChartPages);
+        }
+    }
+
     private void refreshTotalPanel() {
         Util.reloadBindings(gridTotals);
     }
 
     public void resetTotalPanel() {
         getProgressValuesRenderer().panelTotal = new TreeMap<RowTotal, Row>();
+    }
+
+    private void resetMapCharts() {
+        mapCharts = new TreeMap<ProgressValue, Plotinfo>();
+
     }
 
     public List<RowTotal> getRowTotals() {
@@ -874,6 +928,7 @@ public class FilmingProgressController extends GenericForwardComposer {
         refreshTotalPanel();
         updatesDates();
         createTimePlots();
+        reloadNormalLayout();
     }
 }
 
