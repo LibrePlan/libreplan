@@ -24,12 +24,15 @@ import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREAD
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -39,6 +42,8 @@ import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.common.entrypoints.MatrixParameters;
+import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.util.Assert;
 import org.zkoss.zk.ui.Component;
@@ -464,8 +469,21 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         setBreadcrumbs(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
 
+        checkUserComesFromEntryPointsOrSendForbiddenCode();
+
         URLHandlerRegistry.getRedirectorFor(IMonthlyTimesheetController.class)
                 .register(this, page);
+    }
+
+    private void checkUserComesFromEntryPointsOrSendForbiddenCode() {
+        HttpServletRequest request = (HttpServletRequest) Executions
+                .getCurrent().getNativeRequest();
+        Map<String, String> matrixParams = MatrixParameters.extract(request);
+
+        // If it doesn't come from a entry point
+        if (matrixParams.isEmpty()) {
+            Util.sendForbiddenStatusCodeInHttpServletResponse();
+        }
     }
 
     private void setBreadcrumbs(Component comp) {
@@ -483,6 +501,10 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     @Override
     public void goToCreateOrEditForm(LocalDate date) {
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)) {
+            Util.sendForbiddenStatusCodeInHttpServletResponse();
+        }
+
         monthlyTimesheetModel.initCreateOrEdit(date);
         initTimesheet(date);
     }
@@ -490,6 +512,10 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     @Override
     public void goToCreateOrEditFormForResource(LocalDate date,
             org.libreplan.business.resources.entities.Resource resource) {
+        if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
+            Util.sendForbiddenStatusCodeInHttpServletResponse();
+        }
+
         monthlyTimesheetModel.initCreateOrEdit(date, resource);
         initTimesheet(date);
     }
