@@ -40,6 +40,7 @@ import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
@@ -415,5 +416,11 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
         } else {
             this.planningState.getSaveCommand().save(null, null);
         }
+    }
+
+    @Override
+    public void closeBudget() {
+        ((Budget) getTemplate()).getAssociatedOrder().setState(
+                OrderStatusEnum.OFFERED);
     }
 }

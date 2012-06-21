@@ -293,6 +293,8 @@ public class MultipleTabsPlannerController implements Composer,
 
         this.budgetTab = BudgetTabCreator.create(mode, planningStateCreator,
                 budgetController, breadcrumbs);
+        budgetController.setEntryPointsController(this);
+
         this.filmingProgressTab = FilmingProgressTabCreator.create(mode, planningStateCreator,
                 filmingProgressController, breadcrumbs);
 

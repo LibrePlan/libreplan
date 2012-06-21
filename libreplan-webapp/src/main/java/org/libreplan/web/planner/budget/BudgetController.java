@@ -25,6 +25,7 @@ import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.ISaveCommand;
+import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
 import org.libreplan.web.templates.budgettemplates.EditTemplateWindowController;
 import org.libreplan.web.templates.budgettemplates.IBudgetTemplatesModel;
 import org.libreplan.web.templates.budgettemplates.IEditionSubwindowController;
@@ -67,7 +68,11 @@ public class BudgetController extends GenericForwardComposer implements
 
     private Button cancelEditionButton;
 
+    private Button closeBudgetButton;
+
     private EditTemplateWindowController editTemplateController;
+
+    private IGlobalViewEntryPoints entryPointsController;
 
     public void init(Budget budget, ISaveCommand saveCommand) {
         model.initEdit(budget);
@@ -200,6 +205,37 @@ public class BudgetController extends GenericForwardComposer implements
                     }
                 });
 
+        closeBudgetButton.addEventListener(Events.ON_CLICK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        try {
+                            Messagebox.show(
+                                    _("The budget will be saved, and you won't be able to change it later. Are you sure?"),
+                                    _("Confirm budget close"),
+                                    Messagebox.OK | Messagebox.CANCEL,
+                                    Messagebox.QUESTION,
+                                    new org.zkoss.zk.ui.event.EventListener() {
+                                        public void onEvent(Event evt)
+                                                throws InterruptedException {
+                                            if (evt.getName().equals("onOK")) {
+                                                model.closeBudget();
+                                                model.saveThroughPlanningState(editWindow.getDesktop(), false);
+                                                entryPointsController.goToOrderDetails(
+                                                        ((Budget)model.getTemplate()).getAssociatedOrder());
+                                            }
+                                        }
+                                    });
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
     }
 
+    public void setEntryPointsController(
+            IGlobalViewEntryPoints entryPointsController) {
+        this.entryPointsController = entryPointsController;
+    }
 }

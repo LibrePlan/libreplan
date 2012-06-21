@@ -41,6 +41,8 @@
                         sclass="planner-icon" tooltiptext="${i18n:_('Save Project')}" />
                 <button id="cancelEditionButton"  image="/common/img/ico_back.png"
                         sclass="planner-icon" tooltiptext="${i18n:_('Cancel edition')}" />
+                <button id="closeBudgetButton" label="${i18n:_('Close Budget')}"
+                        sclass="planner-icon" tooltiptext="${i18n:_('Close Budget')}" />
             </hbox>
         </north>
 
