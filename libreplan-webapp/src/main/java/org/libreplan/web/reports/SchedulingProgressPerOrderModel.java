@@ -48,6 +48,7 @@ import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.reports.dtos.SchedulingProgressPerOrderDTO;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -87,8 +88,9 @@ public class SchedulingProgressPerOrderModel implements ISchedulingProgressPerOr
     }
 
     private void loadAllOrders() {
-        allOrders = orderDAO.getOrdersByScenario(scenarioManager
-                .getCurrent());
+        allOrders = orderDAO.getOrdersByReadAuthorizationByScenario(
+                SecurityUtils.getSessionUserLoginName(),
+                scenarioManager.getCurrent());
 
         Collections.sort(allOrders);
 

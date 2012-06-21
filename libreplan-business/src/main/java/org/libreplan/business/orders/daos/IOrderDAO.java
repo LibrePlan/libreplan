@@ -76,7 +76,7 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
      */
     List<Order> getOrdersByWriteAuthorization(User user);
 
-    List<Order> getOrdersByReadAuthorizationByScenario(User user,
+    List<Order> getOrdersByReadAuthorizationByScenario(String username,
             Scenario scenario);
 
     /**
@@ -105,4 +105,5 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
 
     List<CostExpenseSheetDTO> getCostExpenseSheet(List<Order> orders, Date startingDate,
             Date endingDate, List<Criterion> criterions);
+
 }

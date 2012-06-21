@@ -213,19 +213,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-
-        User user;
-        try {
-            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
-        }
-        catch(InstanceNotFoundException e) {
-            //this case shouldn't happen, because it would mean that there isn't a logged user
-            //anyway, if it happenned we return an empty list
-            return new ArrayList<Order>();
-        }
         getLabelsOnConversation().reattachLabels();
         List<Order> orders = orderDAO.getOrdersByReadAuthorizationByScenario(
-                user, scenarioManager.getCurrent());
+                SecurityUtils.getSessionUserLoginName(),
+                scenarioManager.getCurrent());
 
         initializeOrders(orders);
         return orders;

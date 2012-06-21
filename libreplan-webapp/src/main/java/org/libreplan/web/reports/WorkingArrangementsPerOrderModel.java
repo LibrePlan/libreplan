@@ -57,6 +57,7 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -132,7 +133,9 @@ public class WorkingArrangementsPerOrderModel implements
     public List<Order> getOrders() {
         Scenario currentScenario = scenarioManager.getCurrent();
         final List<Order> orders = orderDAO
-                .getOrdersByScenario(currentScenario);
+                .getOrdersByReadAuthorizationByScenario(
+                        SecurityUtils.getSessionUserLoginName(),
+                        currentScenario);
         for (Order each: orders) {
             initializeOrderElements(each.getOrderElements());
             each.useSchedulingDataFor(currentScenario);

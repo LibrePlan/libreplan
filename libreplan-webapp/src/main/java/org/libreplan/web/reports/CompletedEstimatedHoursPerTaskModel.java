@@ -22,6 +22,7 @@
 package org.libreplan.web.reports;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,6 +48,7 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -116,7 +118,12 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-        return orderDAO.getOrdersByScenario(scenarioManager.getCurrent());
+        List<Order> result = orderDAO.getOrdersByReadAuthorizationByScenario(
+                SecurityUtils.getSessionUserLoginName(),
+                scenarioManager.getCurrent());
+
+        Collections.sort(result);
+        return result;
     }
 
     private void initializeOrderElements(List<OrderElement> orderElements) {
