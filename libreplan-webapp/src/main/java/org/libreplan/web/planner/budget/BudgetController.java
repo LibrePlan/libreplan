@@ -171,7 +171,7 @@ public class BudgetController extends GenericForwardComposer implements
                 new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        model.saveThroughPlanningState(editWindow.getDesktop());
+                        model.saveThroughPlanningState(editWindow.getDesktop(), true);
                     }
                 });
 

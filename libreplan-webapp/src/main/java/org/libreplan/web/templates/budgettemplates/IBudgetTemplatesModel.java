@@ -32,5 +32,5 @@ public interface IBudgetTemplatesModel extends ITemplatesModel {
 
     boolean checkValidCode(OrderElementTemplate element, String code);
 
-    void saveThroughPlanningState(Desktop desktop);
+    void saveThroughPlanningState(Desktop desktop, boolean showSaveMessage);
 }

@@ -400,7 +400,8 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
 
     @Override
     @Transactional
-    public void saveThroughPlanningState(Desktop desktop) {
+    public void saveThroughPlanningState(Desktop desktop,
+            boolean showSaveMessage) {
         this.planningState = planningStateCreator.retrieveOrCreate(desktop,
                 ((Budget) getTemplate()).getAssociatedOrder(),
                 new IActionsOnRetrieval() {
@@ -410,6 +411,10 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
                         planningState.reattach();
                     }
                 });
-        this.planningState.getSaveCommand().save(null);
+        if (showSaveMessage) {
+            this.planningState.getSaveCommand().save(null);
+        } else {
+            this.planningState.getSaveCommand().save(null, null);
+        }
     }
 }
