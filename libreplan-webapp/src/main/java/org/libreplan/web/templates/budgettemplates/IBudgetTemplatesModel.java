@@ -20,6 +20,7 @@ package org.libreplan.web.templates.budgettemplates;
 
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.templates.ITemplatesModel;
+import org.zkoss.zk.ui.Desktop;
 
 /**
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
@@ -31,4 +32,5 @@ public interface IBudgetTemplatesModel extends ITemplatesModel {
 
     boolean checkValidCode(OrderElementTemplate element, String code);
 
+    void saveThroughPlanningState(Desktop desktop);
 }

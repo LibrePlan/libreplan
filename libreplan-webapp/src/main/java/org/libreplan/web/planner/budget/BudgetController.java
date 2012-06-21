@@ -19,6 +19,8 @@
 
 package org.libreplan.web.planner.budget;
 
+import static org.libreplan.web.I18nHelper._;
+
 import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.common.Util;
@@ -34,10 +36,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Div;
@@ -57,6 +63,10 @@ public class BudgetController extends GenericForwardComposer implements
 
     private Div editWindow;
 
+    private Button saveOrderAndContinueButton;
+
+    private Button cancelEditionButton;
+
     private EditTemplateWindowController editTemplateController;
 
     public void init(Budget budget, ISaveCommand saveCommand) {
@@ -70,6 +80,7 @@ public class BudgetController extends GenericForwardComposer implements
         bindLabelsControllerWithCurrentTemplate();
         bindQualityFormWithCurrentTemplate();
         bindEditTemplateWindowWithController();
+        setupGlobalButtons();
 
         Util.createBindingsFor(editWindow);
     }
@@ -144,4 +155,51 @@ public class BudgetController extends GenericForwardComposer implements
                 "assignedQualityForms", QualityFormAssignerComponent.class);
         c.useModel(model);
     }
+
+    private void setupGlobalButtons() {
+        Hbox perspectiveButtonsInsertionPoint = (Hbox) page
+                .getFellow("perspectiveButtonsInsertionPoint");
+        perspectiveButtonsInsertionPoint.getChildren().clear();
+
+        saveOrderAndContinueButton.setParent(perspectiveButtonsInsertionPoint);
+        cancelEditionButton.setParent(perspectiveButtonsInsertionPoint);
+
+        saveOrderAndContinueButton.setVisible(true);
+        cancelEditionButton.setVisible(true);
+
+        saveOrderAndContinueButton.addEventListener(Events.ON_CLICK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        model.saveThroughPlanningState(editWindow.getDesktop());
+                    }
+                });
+
+        cancelEditionButton.addEventListener(Events.ON_CLICK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        try {
+                            Messagebox.show(
+                                    _("Unsaved changes will be lost. Are you sure?"),
+                                    _("Confirm exit dialog"),
+                                    Messagebox.OK | Messagebox.CANCEL,
+                                    Messagebox.QUESTION,
+                                    new org.zkoss.zk.ui.event.EventListener() {
+                                        public void onEvent(Event evt)
+                                                throws InterruptedException {
+                                            if (evt.getName().equals("onOK")) {
+                                                Executions.sendRedirect(
+                                                        "/planner/index.zul;company_scheduling");
+                                            }
+                                        }
+                                    });
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+
 }

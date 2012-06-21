@@ -32,28 +32,43 @@
         ]]>
     </zscript>
 
-    <div id="editWindow" self="@{define(content)}" apply="${bController}" height="100%" style="overflow:visible">
-        <vbox id="messagesContainer" />
-        <editTemplateWindow />
+    <borderlayout sclass="orderslayout" width="auto" self="@{define(content)}" apply="${bController}"
+            height="100%" style="overflow:visible">
 
-        <tabbox>
-            <tabs>
-                <tab label="${i18n:_('Template Tree')}"
-                    onSelect="bController.openTemplateTree()" />
-                <tab label="${i18n:_('Labels')}" />
-                <tab label="${i18n:_('Quality Forms')}" />
-            </tabs>
-            <tabpanels>
-                <tabpanel sclass="template-tree-tabpanel">
-                    <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
-                </tabpanel>
-                <tabpanel>
-                    <listOrderElementLabels id="listOrderElementLabels"/>
-                </tabpanel>
-                <tabpanel>
-                    <assignedQualityForms id="assignedQualityForms"/>
-                </tabpanel>
-            </tabpanels>
-        </tabbox>
-    </div>
+        <north height="30px" border="0" sclass="toolbar-box">
+            <hbox align="center" id="toolbar">
+                <button id="saveOrderAndContinueButton" image="/common/img/ico_save.png"
+                        sclass="planner-icon" tooltiptext="${i18n:_('Save Project')}" />
+                <button id="cancelEditionButton"  image="/common/img/ico_back.png"
+                        sclass="planner-icon" tooltiptext="${i18n:_('Cancel edition')}" />
+            </hbox>
+        </north>
+
+        <center border="0" class="orderslayout-area">
+            <div id="editWindow">
+                <vbox id="messagesContainer" />
+                <editTemplateWindow />
+
+                <tabbox>
+                    <tabs>
+                        <tab label="${i18n:_('Template Tree')}"
+                            onSelect="bController.openTemplateTree()" />
+                        <tab label="${i18n:_('Labels')}" />
+                        <tab label="${i18n:_('Quality Forms')}" />
+                    </tabs>
+                    <tabpanels>
+                        <tabpanel sclass="template-tree-tabpanel">
+                            <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
+                        </tabpanel>
+                        <tabpanel>
+                            <listOrderElementLabels id="listOrderElementLabels"/>
+                        </tabpanel>
+                        <tabpanel>
+                            <assignedQualityForms id="assignedQualityForms"/>
+                        </tabpanel>
+                    </tabpanels>
+                </tabbox>
+            </div>
+        </center>
+    </borderlayout>
 </zk>
