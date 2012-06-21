@@ -34,7 +34,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.web.common.ITemplateModel.IOnFinished;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -132,39 +132,39 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getDefaultPasswdAdminVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.ADMIN);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.ADMIN);
     }
 
     public String getDefaultPasswdWsreaderVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSREADER);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.WSREADER);
     }
 
     public String getDefaultPasswdWswriterVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSWRITER);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.WSWRITER);
     }
 
     public String getDefaultPasswdWssubcontractingVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSSUBCONTRACTING);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.WSSUBCONTRACTING);
     }
 
     public String getDefaultPasswdManagerVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.MANAGER);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.MANAGER);
     }
 
     public String getDefaultPasswdHresourcesVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.HRESOURCES);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.HRESOURCES);
     }
 
     public String getDefaultPasswdOutsourcingVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.OUTSOURCING);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.OUTSOURCING);
     }
 
     public String getDefaultPasswdReportsVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.REPORTS);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.REPORTS);
     }
 
     private String notChangedPasswordWarningDisplayPropertyFor(
-            MandatoryUser mandatoryUser) {
+            PredefinedUsers mandatoryUser) {
         return asDisplayProperty(templateModel
                 .hasChangedDefaultPassword(mandatoryUser));
     }
@@ -180,37 +180,37 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getIdAdminUser() {
-        return templateModel.getIdUser(MandatoryUser.ADMIN.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.ADMIN.getLoginName());
     }
 
     public String getIdWsreaderUser() {
-        return templateModel.getIdUser(MandatoryUser.WSREADER.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.WSREADER.getLoginName());
     }
 
     public String getIdWswriterUser() {
-        return templateModel.getIdUser(MandatoryUser.WSWRITER.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.WSWRITER.getLoginName());
     }
 
     public String getIdWssubcontractingUser() {
-        return templateModel.getIdUser(MandatoryUser.WSSUBCONTRACTING
+        return templateModel.getIdUser(PredefinedUsers.WSSUBCONTRACTING
                 .getLoginName());
     }
 
     public String getIdManagerUser() {
-        return templateModel.getIdUser(MandatoryUser.MANAGER.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.MANAGER.getLoginName());
     }
 
     public String getIdHresourcesUser() {
-        return templateModel.getIdUser(MandatoryUser.HRESOURCES.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.HRESOURCES.getLoginName());
     }
 
     public String getIdOutsourcingUser() {
         return templateModel
-                .getIdUser(MandatoryUser.OUTSOURCING.getLoginName());
+                .getIdUser(PredefinedUsers.OUTSOURCING.getLoginName());
     }
 
     public String getIdReportsUser() {
-        return templateModel.getIdUser(MandatoryUser.REPORTS.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.REPORTS.getLoginName());
     }
 
     public boolean isUserAdmin() {

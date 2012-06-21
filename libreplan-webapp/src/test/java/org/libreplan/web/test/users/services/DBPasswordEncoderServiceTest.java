@@ -34,7 +34,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.libreplan.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -68,7 +68,7 @@ public class DBPasswordEncoderServiceTest {
 
         usersBootstrap.loadRequiredData();
 
-        for (MandatoryUser u : MandatoryUser.values()) {
+        for (PredefinedUsers u : PredefinedUsers.values()) {
 
             String encodedPassword = dbPasswordEncoderService.encodePassword(
                 u.getClearPassword(), u.getLoginName());

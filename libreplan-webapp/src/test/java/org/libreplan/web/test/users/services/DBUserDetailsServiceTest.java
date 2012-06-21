@@ -40,7 +40,7 @@ import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
@@ -95,7 +95,7 @@ public class DBUserDetailsServiceTest {
     public void testLoadUserByUsername() {
         usersBootstrap.loadRequiredData();
 
-        for (MandatoryUser u : MandatoryUser.values()) {
+        for (PredefinedUsers u : PredefinedUsers.values()) {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(u
                     .getLoginName());
@@ -107,7 +107,7 @@ public class DBUserDetailsServiceTest {
 
     }
 
-    private Object getUserRoles(MandatoryUser u) {
+    private Object getUserRoles(PredefinedUsers u) {
         Set<UserRole> userRoles = new HashSet<UserRole>();
 
         userRoles.addAll(u.getInitialRoles());

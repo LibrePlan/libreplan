@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,17 +35,19 @@ import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.UserRole;
 
 /**
- * It enumerates the mandatory users (usernames) for running the application.<br />
+ * It enumerates the default users (usernames) for the application.<br />
  *
- * <code>ADMIN</code> user will be always enabled, however <code>USER</code>,
- * <code>WSREADER</code> and <code>WSWRITER</code> could be disabled in
- * copilation time with a Maven option specified via {@link Configuration}
- * class.
+ * {@link PredefinedUsers#ADMIN} user will be always enabled, however
+ * {@link PredefinedUsers#WSREADER}, {@link PredefinedUsers#WSWRITER},
+ * {@link PredefinedUsers#WSSUBCONTRACTING}, {@link PredefinedUsers#MANAGER},
+ * {@link PredefinedUsers#HRESOURCES}, {@link PredefinedUsers#OUTSOURCING} and
+ * {@link PredefinedUsers#REPORTS} users could be disabled in compilation time
+ * with a Maven option specified via {@link Configuration} class.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public enum MandatoryUser {
+public enum PredefinedUsers {
 
     ADMIN(Arrays.asList(UserRole.ROLE_SUPERUSER,
         UserRole.ROLE_READ_ALL_PROJECTS,
@@ -117,8 +119,8 @@ public enum MandatoryUser {
     }
 
     public static boolean someKeepsDefaultPassword(
-            Collection<MandatoryUser> mandatoryUsers) {
-        for (MandatoryUser each : mandatoryUsers) {
+            Collection<PredefinedUsers> mandatoryUsers) {
+        for (PredefinedUsers each : mandatoryUsers) {
             if (!each.hasChangedDefaultPasswordOrDisabled()) {
                 return true;
             }
@@ -137,12 +139,12 @@ public enum MandatoryUser {
 
     private final boolean userDisabled;
 
-    private MandatoryUser(Collection<UserRole> initialUserRoles,
+    private PredefinedUsers(Collection<UserRole> initialUserRoles,
             boolean userDisabled) {
         this(initialUserRoles, null, userDisabled);
     }
 
-    private MandatoryUser(Collection<UserRole> initialUserRoles,
+    private PredefinedUsers(Collection<UserRole> initialUserRoles,
             Collection<Profile> initialProfiles, boolean userDisabled) {
         if (initialUserRoles != null) {
             this.initialRoles = new HashSet<UserRole>(initialUserRoles);
@@ -179,7 +181,7 @@ public enum MandatoryUser {
         return initialProfiles;
     }
 
-    public static EnumSet<MandatoryUser> allExcept(MandatoryUser mandatoryUser) {
+    public static EnumSet<PredefinedUsers> allExcept(PredefinedUsers mandatoryUser) {
         return EnumSet.complementOf(EnumSet.of(mandatoryUser));
     }
 

@@ -53,7 +53,7 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.web.UserUtil;
 import org.libreplan.web.planner.tabs.GanttDiagramBuilder;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.libreplan.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -426,14 +426,14 @@ public class TemplateModel implements ITemplateModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean hasChangedDefaultPassword(MandatoryUser user) {
+    public boolean hasChangedDefaultPassword(PredefinedUsers user) {
         return user.hasChangedDefaultPasswordOrDisabled();
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean adminPasswordChangedAndSomeOtherNotChanged() {
-        return MandatoryUser.adminChangedAndSomeOtherNotChanged();
+        return PredefinedUsers.adminChangedAndSomeOtherNotChanged();
     }
 
     @Override

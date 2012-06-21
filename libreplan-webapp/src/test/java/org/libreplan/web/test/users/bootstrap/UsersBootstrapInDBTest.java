@@ -35,7 +35,7 @@ import org.libreplan.business.users.bootstrap.IProfileBootstrap;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -79,7 +79,7 @@ public class UsersBootstrapInDBTest {
 
         usersBootstrap.loadRequiredData();
 
-        for (MandatoryUser u : MandatoryUser.values()) {
+        for (PredefinedUsers u : PredefinedUsers.values()) {
 
             User user = userDAO.findByLoginName(u.getLoginName());
 

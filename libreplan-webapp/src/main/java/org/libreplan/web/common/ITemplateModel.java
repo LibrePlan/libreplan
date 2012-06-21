@@ -24,7 +24,7 @@ package org.libreplan.web.common;
 import java.util.List;
 
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 
 /**
  * Contract for {@link TemplateModel}.
@@ -50,7 +50,7 @@ public interface ITemplateModel {
 
     boolean isScenariosVisible();
 
-    boolean hasChangedDefaultPassword(MandatoryUser user);
+    boolean hasChangedDefaultPassword(PredefinedUsers user);
 
     boolean adminPasswordChangedAndSomeOtherNotChanged();
 

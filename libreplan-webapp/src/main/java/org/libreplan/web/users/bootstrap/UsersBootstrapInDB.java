@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Bootstrapt to create the default {@link User}s.
+ * Bootstrapt to create the default {@link User Users}.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
@@ -53,25 +53,20 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
     @Override
     public void loadRequiredData() {
 
-        for (MandatoryUser u : MandatoryUser.values()) {
-            createUserIfNotExists(u);
+        if (userDAO.list(User.class).isEmpty()) {
+            for (PredefinedUsers u : PredefinedUsers.values()) {
+                User user = User.create(u.getLoginName(),
+                        getEncodedPassword(u), u.getInitialRoles(),
+                        u.getInitialProfiles());
+                user.setDisabled(u.isUserDisabled());
+
+                userDAO.save(user);
+            }
         }
 
     }
 
-    private void createUserIfNotExists(MandatoryUser u) {
-
-        if (!userDAO.existsByLoginName(u.getLoginName())) {
-            User user = User.create(u.getLoginName(), getEncodedPassword(u),
-                    u.getInitialRoles(), u.getInitialProfiles());
-            user.setDisabled(u.isUserDisabled());
-
-            userDAO.save(user);
-        }
-
-    }
-
-    private String getEncodedPassword(MandatoryUser u) {
+    private String getEncodedPassword(PredefinedUsers u) {
 
         return dbPasswordEncoderService.encodePassword(u.getClearPassword(),
             u.getLoginName());
