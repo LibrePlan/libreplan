@@ -55,7 +55,7 @@ import static org.libreplan.business.users.entities.UserRole.ROLE_VIRTUAL_WORKER
 import static org.libreplan.business.users.entities.UserRole.ROLE_WORKERS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT;
 import static org.libreplan.business.users.entities.UserRole.ROLE_WORK_AND_PROGRESS_PER_TASK_REPORT;
-import static org.libreplan.business.users.entities.UserRole.ROLE_WORK_REPORT_LINES_REPORT;
+import static org.libreplan.business.users.entities.UserRole.ROLE_TIMESHEET_LINES_LIST_REPORT;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -97,7 +97,7 @@ public enum PredefinedProfiles {
     TIME_TRACKING_AND_EXPENSES_RESPONSIBLE(
             "Time Tracking & Expenses Responsible", ROLE_TIMESHEETS,
             ROLE_TIMESHEETS_TEMPLATES, ROLE_EXPENSES, ROLE_HOURS_TYPES,
-            ROLE_WORK_REPORT_LINES_REPORT,
+            ROLE_TIMESHEET_LINES_LIST_REPORT,
             ROLE_HOURS_WORKED_PER_RESOURCE_REPORT,
             ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT),
 
@@ -105,7 +105,7 @@ public enum PredefinedProfiles {
             ROLE_SEND_TO_SUBCONTRACTORS, ROLE_RECEIVED_FROM_SUBCONTRACTORS,
             ROLE_SEND_TO_CUSTOMERS, ROLE_RECEIVED_FROM_CUSTOMERS),
 
-    REPORTS_RESPONSIBLE("Reports Responsible", ROLE_WORK_REPORT_LINES_REPORT,
+    REPORTS_RESPONSIBLE("Reports Responsible", ROLE_TIMESHEET_LINES_LIST_REPORT,
             ROLE_HOURS_WORKED_PER_RESOURCE_REPORT,
             ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT,
             ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT,

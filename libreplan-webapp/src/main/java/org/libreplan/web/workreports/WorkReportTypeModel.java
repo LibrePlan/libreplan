@@ -153,7 +153,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     public void initEdit(WorkReportType workReportType) {
         if (workReportType.isMonthlyTimesheetsType()) {
             throw new IllegalArgumentException(
-                    "Monthly timesheets work report type cannot be edited");
+                    "Monthly timesheets timesheet template cannot be edited");
         }
 
         setListing(false);
@@ -222,7 +222,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     public void confirmRemove(WorkReportType workReportType) {
         if (workReportType.isMonthlyTimesheetsType()) {
             throw new IllegalArgumentException(
-                    "Monthly timesheets work report type cannot be removed");
+                    "Monthly timesheets timesheet template cannot be removed");
         }
 
         try {

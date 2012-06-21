@@ -20,7 +20,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page title="${i18n:_('LibrePlan: Work Reports')}" id="work_report_admin"?>
+<?page title="${i18n:_('LibrePlan: Timesheets')}" id="work_report_admin"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -35,12 +35,12 @@
         apply="org.libreplan.web.workreports.WorkReportCRUDController">
         <vbox id="messagesContainer"></vbox>
 
-        <window id="listWindow" title="${i18n:_('Work Reports List')}">
+        <window id="listWindow" title="${i18n:_('Timesheets List')}">
                 <vbox align="right">
                 <hbox id="hboxFilter" align="center">
                   <!-- Filter by type, start date and finish date -->
-                  <label value="${i18n:_('Filter work report by')}:"/>
-                  <label value="${i18n:_('Type')}"/>
+                  <label value="${i18n:_('Filter timesheet by')}:"/>
+                  <label value="${i18n:_('Template')}"/>
                   <listbox id="listType" mold="select" rows="1"
                     model="@{controller.filterWorkReportTypes}" width="150px">
                         <listitem self="@{each='workReportType'}" value="@{workReportType}">
@@ -62,7 +62,7 @@
                 <columns sizable="true">
                     <column id="columnDateStart" label="${i18n:_('Date Start')}" sort="auto(dateStart, dateFinish)" sortDirection="ascending"/>
                     <column id="columnDateFinish" label="${i18n:_('Date Finish')}" sort="auto(dateFinish, dateStart)" sortDirection="ascending"/>
-                    <column label="${i18n:_('Type')}" sort="auto(type)"/>
+                    <column label="${i18n:_('Template')}" sort="auto(type)"/>
                     <column label="${i18n:_('Total work')}" sort="auto(hours)" />
                     <column label="${i18n:_('Code')}" />
                     <column label="${i18n:_('Actions')}" />
@@ -95,7 +95,7 @@
             <div align="left">
                 <hbox align="center">
                   <!-- Create new Work Report  -->
-                  <label value="${i18n:_('Select type')}:"/>
+                  <label value="${i18n:_('Select template')}:"/>
                   <listbox id="listTypeToAssign" mold="select" rows="1"
                     model="@{controller.workReportTypes}" width="150px"
                     selectedItem="@{controller.firstType}">
@@ -103,7 +103,7 @@
                           <listcell label="@{workReportType.name}" />
                        </listitem>
                   </listbox>
-                  <button label="${i18n:_('New work report')}" style="margin-top: -4px"
+                  <button label="${i18n:_('New timesheet')}" style="margin-top: -4px"
                         onClick="controller.onCreateNewWorkReport()"/>
                 </hbox>
                 </div>
@@ -214,7 +214,7 @@
 
                             <!-- Work report lines -->
                             <groupbox closable="false">
-                            <caption label="${i18n:_('Work report lines')}" />
+                            <caption label="${i18n:_('Timesheet lines')}" />
                                     <hbox>
                                         <button label="${i18n:_('Add new row')}"
                                             onClick="controller.addWorkReportLine()" />
@@ -233,7 +233,7 @@
             <button onClick="controller.saveAndContinue();"
                 label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.newWorkReportWithSameType();"
-                label="${i18n:_('Save &amp; New work report')}" sclass="saveandcontinue-button global-action"/>
+                label="${i18n:_('Save &amp; New timesheet')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.cancel();"
                 label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
 

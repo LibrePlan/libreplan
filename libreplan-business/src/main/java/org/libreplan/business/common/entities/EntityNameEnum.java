@@ -47,13 +47,13 @@ import org.libreplan.business.workreports.entities.WorkReportType;
  */
 public enum EntityNameEnum {
 
-    ORDER("Order", false), CRITERION("Criterion", true), LABEL("Label", true), MACHINE(
-            "Machine", true), WORKER("Worker", true), UNIT_TYPE("Unit type",
+    ORDER("Project", false), CRITERION("Criterion", true), LABEL("Label", true), MACHINE(
+            "Machine", true), WORKER("Worker", true), UNIT_TYPE(
+            "Material unit",
             true), CALENDAR("Calendar", true), WORK_HOURS_TYPE(
-            "Type of work hours", true), MATERIAL_CATEGORY("Material category",
-            true), WORK_REPORT("Work report", true), WORKREPORTTYPE(
-            "Work report type", false), CALENDAR_EXCEPTION_TYPE(
-            "Calendar exception type", true), COST_CATEGORY("Cost category",
+            "Hours type", true), MATERIAL_CATEGORY("Material category", true), WORK_REPORT(
+            "Timesheet", true), WORKREPORTTYPE("Timesheet template", false), CALENDAR_EXCEPTION_TYPE(
+            "Calendar exception day", true), COST_CATEGORY("Cost category",
             true), RESOURCE_CALENDAR("Resource calendar", true), CRITERION_SATISFACTION(
             "Criterion satisfaction", true), RESOURCE_COST_CATEGORY_ASSIGNMENT(
             "Resource cost category assignment", true), EXPENSE_SHEET("Expense sheet", true);

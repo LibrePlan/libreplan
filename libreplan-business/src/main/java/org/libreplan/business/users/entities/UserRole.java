@@ -70,7 +70,7 @@ public enum UserRole {
     ROLE_RECEIVED_FROM_SUBCONTRACTORS(_("Received From Subcontractors")),
     ROLE_SEND_TO_CUSTOMERS(_("Send To Customers")),
     ROLE_RECEIVED_FROM_CUSTOMERS(_("Received From Customers")),
-    ROLE_WORK_REPORT_LINES_REPORT(_("Work Report Lines Report")),
+    ROLE_TIMESHEET_LINES_LIST_REPORT(_("Timesheet Lines List Report")),
     ROLE_HOURS_WORKED_PER_RESOURCE_REPORT(_("Hours Worked Per Resource Report")),
     ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT(_("Total Worked Hours By Resource In A Month Report")),
     ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT(_("Work And Progress Per Project Report")),

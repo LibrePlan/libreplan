@@ -96,7 +96,7 @@
         <intercept-url pattern="/subcontract/customerCommunications.zul"
             access="ROLE_SUPERUSER,ROLE_RECEIVED_FROM_CUSTOMERS" />
         <intercept-url pattern="/workreports/workReportQuery.zul"
-            access="ROLE_SUPERUSER,ROLE_WORK_REPORT_LINES_REPORT" />
+            access="ROLE_SUPERUSER,ROLE_TIMESHEET_LINES_LIST_REPORT" />
         <intercept-url pattern="/reports/hoursWorkedPerWorkerReport.zul"
             access="ROLE_SUPERUSER,ROLE_HOURS_WORKED_PER_RESOURCE_REPORT" />
         <intercept-url pattern="/reports/hoursWorkedPerWorkerInAMonthReport.zul"

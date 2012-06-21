@@ -713,7 +713,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("You can not remove the task \"{0}\" because of this or any of its children are already in use in some work reports",
+                            _("You can not remove the task \"{0}\" because of this or any of its children are already in use in some timesheets",
                                     element.getName()));
         } else {
             super.remove(element);

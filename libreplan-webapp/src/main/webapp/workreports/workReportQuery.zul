@@ -20,7 +20,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page title="${i18n:_('LibrePlan: Work Reports')}" id="work_report_admin_query"?>
+<?page title="${i18n:_('LibrePlan: Timesheet Lines List')}" id="work_report_admin_query"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -31,8 +31,8 @@
         apply="org.libreplan.web.workreports.WorkReportCRUDController">
         <vbox id="messagesContainer"></vbox>
 
-    <window id="listQueryWindow" title="${i18n:_('Work Report Lines List')}">
-       <panel title="${i18n:_('Filter work report by')}" border="normal"
+    <window id="listQueryWindow" title="${i18n:_('Timesheet Lines List')}">
+       <panel title="${i18n:_('Filter timesheet lines by')}" border="normal"
                     style="overflow:auto">
         <panelchildren>
         <separator bar="false" spacing="5px" orient="horizontal"/>
@@ -114,7 +114,7 @@
                     sort="auto(effort)" sortDirection="ascending"/>
                 <column id="hourType" label="${i18n:_('Hours type')}" align="center"
                     sort="auto(typeOfWorkHours.name)" sortDirection="ascending"/>
-                <column label="${i18n:_('Work Report')}" align="center"/>
+                <column label="${i18n:_('Timesheet')}" align="center"/>
                 </columns>
                 <rows>
                 <row self="@{each='queryWorkReportLine'}" value="@{queryWorkReportLine}">
@@ -156,7 +156,7 @@
 
         </window>
 
-        <window id="createWindow" title="${i18n:_('Edit work report')}">
+        <window id="createWindow" title="${i18n:_('Edit timesheet')}">
             <tabbox>
                 <tabs>
                     <tab label="${i18n:_('Report data')}"></tab>
@@ -211,7 +211,7 @@
                         <separator bar="false" spacing="80px" orient="vertical"/>
 
                             <!-- Work report lines -->
-                            <panel title="${i18n:_('Work report lines')}"
+                            <panel title="${i18n:_('Timesheet lines')}"
                                 border="normal">
                                 <panelchildren>
                                     <hbox>
@@ -233,7 +233,7 @@
             <button onClick="controller.saveAndContinue();"
                 label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.newWorkReportWithSameType();"
-                label="${i18n:_('Save &amp; New work report')}" sclass="saveandcontinue-button global-action"/>
+                label="${i18n:_('Save &amp; New timesheet')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.cancel();"
                 label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
 

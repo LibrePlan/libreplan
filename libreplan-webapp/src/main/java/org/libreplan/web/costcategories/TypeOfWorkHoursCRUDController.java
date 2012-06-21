@@ -109,12 +109,12 @@ public class TypeOfWorkHoursCRUDController extends BaseCRUDController<TypeOfWork
 
     @Override
     protected String getEntityType() {
-        return _("Type of hours");
+        return _("Hours Type");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Types of hours");
+        return _("Hours Types");
     }
 
     @Override

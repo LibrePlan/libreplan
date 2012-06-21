@@ -111,7 +111,7 @@
                     <hbox>
                         <radiogroup>
                             <label value="${i18n:_('Apply filter to')}:"/>
-                            <radio id="filterByWorkReports" label="${i18n:_('Work reports')}" />
+                            <radio id="filterByWorkReports" label="${i18n:_('Timesheets')}" />
                             <radio id="filterByOrderElements" label="${i18n:_('Tasks')}" />
                             <radio id="filterByBoth" label="${i18n:_('Both')}" checked="true" />
                         </radiogroup>

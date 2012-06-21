@@ -654,7 +654,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
             workReportLabelTypeAssigment.setLabelType(null);
             throw new WrongValueException(
                     comboLabelTypes,
-                    _("This label type already is assigned to the work report type."));
+                    _("This label type already is assigned to the timesheet template."));
         }
     }
 
@@ -942,12 +942,12 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
 
     @Override
     protected String getEntityType() {
-        return _("Work Report Type");
+        return _("Timesheets Template");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Work Report Types");
+        return _("Timesheets Templates");
     }
 
     @Override
@@ -972,7 +972,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         if (thereAreWorkReportsFor(workReportType)) {
             try {
                 Messagebox
-                        .show(_("Cannot delete work report type. There are some work reports bound to it."),
+                        .show(_("Cannot delete timesheet template. There are some timesheets bound to it."),
                                 _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
             } catch (InterruptedException e) {
                 LOG.error(

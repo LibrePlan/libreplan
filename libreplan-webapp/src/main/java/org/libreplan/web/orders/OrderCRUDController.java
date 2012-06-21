@@ -918,7 +918,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the project \"{0}\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario",
+                                    "You can not remove the project \"{0}\" because of any of its tasks are already in use in some timesheets and the project just exists in the current scenario",
                                     order.getName()));
         } else {
             if (!StringUtils.isBlank(order.getExternalCode())) {

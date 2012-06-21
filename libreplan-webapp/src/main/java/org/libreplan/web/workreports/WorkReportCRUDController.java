@@ -251,7 +251,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             if (Messagebox.OK == status) {
                 workReportModel.remove(workReport);
                 messagesForUser.showMessage(Level.INFO,
-                        _("Work report removed successfully"));
+                        _("Timesheet removed successfully"));
                 loadComponentslist(listWindow);
                 Util.reloadBindings(listWindow);
             }
@@ -293,8 +293,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         workReportModel.generateWorkReportLinesIfIsNecessary();
         try {
             workReportModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO,
-                    _("Work report saved"));
+            messagesForUser.showMessage(Level.INFO, _("Timesheet saved"));
             return true;
         } catch (ValidationException e) {
             showInvalidValues(e);
@@ -660,7 +659,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             cameBackList = false;
             workReportModel.initCreate(workReportType);
             prepareWorkReportList();
-            createWindow.setTitle(_("Create Work Report"));
+            createWindow.setTitle(_("Create Timesheet"));
             getVisibility().showOnly(createWindow);
             loadComponents(createWindow);
             Util.reloadBindings(createWindow);
@@ -679,7 +678,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             goToEditMonthlyTimeSheet(workReport);
         } else {
             workReportModel.initEdit(workReport);
-            createWindow.setTitle(_("Edit Work Report"));
+            createWindow.setTitle(_("Edit Timesheet"));
             loadComponents(createWindow);
             prepareWorkReportList();
             getVisibility().showOnly(createWindow);
@@ -1533,7 +1532,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private final String SHOW_ALL = _("Show all");
 
-    private final String FILTER = _("Filter work reports");
+    private final String FILTER = _("Filter timesheets");
 
     public List<WorkReportType> getFilterWorkReportTypes() {
         List<WorkReportType> result = workReportModel.getWorkReportTypes();
@@ -1863,13 +1862,13 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         Listitem selectedItem = listTypeToAssign.getSelectedItem();
         if (selectedItem == null) {
             throw new WrongValueException(listTypeToAssign,
-                    _("please, select a work report type"));
+                    _("please, select a timesheet template type"));
         }
 
         WorkReportType type = (WorkReportType) selectedItem.getValue();
         if (type == null) {
             throw new WrongValueException(listTypeToAssign,
-                    _("please, select a work report type"));
+                    _("please, select a timesheet template type"));
         }
 
         goToCreateForm(type);

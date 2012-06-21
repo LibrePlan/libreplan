@@ -20,7 +20,7 @@
   <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Configuration')}"?>
+<?page title="${i18n:_('LibrePlan: Main Settings')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?page  id="List"?>
@@ -33,7 +33,7 @@
 
     <window id="configurationWindow" self="@{define(content)}"
         apply="org.libreplan.web.common.ConfigurationController"
-        title="${i18n:_('Configuration')}">
+        title="${i18n:_('Main Settings')}">
 
         <vbox id="messagesContainer" />
 
@@ -131,17 +131,17 @@
                                     <rows>
                                         <row>
                                             <checkbox
-                                                label="${i18n:_('Criterion')}"
+                                                label="${i18n:_('Criteria')}"
                                                 checked="@{configurationController.generateCodeForCriterion}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
-                                                label="${i18n:_('Label')}"
+                                                label="${i18n:_('Labels')}"
                                                 checked="@{configurationController.generateCodeForLabel}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
                                         <row>
                                             <checkbox
-                                                label="${i18n:_('Work report')}"
+                                                label="${i18n:_('Timesheets')}"
                                                 checked="@{configurationController.generateCodeForWorkReport}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
@@ -151,7 +151,7 @@
                                         </row>
                                         <row>
                                             <checkbox
-                                                label="${i18n:_('Types of work hours')}"
+                                                label="${i18n:_('Hours Types')}"
                                                 checked="@{configurationController.generateCodeForTypesOfWorkHours}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
@@ -161,7 +161,7 @@
                                         </row>
                                         <row>
                                             <checkbox
-                                                label="${i18n:_('Unit Measures')}"
+                                                label="${i18n:_('Material Units')}"
                                                 checked="@{configurationController.generateCodeForUnitTypes}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
@@ -171,11 +171,11 @@
                                         </row>
                                         <row>
                                             <checkbox
-                                                label="${i18n:_('Work report types')}"
+                                                label="${i18n:_('Timesheet templates')}"
                                                 checked="@{configurationController.generateCodeForWorkReportType}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
-                                                label="${i18n:_('Calendar exception types')}"
+                                                label="${i18n:_('Calendar exception days')}"
                                                 checked="@{configurationController.generateCodeForCalendarExceptionType}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>

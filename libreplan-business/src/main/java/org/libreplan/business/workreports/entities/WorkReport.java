@@ -130,7 +130,7 @@ public class WorkReport extends IntegrationEntity implements
         }
     }
 
-    @NotNull(message = "work report type not specified")
+    @NotNull(message = "timesheet template not specified")
     public WorkReportType getWorkReportType() {
         return workReportType;
     }
@@ -259,7 +259,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "label type:the work report have not assigned this label type")
+    @AssertTrue(message = "label type:the timesheet have not assigned this label type")
     public boolean checkConstraintAssignedLabelTypes() {
         if (this.workReportType == null) {
             return true;
@@ -281,7 +281,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "description value:the work report have not assigned the description field")
+    @AssertTrue(message = "description value:the timesheet have not assigned the description field")
     public boolean checkConstraintAssignedDescriptionValues() {
         if (this.workReportType == null) {
             return true;
@@ -304,7 +304,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "There are repeated description values in the work report ")
+    @AssertTrue(message = "There are repeated description values in the timesheet ")
     public boolean checkConstraintAssignedRepeatedDescriptionValues() {
 
         Set<String> textFields = new HashSet<String>();
@@ -359,7 +359,7 @@ public class WorkReport extends IntegrationEntity implements
         assignItsDescriptionValues(workReportType);
         assignItsLabels(workReportType);
 
-        // it updates the fields and labels of its work report lines
+        // it updates the fields and labels of its timesheet lines
         for (WorkReportLine line : getWorkReportLines()) {
             line.updateItsFieldsAndLabels();
         }
@@ -432,7 +432,7 @@ public class WorkReport extends IntegrationEntity implements
 
     }
 
-    @AssertTrue(message = "The work report line codes must be unique.")
+    @AssertTrue(message = "The timesheet line codes must be unique.")
     public boolean checkConstraintNonRepeatedWorkReportLinesCodes() {
         return getFirstRepeatedCode(this.workReportLines) == null;
     }
@@ -470,7 +470,7 @@ public class WorkReport extends IntegrationEntity implements
         return result;
     }
 
-    @AssertTrue(message = "only one work report line per day and task is allowed in monthly timesheets")
+    @AssertTrue(message = "only one timesheet line per day and task is allowed in monthly timesheets")
     public boolean checkConstraintOnlyOneWorkReportLinePerDayAndOrderElementInMonthlyTimesheet() {
         if (!getWorkReportType().isMonthlyTimesheetsType()) {
             return true;
@@ -492,7 +492,7 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
-    @AssertTrue(message = "all work report lines have to be in the same month in monthly timesheets")
+    @AssertTrue(message = "all timesheet lines have to be in the same month in monthly timesheets")
     public boolean checkConstraintAllWorkReportLinesInTheSameMonthInMonthlyTimesheet() {
         if (!getWorkReportType().isMonthlyTimesheetsType()) {
             return true;

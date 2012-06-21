@@ -158,7 +158,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         if (!workReportLines.isEmpty()) {
             throw ValidationException
                     .invalidValue(
-                            "Cannot delete type of work hours. It is being used at this moment in some work report line.",
+                            "Cannot delete type of work hours. It is being used at this moment in some timesheet line.",
                             type);
         }
     }

@@ -440,8 +440,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         List<CustomMenuItem> reportsItems = new ArrayList<CustomMenuItem>();
         if (SecurityUtils
-                .isSuperuserOrUserInRoles(UserRole.ROLE_WORK_REPORT_LINES_REPORT)) {
-            reportsItems.add(subItem(_("Work Report Lines"),
+                .isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEET_LINES_LIST_REPORT)) {
+            reportsItems.add(subItem(_("Timesheet Lines List"),
                     "/workreports/workReportQuery.zul", "09-partes.html#id4"));
         }
         if (SecurityUtils

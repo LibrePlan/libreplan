@@ -587,12 +587,12 @@ public class ExpenseSheetCRUDController extends
 
     @Override
     protected String getEntityType() {
-        return _("Expense sheet");
+        return _("Expense Sheet");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Expense sheets");
+        return _("Expense Sheets");
     }
 
     public String getCurrencySymbol() {

@@ -33,7 +33,7 @@
         <div id="messagesContainer" />
 
         <div visible="@{controller.notCurrentUser}" class="footer-messages-area">
-            <label value="${i18n:_('Warning: Editing from work reports page')}" />
+            <label value="${i18n:_('Warning: Not editing from home page of bound users')}" />
         </div>
 
         <div visible="@{controller.currentUser}">

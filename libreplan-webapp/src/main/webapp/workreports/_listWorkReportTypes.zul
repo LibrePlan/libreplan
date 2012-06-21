@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Work Report Models')}">
+<window id="${arg.top_id}">
     <grid id="listing" mold="paging" pageSize="10"
         model="@{controller.workReportTypes}" sclass="clickable-rows"
         onInitRender ="controller.sortWorkReportTypes();">
@@ -44,7 +44,7 @@
                         onClick="controller.confirmDelete(self.parent.parent.value);">
                     </button>
 
-                    <button label="${i18n:_('New work report')}"
+                    <button label="${i18n:_('New timesheet')}"
                         onClick="controller.goToEditNewWorkReportForm(self.parent.parent.value);">
                     </button>
 

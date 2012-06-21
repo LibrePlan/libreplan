@@ -197,7 +197,7 @@ public class CalendarExceptionTypeCRUDController extends
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("Cannot remove the predefined Exception Day Type \"{0}\"",
+                            _("Cannot remove the predefined calendar exception day \"{0}\"",
                                     calendarExceptionType.getHumanId()));
             return false;
         }
@@ -244,12 +244,12 @@ public class CalendarExceptionTypeCRUDController extends
 
     @Override
     protected String getEntityType() {
-        return _("Exception Day Type");
+        return _("Calendar Exception Day");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Exception Day Types");
+        return _("Calendar Exception Days");
     }
 
     @Override
