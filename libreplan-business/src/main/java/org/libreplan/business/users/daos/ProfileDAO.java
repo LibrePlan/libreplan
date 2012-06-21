@@ -65,6 +65,7 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Profile findByProfileName(String profileName)
         throws InstanceNotFoundException{
 
