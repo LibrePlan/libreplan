@@ -109,7 +109,8 @@ public final class SecurityUtils {
      * </ul>
      */
     public final static boolean isSuperuserOrRolePlanningOrHasAnyAuthorization() {
-        if (isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+        if (isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING,
+                UserRole.ROLE_READ_ALL_PROJECTS)) {
             return true;
         }
 
