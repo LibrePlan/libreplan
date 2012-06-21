@@ -718,17 +718,29 @@ public class Util {
      *
      * If <code>removeButtonListener</code> is null, it only adds the edit
      * button and the <code>ON_CLICK</code> event.
+     *
+     * @return An array of 1 or 2 positions (depending if
+     *         <code>removeButtonListener</code> param is or not
+     *         <code>null</code>) with the edit and remove buttons. As maybe you
+     *         need to disable any of them depending on different situations.
      */
-    public static void appendOperationsAndOnClickEvent(Row row,
+    public static Button[] appendOperationsAndOnClickEvent(Row row,
             EventListener editButtonListener, EventListener removeButtonListener) {
+        Button[] buttons = new Button[removeButtonListener != null ? 2 : 1];
+
         Hbox hbox = new Hbox();
-        hbox.appendChild(Util.createEditButton(editButtonListener));
+        buttons[0] = Util.createEditButton(editButtonListener);
+        hbox.appendChild(buttons[0]);
+
         if (removeButtonListener != null) {
-            hbox.appendChild(Util.createRemoveButton(removeButtonListener));
+            buttons[1] = Util.createRemoveButton(removeButtonListener);
+            hbox.appendChild(buttons[1]);
         }
         row.appendChild(hbox);
 
         row.addEventListener(Events.ON_CLICK, editButtonListener);
+
+        return buttons;
     }
 
     /**

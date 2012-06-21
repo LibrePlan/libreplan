@@ -49,7 +49,7 @@
                                     value="@{controller.user.loginName}" width="300px"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"
                                     onBlur="controller.updateWindowTitle()"
-                                    disabled="@{controller.ldapUser}" />
+                                    disabled="@{controller.ldapUserOrDefaultAdmin}" />
                             </row>
                             <row>
                                 <label value="${i18n:_('First name')}" />
@@ -78,7 +78,7 @@
                                 <label value="${i18n:_('Disabled')}" />
                                 <checkbox id="disabled"
                                     checked="@{controller.user.disabled}" width="300px"
-                                    disabled="@{controller.ldapUser}" />
+                                    disabled="@{controller.ldapUserOrDefaultAdmin}" />
                             </row>
                             <row>
                                 <label value="${i18n:_('E-mail')}" />
@@ -130,7 +130,8 @@
                     <hbox align="center">
                         <combobox id="userRolesCombo" autodrop="true" />
                         <button label="${i18n:_('Add role')}"
-                            onClick="controller.addSelectedRole()" disabled="@{controller.ldapUserRolesLdapConfiguration}"/>
+                            onClick="controller.addSelectedRole()"
+                            disabled="@{controller.areRolesAndProfilesDisabled}" />
                     </hbox>
                     <grid id="listing" model="@{controller.roles}"
                         rowRenderer="@{controller.rolesRenderer}">
@@ -152,7 +153,8 @@
                             autodrop="true" constraint=""
                             finder="ProfileFinder" />
                         <button label="${i18n:_('Add profile')}"
-                            onClick="controller.addSelectedProfile()" disabled="@{controller.ldapUserRolesLdapConfiguration}"/>
+                            onClick="controller.addSelectedProfile()"
+                            disabled="@{controller.areRolesAndProfilesDisabled}" />
                     </hbox>
                     <grid id="profilesListing" model="@{controller.profiles}">
                         <columns sizable="true">
@@ -166,7 +168,8 @@
                                     <button sclass="icono" image="/common/img/ico_borrar1.png"
                                         hoverImage="/common/img/ico_borrar.png"
                                         tooltiptext="${i18n:_('Delete')}"
-                                        onClick="controller.removeProfile(self.parent.parent.value);" disabled="@{controller.ldapUserRolesLdapConfiguration}">
+                                        onClick="controller.removeProfile(self.parent.parent.value);"
+                                        disabled="@{controller.areRolesAndProfilesDisabled}" >
                                     </button>
                                 </hbox>
                             </row>

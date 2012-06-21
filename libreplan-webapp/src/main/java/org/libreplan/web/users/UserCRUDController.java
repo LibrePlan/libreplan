@@ -43,6 +43,7 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.libreplan.web.security.SecurityUtils;
+import org.libreplan.web.users.bootstrap.MandatoryUser;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -101,7 +102,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             Util.appendLabel(row, user.isBound() ? user.getWorker()
                     .getShortDescription() : "");
 
-            Util.appendOperationsAndOnClickEvent(row, new EventListener() {
+            Button[] buttons = Util.appendOperationsAndOnClickEvent(row,
+                    new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     goToEditForm(user);
@@ -112,7 +114,15 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                     confirmDelete(user);
                 }
             });
+
+            // Disable remove button for default admin as it's mandatory
+            if (isDefaultAdmin(user)) {
+                buttons[1].setDisabled(true);
+                buttons[1]
+                        .setTooltiptext(_("Default user \"admin\" cannot be removed as it is mandatory"));
+            }
         }
+
     };
 
     @Override
@@ -320,7 +330,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                     }
                 });
                 removeButton.setDisabled(getLdapUserRolesLdapConfiguration()
-                        || role.equals(UserRole.ROLE_BOUND_USER));
+                        || role.equals(UserRole.ROLE_BOUND_USER)
+                        || isUserDefaultAdmin());
                 row.appendChild(removeButton);
             }
         };
@@ -403,6 +414,26 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             return _("You do not have permissions to go to worker edition window");
         }
         return "";
+    }
+
+    private boolean isDefaultAdmin(final User user) {
+        return user.getLoginName().equals(MandatoryUser.ADMIN.getLoginName());
+    }
+
+    private boolean isUserDefaultAdmin() {
+        User user = userModel.getUser();
+        if (user != null) {
+            return isDefaultAdmin(user);
+        }
+        return false;
+    }
+
+    public boolean areRolesAndProfilesDisabled() {
+        return isLdapUserLdapConfiguration() || isUserDefaultAdmin();
+    }
+
+    public boolean isLdapUserOrDefaultAdmin() {
+        return isLdapUser() || isUserDefaultAdmin();
     }
 
 }
