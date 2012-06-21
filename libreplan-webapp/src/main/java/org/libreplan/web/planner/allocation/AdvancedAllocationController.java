@@ -768,12 +768,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 groupingRow.setDescription(position + " " + allocationInput.getTaskName());
                 groupingRows.put(allocationInput, groupingRow);
                 rowsCached.add(groupingRow);
-                List<Row> genericRows = genericRows(allocationInput);
-                groupingRow.listenTo(genericRows);
-                rowsCached.addAll(genericRows);
-                List<Row> specificRows = specificRows(allocationInput);
-                groupingRow.listenTo(specificRows);
-                rowsCached.addAll(specificRows);
+
                 position++;
             }
         }
@@ -907,10 +902,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
-        Restriction restriction = allocationInput.getResultReceiver()
-                .createRestriction();
         String taskName = allocationInput.getTaskName();
-        Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
+        Row groupingRow = Row.createRow(messages,
+                Restriction.emptyRestriction(), taskName, 1,
                 allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
         return groupingRow;
     }
@@ -1132,16 +1126,12 @@ class Row {
     }
 
     private EffortDurationBox buildSumAllEffort() {
-        EffortDurationBox box = (isGroupingRow() || isLimiting) ? EffortDurationBox
-                .notEditable() : new EffortDurationBox();
+        EffortDurationBox box = new EffortDurationBox();
         box.setWidth("40px");
         return box;
     }
 
     private void addListenerIfNeeded(Component allEffortComponent) {
-        if (isGroupingRow() || isLimiting) {
-            return;
-        }
         final EffortDurationBox effortDurationBox = (EffortDurationBox) allEffortComponent;
         effortDurationBox.addEventListener(Events.ON_CHANGE,
                 new EventListener() {
@@ -1623,8 +1613,7 @@ class Row {
     }
 
     private boolean cannotBeEdited(DetailItem item) {
-        return isGroupingRow() || doesNotIntersectWithTask(item)
-                || isBeforeLatestConsolidation(item);
+        return false;
     }
 
     private EffortDurationBox disableIfNeeded(DetailItem item,
@@ -1696,6 +1685,10 @@ class Row {
         return "";
     }
 
+    public boolean isGroupingRow() {
+        return false;
+    }
+
     private boolean doesNotIntersectWithTask(DetailItem item) {
         return isBeforeTaskStartDate(item) || isAfterTaskEndDate(item);
     }
@@ -1711,25 +1704,17 @@ class Row {
     }
 
     private boolean isBeforeLatestConsolidation(DetailItem item) {
-        if(!((Task)task).hasConsolidations()) {
+        if (!((Task) task).hasConsolidations()) {
             return false;
         }
         LocalDate d = ((Task) task).getFirstDayNotConsolidated().getDate();
-        DateTime firstDayNotConsolidated =
-            new DateTime(d.getYear(), d.getMonthOfYear(),
-                    d.getDayOfMonth(), 0, 0, 0, 0);
+        DateTime firstDayNotConsolidated = new DateTime(d.getYear(),
+                d.getMonthOfYear(), d.getDayOfMonth(), 0, 0, 0, 0);
         return item.getStartDate().compareTo(firstDayNotConsolidated) < 0;
     }
 
     private ResourceAllocation<?> getAllocation() {
-        if (isGroupingRow()) {
-            throw new IllegalStateException("is grouping row");
-        }
         return aggregate.getAllocationsSortedByStartDate().get(0);
-    }
-
-    public boolean isGroupingRow() {
-        return level == 0;
     }
 
     public String getDescription() {
