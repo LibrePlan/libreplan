@@ -105,7 +105,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
                 </window>
               </div>
               </n:td>
-              <n:td class="usuario">${i18n:_('user')}: ${templateController.username}</n:td>
+              <n:td class="usuario">${i18n:_('user')}: ${templateCtrl.username}</n:td>
               <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
             </n:tr>
           </n:table>
