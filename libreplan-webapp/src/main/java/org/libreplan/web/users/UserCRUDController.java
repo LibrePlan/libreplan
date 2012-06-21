@@ -43,7 +43,7 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -417,7 +417,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     private boolean isDefaultAdmin(final User user) {
-        return user.getLoginName().equals(MandatoryUser.ADMIN.getLoginName());
+        return user.getLoginName().equals(PredefinedUsers.ADMIN.getLoginName());
     }
 
     private boolean isUserDefaultAdmin() {
