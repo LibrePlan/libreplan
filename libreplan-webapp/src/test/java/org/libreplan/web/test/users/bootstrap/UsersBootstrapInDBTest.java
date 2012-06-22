@@ -66,18 +66,18 @@ public class UsersBootstrapInDBTest {
 
     @Test
     @Rollback(false)
-    public void testMandatoryUsersCreated() throws InstanceNotFoundException {
+    public void testLoadProfiles() {
         profileBootstrap.loadRequiredData();
-
-        checkLoadRequiredData();
-
-        // Load data again to verify that a second load does not cause problems
-        checkLoadRequiredData();
     }
 
-    private void checkLoadRequiredData() throws InstanceNotFoundException {
-
+    @Test
+    @Rollback(false)
+    public void testLoadUsers() {
         usersBootstrap.loadRequiredData();
+    }
+
+    @Test
+    public void testMandatoryUsersCreated() throws InstanceNotFoundException {
 
         for (PredefinedUsers u : PredefinedUsers.values()) {
 
@@ -85,7 +85,6 @@ public class UsersBootstrapInDBTest {
 
             assertEquals(u.getLoginName(), user.getLoginName());
             assertEquals(u.getInitialRoles(), user.getRoles());
-            assertEquals(u.getInitialProfiles(), user.getProfiles());
 
         }
 

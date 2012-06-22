@@ -112,4 +112,13 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Profile findByProfileNameLoadingRoles(String profileName)
+            throws InstanceNotFoundException {
+        Profile profile = findByProfileName(profileName);
+        profile.getRoles().size();
+        return profile;
+    }
+
 }

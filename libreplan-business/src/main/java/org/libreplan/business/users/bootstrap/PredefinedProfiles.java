@@ -131,7 +131,7 @@ public enum PredefinedProfiles {
 
     public Profile getFromDB() {
         try {
-            return Registry.getProfileDAO().findByProfileName(name);
+            return Registry.getProfileDAO().findByProfileNameLoadingRoles(name);
         } catch (InstanceNotFoundException e) {
             return null;
         }

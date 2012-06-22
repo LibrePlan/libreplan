@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.libreplan.business.users.daos.IProfileDAO;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
@@ -72,6 +73,9 @@ public class DBUserDetailsServiceTest {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IProfileDAO profileDAO;
 
     @Before
     public void loadScenariosBootsrap() {
