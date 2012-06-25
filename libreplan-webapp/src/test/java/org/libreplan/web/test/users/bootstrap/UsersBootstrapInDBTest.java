@@ -30,6 +30,8 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.bootstrap.IProfileBootstrap;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -64,29 +66,53 @@ public class UsersBootstrapInDBTest {
     @Autowired
     private IUserDAO userDAO;
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     @Test
     @Rollback(false)
     public void testLoadProfiles() {
-        profileBootstrap.loadRequiredData();
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                profileBootstrap.loadRequiredData();
+                return null;
+            }
+        });
     }
 
     @Test
     @Rollback(false)
     public void testLoadUsers() {
-        usersBootstrap.loadRequiredData();
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                usersBootstrap.loadRequiredData();
+                return null;
+            }
+        });
     }
 
     @Test
-    public void testMandatoryUsersCreated() throws InstanceNotFoundException {
+    public void testMandatoryUsersCreated() {
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                for (PredefinedUsers u : PredefinedUsers.values()) {
+                    try {
 
-        for (PredefinedUsers u : PredefinedUsers.values()) {
+                        User user = userDAO.findByLoginName(u.getLoginName());
 
-            User user = userDAO.findByLoginName(u.getLoginName());
+                        assertEquals(u.getLoginName(), user.getLoginName());
+                        assertEquals(u.getInitialRoles(), user.getRoles());
 
-            assertEquals(u.getLoginName(), user.getLoginName());
-            assertEquals(u.getInitialRoles(), user.getRoles());
-
-        }
+                    } catch (InstanceNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return null;
+            }
+        });
 
     }
 
