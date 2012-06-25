@@ -21,8 +21,15 @@
 
 package org.libreplan.web.users.bootstrap;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.libreplan.business.BootstrapOrder;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.bootstrap.PredefinedProfiles;
+import org.libreplan.business.users.daos.IProfileDAO;
 import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +48,9 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
     @Autowired
     private IUserDAO userDAO;
 
+    @Autowired
+    private IProfileDAO profileDAO;
+
     private IDBPasswordEncoderService dbPasswordEncoderService;
 
     public void setDbPasswordEncoderService(
@@ -57,13 +67,25 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
             for (PredefinedUsers u : PredefinedUsers.values()) {
                 User user = User.create(u.getLoginName(),
                         getEncodedPassword(u), u.getInitialRoles(),
-                        u.getInitialProfiles());
+                        getProfiles(u.getInitialProfiles()));
                 user.setDisabled(u.isUserDisabled());
 
                 userDAO.save(user);
             }
         }
 
+    }
+
+    private Set<Profile> getProfiles(Set<PredefinedProfiles> initialProfiles) {
+        Set<Profile> profiles = new HashSet<Profile>();
+        for (PredefinedProfiles each : initialProfiles) {
+            try {
+                profiles.add(profileDAO.findByProfileName(each.getName()));
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return profiles;
     }
 
     private String getEncodedPassword(PredefinedUsers u) {

@@ -31,7 +31,6 @@ import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.bootstrap.PredefinedProfiles;
-import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.UserRole;
 
 /**
@@ -81,8 +80,7 @@ public enum PredefinedUsers {
                     .getChangedDefaultWssubcontractingPassword();
         }
     },
-    MANAGER(null,
-            Arrays.asList(PredefinedProfiles.PROJECT_MANAGER.getFromDB()),
+    MANAGER(null, Arrays.asList(PredefinedProfiles.PROJECT_MANAGER),
             Configuration.isExampleUsersDisabled()) {
         @Override
         public boolean hasChangedDefaultPassword() {
@@ -91,22 +89,22 @@ public enum PredefinedUsers {
         }
     },
     HRESOURCES(null, Arrays
-            .asList(PredefinedProfiles.HUMAN_RESOURCES_AND_COSTS_MANAGER
-                    .getFromDB()), Configuration.isExampleUsersDisabled()) {
+            .asList(PredefinedProfiles.HUMAN_RESOURCES_AND_COSTS_MANAGER),
+            Configuration.isExampleUsersDisabled()) {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultManagerPassword();
         }
     },
-    OUTSOURCING(null, Arrays.asList(PredefinedProfiles.OUTSOURCING_MANAGER
-            .getFromDB()), Configuration.isExampleUsersDisabled()) {
+    OUTSOURCING(null, Arrays.asList(PredefinedProfiles.OUTSOURCING_MANAGER),
+            Configuration.isExampleUsersDisabled()) {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultManagerPassword();
         }
     },
-    REPORTS(null, Arrays.asList(PredefinedProfiles.REPORTS_RESPONSIBLE
-            .getFromDB()), Configuration.isExampleUsersDisabled()) {
+    REPORTS(null, Arrays.asList(PredefinedProfiles.REPORTS_RESPONSIBLE),
+            Configuration.isExampleUsersDisabled()) {
         @Override
         public boolean hasChangedDefaultPassword() {
             return getConfiguration().getChangedDefaultManagerPassword();
@@ -135,7 +133,7 @@ public enum PredefinedUsers {
 
     private Set<UserRole> initialRoles = new HashSet<UserRole>();
 
-    private Set<Profile> initialProfiles = new HashSet<Profile>();
+    private Set<PredefinedProfiles> initialProfiles = new HashSet<PredefinedProfiles>();
 
     private final boolean userDisabled;
 
@@ -145,12 +143,13 @@ public enum PredefinedUsers {
     }
 
     private PredefinedUsers(Collection<UserRole> initialUserRoles,
-            Collection<Profile> initialProfiles, boolean userDisabled) {
+            Collection<PredefinedProfiles> initialProfiles, boolean userDisabled) {
         if (initialUserRoles != null) {
             this.initialRoles = new HashSet<UserRole>(initialUserRoles);
         }
         if (initialProfiles != null) {
-            this.initialProfiles = new HashSet<Profile>(initialProfiles);
+            this.initialProfiles = new HashSet<PredefinedProfiles>(
+                    initialProfiles);
         }
         this.userDisabled = userDisabled;
     }
@@ -177,7 +176,7 @@ public enum PredefinedUsers {
         return initialRoles;
     }
 
-    public Set<Profile> getInitialProfiles() {
+    public Set<PredefinedProfiles> getInitialProfiles() {
         return initialProfiles;
     }
 

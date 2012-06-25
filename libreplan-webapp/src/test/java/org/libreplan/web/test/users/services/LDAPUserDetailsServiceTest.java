@@ -35,7 +35,8 @@ import org.junit.runner.RunWith;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
-import org.libreplan.business.users.entities.Profile;
+import org.libreplan.business.users.bootstrap.IProfileBootstrap;
+import org.libreplan.business.users.bootstrap.PredefinedProfiles;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
 import org.libreplan.web.users.bootstrap.PredefinedUsers;
@@ -74,6 +75,9 @@ public class LDAPUserDetailsServiceTest {
     private IScenariosBootstrap scenariosBootstrap;
 
     @Autowired
+    private IProfileBootstrap profileBootstrap;
+
+    @Autowired
     private IAdHocTransactionService transactionService;
 
     @Before
@@ -89,6 +93,7 @@ public class LDAPUserDetailsServiceTest {
             @Override
             public Void execute() {
                 scenariosBootstrap.loadRequiredData();
+                profileBootstrap.loadRequiredData();
                 return null;
             }
         });
@@ -116,9 +121,8 @@ public class LDAPUserDetailsServiceTest {
 
         userRoles.addAll(u.getInitialRoles());
 
-        Set<Profile> initialProfiles = u.getInitialProfiles();
-        for (Profile profile : initialProfiles) {
-            userRoles.addAll(profile.getRoles());
+        for (PredefinedProfiles each : u.getInitialProfiles()) {
+            userRoles.addAll(each.getRoles());
         }
 
         return userRoles;

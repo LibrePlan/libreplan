@@ -30,8 +30,6 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.bootstrap.IProfileBootstrap;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -39,7 +37,6 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
 import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,62 +55,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class UsersBootstrapInDBTest {
 
     @Autowired
-    private IProfileBootstrap profileBootstrap;
+    private IUsersBootstrapInDB usersBootstrap;
 
     @Autowired
-    private IUsersBootstrapInDB usersBootstrap;
+    private IProfileBootstrap profileBootstrap;
 
     @Autowired
     private IUserDAO userDAO;
 
-    @Autowired
-    private IAdHocTransactionService transactionService;
-
     @Test
-    @Rollback(false)
-    public void testLoadProfiles() {
-        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                profileBootstrap.loadRequiredData();
-                return null;
-            }
-        });
-    }
+    public void testMandatoryUsersCreated() throws InstanceNotFoundException {
+        profileBootstrap.loadRequiredData();
+        usersBootstrap.loadRequiredData();
 
-    @Test
-    @Rollback(false)
-    public void testLoadUsers() {
-        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                usersBootstrap.loadRequiredData();
-                return null;
-            }
-        });
-    }
+        for (PredefinedUsers u : PredefinedUsers.values()) {
 
-    @Test
-    public void testMandatoryUsersCreated() {
-        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
-            @Override
-            public Void execute() {
-                for (PredefinedUsers u : PredefinedUsers.values()) {
-                    try {
+            User user = userDAO.findByLoginName(u.getLoginName());
 
-                        User user = userDAO.findByLoginName(u.getLoginName());
+            assertEquals(u.getLoginName(), user.getLoginName());
+            assertEquals(u.getInitialRoles(), user.getRoles());
 
-                        assertEquals(u.getLoginName(), user.getLoginName());
-                        assertEquals(u.getInitialRoles(), user.getRoles());
-
-                    } catch (InstanceNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                return null;
-            }
-        });
-
+        }
     }
 
 }
