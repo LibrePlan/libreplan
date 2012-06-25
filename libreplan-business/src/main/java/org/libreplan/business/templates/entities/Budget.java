@@ -54,6 +54,13 @@ public class Budget extends OrderTemplate {
         return create(beingBuilt);
     }
 
+    public Order createOrderLineElementsForAssociatedOrder() {
+        for (OrderElementTemplate each : getChildren()) {
+            each.createElement(associatedOrder);
+        }
+        return associatedOrder;
+    }
+
     public Order getAssociatedOrder() {
         return associatedOrder;
     }

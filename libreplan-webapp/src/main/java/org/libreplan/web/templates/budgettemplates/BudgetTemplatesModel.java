@@ -419,8 +419,13 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
     }
 
     @Override
+    @Transactional
     public void closeBudget() {
-        ((Budget) getTemplate()).getAssociatedOrder().setState(
+        Budget budget = (Budget) getTemplate();
+        Order order = budget.getAssociatedOrder();
+        orderDAO.reattach(order);
+        order.setState(
                 OrderStatusEnum.OFFERED);
+        budget.createOrderLineElementsForAssociatedOrder();
     }
 }
