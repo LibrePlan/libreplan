@@ -48,6 +48,7 @@ import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksEs
 import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksLagInCompletionVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -80,6 +81,7 @@ public class DashboardModel implements IDashboardModel {
     public static double LTC_STRETCHES_MAX_VALUE = 0;
 
     private Order currentOrder;
+    private List<TaskElement> criticalPath;
     private Integer taskCount = null;
 
     private final Map<TaskStatusEnum, BigDecimal> taskStatusStats;
@@ -95,10 +97,16 @@ public class DashboardModel implements IDashboardModel {
     }
 
     @Override
-    public void setCurrentOrder(Order order) {
+    public void setCurrentOrder(PlanningState planningState, List<TaskElement> criticalPath) {
+        final Order order = planningState.getOrder();
+
+        resourceLoadCalculator.setOrder(order,
+                planningState.getAssignmentsCalculator());
         this.currentOrder = order;
+        this.criticalPath = criticalPath;
         this.taskCount = null;
         if (tasksAvailable()) {
+            this.calculateGlobalProgress();
             this.calculateTaskStatusStatistics();
             this.calculateTaskViolationStatusStatistics();
             this.calculateAbsoluteMarginWithDeadLine();
@@ -147,13 +155,17 @@ public class DashboardModel implements IDashboardModel {
     }
 
     /* Progress KPI: "Global Progress of the Project" */
-    @Override
-    public BigDecimal getAdvancePercentageByHours() {
-        TaskGroup rootTask = (TaskGroup) getRootTask();
+    private void calculateGlobalProgress() {
+        TaskGroup rootTask = getRootTask();
         if (rootTask == null) {
             throw new RuntimeException("Root task is null");
         }
-        return asPercentage(rootTask.getProgressAllByNumHours());
+        rootTask.updateCriticalPathProgress(criticalPath);
+    }
+
+    @Override
+    public BigDecimal getSpreadProgress() {
+        return asPercentage(getRootTask().getAdvancePercentage());
     }
 
     private BigDecimal asPercentage(BigDecimal value) {
@@ -162,50 +174,35 @@ public class DashboardModel implements IDashboardModel {
     }
 
     @Override
+    public BigDecimal getAdvancePercentageByHours() {
+        return asPercentage(getRootTask().getProgressAllByNumHours());
+    }
+
+    @Override
     public BigDecimal getExpectedAdvancePercentageByHours() {
-        TaskGroup rootTask = (TaskGroup) getRootTask();
-        if (rootTask == null) {
-            throw new RuntimeException("Root task is null");
-        }
-        return asPercentage(rootTask
+        return asPercentage(getRootTask()
                 .getTheoreticalProgressByNumHoursForAllTasksUntilNow());
     }
 
     @Override
     public BigDecimal getCriticalPathProgressByNumHours() {
-        TaskGroup rootTask = (TaskGroup) getRootTask();
-        if (rootTask == null) {
-            throw new RuntimeException("Root task is null");
-        }
-        return asPercentage(rootTask.getCriticalPathProgressByNumHours());
+        return asPercentage(getRootTask().getCriticalPathProgressByNumHours());
     }
 
     @Override
     public BigDecimal getExpectedCriticalPathProgressByNumHours() {
-        TaskGroup rootTask = (TaskGroup) getRootTask();
-        if (rootTask == null) {
-            throw new RuntimeException("Root task is null");
-        }
-        return asPercentage(rootTask
+        return asPercentage(getRootTask()
                 .getTheoreticalProgressByNumHoursForCriticalPathUntilNow());
     }
 
     @Override
     public BigDecimal getCriticalPathProgressByDuration() {
-        TaskGroup rootTask = (TaskGroup) getRootTask();
-        if (rootTask == null) {
-            throw new RuntimeException("Root task is null");
-        }
-        return asPercentage(rootTask.getCriticalPathProgressByDuration());
+        return asPercentage(getRootTask().getCriticalPathProgressByDuration());
     }
 
     @Override
     public BigDecimal getExpectedCriticalPathProgressByDuration() {
-        TaskGroup rootTask = (TaskGroup) getRootTask();
-        if (rootTask == null) {
-            throw new RuntimeException("Root task is null");
-        }
-        return asPercentage(rootTask
+        return asPercentage(getRootTask()
                 .getTheoreticalProgressByDurationForCriticalPathUntilNow());
     }
 
@@ -223,7 +220,7 @@ public class DashboardModel implements IDashboardModel {
             this.marginWithDeadLine = null;
             return;
         }
-        TaskElement rootTask = getRootTask();
+        TaskGroup rootTask = getRootTask();
         Days orderDuration = Days.daysBetween(rootTask.getStartAsLocalDate(),
                 rootTask.getEndAsLocalDate());
 
@@ -490,7 +487,7 @@ public class DashboardModel implements IDashboardModel {
         }
     }
 
-    private TaskElement getRootTask() {
+    private TaskGroup getRootTask() {
         return currentOrder.getAssociatedTaskElement();
     }
 

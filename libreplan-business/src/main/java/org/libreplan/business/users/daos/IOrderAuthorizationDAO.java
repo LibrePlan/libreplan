@@ -70,6 +70,18 @@ public interface IOrderAuthorizationDAO extends IGenericDAO<OrderAuthorization, 
     List<OrderAuthorization> listByUserAndItsProfiles(User user);
 
     /**
+     * Returns <code>true</code> if the user or its profile have any
+     * {@link OrderAuthorization}. That means that the user should have access
+     * to the proper pages (company view and projects list).
+     *
+     * @param user
+     *            {@link User} object
+     * @return <code>true</code> if the user or its profile have any
+     *         authorization
+     */
+    boolean userOrItsProfilesHaveAnyAuthorization(User user);
+
+    /**
      * Retrieves the list of {@link OrderAuthorization} objects related with
      * the specified {@link Order} and {@link User} objects.
      * @param order {@link Order} object

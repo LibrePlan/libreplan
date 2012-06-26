@@ -74,6 +74,19 @@ public class OrderAuthorizationDAO extends GenericDAOHibernate<OrderAuthorizatio
     }
 
     @Override
+    public boolean userOrItsProfilesHaveAnyAuthorization(User user) {
+        if (!listByUser(user).isEmpty()) {
+            return true;
+        }
+        for (Profile profile : user.getProfiles()) {
+            if (!listByProfile(profile).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public List<OrderAuthorization> listByOrderAndUser(Order order, User user) {
         Criteria c = getSession().createCriteria(OrderAuthorization.class);
         c.add(Restrictions.eq("order", order));

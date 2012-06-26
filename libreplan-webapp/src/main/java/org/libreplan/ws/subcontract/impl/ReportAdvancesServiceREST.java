@@ -82,7 +82,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-@Path("/reportadvances/")
+@Path("/subcontracting/reportadvances/")
 @Produces("application/xml")
 @Service("reportAdvancesServiceREST")
 public class ReportAdvancesServiceREST implements IReportAdvancesService {

@@ -49,7 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/costcategories/typeOfWorkHours.zul")
+@OnConcurrentModification(goToPage = "/typeofworkhours/typeOfWorkHours.zul")
 public class TypeOfWorkHoursModel extends IntegrationEntityModel implements
         ITypeOfWorkHoursModel {
 

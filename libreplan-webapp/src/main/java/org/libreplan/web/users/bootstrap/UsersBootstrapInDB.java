@@ -21,23 +21,35 @@
 
 package org.libreplan.web.users.bootstrap;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.libreplan.business.BootstrapOrder;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.bootstrap.PredefinedProfiles;
+import org.libreplan.business.users.daos.IProfileDAO;
 import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Bootstrapt to create the default {@link User}s.
+ * Bootstrapt to create the default {@link User Users}.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Transactional
+@BootstrapOrder(1)
 public class UsersBootstrapInDB implements IUsersBootstrapInDB {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    private IProfileDAO profileDAO;
 
     private IDBPasswordEncoderService dbPasswordEncoderService;
 
@@ -51,25 +63,32 @@ public class UsersBootstrapInDB implements IUsersBootstrapInDB {
     @Override
     public void loadRequiredData() {
 
-        for (MandatoryUser u : MandatoryUser.values()) {
-            createUserIfNotExists(u);
+        if (userDAO.list(User.class).isEmpty()) {
+            for (PredefinedUsers u : PredefinedUsers.values()) {
+                User user = User.create(u.getLoginName(),
+                        getEncodedPassword(u), u.getInitialRoles(),
+                        getProfiles(u.getInitialProfiles()));
+                user.setDisabled(u.isUserDisabled());
+
+                userDAO.save(user);
+            }
         }
 
     }
 
-    private void createUserIfNotExists(MandatoryUser u) {
-
-        if (!userDAO.existsByLoginName(u.getLoginName())) {
-            User user = User.create(u.getLoginName(), getEncodedPassword(u),
-                    u.getInitialRoles());
-            user.setDisabled(u.isUserDisabled());
-
-            userDAO.save(user);
+    private Set<Profile> getProfiles(Set<PredefinedProfiles> initialProfiles) {
+        Set<Profile> profiles = new HashSet<Profile>();
+        for (PredefinedProfiles each : initialProfiles) {
+            try {
+                profiles.add(profileDAO.findByProfileName(each.getName()));
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
-
+        return profiles;
     }
 
-    private String getEncodedPassword(MandatoryUser u) {
+    private String getEncodedPassword(PredefinedUsers u) {
 
         return dbPasswordEncoderService.encodePassword(u.getClearPassword(),
             u.getLoginName());

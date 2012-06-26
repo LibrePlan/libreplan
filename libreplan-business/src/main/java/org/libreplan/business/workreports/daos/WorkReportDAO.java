@@ -29,14 +29,20 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.workreports.entities.PredefinedWorkReportTypes;
 import org.libreplan.business.workreports.entities.WorkReport;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -58,6 +64,9 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private IWorkReportTypeDAO workReportTypeDAO;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -127,6 +136,42 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
             return calendar.get(Calendar.YEAR);
         }
         return 0;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public WorkReport getMonthlyTimesheetWorkReport(Resource resource,
+            LocalDate date) {
+        WorkReportType workReportType;
+        try {
+            workReportType = workReportTypeDAO
+                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                            .getName());
+        } catch (NonUniqueResultException e) {
+            throw new RuntimeException(e);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Criteria criteria = getSession().createCriteria(WorkReport.class);
+        criteria.add(Restrictions.eq("workReportType", workReportType));
+        List<WorkReport> monthlyTimesheets = criteria.add(
+                Restrictions.eq("resource", resource)).list();
+
+        for (WorkReport workReport : monthlyTimesheets) {
+            Set<WorkReportLine> workReportLines = workReport
+                    .getWorkReportLines();
+            if (workReportLines.size() > 0) {
+                Date workReportDate = workReportLines.iterator().next()
+                        .getDate();
+                if (LocalDate.fromDateFields(workReportDate).monthOfYear()
+                        .equals(date.monthOfYear())) {
+                    return workReport;
+                }
+            }
+        }
+
+        return null;
     }
 
 }

@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
+import org.libreplan.business.resources.entities.Resource;
 
 /**
  * Interface for ExpenseSheet DAO
@@ -32,5 +33,7 @@ import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 public interface IExpenseSheetDAO extends IIntegrationEntityDAO<ExpenseSheet> {
 
     List<ExpenseSheet> getAll();
+
+    List<ExpenseSheet> getPersonalExpenseSheetsByResource(Resource resource);
 
 }

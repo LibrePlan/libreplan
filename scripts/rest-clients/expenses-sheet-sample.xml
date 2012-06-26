@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<expense-sheet-list>
+  <expense-sheet description="Gastos anuales 2012"
+  code="EXPENSE_SHEET00002">
+    <expense-sheet-line-list>
+      <expense-sheet-line date="2012-06-05" task="ORDER00001-00002"
+      value="40.00" concept="Material reciclable"
+      code="EXPENSE_SHEET00002-00002" />
+    <expense-sheet-line date="2012-06-12" task="ORDER00001-00002"
+      value="40.00" concept=""
+      code="EXPENSE_SHEET00002-00003" />
+    </expense-sheet-line-list>
+  </expense-sheet>
+</expense-sheet-list>

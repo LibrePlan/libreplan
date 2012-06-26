@@ -23,6 +23,8 @@ package org.libreplan.web.users;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -40,6 +42,8 @@ import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
+import org.libreplan.web.security.SecurityUtils;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -93,12 +97,13 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
             Util.appendLabel(row, user.getLoginName());
             Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
-            Util.appendLabel(row, user.isAdministrator() ? _("Yes") : _("No"));
+            Util.appendLabel(row, user.isSuperuser() ? _("Yes") : _("No"));
             Util.appendLabel(row, getAuthenticationType(user));
             Util.appendLabel(row, user.isBound() ? user.getWorker()
                     .getShortDescription() : "");
 
-            Util.appendOperationsAndOnClickEvent(row, new EventListener() {
+            Button[] buttons = Util.appendOperationsAndOnClickEvent(row,
+                    new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     goToEditForm(user);
@@ -109,7 +114,15 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                     confirmDelete(user);
                 }
             });
+
+            // Disable remove button for default admin as it's mandatory
+            if (isDefaultAdmin(user)) {
+                buttons[1].setDisabled(true);
+                buttons[1]
+                        .setTooltiptext(_("Default user \"admin\" cannot be removed as it is mandatory"));
+            }
         }
+
     };
 
     @Override
@@ -120,7 +133,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         passwordConfirmationBox = (Textbox) editWindow.getFellowIfAny("passwordConfirmation");
         profileAutocomplete = (Autocomplete) editWindow.getFellowIfAny("profileAutocomplete");
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
-        appendAllUserRoles(userRolesCombo);
+        appendAllUserRolesExceptRoleBoundUser(userRolesCombo);
         boundResourceGroupbox = (Groupbox) editWindow
                 .getFellowIfAny("boundResourceGroupbox");
 
@@ -133,8 +146,12 @@ public class UserCRUDController extends BaseCRUDController<User> implements
      * Appends the existing UserRoles to the Combobox passed.
      * @param combo
      */
-    private void appendAllUserRoles(Combobox combo) {
-        for(UserRole role : UserRole.values()) {
+    private void appendAllUserRolesExceptRoleBoundUser(Combobox combo) {
+        List<UserRole> roles = new ArrayList<UserRole>(Arrays.asList(UserRole
+                .values()));
+        roles.remove(UserRole.ROLE_BOUND_USER);
+
+        for (UserRole role : roles) {
             Comboitem item = combo.appendItem(_(role.getDisplayName()));
             item.setValue(role);
         }
@@ -312,7 +329,9 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                         removeRole(role);
                     }
                 });
-                removeButton.setDisabled(getLdapUserRolesLdapConfiguration());
+                removeButton.setDisabled(getLdapUserRolesLdapConfiguration()
+                        || role.equals(UserRole.ROLE_BOUND_USER)
+                        || isUserDefaultAdmin());
                 row.appendChild(removeButton);
             }
         };
@@ -384,6 +403,37 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     public void unboundResource() {
         userModel.unboundResource();
         Util.reloadBindings(boundResourceGroupbox);
+    }
+
+    public boolean isNoRoleWorkers() {
+        return !SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_WORKERS);
+    }
+
+    public String getWorkerEditionButtonTooltip() {
+        if (isNoRoleWorkers()) {
+            return _("You do not have permissions to go to worker edition window");
+        }
+        return "";
+    }
+
+    private boolean isDefaultAdmin(final User user) {
+        return user.getLoginName().equals(PredefinedUsers.ADMIN.getLoginName());
+    }
+
+    private boolean isUserDefaultAdmin() {
+        User user = userModel.getUser();
+        if (user != null) {
+            return isDefaultAdmin(user);
+        }
+        return false;
+    }
+
+    public boolean areRolesAndProfilesDisabled() {
+        return isLdapUserLdapConfiguration() || isUserDefaultAdmin();
+    }
+
+    public boolean isLdapUserOrDefaultAdmin() {
+        return isLdapUser() || isUserDefaultAdmin();
     }
 
 }

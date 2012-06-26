@@ -48,6 +48,7 @@ import org.libreplan.business.reports.dtos.OrderCostsPerResourceDTO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
+import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.OrderAuthorizationType;
 import org.libreplan.business.users.entities.User;
@@ -79,6 +80,9 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     @Autowired
     private IAdHocTransactionService transactionService;
@@ -189,8 +193,9 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @Override
     public List<Order> getOrdersByReadAuthorization(User user) {
-        if (user.isInRole(UserRole.ROLE_READ_ALL_ORDERS) ||
-            user.isInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (user.isInRole(UserRole.ROLE_SUPERUSER)
+                || user.isInRole(UserRole.ROLE_READ_ALL_PROJECTS)
+                || user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return getOrders();
         }
         else {
@@ -213,7 +218,8 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @Override
     public List<Order> getOrdersByWriteAuthorization(User user) {
-        if (user.isInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (user.isInRole(UserRole.ROLE_SUPERUSER)
+                || user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return getOrders();
         }
         else {
@@ -262,8 +268,14 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
     }
 
     @Override
-    public List<Order> getOrdersByReadAuthorizationByScenario(User user,
+    public List<Order> getOrdersByReadAuthorizationByScenario(String username,
             Scenario scenario) {
+        User user;
+        try {
+            user = userDAO.findByLoginName(username);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return existsInScenario(getOrdersByReadAuthorization(user), scenario);
     }
 
@@ -439,13 +451,13 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             strQuery += "AND orderElement.parent IN (:orders) ";
         }
         if (startingDate != null && endingDate != null) {
-            strQuery += "AND wrl.date BETWEEN :startingDate AND :endingDate ";
+            strQuery += "AND expense.date BETWEEN :startingDate AND :endingDate ";
         }
         if (startingDate != null && endingDate == null) {
-            strQuery += "AND wrl.date >= :startingDate ";
+            strQuery += "AND expense.date >= :startingDate ";
         }
         if (startingDate == null && endingDate != null) {
-            strQuery += "AND wrl.date <= :endingDate ";
+            strQuery += "AND expense.date <= :endingDate ";
         }
 
         // Order by date
@@ -458,10 +470,10 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             query.setParameterList("orders", orders);
         }
         if (startingDate != null) {
-            query.setParameter("startingDate", startingDate);
+            query.setParameter("startingDate", new LocalDate(startingDate));
         }
         if (endingDate != null) {
-            query.setParameter("endingDate", endingDate);
+            query.setParameter("endingDate", new LocalDate(endingDate));
         }
 
         List<CostExpenseSheetDTO> list = query.list();

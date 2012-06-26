@@ -32,6 +32,7 @@ import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
@@ -129,20 +130,6 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
      * @return
      */
     boolean isEditing();
-
-    /**
-     * Returns true if {@link WorkReport} is being edited from the query of the
-     * {@link WorkReportLine} list
-     * @return
-     */
-    boolean isListingQuery();
-
-    /**
-     * Set if the {@link WorkReport} is being edited from the query of the
-     * {@link WorkReportLine} list
-     * @return
-     */
-    void setListingQuery(boolean listingQuery);
 
     /**
      * Makes some operations needed before edit a {@link WorkReport}.
@@ -245,4 +232,15 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
     void generateWorkReportLinesIfIsNecessary();
 
     List<TypeOfWorkHours> getAllHoursType();
+
+    /**
+     * Returns the list of {@link Worker Workers} bound to any {@link User}.
+     */
+    List<Worker> getBoundWorkers();
+
+    /**
+     * Checks if a {@link WorkReport} is or not a monthly timesheet.
+     */
+    boolean isMonthlyTimesheet(WorkReport workReport);
+
 }

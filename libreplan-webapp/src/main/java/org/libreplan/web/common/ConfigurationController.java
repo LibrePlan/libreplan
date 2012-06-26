@@ -42,6 +42,7 @@ import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.springframework.ldap.core.DistinguishedName;
@@ -866,6 +867,15 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void setSelectedCurrency(String currencyCode) {
         configurationModel.setCurrency(currencyCode);
+    }
+
+    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
+        return configurationModel.getMonthlyTimesheetsTypeOfWorkHours();
+    }
+
+    public void setMonthlyTimesheetsTypeOfWorkHours(
+            TypeOfWorkHours typeOfWorkHours) {
+        configurationModel.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
     }
 
 }

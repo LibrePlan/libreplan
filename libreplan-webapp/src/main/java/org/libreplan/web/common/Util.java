@@ -23,6 +23,7 @@ package org.libreplan.web.common;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -30,13 +31,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -708,16 +714,63 @@ public class Util {
      * {@link Row} for the edit operation.<br />
      *
      * The edit button will call the <code>editButtonListener</code> when
-     * clicked and the remove button the <code>removeButtonListener</code>.
+     * clicked and the remove button the <code>removeButtonListener</code>.<br />
+     *
+     * If <code>removeButtonListener</code> is null, it only adds the edit
+     * button and the <code>ON_CLICK</code> event.
+     *
+     * @return An array of 1 or 2 positions (depending if
+     *         <code>removeButtonListener</code> param is or not
+     *         <code>null</code>) with the edit and remove buttons. As maybe you
+     *         need to disable any of them depending on different situations.
      */
-    public static void appendOperationsAndOnClickEvent(Row row,
+    public static Button[] appendOperationsAndOnClickEvent(Row row,
             EventListener editButtonListener, EventListener removeButtonListener) {
+        Button[] buttons = new Button[removeButtonListener != null ? 2 : 1];
+
         Hbox hbox = new Hbox();
-        hbox.appendChild(Util.createEditButton(editButtonListener));
-        hbox.appendChild(Util.createRemoveButton(removeButtonListener));
+        buttons[0] = Util.createEditButton(editButtonListener);
+        hbox.appendChild(buttons[0]);
+
+        if (removeButtonListener != null) {
+            buttons[1] = Util.createRemoveButton(removeButtonListener);
+            hbox.appendChild(buttons[1]);
+        }
         row.appendChild(hbox);
 
         row.addEventListener(Events.ON_CLICK, editButtonListener);
+
+        return buttons;
+    }
+
+    /**
+     * Checks if the <code>entity</code> is contained in the provided
+     * <code>list</code>.
+     */
+    public static boolean contains(List<? extends BaseEntity> list,
+            BaseEntity entity) {
+        for (BaseEntity each : list) {
+            if (each.getId() != null && entity.getId() != null
+                    && each.getId().equals(entity.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Gets the {@link HttpServletResponse} from the current {@link Execution}
+     * and uses the method {@link HttpServletResponse#sendError(int)} with the
+     * code {@link HttpServletResponse#SC_FORBIDDEN}.
+     */
+    public static void sendForbiddenStatusCodeInHttpServletResponse() {
+        try {
+            HttpServletResponse response = (HttpServletResponse) Executions
+                    .getCurrent().getNativeResponse();
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

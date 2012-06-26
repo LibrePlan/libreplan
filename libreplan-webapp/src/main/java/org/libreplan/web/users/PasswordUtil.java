@@ -21,7 +21,7 @@ package org.libreplan.web.users;
 
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.users.entities.User;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
@@ -35,28 +35,49 @@ public class PasswordUtil {
     public static void checkIfChangeDefaultPasswd(User user,
             String clearPassword) {
         if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.ADMIN.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.ADMIN, clearPassword);
+                PredefinedUsers.ADMIN.getLoginName())) {
+            checkIfChangeDefaultPasswd(PredefinedUsers.ADMIN, clearPassword);
             return;
         }
         if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.USER.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.USER, clearPassword);
+                PredefinedUsers.WSREADER.getLoginName())) {
+            checkIfChangeDefaultPasswd(PredefinedUsers.WSREADER, clearPassword);
             return;
         }
         if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.WSREADER.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.WSREADER, clearPassword);
+                PredefinedUsers.WSWRITER.getLoginName())) {
+            checkIfChangeDefaultPasswd(PredefinedUsers.WSWRITER, clearPassword);
             return;
         }
         if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.WSWRITER.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.WSWRITER, clearPassword);
+                PredefinedUsers.WSSUBCONTRACTING.getLoginName())) {
+            checkIfChangeDefaultPasswd(PredefinedUsers.WSSUBCONTRACTING,
+                    clearPassword);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                PredefinedUsers.MANAGER.getLoginName())) {
+            checkIfChangeDefaultPasswd(PredefinedUsers.MANAGER, clearPassword);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                PredefinedUsers.HRESOURCES.getLoginName())) {
+            checkIfChangeDefaultPasswd(PredefinedUsers.HRESOURCES, clearPassword);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                PredefinedUsers.OUTSOURCING.getLoginName())) {
+            checkIfChangeDefaultPasswd(PredefinedUsers.OUTSOURCING, clearPassword);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                PredefinedUsers.REPORTS.getLoginName())) {
+            checkIfChangeDefaultPasswd(PredefinedUsers.REPORTS, clearPassword);
             return;
         }
     }
 
-    private static void checkIfChangeDefaultPasswd(MandatoryUser user,
+    private static void checkIfChangeDefaultPasswd(PredefinedUsers user,
             String clearPassword) {
         boolean changedPasswd = true;
         if (clearPassword.isEmpty()
@@ -76,19 +97,32 @@ public class PasswordUtil {
      * been disabled
      */
     public static void showOrHideDefaultPasswordWarnings() {
-        boolean adminNotDefaultPassword = MandatoryUser.ADMIN
+        boolean adminNotDefaultPassword = PredefinedUsers.ADMIN
                 .hasChangedDefaultPasswordOrDisabled();
-        boolean userNotDefaultPassword = MandatoryUser.USER
+        boolean wsreaderNotDefaultPassword = PredefinedUsers.WSREADER
                 .hasChangedDefaultPasswordOrDisabled();
-        boolean wsreaderNotDefaultPassword = MandatoryUser.WSREADER
+        boolean wswriterNotDefaultPassword = PredefinedUsers.WSWRITER
                 .hasChangedDefaultPasswordOrDisabled();
-        boolean wswriterNotDefaultPassword = MandatoryUser.WSWRITER
+        boolean wssubcontractingNotDefaultPassword = PredefinedUsers.WSSUBCONTRACTING
+                .hasChangedDefaultPasswordOrDisabled();
+        boolean managerNotDefaultPassword = PredefinedUsers.MANAGER
+                .hasChangedDefaultPasswordOrDisabled();
+        boolean hresourcesNotDefaultPassword = PredefinedUsers.HRESOURCES
+                .hasChangedDefaultPasswordOrDisabled();
+        boolean outsourcingNotDefaultPassword = PredefinedUsers.OUTSOURCING
+                .hasChangedDefaultPasswordOrDisabled();
+        boolean reportsNotDefaultPassword = PredefinedUsers.REPORTS
                 .hasChangedDefaultPasswordOrDisabled();
 
         Clients.evalJavaScript("showOrHideDefaultPasswordWarnings("
-                + adminNotDefaultPassword + ", " + userNotDefaultPassword
-                + ", " + wsreaderNotDefaultPassword + ", "
-                + wswriterNotDefaultPassword + ");");
+                + adminNotDefaultPassword + ", "
+                + wsreaderNotDefaultPassword + ", "
+                + wswriterNotDefaultPassword + ", "
+                + wssubcontractingNotDefaultPassword + ", "
+                + managerNotDefaultPassword + ", "
+                + hresourcesNotDefaultPassword + ", "
+                + outsourcingNotDefaultPassword + ", "
+                + reportsNotDefaultPassword + ");");
     }
 
 }

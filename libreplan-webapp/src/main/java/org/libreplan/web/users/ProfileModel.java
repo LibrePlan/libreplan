@@ -46,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/users/profiles.zul")
+@OnConcurrentModification(goToPage = "/profiles/profiles.zul")
 public class ProfileModel implements IProfileModel {
 
     private Profile profile;
@@ -98,15 +98,6 @@ public class ProfileModel implements IProfileModel {
         for(UserRole role : profile.getRoles()) {
             role.name();
         }
-    }
-
-    @Override
-    public List<UserRole> getAllRoles() {
-        List<UserRole> list = new ArrayList<UserRole>();
-        for(UserRole role : UserRole.values()) {
-            list.add(role);
-        }
-        return list;
     }
 
     @Override

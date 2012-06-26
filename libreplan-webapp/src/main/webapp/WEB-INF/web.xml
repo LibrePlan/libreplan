@@ -139,7 +139,7 @@
     </session-config>
 
     <welcome-file-list>
-        <welcome-file>/planner/index.zul</welcome-file>
+        <welcome-file>/common/index.zul</welcome-file>
     </welcome-file-list>
 
     <error-page>
@@ -151,4 +151,10 @@
         <error-code>404</error-code>
         <location>/common/page_not_found.zul</location>
     </error-page>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/common/access_forbidden.zul</location>
+    </error-page>
+
 </web-app>

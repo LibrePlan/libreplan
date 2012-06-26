@@ -34,6 +34,7 @@ import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -126,6 +127,23 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         }
         return getSession().createCriteria(WorkReportLine.class).add(
                 Restrictions.in("resource", resourcesList)).list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<WorkReportLine> findByResourceFilteredByDateNotInWorkReport(
+            Resource resource, Date start, Date end, WorkReport workReport) {
+        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+        criteria.add(Restrictions.eq("resource", resource));
+
+        criteria.add(Restrictions.ge("date", start));
+        criteria.add(Restrictions.le("date", end));
+
+        if (workReport != null) {
+            criteria.add(Restrictions.ne("workReport", workReport));
+        }
+
+        return criteria.list();
     }
 
 }

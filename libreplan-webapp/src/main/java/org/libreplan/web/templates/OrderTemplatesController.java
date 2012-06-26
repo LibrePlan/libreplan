@@ -299,9 +299,9 @@ public class OrderTemplatesController extends GenericForwardComposer implements
             breadcrumbs.getChildren().clear();
         }
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadcrumbs.appendChild(new Label(_("Scheduling")));
+        breadcrumbs.appendChild(new Label(_("Planning")));
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadcrumbs.appendChild(new Label(_("Project Templates")));
+        breadcrumbs.appendChild(new Label(_("Templates")));
     }
 
     /**

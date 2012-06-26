@@ -22,10 +22,14 @@ package org.libreplan.web.expensesheet;
 import java.util.List;
 import java.util.SortedSet;
 
+import org.joda.time.LocalDate;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.IIntegrationEntityModel;
 
 /**
@@ -39,13 +43,14 @@ public interface IExpenseSheetModel extends IIntegrationEntityModel {
 
     void prepareToList();
 
-    void initCreate();
+    void initCreate(boolean personal);
 
     void prepareToEdit(ExpenseSheet expenseSheet);
 
     List<ExpenseSheet> getExpenseSheets();
 
-    void removeExpenseSheet(ExpenseSheet expenseSheet);
+    void removeExpenseSheet(ExpenseSheet expenseSheet)
+            throws InstanceNotFoundException;
 
     ExpenseSheet getExpenseSheet();
 
@@ -55,7 +60,7 @@ public interface IExpenseSheetModel extends IIntegrationEntityModel {
 
     void addExpenseSheetLine();
 
-    ExpenseSheetLine getExpenseSheetLineDTO();
+    ExpenseSheetLine getNewExpenseSheetLine();
 
     List<Order> getOrders();
 
@@ -66,5 +71,26 @@ public interface IExpenseSheetModel extends IIntegrationEntityModel {
     Order getSelectedProject();
 
     void generateExpenseSheetLineCodesIfIsNecessary();
+
+    /**
+     * Returns the {@link Resource} associated to the <b>personal</b>
+     * {@link ExpenseSheet}.<br />
+     *
+     * In <b>personal</b> {@link ExpenseSheet ExpenseSheets} all
+     * {@link ExpenseSheetLine} has the same {@link Resource}.<br />
+     *
+     * It tries to get the {@link Resource} from the first {@link ExpenseSheet}
+     * and if not it tries to get it from bound {@link User}.
+     */
+    Resource getResource();
+
+    void keepSortedExpenseSheetLines(ExpenseSheetLine expenseSheetLine, LocalDate newDate);
+
+    /**
+     * Returns <code>true</code> if the {@link ExpenseSheet} is
+     * <strong>personal</strong> and belongs to the worker associated to current
+     * user.
+     */
+    boolean isPersonalAndBelognsToCurrentUser(ExpenseSheet expenseSheet);
 
 }

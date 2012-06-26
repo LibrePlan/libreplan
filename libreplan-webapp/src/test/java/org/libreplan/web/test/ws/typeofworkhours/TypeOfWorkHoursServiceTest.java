@@ -34,12 +34,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.entities.IConfigurationBootstrap;
+import org.libreplan.business.common.entities.IMonthlyTimesheetsTypeOfWorkHoursBootstrap;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.libreplan.business.costcategories.entities.ITypeOfWorkHoursBootstrap;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsDTO;
 import org.libreplan.ws.typeofworkhours.api.ITypeOfWorkHoursService;
@@ -74,6 +78,29 @@ public class TypeOfWorkHoursServiceTest {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IConfigurationBootstrap configurationBootstrap;
+
+    @Autowired
+    private ITypeOfWorkHoursBootstrap typeOfWorkHoursBootstrap;
+
+    @Autowired
+    private IMonthlyTimesheetsTypeOfWorkHoursBootstrap monthlyTimesheetsTypeOfWorkHoursBootstrap;
+
+    @Before
+    public void loadRequiredData() {
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                configurationBootstrap.loadRequiredData();
+                typeOfWorkHoursBootstrap.loadRequiredData();
+                monthlyTimesheetsTypeOfWorkHoursBootstrap.loadRequiredData();
+                return null;
+            }
+        });
+    }
 
     @Test
     public void testAddAndGetTypeOfWorkHours() {

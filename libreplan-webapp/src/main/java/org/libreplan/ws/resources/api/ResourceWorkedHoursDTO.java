@@ -36,12 +36,12 @@ public class ResourceWorkedHoursDTO {
     public String resource;
 
     @XmlAttribute
-    public Integer hours;
+    public String hours;
 
     public ResourceWorkedHoursDTO() {
     }
 
-    public ResourceWorkedHoursDTO(String resource, Integer hours) {
+    public ResourceWorkedHoursDTO(String resource, String hours) {
         this.resource = resource;
         this.hours = hours;
     }

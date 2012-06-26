@@ -66,6 +66,7 @@ Previous Team Members
 Translators
 -----------
 
+* [cs] Zbyněk Schwarz <zbynek.schwarz@gmail.com>
 * [es] Jacobo Aragunde Pérez <jaragunde@igalia.com>,
   Manuel Rego Casasnovas <rego@igalia.com>,
   Diego Pino García <dpino@igalia.com>

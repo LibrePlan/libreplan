@@ -46,6 +46,7 @@ import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -131,11 +132,18 @@ public class ConfigurationModel implements IConfigurationModel {
 
     private void forceLoad(Configuration configuration) {
         forceLoad(configuration.getDefaultCalendar());
+        forceLoad(configuration.getMonthlyTimesheetsTypeOfWorkHours());
     }
 
     private void forceLoad(BaseCalendar calendar) {
         if (calendar != null) {
             calendar.getName();
+        }
+    }
+
+    private void forceLoad(TypeOfWorkHours typeOfWorkHours) {
+        if (typeOfWorkHours != null) {
+            typeOfWorkHours.getName();
         }
     }
 
@@ -610,6 +618,19 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration.setCurrencyCode(currencyCode);
             configuration.setCurrencySymbol(currencies.get(currencyCode));
+        }
+    }
+
+    @Override
+    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
+        return configuration.getMonthlyTimesheetsTypeOfWorkHours();
+    }
+
+    @Override
+    public void setMonthlyTimesheetsTypeOfWorkHours(
+            TypeOfWorkHours typeOfWorkHours) {
+        if (configuration != null) {
+            configuration.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
         }
     }
 

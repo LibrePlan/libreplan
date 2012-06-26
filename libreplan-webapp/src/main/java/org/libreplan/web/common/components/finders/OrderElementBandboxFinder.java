@@ -109,21 +109,21 @@ public class OrderElementBandboxFinder extends BandboxFinder implements IBandbox
             OrderElement orderElement = (OrderElement) data;
             item.setValue(orderElement);
 
-            Listcell orderCode = new Listcell();
-            orderCode.setLabel(orderElement.getOrder().getCode());
-            orderCode.setParent(item);
-
             Listcell orderName = new Listcell();
             orderName.setLabel(orderElement.getOrder().getName());
             orderName.setParent(item);
 
-            Listcell orderElementCode = new Listcell();
-            orderElementCode.setLabel(orderElement.getCode());
-            orderElementCode.setParent(item);
+            Listcell orderCode = new Listcell();
+            orderCode.setLabel(orderElement.getOrder().getCode());
+            orderCode.setParent(item);
 
             Listcell orderElementName = new Listcell();
             orderElementName.setLabel(orderElement.getName());
             orderElementName.setParent(item);
+
+            Listcell orderElementCode = new Listcell();
+            orderElementCode.setLabel(orderElement.getCode());
+            orderElementCode.setParent(item);
         }
 
     };

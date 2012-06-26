@@ -1,0 +1,135 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2012 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/>.
+ -->
+
+<?page id="exceptionDayTypesList" title="${i18n:_('LibrePlan: Monthly timesheet')}" ?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+
+<zk>
+    <window apply="org.libreplan.web.users.dashboard.MonthlyTimesheetController"
+        self="@{define(content)}" title="${i18n:_('Monthly timesheet')}">
+
+        <div id="messagesContainer" />
+
+        <div visible="@{controller.notCurrentUser}" class="footer-messages-area">
+            <label value="${i18n:_('Warning: Not editing from home page of bound users')}" />
+        </div>
+
+        <div visible="@{controller.currentUser}">
+            <button id="previousMonth"
+                onClick="controller.previousMonth();"
+                label="${i18n:_('Previous')}"
+                disabled="@{controller.firstMonth}" />
+            <button id="nextMonth"
+                onClick="controller.nextMonth();"
+                label="${i18n:_('Next')}"
+                disabled="@{controller.lastMonth}" />
+        </div>
+
+        <hbox>
+            <groupbox style="margin-top: 5px" closable="false">
+                <caption label="${i18n:_('Timesheet data')}" />
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Date')}" />
+                            <label value="@{controller.date}" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Resource')}" />
+                            <label value="@{controller.resource}" />
+                        </row>
+                    </rows>
+                </grid>
+            </groupbox>
+            <groupbox style="margin-top: 5px" closable="false">
+                <caption label="${i18n:_('Timesheet summary')}" />
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row visible="@{controller.hasOtherReports}">
+                            <label value="${i18n:_('Total monthly timesheet')}" />
+                            <label id="summaryTotalMonthlyTimesheet" />
+                        </row>
+                        <row visible="@{controller.hasOtherReports}">
+                            <label value="${i18n:_('Total other')}" />
+                            <label id="summaryTotalOther" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total')}" />
+                            <label id="summaryTotal" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total capacity')}" />
+                            <label id="summaryTotalCapacity" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total extra per day')}" />
+                            <label id="summaryTotalExtraPerDay" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total extra')}" />
+                            <label id="summaryTotalExtra" />
+                        </row>
+                    </rows>
+                </grid>
+            </groupbox>
+        </hbox>
+
+        <groupbox style="margin-top: 5px" closable="false">
+            <caption label="${i18n:_('Time tracking')}" />
+            <grid id="timesheet"
+                model="@{controller.rows}"
+                rowRenderer="@{controller.rowRenderer}" />
+            <hbox>
+                <bandboxSearch
+                    id="orderElementBandboxSearch"
+                    finder="OrderElementBandboxFinder"
+                    widthBandbox="300px"
+                    widthListbox="600px" />
+                <button onClick="controller.addOrderElement();"
+                    label="${i18n:_('Add task')}" />
+            </hbox>
+        </groupbox>
+
+        <button onClick="controller.save();"
+            label="${i18n:_('Save')}"
+            sclass="save-button global-action" />
+        <button onClick="controller.saveAndContinue();"
+            label="${i18n:_('Save &amp; Continue')}"
+            sclass="saveandcontinue-button global-action" />
+        <button onClick="controller.cancel();"
+            label="${i18n:_('Cancel')}"
+            sclass="cancel-button global-action" />
+
+
+    </window>
+</zk>

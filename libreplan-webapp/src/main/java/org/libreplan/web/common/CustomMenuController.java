@@ -258,83 +258,241 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 helpLink);
     }
 
-    private CustomMenuItem subItem(String name, String url, String helpLink,
-            CustomMenuItem... children) {
-        CustomMenuItem parent = subItem(name, url, helpLink);
-        for (CustomMenuItem child : children) {
-            parent.appendChildren(child);
-        }
-        return parent;
-    }
-
     public void initializeMenu() {
-        topItem(_("Scheduling"), "/planner/index.zul", "",
-                subItem(_("Projects Planning"), new ICapture() {
-                    @Override
-                    public void capture() {
-                        globalView.goToCompanyScheduling();
-                    }
-                }, "01-introducion.html"),
-                subItem(_("Projects List"), new ICapture() {
-                    @Override
-                    public void capture() {
-                        globalView.goToOrdersList();
-                    }
-                }, "01-introducion.html#id2"),
-                subItem(_("Budget Templates"),
-                        "/budgettemplates/templates.zul", ""));
+        List<CustomMenuItem> planningItems = new ArrayList<CustomMenuItem>();
+        if (SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
+            planningItems.add(subItem(_("Company view"), new ICapture() {
+                @Override
+                public void capture() {
+                    globalView.goToCompanyScheduling();
+                }
+            }, "01-introducion.html"));
+            planningItems.add(subItem(_("Projects"), new ICapture() {
+                @Override
+                public void capture() {
+                    globalView.goToOrdersList();
+                }
+            }, "01-introducion.html#id2"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
+            planningItems.add(subItem(_("Budget Templates"),
+                    "/budgettemplates/templates.zul", ""));
+        }
+        if (!planningItems.isEmpty()) {
+            topItem(_("Planning"), "/planner/index.zul", "", planningItems);
+        }
 
         List<CustomMenuItem> resourcesItems = new ArrayList<CustomMenuItem>();
-        if ((SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION))
-                || (SecurityUtils.isUserInRole(UserRole.ROLE_EXPENSE_TRACKING))) {
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_WORKERS)) {
+            resourcesItems.add(subItem(_("Workers"),
+                    "/resources/worker/worker.zul",
+                    "05-recursos.html#xesti-n-de-traballadores"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_MACHINES)) {
+            resourcesItems.add(subItem(_("Machines"),
+                    "/resources/machine/machines.zul",
+                    "05-recursos.html#xesti-n-de-m-quinas"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_VIRTUAL_WORKERS)) {
+            resourcesItems.add(subItem(_("Virtual Workers"),
+                    "/resources/worker/virtualWorkers.zul",
+                    "05-recursos.html#xesti-n-de-traballadores"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CALENDARS)) {
+            resourcesItems.add(subItem(_("Calendars"),
+                    "/calendars/calendars.zul", "03-calendarios.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_CALENDAR_EXCEPTION_DAYS)) {
+            resourcesItems.add(subItem(_("Calendar Exception Days"),
+                    "/excetiondays/exceptionDays.zul", ""));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CRITERIA)) {
+            resourcesItems.add(subItem(_("Criteria"),
+                    "/resources/criterions/criterions.zul",
+                    "02-criterios.html#id1"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_PROGRESS_TYPES)) {
+            resourcesItems.add(subItem(_("Progress Types"),
+                    "/advance/advanceTypes.zul", "04-avances.html#id1"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_MATERIALS)) {
+            resourcesItems.add(subItem(_("Labels"), "/labels/labelTypes.zul",
+                    "10-etiquetas.html"));
+            resourcesItems.add(subItem(_("Materials"),
+                    "/materials/materials.zul",
+                    "11-materiales.html#administraci-n-de-materiais"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_MATERIAL_UNITS)) {
+            resourcesItems.add(subItem(_("Material Units"),
+                    "/unittypes/unitTypes.zul",
+                    "11-materiales.html#administraci-n-de-materiais"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_QUALITY_FORMS)) {
             resourcesItems
-                    .add(subItem(_("Expense Tracking"), "/expensesheet/expenseSheet.zul", ""));
+                    .add(subItem(_("Quality Forms"),
+                            "/qualityforms/qualityForms.zul",
+                            "12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"));
         }
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
-            resourcesItems.add(subItem(_("Companies"), "/externalcompanies/externalcompanies.zul",""));
-        }
-
-        resourcesItems.add(subItem(_("Communications"), "/subcontract/subcontractedTasks.zul", "",
-                subItem(_("Send to subcontractors"), "/subcontract/subcontractedTasks.zul", ""),
-                subItem(_("Received from subcontractors"), "/subcontract/subcontractorCommunications.zul",""),
-                subItem(_("Send to customers"), "/subcontract/reportAdvances.zul", ""),
-                subItem(_("Received from customers"), "/subcontract/customerCommunications.zul","")));
-        topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
-
-        if (isScenariosVisible()) {
-        topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
-                subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
-                subItem(_("Transfer Projects Between Scenarios"), "/scenarios/transferOrders.zul", ""));
+        if (!resourcesItems.isEmpty()) {
+            topItem(_("Resources"), "/resources/worker/worker.zul", "",
+                    resourcesItems);
         }
 
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
-            topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
-                    subItem(_("LibrePlan Configuration"),
+        List<CustomMenuItem> costItems = new ArrayList<CustomMenuItem>();
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
+            costItems.add(subItem(_("Timesheets"),
+                    "/workreports/workReport.zul", "09-partes.html#id3"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS_TEMPLATES)) {
+            costItems.add(subItem(_("Timesheets Templates"),
+                    "/workreports/workReportTypes.zul", "09-partes.html#id2"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EXPENSES)) {
+            costItems.add(subItem(_("Expenses"),
+                    "/expensesheet/expenseSheet.zul", ""));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_COST_CATEGORIES)) {
+            costItems.add(subItem(_("Cost Categories"),
+                    "/costcategories/costCategory.zul",
+                    "14-custos.html#categor-as-de-custo"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_HOURS_TYPES)) {
+            costItems.add(subItem(_("Hours Types"),
+                    "/typeofworkhours/typeOfWorkHours.zul",
+                    "14-custos.html#administraci-n-de-horas-traballadas"));
+        }
+        if (!costItems.isEmpty()) {
+            topItem(_("Cost"), "/workreports/workReport.zul", "", costItems);
+        }
+
+        List<CustomMenuItem> configurationItems = new ArrayList<CustomMenuItem>();
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_MAIN_SETTINGS)) {
+            configurationItems
+                    .add(subItem(_("Main Settings"),
                             "/common/configuration.zul",
-                            "16-ldap-authentication.html"),
-                subItem(_("Users"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios",
-                    subItem(_("Accounts"), "/users/users.zul","13-usuarios.html#administraci-n-de-usuarios"),
-                    subItem(_("Profiles"), "/users/profiles.zul","13-usuarios.html#administraci-n-de-perfiles")),
-                subItem(_("Calendars"),"/calendars/calendars.zul", "03-calendarios.html"),
-                subItem(_("Quality Forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
-                subItem(_("Data Types"),"/advance/advanceTypes.zul", "04-avances.html#id1",
-                    subItem(_("Progress"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
-                    subItem(_("Exception Days"),"/excetiondays/exceptionDays.zul",""),
-                    subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
-                            subItem(_("Unit Measures"),
-                                    "/materials/unitTypes.zul",
-                                    "11-materiales.html#administraci-n-de-materiais")));
-            }
+                            "16-ldap-authentication.html"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {
+            configurationItems.add(subItem(_("User Accounts"),
+                    "/users/users.zul",
+                    "13-usuarios.html#administraci-n-de-usuarios"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PROFILES)) {
+            configurationItems.add(subItem(_("Profiles"),
+                    "/profiles/profiles.zul",
+                    "13-usuarios.html#administraci-n-de-perfiles"));
+        }
+        if (!configurationItems.isEmpty()) {
+            topItem(_("Configuration"), "/common/configuration.zul", "",
+                    configurationItems);
+        }
 
-        topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
-                subItem(_("Project Costs"),
-                        "/reports/orderCostsPerResource.zul",
-                        "15-informes.html"));
+        List<CustomMenuItem> communicationsItems = new ArrayList<CustomMenuItem>();
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_COMPANIES)) {
+            communicationsItems.add(subItem(_("Companies"),
+                    "/externalcompanies/externalcompanies.zul", ""));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_SEND_TO_SUBCONTRACTORS)) {
+            communicationsItems.add(subItem(_("Send To Subcontractors"),
+                    "/subcontract/subcontractedTasks.zul", ""));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_RECEIVED_FROM_SUBCONTRACTORS)) {
+            communicationsItems.add(subItem(_("Received From Subcontractors"),
+                    "/subcontract/subcontractorCommunications.zul", ""));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_SEND_TO_CUSTOMERS)) {
+            communicationsItems.add(subItem(_("Send To Customers"),
+                    "/subcontract/reportAdvances.zul", ""));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_RECEIVED_FROM_CUSTOMERS)) {
+            communicationsItems.add(subItem(_("Received From Customers"),
+                    "/subcontract/customerCommunications.zul", ""));
+        }
+        if (!communicationsItems.isEmpty()) {
+            topItem(_("Communications"),
+                    "/externalcompanies/externalcompanies.zul", "",
+                    communicationsItems);
+        }
 
-        topItem(_("My account"), "/myaccount/userDashboard.zul", "",
-                subItem(_("My dashboard"), "/myaccount/userDashboard.zul", ""),
-                subItem(_("Settings"), "/myaccount/settings.zul", ""),
-                subItem(_("Change Password"), "/myaccount/changePassword.zul", ""));
+        List<CustomMenuItem> reportsItems = new ArrayList<CustomMenuItem>();
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEET_LINES_LIST_REPORT)) {
+            reportsItems.add(subItem(_("Timesheet Lines List"),
+                    "/workreports/workReportQuery.zul", "09-partes.html#id4"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_HOURS_WORKED_PER_RESOURCE_REPORT)) {
+            reportsItems.add(subItem(_("Hours Worked Per Resource"),
+                    "/reports/hoursWorkedPerWorkerReport.zul",
+                    "15-1-report-hours-worked-by-resource.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT)) {
+            reportsItems.add(subItem(
+                    _("Total Worked Hours By Resource In A Month"),
+                    "/reports/hoursWorkedPerWorkerInAMonthReport.zul",
+                    "15-2-total-hours-by-resource-month.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT)) {
+            reportsItems.add(subItem(_("Work And Progress Per Project"),
+                    "/reports/schedulingProgressPerOrderReport.zul",
+                    "15-3-work-progress-per-project.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_WORK_AND_PROGRESS_PER_TASK_REPORT)) {
+            reportsItems.add(subItem(_("Work And Progress Per Task"),
+                    "/reports/workingProgressPerTaskReport.zul",
+                    "15-informes.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT)) {
+            reportsItems.add(subItem(_("Estimated/Planned Hours Per Task"),
+                    "/reports/completedEstimatedHoursPerTask.zul",
+                    "15-informes.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_PROJECT_COSTS_REPORT)) {
+            reportsItems.add(subItem(_("Project Costs"),
+                    "/reports/orderCostsPerResource.zul", "15-informes.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT)) {
+            reportsItems.add(subItem(_("Task Scheduling Status In Project"),
+                    "/reports/workingArrangementsPerOrderReport.zul",
+                    "15-informes.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_MATERIALS_NEED_AT_DATE_REPORT)) {
+            reportsItems.add(subItem(_("Materials Needs At Date"),
+                    "/reports/timeLineMaterialReport.zul", "15-informes.html"));
+        }
+        if (!reportsItems.isEmpty()) {
+            topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul",
+                    "", reportsItems);
+        }
+
+        List<CustomMenuItem> personalAreaItems = new ArrayList<CustomMenuItem>();
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)) {
+            personalAreaItems.add(subItem(_("Home"),
+                    "/myaccount/userDashboard.zul", ""));
+        }
+        personalAreaItems.add(subItem(_("Preferences"),
+                "/myaccount/settings.zul", ""));
+        personalAreaItems.add(subItem(_("Change Password"),
+                "/myaccount/changePassword.zul", ""));
+        topItem(_("Personal area"), "/myaccount/userDashboard.zul", "",
+                personalAreaItems);
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
@@ -349,7 +507,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         List<CustomMenuItem> breadcrumbsPath = new ArrayList<CustomMenuItem>();
         for (CustomMenuItem ci : this.firstLevel) {
             if (ci.isActiveParent()) {
-                if ((ci.name != null) && (ci.name != _("Scheduling"))) {
+                if ((ci.name != null) && (ci.name != _("Planning"))) {
                     breadcrumbsPath.add(ci);
                     for (CustomMenuItem child : ci.children) {
                         if (child.isActiveParent()) {

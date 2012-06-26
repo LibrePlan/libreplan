@@ -31,6 +31,7 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -101,6 +102,14 @@ public class OrdersTabCreator {
     private ITab createGlobalOrdersTab() {
         return new CreatedOnDemandTab(_("Projects List"), "orders",
                 ordersTabCreator) {
+            @Override
+            protected void beforeShowAction() {
+                if (!SecurityUtils
+                        .isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
+                    Util.sendForbiddenStatusCodeInHttpServletResponse();
+                }
+            }
+
             @Override
             protected void afterShowAction() {
                 orderCRUDController.goToList();

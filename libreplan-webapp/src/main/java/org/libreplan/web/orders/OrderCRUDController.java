@@ -919,7 +919,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the project \"{0}\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario",
+                                    "You can not remove the project \"{0}\" because of any of its tasks are already in use in some timesheets and the project just exists in the current scenario",
                                     order.getName()));
         } else {
             if (!StringUtils.isBlank(order.getExternalCode())) {
@@ -1346,6 +1346,11 @@ public class OrderCRUDController extends GenericForwardComposer {
                 createTemplate(order);
             }
         });
+        if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
+            buttonDerived.setDisabled(true);
+            buttonDerived
+                    .setTooltiptext(_("You do not have permissions to create templates"));
+        }
         hbox.appendChild(buttonDerived);
     }
 
@@ -1500,7 +1505,7 @@ public class OrderCRUDController extends GenericForwardComposer {
      * the create buttons accordingly.
      */
     private void checkCreationPermissions() {
-        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
             if (createOrderButton != null) {
                 createOrderButton.setDisabled(true);
             }

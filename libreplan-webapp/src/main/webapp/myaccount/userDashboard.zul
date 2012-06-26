@@ -26,33 +26,22 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 
+<?component name="my-tasks-area" inline="true" macroURI="_myTasksArea.zul"?>
+<?component name="monthly-timesheets-area" inline="true" macroURI="_monthlyTimesheetsArea.zul"?>
+<?component name="expenses-area" inline="true" macroURI="_expensesArea.zul"?>
+
 <zk>
+
     <window self="@{define(content)}" title="${i18n:_('My dashboard')}"
         apply="org.libreplan.web.users.dashboard.UserDashboardController">
 
-        <groupbox>
-            <caption label="${i18n:_('My tasks')}" />
+        <vbox id="messagesContainer" />
 
-            <grid id="listing" model="@{controller.tasks}" mold="paging"
-                pageSize="10" rowRenderer="@{controller.tasksRenderer}">
-                <columns sizable="true">
-                    <column label="${i18n:_('Name')}"
-                        sort="auto(name)" />
-                    <column label="${i18n:_('Code')}"
-                        sort="auto(orderElement.code)" />
-                    <column label="${i18n:_('Project')}"
-                        sort="auto(orderElement.order.name)" />
-                    <column label="${i18n:_('Start date')}"
-                        sort="auto(startDate)" />
-                    <column label="${i18n:_('End date')}"
-                        sort="auto(endDate)" />
-                    <column label="${i18n:_('Progress')}"
-                        sort="auto(orderElement.advancePercentage)" />
-                    <column label="${i18n:_('Work done')}"
-                        sort="auto(orderElement.sumChargedEffort.totalChargedEffort)" />
-                </columns>
-            </grid>
-        </groupbox>
+        <my-tasks-area />
+
+        <monthly-timesheets-area />
+
+        <expenses-area />
 
     </window>
 </zk>

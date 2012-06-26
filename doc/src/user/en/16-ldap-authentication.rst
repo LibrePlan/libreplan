@@ -135,8 +135,7 @@ The next example represents a valid LDAP structure to use property strategy.
       |- uid=worker2
       |- uid=worker3
 
-With attribute
-..............
+**With attribute**
 
 In this case, each user will have attribute, for example called ``group`` with
 the name of the group to which it belongs:
@@ -186,8 +185,7 @@ And for example if you want to match some roles:
 * All projects edition allowed: ``admins``
 * Project creation allowed: ``workers``
 
-By user identifier
-..................
+**By user identifier**
 
 You can even have a workaround to specify LibrePlan roles directly to users,
 without having an attribute in each LDAP user.

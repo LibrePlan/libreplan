@@ -30,6 +30,7 @@ import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 
 /**
  * This class models a worker.
@@ -215,10 +216,13 @@ public class Worker extends Resource {
 
     public void setUser(User user) {
         this.user = user;
+        if (user != null) {
+            user.addRole(UserRole.ROLE_BOUND_USER);
+        }
     }
 
     @AssertTrue(message = "User already bound to other worker")
-    public boolean checkUserNotBoundToOtherWorker() {
+    public boolean checkConstraintUserNotBoundToOtherWorker() {
         if (user == null || user.isNewObject()) {
             return true;
         }
@@ -242,7 +246,7 @@ public class Worker extends Resource {
     }
 
     @AssertTrue(message = "Limiting resources cannot be bound to any user")
-    public boolean checkLimitingResourceNotBoundToUser() {
+    public boolean checkConstraintLimitingResourceNotBoundToUser() {
         if (isLimitingResource()) {
             return user == null;
         }
@@ -250,7 +254,7 @@ public class Worker extends Resource {
     }
 
     @AssertTrue(message = "Virtual resources cannot be bound to any user")
-    public boolean checkVirtualResourceNotBoundToUser() {
+    public boolean checkConstraintVirtualResourceNotBoundToUser() {
         if (isVirtual()) {
             return user == null;
         }
@@ -262,6 +266,14 @@ public class Worker extends Resource {
             user.setFirstName(firstName);
             user.setLastName(surname);
         }
+    }
+
+    @AssertTrue(message = "Bound user has proper role")
+    public boolean checkConstraintBoundUserHaveProperRole() {
+        if (user == null) {
+            return true;
+        }
+        return user.getRoles().contains(UserRole.ROLE_BOUND_USER);
     }
 
 }

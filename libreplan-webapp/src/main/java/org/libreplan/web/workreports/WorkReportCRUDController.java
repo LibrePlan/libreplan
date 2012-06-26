@@ -29,15 +29,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.HoursManagementEnum;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -58,9 +60,11 @@ import org.libreplan.web.common.components.NewDataSortableGrid;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
+import org.libreplan.web.users.dashboard.IMonthlyTimesheetController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -79,17 +83,19 @@ import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.api.Window;
-
 /**
- * Controller for CRUD actions over a {@link WorkReport}
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ *
+ *         Controller for CRUD actions over a {@link WorkReport}
+ *
  */
 public class WorkReportCRUDController extends GenericForwardComposer implements
         IWorkReportCRUDControllerEntryPoints {
@@ -101,8 +107,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private Window createWindow;
 
     private Window listWindow;
-
-    private Window listQueryWindow;
 
     private IWorkReportModel workReportModel;
 
@@ -152,19 +156,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private Datebox filterFinishDate;
 
-    private IPredicate predicateFilterLines;
+    @javax.annotation.Resource
+    private IMonthlyTimesheetController monthlyTimesheetController;
 
-    private Grid gridListQuery;
+    private Popup monthlyTimesheetsPopup;
 
-    private Autocomplete filterResource;
+    private Datebox monthlyTimesheetsDatebox;
 
-    private Datebox filterStartDateLine;
-
-    private Datebox filterFinishDateLine;
-
-    private BandboxSearch bandboxFilterOrderElement;
-
-    private Autocomplete filterHoursType;
+    private BandboxSearch monthlyTimesheetsBandboxSearch;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -172,8 +171,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listWorkReportLines = (NewDataSortableGrid) createWindow
                 .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
-        initCurrentList();
+        showMessageIfMonthlyTimesheetWasSaved();
+
+        comp.setAttribute("controller", this);
+        goToList();
         if(listType != null) {
             //listType is null in reports -> work report lines
             listType.setSelectedIndex(0);
@@ -184,17 +185,17 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         handler.register(this, page);
     }
 
-    private void initializeHoursType() {
-        allHoursType = new SimpleListModel(workReportModel.getAllHoursType());
+    private void showMessageIfMonthlyTimesheetWasSaved() {
+        String timesheetSave = Executions.getCurrent().getParameter(
+                "timesheet_saved");
+        if (!StringUtils.isBlank(timesheetSave)) {
+            messagesForUser.showMessage(Level.INFO,
+                    _("Monthly timesheet saved"));
+        }
     }
 
-    private void initCurrentList() {
-        if (listWindow != null) {
-            workReportModel.setListingQuery(false);
-        } else if (listQueryWindow != null) {
-            workReportModel.setListingQuery(true);
-        }
-        this.goToList();
+    private void initializeHoursType() {
+        allHoursType = new SimpleListModel(workReportModel.getAllHoursType());
     }
 
     /**
@@ -212,7 +213,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             if (Messagebox.OK == status) {
                 workReportModel.remove(workReport);
                 messagesForUser.showMessage(Level.INFO,
-                        _("Work report removed successfully"));
+                        _("Timesheet removed successfully"));
                 loadComponentslist(listWindow);
                 Util.reloadBindings(listWindow);
             }
@@ -233,8 +234,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private OnlyOneVisible getVisibility() {
         return (visibility == null) ? new OnlyOneVisible(createWindow,
-                listWindow, listQueryWindow)
-                : visibility;
+                listWindow) : visibility;
     }
 
     public void saveAndExit() {
@@ -254,8 +254,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         workReportModel.generateWorkReportLinesIfIsNecessary();
         try {
             workReportModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO,
-                    _("Work report saved"));
+            messagesForUser.showMessage(Level.INFO, _("Timesheet saved"));
             return true;
         } catch (ValidationException e) {
             showInvalidValues(e);
@@ -586,23 +585,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToList() {
-        if (workReportModel.isListingQuery()) {
-            goToListQueryWorkReportLines();
-        } else {
-            goToListWorkReports();
-        }
-    }
-
-    public void goToListWorkReports() {
         getVisibility().showOnly(listWindow);
         loadComponentslist(listWindow);
         Util.reloadBindings(listWindow);
-    }
-
-    public void goToListQueryWorkReportLines() {
-        getVisibility().showOnly(listQueryWindow);
-        loadComponentslistLines(listQueryWindow);
-        Util.reloadBindings(listQueryWindow);
     }
 
     public void cancel() {
@@ -613,28 +598,44 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
+    @Override
     public void goToCreateForm(WorkReportType workReportType) {
-        cameBackList = false;
-        workReportModel.initCreate(workReportType);
-        prepareWorkReportList();
-        createWindow.setTitle(_("Create Work Report"));
-        getVisibility().showOnly(createWindow);
-        loadComponents(createWindow);
-        Util.reloadBindings(createWindow);
+        if (workReportType.isMonthlyTimesheetsType()) {
+            monthlyTimesheetsPopup.open(listTypeToAssign);
+        } else {
+            cameBackList = false;
+            workReportModel.initCreate(workReportType);
+            prepareWorkReportList();
+            createWindow.setTitle(_("Create Timesheet"));
+            getVisibility().showOnly(createWindow);
+            loadComponents(createWindow);
+            Util.reloadBindings(createWindow);
+        }
     }
 
     public void goToEditForm(WorkReportDTO workReportDTO) {
-        workReportModel.setListingQuery(false);
         goToEditForm(workReportDTO.getWorkReport());
     }
 
+    @Override
     public void goToEditForm(WorkReport workReport) {
-        workReportModel.initEdit(workReport);
-        createWindow.setTitle(_("Edit Work Report"));
-        loadComponents(createWindow);
-        prepareWorkReportList();
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+        if (workReportModel.isMonthlyTimesheet(workReport)) {
+            goToEditMonthlyTimeSheet(workReport);
+        } else {
+            workReportModel.initEdit(workReport);
+            createWindow.setTitle(_("Edit Timesheet"));
+            loadComponents(createWindow);
+            prepareWorkReportList();
+            getVisibility().showOnly(createWindow);
+            Util.reloadBindings(createWindow);
+        }
+    }
+
+    private void goToEditMonthlyTimeSheet(WorkReport workReport) {
+        Date date = workReport.getWorkReportLines().iterator().next().getDate();
+        Resource resource = workReport.getResource();
+        monthlyTimesheetController.goToCreateOrEditFormForResource(
+                LocalDate.fromDateFields(date), resource);
     }
 
     private void loadComponents(Component window) {
@@ -682,20 +683,15 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listTypeToAssign = (Listbox) window.getFellow("listTypeToAssign");
         filterStartDate = (Datebox) window.getFellow("filterStartDate");
         filterFinishDate = (Datebox) window.getFellow("filterFinishDate");
+        monthlyTimesheetsPopup = (Popup) window
+                .getFellow("monthlyTimesheetsPopup");
+        monthlyTimesheetsDatebox = (Datebox) window
+                .getFellow("monthlyTimesheetsDatebox");
+        monthlyTimesheetsBandboxSearch = (BandboxSearch) window
+                .getFellow("monthlyTimesheetsBandboxSearch");
         clearFilterDates();
     }
 
-    private void loadComponentslistLines(Component window) {
-        gridListQuery = (Grid) window.getFellow("gridListQuery");
-        filterResource = (Autocomplete) window.getFellow("filterResource");
-        filterStartDateLine = (Datebox) window.getFellow("filterStartDateLine");
-        filterFinishDateLine = (Datebox) window
-                .getFellow("filterFinishDateLine");
-        bandboxFilterOrderElement = (BandboxSearch) window
-                .getFellow("bandboxFilterOrderElement");
-        filterHoursType = (Autocomplete) window.getFellow("filterHoursType");
-        clearFilterDatesLines();
-    }
     /**
      * {@link WorkReportLine} list is finally constructed dynamically
      *
@@ -985,7 +981,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void appendAutocompleteLabelsByTypeInLine(Row row,
             final Label currentLabel) {
-        final LabelType labelType = (LabelType) currentLabel.getType();
+        final LabelType labelType = currentLabel.getType();
         final WorkReportLine line = (WorkReportLine) row.getValue();
         final Autocomplete comboLabels = createAutocompleteLabels(labelType,
                 currentLabel);
@@ -1087,8 +1083,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         starting.clearErrorMessage(true);
         ending.clearErrorMessage(true);
 
-        final Date startingDate = (Date) starting.getValue();
-        final Date endingDate = (Date) ending.getValue();
+        final Date startingDate = starting.getValue();
+        final Date endingDate = ending.getValue();
 
         if (endingDate == null || startingDate == null
                 || startingDate.compareTo(endingDate) > 0) {
@@ -1236,7 +1232,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private String getWorkReportLineName(WorkReportLine workReportLine) {
-        final Resource resource = (Resource) workReportLine.getResource();
+        final Resource resource = workReportLine.getResource();
         final OrderElement orderElement = workReportLine.getOrderElement();
 
         if (resource == null || orderElement == null) {
@@ -1375,7 +1371,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private void appendAutocompleteLabelsByType(Row row,
             final Label currentLabel) {
-        final LabelType labelType = (LabelType) currentLabel.getType();
+        final LabelType labelType = currentLabel.getType();
         final Autocomplete comboLabels = createAutocompleteLabels(labelType,
                 currentLabel);
         comboLabels.setParent(row);
@@ -1461,14 +1457,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             }
         }
     }
-
-    /**
-     * Filter or show all work Reports
-     */
-
-    private final String SHOW_ALL = _("Show all");
-
-    private final String FILTER = _("Filter work reports");
 
     public List<WorkReportType> getFilterWorkReportTypes() {
         List<WorkReportType> result = workReportModel.getWorkReportTypes();
@@ -1573,137 +1561,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     /**
-     * Method to manage the query work report lines
-     */
-
-    public List<WorkReportLine> getQueryWorkReportLines() {
-        return workReportModel.getAllWorkReportLines();
-    }
-
-    public void sortQueryWorkReportLines() {
-        Column columnDateLine = (Column) listQueryWindow.getFellow("date");
-        if (columnDateLine != null) {
-            if (columnDateLine.getSortDirection().equals("ascending")) {
-                columnDateLine.sort(false, false);
-                columnDateLine.setSortDirection("ascending");
-            } else if (columnDateLine.getSortDirection().equals("descending")) {
-                columnDateLine.sort(true, false);
-                columnDateLine.setSortDirection("descending");
-            }
-        }
-    }
-
-    public void goToEditFormQuery(WorkReportLine line) {
-        workReportModel.setListingQuery(true);
-        goToEditForm(line.getWorkReport());
-    }
-
-    /**
-     * Apply filter to work report lines
-     * @param event
-     */
-    public void onApplyFilterWorkReportLines(Event event) {
-        createPredicateLines();
-        filterByPredicateLines();
-    }
-
-    private void createPredicateLines() {
-        Resource resource = getSelectedResource();
-        Date startDate = filterStartDateLine.getValue();
-        Date finishDate = filterFinishDateLine.getValue();
-        OrderElement orderElement = getSelectedOrderElement();
-        TypeOfWorkHours hoursType = getSelectedHoursType();
-        predicateFilterLines = new WorkReportLinePredicate(resource, startDate,
-                finishDate, orderElement, hoursType);
-    }
-
-    private Resource getSelectedResource() {
-        Comboitem itemSelected = filterResource.getSelectedItem();
-        if ((itemSelected != null)
-                && (((Resource) itemSelected.getValue()) != null)) {
-            return (Resource) itemSelected.getValue();
-        }
-        return null;
-    }
-
-    public OrderElement getSelectedOrderElement() {
-        OrderElement orderElement = (OrderElement) this.bandboxFilterOrderElement
-                .getSelectedElement();
-        if ((orderElement != null)
-                && ((orderElement.getCode() != null) && (!orderElement
-                        .getCode().isEmpty()))) {
-            try {
-                return workReportModel.findOrderElement(orderElement.getCode());
-            } catch (InstanceNotFoundException e) {
-                throw new WrongValueException(bandboxFilterOrderElement,
-                        _("Task not found"));
-            }
-        }
-        return null;
-    }
-
-    private TypeOfWorkHours getSelectedHoursType() {
-        Comboitem itemSelected = filterHoursType.getSelectedItem();
-        if ((itemSelected != null)
-                && (((TypeOfWorkHours) itemSelected.getValue()) != null)) {
-            return (TypeOfWorkHours) itemSelected.getValue();
-        }
-        return null;
-    }
-
-    private void filterByPredicateLines() {
-        List<WorkReportLine> filterWorkReportLines = workReportModel
-                .getFilterWorkReportLines(predicateFilterLines);
-        gridListQuery.setModel(new SimpleListModel(filterWorkReportLines
-                .toArray()));
-        gridListQuery.invalidate();
-    }
-
-    private void clearFilterDatesLines() {
-        filterResource.setValue(null);
-        bandboxFilterOrderElement.clear();
-        filterStartDateLine.setValue(null);
-        filterFinishDateLine.setValue(null);
-        filterHoursType.setValue(null);
-    }
-
-    public Constraint checkConstraintFinishDateLine() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                Date finishDateLine = (Date) value;
-                if ((finishDateLine != null)
-                        && (filterStartDateLine.getValue() != null)
-                        && (finishDateLine.compareTo(filterStartDateLine
-                                .getValue()) < 0)) {
-                    filterFinishDateLine.setValue(null);
-                    throw new WrongValueException(comp,
-                            _("must be greater than start date"));
-                }
-            }
-        };
-    }
-
-    public Constraint checkConstraintStartDateLine() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                Date startDateLine = (Date) value;
-                if ((startDateLine != null)
-                        && (filterFinishDateLine.getValue() != null)
-                        && (startDateLine.compareTo(filterFinishDateLine
-                                .getValue()) > 0)) {
-                    filterStartDateLine.setValue(null);
-                    throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
-                }
-            }
-        };
-    }
-
-    /**
      * Methods improved the work report edition and creation.Executed on
      * pressing New work report button Creates a new work report for a type, and
      * added it to the work report list
@@ -1713,13 +1570,13 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         Listitem selectedItem = listTypeToAssign.getSelectedItem();
         if (selectedItem == null) {
             throw new WrongValueException(listTypeToAssign,
-                    _("please, select a work report type"));
+                    _("please, select a timesheet template type"));
         }
 
         WorkReportType type = (WorkReportType) selectedItem.getValue();
         if (type == null) {
             throw new WrongValueException(listTypeToAssign,
-                    _("please, select a work report type"));
+                    _("please, select a timesheet template type"));
         }
 
         goToCreateForm(type);
@@ -1756,6 +1613,27 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
         Util.reloadBindings(createWindow);
         reloadWorkReportLines();
+    }
+
+    public List<Worker> getBoundWorkers() {
+        return workReportModel.getBoundWorkers();
+    }
+
+    public void createOrEditMonthlyTimesheet() {
+        Date date = monthlyTimesheetsDatebox.getValue();
+        if (date == null) {
+            throw new WrongValueException(monthlyTimesheetsDatebox,
+                    _("Please set a date"));
+        }
+        Resource resource = (Resource) monthlyTimesheetsBandboxSearch
+                .getSelectedElement();
+        if (resource == null) {
+            throw new WrongValueException(monthlyTimesheetsBandboxSearch,
+                    _("Please select a worker"));
+        }
+
+        monthlyTimesheetController.goToCreateOrEditFormForResource(
+                LocalDate.fromDateFields(date), resource);
     }
 
 }

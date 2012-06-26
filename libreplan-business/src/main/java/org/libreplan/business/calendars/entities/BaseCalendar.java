@@ -893,6 +893,16 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         return sorted.get(sorted.size() - 1);
     }
 
+    public CalendarAvailability getFistCalendarAvailability() {
+        if (calendarAvailabilities.isEmpty()) {
+            return null;
+        }
+        // Sorting for ensuring the first one is picked. In theory sorting would
+        // not be necessary, doing it for safety
+        List<CalendarAvailability> sorted = getCalendarAvailabilitiesSortedByStartDate();
+        return sorted.get(0);
+    }
+
     public boolean isLastCalendarAvailability(
             CalendarAvailability calendarAvailability) {
         if (getLastCalendarAvailability() == null

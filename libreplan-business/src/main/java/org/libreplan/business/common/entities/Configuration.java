@@ -27,6 +27,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 
 /**
  * Application configuration variables.
@@ -72,11 +73,19 @@ public class Configuration extends BaseEntity {
 
     private Boolean changedDefaultAdminPassword = false;
 
-    private Boolean changedDefaultUserPassword = false;
-
     private Boolean changedDefaultWsreaderPassword = false;
 
     private Boolean changedDefaultWswriterPassword = false;
+
+    private Boolean changedDefaultWssubcontractingPassword = false;
+
+    private Boolean changedDefaultManagerPassword = false;
+
+    private Boolean changedDefaultHresourcesPassword = false;
+
+    private Boolean changedDefaultOutsourcingPassword = false;
+
+    private Boolean changedDefaultReportsPassword = false;
 
     private Boolean autocompleteLogin = true;
 
@@ -99,6 +108,8 @@ public class Configuration extends BaseEntity {
      */
     private String currencyCode = "EUR";
     private String currencySymbol = "€";
+
+    private TypeOfWorkHours monthlyTimesheetsTypeOfWorkHours;
 
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
@@ -318,15 +329,6 @@ public class Configuration extends BaseEntity {
                 : changedDefaultAdminPassword;
     }
 
-    public void setChangedDefaultUserPassword(Boolean changedDefaultUserPassword) {
-        this.changedDefaultUserPassword = changedDefaultUserPassword;
-    }
-
-    public Boolean getChangedDefaultUserPassword() {
-        return changedDefaultUserPassword != null ? changedDefaultUserPassword
-                : false;
-    }
-
     public void setChangedDefaultWsreaderPassword(
             Boolean changedDefaultWsreaderPassword) {
         this.changedDefaultWsreaderPassword = changedDefaultWsreaderPassword;
@@ -344,6 +346,56 @@ public class Configuration extends BaseEntity {
 
     public Boolean getChangedDefaultWswriterPassword() {
         return changedDefaultWswriterPassword != null ? changedDefaultWswriterPassword
+                : false;
+    }
+
+    public void setChangedDefaultWssubcontractingPassword(
+            Boolean changedDefaultWssubcontractingPassword) {
+        this.changedDefaultWssubcontractingPassword = changedDefaultWssubcontractingPassword;
+    }
+
+    public Boolean getChangedDefaultWssubcontractingPassword() {
+        return changedDefaultWssubcontractingPassword != null ? changedDefaultWssubcontractingPassword
+                : false;
+    }
+
+    public void setChangedDefaultManagerPassword(
+            Boolean changedDefaultManagerPassword) {
+        this.changedDefaultManagerPassword = changedDefaultManagerPassword;
+    }
+
+    public Boolean getChangedDefaultManagerPassword() {
+        return changedDefaultManagerPassword != null ? changedDefaultManagerPassword
+                : false;
+    }
+
+    public void setChangedDefaultHresourcesPassword(
+            Boolean changedDefaultHresourcesPassword) {
+        this.changedDefaultHresourcesPassword = changedDefaultHresourcesPassword;
+    }
+
+    public Boolean getChangedDefaultHresourcesPassword() {
+        return changedDefaultHresourcesPassword != null ? changedDefaultHresourcesPassword
+                : false;
+    }
+
+    public void setChangedDefaultOutsourcingPassword(
+            Boolean changedDefaultOutsourcingPassword) {
+        this.changedDefaultOutsourcingPassword = changedDefaultOutsourcingPassword;
+    }
+
+    public Boolean getChangedDefaultOutsourcingPassword() {
+        return changedDefaultOutsourcingPassword != null ? changedDefaultOutsourcingPassword
+                : false;
+    }
+
+    public void setChangedDefaultReportsPassword(
+            Boolean changedDefaultReportsPassword) {
+        this.changedDefaultReportsPassword = changedDefaultReportsPassword;
+    }
+
+    public Boolean getChangedDefaultReportsPassword() {
+        return changedDefaultReportsPassword != null ? changedDefaultReportsPassword
                 : false;
     }
 
@@ -397,6 +449,15 @@ public class Configuration extends BaseEntity {
 
     public void setCurrencySymbol(String currencySymbol) {
         this.currencySymbol = currencySymbol;
+    }
+
+    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
+        return monthlyTimesheetsTypeOfWorkHours;
+    }
+
+    public void setMonthlyTimesheetsTypeOfWorkHours(
+            TypeOfWorkHours typeOfWorkHours) {
+        monthlyTimesheetsTypeOfWorkHours = typeOfWorkHours;
     }
 
 }

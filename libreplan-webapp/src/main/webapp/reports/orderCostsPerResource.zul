@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page id="reports" title="${i18n:_('LibrePlan: Project Costs Per Resource')}" ?>
+<?page id="reports" title="${i18n:_('LibrePlan: Project Costs')}" ?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -36,7 +36,7 @@
 
     <window self="@{define(content)}"
         apply="org.libreplan.web.reports.OrderCostsPerResourceController"
-        title="${i18n:_('Project Costs Per Resource')}">
+        title="${i18n:_('Project Costs')}">
 
     <tabbox>
         <tabs>

@@ -18,8 +18,7 @@
  */
 package org.libreplan.web.users.services;
 
-import static org.libreplan.web.I18nHelper._;
-
+import java.text.MessageFormat;
 import java.util.Set;
 
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -62,8 +61,8 @@ public class LDAPUserDetailsService implements UserDetailsService {
         try {
             user = userDAO.findByLoginName(loginName);
         } catch (InstanceNotFoundException e) {
-            throw new UsernameNotFoundException(_("User with username "
-                    + "'{0}': not found", loginName));
+            throw new UsernameNotFoundException(MessageFormat.format(
+                    "User with username {0}: not found", loginName));
         }
 
         Scenario scenario = user.getLastConnectedScenario();

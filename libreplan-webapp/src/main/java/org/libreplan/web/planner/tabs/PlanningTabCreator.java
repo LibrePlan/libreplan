@@ -38,6 +38,7 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.company.CompanyPlanningController;
 import org.libreplan.web.planner.order.OrderPlanningController;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ITab;
@@ -196,6 +197,14 @@ public class PlanningTabCreator {
         return new CreatedOnDemandTab(_("Projects Planning"),
                 "company-scheduling",
                 componentCreator) {
+            @Override
+            protected void beforeShowAction() {
+                if (!SecurityUtils
+                        .isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
+                    Util.sendForbiddenStatusCodeInHttpServletResponse();
+                }
+            }
+
             @Override
             protected void afterShowAction() {
                 companyPlanningController.setConfigurationForPlanner();

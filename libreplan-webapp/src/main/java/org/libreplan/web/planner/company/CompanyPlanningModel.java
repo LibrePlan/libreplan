@@ -673,18 +673,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
-        User user;
 
-        try {
-            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
-        }
-        catch(InstanceNotFoundException e) {
-            //this case shouldn't happen, because it would mean that there isn't a logged user
-            //anyway, if it happenned we return an empty list
-            return result;
-        }
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
-                user, currentScenario);
+                SecurityUtils.getSessionUserLoginName(), currentScenario);
         for (Order order : list) {
             order.useSchedulingDataFor(currentScenario, false);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
@@ -708,20 +699,12 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Override
     @Transactional(readOnly = true)
     public IPredicate getDefaultPredicate(Boolean includeOrderElements) {
-        User user;
         if (currentScenario == null) {
             currentScenario = scenarioManager.getCurrent();
         }
-        try {
-            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
-        }
-        catch(InstanceNotFoundException e) {
-            //this case shouldn't happen, because it would mean that there isn't a logged user
-            //anyway, if it happened we return an empty list
-            return null;
-        }
+
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
-                user, currentScenario);
+                SecurityUtils.getSessionUserLoginName(), currentScenario);
         Date startDate = null;
         Date endDate = null;
         for (Order each : list) {

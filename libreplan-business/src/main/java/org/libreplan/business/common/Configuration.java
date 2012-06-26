@@ -29,7 +29,8 @@ import org.apache.commons.lang.BooleanUtils;
  * Currently we have two options:
  * <ul>
  * <li>Enable/Disable the warning changing default password</li>
- * <li>Enable/Disable default users (such as user, wsreader and wswriter)</li>
+ * <li>Enable/Disable default users (such as wsreader, wswriter,
+ * wssubcontracting, manager, hresources, outsourcing and reports)</li>
  * </ul>
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>

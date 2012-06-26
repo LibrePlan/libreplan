@@ -149,7 +149,7 @@ public class CompanyPlanningController implements Composer {
      * the create buttons accordingly.
      */
     private void checkCreationPermissions() {
-        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
             Button createOrderButton = (Button) planner.getPage().getFellow(
                     "createOrderButton");
             if (createOrderButton != null) {

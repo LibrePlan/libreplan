@@ -33,9 +33,13 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     contextPath = Executions.getCurrent().getContextPath();
     templateCtrl = templateController;
     idAdminUser = templateController.getIdAdminUser();
-    idUser = templateController.getIdUser();
     idWsreader = templateController.getIdWsreaderUser();
     idWswriter = templateController.getIdWswriterUser();
+    idWssubcontracting = templateController.getIdWssubcontractingUser();
+    idManager = templateController.getIdManagerUser();
+    idHresources = templateController.getIdHresourcesUser();
+    idOutsourcing = templateController.getIdOutsourcingUser();
+    idReports = templateController.getIdReportsUser();
 ]]>
 </zscript>
 
@@ -98,7 +102,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
                 </window>
               </div>
               </n:td>
-              <n:td class="usuario">${i18n:_('user')}: ${desktop.execution.userPrincipal.name}</n:td>
+              <n:td class="usuario">${i18n:_('user')}: ${templateCtrl.username}</n:td>
               <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
             </n:tr>
           </n:table>
@@ -139,15 +143,27 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
             class="footer-messages-area"
             style="display:${templateCtrl.defaultPasswdVisible}">
             <div>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idUser}"
-                    id="warningDefaultPasswduser"
-                    style="display:${templateCtrl.defaultPasswdUserVisible}">[user]</n:a>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idWsreader}"
-                    id="warningDefaultPasswdwsreader"
+                    id="warningDefaultPasswdWsreader"
                     style="display:${templateCtrl.defaultPasswdWsreaderVisible}">[wsreader]</n:a>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idWswriter}"
-                    id="warningDefaultPasswdwswriter"
+                    id="warningDefaultPasswdWswriter"
                     style="display:${templateCtrl.defaultPasswdWswriterVisible}">[wswriter]</n:a>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idWssubcontracting}"
+                    id="warningDefaultPasswdWssubcontracting"
+                    style="display:${templateCtrl.defaultPasswdWssubcontractingVisible}">[wssubcontracting]</n:a>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idManager}"
+                    id="warningDefaultPasswdManager"
+                    style="display:${templateCtrl.defaultPasswdManagerVisible}">[manager]</n:a>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idHresources}"
+                    id="warningDefaultPasswdHresources"
+                    style="display:${templateCtrl.defaultPasswdHresourcesVisible}">[hresources]</n:a>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idOutsourcing}"
+                    id="warningDefaultPasswdOutsourcing"
+                    style="display:${templateCtrl.defaultPasswdOutsourcingVisible}">[outsourcing]</n:a>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idReports}"
+                    id="warningDefaultPasswdReports"
+                    style="display:${templateCtrl.defaultPasswdReportsVisible}">[reports]</n:a>
                 <n:span class="footer-messages-area">
                     ${i18n:_('default password were not changed')}.
                 </n:span>

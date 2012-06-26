@@ -70,6 +70,8 @@
 				class="org.libreplan.business.expensesheet.entities.ExpenseSheetLine" />
 		</set>
 
+        <property name="personal" />
+
 	</class>
 
 </hibernate-mapping>

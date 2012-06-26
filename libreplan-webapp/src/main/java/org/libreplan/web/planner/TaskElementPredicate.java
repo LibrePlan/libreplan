@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
@@ -178,11 +179,16 @@ public class TaskElementPredicate implements IPredicate {
 
     private boolean existLabelInTaskElement(Label filterLabel,
             TaskElement taskElement) {
+        OrderElement orderElement = taskElement.getOrderElement();
+        if (orderElement ==  null) {
+            return false;
+        }
+
         Set<Label> labels;
         if (ignoreLabelsInheritance) {
-            labels = taskElement.getOrderElement().getLabels();
+            labels = orderElement.getLabels();
         } else {
-            labels = taskElement.getOrderElement().getAllLabels();
+            labels = orderElement.getAllLabels();
         }
         for (Label label : labels) {
             if (label.getId().equals(filterLabel.getId())) {

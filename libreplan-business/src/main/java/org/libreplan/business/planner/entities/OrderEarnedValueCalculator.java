@@ -103,9 +103,9 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getBudgetAtCompletion(Order order) {
-        SortedMap<LocalDate, BigDecimal> budgedtedCost = calculateBudgetedCostWorkScheduled(order);
-        LocalDate lastKey = budgedtedCost.lastKey();
-        return (lastKey) != null ? budgedtedCost.get(lastKey) : BigDecimal.ZERO;
+		SortedMap<LocalDate, BigDecimal> budgedtedCost = calculateBudgetedCostWorkScheduled(order);
+		return !budgedtedCost.isEmpty() ? budgedtedCost.get(budgedtedCost
+				.lastKey()) : BigDecimal.ZERO;
     }
 
     @Override

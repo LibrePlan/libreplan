@@ -21,9 +21,13 @@ package org.libreplan.web.users.services;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.Authentication;
 import org.springframework.security.ui.TargetUrlResolverImpl;
@@ -41,25 +45,71 @@ import org.springframework.security.userdetails.UserDetails;
  */
 public class CustomTargetUrlResolver extends TargetUrlResolverImpl {
 
-    private final static String USER_DASHBOARD_URL = "/myaccount/userDashboard.zul";
+    public final static String USER_DASHBOARD_URL = "/myaccount/userDashboard.zul";
+
+    public static final String PLANNING_URL = "/planner/index.zul";
+
+    public static final String SETTINGS_URL = "/myaccount/settings.zul";
 
     @Autowired
     private IUserDAO userDAO;
 
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionServiceDAO;
+
     @Override
     public String determineTargetUrl(SavedRequest savedRequest,
-            HttpServletRequest currentRequest, Authentication auth) {
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-
-        try {
-            User user = userDAO.findByLoginName(userDetails.getUsername());
-            if (user.isBound()) {
-                return USER_DASHBOARD_URL;
-            }
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
+            HttpServletRequest currentRequest, final Authentication auth) {
+        if (isUserInRole(auth, UserRole.ROLE_SUPERUSER.name())) {
+            return super.determineTargetUrl(savedRequest, currentRequest, auth);
         }
 
-        return super.determineTargetUrl(savedRequest, currentRequest, auth);
+        if (isUserInRole(auth, UserRole.ROLE_BOUND_USER.name())) {
+            return USER_DASHBOARD_URL;
+        }
+
+        if (isUserInRole(auth, UserRole.ROLE_PLANNING.name())) {
+            return PLANNING_URL;
+        }
+
+        boolean userOrItsProfilesHaveAnyAuthorization = transactionServiceDAO
+                .runOnReadOnlyTransaction(new IOnTransaction<Boolean>() {
+            @Override
+            public Boolean execute() {
+                try {
+                    UserDetails userDetails = (UserDetails) auth.getPrincipal();
+                    User user = userDAO.findByLoginName(userDetails.getUsername());
+                    user.getProfiles().size();
+                            return orderAuthorizationDAO
+                                    .userOrItsProfilesHaveAnyAuthorization(user);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+        if (userOrItsProfilesHaveAnyAuthorization) {
+            return PLANNING_URL;
+        }
+
+        return SETTINGS_URL;
+    }
+
+    private boolean isUserInRole(Authentication auth, String role) {
+        if ((auth == null) || (auth.getPrincipal() == null)
+                || (auth.getAuthorities() == null)) {
+            return false;
+        }
+
+        for (int i = 0; i < auth.getAuthorities().length; i++) {
+            if (role.equals(auth.getAuthorities()[i].getAuthority())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

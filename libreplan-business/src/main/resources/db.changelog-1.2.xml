@@ -329,6 +329,7 @@
         <addForeignKeyConstraint constraintName="sum_charged_effort_order_element_fkey"
             baseTableName="sum_charged_effort" baseColumnNames="order_element"
             referencedTableName="order_element" referencedColumnNames="id" />
+        <dropForeignKeyConstraint baseTableName="order_element" constraintName="sum_charged_effort_id_fkey"/>
         <dropColumn tableName="order_element" columnName="sum_charged_effort_id"/>
     </changeSet>
 
@@ -471,6 +472,182 @@
         <addForeignKeyConstraint constraintName="worker_user_fkey"
             baseTableName="worker" baseColumnNames="user_id"
             referencedTableName="user_table" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="add-monthly_timesheets_type_of_work_hours-to-configuration" author="mrego">
+        <comment>
+            Add new column monthly_timesheets_type_of_work_hours to
+            configuration table.
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="monthly_timesheets_type_of_work_hours" type="BIGINT" />
+        </addColumn>
+        <addForeignKeyConstraint constraintName="configuration_type_of_work_hours_fkey"
+            baseTableName="configuration" baseColumnNames="monthly_timesheets_type_of_work_hours"
+            referencedTableName="type_of_work_hours" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="add-new-column-personal-to-expense_sheet-table" author="mrego">
+        <comment>
+            Add new column personal with default value FALSE to expense_sheet
+            table
+        </comment>
+        <addColumn tableName="expense_sheet">
+            <column name="personal" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="expense_sheet" columnName="personal"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="expense_sheet" columnName="personal"
+            defaultNullValue="FALSE" columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_wssubcontracting_password" author="mrego">
+        <comment>
+            Add new column changed_default_wssubcontracting_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_wssubcontracting_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_wssubcontracting_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_wssubcontracting_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="rename-column-elt-in-roles_table-to-role" author="mrego">
+        <comment>Rename column elt in roles_table to role</comment>
+        <renameColumn tableName="roles_table" oldColumnName="elt"
+            newColumnName="role" columnDataType="VARCHAR(255)" />
+    </changeSet>
+
+    <changeSet id="rename-roles-in-roles_table" author="mrego">
+        <comment>Rename roles in roles_table</comment>
+        <update tableName="roles_table">
+            <column name="role" value="ROLE_SUPERUSER"/>
+            <where>role='ROLE_ADMINISTRATION'</where>
+        </update>
+        <update tableName="roles_table">
+            <column name="role" value="ROLE_READ_ALL_PROJECTS"/>
+            <where>role='ROLE_READ_ALL_ORDERS'</where>
+        </update>
+        <update tableName="roles_table">
+            <column name="role" value="ROLE_EDIT_ALL_PROJECTS"/>
+            <where>role='ROLE_EDIT_ALL_ORDERS'</where>
+        </update>
+        <update tableName="roles_table">
+            <column name="role" value="ROLE_CREATE_PROJECTS"/>
+            <where>role='ROLE_CREATE_ORDER'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="rename-column-elt-in-profile_roles-to-role" author="mrego">
+        <comment>Rename column elt in profile_roles to role</comment>
+        <renameColumn tableName="profile_roles" oldColumnName="elt"
+            newColumnName="role" columnDataType="VARCHAR(255)" />
+    </changeSet>
+
+    <changeSet id="rename-roles-in-profile_roles" author="mrego">
+        <comment>Rename roles in profile_roles</comment>
+        <update tableName="profile_roles">
+            <column name="role" value="ROLE_SUPERUSER"/>
+            <where>role='ROLE_ADMINISTRATION'</where>
+        </update>
+        <update tableName="profile_roles">
+            <column name="role" value="ROLE_READ_ALL_PROJECTS"/>
+            <where>role='ROLE_READ_ALL_ORDERS'</where>
+        </update>
+        <update tableName="profile_roles">
+            <column name="role" value="ROLE_EDIT_ALL_PROJECTS"/>
+            <where>role='ROLE_EDIT_ALL_ORDERS'</where>
+        </update>
+        <update tableName="profile_roles">
+            <column name="role" value="ROLE_CREATE_PROJECTS"/>
+            <where>role='ROLE_CREATE_ORDER'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="drop-column-changed_default_user_password-in-configuration"
+        author="mrego">
+        <comment>Drop column code in configuration table</comment>
+        <dropColumn tableName="configuration"
+            columnName="changed_default_user_password" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_manager_password" author="mrego">
+        <comment>
+            Add new column changed_default_manager_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_manager_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_manager_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_manager_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_hresources_password" author="mrego">
+        <comment>
+            Add new column changed_default_hresources_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_hresources_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_hresources_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_hresources_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_outsourcing_password" author="mrego">
+        <comment>
+            Add new column changed_default_outsourcing_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_outsourcing_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_outsourcing_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_outsourcing_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_reports_password" author="mrego">
+        <comment>
+            Add new column changed_default_reports_password with
+            default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_reports_password"
+                type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+            columnName="changed_default_reports_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_reports_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
     </changeSet>
 
 </databaseChangeLog>

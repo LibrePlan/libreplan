@@ -28,6 +28,7 @@ import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 
 /**
@@ -51,5 +52,17 @@ public interface IWorkReportLineDAO extends
 
     List<WorkReportLineDTO> findByOrderElementGroupByResourceAndHourTypeAndDate(
             OrderElement orderElement);
+
+    /**
+     * Returns the {@link List} of {@link WorkReportLine WorkReportLines} of the
+     * given <code>resource</code> between 2 dates that not belong to the
+     * specified <code>workReport</code>.<br />
+     *
+     * If <code>workReport</code> is <code>null</code>, it returns all the
+     * {@link WorkReportLine WorkReportLines} for this <code>resource</code>
+     * between the dates.
+     */
+    List<WorkReportLine> findByResourceFilteredByDateNotInWorkReport(
+            Resource resource, Date start, Date end, WorkReport workReport);
 
 }

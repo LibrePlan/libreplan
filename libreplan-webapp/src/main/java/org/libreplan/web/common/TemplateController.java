@@ -34,7 +34,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.web.common.ITemplateModel.IOnFinished;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -132,23 +132,39 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getDefaultPasswdAdminVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.ADMIN);
-    }
-
-    public String getDefaultPasswdUserVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.USER);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.ADMIN);
     }
 
     public String getDefaultPasswdWsreaderVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSREADER);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.WSREADER);
     }
 
     public String getDefaultPasswdWswriterVisible() {
-        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSWRITER);
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.WSWRITER);
+    }
+
+    public String getDefaultPasswdWssubcontractingVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.WSSUBCONTRACTING);
+    }
+
+    public String getDefaultPasswdManagerVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.MANAGER);
+    }
+
+    public String getDefaultPasswdHresourcesVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.HRESOURCES);
+    }
+
+    public String getDefaultPasswdOutsourcingVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.OUTSOURCING);
+    }
+
+    public String getDefaultPasswdReportsVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(PredefinedUsers.REPORTS);
     }
 
     private String notChangedPasswordWarningDisplayPropertyFor(
-            MandatoryUser mandatoryUser) {
+            PredefinedUsers mandatoryUser) {
         return asDisplayProperty(templateModel
                 .hasChangedDefaultPassword(mandatoryUser));
     }
@@ -164,19 +180,37 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getIdAdminUser() {
-        return templateModel.getIdUser(MandatoryUser.ADMIN.getLoginName());
-    }
-
-    public String getIdUser() {
-        return templateModel.getIdUser(MandatoryUser.USER.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.ADMIN.getLoginName());
     }
 
     public String getIdWsreaderUser() {
-        return templateModel.getIdUser(MandatoryUser.WSREADER.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.WSREADER.getLoginName());
     }
 
     public String getIdWswriterUser() {
-        return templateModel.getIdUser(MandatoryUser.WSWRITER.getLoginName());
+        return templateModel.getIdUser(PredefinedUsers.WSWRITER.getLoginName());
+    }
+
+    public String getIdWssubcontractingUser() {
+        return templateModel.getIdUser(PredefinedUsers.WSSUBCONTRACTING
+                .getLoginName());
+    }
+
+    public String getIdManagerUser() {
+        return templateModel.getIdUser(PredefinedUsers.MANAGER.getLoginName());
+    }
+
+    public String getIdHresourcesUser() {
+        return templateModel.getIdUser(PredefinedUsers.HRESOURCES.getLoginName());
+    }
+
+    public String getIdOutsourcingUser() {
+        return templateModel
+                .getIdUser(PredefinedUsers.OUTSOURCING.getLoginName());
+    }
+
+    public String getIdReportsUser() {
+        return templateModel.getIdUser(PredefinedUsers.REPORTS.getLoginName());
     }
 
     public boolean isUserAdmin() {
@@ -190,6 +224,10 @@ public class TemplateController extends GenericForwardComposer {
 
         return VersionInformation.isNewVersionAvailable(templateModel
                 .isAllowToGatherUsageStatsEnabled());
+    }
+
+    public String getUsername() {
+        return SecurityUtils.getLoggedUser().getUsername();
     }
 
 }

@@ -136,11 +136,18 @@ public class HourCost extends IntegrationEntity {
     }
 
     public boolean isActiveAtDate(LocalDate date) {
-        if ((date.isAfter(this.getInitDate()))
-                && (!date.isBefore(this.getInitDate()))) {
+        if (isEqualOrAfter(date) && isEqualOrBefore(date)) {
             return true;
         }
         return false;
+    }
+
+    private boolean isEqualOrAfter(LocalDate date) {
+        return (!date.isBefore(this.getInitDate()));
+    }
+
+    private boolean isEqualOrBefore(LocalDate date) {
+        return (this.getEndDate() == null || !date.isAfter(this.getEndDate()));
     }
 
     @AssertTrue(message="The end date cannot be before the init date")

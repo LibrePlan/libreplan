@@ -45,12 +45,20 @@
             column="monte_carlo_method_tab_visible" />
         <property name="changedDefaultAdminPassword" not-null="true"
             column="changed_default_admin_password" />
-        <property name="changedDefaultUserPassword" not-null="true"
-            column="changed_default_user_password" />
         <property name="changedDefaultWsreaderPassword" not-null="true"
             column="changed_default_wsreader_password" />
         <property name="changedDefaultWswriterPassword" not-null="true"
             column="changed_default_wswriter_password" />
+        <property name="changedDefaultWssubcontractingPassword" not-null="true"
+            column="changed_default_wssubcontracting_password" />
+        <property name="changedDefaultManagerPassword" not-null="true"
+            column="changed_default_manager_password" />
+        <property name="changedDefaultHresourcesPassword" not-null="true"
+            column="changed_default_hresources_password" />
+        <property name="changedDefaultOutsourcingPassword" not-null="true"
+            column="changed_default_outsourcing_password" />
+        <property name="changedDefaultReportsPassword" not-null="true"
+            column="changed_default_reports_password" />
         <property name="autocompleteLogin" not-null="true"
             column="enabled_autocomplete_login" />
         <property name="checkNewVersionEnabled" not-null="true"
@@ -71,8 +79,11 @@
         <property name="currencyCode" not-null="true" column="currency_code" />
         <property name="currencySymbol" not-null="true" column="currency_symbol" />
 
+        <many-to-one name="monthlyTimesheetsTypeOfWorkHours" cascade="none"
+            column="monthly_timesheets_type_of_work_hours" />
+
         <component name="ldapConfiguration" class="org.libreplan.business.common.entities.LDAPConfiguration">
-            <property name="ldapHost" column="ldap_Host"/>
+            <property name="ldapHost" column="ldap_host"/>
             <property name="ldapPort" column="ldap_port"/>
             <property name="ldapBase" column="ldap_base"/>
             <property name="ldapUserDn" column="ldap_userdn"/>

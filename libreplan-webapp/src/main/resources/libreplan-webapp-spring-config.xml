@@ -72,6 +72,7 @@
             <ref bean="calendarServiceREST"/>
             <ref bean="materialServiceREST"/>
             <ref bean="unitTypeServiceREST"/>
+            <ref bean="expenseSheetServiceREST"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="runtimeExceptionMapper" />

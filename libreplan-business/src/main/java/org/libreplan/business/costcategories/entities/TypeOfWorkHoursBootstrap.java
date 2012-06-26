@@ -45,7 +45,7 @@ public class TypeOfWorkHoursBootstrap implements ITypeOfWorkHoursBootstrap {
     @Override
     @Transactional
     public void loadRequiredData() {
-        if (typeOfWorkHoursDAO.findAll().size() == 0) {
+        if (typeOfWorkHoursDAO.findActive().size() == 0) {
             for (PredefinedTypeOfWorkHours predefinedTypeOfWorkHours : PredefinedTypeOfWorkHours
                     .values()) {
                 TypeOfWorkHours typeOfWorkHours = predefinedTypeOfWorkHours

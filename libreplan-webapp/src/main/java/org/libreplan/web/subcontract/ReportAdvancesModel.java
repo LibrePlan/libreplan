@@ -195,7 +195,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
         WebClient client = WebClient.create(externalCompany.getAppURI());
 
-        client.path("ws/rest/reportadvances");
+        client.path("ws/rest/subcontracting/reportadvances");
 
         Util.addAuthorizationHeader(client, externalCompany
                 .getOurCompanyLogin(), externalCompany.getOurCompanyPassword());

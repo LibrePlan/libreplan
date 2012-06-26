@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.IAdHocTransactionService;
@@ -34,6 +35,7 @@ import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.SumExpenses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -93,11 +95,17 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
                             }
                         }
                     });
-            if (value.compareTo(previousValue) >= 0) {
-                value = value.subtract(previousValue);
-            } else {
-                increase = false;
-                value = previousValue.subtract(value);
+
+            boolean isTaskDifferent = updateRelatedSumExpensesIfTheAssociatedTaskIsDifferent(
+                    previousValue, expenseSheetLine);
+
+            if (!isTaskDifferent) {
+                if (value.compareTo(previousValue) >= 0) {
+                    value = value.subtract(previousValue);
+                } else {
+                    increase = false;
+                    value = previousValue.subtract(value);
+                }
             }
         }
 
@@ -107,6 +115,47 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
             } else {
                 substractDirectExpenses(expenseSheetLine.getOrderElement(), value);
             }
+        }
+    }
+
+    private boolean updateRelatedSumExpensesIfTheAssociatedTaskIsDifferent(
+            BigDecimal previousValue, final ExpenseSheetLine expenseSheetLine) {
+        final OrderElement task = expenseSheetLine.getOrderElement();
+
+        OrderElement previousTask = transactionService
+                .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
+                    @Override
+                    public OrderElement execute() {
+                        try {
+                            OrderElement previousTask = expenseSheetLineDAO
+                                    .find(expenseSheetLine.getId())
+                                    .getOrderElement();
+                            if (task.getId().compareTo(previousTask.getId()) != 0) {
+                                initalizeOrderElement(previousTask);
+                            }
+                            return previousTask;
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+        if (task.getId().compareTo(previousTask.getId()) != 0) {
+            substractDirectExpenses(previousTask, previousValue);
+            return true;
+        }
+        return false;
+    }
+
+    private void initalizeOrderElement(OrderElement orderElement) {
+        Hibernate.initialize(orderElement);
+        initalizeOrder(orderElement);
+    }
+
+    private void initalizeOrder(OrderElement orderElement) {
+        OrderLineGroup parent = orderElement.getParent();
+        while (parent != null) {
+            Hibernate.initialize(parent);
+            parent = parent.getParent();
         }
     }
 

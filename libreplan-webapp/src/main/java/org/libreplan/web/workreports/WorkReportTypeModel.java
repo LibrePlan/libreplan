@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.NonUniqueResultException;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
@@ -42,6 +43,7 @@ import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.PositionInWorkReportEnum;
+import org.libreplan.business.workreports.entities.PredefinedWorkReportTypes;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.libreplan.business.workreports.entities.WorkReportType;
@@ -116,8 +118,18 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<WorkReportType> getWorkReportTypes() {
-        return workReportTypeDAO.list(WorkReportType.class);
+    public List<WorkReportType> getWorkReportTypesExceptMonthlyTimeSheets() {
+        List<WorkReportType> list = workReportTypeDAO.list(WorkReportType.class);
+        try {
+            list.remove(workReportTypeDAO
+                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                            .getName()));
+        } catch (NonUniqueResultException e) {
+            throw new RuntimeException(e);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 
     @Override
@@ -139,6 +151,11 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     @Override
     @Transactional(readOnly = true)
     public void initEdit(WorkReportType workReportType) {
+        if (workReportType.isMonthlyTimesheetsType()) {
+            throw new IllegalArgumentException(
+                    "Monthly timesheets timesheet template cannot be edited");
+        }
+
         setListing(false);
         editing = true;
         Validate.notNull(workReportType);
@@ -203,6 +220,11 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     @Override
     @Transactional
     public void confirmRemove(WorkReportType workReportType) {
+        if (workReportType.isMonthlyTimesheetsType()) {
+            throw new IllegalArgumentException(
+                    "Monthly timesheets timesheet template cannot be removed");
+        }
+
         try {
             workReportTypeDAO.remove(workReportType.getId());
         } catch (InstanceNotFoundException e) {

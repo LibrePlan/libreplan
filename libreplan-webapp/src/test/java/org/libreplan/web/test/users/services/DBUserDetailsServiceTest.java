@@ -37,9 +37,11 @@ import org.junit.runner.RunWith;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.libreplan.business.users.bootstrap.IProfileBootstrap;
+import org.libreplan.business.users.bootstrap.PredefinedProfiles;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
@@ -70,6 +72,9 @@ public class DBUserDetailsServiceTest {
     private IScenariosBootstrap scenariosBootstrap;
 
     @Autowired
+    private IProfileBootstrap profileBootstrap;
+
+    @Autowired
     private IAdHocTransactionService transactionService;
 
     @Before
@@ -85,6 +90,7 @@ public class DBUserDetailsServiceTest {
             @Override
             public Void execute() {
                 scenariosBootstrap.loadRequiredData();
+                profileBootstrap.loadRequiredData();
                 return null;
             }
         });
@@ -94,17 +100,28 @@ public class DBUserDetailsServiceTest {
     public void testLoadUserByUsername() {
         usersBootstrap.loadRequiredData();
 
-        for (MandatoryUser u : MandatoryUser.values()) {
+        for (PredefinedUsers u : PredefinedUsers.values()) {
 
-            UserDetails userDetails =
-                userDetailsService.loadUserByUsername(u.getLoginName());
-
+            UserDetails userDetails = userDetailsService.loadUserByUsername(u
+                    .getLoginName());
             assertEquals(u.getLoginName(), userDetails.getUsername());
 
-            assertEquals(u.getInitialRoles(), getUserRoles(userDetails));
+            assertEquals(getUserRoles(u), getUserRoles(userDetails));
 
         }
 
+    }
+
+    private Object getUserRoles(PredefinedUsers u) {
+        Set<UserRole> userRoles = new HashSet<UserRole>();
+
+        userRoles.addAll(u.getInitialRoles());
+
+        for (PredefinedProfiles each : u.getInitialProfiles()) {
+            userRoles.addAll(each.getRoles());
+        }
+
+        return userRoles;
     }
 
     private Set<UserRole> getUserRoles(UserDetails userDetails) {

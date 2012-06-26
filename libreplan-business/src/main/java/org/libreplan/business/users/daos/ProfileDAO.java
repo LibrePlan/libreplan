@@ -65,6 +65,7 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Profile findByProfileName(String profileName)
         throws InstanceNotFoundException{
 
@@ -109,6 +110,15 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
                             "Cannot delete profile. It is being used at this moment by some users.",
                             profile);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Profile findByProfileNameLoadingRoles(String profileName)
+            throws InstanceNotFoundException {
+        Profile profile = findByProfileName(profileName);
+        profile.getRoles().size();
+        return profile;
     }
 
 }

@@ -168,4 +168,18 @@ public class ResourcesCostCategoryAssignment extends IntegrationEntity {
         return Registry.getResourcesCostCategoryAssignmentDAO();
     }
 
+    public boolean isActiveAtDate(LocalDate date) {
+        if (isEqualOrAfter(date) && isEqualOrBefore(date)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isEqualOrAfter(LocalDate date) {
+        return (!date.isBefore(this.getInitDate()));
+    }
+
+    private boolean isEqualOrBefore(LocalDate date) {
+        return (this.getEndDate() == null || !date.isAfter(this.getEndDate()));
+    }
 }

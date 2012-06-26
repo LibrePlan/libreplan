@@ -26,7 +26,7 @@
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('Username')}" sort="auto(loginName)" />
             <newdatasortablecolumn label="${i18n:_('Disabled')}" />
-            <newdatasortablecolumn label="${i18n:_('Administrator')}" />
+            <newdatasortablecolumn label="${i18n:_('Superuser')}" />
             <newdatasortablecolumn label="${i18n:_('Authentication type')}" />
             <newdatasortablecolumn label="${i18n:_('Bound resource')}" />
             <newdatasortablecolumn label="${i18n:_('Actions')}" />

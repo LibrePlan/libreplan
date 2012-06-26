@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotEmpty;
@@ -34,7 +35,9 @@ import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetDAO;
+import org.libreplan.business.resources.entities.Resource;
 
 /**
  * ExpenseSheet Entity
@@ -50,6 +53,8 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
     private BigDecimal total;
 
     private String description;
+
+    private boolean personal = false;
 
     @Valid
     private SortedSet<ExpenseSheetLine> expenseSheetLines = new TreeSet<ExpenseSheetLine>(
@@ -156,6 +161,13 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
         lastExpenseSheetLineSequenceCode++;
     }
 
+    public void keepSortedExpenseSheetLines(ExpenseSheetLine expenseSheetLine,
+            LocalDate newDate) {
+        this.expenseSheetLines.remove(expenseSheetLine);
+        expenseSheetLine.setDate(newDate);
+        this.expenseSheetLines.add(expenseSheetLine);
+    }
+
     public void updateCalculatedProperties() {
         updateFistAndLastExpenseDate();
         updateTotal();
@@ -196,6 +208,53 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
     @Override
     public String getHumanId() {
         return "";
+    }
+
+    public ExpenseSheetLine getExpenseSheetLineByCode(String code)
+            throws ValidationException {
+
+        if (StringUtils.isBlank(code)) {
+            throw new ValidationException(
+                    "missing the code with which find the expense sheet line");
+        }
+
+        for (ExpenseSheetLine l : this.expenseSheetLines) {
+            if (l.getCode().equalsIgnoreCase(StringUtils.trim(code))) {
+                return l;
+            }
+        }
+        return null;
+    }
+
+    public boolean isPersonal() {
+        return personal;
+    }
+
+    public void setPersonal(boolean personal) {
+        this.personal = personal;
+    }
+
+    public boolean isNotPersonal() {
+        return !personal;
+    }
+
+    @AssertTrue(message = "a personal expense sheet must have the same resource in all the lines")
+    public boolean checkConstraintPersonalExpenseSheetMustHaveTheSameResourceInAllLines() {
+        if (!personal) {
+            return true;
+        }
+
+        Resource resource = expenseSheetLines.iterator().next().getResource();
+
+        for (ExpenseSheetLine line : expenseSheetLines) {
+            Resource resourceLine = line.getResource();
+            if ((resourceLine == null)
+                    || (!resourceLine.getId().equals(resource.getId()))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

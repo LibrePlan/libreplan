@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,25 +17,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function showOrHideDefaultPasswordWarnings(adminNotDefaultPassword,
-    userNotDefaultPassword, wsreaderNotDefaultPassword,
-    wswriterNotDefaultPassword) {
+function showOrHideDefaultPasswordWarnings(
+        adminNotDefaultPassword,
+        wsreaderNotDefaultPassword,
+        wswriterNotDefaultPassword,
+        wssubcontractingNotDefaultPassword,
+        managerNotDefaultPassword,
+        hresourcesNotDefaultPassword,
+        outsourcingNotDefaultPassword,
+        reportsNotDefaultPassword) {
 
     setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdadmin"),
         adminNotDefaultPassword);
 
-    var otherDefaultPassword = adminNotDefaultPassword &&
-        (!userNotDefaultPassword || !wsreaderNotDefaultPassword || !wswriterNotDefaultPassword);
+    var otherDefaultPassword = adminNotDefaultPassword && (
+            !wsreaderNotDefaultPassword ||
+            !wswriterNotDefaultPassword ||
+            !wssubcontractingNotDefaultPassword ||
+            !managerNotDefaultPassword ||
+            !hresourcesNotDefaultPassword ||
+            !outsourcingNotDefaultPassword ||
+            !reportsNotDefaultPassword);
     setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdOthers"),
         !otherDefaultPassword);
 
     if (otherDefaultPassword) {
-        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswduser"),
-            userNotDefaultPassword);
-        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwsreader"),
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdWsreader"),
             wsreaderNotDefaultPassword);
-        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwswriter"),
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdWswriter"),
             wswriterNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdWssubcontracting"),
+                wssubcontractingNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdManager"),
+                managerNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdHresources"),
+                hresourcesNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdOutsourcing"),
+                outsourcingNotDefaultPassword);
+        setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdReports"),
+                reportsNotDefaultPassword);
     }
 }
 

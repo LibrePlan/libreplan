@@ -139,8 +139,7 @@ estratexia de propiedade.
       |- uid=worker2
       |- uid=worker3
 
-Con atributo
-............
+**Con atributo**
 
 Neste caso, cada usuario tenrá un atributo, por exemplo chamado ``group```
 co nome do grupo ao que pertence:
@@ -190,8 +189,7 @@ E por exemplo se quere facer algunha correspondencia de roles:
 * All projects edition allowed: ``admins``
 * Project creation allowed: ``workers``
 
-Por identificador de usuario
-............................
+**Por identificador de usuario**
 
 Incluso pode ter unha solución para especificar os roles de LibrePlan
 directamente aos usuarios, sen ter un atributo en cada usuario de LDAP.

@@ -214,19 +214,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public List<Order> getOrders() {
-
-        User user;
-        try {
-            user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
-        }
-        catch(InstanceNotFoundException e) {
-            //this case shouldn't happen, because it would mean that there isn't a logged user
-            //anyway, if it happenned we return an empty list
-            return new ArrayList<Order>();
-        }
         getLabelsOnConversation().reattachLabels();
         List<Order> orders = orderDAO.getOrdersByReadAuthorizationByScenario(
-                user, scenarioManager.getCurrent());
+                SecurityUtils.getSessionUserLoginName(),
+                scenarioManager.getCurrent());
 
         initializeOrders(orders);
         return orders;
@@ -792,12 +783,13 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public boolean userCanRead(Order order, String loginName) {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_ORDERS) ||
-                SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (SecurityUtils.isSuperuserOrUserInRoles(
+                UserRole.ROLE_READ_ALL_PROJECTS,
+                UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
         if (order.isNewObject()
-                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
             return true;
         }
         try {
@@ -822,11 +814,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public boolean userCanWrite(Order order, String loginName) {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
         if (order.isNewObject()
-                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
             return true;
         }
         try {

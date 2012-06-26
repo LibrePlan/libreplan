@@ -27,6 +27,7 @@ import java.util.List;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.entities.User;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -121,4 +122,9 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
 
     public List<Worker> findByFirstNameSecondNameAnotherTransaction(
             String firstname, String secondname);
+
+    /**
+     * Return the list of {@link Worker Workers} bound to any {@link User}.
+     */
+    List<Worker> getBound();
 }

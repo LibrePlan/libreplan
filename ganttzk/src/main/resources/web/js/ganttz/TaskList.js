@@ -10,7 +10,8 @@ ganttz.TaskList = zk.$extends(zk.Widget, {
             child.showLabels();
     },
     hideAllTaskLabels : function(){
-        jq('.task-labels').css('display','none');
+        for(var child = this.firstChild; child; child = child.nextSibling)
+            child.hideLabels();
     },
     showResourceTooltips : function(){
         for(var child = this.firstChild; child; child = child.nextSibling)

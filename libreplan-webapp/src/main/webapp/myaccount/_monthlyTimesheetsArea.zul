@@ -1,0 +1,40 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2012 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/>.
+ -->
+
+<groupbox apply="org.libreplan.web.users.dashboard.MonthlyTimesheetsAreaController">
+    <caption label="${i18n:_('Monthly timesheets')}" />
+
+    <grid model="@{controller.monthlyTimesheets}" mold="paging"
+        pageSize="10" rowRenderer="@{controller.monthlyTimesheetsRenderer}"
+         sclass="clickable-rows">
+        <columns sizable="true">
+            <column label="${i18n:_('Date')}"
+                sort="auto(date)"
+                sortDirection="descending" />
+            <column label="${i18n:_('Available hours')}"
+                sort="auto(resourceCapacity)" />
+            <column label="${i18n:_('Total work')}"
+                sort="auto(totalHours)" />
+            <column label="${i18n:_('Number of tasks')}"
+                sort="auto(tasksNumber)" />
+            <column label="${i18n:_('Operations')}" />
+        </columns>
+    </grid>
+</groupbox>

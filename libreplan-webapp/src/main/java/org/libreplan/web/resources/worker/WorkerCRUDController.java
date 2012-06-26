@@ -41,6 +41,7 @@ import org.libreplan.business.resources.entities.ResourceType;
 import org.libreplan.business.resources.entities.VirtualWorker;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.calendars.BaseCalendarEditionController;
 import org.libreplan.web.calendars.IBaseCalendarModel;
 import org.libreplan.web.common.BaseCRUDController.CRUDControllerState;
@@ -57,6 +58,7 @@ import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.libreplan.web.resources.search.ResourcePredicate;
+import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.IUserCRUDController;
 import org.libreplan.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -486,6 +488,12 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         UserBindingOption[] values = UserBindingOption.values();
         for (UserBindingOption option : values) {
             Radio radio = new Radio(option.label);
+            if (option.equals(UserBindingOption.CREATE_NEW_USER)
+                    && !SecurityUtils
+                            .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {
+                radio.setDisabled(true);
+                radio.setTooltiptext(_("You do not have permissions to create new users"));
+            }
             userBindingRadiogroup.appendChild(radio);
         }
     }
@@ -963,7 +971,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
             boolean removeBoundUser = false;
             User user = workerModel.getBoundUserFromDB(worker);
-            if (user != null && !user.isAdministrator()) {
+            if (user != null && !user.isSuperuser()) {
                 removeBoundUser = Messagebox.show(
                         _("Do you want to remove bound user \"{0}\" too?",
                                 user.getLoginName()), _("Delete bound user"),
@@ -1067,7 +1075,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void setBoundUser(User user) {
         workerModel.setBoundUser(user);
-        updateUserBindingComponents();
+        Util.reloadBindings(userBindingGroupbox.getFellow("existingUserPanel"));
     }
 
     public boolean isUserSelected() {
@@ -1130,6 +1138,18 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isNoRoleUserAccounts() {
+        return !SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS);
+    }
+
+    public String getUserEditionButtonTooltip() {
+        if (isNoRoleUserAccounts()) {
+            return _("You do not have permissions to go to user edition window");
+        }
+        return "";
     }
 
 }

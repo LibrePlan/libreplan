@@ -48,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/materials/unitTypes.zul")
+@OnConcurrentModification(goToPage = "/unittypes/unitTypes.zul")
 public class UnitTypeModel extends IntegrationEntityModel implements
         IUnitTypeModel {
 

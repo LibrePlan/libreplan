@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
@@ -163,7 +164,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "work report type name is already being used")
+    @AssertTrue(message = "timeshet template name is already being used")
     public boolean checkConstraintUniqueWorkReportTypeName() {
         IWorkReportTypeDAO workReportTypeDAO = Registry.getWorkReportTypeDAO();
         if (isNewObject()) {
@@ -194,7 +195,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the assigned label type can not repeat in the work report type.")
+    @AssertTrue(message = "the assigned label type can not repeat in the timeshet template.")
     public boolean checkConstraintNotExistRepeatedLabelTypes() {
         for (WorkReportLabelTypeAssigment assignedLabelType : this.workReportLabelTypeAssigments) {
             if (existRepeatedLabelType(assignedLabelType)) {
@@ -522,4 +523,13 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     public String getHumanId() {
         return name;
     }
+
+    public boolean isMonthlyTimesheetsType() {
+        if (StringUtils.isBlank(name)) {
+            return false;
+        }
+        return name.equals(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                .getName());
+    }
+
 }

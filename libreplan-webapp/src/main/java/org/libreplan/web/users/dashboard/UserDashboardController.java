@@ -21,89 +21,51 @@ package org.libreplan.web.users.dashboard;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.text.MessageFormat;
-import java.util.List;
-
-import org.libreplan.business.advance.entities.AdvanceMeasurement;
-import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
-import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.planner.entities.Task;
-import org.libreplan.web.common.Util;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
+import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.Level;
+import org.libreplan.web.common.MessagesForUser;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.RowRenderer;
 
 /**
- * Controller for user dashboard
+ * Controller for user dashboard window.<br />
+ *
+ * At this moment it's only used to show a message to user after saving a
+ * monthly timesheet.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @SuppressWarnings("serial")
 public class UserDashboardController extends GenericForwardComposer {
 
-    private IUserDashboardModel userDashboardModel;
+    private Component messagesContainer;
 
-    private RowRenderer tasksRenderer = new RowRenderer() {
-
-        @Override
-        public void render(Row row, Object data) throws Exception {
-            Task task = (Task) data;
-            row.setValue(task);
-
-            Util.appendLabel(row, task.getName());
-
-            OrderElement orderElement = task.getOrderElement();
-            Util.appendLabel(row, orderElement.getCode());
-            Util.appendLabel(row, orderElement.getOrder().getName());
-
-            Util.appendLabel(row, task.getStartAsLocalDate().toString());
-            Util.appendLabel(row, task.getEndAsLocalDate().toString());
-
-            Util.appendLabel(row, getProgress(orderElement));
-
-            Util.appendLabel(
-                    row,
-                    _("{0} h", orderElement.getSumChargedEffort()
-                            .getTotalChargedEffort().toFormattedString()));
-        }
-
-        private String getProgress(OrderElement orderElement) {
-
-            AdvanceMeasurement lastAdvanceMeasurement = getLastAdvanceMeasurement(orderElement);
-            if (lastAdvanceMeasurement != null) {
-                return MessageFormat.format("[{0} %] ({1})",
-                        lastAdvanceMeasurement.getValue(),
-                        lastAdvanceMeasurement.getDate());
-            }
-            return "";
-        }
-
-        private AdvanceMeasurement getLastAdvanceMeasurement(
-                OrderElement orderElement) {
-            DirectAdvanceAssignment advanceAssignment = orderElement
-                            .getReportGlobalAdvanceAssignment();
-            if (advanceAssignment == null) {
-                return null;
-            }
-            return advanceAssignment
-                    .getLastAdvanceMeasurement();
-        }
-
-    };
+    private IMessagesForUser messagesForUser;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setAttribute("controller", this);
-    }
 
-    public List<Task> getTasks() {
-        return userDashboardModel.getTasks();
-    }
+        messagesForUser = new MessagesForUser(messagesContainer);
 
-    public RowRenderer getTasksRenderer() {
-        return tasksRenderer;
+        String timesheetSave = Executions.getCurrent().getParameter(
+                "timesheet_saved");
+        if (!StringUtils.isBlank(timesheetSave)) {
+            String monthlyTimesheet = new LocalDate(timesheetSave)
+                    .toString("MMMM y");
+            messagesForUser.showMessage(Level.INFO,
+                    _("Monthly timesheet \"{0}\" saved", monthlyTimesheet));
+        }
+
+        String expenseSheetSaved = Executions.getCurrent().getParameter(
+                "expense_sheet_saved");
+        if (!StringUtils.isBlank(expenseSheetSaved)) {
+            messagesForUser.showMessage(Level.INFO,
+                    _("Expense sheet \"{0}\" saved", expenseSheetSaved));
+        }
     }
 
 }

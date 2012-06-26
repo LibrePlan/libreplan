@@ -35,8 +35,8 @@ public enum ProgressType {
 
     SPREAD_PROGRESS(_("Spreading progress")),
     ALL_NUMHOURS(_("Progress with all tasks by hours")),
-    CRITICAL_PATH_DURATION(_("Progress with critical path tasks by hours")),
-    CRITICAL_PATH_NUMHOURS(_("Progress with critical path tasks by duration"));
+    CRITICAL_PATH_NUMHOURS(_("Progress with critical path tasks by hours")),
+    CRITICAL_PATH_DURATION(_("Progress with critical path tasks by duration"));
 
     private String value;
 

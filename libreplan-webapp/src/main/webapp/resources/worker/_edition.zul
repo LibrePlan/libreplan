@@ -101,7 +101,9 @@
                     <caption label="${i18n:_('Bound user')}" />
                     <radiogroup id="userBindingRadiogroup"
                         onCheck="controller.updateUserBindingView();" />
-                    <panel title="${i18n:_('Existing user')}" border="normal"
+                    <panel title="${i18n:_('Existing user')}"
+                        id="existingUserPanel"
+                        border="normal"
                         visible="@{controller.existingUser}">
                         <panelchildren>
                             <grid fixedLayout="true">
@@ -124,7 +126,9 @@
                             </grid>
                             <button label="${i18n:_('Go to user edition window')}"
                                 onClick="controller.goToUserEdition();"
-                                visible="@{controller.userSelected}" />
+                                visible="@{controller.userSelected}"
+                                disabled="@{controller.noRoleUserAccounts}"
+                                tooltiptext="@{controller.userEditionButtonTooltip}" />
                         </panelchildren>
                     </panel>
                     <panel title="${i18n:_('New user')}" border="normal"

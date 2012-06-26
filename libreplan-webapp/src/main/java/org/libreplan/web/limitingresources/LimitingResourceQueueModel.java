@@ -387,8 +387,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     @Transactional(readOnly = true)
     public boolean userCanRead(Order order, String loginName) {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_ORDERS)
-                || SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+        if (SecurityUtils.isSuperuserOrUserInRoles(
+                UserRole.ROLE_READ_ALL_PROJECTS,
+                UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
         try {

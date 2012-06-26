@@ -140,6 +140,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
                 Date startDateLine = (Date) value;
                 if ((startDateLine != null) && (getEndingDate() != null)
                         && (startDateLine.compareTo(getEndingDate()) > 0)) {
+                    ((Datebox) comp).setValue(null);
                     throw new WrongValueException(comp,
                             _("must be lower than finish date"));
                 }
@@ -155,6 +156,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
                 Date endingDate = (Date) value;
                 if ((endingDate != null) && (getStartingDate() != null)
                         && (endingDate.compareTo(getStartingDate()) < 0)) {
+                    ((Datebox) comp).setValue(null);
                     throw new WrongValueException(comp,
                             _("must be greater than finish date"));
                 }

@@ -34,6 +34,7 @@ public class OrderElementHistoricAssignmentDTO {
     public final String orderCode;
     public final String orderElementCode;
     private final String name;
+    public final String orderElementName;
     public final String estimatedHours;
     public final String workedHours;
     public final OrderElement orderElement;
@@ -47,6 +48,7 @@ public class OrderElementHistoricAssignmentDTO {
         this.orderCode = order.getCode();
         this.orderElementCode = orderElement.getCode();
         this.name = order.getName();
+        this.orderElementName = orderElement.getName();
         this.estimatedHours = estimatedHours;
         this.workedHours = workedHours;
     }
@@ -77,6 +79,10 @@ public class OrderElementHistoricAssignmentDTO {
 
     public String getName() {
         return name;
+    }
+
+    public String getOrderElementName() {
+        return orderElementName;
     }
 
 }

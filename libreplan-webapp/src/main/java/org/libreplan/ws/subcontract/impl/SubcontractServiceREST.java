@@ -85,7 +85,7 @@ import org.springframework.stereotype.Service;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-@Path("/subcontract/")
+@Path("/subcontracting/subcontract/")
 @Produces("application/xml")
 @Service("subcontractServiceREST")
 public class SubcontractServiceREST implements ISubcontractService {

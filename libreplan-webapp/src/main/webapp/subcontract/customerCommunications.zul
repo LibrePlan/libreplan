@@ -17,7 +17,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Received from customers')}"?>
+<?page title="${i18n:_('LibrePlan: Received From Customers')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -30,7 +30,7 @@
 <zk>
 <window self="@{define(content)}"
         apply="org.libreplan.web.subcontract.CustomerCommunicationCRUDController"
-        title="${i18n:_('Communications from customers')}">
+        title="${i18n:_('Communications From Customers')}">
 
     <vbox id="messagesContainer" />
 	<div align="right">

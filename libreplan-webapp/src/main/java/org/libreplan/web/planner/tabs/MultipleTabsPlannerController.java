@@ -129,10 +129,8 @@ public class MultipleTabsPlannerController implements Composer,
         }
     }
 
-    public final String PLANNIFICATION = _("Scheduling");
-
     public static String getSchedulingLabel() {
-        return _("Scheduling");
+        return _("Planning");
     };
 
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
@@ -283,7 +281,8 @@ public class MultipleTabsPlannerController implements Composer,
                 }, parameters);
 
         dashboardTab = DashboardTabCreator.create(mode, planningStateCreator,
-                dashboardController, breadcrumbs);
+                dashboardController, orderPlanningController, breadcrumbs,
+                resourcesSearcher);
 
         this.budgetTab = BudgetTabCreator.create(mode, planningStateCreator,
                 budgetController, breadcrumbs);
@@ -305,12 +304,18 @@ public class MultipleTabsPlannerController implements Composer,
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
-            .add(tabWithNameReloading(ordersTab, typeChanged))
-            .add(tabWithNameReloading(resourceLoadTab, typeChanged))
-            .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
-            .add(visibleOnlyAtOrderMode(advancedAllocationTab))
-            .add(visibleOnlyAtOrderMode(budgetTab))
-            .add(visibleOnlyAtOrderMode(filmingProgressTab))
+            .add(tabWithNameReloading(ordersTab, typeChanged));
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+            tabsConfiguration.add(
+                    tabWithNameReloading(resourceLoadTab, typeChanged)).add(
+                    tabWithNameReloading(limitingResourcesTab, typeChanged));
+        } else {
+            tabsConfiguration.add(visibleOnlyAtOrderModeWithNameReloading(
+                    resourceLoadTab, typeChanged));
+        }
+        tabsConfiguration.add(visibleOnlyAtOrderMode(advancedAllocationTab))
+                .add(visibleOnlyAtOrderMode(budgetTab))
+                .add(visibleOnlyAtOrderMode(filmingProgressTab))
             .add(visibleOnlyAtOrderMode(dashboardTab));
 
         if (isMontecarloVisible) {
@@ -384,8 +389,18 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     private ChangeableTab visibleOnlyAtOrderMode(ITab tab) {
+        return visibleOnlyAtOrderModeWithNameReloading(tab, null);
+    }
+
+    private ChangeableTab visibleOnlyAtOrderModeWithNameReloading(ITab tab,
+            final State<Void> typeChanged) {
         final State<Boolean> state = State.create(mode.isOf(ModeType.ORDER));
-        ChangeableTab result = configure(tab).visibleOn(state);
+        ChangeableTab result;
+        if (typeChanged == null) {
+            result = configure(tab).visibleOn(state);
+        } else {
+            result = configure(tab).visibleOn(state).reloadNameOn(typeChanged);
+        }
         mode.addListener(new ModeTypeChangedListener() {
 
             @Override
@@ -411,7 +426,7 @@ public class MultipleTabsPlannerController implements Composer,
         }
         handler.registerBookmarkListener(this, comp.getPage());
 
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
             org.zkoss.zk.ui.Component createOrderButton = comp.getPage()
                     .getFellowIfAny(
                 "createOrderButton");
@@ -468,7 +483,7 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     @Override
-    public void goToOrderElementDetails(OrderElement orderElement, Order order) {
+    public void goToOrderElementDetails(Order order, OrderElement orderElement) {
         getTabsRegistry().show(ordersTab, changeModeTo(order));
         orderCRUDController.highLight(orderElement);
     }

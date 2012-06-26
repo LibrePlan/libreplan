@@ -18,7 +18,7 @@
 -->
 
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?page title="${i18n:_('LibrePlan: Expense Sheet')}" id="expense_sheet_admin"?>
+<?page title="${i18n:_('LibrePlan: Expenses')}" id="expense_sheet_admin"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -40,209 +40,146 @@
                 </hbox>
             </div>
 
-            <separator bar="false" spacing="10px" orient="horizontal" />
-            <grid id="listing" mold="paging" pageSize="10"
-                model="@{controller.expenseSheets}" sclass="clickable-rows">
+            <separator bar="false" spacing="10px" orient="horizontal"/>
+            <grid id="listing"  mold="paging" pageSize="10"
+                model="@{controller.expenseSheets}" sclass="clickable-rows"
+                rowRenderer="@{controller.expenseSheetsRenderer}">
                 <columns sizable="true">
                     <column id="columnFirstExpense" label="${i18n:_('First expense')}"
-                        sort="auto(firstExpense, lastExpense)"
-                        sortDirection="ascending" />
+                        sort="auto(firstExpense, lastExpense)" />
                     <column id="columnLastExpense" label="${i18n:_('Last expense')}"
-                        sort="auto(lastExpense, firstExpense)"
-                        sortDirection="ascending" />
-                    <column label="${i18n:_('Total')}" sort="auto(total)"
-                        sortDirection="ascending" />
-                    <column label="${i18n:_('Code')}" sort="auto(code)"
-                        sortDirection="ascending" />
+                        sort="auto(lastExpense, firstExpense)" />
+                    <column label="${i18n:_('Total')}"
+                        sort="auto(total)" />
+                    <column label="${i18n:_('Code')}"
+                        sort="auto(code)" />
                     <column label="${i18n:_('Description')}"
-                        width="286px" />
-                    <column label="${i18n:_('Actions')}" width="80px"
-                        align="center" />
+                        sort="auto(description)" />
+                    <column label="${i18n:_('Type')}"
+                        sort="auto(personal)" />
+                    <column label="${i18n:_('Operations')}" />
                 </columns>
-                <rows>
-                    <row self="@{each='expensesheet'}" value="@{expensesheet}"
-                        onClick="controller.goToEditForm(self.value);">
-                        <label
-                            value="@{expensesheet.firstExpense, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}" />
-                        <label
-                            value="@{expensesheet.lastExpense, converter='org.libreplan.web.common.typeconverters.LocalDateConverter'}" />
-                        <hbox>
-                            <label value="@{expensesheet.total}" />
-                            <label value="@{controller.currencySymbol}" />
-                        </hbox>
-                        <label value="@{expensesheet.code}" />
-                        <label value="@{expensesheet.description}" />
-                        <hbox>
-                            <button sclass="icono"
-                                image="/common/img/ico_editar1.png"
-                                hoverImage="/common/img/ico_editar.png"
-                                tooltiptext="${i18n:_('Edit')}"
-                                onClick="controller.goToEditForm(self.parent.parent.value);">
-                            </button>
-
-                            <button sclass="icono"
-                                image="/common/img/ico_borrar1.png"
-                                hoverImage="/common/img/ico_borrar.png"
-                                tooltiptext="${i18n:_('Delete')}"
-                                onClick="controller.confirmDelete(self.parent.parent.value);">
-                            </button>
-                        </hbox>
-                    </row>
-                </rows>
             </grid>
         </window>
 
         <window id="editWindow">
             <caption id="caption" sclass="caption-title" />
+            <groupbox closable="false" width="600px">
+                <caption label="${i18n:_('Identification')}" />
+                <separator bar="false" spacing="5px" orient="horizontal"/>
+                <vbox>
+                    <grid fixedLayout="true">
+                        <columns>
+                            <column width="100px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                            <label value="${i18n:_('Code')}" />
+                            <hbox>
+                                <textbox id="txtExpenseCode" value="@{controller.expenseSheet.code}"
+                                    constraint="@{controller.checkConstraintExpendeCode}"
+                                    disabled="@{controller.expenseSheet.codeAutogenerated}" />
+                                <checkbox id="generateCode" label="${i18n:_('Generate code')}"
+                                    onCheck="controller.onCheckGenerateCode(event)"
+                                    checked="@{controller.expenseSheet.codeAutogenerated}" />
+                            </hbox>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Description')}" />
+                                <textbox width="400px" value="@{controller.expenseSheet.description}"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Type')}" />
+                                <label value="@{controller.type}" />
+                            </row>
+                            <row visible="@{controller.expenseSheet.personal}">
+                                <label value="${i18n:_('Resource')}" />
+                                <label value="@{controller.resource}" />
+                            </row>
+                        </rows>
+                    </grid>
+                </vbox>
+            </groupbox>
+            <separator bar="false" spacing="5px" orient="horizontal"/>
+            <groupbox closable="false" width="600px">
+                <caption label="${i18n:_('Expense properties')}" />
+                <separator bar="false" spacing="5px" orient="horizontal"/>
+                <vbox>
+                    <hbox>
+                        <label value="${i18n:_('Task of project')}" />
+                        <bandboxSearch id="bandboxSelectOrder"
+                            finder="OrderInExpenseSheetBandboxFinder"
+                            widthBandbox="480px"
+                            widthListbox="500px"
+                            model="@{controller.orders}"
+                            selectedElement="@{controller.project, access='both'}"/>
+                    </hbox>
+                    <hbox>
+                        <label value="${i18n:_('Expense date')}" />
+                        <datebox id="dateboxExpenseDate" width="150px"
+                            value="@{controller.expenseSheetLineDate}"/>
+                    </hbox>
+                </vbox>
+            </groupbox>
+			<separator bar="false" spacing="5px" orient="horizontal"/>
+            <groupbox closable="false">
+                <caption label="${i18n:_('Expenses lines')}" />
+                <hbox>
+                    <label value="${i18n:_('Task')}"/>
+                    <bandboxSearch id="bandboxTasks"
+                        widthBandbox="285px"
+                        widthListbox="400px"
+                        finder="OrderElementInExpenseSheetBandboxFinder"
+                        model="@{controller.tasks}"
+                        selectedElement="@{controller.newExpenseSheetLine.orderElement, access='both'}"/>
 
-            <tabbox>
-                <tabs>
-                    <tab label="${i18n:_('Report data')}"></tab>
-                </tabs>
-                <tabpanels>
-                    <tabpanel>
-                        <vbox width="100%">
+					<separator bar="false" spacing="10px" orient="vertical"/>
 
-                            <groupbox closable="false">
-                                <caption label="${i18n:_('Identification')}" />
-                                <separator bar="false"
-                                    spacing="5px" orient="horizontal" />
+                    <label value="${i18n:_('Value')}" />
+                    <decimalbox id="dboxValue"
+                        value="@{controller.newExpenseSheetLine.value}"
+                        format="@{controller.moneyFormat}"
+                        constraint="@{controller.checkConstraintExpenseValue}"/>
 
-                                <grid fixedLayout="false" width="100%"
-                                    span="1">
-                                    <columns>
-                                        <column width="200px" />
-                                        <column />
-                                    </columns>
-                                    <rows>
-                                        <row>
-                                            <label value="${i18n:_('Code')}" />
-                                            <hbox>
+					<separator bar="false" spacing="10px" orient="vertical"/>
 
-                                                <textbox
-                                                    id="txtExpenseCode"
-                                                    width="350px"
-                                                    value="@{controller.expenseSheet.code}"
-                                                    constraint="@{controller.checkConstraintExpendeCode}"
-                                                    disabled="@{controller.expenseSheet.codeAutogenerated}" />
-                                                <checkbox id="generateCode"
-                                                    label="${i18n:_('Generate code')}"
-                                                    onCheck="controller.onCheckGenerateCode(event)"
-                                                    checked="@{controller.expenseSheet.codeAutogenerated}" />
-                                            </hbox>
+                    <label value="${i18n:_('Concept')}" />
+                    <textbox id="tbConcept" width="200px" value="@{controller.newExpenseSheetLine.concept}" />
 
-                                        </row>
-                                        <row>
-                                            <label
-                                                value="${i18n:_('Description')}" />
-                                            <textbox width="500px"
-                                                value="@{controller.expenseSheet.description}" />
-                                        </row>
-                                    </rows>
-                                </grid>
+                    <separator bar="false" spacing="10px" orient="vertical"/>
 
+                    <div visible="@{controller.expenseSheet.notPersonal}">
+                        <label value="${i18n:_('Resource')}" />
+                        <bandboxSearch id="bandboxResource"
+                            widthBandbox="285px"
+                            widthListbox="400px"
+                            finder="ResourceInExpenseSheetBandboxFinder"
+                            selectedElement="@{controller.newExpenseSheetLine.resource, access='both'}"/>
+                    </div>
 
+                    <separator bar="false" spacing="10px" orient="vertical"/>
+                    <button onClick="controller.addExpenseSheetLine();" label="${i18n:_('New')}"/>
+                </hbox>
+                <separator bar="false" spacing="10px" orient="horizontal"/>
+                <grid id="gridExpenseLines" mold="paging" pageSize="10"
+                    model="@{controller.expenseSheetLines}" width="100%"
+                    rowRenderer="@{controller.expenseSheetLineRenderer}">
+                    <columns sizable="true">
+                        <column label="${i18n:_('Task')}" width="275px" />
+                        <column label="${i18n:_('Value')}" />
+                        <column label="${i18n:_('Concept')}" />
+                        <column label="${i18n:_('Date')}" />
+                        <column label="${i18n:_('Resource')}" width="275px"
+                             visible="@{controller.expenseSheet.notPersonal}" />
+                        <column label="${i18n:_('Code')}" />
+                        <column label="${i18n:_('Operations')}" />
+                    </columns>
+                </grid>
+            </groupbox>
 
-
-                                <vbox>
-
-
-                                </vbox>
-                            </groupbox>
-                            <separator bar="false" spacing="5px"
-                                orient="horizontal" />
-                            <separator bar="false" spacing="5px"
-                                orient="horizontal" />
-                            <groupbox closable="false">
-                                <caption label="${i18n:_('Expenses lines')}" />
-
-                                <hbox>
-                                    <hbox align="pack">
-                                    <label value="${i18n:_('New expense task')}" />
-                                    <bandboxSearch id="bandboxTasks"
-                                        widthBandbox="260px"
-                                        widthListbox="600px"
-                                        finder="OrderElementInExpenseSheetBandboxFinder"
-                                        model="@{controller.tasks}"
-                                        selectedElement="@{controller.expenseSheetLineDTO.orderElement}" />
-
-                                    <label value="${i18n:_('Value')}" />
-                                    <decimalbox id="dboxValue"
-                                        value="@{controller.expenseSheetLineDTO.value}"
-                                        scale="2"
-                                        constraint="@{controller.checkConstraintExpenseValue}" />
-                                    <label value="${i18n:_('Concept')}" />
-                                    <textbox id="tbConcept"
-                                        width="180px"
-                                        value="@{controller.expenseSheetLineDTO.concept}" />
-                                    <label value="${i18n:_('Resource')}" />
-                                    <bandboxSearch id="bandboxResource"
-                                        widthBandbox="200px"
-                                        widthListbox="400px"
-                                        finder="ResourceInExpenseSheetBandboxFinder"
-                                        selectedElement="@{controller.expenseSheetLineDTO.resource}" />
-                                    </hbox>
-                                    <groupbox sclass="filter-more-options"
-                                        mold="3d" width="120px" open="false"
-                                        contentStyle="border: 1px solid #B2CCD9;">
-                                        <caption
-                                            label="${i18n:_('More options')}" />
-
-                                        <hbox align="pack">
-                                            <label
-                                                value="${i18n:_('Add only tasks from project')}" />
-                                            <bandboxSearch
-                                                id="bandboxSelectOrder"
-                                                finder="OrderInExpenseSheetBandboxFinder"
-                                                widthBandbox="300px"
-                                                widthListbox="480px"
-                                                model="@{controller.orders}"
-                                                selectedElement="@{controller.projectDefault}" />
-                                            <label
-                                                value="${i18n:_('default date')}" />
-                                            <datebox
-                                                id="dateboxExpenseDate"
-                                                width="100px"
-                                                value="@{controller.expenseSheetLineDate}" />
-                                        </hbox>
-                                    </groupbox>
-
-
-
-                                    <separator bar="false"
-                                        spacing="10px" orient="vertical" />
-                                    <button
-                                        onClick="controller.addExpenseSheetLine();"
-                                        label="${i18n:_('Add')}" />
-                                </hbox>
-                                <separator bar="false"
-                                    spacing="10px" orient="horizontal" />
-                                <grid id="gridExpenseLines" mold="paging"
-                                    pageSize="10"
-                                    model="@{controller.expenseSheetLines}"
-                                    width="100%"
-                                    rowRenderer="@{controller.expenseSheetLineRenderer}">
-                                    <columns>
-                                        <column label="${i18n:_('Task')}" />
-                                        <column label="${i18n:_('Value')}"  width="100px"/>
-                                        <column label="${i18n:_('Concept')}" />
-                                        <column label="${i18n:_('Date')}" width="120px"/>
-                                        <column label="${i18n:_('Resource')}" />
-                                        <column label="${i18n:_('Code')}" />
-                                        <column label="${i18n:_('Op.')}"
-                                            align="center" width="40px"/>
-                                    </columns>
-                                </grid>
-                            </groupbox>
-
-
-                        </vbox>
-                    </tabpanel>
-                </tabpanels>
-            </tabbox>
-
-            <button onClick="controller.saveAndExit();" label="${i18n:_('Save')}"
-                sclass="save-button global-action" />
+            <button onClick="controller.saveAndExit();"
+                label="${i18n:_('Save')}" sclass="save-button global-action"/>
             <button onClick="controller.saveAndContinue();"
                 label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
             <button onClick="controller.cancelForm();" label="${i18n:_('Cancel')}"

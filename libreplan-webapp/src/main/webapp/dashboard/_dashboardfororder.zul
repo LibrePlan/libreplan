@@ -25,6 +25,16 @@
     <zscript>
         <![CDATA[
             dsController = arg.get("dashboardController");
+
+            // Load jqPlot CSS and Javascript files
+            jquery_jqplot_min_css = dsController.loadResourceFile("/jqplot/jquery.jqplot.min.css");
+            jquery_min_js = dsController.loadResourceFile("/jqplot/jquery.min.js");
+            jquery_jqplot_min_js = dsController.loadResourceFile("/jqplot/jquery.jqplot.min.js");
+            jqplot_canvasTextRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.canvasTextRenderer.min.js");
+            jqplot_canvasAxisLabelRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js");
+            jqplot_barRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.barRenderer.min.js");
+            jqplot_pieRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.pieRenderer.min.js");
+            jqplot_categoryAxisRenderer_min_js = dsController.loadResourceFile("/jqplot/plugins/jqplot.categoryAxisRenderer.min.js");
         ]]>
     </zscript>
 
@@ -121,18 +131,35 @@
         var global_progress = { };
     </script>
 
+    <n:style type="text/css">
+        .tooltip {
+            display:none;
+            position:absolute;
+            border:1px solid #333;
+            background-color:#161616;
+            border-radius:5px;
+            padding:10px;
+            color:#fff;
+            font-size:12px Arial;
+        }
+    </n:style>
+
     <globalProgress />
 
     <!-- Include jqPlot styles -->
-    <n:link class="include" rel="stylesheet" type="text/css" href="/libreplan-webapp/jqplot/jquery.jqplot.min.css" />
+    <n:style rel="stylesheet" type="text/css">
+        ${jquery_jqplot_min_css}
+    </n:style>
 
     <!-- Include jqPlot library and additional plugins -->
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/jquery.jqplot.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasTextRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.barRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.pieRenderer.min.js"></n:script>
-    <n:script type="text/javascript" src="/libreplan-webapp/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></n:script>
+    <n:script type="text/javascript">
+        ${jquery_min_js}
+        ${jquery_jqplot_min_js}
+        ${jqplot_canvasTextRenderer_min_js}
+        ${jqplot_canvasAxisLabelRenderer_min_js}
+        ${jqplot_barRenderer_min_js}
+        ${jqplot_pieRenderer_min_js}
+        ${jqplot_categoryAxisRenderer_min_js}
+    </n:script>
 
 </zk>

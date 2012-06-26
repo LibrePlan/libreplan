@@ -58,8 +58,10 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReportLine;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -89,6 +91,9 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     private List<Order> selectedOrders = new ArrayList<Order>();
 
@@ -262,7 +267,10 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
     }
 
     private void loadAllOrders() {
-        this.allOrders = orderDAO.getOrders();
+        this.allOrders = orderDAO.getOrdersByReadAuthorizationByScenario(
+                SecurityUtils.getSessionUserLoginName(),
+                scenarioManager.getCurrent());
+
         Collections.sort(this.allOrders);
     }
 

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +23,9 @@ package org.libreplan.business.workreports.entities;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +33,8 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDate.Property;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -39,6 +43,8 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
@@ -46,6 +52,7 @@ import org.libreplan.business.workreports.valueobjects.DescriptionValue;
 /**
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class WorkReport extends IntegrationEntity implements
         IWorkReportsElements {
@@ -123,7 +130,7 @@ public class WorkReport extends IntegrationEntity implements
         }
     }
 
-    @NotNull(message = "work report type not specified")
+    @NotNull(message = "timesheet template not specified")
     public WorkReportType getWorkReportType() {
         return workReportType;
     }
@@ -252,7 +259,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "label type:the work report have not assigned this label type")
+    @AssertTrue(message = "label type:the timesheet have not assigned this label type")
     public boolean checkConstraintAssignedLabelTypes() {
         if (this.workReportType == null) {
             return true;
@@ -274,7 +281,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "description value:the work report have not assigned the description field")
+    @AssertTrue(message = "description value:the timesheet have not assigned the description field")
     public boolean checkConstraintAssignedDescriptionValues() {
         if (this.workReportType == null) {
             return true;
@@ -297,7 +304,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "There are repeated description values in the work report ")
+    @AssertTrue(message = "There are repeated description values in the timesheet ")
     public boolean checkConstraintAssignedRepeatedDescriptionValues() {
 
         Set<String> textFields = new HashSet<String>();
@@ -352,7 +359,7 @@ public class WorkReport extends IntegrationEntity implements
         assignItsDescriptionValues(workReportType);
         assignItsLabels(workReportType);
 
-        // it updates the fields and labels of its work report lines
+        // it updates the fields and labels of its timesheet lines
         for (WorkReportLine line : getWorkReportLines()) {
             line.updateItsFieldsAndLabels();
         }
@@ -425,7 +432,7 @@ public class WorkReport extends IntegrationEntity implements
 
     }
 
-    @AssertTrue(message = "The work report line codes must be unique.")
+    @AssertTrue(message = "The timesheet line codes must be unique.")
     public boolean checkConstraintNonRepeatedWorkReportLinesCodes() {
         return getFirstRepeatedCode(this.workReportLines) == null;
     }
@@ -453,6 +460,78 @@ public class WorkReport extends IntegrationEntity implements
     @NotNull(message = "last order element sequence code not specified")
     public Integer getLastWorkReportLineSequenceCode() {
         return lastWorkReportLineSequenceCode;
+    }
+
+    public EffortDuration getTotalEffortDuration() {
+        EffortDuration result = EffortDuration.zero();
+        for (WorkReportLine line : workReportLines) {
+            result = result.plus(line.getEffort());
+        }
+        return result;
+    }
+
+    @AssertTrue(message = "only one timesheet line per day and task is allowed in monthly timesheets")
+    public boolean checkConstraintOnlyOneWorkReportLinePerDayAndOrderElementInMonthlyTimesheet() {
+        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+            return true;
+        }
+
+        Map<OrderElement, Set<LocalDate>> map = new HashMap<OrderElement, Set<LocalDate>>();
+        for (WorkReportLine line : workReportLines) {
+            OrderElement orderElement = line.getOrderElement();
+            if (map.get(orderElement) == null) {
+                map.put(orderElement, new HashSet<LocalDate>());
+            }
+
+            LocalDate date = LocalDate.fromDateFields(line.getDate());
+            if (map.get(orderElement).contains(date)) {
+                return false;
+            }
+            map.get(orderElement).add(date);
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "all timesheet lines have to be in the same month in monthly timesheets")
+    public boolean checkConstraintAllWorkReportLinesInTheSameMonthInMonthlyTimesheet() {
+        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+            return true;
+        }
+
+        if (workReportLines.isEmpty()) {
+            return true;
+        }
+
+        Property dayOfMonth = LocalDate.fromDateFields(
+                workReportLines.iterator().next().getDate()).dayOfMonth();
+        LocalDate min = dayOfMonth.withMinimumValue();
+        LocalDate max = dayOfMonth.withMaximumValue();
+
+        for (WorkReportLine line : workReportLines) {
+            LocalDate date = LocalDate.fromDateFields(line.getDate());
+            if ((date.compareTo(min) < 0) || (date.compareTo(max) > 0)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "resource has to be bound to a user in monthly timesheets")
+    public boolean checkConstraintResourceIsBoundInMonthlyTimesheet() {
+        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+            return true;
+        }
+
+        if (resource != null) {
+            try {
+                Worker worker = Registry.getWorkerDAO().find(resource.getId());
+                return worker.getUser() != null;
+            } catch (InstanceNotFoundException e) {
+                // Do nothing
+            }
+        }
+
+        return false;
     }
 
 }

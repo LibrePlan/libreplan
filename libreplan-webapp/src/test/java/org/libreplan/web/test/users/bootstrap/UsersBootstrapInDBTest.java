@@ -31,10 +31,11 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.bootstrap.IProfileBootstrap;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
-import org.libreplan.web.users.bootstrap.MandatoryUser;
+import org.libreplan.web.users.bootstrap.PredefinedUsers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -57,26 +58,17 @@ public class UsersBootstrapInDBTest {
     private IUsersBootstrapInDB usersBootstrap;
 
     @Autowired
+    private IProfileBootstrap profileBootstrap;
+
+    @Autowired
     private IUserDAO userDAO;
 
     @Test
     public void testMandatoryUsersCreated() throws InstanceNotFoundException {
-
-       checkLoadRequiredData();
-
-        /*
-         * Load data again to verify that a second load does not cause
-         * problems.
-         */
-       checkLoadRequiredData();
-
-    }
-
-    private void checkLoadRequiredData() throws InstanceNotFoundException {
-
+        profileBootstrap.loadRequiredData();
         usersBootstrap.loadRequiredData();
 
-        for (MandatoryUser u : MandatoryUser.values()) {
+        for (PredefinedUsers u : PredefinedUsers.values()) {
 
             User user = userDAO.findByLoginName(u.getLoginName());
 
@@ -84,7 +76,6 @@ public class UsersBootstrapInDBTest {
             assertEquals(u.getInitialRoles(), user.getRoles());
 
         }
-
     }
 
 }

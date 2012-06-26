@@ -20,15 +20,17 @@
 package org.libreplan.web.dashboard;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
-import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 
 interface IDashboardModel {
 
-    void setCurrentOrder(Order order);
+    void setCurrentOrder(PlanningState planningState, List<TaskElement> criticalPath);
 
     boolean tasksAvailable();
 
@@ -51,6 +53,8 @@ interface IDashboardModel {
     BigDecimal getPercentageOfTasksWithNoDeadline();
 
     /* Progress KPI: "Global Progress of the Project" */
+    BigDecimal getSpreadProgress();
+
     BigDecimal getAdvancePercentageByHours();
 
     BigDecimal getExpectedAdvancePercentageByHours();

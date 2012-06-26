@@ -21,16 +21,25 @@ package org.libreplan.web.dashboard;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -72,8 +81,31 @@ public class DashboardController extends GenericForwardComposer {
         super.doAfterCompose(comp);
     }
 
-    public void setCurrentOrder(Order order) {
-        dashboardModel.setCurrentOrder(order);
+    public String loadResourceFile(String filename) {
+        final String newline = "\n";
+
+        ApplicationContext ctx = new ClassPathXmlApplicationContext();
+        Resource res = ctx.getResource(filename);
+        BufferedReader reader;
+        StringBuilder sb = new StringBuilder();
+        try {
+           reader = new BufferedReader(new InputStreamReader(res.getInputStream()));
+           String line;
+
+           while ((line = reader.readLine()) != null) {
+              sb.append(line);
+              sb.append(newline);
+           }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        return sb.toString();
+    }
+
+    public void setCurrentOrder(PlanningState planningState, List<TaskElement> criticalPath) {
+        final Order order = planningState.getOrder();
+
+        dashboardModel.setCurrentOrder(planningState, criticalPath);
         if (dashboardModel.tasksAvailable()) {
             if (self != null) {
                 renderGlobalProgress();
@@ -93,9 +125,9 @@ public class DashboardController extends GenericForwardComposer {
     }
 
     private void renderOvertimeRatio() {
-        lblOvertimeRatio.setValue(String.format("%.2f", dashboardModel
-                .getOvertimeRatio().doubleValue()));
-        String valueMeaning = (dashboardModel.getOvertimeRatio().doubleValue() > 1) ? "negative"
+        BigDecimal overtimeRatio = dashboardModel.getOvertimeRatio();
+        lblOvertimeRatio.setValue(String.format("%.2f", overtimeRatio.doubleValue()));
+        String valueMeaning = (overtimeRatio.doubleValue() > 1) ? "negative"
                 : "positive";
         lblOvertimeRatio.setSclass("dashboard-label-remarked " + valueMeaning);
     }
@@ -268,6 +300,9 @@ public class DashboardController extends GenericForwardComposer {
                 dashboardModel.getCriticalPathProgressByNumHours());
         globalProgressChart.current(GlobalProgressChart.ALL_TASKS_HOURS,
                 dashboardModel.getAdvancePercentageByHours());
+        globalProgressChart.current(GlobalProgressChart.SPREAD_PROGRESS,
+                dashboardModel.getSpreadProgress());
+
         // Expected values
         globalProgressChart.expected(
                 GlobalProgressChart.CRITICAL_PATH_DURATION,
@@ -276,6 +311,8 @@ public class DashboardController extends GenericForwardComposer {
                 dashboardModel.getExpectedCriticalPathProgressByNumHours());
         globalProgressChart.expected(GlobalProgressChart.ALL_TASKS_HOURS,
                 dashboardModel.getExpectedAdvancePercentageByHours());
+        globalProgressChart.expected(GlobalProgressChart.SPREAD_PROGRESS,
+                BigDecimal.ZERO);
 
         globalProgressChart.render();
     }

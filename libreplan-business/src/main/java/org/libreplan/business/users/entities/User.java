@@ -83,10 +83,12 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     public User() {
     }
 
-    private User(String loginName, String password, Set<UserRole> roles) {
+    private User(String loginName, String password, Set<UserRole> roles,
+            Set<Profile> profiles) {
         this.loginName = loginName;
         this.password = password;
         this.roles = roles;
+        this.profiles = profiles;
     }
 
     private User(String loginName, String password, String email) {
@@ -97,9 +99,12 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public static User create(String loginName, String password,
             Set<UserRole> roles) {
+        return create(loginName, password, roles, new HashSet<Profile>());
+    }
 
-        return create(new User(loginName, password, roles));
-
+    public static User create(String loginName, String password,
+            Set<UserRole> roles, Set<Profile> profiles) {
+        return create(new User(loginName, password, roles, profiles));
     }
 
     public static User create() {
@@ -204,8 +209,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return disabled;
     }
 
-    public boolean isAdministrator() {
-        return isInRole(UserRole.ROLE_ADMINISTRATION);
+    public boolean isSuperuser() {
+        return isInRole(UserRole.ROLE_SUPERUSER);
     }
 
     @AssertTrue(message = "username is already being used by another user")
@@ -305,6 +310,11 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public void setWorker(Worker worker) {
         this.worker = worker;
+        if (worker == null) {
+            roles.remove(UserRole.ROLE_BOUND_USER);
+        } else {
+            roles.add(UserRole.ROLE_BOUND_USER);
+        }
     }
 
     public String getFullName() {

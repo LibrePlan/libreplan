@@ -27,8 +27,11 @@ import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSc
 import java.util.HashMap;
 import java.util.Map;
 
+import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.limitingresources.LimitingResourcesController;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -132,6 +135,14 @@ public class LimitingResourcesTabCreator {
         return new CreatedOnDemandTab(_("Limiting Resources Planning"),
                 "limiting-resources",
                 componentCreator) {
+            @Override
+            protected void beforeShowAction() {
+                if (!SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+                    Util.sendForbiddenStatusCodeInHttpServletResponse();
+                }
+            }
+
             @Override
             protected void afterShowAction() {
                 limitingResourcesControllerGlobal.reload();

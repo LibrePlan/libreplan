@@ -51,4 +51,7 @@ public interface IProfileDAO extends IGenericDAO<Profile, Long>{
 
     List<OrderAuthorization> getOrderAuthorizationsByProfile(Profile profile);
 
+    Profile findByProfileNameLoadingRoles(String profileName)
+            throws InstanceNotFoundException;
+
 }

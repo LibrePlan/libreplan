@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 CafédeRed Solutions, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,12 +20,14 @@
 package org.libreplan.business.workreports.entities;
 
 /**
- * Defines the default {@link WorkReportType}.
+ * Defines the default {@link WorkReportType WorkReportTypes}.
  *
  * @author Ignacio Díaz Teijido <ignacio.diaz@cafedered.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public enum PredefinedWorkReportTypes {
-    DEFAULT("Default", false, false, false);
+    DEFAULT("Default", false, false, false),
+    MONTHLY_TIMESHEETS("Monthly timesheets", false, true, false);
 
     private WorkReportType workReportType;
 
@@ -41,4 +44,9 @@ public enum PredefinedWorkReportTypes {
     public WorkReportType getWorkReportType() {
         return workReportType;
     }
+
+    public String getName() {
+        return workReportType.getName();
+    }
+
 }
