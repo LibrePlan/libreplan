@@ -33,14 +33,19 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
+import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.templates.IOrderTemplatesModel;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
@@ -131,24 +136,53 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
     public void view(final OrderElementHistoricAssignmentDTO dto) {
         OrderElement orderElement = dto.getOrderElement();
         Order order = dto.getOrder();
-        if (model.getCurrentScenario().contains(order)) {
-            globalView.goToOrderElementDetails(order, orderElement);
-        } else {
-            try {
+        try {
+            if (model.getCurrentScenario().contains(order)) {
+                if (SecurityUtils.isSuperuserOrUserInRoles(
+                        UserRole.ROLE_PLANNING,
+                        UserRole.ROLE_READ_ALL_PROJECTS,
+                        UserRole.ROLE_EDIT_ALL_PROJECTS)
+                        || curerntUserHasAnyPermissionOverOrder(order)) {
+                    globalView.goToOrderElementDetails(order, orderElement);
+                } else {
+                    Messagebox
+                            .show(_("You do not have permissions to edit the project"),
+                                    _("Warning"), Messagebox.OK,
+                                    Messagebox.EXCLAMATION);
+                }
+            } else {
                 String scenarios = "";
                 for (Scenario scene : getScenarios(order)) {
                     scenarios = scenarios.concat(scene.getName() + "\n");
                 }
                 Messagebox
-                        .show(
-                                _("Its planning is not in the current scene.\nShould change to any of the following scenarios:\n"
-                                        + scenarios),
-                                _("Information"), Messagebox.OK,
+                        .show(_("The planning of this task is not in the current scenenario.\nYou should change to any of the following scenarios: {0}",
+                                scenarios), _("Information"), Messagebox.OK,
                                 Messagebox.INFORMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    private boolean curerntUserHasAnyPermissionOverOrder(final Order order) {
+        return this.adHocTransactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<Boolean>() {
+                    @Override
+                    public Boolean execute() {
+                        try {
+                            User user = Registry.getUserDAO()
+                                    .findByLoginName(
+                                            SecurityUtils.getLoggedUser()
+                                                    .getUsername());
+                            return !Registry.getOrderAuthorizationDAO()
+                                    .listByOrderUserAndItsProfiles(order, user)
+                                    .isEmpty();
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
     }
 
     private Set<Scenario> getScenarios(final Order order) {
