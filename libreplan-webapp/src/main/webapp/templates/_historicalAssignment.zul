@@ -34,9 +34,10 @@
                     <columns>
                         <column label="${i18n:_('Project code')}" sort="orderCode" sortDirection="descending"/>
                         <column label="${i18n:_('Project Name')}" width="250px" sort="auto(name)" sortDirection="descending"/>
-                        <column label="${i18n:_('Project element code')}" sort="auto(name)" sortDirection="descending"/>
+                        <column label="${i18n:_('Task code')}" sort="auto(orderElementCode)" />
+                        <column label="${i18n:_('Task name')}" sort="auto(orderElementName)" />
                         <column label="${i18n:_('Estimated hours')}" />
-                        <column label="${i18n:_('worked hours')}" />
+                        <column label="${i18n:_('Worked hours')}" />
                         <column label="${i18n:_('Operations')}" align="center" width="100px" />
                     </columns>
                     <rows>
@@ -44,6 +45,7 @@
                             <label value="@{orderElementDTO.orderCode}"/>
                             <label value="@{orderElementDTO.name}"/>
                             <label value="@{orderElementDTO.orderElementCode}"/>
+                            <label value="@{orderElementDTO.orderElementName}"/>
                             <label value="@{orderElementDTO.estimatedHours}"/>
                             <label value="@{orderElementDTO.workedHours}"/>
                             <button label="${i18n:_('View')}"
