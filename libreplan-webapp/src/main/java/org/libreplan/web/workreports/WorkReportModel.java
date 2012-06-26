@@ -110,8 +110,6 @@ public class WorkReportModel extends IntegrationEntityModel implements
 
     private boolean editing = false;
 
-    private boolean listingQuery = false;
-
     private static final Map<LabelType, List<Label>> mapLabelTypes = new HashMap<LabelType, List<Label>>();
 
     private List<WorkReportDTO> listWorkReportDTOs = new ArrayList<WorkReportDTO>();
@@ -395,16 +393,6 @@ public class WorkReportModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public boolean isListingQuery() {
-        return this.listingQuery;
-    }
-
-    @Override
-    public void setListingQuery(boolean listingQuery) {
-        this.listingQuery = listingQuery;
-    }
-
-    @Override
     public WorkReportLine addWorkReportLine() {
         if (workReport != null) {
             WorkReportLine workReportLine = WorkReportLine.create(workReport);
@@ -637,6 +625,18 @@ public class WorkReportModel extends IntegrationEntityModel implements
     @Transactional(readOnly = true)
     public List<Worker> getBoundWorkers() {
         return workerDAO.getBound();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isMonthlyTimesheet(WorkReport workReport) {
+        try {
+            return workReportTypeDAO.find(
+                    workReport.getWorkReportType().getId())
+                    .isMonthlyTimesheetsType();
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

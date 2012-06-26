@@ -132,20 +132,6 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
     boolean isEditing();
 
     /**
-     * Returns true if {@link WorkReport} is being edited from the query of the
-     * {@link WorkReportLine} list
-     * @return
-     */
-    boolean isListingQuery();
-
-    /**
-     * Set if the {@link WorkReport} is being edited from the query of the
-     * {@link WorkReportLine} list
-     * @return
-     */
-    void setListingQuery(boolean listingQuery);
-
-    /**
      * Makes some operations needed before edit a {@link WorkReport}.
      * @param workReport
      *            The object to be edited
@@ -251,4 +237,10 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
      * Returns the list of {@link Worker Workers} bound to any {@link User}.
      */
     List<Worker> getBoundWorkers();
+
+    /**
+     * Checks if a {@link WorkReport} is or not a monthly timesheet.
+     */
+    boolean isMonthlyTimesheet(WorkReport workReport);
+
 }

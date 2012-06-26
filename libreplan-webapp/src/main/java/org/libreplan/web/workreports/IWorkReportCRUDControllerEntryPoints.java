@@ -29,9 +29,6 @@ import org.libreplan.web.common.entrypoints.EntryPoints;
 @EntryPoints(page = "/workreports/workReport.zul", registerAs = "workReportCRUD")
 public interface IWorkReportCRUDControllerEntryPoints {
 
-    @EntryPoint("editDTO")
-    public abstract void goToEditForm(WorkReportDTO workReportDTO);
-
     @EntryPoint("edit")
     public abstract void goToEditForm(WorkReport workReport);
 

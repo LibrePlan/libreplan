@@ -27,11 +27,10 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
-    <window self="@{define(content)}"
-        apply="org.libreplan.web.workreports.WorkReportCRUDController">
-        <vbox id="messagesContainer"></vbox>
+    <window self="@{define(content)}" id="listQueryWindow"
+        title="${i18n:_('Timesheet Lines List')}"
+        apply="org.libreplan.web.workreports.WorkReportQueryController">
 
-    <window id="listQueryWindow" title="${i18n:_('Timesheet Lines List')}">
        <panel title="${i18n:_('Filter timesheet lines by')}" border="normal"
                     style="overflow:auto">
         <panelchildren>
@@ -156,88 +155,4 @@
 
         </window>
 
-        <window id="createWindow" title="${i18n:_('Edit timesheet')}">
-            <tabbox>
-                <tabs>
-                    <tab label="${i18n:_('Report data')}"></tab>
-                </tabs>
-                <tabpanels>
-                    <tabpanel>
-                        <vbox width="100%">
-
-                    <panel title="${i18n:_('Heading Fields')}" border="normal"
-                            style="overflow:auto">
-                        <panelchildren>
-                        <grid id="HeadingRequirementsFields" mold="paging" pageSize="4" fixedLayout="true">
-                            <columns>
-                              <column width="200px"/>
-                              <column />
-                            </columns>
-                            <rows>
-                                <row visible = "@{controller.workReport.workReportType.dateIsSharedByLines}">
-                                        <label value="${i18n:_('Date')}" />
-                                        <datebox id="date" value="@{controller.workReport.date}" />
-                                </row>
-                                <row visible = "@{controller.workReport.workReportType.resourceIsSharedInLines}">
-                                        <label value="${i18n:_('Resource')}" />
-                                        <autocomplete id="autocompleteResource" buttonVisible="true"
-                                            onChange ="controller.changeResource(self.selectedItem);"
-                                            finder="ResourceFinder"
-                                            selectedItem="@{controller.workReport.resource}"/>
-                                </row>
-                                <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
-                                    <label value="${i18n:_('Task Code')}" />
-                                    <bandboxSearch id="bandboxSelectOrderElementInHead"
-                                        finder="OrderElementBandboxFinder"
-                                        model="@{controller.orderElements}"
-                                        selectedElement="@{controller.workReport.orderElement}"
-                                        onSelect="controller.setOrderElementInComponent(event)" />
-                                </row>
-                            </rows>
-                        </grid>
-
-                        <grid id="headingFieldsAndLabels" mold="paging" pageSize="4"
-                            fixedLayout="true"
-                            model="@{controller.fieldsAndLabelsHeading}"
-                            rowRenderer= "@{controller.orderedFieldsAndLabelsRowRenderer}">
-                            <columns>
-                              <column width="200px"/>
-                              <column />
-                            </columns>
-                        </grid>
-                        </panelchildren>
-                        </panel>
-
-                        <separator bar="false" spacing="80px" orient="vertical"/>
-
-                            <!-- Work report lines -->
-                            <panel title="${i18n:_('Timesheet lines')}"
-                                border="normal">
-                                <panelchildren>
-                                    <hbox>
-                                        <button label="${i18n:_('Add new row')}"
-                                            onClick="controller.addWorkReportLine()" />
-                                    </hbox>
-
-                                   <newdatasortablegrid id="listWorkReportLines" fixedLayout="true"
-                                        rowRenderer="@{controller.renderer}" />
-                                </panelchildren>
-                            </panel>
-                        </vbox>
-                    </tabpanel>
-                </tabpanels>
-            </tabbox>
-
-            <button onClick="controller.saveAndExit();"
-                label="${i18n:_('Save')}" sclass="save-button global-action"/>
-            <button onClick="controller.saveAndContinue();"
-                label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
-            <button onClick="controller.newWorkReportWithSameType();"
-                label="${i18n:_('Save &amp; New timesheet')}" sclass="saveandcontinue-button global-action"/>
-            <button onClick="controller.cancel();"
-                label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
-
-        </window>
-
-    </window>
 </zk>
