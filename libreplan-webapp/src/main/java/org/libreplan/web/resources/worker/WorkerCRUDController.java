@@ -488,6 +488,12 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         UserBindingOption[] values = UserBindingOption.values();
         for (UserBindingOption option : values) {
             Radio radio = new Radio(option.label);
+            if (option.equals(UserBindingOption.CREATE_NEW_USER)
+                    && !SecurityUtils
+                            .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {
+                radio.setDisabled(true);
+                radio.setTooltiptext(_("You do not have permissions to create new users"));
+            }
             userBindingRadiogroup.appendChild(radio);
         }
     }
