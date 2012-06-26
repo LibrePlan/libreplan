@@ -759,8 +759,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public boolean userCanRead(Order order, String loginName) {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_READ_ALL_PROJECTS) ||
-                SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+        if (SecurityUtils.isSuperuserOrUserInRoles(
+                UserRole.ROLE_READ_ALL_PROJECTS,
+                UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
         if (order.isNewObject()
@@ -789,7 +790,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Override
     @Transactional(readOnly = true)
     public boolean userCanWrite(Order order, String loginName) {
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
         if (order.isNewObject()

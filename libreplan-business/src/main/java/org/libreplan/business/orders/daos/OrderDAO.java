@@ -193,8 +193,9 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @Override
     public List<Order> getOrdersByReadAuthorization(User user) {
-        if (user.isInRole(UserRole.ROLE_READ_ALL_PROJECTS) ||
-            user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+        if (user.isInRole(UserRole.ROLE_SUPERUSER)
+                || user.isInRole(UserRole.ROLE_READ_ALL_PROJECTS)
+                || user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return getOrders();
         }
         else {
@@ -217,7 +218,8 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @Override
     public List<Order> getOrdersByWriteAuthorization(User user) {
-        if (user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+        if (user.isInRole(UserRole.ROLE_SUPERUSER)
+                || user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return getOrders();
         }
         else {
