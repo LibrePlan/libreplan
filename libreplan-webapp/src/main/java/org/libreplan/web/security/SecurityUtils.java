@@ -105,12 +105,15 @@ public final class SecurityUtils {
      * <ul>
      * <li>Has role {@link UserRole#ROLE_SUPERUSER}</li>
      * <li>Or has role {@link UserRole#ROLE_PLANNING}</li>
+     * <li>Or has role {@link UserRole#ROLE_READ_ALL_PROJECTS}</li>
+     * <li>Or has role {@link UserRole#ROLE_READ_EDIT_PROJECTS}</li>
      * <li>Or has any {@link OrderAuthorization} over any project</li>
      * </ul>
      */
     public final static boolean isSuperuserOrRolePlanningOrHasAnyAuthorization() {
         if (isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING,
-                UserRole.ROLE_READ_ALL_PROJECTS)) {
+                UserRole.ROLE_READ_ALL_PROJECTS,
+                UserRole.ROLE_EDIT_ALL_PROJECTS)) {
             return true;
         }
 
