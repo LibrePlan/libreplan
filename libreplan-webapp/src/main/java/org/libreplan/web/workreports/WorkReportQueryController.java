@@ -35,10 +35,19 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
+import org.libreplan.web.UserUtil;
+import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.Level;
+import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
+import org.libreplan.web.security.SecurityUtils;
+import org.libreplan.web.users.dashboard.IMonthlyTimesheetController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -92,13 +101,22 @@ public class WorkReportQueryController extends GenericForwardComposer {
 
     private Window listQueryWindow;
 
+    private Component messagesContainer;
+
+    private IMessagesForUser messagesForUser;
+
     @javax.annotation.Resource
     private IWorkReportCRUDControllerEntryPoints workReportCRUD;
+
+    @javax.annotation.Resource
+    private IMonthlyTimesheetController monthlyTimesheetController;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
+
+        messagesForUser = new MessagesForUser(messagesContainer);
     }
 
     public List<OrderElement> getOrderElements() {
@@ -311,7 +329,23 @@ public class WorkReportQueryController extends GenericForwardComposer {
     }
 
     public void goToEditFormQuery(WorkReportLine line) {
-        workReportCRUD.goToEditForm(line.getWorkReport());
+        WorkReport workReport = line.getWorkReport();
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
+            workReportCRUD.goToEditForm(workReport);
+        } else if (SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)
+                && workReportModel.isMonthlyTimesheet(workReport)
+                && belongsToCurrentUser(line)) {
+            monthlyTimesheetController
+                    .goToCreateOrEditForm(line.getLocalDate());
+        } else {
+            messagesForUser.showMessage(Level.WARNING,
+                    _("You do not have permissions to edit this work report"));
+        }
+    }
+
+    private boolean belongsToCurrentUser(WorkReportLine line) {
+        User user = UserUtil.getUserFromSession();
+        return line.getResource().getId().equals(user.getWorker().getId());
     }
 
     /**

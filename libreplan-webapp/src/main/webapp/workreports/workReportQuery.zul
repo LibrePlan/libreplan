@@ -31,7 +31,9 @@
         title="${i18n:_('Timesheet Lines List')}"
         apply="org.libreplan.web.workreports.WorkReportQueryController">
 
-       <panel title="${i18n:_('Filter timesheet lines by')}" border="normal"
+        <vbox id="messagesContainer"></vbox>
+
+        <panel title="${i18n:_('Filter timesheet lines by')}" border="normal"
                     style="overflow:auto">
         <panelchildren>
         <separator bar="false" spacing="5px" orient="horizontal"/>
