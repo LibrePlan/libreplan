@@ -21,6 +21,8 @@
 
 package org.libreplan.web.common;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,8 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
@@ -49,6 +53,8 @@ public class MessagesForUser extends GenericForwardComposer implements
 
     // 2 seconds
     private static final long DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS = 1000 * 2;
+
+    private static final Log LOG = LogFactory.getLog(MessagesForUser.class);
 
     private static final class PreviousMessagesDiscarder implements
             EventInterceptor {
@@ -148,8 +154,7 @@ public class MessagesForUser extends GenericForwardComposer implements
 
     public static Label createLabelFor(InvalidValue invalidValue) {
         Label result = new Label();
-        result.setValue(invalidValue.getPropertyName() + ": "
-                + invalidValue.getMessage());
+        result.setValue(_(invalidValue.getMessage()));
         return result;
     }
 
@@ -199,12 +204,14 @@ public class MessagesForUser extends GenericForwardComposer implements
 
     @Override
     public void showInvalidValues(ValidationException e, ICustomLabelCreator customLabelCreator) {
-        if (!StringUtils.isEmpty(e.getMessage())) {
-            showMessage(Level.WARNING, e.getMessage());
-        }
         for (InvalidValue invalidValue : e.getInvalidValues()) {
             invalidValue(invalidValue, customLabelCreator);
         }
+        if (!StringUtils.isEmpty(e.getMessage())
+                && e.getInvalidValues().length == 0) {
+                showMessage(Level.WARNING, e.getMessage());
+        }
+        LOG.warn(e.getMessage());
     }
 
 }
