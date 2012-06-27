@@ -298,9 +298,7 @@ public class TemplatesTreeController extends
         try {
             OrderElementTemplate orderElement = (OrderElementTemplate) item
                     .getValue();
-            getRenderer().updateNameFor(orderElement);
-            getRenderer().updateHoursFor(orderElement);
-            getRenderer().updateBudgetFor(orderElement);
+            getRenderer().updateColumnsFor(orderElement);
             getRenderer().render(item, orderElement);
         } catch (Exception e) {
             e.printStackTrace();

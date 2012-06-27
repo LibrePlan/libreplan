@@ -849,7 +849,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             };
         }
 
-        public void updateBudgetFor(T element) {
+        public void updateColumnsFor(T element) {
+            updateNameFor(element);
+            updateHoursFor(element);
+            updateBudgetFor(element);
+        }
+
+        private void updateBudgetFor(T element) {
             if (!readOnly && element.isLeaf()) {
                 Decimalbox decimalbox = budgetDecimalboxByElement.get(element);
                 decimalbox.invalidate();
@@ -857,7 +863,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             }
         }
 
-        public void updateNameFor(T element) {
+        private void updateNameFor(T element) {
             if (!readOnly) {
                 Textbox textbox = nameTextboxByElement.get(element);
                 textbox.setValue(getNameHandler().getNameFor(element));
@@ -979,7 +985,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             };
         }
 
-        public void updateHoursFor(T element) {
+        private void updateHoursFor(T element) {
             if (!readOnly && element.isLeaf()) {
                 Intbox boxHours = (Intbox) hoursIntBoxByElement.get(element);
                 Treecell tc = (Treecell) boxHours.getParent();
