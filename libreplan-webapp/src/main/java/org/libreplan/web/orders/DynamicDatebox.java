@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,15 +21,19 @@
 
 package org.libreplan.web.orders;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import org.libreplan.business.orders.entities.OrderElement;
+import org.apache.commons.lang.StringUtils;
+import org.libreplan.web.common.Util;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -128,6 +132,26 @@ public class DynamicDatebox extends GenericForwardComposer {
 
     private void registerListeners() {
         registerOnEnterListener(dateTextBox);
+
+        Util.bind(dateTextBox, new Util.Getter<String>() {
+            @Override
+            public String get() {
+                return asString(getter.get());
+            }
+        }, new Util.Setter<String>() {
+            @Override
+            public void set(String string) {
+                try {
+                    setter.set(fromString(string));
+                } catch (ParseException e) {
+                    throw new WrongValueException(
+                            dateTextBox,
+                            _("date format is wrong, please use the right format (for example for today the format would be: {0})",
+                                    asString(new Date())));
+                }
+            }
+        });
+
     }
 
     private void findComponents(Hbox hbox) {
@@ -215,6 +239,13 @@ public class DynamicDatebox extends GenericForwardComposer {
             return "";
         }
         return dateFormat.format(date);
+    }
+
+    private Date fromString(String string) throws ParseException {
+        if (StringUtils.isBlank(string)) {
+            return null;
+        }
+        return dateFormat.parse(StringUtils.trim(string));
     }
 
     public Textbox getDateTextBox() {
