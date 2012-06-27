@@ -279,7 +279,7 @@ sub parse_hibernate_validations()
             next;
         }
         # First line
-        if ($line =~ /\@\w+\(message=\"(.*?)\"/) {
+        if ($line =~ /\@\s*\w+\s*\(\s*message\s*=\s*\"(.*?)\s*\"/) {
             $msgid = "\"$1\"";
             # Line ends with a )
             if ($line =~ /\)\s*$/) {
