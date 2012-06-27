@@ -37,19 +37,8 @@
             <label value="${i18n:_('Warning: Not editing from home page of bound users')}" />
         </div>
 
-        <div visible="@{controller.currentUser}">
-            <button id="previousMonth"
-                onClick="controller.previousMonth();"
-                label="${i18n:_('Previous')}"
-                disabled="@{controller.firstMonth}" />
-            <button id="nextMonth"
-                onClick="controller.nextMonth();"
-                label="${i18n:_('Next')}"
-                disabled="@{controller.lastMonth}" />
-        </div>
-
-        <hbox>
-            <groupbox style="margin-top: 5px" closable="false">
+        <hbox width="100%">
+            <groupbox style="margin-top: 5px" closable="false" hflex="1">
                 <caption label="${i18n:_('Timesheet data')}" />
                 <grid fixedLayout="true">
                     <columns>
@@ -59,7 +48,21 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Date')}" />
-                            <label value="@{controller.date}" />
+                                <hbox align="pack">
+                                    <div visible="@{controller.currentUser}">
+            <button id="previousMonth"
+                onClick="controller.previousMonth();"
+                label="${i18n:_('Previous')}"
+                disabled="@{controller.firstMonth}" />
+                </div>
+
+                <label value="@{controller.date}" />
+                                    <div visible="@{controller.currentUser}">
+            <button id="nextMonth"
+                onClick="controller.nextMonth();"
+                label="${i18n:_('Next')}"
+                disabled="@{controller.lastMonth}" />
+                            </div></hbox>
                         </row>
                         <row>
                             <label value="${i18n:_('Resource')}" />
@@ -68,7 +71,7 @@
                     </rows>
                 </grid>
             </groupbox>
-            <groupbox style="margin-top: 5px" closable="false">
+            <groupbox style="margin-top: 5px" closable="false" hflex="1">
                 <caption label="${i18n:_('Timesheet summary')}" />
                 <grid fixedLayout="true">
                     <columns>
@@ -105,12 +108,11 @@
             </groupbox>
         </hbox>
 
-        <groupbox style="margin-top: 5px" closable="false">
-            <caption label="${i18n:_('Time tracking')}" />
-            <grid id="timesheet" sclass="timesheet"
-                model="@{controller.rows}"
-                rowRenderer="@{controller.rowRenderer}" />
-            <hbox>
+        <hbox  width="100%">
+
+        <groupbox width="100%" closable="false" hflex="1" style="margin-top:5px">
+            <!--  caption label="${i18n:_('Time tracking')}"  hflex="1" width="100%"  -->
+            <hbox align="center" hflex="1" width="100%">
                 <bandboxSearch
                     id="orderElementBandboxSearch"
                     finder="OrderElementBandboxFinder"
@@ -119,7 +121,15 @@
                 <button onClick="controller.addOrderElement();"
                     label="${i18n:_('Add task')}" />
             </hbox>
+            <hbox width="100%">
+            <grid id="timesheet" width="100%" sizedByContent="true" hflex="1" sclass="timesheet"
+                model="@{controller.rows}"
+                rowRenderer="@{controller.rowRenderer}" />
+            </hbox>
+
         </groupbox>
+
+    </hbox>
 
         <button onClick="controller.save();"
             label="${i18n:_('Save')}"

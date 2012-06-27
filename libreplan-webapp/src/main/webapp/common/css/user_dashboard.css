@@ -2,4 +2,19 @@
     background-image: none;
     background-color: transparent;
     border: solid 1px transparent;
+    margin: 0;
+    text-align: center;
+}
+
+.timesheet .z-cell {
+    padding: 0;
+}
+
+.timesheet .z-textbox.z-textbox-disd {
+    background-color: #EEE;
+    color: black;
+}
+
+.timesheet {
+    margin-top:5px;
 }
