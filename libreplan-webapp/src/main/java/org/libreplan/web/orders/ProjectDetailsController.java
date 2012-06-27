@@ -257,12 +257,23 @@ public class ProjectDetailsController extends GenericForwardComposer {
     }
 
     public void calculateProjectDates(OrderTemplate template) {
-        initDate.setValue(new LocalDate().plusDays(template.getStartAsDaysFromBeginning()).toDateTimeAtStartOfDay().toDate());
+        LocalDate initLocalDate = new LocalDate()
+                .plusDays(template.getStartAsDaysFromBeginning());
+        Date initDate = initLocalDate.toDateTimeAtStartOfDay().toDate();
+        getOrder().setInitDate(initDate);
+        this.initDate.setValue(initDate);
+
         if (template.getDeadlineAsDaysFromBeginning() != null ) {
-            deadline.setValue( new LocalDate(initDate.getValue()).plusDays(template.getDeadlineAsDaysFromBeginning()).toDateTimeAtStartOfDay().toDate());
+            LocalDate deadlineLocalDate = initLocalDate.plusDays(template
+                    .getDeadlineAsDaysFromBeginning());
+            Date deadline = deadlineLocalDate.toDateTimeAtStartOfDay().toDate();
+            getOrder().setDeadline(deadline);
+            this.deadline.setValue(deadline);
         } else {
-            deadline.setText("");
+            getOrder().setDeadline(null);
+            this.deadline.setValue(null);
         }
+
     }
 
     public OrderTemplate getTemplate() {
