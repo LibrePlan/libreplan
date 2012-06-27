@@ -413,6 +413,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             updateColumnsFor(currentOrderElement);
         }
 
+        @Override
         protected void addCodeCell(final OrderElement orderElement) {
             Textbox textBoxCode = new Textbox();
             Util.bind(textBoxCode, new Util.Getter<String>() {
@@ -444,6 +445,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
 
             addCell(textBoxCode);
+            putCodeTextbox(orderElement, textBoxCode);
+
+            // FIXME remove this map as it's already in
+            // org.libreplan.web.tree.TreeController.Renderer.codeTextboxByElement
             orderElementCodeTextboxes.put(orderElement, textBoxCode);
         }
 
@@ -467,6 +472,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("init"));
+            putInitDateDynamicDatebox(currentOrderElement, dinamicDatebox);
         }
 
         void addEndDateCell(final OrderElement currentOrderElement) {
@@ -488,6 +494,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("end"));
+            putEndDateDynamicDatebox(currentOrderElement, dinamicDatebox);
         }
 
         @Override
@@ -774,6 +781,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             @Override
             public String getNameFor(OrderElement element) {
                 return element.getName();
+            }
+
+        };
+    }
+
+    @Override
+    protected ICodeHandler<OrderElement> getCodeHandler() {
+        return new ICodeHandler<OrderElement>() {
+
+            @Override
+            public String getCodeFor(OrderElement element) {
+                return element.getCode();
             }
 
         };

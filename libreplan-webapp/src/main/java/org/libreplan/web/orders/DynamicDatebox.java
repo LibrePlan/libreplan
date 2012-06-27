@@ -230,7 +230,7 @@ public class DynamicDatebox extends GenericForwardComposer {
         setter.set(date);
     }
 
-    private void updateComponents() {
+    public void updateComponents() {
         getDateTextBox().setValue(asString(getter.get()));
     }
 

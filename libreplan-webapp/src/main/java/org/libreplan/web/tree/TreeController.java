@@ -578,11 +578,17 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         }
 
+        private Map<T, Textbox> codeTextboxByElement = new HashMap<T, Textbox>();
+
         private Map<T, Textbox> nameTextboxByElement = new HashMap<T, Textbox>();
 
         private Map<T, Intbox> hoursIntBoxByElement = new HashMap<T, Intbox>();
 
         private Map<T, Decimalbox> budgetDecimalboxByElement = new HashMap<T, Decimalbox>();
+
+        private Map<T, DynamicDatebox> initDateDynamicDateboxByElement = new HashMap<T, DynamicDatebox>();
+
+        private Map<T, DynamicDatebox> endDateDynamicDateboxByElement = new HashMap<T, DynamicDatebox>();
 
         private KeyboardNavigationHandler navigationHandler = new KeyboardNavigationHandler();
 
@@ -599,8 +605,22 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             return nameTextboxByElement.get(key);
         }
 
+        protected void putCodeTextbox(T key, Textbox textbox) {
+            codeTextboxByElement.put(key, textbox);
+        }
+
         protected void putNameTextbox(T key, Textbox textbox) {
             nameTextboxByElement.put(key, textbox);
+        }
+
+        protected void putInitDateDynamicDatebox(T key,
+                DynamicDatebox dynamicDatebox) {
+            initDateDynamicDateboxByElement.put(key, dynamicDatebox);
+        }
+
+        protected void putEndDateDynamicDatebox(T key,
+                DynamicDatebox dynamicDatebox) {
+            endDateDynamicDateboxByElement.put(key, dynamicDatebox);
         }
 
         protected void registerFocusEvent(final InputElement inputElement) {
@@ -850,9 +870,19 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public void updateColumnsFor(T element) {
+            updateCodeFor(element);
             updateNameFor(element);
             updateHoursFor(element);
             updateBudgetFor(element);
+            updateInitDateFor(element);
+            updateEndDateFor(element);
+        }
+
+        private void updateCodeFor(T element) {
+            if (!readOnly) {
+                Textbox textbox = codeTextboxByElement.get(element);
+                textbox.setValue(getCodeHandler().getCodeFor(element));
+            }
         }
 
         private void updateBudgetFor(T element) {
@@ -867,6 +897,22 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             if (!readOnly) {
                 Textbox textbox = nameTextboxByElement.get(element);
                 textbox.setValue(getNameHandler().getNameFor(element));
+            }
+        }
+
+        private void updateInitDateFor(T element) {
+            if (!readOnly) {
+                DynamicDatebox dynamicDatebox = initDateDynamicDateboxByElement
+                        .get(element);
+                dynamicDatebox.updateComponents();
+            }
+        }
+
+        private void updateEndDateFor(T element) {
+            if (!readOnly) {
+                DynamicDatebox dynamicDatebox = endDateDynamicDateboxByElement
+                        .get(element);
+                dynamicDatebox.updateComponents();
             }
         }
 
@@ -1195,6 +1241,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     protected abstract IBudgetHandler<T> getBudgetHandler();
+
+    public interface ICodeHandler<T> {
+
+        String getCodeFor(T element);
+
+    }
+
+    protected abstract ICodeHandler<T> getCodeHandler();
 
     public interface INameHandler<T> {
 

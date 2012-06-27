@@ -294,6 +294,19 @@ public class TemplatesTreeController extends
         };
     }
 
+    @Override
+    protected ICodeHandler<OrderElementTemplate> getCodeHandler() {
+        return new ICodeHandler<OrderElementTemplate>() {
+
+            @Override
+            public String getCodeFor(OrderElementTemplate element) {
+                // Empty as OrderElementTemplate doesn't have code
+                return "";
+            }
+
+        };
+    }
+
     public void refreshRow(Treeitem item) {
         try {
             OrderElementTemplate orderElement = (OrderElementTemplate) item
