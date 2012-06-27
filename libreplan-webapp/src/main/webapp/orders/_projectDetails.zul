@@ -40,7 +40,8 @@
             </row>
             <row>
                 <label value="${i18n:_('Template')}" />
-                <bandboxSearch id="bdProjectTemplate" finder="templatesEligibleForOrder"
+                <bandboxSearch id="bdProjectTemplate" finder="TemplatesEligibleForOrder"
+                    selectedElement="@{projectController.template, access='both'}"
                     widthBandbox="400px" widthListbox="500px" />
             </row>
             <row>
@@ -69,7 +70,7 @@
                 <bandboxSearch id="bdExternalCompanies" widthBandbox="485px" widthListbox="500px"
                     finder="ExternalCompanyBandboxFinder"
                     model="@{projectController.externalCompaniesAreClient}"
-                    selectedElement="@{projectController.order.customer}"/>
+                    selectedElement="@{projectController.order.customer, access='both'}"/>
             </row>
             <row>
                 <label value="${i18n:_('Calendar')}" />
