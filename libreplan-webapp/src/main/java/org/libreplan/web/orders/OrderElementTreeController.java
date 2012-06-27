@@ -356,10 +356,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
-    private Map<OrderElement, Textbox> orderElementCodeTextboxes = new HashMap<OrderElement, Textbox>();
-
     public Map<OrderElement, Textbox> getOrderElementCodeTextboxes() {
-        return orderElementCodeTextboxes;
+        return getRenderer().getCodeTextboxByElement();
     }
 
     public class OrderElementTreeitemRenderer extends Renderer {
@@ -446,10 +444,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             addCell(textBoxCode);
             putCodeTextbox(orderElement, textBoxCode);
-
-            // FIXME remove this map as it's already in
-            // org.libreplan.web.tree.TreeController.Renderer.codeTextboxByElement
-            orderElementCodeTextboxes.put(orderElement, textBoxCode);
         }
 
         void addInitDateCell(final OrderElement currentOrderElement) {
@@ -515,6 +509,11 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                         }
                     });
             return editbutton;
+        }
+
+        @Override
+        public void removeCodeTextbox(OrderElement key) {
+            super.removeCodeTextbox(key);
         }
 
     }
@@ -720,7 +719,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                     element.getName()));
         } else {
             super.remove(element);
-            orderElementCodeTextboxes.remove(element);
+            getRenderer().removeCodeTextbox(element);
         }
     }
 

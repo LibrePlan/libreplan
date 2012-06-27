@@ -605,8 +605,16 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             return nameTextboxByElement.get(key);
         }
 
+        public Map<T, Textbox> getCodeTextboxByElement() {
+            return Collections.unmodifiableMap(codeTextboxByElement);
+        }
+
         protected void putCodeTextbox(T key, Textbox textbox) {
             codeTextboxByElement.put(key, textbox);
+        }
+
+        protected void removeCodeTextbox(T key) {
+            codeTextboxByElement.remove(key);
         }
 
         protected void putNameTextbox(T key, Textbox textbox) {
