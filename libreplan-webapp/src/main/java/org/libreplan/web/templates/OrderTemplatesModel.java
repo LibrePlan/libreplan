@@ -52,6 +52,7 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.libreplan.web.orders.QualityFormsOnConversation;
 import org.libreplan.web.orders.labels.LabelsOnConversation;
@@ -191,11 +192,19 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     }
 
     private void loadAssociatedData(OrderElementTemplate template) {
+        loadCalendar(template);
         loadAdvanceAssignments(template);
         loadQualityForms(template);
         loadLabels(template);
         loadCriterionRequirements(template);
         getOrderElementsOnConversation().initialize(template);
+    }
+
+    private void loadCalendar(OrderElementTemplate template) {
+        if (template.isOrderTemplate()) {
+            OrderTemplate orderTemplate = (OrderTemplate) template;
+            orderTemplate.getCalendar().getName();
+        }
     }
 
     private static void loadCriterionRequirements(OrderElementTemplate orderElement) {

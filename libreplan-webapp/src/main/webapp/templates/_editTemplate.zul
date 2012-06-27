@@ -86,6 +86,12 @@
                                 constraint="no negative:${i18n:_('Budget value cannot be negative')}"
                                 format="@{templatesForOrdersController.moneyFormat}" />
                         </row>
+                        <row visible="@{templatesForOrdersController.orderTemplate}">
+                            <label value="${i18n:_('Calendar')}" />
+                            <bandboxSearch id="calendar"
+                                finder="BaseCalendarBandboxFinder"
+                                selectedElement="@{templatesForOrdersController.calendar, access='both'}" />
+                        </row>
                     </rows>
                 </grid>
             </tabpanel>

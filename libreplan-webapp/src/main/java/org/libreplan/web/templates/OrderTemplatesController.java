@@ -29,9 +29,11 @@ import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
+import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -261,6 +263,13 @@ public class OrderTemplatesController extends GenericForwardComposer implements
             showInvalidWorkReportTypeName();
             return false;
         }
+        if (model.getTemplate().isOrderTemplate()) {
+            OrderTemplate orderTemplate = (OrderTemplate) model.getTemplate();
+            if (orderTemplate.getCalendar() == null) {
+                throw new WrongValueException(editWindow.getFellow("calendar"),
+                        _("calendar not specified"));
+            }
+        }
         return true;
     }
 
@@ -410,6 +419,26 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
     public String getMoneyFormat() {
         return Util.getMoneyFormat();
+    }
+
+    public boolean isOrderTemplate() {
+        if (model.getTemplate() == null) {
+            return false;
+        }
+        return model.getTemplate().isOrderTemplate();
+    }
+
+    public BaseCalendar getCalendar() {
+        if (isOrderTemplate()) {
+            return ((OrderTemplate) model.getTemplate()).getCalendar();
+        }
+        return null;
+    }
+
+    public void setCalendar(BaseCalendar calendar) {
+        if (isOrderTemplate()) {
+            ((OrderTemplate) model.getTemplate()).setCalendar(calendar);
+        }
     }
 
 }

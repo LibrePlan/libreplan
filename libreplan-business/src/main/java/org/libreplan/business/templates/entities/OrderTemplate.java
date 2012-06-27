@@ -22,10 +22,7 @@ package org.libreplan.business.templates.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
-import java.util.Date;
-
 import org.hibernate.validator.NotNull;
-import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -45,7 +42,6 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         return create(beingBuilt, order);
     }
 
-    @NotNull(message = "project calendar not specified")
     private BaseCalendar calendar;
 
     @Override
@@ -66,6 +62,20 @@ public class OrderTemplate extends OrderLineGroupTemplate {
     @Override
     public String getType() {
         return _("Project");
+    }
+
+    public void setCalendar(BaseCalendar calendar) {
+        this.calendar = calendar;
+    }
+
+    @NotNull(message = "template calendar not specified")
+    public BaseCalendar getCalendar() {
+        return calendar;
+    }
+
+    @Override
+    public boolean isOrderTemplate() {
+        return true;
     }
 
 }

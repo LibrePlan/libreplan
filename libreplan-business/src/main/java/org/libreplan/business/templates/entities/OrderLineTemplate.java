@@ -237,4 +237,9 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return budget;
     }
 
+    @Override
+    public boolean isOrderTemplate() {
+        return false;
+    }
+
 }

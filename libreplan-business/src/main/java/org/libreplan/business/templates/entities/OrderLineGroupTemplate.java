@@ -286,4 +286,9 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         return budget;
     }
 
+    @Override
+    public boolean isOrderTemplate() {
+        return false;
+    }
+
 }
