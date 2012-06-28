@@ -49,11 +49,13 @@ import org.springframework.util.Assert;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
+import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
@@ -475,6 +477,17 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         URLHandlerRegistry.getRedirectorFor(IMonthlyTimesheetController.class)
                 .register(this, page);
 
+        Frozen frozen = new Frozen();
+        frozen.setColumns(2);
+        timesheet.appendChild(frozen);
+
+        adjustFrozenWidth();
+
+    }
+
+    private void adjustFrozenWidth() {
+        // Hack to reduce frozen scrollarea
+        Clients.evalJavaScript("jq('.z-frozen-inner div').width(jq('.total-row').offset().left);");
     }
 
     private void checkUserComesFromEntryPointsOrSendForbiddenCode() {
@@ -640,6 +653,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             monthlyTimesheetModel.addOrderElement(orderElement);
             orderElementBandboxSearch.setSelectedElement(null);
             Util.reloadBindings(timesheet);
+            adjustFrozenWidth();
         }
     }
 
