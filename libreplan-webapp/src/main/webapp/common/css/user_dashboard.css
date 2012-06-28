@@ -18,3 +18,8 @@
 .timesheet {
     margin-top:5px;
 }
+
+.timesheet .total-row,
+.timesheet .total-row .z-column-cnt {
+    text-align: center;
+}

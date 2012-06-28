@@ -71,6 +71,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         implements IMonthlyTimesheetController {
 
     private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
+    private final static String TOTAL_DURATION_TEXTBOX_WIDTH = "45px";
 
     private final static String WORK_REPORTS_URL = "/workreports/workReport.zul";
 
@@ -171,7 +172,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 final LocalDate textboxDate = day;
 
                 final Textbox textbox = new Textbox();
-                textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
+                textbox.setHflex("true");
 
                 Util.bind(textbox, new Util.Getter<String>() {
                     @Override
@@ -221,7 +222,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void markAsModified(final Textbox textbox) {
-            textbox.setStyle("border-color: red;");
+            textbox.setStyle("font-weight: bold");
         }
 
         private void appendOtherColumn(Row row, final OrderElement orderElement) {
@@ -429,7 +430,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private Textbox getDisabledTextbox(String id) {
             Textbox textbox = new Textbox();
-            textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
+            textbox.setHflex("true");
             textbox.setId(id);
             textbox.setDisabled(true);
             return textbox;
@@ -473,6 +474,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         URLHandlerRegistry.getRedirectorFor(IMonthlyTimesheetController.class)
                 .register(this, page);
+
     }
 
     private void checkUserComesFromEntryPointsOrSendForbiddenCode() {
@@ -522,6 +524,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private void initTimesheet(LocalDate date) {
         columns = new Columns();
+        columns.setSizable(true);
         timesheet.getChildren().clear();
         timesheet.appendChild(columns);
         createColumns(date);
@@ -538,13 +541,14 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private void createProjectAndTaskColumns() {
         Column project = new Column(_("Project"));
-        project.setWidth("200px");
+        project.setStyle("min-width:100px");
         columns.appendChild(project);
 
-        Column tasks = new Column(_("Tasks"));
-        project.setStyle("min-width:300px");
+        Column task = new Column(_("Task"));
+        task.setStyle("min-width:100px");
+
         columns.appendChild(project);
-        columns.appendChild(new Column(_("Task")));
+        columns.appendChild(task);
     }
 
     private void createColumnsForDays(LocalDate date) {
@@ -554,6 +558,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                 .plusDays(1)) {
             Column column = new Column(day.getDayOfMonth() + "");
+            column.setAlign("center");
+            column.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
             columns.appendChild(column);
         }
     }
@@ -563,7 +569,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     }
 
     private void createTotalColumn() {
-        columns.appendChild(new Column(_("Total")));
+        Column total = new Column(_("Total"));
+        total.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
+        total.setSclass("total-row");
+        total.setAlign("center");
+        columns.appendChild(total);
+
     }
 
     public String getDate() {
@@ -768,6 +779,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     public boolean hasOtherReports() {
         return monthlyTimesheetModel.hasOtherReports();
     }
+
 
 }
 
