@@ -37,16 +37,13 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
-import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -124,47 +121,6 @@ import org.zkoss.zul.api.Window;
 public class OrderCRUDController extends GenericForwardComposer {
 
     private static final String DEFAULT_TAB = "tabOrderElements";
-
-    private static final class LabelCreatorForInvalidValues implements
-            IMessagesForUser.ICustomLabelCreator {
-
-        @Override
-        public Component createLabelFor(
-                InvalidValue invalidValue) {
-            if (invalidValue.getBean() instanceof OrderElement) {
-                Label result = new Label();
-
-                String orderElementName;
-                if (invalidValue.getBean() instanceof Order) {
-                    orderElementName = _("Project");
-                } else {
-                    orderElementName = ((OrderElement) invalidValue
-                            .getBean()).getName();
-                }
-
-                result.setValue(orderElementName + " "
-                        + invalidValue.getPropertyName() + ": "
-                        + invalidValue.getMessage());
-                return result;
-            } else if (invalidValue.getBean() instanceof HoursGroup) {
-                Label result = new Label();
-                HoursGroup hoursGroup = (HoursGroup) invalidValue.getBean();
-                result.setValue(_("Hours Group at ")
-                        + getParentName(hoursGroup) + ". "
-                        + invalidValue.getPropertyName() + ": "
-                        + invalidValue.getMessage());
-                return result;
-            }else {
-                return MessagesForUser.createLabelFor(invalidValue);
-            }
-        }
-
-        private String getParentName(HoursGroup hoursGroup) {
-            return (hoursGroup.getParentOrderLine() != null) ? hoursGroup
-                    .getParentOrderLine().getName() : hoursGroup
-                    .getOrderLineTemplate().getName();
-        }
-    }
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(OrderCRUDController.class);
@@ -692,11 +648,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.reloadBindings(orderElementAuthorizations);
     }
 
-    private void saveOrderAuthorizations() {
-        setupOrderAuthorizationController();
-        orderAuthorizationController.save();
-    }
-
     public List<Order> getOrders() {
         return orderModel.getOrders();
     }
@@ -806,11 +757,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         orderModel.save(showSaveMessage);
-        try {
-            saveOrderAuthorizations();
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e, new LabelCreatorForInvalidValues());
-        }
     }
 
     Tab tabGeneralData;

@@ -88,6 +88,8 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.workingday.IntraDayDate;
+import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
@@ -104,6 +106,7 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
 /**
@@ -319,12 +322,22 @@ public class SaveCommandBuilder {
                 }
 
                 try {
-                    String message = validationException.getMessage();
+                    String message = "";
+
+                    LabelCreatorForInvalidValues labelCreator = new LabelCreatorForInvalidValues();
                     for (InvalidValue invalidValue : validationException
                             .getInvalidValues()) {
-                        message += "\n" + invalidValue.getPropertyName() + ": "
-                                + invalidValue.getMessage();
+                        message += "* "
+                                + ((Label) labelCreator
+                                        .createLabelFor(invalidValue))
+                                        .getValue() + "\n";
                     }
+
+                    if (validationException.getInvalidValues().length == 0) {
+                        message += validationException.getMessage();
+                    }
+
+                    LOG.warn(validationException.getMessage());
                     Messagebox.show(
                             _("Error saving the project\n{0}", message),
                             _("Error"), Messagebox.OK, Messagebox.ERROR);
@@ -1063,4 +1076,45 @@ public class SaveCommandBuilder {
         }
 
     }
+
+    private static final class LabelCreatorForInvalidValues implements
+            IMessagesForUser.ICustomLabelCreator {
+
+        @Override
+        public org.zkoss.zk.ui.Component createLabelFor(
+                InvalidValue invalidValue) {
+            if (invalidValue.getBean() instanceof OrderElement) {
+                Label result = new Label();
+
+                String orderElementName;
+                if (invalidValue.getBean() instanceof Order) {
+                    orderElementName = _("Project");
+                } else {
+                    orderElementName = _("Task {0}",
+                            ((OrderElement) invalidValue.getBean()).getName());
+                }
+
+                result.setValue(orderElementName + ": "
+                        + _(invalidValue.getMessage()));
+                return result;
+            } else if (invalidValue.getBean() instanceof HoursGroup) {
+                Label result = new Label();
+                HoursGroup hoursGroup = (HoursGroup) invalidValue.getBean();
+                result.setValue(_("Hours Group at {0}",
+                        getParentName(hoursGroup))
+                        + ": "
+                        + _(invalidValue.getMessage()));
+                return result;
+            } else {
+                return MessagesForUser.createLabelFor(invalidValue);
+            }
+        }
+
+        private String getParentName(HoursGroup hoursGroup) {
+            return (hoursGroup.getParentOrderLine() != null) ? hoursGroup
+                    .getParentOrderLine().getName() : hoursGroup
+                    .getOrderLineTemplate().getName();
+        }
+    }
+
 }

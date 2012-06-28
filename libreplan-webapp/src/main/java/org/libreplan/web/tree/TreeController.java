@@ -699,8 +699,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             InvalidValue[] invalidValues = validator.getPotentialInvalidValues(
                     property, value);
             if (invalidValues.length > 0) {
-                throw new WrongValueException(component, invalidValues[0]
-                        .getMessage());
+                throw new WrongValueException(component,
+                        _(invalidValues[0].getMessage()));
             }
         }
 

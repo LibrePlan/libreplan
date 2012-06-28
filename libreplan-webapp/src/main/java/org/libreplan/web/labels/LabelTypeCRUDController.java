@@ -27,7 +27,6 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
@@ -232,10 +231,7 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
             forceSortGridLabels();
             newLabelTextbox.setValue("");
         } catch (ValidationException e) {
-            for (InvalidValue invalidValue : e.getInvalidValues()) {
-                messagesForUser.showMessage(Level.ERROR, invalidValue
-                        .getMessage());
-            }
+            messagesForUser.showInvalidValues(e);
         }
     }
 

@@ -28,7 +28,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -225,10 +224,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 messagesForUser.showMessage(Level.INFO, _("Template saved"));
                 show(listWindow);
             } catch (ValidationException e) {
-                for (InvalidValue invalidValue : e.getInvalidValues()) {
-                    messagesForUser.showMessage(Level.ERROR,
-                            invalidValue.getMessage());
-                }
+                messagesForUser.showInvalidValues(e);
             }
         }
     }
@@ -245,10 +241,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 bindTemplatesTreeWithModel();
                 messagesForUser.showMessage(Level.INFO, _("Template saved"));
             } catch (ValidationException e) {
-                for (InvalidValue invalidValue : e.getInvalidValues()) {
-                    messagesForUser.showMessage(Level.ERROR,
-                            invalidValue.getMessage());
-                }
+                messagesForUser.showInvalidValues(e);
             }
 
         }

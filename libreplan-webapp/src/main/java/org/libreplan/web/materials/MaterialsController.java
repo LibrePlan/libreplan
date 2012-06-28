@@ -327,7 +327,8 @@ public class MaterialsController extends
                      MaterialCategory materialCategory = (MaterialCategory) value;
                      Component comp = findInMaterialCategoryTree(materialCategory);
                      if (comp != null) {
-                         throw new WrongValueException(comp, invalidValue.getMessage());
+                        throw new WrongValueException(comp,
+                                _(invalidValue.getMessage()));
                      }
                  }
             }
@@ -418,10 +419,14 @@ public class MaterialsController extends
                 final Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree, materialCategory);
                 if (treeitem != null) {
                     if(each.getPropertyName().equals("name")) {
-                        throw new WrongValueException(getCategoryTextbox(treeitem), each.getMessage());
+                        throw new WrongValueException(
+                                getCategoryTextbox(treeitem),
+                                _(each.getMessage()));
                     }
                     if(each.getPropertyName().equals("code")) {
-                        throw new WrongValueException(getCategoryCodeTextbox(treeitem), each.getMessage());
+                        throw new WrongValueException(
+                                getCategoryCodeTextbox(treeitem),
+                                _(each.getMessage()));
                     }
                 }
             }

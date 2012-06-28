@@ -76,10 +76,6 @@ public class OrderAuthorizationController extends GenericForwardComposer{
         Util.reloadBindings(window);
     }
 
-    public void save() {
-        orderAuthorizationModel.confirmSave();
-    }
-
     public List<ProfileOrderAuthorization> getProfileOrderAuthorizations() {
         return orderAuthorizationModel.getProfileOrderAuthorizations();
     }

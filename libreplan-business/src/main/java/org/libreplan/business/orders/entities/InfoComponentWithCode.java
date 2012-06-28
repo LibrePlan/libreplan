@@ -18,7 +18,6 @@
  */
 package org.libreplan.business.orders.entities;
 
-import org.hibernate.validator.NotEmpty;
 
 /**
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
@@ -31,7 +30,6 @@ public class InfoComponentWithCode extends InfoComponent {
         this.code = code;
     }
 
-    @NotEmpty(message = "code not specified")
     public String getCode() {
         return code;
     }

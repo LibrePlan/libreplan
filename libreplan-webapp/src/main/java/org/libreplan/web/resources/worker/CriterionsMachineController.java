@@ -265,12 +265,8 @@ public class CriterionsMachineController extends GenericForwardComposer {
             reload();
         } catch (ValidationException e) {
             showInvalidValues(e);
-            for (InvalidValue invalidValue : e.getInvalidValues()) {
-                messages.showMessage(Level.ERROR, invalidValue
-                        .getPropertyName()
-                        + invalidValue.getMessage());
-                return false;
-            }
+            messages.showInvalidValues(e);
+            return false;
         } catch (IllegalStateException e) {
             messages.showMessage(Level.ERROR, e.getMessage());
             return false;

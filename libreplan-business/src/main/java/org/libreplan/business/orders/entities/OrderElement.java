@@ -37,6 +37,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -515,6 +516,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public abstract List<HoursGroup> getHoursGroups();
 
+    @NotEmpty(message = "name not specified")
     public String getName() {
         return getInfoComponent().getName();
     }
@@ -582,6 +584,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         this.getInfoComponent().setCode(code);
     }
 
+    @NotEmpty(message = "code not specified")
     public String getCode() {
         return getInfoComponent().getCode();
     }
@@ -1290,7 +1293,6 @@ public abstract class OrderElement extends IntegrationEntity implements
         return directAdvanceAssignment;
     }
 
-    @Valid
     public InfoComponentWithCode getInfoComponent() {
         if (infoComponent == null) {
             infoComponent = new InfoComponentWithCode();
