@@ -72,13 +72,13 @@ public class BudgetTabCreator {
 
     private ITab build() {
         return TabOnModeType.forMode(mode)
-                .forType(ModeType.GLOBAL, createFilmingProgressTab())
-                .forType(ModeType.ORDER, createFilmingProgressTab())
-                .forType(ModeType.BUDGET, createFilmingProgressTab())
+                .forType(ModeType.GLOBAL, createBudgetTab())
+                .forType(ModeType.ORDER, createBudgetTab())
+                .forType(ModeType.BUDGET, createBudgetTab())
                 .create();
     }
 
-    private ITab createFilmingProgressTab() {
+    private ITab createBudgetTab() {
         IComponentCreator componentCreator = new IComponentCreator() {
 
             @Override
@@ -107,7 +107,7 @@ public class BudgetTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Filming progress")));
+                breadcrumbs.appendChild(new Label(_("Budget")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(currentOrder.getName()));
             }
