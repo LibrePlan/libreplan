@@ -150,6 +150,9 @@ public class TemplatesTreeController extends
                         }
                     });
 
+            if (readOnly) {
+                textBox.setDisabled(true);
+            }
             addCell(textBox);
             putNameTextbox(element, textBox);
         }
@@ -186,6 +189,9 @@ public class TemplatesTreeController extends
                     }
                 }
             });
+            if (readOnly) {
+                textBoxCode.setDisabled(true);
+            }
             addCell(textBoxCode);
             if (textBoxCode.isValid()) {
                 model.notifyUpdate(element);
