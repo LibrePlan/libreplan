@@ -606,8 +606,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         if (monthlyTimesheetModel.hasOtherReports()) {
             result.add(MonthlyTimesheetRow.createOtherRow());
         }
-        result.add(MonthlyTimesheetRow.createCapacityRow());
         result.add(MonthlyTimesheetRow.createTotalRow());
+        result.add(MonthlyTimesheetRow.createCapacityRow());
         result.add(MonthlyTimesheetRow.createExtraRow());
         return result;
     }
