@@ -27,7 +27,6 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.ISaveCommand;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
 import org.libreplan.web.templates.budgettemplates.EditTemplateWindowController;
-import org.libreplan.web.templates.budgettemplates.IBudgetTemplatesModel;
 import org.libreplan.web.templates.budgettemplates.IEditionSubwindowController;
 import org.libreplan.web.templates.budgettemplates.TemplatesTreeController;
 import org.libreplan.web.templates.labels.LabelsAssignmentToTemplateComponent;
@@ -58,7 +57,7 @@ public class BudgetController extends GenericForwardComposer implements
         IEditionSubwindowController {
 
     @Autowired
-    private IBudgetTemplatesModel model;
+    private IBudgetModel model;
 
     private TreeComponent treeComponent;
 

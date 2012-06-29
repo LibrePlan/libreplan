@@ -40,7 +40,6 @@ import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
@@ -51,22 +50,17 @@ import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
-import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.libreplan.web.orders.QualityFormsOnConversation;
 import org.libreplan.web.orders.labels.LabelsOnConversation;
-import org.libreplan.web.planner.order.PlanningStateCreator;
-import org.libreplan.web.planner.order.PlanningStateCreator.IActionsOnRetrieval;
-import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.libreplan.web.templates.OrderElementsOnConversation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.zk.ui.Desktop;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -114,11 +108,6 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
     private TemplatesTree treeModel;
 
     private LabelsOnConversation labelsOnConversation;
-
-    @Autowired
-    private PlanningStateCreator planningStateCreator;
-
-    private PlanningState planningState;
 
     private LabelsOnConversation getLabelsOnConversation() {
         if (labelsOnConversation == null) {
@@ -396,36 +385,5 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel {
             }
         }
         return true;
-    }
-
-    @Override
-    @Transactional
-    public void saveThroughPlanningState(Desktop desktop,
-            boolean showSaveMessage) {
-        this.planningState = planningStateCreator.retrieveOrCreate(desktop,
-                ((Budget) getTemplate()).getAssociatedOrder(),
-                new IActionsOnRetrieval() {
-
-                    @Override
-                    public void onRetrieval(PlanningState planningState) {
-                        planningState.reattach();
-                    }
-                });
-        if (showSaveMessage) {
-            this.planningState.getSaveCommand().save(null);
-        } else {
-            this.planningState.getSaveCommand().save(null, null);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void closeBudget() {
-        Budget budget = (Budget) getTemplate();
-        Order order = budget.getAssociatedOrder();
-        orderDAO.reattach(order);
-        order.setState(
-                OrderStatusEnum.OFFERED);
-        budget.createOrderLineElementsForAssociatedOrder();
     }
 }

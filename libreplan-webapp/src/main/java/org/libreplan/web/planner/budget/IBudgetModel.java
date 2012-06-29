@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libreplan.web.templates.budgettemplates;
 
-import org.libreplan.business.templates.entities.OrderElementTemplate;
-import org.libreplan.web.templates.ITemplatesModel;
+package org.libreplan.web.planner.budget;
+
+import org.libreplan.web.templates.budgettemplates.IBudgetTemplatesModel;
+import org.zkoss.zk.ui.Desktop;
 
 /**
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
- *
  */
-public interface IBudgetTemplatesModel extends ITemplatesModel {
+public interface IBudgetModel extends IBudgetTemplatesModel {
 
-    void notifyUpdate(OrderElementTemplate element);
+    void saveThroughPlanningState(Desktop desktop, boolean showSaveMessage);
 
-    boolean checkValidCode(OrderElementTemplate element, String code);
+    void closeBudget();
 }
