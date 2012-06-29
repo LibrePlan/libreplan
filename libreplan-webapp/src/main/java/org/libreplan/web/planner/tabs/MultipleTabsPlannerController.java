@@ -323,7 +323,7 @@ public class MultipleTabsPlannerController implements Composer,
                     resourceLoadTab, typeChanged));
         }
         tabsConfiguration.add(visibleOnlyAtOrderMode(advancedAllocationTab))
-            .add(visibleOnlyAtBudgetMode(budgetTab))
+            .add(visibleOnlyAtBudgetAndOrderModes(budgetTab))
             .add(visibleOnlyAtOrderMode(filmingProgressTab))
             .add(visibleOnlyAtOrderMode(dashboardTab));
 
@@ -420,14 +420,16 @@ public class MultipleTabsPlannerController implements Composer,
         return result;
     }
 
-    private ChangeableTab visibleOnlyAtBudgetMode(ITab tab) {
-        final State<Boolean> state = State.create(mode.isOf(ModeType.BUDGET));
+    private ChangeableTab visibleOnlyAtBudgetAndOrderModes(ITab tab) {
+        final State<Boolean> state = State.create(mode.isOf(ModeType.BUDGET)
+                || mode.isOf(ModeType.ORDER));
         ChangeableTab result = configure(tab).visibleOn(state);
         mode.addListener(new ModeTypeChangedListener() {
 
             @Override
             public void typeChanged(ModeType oldType, ModeType newType) {
-                state.changeValueTo(ModeType.BUDGET == newType);
+                state.changeValueTo((ModeType.BUDGET == newType)
+                        || (ModeType.ORDER == newType));
             }
         });
         return result;

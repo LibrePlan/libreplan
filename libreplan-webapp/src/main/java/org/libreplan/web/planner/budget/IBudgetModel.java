@@ -33,4 +33,6 @@ public interface IBudgetModel extends IBudgetTemplatesModel {
     void closeBudget();
 
     Order getAssociatedOrder();
+
+    boolean isReadOnly();
 }

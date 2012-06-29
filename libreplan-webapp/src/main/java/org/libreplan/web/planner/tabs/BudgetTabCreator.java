@@ -85,8 +85,7 @@ public class BudgetTabCreator {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
                 Map<String, Object> arguments = new HashMap<String, Object>();
-                arguments.put("budgetController",
- budgetController);
+                arguments.put("budgetController", budgetController);
                 return Executions.createComponents("budget.zul", parent,
                         arguments);
             }

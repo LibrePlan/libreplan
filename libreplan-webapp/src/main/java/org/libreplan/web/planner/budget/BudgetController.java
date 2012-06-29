@@ -105,7 +105,7 @@ public class BudgetController extends GenericForwardComposer implements
                     .getFellow("orderElementTree");
             treeComponent.useController(treeController);
             controlSelectionWithOnClick(getTreeFrom(treeComponent));
-            treeController.setReadOnly(false);
+            treeController.setReadOnly(model.isReadOnly());
             setTreeRenderer(treeComponent);
         }
         bindTemplatesTreeWithModel();
@@ -239,6 +239,10 @@ public class BudgetController extends GenericForwardComposer implements
                         }
                     }
                 });
+        if (model.isReadOnly()) {
+            saveOrderAndContinueButton.setDisabled(true);
+            closeBudgetButton.setDisabled(true);
+        }
 
     }
 

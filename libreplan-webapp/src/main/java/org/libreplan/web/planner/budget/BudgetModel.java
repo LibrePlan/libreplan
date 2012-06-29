@@ -92,4 +92,9 @@ public class BudgetModel extends BudgetTemplatesModel implements IBudgetModel {
     public Order getAssociatedOrder() {
         return ((Budget) getTemplate()).getAssociatedOrder();
     }
+
+    @Override
+    public boolean isReadOnly() {
+        return !getAssociatedOrder().getState().equals(OrderStatusEnum.BUDGET);
+    }
 }
