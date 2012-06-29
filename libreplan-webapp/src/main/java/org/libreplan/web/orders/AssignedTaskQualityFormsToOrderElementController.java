@@ -204,9 +204,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                 deleteTaskQualityForm(taskQualityForm);
             }
         } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", taskQualityForm
-                    .getId()), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -520,14 +518,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                             && (!item.checkConstraintIfDateCanBeNull())) {
                         item.setDate(null);
                         throw new WrongValueException(comp,
-                                _("date not specified."));
+                                _("date not specified"));
                     }
                     if (!assignedTaskQualityFormsToOrderElementModel
                             .isCorrectConsecutiveDate(taskQualityForm, item)) {
                         item.setDate(null);
                         throw new WrongValueException(
                                 comp,
-                                _("must be greater than the previous date."));
+                                _("must be after the previous date"));
                     }
                 }
             }

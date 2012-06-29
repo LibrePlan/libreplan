@@ -179,12 +179,12 @@ public class CriterionsMachineController extends GenericForwardComposer {
         if (assignedMachineCriterionsModel
                 .checkSameCriterionAndSameInterval(satisfaction)) {
                 throw new WrongValueException(comp,
-                                        _("Criterion is not valid, the criterion overlap other criterionSatisfaction whith same criterion"));
+                                        _("Criterion already assigned"));
             }
         if (assignedMachineCriterionsModel
                 .checkNotAllowSimultaneousCriterionsPerResource(satisfaction)) {
                 throw new WrongValueException(comp,
-                                        _("CriterionType is not valid, the criterionType overlap other criterionSatisfaction whith same criterionType"));
+                                        _("This type of criteria cannot have multiple values in the same period"));
             }
     }
 
@@ -211,11 +211,11 @@ public class CriterionsMachineController extends GenericForwardComposer {
         if (!criterionSatisfactionDTO.isGreaterStartDate((Date) value)) {
             throw new WrongValueException(
                     comp,
-                    _("End date is not valid, the new end date must be greater than the start date"));
+                    _("End date is not valid, the new end date must be after the start date"));
         } else if (!criterionSatisfactionDTO.isPostEndDate((Date) value)) {
             throw new WrongValueException(
                     comp,
-                    _("End date is not valid, the new end date must be later the current end date"));
+                    _("End date is not valid, the new end date must be after the current end date"));
         }
     }
 
@@ -233,7 +233,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
         CriterionSatisfactionDTO criterionSatisfactionDTO = (CriterionSatisfactionDTO) ((Row) comp
                 .getParent()).getValue();
         if (value == null) {
-            throw new WrongValueException(comp, _("Start date cannot be null"));
+            throw new WrongValueException(comp, _("cannot be empty"));
         }
         if (!criterionSatisfactionDTO.isLessToEndDate((Date) value)) {
             throw new WrongValueException(
@@ -345,7 +345,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
                     // Value is incorrect, clear
                     startDate.setValue(null);
                     throw new WrongValueException(startDate,
-                            _("The start date cannot be null"));
+                            _("cannot be empty"));
                 }
                 if (CriterionSatisfactionDTO.CRITERION_WITH_ITS_TYPE
                         .equals(propertyName)) {
@@ -354,7 +354,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
                     // Value is incorrect, clear
                     bandType.setValue(null);
                     throw new WrongValueException(bandType,
-                            _("The criterion and its type cannot be null"));
+                            _("cannot be empty"));
                 }
             }
         }

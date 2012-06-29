@@ -142,7 +142,7 @@ public class ResourcesCostCategoryAssignment extends IntegrationEntity {
         }
     }
 
-    @AssertTrue(message="cost assignment with end date less than start date")
+    @AssertTrue(message="cost assignment with end date before start date")
     public boolean checkConstraintPositiveTimeInterval() {
 
         /* Check if it makes sense to check the constraint .*/

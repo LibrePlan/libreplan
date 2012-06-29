@@ -93,7 +93,7 @@
                             <label value="${i18n:_('Number of iterations')}" />
                             <intbox id="ibIterations"
                                 width="200px"
-                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                constraint="no empty:${i18n:_('cannot be empty')}" />
                             <button id="btnRunMonteCarlo" label="${i18n:_('Go!')}" />
                             <progressmeter id="progressMonteCarloCalculation" value="0" />
                         </row>

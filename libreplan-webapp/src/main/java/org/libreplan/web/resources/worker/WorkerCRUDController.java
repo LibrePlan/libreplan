@@ -301,13 +301,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         String loginName = loginNameTextbox.getValue();
         if (StringUtils.isBlank(loginName)) {
             throw new WrongValueException(loginNameTextbox,
-                    _("cannot be null or empty"));
+                    _("cannot be empty"));
         }
 
         String password = passwordTextbox.getValue();
         if (StringUtils.isBlank(loginName)) {
             throw new WrongValueException(passwordTextbox,
-                    _("cannot be null or empty"));
+                    _("cannot be empty"));
         }
 
         String passwordConfirmation = passwordConfirmationTextbox.getValue();
@@ -765,7 +765,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                         && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };

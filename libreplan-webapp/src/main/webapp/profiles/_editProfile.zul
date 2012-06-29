@@ -40,7 +40,7 @@
                                 <label value="${i18n:_('Name')}" />
                                 <textbox id="name"
                                     value="@{controller.profile.profileName}" width="300px"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                    constraint="no empty:${i18n:_('cannot be empty')}"
                                     onBlur="controller.updateWindowTitle()"/>
                             </row>
                         </rows>

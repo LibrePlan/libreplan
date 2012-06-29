@@ -172,12 +172,12 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public String getNoValidPeriodsMessage() {
-            return _("The resource's calendar has no available days starting from the start of the task.");
+            return _("Resource is not available from task's start");
         }
 
         @Override
         public String getNoValidPeriodsMessageDueToIntersectionMessage() {
-            return _("There are no days available at resource's calendar in the days marked available by the task's calendar.");
+            return _("Resource is not available according to task's calendar");
         }
 
         private Resource getAssociatedResource() {

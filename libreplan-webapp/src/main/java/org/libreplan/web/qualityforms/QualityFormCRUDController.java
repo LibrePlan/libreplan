@@ -250,7 +250,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                         .checkConstraintOutOfRangeQualityFormItemPercentage(item)) {
                     item.setPercentage(null);
                     throw new WrongValueException(comp,
-                            _("percentage must be in range (0,100]"));
+                            _("percentage should be between 1 and 100"));
                 }
                 if (!qualityFormModel
                         .checkConstraintUniqueQualityFormItemPercentage()) {
@@ -391,9 +391,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
             Messagebox.show(_(message), _("Warning"), Messagebox.OK,
                     Messagebox.EXCLAMATION);
         } catch (InterruptedException e) {
-            LOG.error(
-                    _("Error on showing warning message removing qualityForm: ",
-                            qualityForm.getId()), e);
+            throw new RuntimeException(e);
         }
     }
 }

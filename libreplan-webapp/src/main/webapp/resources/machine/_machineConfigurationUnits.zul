@@ -126,7 +126,7 @@
 
                 </detailrow>
                 <textbox value="@{configurationUnit.name}"
-                    constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                    constraint="no empty:${i18n:_('cannot be empty')}" />
                 <textbox value="@{configurationUnit.alpha}"
                     constraint="no zero,no empty,/[0-9][0-9]*(\.[0-9][0-9]?)?/:${i18n:_('must be a real positive number')}" />
                 <button sclass="icono" image="/common/img/ico_borrar1.png"

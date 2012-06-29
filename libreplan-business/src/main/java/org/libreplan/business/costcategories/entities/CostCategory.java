@@ -106,7 +106,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                     // this is not exactly an overlapping but a
                     // problem with missing compulsory fields
                     throw ValidationException.invalidValue(
-                            _("Hours cost type cannot be empty or null"),
+                            "Hours cost type cannot be empty",
                             listElement);
                 }
                 if (listElement.getType().getId()
@@ -115,12 +115,12 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                         // this is not exactly an overlapping but a
                         // problem with missing compulsory fields
                         throw ValidationException.invalidValue(
-                                _("Init date cannot be empty or null"),
+                                "Init date cannot be empty",
                                 listElement);
                     }
                     if (endDate == null && listElement.getEndDate() == null) {
                         throw ValidationException.invalidValue(
-                                _("End date cannot be empty or null"),
+                                "End date cannot be empty",
                                 listElement);
                     } else if ((endDate == null && listElement.getEndDate()
                             .compareTo(initDate) >= 0)

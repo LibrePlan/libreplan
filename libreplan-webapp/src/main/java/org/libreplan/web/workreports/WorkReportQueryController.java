@@ -135,7 +135,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
                                 .getValue()) < 0)) {
                     filterFinishDateLine.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };
@@ -339,7 +339,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
                     .goToCreateOrEditForm(line.getLocalDate());
         } else {
             messagesForUser.showMessage(Level.WARNING,
-                    _("You do not have permissions to edit this work report"));
+                    _("You do not have permissions to edit this timesheet"));
         }
     }
 

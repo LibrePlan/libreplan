@@ -674,7 +674,7 @@ public class FormBinder {
 
     public void markNoEmptyResourcesPerDay(List<AllocationRow> rows) {
         Validate.isTrue(!rows.isEmpty());
-        final String message = _("resources per day must be not empty and bigger than zero");
+        final String message = _("resources per day cannot be empty or less than zero");
         if (!recommendedAllocation) {
             AllocationRow first = rows.get(0);
             throw new WrongValueException(

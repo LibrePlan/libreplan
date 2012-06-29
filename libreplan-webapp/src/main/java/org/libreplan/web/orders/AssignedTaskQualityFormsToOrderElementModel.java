@@ -263,7 +263,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
                 throw new ValidationException(new InvalidValue(
-                        _("can not pass until the previous item is passed."),
+                        _("can not pass until the previous item is passed"),
                         TaskQualityForm.class,
                         "passed", item.getName(), taskQualityForm));
 
@@ -271,7 +271,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutiveDate(item))) {
                 throw new ValidationException(new InvalidValue(
-                        _("must be greater than the previous date."),
+                        _("must be after the previous date"),
                         TaskQualityForm.class,
                         "date", item.getName(), taskQualityForm));
             }

@@ -594,7 +594,7 @@ public abstract class BaseCalendarEditionController extends
         }
 
         if (calendar.getCapacityOn(PartialDay.wholeDay(date)).isZero()) {
-            return _("Not working day");
+            return _("Not workable day");
         }
 
         return _("Normal");
@@ -628,7 +628,7 @@ public abstract class BaseCalendarEditionController extends
         Date endDate = dateboxEndDate.getValue();
         if (endDate == null) {
             throw new WrongValueException(dateboxEndDate,
-                    _("You should select a end date for the exception"));
+                    _("You should select an end date for the exception"));
         } else {
             Clients.closeErrorBox(dateboxEndDate);
         }
@@ -991,7 +991,7 @@ public abstract class BaseCalendarEditionController extends
                     .getFellow("parentCalendars");
             if (parentCalendars.getSelectedItem() == null) {
                 throw new WrongValueException(parentCalendars,
-                        _("cannot be null or empty"));
+                        _("cannot be empty"));
             }
             selected = (BaseCalendar) parentCalendars.getSelectedItem()
                     .getValue();
@@ -1181,7 +1181,7 @@ public abstract class BaseCalendarEditionController extends
                 }
             });
 
-            code.setConstraint("no empty:" + _("cannot be null or empty"));
+            code.setConstraint("no empty:" + _("cannot be empty"));
 
             listcell.appendChild(code);
             item.appendChild(listcell);
@@ -1220,7 +1220,7 @@ public abstract class BaseCalendarEditionController extends
             if (!baseCalendarModel.isOwnException(calendarException)) {
                 result.setDisabled(true);
                 result
-                        .setTooltiptext(_("derived exception can not be removed"));
+                        .setTooltiptext(_("inherited exception can not be removed"));
             }
             return result;
         }
@@ -1264,7 +1264,7 @@ public abstract class BaseCalendarEditionController extends
         Date endDate = dateboxEndDate.getValue();
         if (endDate == null) {
             throw new WrongValueException(dateboxEndDate,
-                    _("You should select a end date for the exception"));
+                    _("You should select an end date for the exception"));
         } else {
             Clients.closeErrorBox(dateboxEndDate);
         }
@@ -1404,7 +1404,7 @@ public abstract class BaseCalendarEditionController extends
                     return null;
                 } else {
                     throw new IllegalArgumentException(
-                            _("Only the last activation period allows to delete end date."));
+                            _("End date can only be deleted in the the last activation"));
                 }
             }
             return new LocalDate(endDate);
@@ -1438,7 +1438,7 @@ public abstract class BaseCalendarEditionController extends
                 }
             });
 
-            code.setConstraint("no empty:" + _("cannot be null or empty"));
+            code.setConstraint("no empty:" + _("cannot be empty"));
 
             listcell.appendChild(code);
             item.appendChild(listcell);

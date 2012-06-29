@@ -146,8 +146,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
                 removeCostCategoryAssignment(assignment);
             }
         } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", assignment.getId()), e);
+            throw new RuntimeException(e);
         }
     }
 

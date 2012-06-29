@@ -746,7 +746,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
             if (prefixBox.getValue() == null || prefixBox.getValue().isEmpty()) {
                 throw new WrongValueException(prefixBox,
-                        _("cannot be null or empty"));
+                        _("cannot be empty"));
             }
 
             try {

@@ -392,7 +392,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 }
             }
         } catch (InterruptedException e) {
-            LOG.error(_("Error on showing delete confirm"), e);
+            throw new RuntimeException(e);
         }
 
     }

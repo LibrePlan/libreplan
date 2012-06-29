@@ -164,7 +164,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
     }
 
     private void showWrongValue() {
-        throw new WrongValueException(initDate, _("cannot be null or empty"));
+        throw new WrongValueException(initDate, _("cannot be empty"));
     }
 
     private void showWrongName() {
@@ -233,7 +233,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
                     deadline.setValue(null);
                     getOrder().setDeadline(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };

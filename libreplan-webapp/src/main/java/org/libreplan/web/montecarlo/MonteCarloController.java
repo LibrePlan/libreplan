@@ -156,7 +156,7 @@ public class MonteCarloController extends GenericForwardComposer {
                         .getValue().intValue() : 0;
                 if (iterations == 0) {
                     throw new WrongValueException(ibIterations,
-                            _("Cannot be null or empty"));
+                            _("cannot be empty"));
                 }
                 if (iterations < 0 || iterations > MAX_NUMBER_ITERATIONS) {
                     throw new WrongValueException(ibIterations,

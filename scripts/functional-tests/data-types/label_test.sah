@@ -49,8 +49,8 @@ function labelCreateDuplicateType($type){
 function labelCreateEmpty(){
     commonCreate("Labels");
     commonLabelForm("");
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
     _log("Do not allow create a label without type", "custom1");
 }
 

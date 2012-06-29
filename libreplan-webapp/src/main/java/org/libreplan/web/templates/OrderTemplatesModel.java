@@ -308,13 +308,13 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public void validateTemplateName(String name)
             throws IllegalArgumentException {
         if ((name == null) || (name.isEmpty())) {
-            throw new IllegalArgumentException(_("the name must be not empty"));
+            throw new IllegalArgumentException(_("the name cannot be empty"));
         }
 
         getTemplate().setName(name);
         if (!getTemplate().checkConstraintUniqueRootTemplateName()) {
             throw new IllegalArgumentException(
-                    _("There exists other template with the same name."));
+                    _("Already exists other template with the same name"));
         }
     }
 

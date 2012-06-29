@@ -254,7 +254,7 @@ public class CompanyPlanningController implements Composer {
                                 filterStartDate.getRawValue()) < 0)) {
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };

@@ -2014,7 +2014,7 @@ following validation on ``_editStretchesFunctionTemplate.zul`` file::
                                 value="@{controller.stretchesFunctionTemplate.name}"
                                 width="300px"
                                 onBlur="controller.updateWindowTitle()"
-                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                constraint="no empty:${i18n:_('cannot be empty')}" />
 
 Now, if users set an empty name, they will receive an error in a pop-up. However,
 if they click *Save* button, the request to sever will be sent and then they

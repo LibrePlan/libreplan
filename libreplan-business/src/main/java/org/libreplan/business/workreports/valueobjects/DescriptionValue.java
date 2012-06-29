@@ -77,7 +77,7 @@ public class DescriptionValue implements INewObject {
         this.fieldName = fieldName;
     }
 
-    @NotNull(message = "value cannot be null")
+    @NotNull(message = "value not specified")
     public String getValue() {
         return value;
     }

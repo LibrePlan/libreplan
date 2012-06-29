@@ -36,7 +36,7 @@
             <rows>
                 <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}">
                     <textbox value="@{assignedMaterial.material.code}"
-                        constraint="no empty:${i18n:_('cannot be null or empty')}"
+                        constraint="no empty:${i18n:_('cannot be empty')}"
                         readonly="true" />
                     <doublebox value="@{assignedMaterial.units}"
                         onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />

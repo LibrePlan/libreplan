@@ -654,7 +654,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
             workReportLabelTypeAssigment.setLabelType(null);
             throw new WrongValueException(
                     comboLabelTypes,
-                    _("This label type already is assigned to the timesheet template."));
+                    _("Label type already assigned"));
         }
     }
 
@@ -903,7 +903,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
             messagesForUserSortedLabelsAndFields
                     .showMessage(
                             Level.ERROR,
-                            _("The index fields and labels must be uniques and consecutives"));
+                            _("Index fields and labels must be unique and consecutive"));
         }
     }
 
@@ -975,9 +975,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
                         .show(_("Cannot delete timesheet template. There are some timesheets bound to it."),
                                 _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
             } catch (InterruptedException e) {
-                LOG.error(
-                        _("Error on showing warning message removing workReportType: ",
-                                workReportType.getHumanId()), e);
+                throw new RuntimeException(e);
             }
             return false;
         }

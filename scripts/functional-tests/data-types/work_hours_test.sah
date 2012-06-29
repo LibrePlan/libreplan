@@ -59,8 +59,8 @@ function workHourCreateDuplicateType($type, $price){
 function workHourCreateEmpty(){
     commonCreate("Work Hours");
     commonWorkHourForm("", 10);
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
     _log("Do not allow create a empty Work Hour", "custom1");
 }
 

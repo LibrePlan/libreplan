@@ -99,7 +99,7 @@ public class CalendarExceptionTypeModel extends IntegrationEntityModel
     @Transactional
     public void confirmDelete(CalendarExceptionType exceptionType) throws InstanceNotFoundException, InvalidValueException {
         if (calendarExceptionTypeDAO.hasCalendarExceptions(exceptionType)) {
-            throw new InvalidValueException(_("Cannot remove {0}, since it is being used by some Exception Day", exceptionType.getName()));
+            throw new InvalidValueException(_("Cannot remove {0}, since it is being used by some exception day", exceptionType.getName()));
         }
         if (!exceptionType.isNewObject()) {
             calendarExceptionTypeDAO.remove(exceptionType.getId());

@@ -405,7 +405,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
                         && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };
@@ -551,7 +551,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
             machineModel.confirmRemove(machine);
         } catch (InstanceNotFoundException e) {
             messagesForUser.showMessage(Level.INFO,
-                    _("This machine was already removed by other user"));
+                    _("Machine was already removed"));
         }
     }
 

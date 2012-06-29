@@ -50,8 +50,8 @@ function exceptDayCreateDuplicateName($name, $standar, $color) {
 function exceptDayCreateEmpty($name, $standar, $color) {
     commonCreate("Exception Days");
     exceptDayForm($name, $standar, $color);
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
     _log("Do not allow create an exception day without name", "custom1");
 }
 

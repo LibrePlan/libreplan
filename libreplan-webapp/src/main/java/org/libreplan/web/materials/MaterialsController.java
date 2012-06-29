@@ -295,8 +295,7 @@ public class MaterialsController extends
                 removeMaterialCategory(materialCategory);
             }
         } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", materialCategory.getId()), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -308,7 +307,7 @@ public class MaterialsController extends
     public void addMaterialCategory() {
         String categoryName = txtCategory.getValue();
         if (categoryName == null || categoryName.isEmpty()) {
-            throw new WrongValueException(txtCategory, _("cannot be null or empty"));
+            throw new WrongValueException(txtCategory, _("cannot be empty"));
         }
 
         MaterialCategory parent = null;

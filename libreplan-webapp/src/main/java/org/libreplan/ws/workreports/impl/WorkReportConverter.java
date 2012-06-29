@@ -464,7 +464,7 @@ public final class WorkReportConverter {
                     updateLabel(labelDTO, labels);
                 } catch (InstanceNotFoundException e) {
                     throw new ValidationException(
-                            "a work report line has not this label type assigned");
+                            "there are not work report lines with assigned labels of this type");
                 }
             }
         }

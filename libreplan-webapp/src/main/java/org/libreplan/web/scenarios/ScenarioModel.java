@@ -115,7 +115,7 @@ public class ScenarioModel implements IScenarioModel {
         boolean isMainScenario = PredefinedScenarios.MASTER.getScenario().getId().equals(scenario.getId());
         if (isMainScenario) {
             throw new IllegalArgumentException(
-                    _("You can not remove the default scenario called \"{0}\"", PredefinedScenarios.MASTER.getName()));
+                    _("You can not remove the default scenario \"{0}\"", PredefinedScenarios.MASTER.getName()));
         }
 
         Scenario currentScenario = scenarioManager.getCurrent();

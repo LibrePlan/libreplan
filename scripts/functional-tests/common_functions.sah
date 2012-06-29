@@ -114,8 +114,8 @@ function commonSaveConfigurationValidation(){
 }
 
 function commonEmptyCodeValidation(){
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
 
 function commonProjectPlanningFilterValidation(){

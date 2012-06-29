@@ -136,7 +136,7 @@ public class ManageOrderElementAdvancesController extends
             manageOrderElementAdvancesModel.confirmSave();
             return true;
         } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-            messagesForUser.showMessage(Level.ERROR, _("cannot include a progress of the same progress type twice"));
+            messagesForUser.showMessage(Level.ERROR, _("Cannot create another progress of the same type"));
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
                     Level.ERROR, _("spread values are not valid, at least one value should be true"));
@@ -145,7 +145,7 @@ public class ManageOrderElementAdvancesController extends
         } catch (InstanceNotFoundException e) {
             messagesForUser.showMessage(
                     Level.ERROR, e.getMessage());
-            LOG.error(_("Couldn't find element: {0}", e.getKey()), e);
+            LOG.error("Couldn't find element: " + e.getKey(), e);
         }
         increaseScreenHeight();
         return false;
@@ -950,7 +950,7 @@ public class ManageOrderElementAdvancesController extends
                     if (advance.getAdvanceType() == null) {
                         throw new WrongValueException(
                                 getComboboxTypeBy(listItem),
-                            _("Value is not valid, the type must be not empty"));
+                            _("cannot be empty"));
                     }
 
                     DirectAdvanceAssignment directAdvanceAssignment;
@@ -964,7 +964,7 @@ public class ManageOrderElementAdvancesController extends
                         && directAdvanceAssignment.getMaxValue() == null) {
                         throw new WrongValueException(
                                 getDecimalboxMaxValueBy(listItem),
-                                _("Value is not valid, the current value must be not empty"));
+                                _("cannot be empty"));
                     }
                 }
             }
@@ -1297,7 +1297,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void showMessageDeleteSpread() {
-        String message = _("This progress can not be removed, because it is spread. It is necessary to select another progress as spread.");
+        String message = _("Spread progress cannot be removed. Please select another progress as spread.");
         showErrorMessage(message);
     }
 
@@ -1418,7 +1418,7 @@ public class ManageOrderElementAdvancesController extends
                 advanceMeasurement.setDate(null);
                 ((Datebox) comp).setValue(null);
                 throw new WrongValueException(comp,
-                        _("The date is not valid, the date must be not empty"));
+                        _("cannot be empty"));
             } else {
                 String errorMessage = validateDateAdvanceMeasurement(
                         new LocalDate(value), advanceMeasurement);
@@ -1445,7 +1445,7 @@ public class ManageOrderElementAdvancesController extends
             if (((BigDecimal) value) == null) {
                 throw new WrongValueException(
                         comp,
-                        _("Value is not valid, the current value must be not empty"));
+                        _("cannot be empty"));
             } else {
                 String errorMessage = validateValueAdvanceMeasurement(advanceMeasurement);
                 if (errorMessage != null) {

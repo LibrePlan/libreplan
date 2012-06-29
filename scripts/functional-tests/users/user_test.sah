@@ -62,8 +62,8 @@ function accountsCreateDuplicateType($name, $password) {
 function accountsCreateEmpty($name, $password) {
     commonCreate("Accounts");
     accountsForm($name, $password);
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
     _log("Do not allow create a Account with empty Name", "custom1");
 }
 

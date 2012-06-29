@@ -226,14 +226,14 @@
                                                 </columns>
                                                 <rows>
                                                     <row>
-                                                        <label value="${i18n:_('Because of hours')}:" />
+                                                        <label value="${i18n:_('Cost of hours')}:" />
                                                         <hbox>
                                                             <label value="@{assignedHoursToOrderElementController.costOfHours}" />
                                                             <label value="@{assignedHoursToOrderElementController.currencySymbol}" />
                                                         </hbox>
                                                     </row>
                                                     <row>
-                                                        <label value="${i18n:_('Because of expenses')}:" />
+                                                        <label value="${i18n:_('Cost of expenses')}:" />
                                                         <hbox>
                                                             <label value="@{assignedHoursToOrderElementController.costOfExpenses}" />
                                                             <label value="@{assignedHoursToOrderElementController.currencySymbol}" />

@@ -322,7 +322,7 @@ public class OrderPlanningController implements Composer {
                                 .getValue()) < 0)) {
                     filterFinishDateOrderElement.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
 

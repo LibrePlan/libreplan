@@ -94,7 +94,7 @@ public class UnitTypeModel extends IntegrationEntityModel implements
         try {
             return unitTypeDAO.find(unitType.getId());
         } catch (InstanceNotFoundException e) {
-            LOG.error("It was not possible load entity. Not found. Id: "
+            LOG.error("Could not load entity. Id: "
                     + unitType.getId(), e);
             throw new RuntimeException(e);
         }

@@ -832,9 +832,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     remove(order);
                 }
             } catch (InterruptedException e) {
-                messagesForUser.showMessage(
-                        Level.ERROR, e.getMessage());
-                LOG.error(_("Error on showing removing element: ", order.getId()), e);
+                throw new RuntimeException(e);
             }
         }
         else {
@@ -864,23 +862,21 @@ public class OrderCRUDController extends GenericForwardComposer {
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the project \"{0}\" because of any of its tasks are already in use in some timesheets and the project just exists in the current scenario",
+                                    "You can not remove the project \"{0}\" because it has work reported on it or any of its tasks",
                                     order.getName()));
         } else {
             if (!StringUtils.isBlank(order.getExternalCode())) {
                 try {
                     if (Messagebox
                             .show(
-                                    _("Deleting this subcontracted project, you are going to lose the relation to report progress. Are you sure?"),
+                                    _("This is a subcontracted project, if you delete it you can not report progress anymore. Are you sure?"),
                                     _("Confirm"), Messagebox.OK
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION) == Messagebox.CANCEL) {
                         return;
                     }
                 } catch (InterruptedException e) {
-                    messagesForUser.showMessage(Level.ERROR, e.getMessage());
-                    LOG.error(_("Error on showing removing element: ", order
-                            .getId()), e);
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -1322,7 +1318,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                         && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };
@@ -1506,7 +1502,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
                 if (StringUtils.isBlank((String) value)) {
                     throw new WrongValueException(comp,
-                            _("cannot be null or empty"));
+                            _("cannot be empty"));
                 }
                 try {
                     Order found = orderDAO
@@ -1530,7 +1526,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
                 if (StringUtils.isBlank((String) value)) {
                     throw new WrongValueException(comp,
-                            _("cannot be null or empty"));
+                            _("cannot be empty"));
                 }
                 try {
                     Order found = orderDAO

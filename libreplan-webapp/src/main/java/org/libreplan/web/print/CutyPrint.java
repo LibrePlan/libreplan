@@ -21,8 +21,6 @@
 
 package org.libreplan.web.print;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -243,11 +241,11 @@ public class CutyPrint {
                 }
                 Executions.getCurrent().sendRedirect(filename, "_blank");
             } catch (Exception e) {
-                LOG.error(_("Could open generated PDF"), e);
+                LOG.error("Could open generated PDF", e);
             }
 
         } catch (IOException e) {
-            LOG.error(_("Could not execute print command"), e);
+            LOG.error("Could not execute print command", e);
         }
     }
 
@@ -340,7 +338,7 @@ public class CutyPrint {
             out.close();
 
         } catch (FileNotFoundException ex) {
-            LOG.error(ex.getMessage() + _(" in the specified directory."));
+            LOG.error(ex.getMessage() + " in the specified directory.", ex);
             System.exit(0);
         } catch (IOException e) {
             LOG.error(e.getMessage());

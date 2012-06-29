@@ -970,7 +970,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             if (!readOnly && element.isLeaf()) {
                 if (getHoursGroupHandler().hasMoreThanOneHoursGroup(element)) {
                     boxHours.setReadonly(true);
-                    tc.setTooltiptext(_("Not editable for containing more that an hours group."));
+                    tc.setTooltiptext(_("Disabled because of it contains more than one hours group"));
                 } else {
                     boxHours.setReadonly(false);
                     tc.setTooltiptext("");

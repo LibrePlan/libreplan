@@ -821,7 +821,7 @@ public final class OrderElementConverter {
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
                 throw new ValidationException(
                         MessageFormat
-                                .format("Duplicate value true report global progress for task {0}",
+                                .format("More than one progress marked as report global for task {0}",
                                         orderElement.getCode()));
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
                 throw new ValidationException(MessageFormat.format(

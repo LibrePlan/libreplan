@@ -293,8 +293,7 @@ public class CriterionSatisfaction extends IntegrationEntity {
         return criterion.getType().getResource();
     }
 
-    @AssertTrue(message="criterion satisfaction with end date less than start " +
-        "date")
+    @AssertTrue(message = "criterion satisfaction with end date before start")
     public boolean checkConstraintPositiveTimeInterval() {
 
         /* Check if it makes sense to check the constraint .*/

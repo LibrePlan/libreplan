@@ -198,7 +198,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         this.labels = labels;
     }
 
-    @NotNull(message = "work report not specified")
+    @NotNull(message = "timesheet not specified")
     public WorkReport getWorkReport() {
         return workReport;
     }
@@ -395,7 +395,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return Registry.getWorkReportLineDAO();
     }
 
-    @AssertTrue(message = "fields should match with work report data if are shared by lines")
+    @AssertTrue(message = "fields should match with timesheet data if are shared by lines")
     public boolean checkConstraintFieldsMatchWithWorkReportIfAreSharedByLines() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -441,7 +441,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
                 && (orderElement != null);
     }
 
-    @AssertTrue(message = "label type:the work report have not assigned this label type")
+    @AssertTrue(message = "label type: the timesheet has not assigned this label type")
     public boolean checkConstraintAssignedLabelTypes() {
         if (this.workReport == null
                 || this.workReport.getWorkReportType() == null) {
@@ -464,7 +464,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "description value:the work report have not assigned the description field")
+    @AssertTrue(message = "description value: the timesheet has not assigned the description field")
     public boolean checkConstraintAssignedDescriptionValues() {
         if (this.workReport == null
                 || this.workReport.getWorkReportType() == null) {
@@ -487,7 +487,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "There are repeated description values in the work report line")
+    @AssertTrue(message = "there are repeated description values in the timesheet lines")
     public boolean checkConstraintAssignedRepeatedDescriptionValues() {
 
         Set<String> textFields = new HashSet<String>();

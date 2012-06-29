@@ -174,13 +174,13 @@ function criteriaForm($name){
  * */
 
 function machineNameEmptyValidation(){
-    _assertExists(_div("Name cannot be null or empty"));
-    _assert(_isVisible(_div("Name cannot be null or empty")));
+    _assertExists(_div("Name cannot be empty"));
+    _assert(_isVisible(_div("Name cannot be empty")));
 }
 
 function machineDescriptionEmptyValidation(){
-    _assertExists(_div("Description cannot be null or empty"));
-    _assert(_isVisible(_div("Description cannot be null or empty")));
+    _assertExists(_div("Description cannot be empty"));
+    _assert(_isVisible(_div("Description cannot be empty")));
 }
 
 function machineEmptyFields(){

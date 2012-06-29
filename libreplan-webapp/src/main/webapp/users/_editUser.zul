@@ -47,7 +47,7 @@
                                 <label value="${i18n:_('Username')}" />
                                 <textbox id="loginName"
                                     value="@{controller.user.loginName}" width="300px"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                    constraint="no empty:${i18n:_('cannot be empty')}"
                                     onBlur="controller.updateWindowTitle()"
                                     disabled="@{controller.ldapUserOrDefaultAdmin}" />
                             </row>

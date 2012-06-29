@@ -391,7 +391,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
                 removeMaterialAssignment(materialAssignment);
             }
         } catch (InterruptedException e) {
-            LOG.error(_("Error on showing delete confirm"), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -479,9 +479,9 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
                 splitMaterialAssignment(materialAssignment, dbUnits.getValue());
             }
         } catch (SuspendNotAllowedException e) {
-            LOG.error(_("Error on splitting"), e);
+            throw new RuntimeException(e);
         } catch (InterruptedException e) {
-            LOG.error(_("Error on splitting"), e);
+            throw new RuntimeException(e);
         }
     }
 

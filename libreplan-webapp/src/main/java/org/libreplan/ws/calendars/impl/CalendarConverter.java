@@ -303,8 +303,8 @@ public final class CalendarConverter {
                     result.put(day, capacity);
                 } catch (IllegalArgumentException e) {
                     throw new ValidationException("a day is not valid");
-                } catch(NullPointerException e){
-                    throw new ValidationException("a day is empty");
+                } catch (NullPointerException e) {
+                    throw new ValidationException("a day is null");
                 }
             }
         }
