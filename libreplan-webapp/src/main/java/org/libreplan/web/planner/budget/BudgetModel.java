@@ -54,8 +54,7 @@ public class BudgetModel extends BudgetTemplatesModel implements IBudgetModel {
     public void saveThroughPlanningState(Desktop desktop,
             boolean showSaveMessage) {
         this.planningState = planningStateCreator.retrieveOrCreate(desktop,
-                ((Budget) getTemplate()).getAssociatedOrder(),
-                new IActionsOnRetrieval() {
+                getAssociatedOrder(), new IActionsOnRetrieval() {
 
                     @Override
                     public void onRetrieval(PlanningState planningState) {
@@ -77,5 +76,10 @@ public class BudgetModel extends BudgetTemplatesModel implements IBudgetModel {
         orderDAO.reattach(order);
         order.setState(OrderStatusEnum.OFFERED);
         budget.createOrderLineElementsForAssociatedOrder();
+    }
+
+    @Override
+    public Order getAssociatedOrder() {
+        return ((Budget) getTemplate()).getAssociatedOrder();
     }
 }

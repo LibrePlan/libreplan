@@ -19,6 +19,7 @@
 
 package org.libreplan.web.planner.budget;
 
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.templates.budgettemplates.IBudgetTemplatesModel;
 import org.zkoss.zk.ui.Desktop;
 
@@ -30,4 +31,6 @@ public interface IBudgetModel extends IBudgetTemplatesModel {
     void saveThroughPlanningState(Desktop desktop, boolean showSaveMessage);
 
     void closeBudget();
+
+    Order getAssociatedOrder();
 }

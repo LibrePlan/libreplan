@@ -220,8 +220,7 @@ public class BudgetController extends GenericForwardComposer implements
                                             if (evt.getName().equals("onOK")) {
                                                 model.closeBudget();
                                                 model.saveThroughPlanningState(editWindow.getDesktop(), false);
-                                                entryPointsController.goToOrderDetails(
-                                                        ((Budget)model.getTemplate()).getAssociatedOrder());
+                                                entryPointsController.goToOrderDetails(model.getAssociatedOrder());
                                             }
                                         }
                                     });
