@@ -312,12 +312,13 @@ public class MultipleTabsPlannerController implements Composer,
                         returnToPlanningTab(), breadcrumbs));
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
-            .add(tabWithNameReloading(planningTab, typeChanged))
-            .add(tabWithNameReloading(ordersTab, typeChanged));
+                .add(tabNotVisibleInBudgetMode(planningTab, typeChanged))
+                .add(tabNotVisibleInBudgetMode(ordersTab, typeChanged));
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
             tabsConfiguration.add(
-                    tabWithNameReloading(resourceLoadTab, typeChanged)).add(
-                    tabWithNameReloading(limitingResourcesTab, typeChanged));
+                    tabNotVisibleInBudgetMode(resourceLoadTab, typeChanged))
+                    .add(tabNotVisibleInBudgetMode(limitingResourcesTab,
+                            typeChanged));
         } else {
             tabsConfiguration.add(visibleOnlyAtOrderModeWithNameReloading(
                     resourceLoadTab, typeChanged));
@@ -380,9 +381,25 @@ public class MultipleTabsPlannerController implements Composer,
         };
     }
 
-    private ChangeableTab tabWithNameReloading(ITab tab,
+    private ChangeableTab tabNotVisibleInBudgetMode(ITab tab,
             final State<Void> typeChanged) {
-        return configure(tab).reloadNameOn(typeChanged);
+        final State<Boolean> state = State.create(mode.isOf(ModeType.GLOBAL)
+                || mode.isOf(ModeType.ORDER));
+        ChangeableTab result;
+        if (typeChanged == null) {
+            result = configure(tab).visibleOn(state);
+        } else {
+            result = configure(tab).visibleOn(state).reloadNameOn(typeChanged);
+        }
+        mode.addListener(new ModeTypeChangedListener() {
+
+            @Override
+            public void typeChanged(ModeType oldType, ModeType newType) {
+                state.changeValueTo((ModeType.GLOBAL == newType)
+                        || (ModeType.ORDER == newType));
+            }
+        });
+        return result;
     }
 
     private State<Void> typeChangedState() {
