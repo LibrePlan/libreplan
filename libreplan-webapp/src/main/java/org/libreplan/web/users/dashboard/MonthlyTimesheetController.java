@@ -72,8 +72,8 @@ import org.zkoss.zul.api.Grid;
 public class MonthlyTimesheetController extends GenericForwardComposer
         implements IMonthlyTimesheetController {
 
-    private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
-    private final static String TOTAL_DURATION_TEXTBOX_WIDTH = "45px";
+    private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "34px";
+    private final static String TOTAL_DURATION_TEXTBOX_WIDTH = "50px";
 
     private final static String WORK_REPORTS_URL = "/workreports/workReport.zul";
 
@@ -252,6 +252,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private void renderTotalRow(Row row) {
             appendLabelSpaningTwoColumns(row, _("Total"));
             appendTotalForDays(row);
+            row.setSclass("total-row");
             appendTotalColumn(row);
         }
 
@@ -487,7 +488,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private void adjustFrozenWidth() {
         // Hack to reduce frozen scrollarea
-        Clients.evalJavaScript("jq('.z-frozen-inner div').width(jq('.total-row').offset().left);");
+        Clients.evalJavaScript("jq('.z-frozen-inner div').width(jq('.totals-column').offset().left);");
     }
 
     private void checkUserComesFromEntryPointsOrSendForbiddenCode() {
@@ -584,7 +585,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     private void createTotalColumn() {
         Column total = new Column(_("Total"));
         total.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
-        total.setSclass("total-row");
+        total.setSclass("totals-column");
         total.setAlign("center");
         columns.appendChild(total);
 

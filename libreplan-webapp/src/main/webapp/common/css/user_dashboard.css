@@ -1,25 +1,39 @@
 .timesheet .z-textbox {
     background-image: none;
     background-color: transparent;
-    border: solid 1px transparent;
+    border: 0;
     margin: 0;
     text-align: center;
+    padding: 3px 0;
 }
 
 .timesheet .z-cell {
     padding: 0;
 }
 
+.timesheet tr.z-row td.z-cell {
+    border-left: 0;
+}
+
 .timesheet .z-textbox.z-textbox-disd {
     background-color: #EEE;
-    color: black;
+}
+
+.timesheet .z-textbox-disd  {
+    color: #000 !important;
 }
 
 .timesheet {
     margin-top:5px;
+    margin: 0;
+    padding: 0;
 }
 
-.timesheet .total-row,
-.timesheet .total-row .z-column-cnt {
+.timesheet .totals-column,
+.timesheet .totals-column .z-column-cnt {
     text-align: center;
+}
+
+.timesheet .total-row td {
+    border-top: solid 1px #B1CBD5;
 }
