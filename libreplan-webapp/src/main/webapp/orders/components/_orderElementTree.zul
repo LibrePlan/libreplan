@@ -44,7 +44,8 @@
                 visible="${treeComponent.createFromTemplateEnabled}"/>
         </hbox>
 
-        <hbox width="100%" style="float:right" hflex="1" align="right" pack="right">
+        <hbox width="100%" style="float:right" hflex="1" align="right" pack="right"
+                id="selectedRowButtons" visible="false">
             <label value="${i18n:_('Selected node')}:" />
             <button id="editOrderElementButton" sclass="icono" image="/common/img/ico_editar1.png"
                 tooltiptext="${i18n:_('Edit selected task')}"
