@@ -19,6 +19,9 @@
 
 package org.libreplan.web.planner.budget;
 
+import static org.libreplan.web.I18nHelper._;
+
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
@@ -53,6 +56,10 @@ public class BudgetModel extends BudgetTemplatesModel implements IBudgetModel {
     @Transactional
     public void saveThroughPlanningState(Desktop desktop,
             boolean showSaveMessage) {
+        if (!getAssociatedOrder().getState().equals(OrderStatusEnum.BUDGET)) {
+            throw new ValidationException(
+                    _("The project budget cannot be modified once it has been closed"));
+        }
         this.planningState = planningStateCreator.retrieveOrCreate(desktop,
                 getAssociatedOrder(), new IActionsOnRetrieval() {
 
@@ -73,6 +80,9 @@ public class BudgetModel extends BudgetTemplatesModel implements IBudgetModel {
     public void closeBudget() {
         Budget budget = (Budget) getTemplate();
         Order order = budget.getAssociatedOrder();
+        if (!order.getState().equals(OrderStatusEnum.BUDGET)) {
+            throw new ValidationException(_("The budget is already closed"));
+        }
         orderDAO.reattach(order);
         order.setState(OrderStatusEnum.OFFERED);
         budget.createOrderLineElementsForAssociatedOrder();

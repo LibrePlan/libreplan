@@ -21,6 +21,7 @@ package org.libreplan.web.planner.budget;
 
 import static org.libreplan.web.I18nHelper._;
 
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.common.Util;
@@ -175,7 +176,12 @@ public class BudgetController extends GenericForwardComposer implements
                 new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        model.saveThroughPlanningState(editWindow.getDesktop(), true);
+                        try {
+                            model.saveThroughPlanningState(
+                                    editWindow.getDesktop(), true);
+                        } catch (ValidationException e) {
+                            Messagebox.show(e.getMessage());
+                        }
                     }
                 });
 
@@ -218,9 +224,13 @@ public class BudgetController extends GenericForwardComposer implements
                                         public void onEvent(Event evt)
                                                 throws InterruptedException {
                                             if (evt.getName().equals("onOK")) {
-                                                model.closeBudget();
-                                                model.saveThroughPlanningState(editWindow.getDesktop(), false);
-                                                entryPointsController.goToOrderDetails(model.getAssociatedOrder());
+                                                try {
+                                                    model.closeBudget();
+                                                    model.saveThroughPlanningState(editWindow.getDesktop(), false);
+                                                    entryPointsController.goToOrderDetails(model.getAssociatedOrder());
+                                                } catch (ValidationException e) {
+                                                    Messagebox.show(e.getMessage());
+                                                }
                                             }
                                         }
                                     });
