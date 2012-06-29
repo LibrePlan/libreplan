@@ -51,16 +51,17 @@
                                 <hbox align="pack">
                                     <div visible="@{controller.currentUser}">
             <button id="previousMonth"
+                image="/common/img/ico_step_left.png" sclass="icono"
                 onClick="controller.previousMonth();"
-                label="${i18n:_('Previous')}"
+                tooltiptext="${i18n:_('Previous')}"
                 disabled="@{controller.firstMonth}" />
                 </div>
 
                 <label value="@{controller.date}" />
                                     <div visible="@{controller.currentUser}">
             <button id="nextMonth"
-                onClick="controller.nextMonth();"
-                label="${i18n:_('Next')}"
+                onClick="controller.nextMonth();" image="/common/img/ico_step_right.png"
+                tooltiptext="${i18n:_('Next')}" sclass="icono"
                 disabled="@{controller.lastMonth}" />
                             </div></hbox>
                         </row>
@@ -124,7 +125,7 @@
             <hbox width="100%">
             <grid id="timesheet" width="100%" sizedByContent="true" hflex="1" sclass="timesheet"
                 model="@{controller.rows}"
-                rowRenderer="@{controller.rowRenderer}" />
+                rowRenderer="@{controller.rowRenderer}"/>
             </hbox>
 
         </groupbox>
