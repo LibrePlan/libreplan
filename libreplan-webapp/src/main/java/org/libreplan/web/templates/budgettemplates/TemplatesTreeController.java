@@ -458,7 +458,7 @@ public class TemplatesTreeController extends
 
     @Override
     protected boolean isNewButtonDisabled() {
-        return false;
+        return readOnly;
     }
 
     @Override
