@@ -405,10 +405,6 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
     @Transactional
     public void saveThroughPlanningState(Desktop desktop,
             boolean showSaveMessage) {
-        if (!getAssociatedOrder().getState().equals(OrderStatusEnum.BUDGET)) {
-            throw new ValidationException(
-                    _("The project budget cannot be modified once it has been closed"));
-        }
         this.planningState = planningStateCreator.retrieveOrCreate(desktop,
                 getAssociatedOrder(), new IActionsOnRetrieval() {
 
