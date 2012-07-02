@@ -256,7 +256,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                         .checkConstraintUniqueQualityFormItemPercentage()) {
                     item.setPercentage(null);
                     throw new WrongValueException(comp,
-                            _("percentage cannot be duplicated"));
+                            _("percentage must be unique"));
                 }
             }
         };

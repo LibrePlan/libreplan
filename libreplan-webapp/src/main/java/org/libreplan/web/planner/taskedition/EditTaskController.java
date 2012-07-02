@@ -361,7 +361,7 @@ public class EditTaskController extends GenericForwardComposer {
     }
 
     public void showNonPermitChangeResourceAllocationType() {
-        String message = _("The task has got progress consolidations. It must delete all consolidations to change the resource allocation type ");
+        String message = _("The task has got progress consolidations. To change resource allocation type all consolidations must be removed before");
         try {
             Messagebox.show(message, _("Information"), Messagebox.OK,
                     Messagebox.INFORMATION);

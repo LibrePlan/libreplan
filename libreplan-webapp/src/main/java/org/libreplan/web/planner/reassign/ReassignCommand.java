@@ -146,7 +146,7 @@ public class ReassignCommand implements IReassignCommand {
 
                                     @Override
                                     public String call() {
-                                        return _("It couldn't complete all the reassignations");
+                                        return _("Assignments could not be completed");
                                     }
                                 })));
                     }

@@ -163,7 +163,7 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
         }
     }
 
-    @AssertTrue(message="Company ID already used. It has to be be unique")
+    @AssertTrue(message="Company ID already used. It must be unique")
     public boolean checkConstraintUniqueNif() {
         IExternalCompanyDAO dao = Registry.getExternalCompanyDAO();
 

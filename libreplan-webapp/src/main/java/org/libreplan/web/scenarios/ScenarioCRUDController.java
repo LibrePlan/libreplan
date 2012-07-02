@@ -222,7 +222,7 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
     private void errorHappenedDoingReassignation(Exception exceptionHappened) {
         LOG.error("error happened doing reassignation", exceptionHappened);
         messagesForUser.showMessage(Level.ERROR, _(
-                "error doing reassignation: {0}", exceptionHappened));
+                "error doing reassignment: {0}", exceptionHappened));
     }
 
     public Set<Order> getOrders() {

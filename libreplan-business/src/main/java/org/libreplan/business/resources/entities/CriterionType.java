@@ -417,13 +417,13 @@ public class CriterionType extends IntegrationEntity implements
     }
 
     @AssertTrue(message="criterion codes must be unique inside a criterion " +
-        "type")
+        " type")
     public boolean checkConstraintNonRepeatedCriterionCodes() {
         return getFirstRepeatedCode(criterions) == null;
     }
 
     @AssertTrue(message="criterion names must be unique inside a criterion " +
-        "type")
+        " type")
     public boolean checkConstraintNonRepeatedCriterionNames() {
 
         Set<String> criterionNames = new HashSet<String>();
@@ -468,7 +468,7 @@ public class CriterionType extends IntegrationEntity implements
 
     }
 
-    @AssertTrue(message="criterion type does not allow resource hierarchy")
+    @AssertTrue(message="criterion type does not allow hierarchy")
     public boolean checkConstraintAllowHierarchy() {
 
         if (!allowHierarchy) {
@@ -513,7 +513,7 @@ public class CriterionType extends IntegrationEntity implements
      * {@link CriterionType} has been assigned to any {@link Resource}
      * @throws ChangeTypeCriterionTypeException
      */
-    @AssertTrue(message = "Criteria of this criterion type has been assigned to some resource.")
+    @AssertTrue(message = "Criteria of this criterion type have been assigned to some resource.")
     protected boolean checkConstraintChangeType() {
         /* Check the constraint. */
         ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();

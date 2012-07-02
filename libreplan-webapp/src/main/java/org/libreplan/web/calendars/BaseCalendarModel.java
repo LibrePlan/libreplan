@@ -486,7 +486,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
             if (version.equals(getBaseCalendar().getFirstCalendarData())) {
                 return;
             } else {
-                throw new ValidationException(_("This date can not be empty"));
+                throw new ValidationException(_("This date cannot be empty"));
             }
         }
 
@@ -518,7 +518,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
             if (version.equals(getBaseCalendar().getLastCalendarData())) {
                 return;
             } else {
-                throw new ValidationException(_("This date can not be empty"));
+                throw new ValidationException(_("This date cannot be empty"));
             }
         }
 

@@ -665,7 +665,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
                     descriptionField.setFieldName(null);
                     throw new WrongValueException(
                             comp,
-                            _("A description field of the same name already exists."));
+                            _("A description field with the same name already exists."));
                 }
             }
         };

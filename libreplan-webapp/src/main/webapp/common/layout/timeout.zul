@@ -24,7 +24,7 @@
 <zk>
     <window self="@{define(content)}" >
         <vbox apply="org.libreplan.web.error.PageForErrorOnEvent" sclass="warningbox">
-            <i18n id="message" value="Your session has expired after inactivity period. Please log in again." />
+            <i18n id="message" value="Your session has expired because of inactivity. Please log in again." />
             <hbox style="margin-left:auto; margin-right:auto">
                 <button id="quitSession" label="${i18n:_('Back to log in')}"></button>
             </hbox>

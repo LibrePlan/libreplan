@@ -263,7 +263,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
                 throw new ValidationException(new InvalidValue(
-                        _("can not pass until the previous item is passed"),
+                        _("cannot be checked until the previous item is checked before"),
                         TaskQualityForm.class,
                         "passed", item.getName(), taskQualityForm));
 

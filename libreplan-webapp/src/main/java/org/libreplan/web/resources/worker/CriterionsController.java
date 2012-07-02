@@ -183,7 +183,7 @@ public class CriterionsController extends GenericForwardComposer {
             }
             if(assignedCriterionsModel.checkNotAllowSimultaneousCriterionsPerResource(satisfaction)){
                 throw new WrongValueException(comp,
-                                        _("This type of criteria cannot have multiple values in the same period"));
+                                        _("This criterion type cannot have multiple values in the same period"));
             }
     }
 
@@ -236,7 +236,7 @@ public class CriterionsController extends GenericForwardComposer {
             (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
         if(!criterionSatisfactionDTO.isGreaterStartDate((Date) value)){
             throw new WrongValueException(comp,
-                _("End date is not valid, the new end date after the start date"));
+                _("End date is not valid, the new end date must be after start date"));
         }else if(!criterionSatisfactionDTO.isPostEndDate((Date) value)){
             throw new WrongValueException(comp,
                 _("End date is not valid, the new end date must be after the current end date"));

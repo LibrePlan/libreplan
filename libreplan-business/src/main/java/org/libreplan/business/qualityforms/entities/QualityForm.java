@@ -213,7 +213,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The quality item positions must be unique and consecutive.")
+    @AssertTrue(message = "The quality form item positions must be unique and consecutive.")
     public boolean checkConstraintConsecutivesAndUniquesQualityFormItemPositions() {
         List<QualityFormItem> result = getListToNull(qualityFormItems);
         for (QualityFormItem qualityFormItem : qualityFormItems) {

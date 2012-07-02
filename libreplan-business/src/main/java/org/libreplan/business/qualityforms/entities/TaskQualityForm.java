@@ -111,7 +111,7 @@ public class TaskQualityForm extends BaseEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the items can not passes until the previous items are passed.")
+    @AssertTrue(message = "items cannot be checked until the previous items are checked before.")
     public boolean checkConstraintConsecutivePassedItems() {
         if (!isByItems()) {
             for (TaskQualityFormItem item : taskQualityFormItems) {

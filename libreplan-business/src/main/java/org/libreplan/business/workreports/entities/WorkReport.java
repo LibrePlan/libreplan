@@ -281,7 +281,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "description value:the timesheet have not assigned the description field")
+    @AssertTrue(message = "description value: the timesheet has some description field missing")
     public boolean checkConstraintAssignedDescriptionValues() {
         if (this.workReportType == null) {
             return true;

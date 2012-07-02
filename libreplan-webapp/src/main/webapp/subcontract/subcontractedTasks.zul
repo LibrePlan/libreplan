@@ -49,7 +49,7 @@
             <column label="${i18n:_('Company')}" tooltiptext="${i18n:_('External company')}" sort="auto(externalCompany)" width="100px"/>
             <column label="${i18n:_('Project code')}" tooltiptext="${i18n:_('Project code')}" />
             <column label="${i18n:_('Project name')}" tooltiptext="${i18n:_('Project name')}" />
-            <column label="${i18n:_('Subcontracted code')}" tooltiptext="${i18n:_('Subcontracted code')}" width="130px"/>
+            <column label="${i18n:_('Subcontracting code')}" tooltiptext="${i18n:_('Subcontracting code')}" width="130px"/>
             <column label="${i18n:_('Task name')}" tooltiptext="${i18n:_('Task name')}" />
             <column label="${i18n:_('Description')}" tooltiptext="${i18n:_('Work description')}" />
             <column label="${i18n:_('Budget')}" tooltiptext="${i18n:_('Budget')}" />

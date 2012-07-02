@@ -347,8 +347,8 @@ public class StretchesFunction extends AssignmentFunction {
                 .sortByLengthPercentage(result));
     }
 
-    @AssertTrue(message = "Last stretch should have one hundred percent for "
-            + "length and amount of work percentage")
+    @AssertTrue(message = "Last stretch should have one hundred percent "
+            + "length and one hundred percent of work percentage")
     public boolean checkOneHundredPercent() {
         List<Stretch> stretches = getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {

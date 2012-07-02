@@ -117,7 +117,7 @@ public class TemplateController extends GenericForwardComposer {
                         LOG.error("error doing reassignation",
                                 exceptionHappened);
                         windowMessages.showMessage(Level.ERROR, _(
-                                "error doing reassignation: {0}",
+                                "error doing reassignment: {0}",
                                 exceptionHappened));
                     }
                 });

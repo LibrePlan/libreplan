@@ -126,7 +126,7 @@ public class ManageOrderElementAdvancesController extends
             throw new InvalidValueException(_("values are not valid, the values must not be null"));
         }
         if (!validateReportGlobalAdvance()) {
-            throw new InvalidValueException(_("spread values are not valid, at least one value should be true"));
+            throw new InvalidValueException(_("spread values are not valid, one progress must be checked as spread"));
         }
     }
 
@@ -139,7 +139,7 @@ public class ManageOrderElementAdvancesController extends
             messagesForUser.showMessage(Level.ERROR, _("Cannot create another progress of the same type"));
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
-                    Level.ERROR, _("spread values are not valid, at least one value should be true"));
+                    Level.ERROR, _("spread values are not valid, one progress must be checked as spread"));
         } catch (InvalidValueException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         } catch (InstanceNotFoundException e) {
@@ -755,7 +755,7 @@ public class ManageOrderElementAdvancesController extends
         } else if (manageOrderElementAdvancesModel.hasReportedProgress(advance)) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Advance assignment can not be removed because, it has advance measures that have already been reported to customer."));
+                    .setTooltiptext(_("Progress assignment can not be removed because it has advance measurements already sent to customer."));
         }
 
         hbox.appendChild(removeButton);
@@ -1218,7 +1218,7 @@ public class ManageOrderElementAdvancesController extends
                     && (advance.getAdvanceType().isQualityForm())) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("Progress measurements that are reported by quality forms can not be removed"));
+                        .setTooltiptext(_("Progress measurements that are reported by quality forms cannot be removed"));
             } else if (advance.isFake()) {
                 removeButton.setDisabled(true);
                 removeButton

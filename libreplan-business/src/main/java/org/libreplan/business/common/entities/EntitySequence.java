@@ -199,7 +199,7 @@ public class EntitySequence extends BaseEntity {
         this.entityName = entityName;
     }
 
-    @AssertTrue(message = "Only one sequence for each entity can be active at the same time.")
+    @AssertTrue(message = "Only one sequence per entity can be active at the same time.")
     public boolean checkConstraintOnlyOneSequenceForEachEntityIsActive() {
         if (!isActive()) {
             return true;

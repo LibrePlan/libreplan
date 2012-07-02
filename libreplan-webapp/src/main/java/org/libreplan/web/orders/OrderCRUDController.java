@@ -862,7 +862,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the project \"{0}\" because it has work reported on it or any of its tasks",
+                                    "You can not remove the project \"{0}\" because it has time tracked at some of its tasks",
                                     order.getName()));
         } else {
             if (!StringUtils.isBlank(order.getExternalCode())) {
@@ -1586,7 +1586,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("It will only be possible to add a end date if all the exiting ones in the table have already been sent to customer.."));
+                            _("It will only be possible to add an end date if all the exiting ones in the table have already been sent to the customer."));
             return;
         }
         if (orderModel.alreadyExistsRepeatedEndDate(newEndDate.getValue())) {

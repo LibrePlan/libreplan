@@ -184,7 +184,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
         if (assignedMachineCriterionsModel
                 .checkNotAllowSimultaneousCriterionsPerResource(satisfaction)) {
                 throw new WrongValueException(comp,
-                                        _("This type of criteria cannot have multiple values in the same period"));
+                                        _("This criterion type cannot have multiple values in the same period"));
             }
     }
 

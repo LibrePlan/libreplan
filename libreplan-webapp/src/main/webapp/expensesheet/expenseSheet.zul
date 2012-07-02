@@ -122,7 +122,7 @@
             </groupbox>
 			<separator bar="false" spacing="5px" orient="horizontal"/>
             <groupbox closable="false">
-                <caption label="${i18n:_('Expenses lines')}" />
+                <caption label="${i18n:_('Expense lines')}" />
                 <hbox>
                     <label value="${i18n:_('Task')}"/>
                     <bandboxSearch id="bandboxTasks"

@@ -212,6 +212,7 @@ public class CriterionSatisfaction extends IntegrationEntity {
         this.criterion = criterion;
     }
 
+
     @NotNull(message="resource not specified")
     public Resource getResource() {
         return resource;

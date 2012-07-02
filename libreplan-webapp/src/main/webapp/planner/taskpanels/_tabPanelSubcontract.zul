@@ -63,7 +63,7 @@
                     readonly="@{subController.sent}" format="@{subController.moneyFormat}"/>
             </row>
             <row>
-                <label value="${i18n:_('Subcontracted code')}" />
+                <label value="${i18n:_('Subcontracting code')}" />
                 <textbox value="@{subController.subcontractedTaskData.subcontractedCode}"
                     readonly="@{subController.sent}"/>
             </row>

@@ -434,7 +434,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
      *
      */
     public enum ResourceAllocationTypeEnum {
-        NON_LIMITING_RESOURCES(_("Non limiting resource assignation")),
+        NON_LIMITING_RESOURCES(_("Non limiting resource assignment")),
         LIMITING_RESOURCES(_("Limiting resource assignation")),
         SUBCONTRACT(_("Subcontract"));
 

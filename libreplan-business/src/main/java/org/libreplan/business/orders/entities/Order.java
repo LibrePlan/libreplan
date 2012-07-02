@@ -353,7 +353,7 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the order must have a deadline")
+    @AssertTrue(message = "the project must have a deadline")
     private boolean ifSchedulingModeIsBackwardsOrderMustHaveDeadline() {
         return getSchedulingMode() != SchedulingMode.BACKWARDS
                 || getDeadline() != null;
