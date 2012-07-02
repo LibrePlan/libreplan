@@ -1146,7 +1146,7 @@ public abstract class Resource extends IntegrationEntity implements
         return getFirstRepeatedCode(criterionSatisfactions) == null;
     }
 
-    @AssertTrue(message="resources cost category assignment codes must be " +
+    @AssertTrue(message="resource cost category assignments codes must be " +
         "unique inside a resource")
     public boolean checkConstraintNonRepeatedResourcesCostCategoryAssignmentCodes() {
         return getFirstRepeatedCode(resourcesCostCategoryAssignments) == null;

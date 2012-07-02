@@ -163,7 +163,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
 
         private Button getExportButton(
                 final Order order) {
-            Button exportButton = new Button(_("XML"));
+            Button exportButton = new Button("XML");
             exportButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 IServletRequestHandler requestHandler = new IServletRequestHandler() {

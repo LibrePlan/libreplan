@@ -319,7 +319,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
         return name;
     }
 
-    @AssertTrue(message = "the cost category name has to be unique. It is already used")
+    @AssertTrue(message = "the cost category name has to be unique and it is already in use")
     public boolean checkConstraintUniqueName() {
         if (StringUtils.isBlank(name)) {
             return true;

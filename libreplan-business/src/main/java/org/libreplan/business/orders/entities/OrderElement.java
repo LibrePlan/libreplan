@@ -659,8 +659,8 @@ public abstract class OrderElement extends IntegrationEntity implements
 
         if (!checkAncestorsNoOtherLabelRepeated(label)) {
             throw new IllegalArgumentException(
-                    _("Some ancestor has the same label assigned, "
-                            + "so this element is already inheriting this label"));
+                    "An ancestor has the same label assigned, "
+                            + "so this element is already inheriting this label");
         }
 
         removeLabelOnChildren(label);

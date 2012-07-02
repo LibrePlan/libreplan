@@ -82,7 +82,7 @@
                                 </hbox>
                             </row>
                             <row>
-                                <label value="${i18n:_('Our company login')}:" />
+                                <label value="${i18n:_('Our company username')}:" />
                                 <textbox id="ourCompanyLogin"
                                     value="@{controller.company.ourCompanyLogin}" />
                             </row>

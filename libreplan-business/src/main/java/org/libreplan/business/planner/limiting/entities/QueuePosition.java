@@ -50,7 +50,7 @@ public class QueuePosition {
     }
 
     public void setHour(int hour) {
-        Validate.isTrue(hour >= 0 && hour <= 23, _("Hour should be a value between 0 and 23"));
+        Validate.isTrue(hour >= 0 && hour <= 23, _("Hour should be between 0 and 23"));
         this.hour = hour;
     }
 

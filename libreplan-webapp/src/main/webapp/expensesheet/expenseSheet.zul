@@ -29,7 +29,7 @@
         apply="org.libreplan.web.expensesheet.ExpenseSheetCRUDController">
         <vbox id="messagesContainer"></vbox>
 
-        <window id="listWindow" title="${i18n:_('Expense Sheet List')}">
+        <window id="listWindow" title="${i18n:_('Expense Sheets List')}">
             <div align="left">
                 <hbox align="center">
                   <!-- Create new Expense Sheet  -->

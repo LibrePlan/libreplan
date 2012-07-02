@@ -85,9 +85,7 @@ public class EntitySequence extends BaseEntity {
 
     public void setPrefix(String prefix) throws IllegalArgumentException {
         if (isAlreadyInUse()) {
-            throw new IllegalArgumentException(
-                    I18nHelper
-                            ._("You can not modifiy this entity sequence, it is already in use"));
+            throw new IllegalArgumentException("You cannot modifiy this entity sequence, it is already in use");
         }
 
         this.prefix = prefix;
@@ -126,9 +124,7 @@ public class EntitySequence extends BaseEntity {
     public void setNumberOfDigits(Integer numberOfDigits)
             throws IllegalArgumentException {
         if (isAlreadyInUse()) {
-            throw new IllegalArgumentException(
-                    I18nHelper
-                            ._("You can not modifiy this entity sequence, it is already in use"));
+            throw new IllegalArgumentException("You cannot modifiy this entity sequence, it is already in use");
         }
 
         if ((numberOfDigits != null)

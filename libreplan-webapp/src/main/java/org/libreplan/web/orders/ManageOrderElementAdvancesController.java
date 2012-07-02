@@ -747,7 +747,7 @@ public class ManageOrderElementAdvancesController extends
                 .hasConsolidatedAdvances(advance)) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Consolidated progress can not be removed"));
+                    .setTooltiptext(_("Consolidated progress cannot be removed"));
         } else if (readOnly) {
             removeButton.setDisabled(true);
             removeButton
@@ -1222,7 +1222,7 @@ public class ManageOrderElementAdvancesController extends
             } else if (advance.isFake()) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("Calculated progress measurement can not be removed"));
+                        .setTooltiptext(_("Calculated progress measurements cannot be removed"));
             } else if (manageOrderElementAdvancesModel
                     .hasConsolidatedAdvances(measure)) {
                 removeButton.setDisabled(true);
@@ -1302,9 +1302,9 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void showMessagesConsolidation(LocalDate date) {
-        String message = _("This progress measurement can not be in "
-                + date
-                + ", because it is consolidated. it is necessary to select other date.");
+        String message = _(
+                "Progress measurement cannot be canged to {0}, because it is consolidated",
+                date);
         showErrorMessage(message);
     }
 

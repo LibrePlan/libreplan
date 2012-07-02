@@ -494,7 +494,7 @@ public class ConfigurationController extends GenericForwardComposer {
             appendOperations(row, entitySequence);
 
             if (entitySequence.isAlreadyInUse()) {
-                row.setTooltiptext(_("The code sequence is already in use and it can not be updated."));
+                row.setTooltiptext(_("Code sequence is already in use and cannot be updated"));
             }
 
             if ((row.getPreviousSibling() != null)

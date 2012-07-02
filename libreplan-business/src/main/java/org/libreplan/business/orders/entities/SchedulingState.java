@@ -211,8 +211,7 @@ public class SchedulingState {
 
     public void schedule() {
         if (!canBeScheduled()) {
-            throw new IllegalStateException(
-                    _("it's already somewhat scheduled"));
+            throw new IllegalStateException("It is already somewhat scheduled");
         }
         setType(Type.SCHEDULING_POINT);
         for (SchedulingState schedulingState : getDescendants()) {
@@ -226,7 +225,7 @@ public class SchedulingState {
 
     public void unschedule() {
         if (!canBeUnscheduled()) {
-            throw new IllegalStateException(_("it can't be unscheduled"));
+            throw new IllegalStateException("It cannot be unscheduled");
         }
         setType(Type.NO_SCHEDULED);
         markDescendantsAsNoScheduled();
@@ -364,7 +363,7 @@ public class SchedulingState {
 
     public String getStateName() {
         if (isCompletelyScheduled()) {
-            return _("Completely scheduled");
+            return _("Fully scheduled");
         } else if (isPartiallyScheduled()) {
             return _("Partially scheduled");
         } else {
@@ -374,7 +373,7 @@ public class SchedulingState {
 
     public String getStateAbbreviation() {
         if (isCompletelyScheduled()) {
-            return _("C");
+            return _("F");
         } else if (isPartiallyScheduled()) {
             return _("P");
         } else {

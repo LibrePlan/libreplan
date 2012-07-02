@@ -327,7 +327,7 @@ public class CriterionTreeModel implements ICriterionTreeModel {
         for(CriterionDTO criterion : criterions){
             if(criterion.getName().equals(name)){
                 InvalidValue[] invalidValues = {
-                    new InvalidValue(_("Already exists other " +
+                    new InvalidValue(_("Already exists another " +
                             "criterion with the same name"),
                             Criterion.class, "name",
                             criterion.getName(), criterion)};

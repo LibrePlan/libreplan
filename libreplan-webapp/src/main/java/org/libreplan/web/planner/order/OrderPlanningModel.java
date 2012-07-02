@@ -763,7 +763,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Date today = LocalDate.fromDateFields(new Date())
                 .toDateTimeAtStartOfDay().toDate();
         if (value != null && (value.compareTo(today) > 0)) {
-            throw new WrongValueException(datebox, _("date in future"));
+            throw new WrongValueException(datebox, _("date in the future"));
         }
     }
 

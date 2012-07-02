@@ -97,7 +97,7 @@ public class TemplatesTreeComponent extends TreeComponent {
 
         });
         result.add(new TemplatesTreeColumn(
-                _("Must start after (days since beginning project)"),
+                _("Must start after (days since project start)"),
                 "estimated_init") {
 
             @Override
@@ -108,7 +108,7 @@ public class TemplatesTreeComponent extends TreeComponent {
 
         });
         result.add(new TemplatesTreeColumn(
-                _("Deadline (days since beggining project)"),
+                _("Deadline (days since project start)"),
                 "estimated_end") {
 
             @Override

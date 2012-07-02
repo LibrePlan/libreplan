@@ -93,7 +93,7 @@ public abstract class ResourcesPerDayModification extends
         @Override
         public String getNoValidPeriodsMessage() {
             String firstLine = _("There are no days available due to not satisfying the criteria.");
-            String secondLine = _("Another possibility is that the resources don't have days available due to their calendars.");
+            String secondLine = _("Another possibility is that the resources do not have days available due to their calendars.");
             return firstLine + "\n" + secondLine;
         }
 

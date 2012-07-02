@@ -312,7 +312,7 @@ public class StretchesFunction extends AssignmentFunction {
         return getStretchesPlusConsolidated().size() > 2;
     }
 
-    @AssertTrue(message = "Some stretch has lower or equal values than the "
+    @AssertTrue(message = "A stretch has lower or equal values than the "
             + "previous stretch")
     public boolean checkStretchesOrder() {
         List<Stretch> stretchesPlusConsolidated = getStretchesPlusConsolidated();

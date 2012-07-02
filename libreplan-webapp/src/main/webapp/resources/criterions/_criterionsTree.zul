@@ -20,7 +20,7 @@
 -->
 
 <groupbox closable="false">
-<caption label="${i18n:_('Criteria of selected type ')}" />
+<caption label="${i18n:_('Criteria list')}" />
 
 <vbox id="criterionsTree">
     <vbox>

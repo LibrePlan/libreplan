@@ -258,7 +258,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "clockFinish:the clockStart must be not null if number of hours is calcultate by clock")
+    @AssertTrue(message = "clock finish cannot be empty if number of hours is calcultate by clock")
     public boolean checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock() {
         if (!firstLevelValidationsPassed()) {
             return true;

@@ -30,7 +30,7 @@
         <columns>
             <column width="25px" />
             <column label="${i18n:_('Name')}"
-                tooltiptext="${i18n:_('Each worker configuration unit name')}"
+                tooltiptext="${i18n:_('Configuration unit name')}"
                 width="400px" sort="auto(name)" />
             <column label="${i18n:_('Alpha')}"
                 tooltiptext="${i18n:_('Human hours per machine working hour within configuration unit')}" />

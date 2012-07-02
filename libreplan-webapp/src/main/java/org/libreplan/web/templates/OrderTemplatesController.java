@@ -374,7 +374,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
      */
     public void confirmDelete(OrderElementTemplate template) {
         try {
-            if (Messagebox.show(_("Delete project template. Are you sure?"),
+            if (Messagebox.show(_("Delete template. Are you sure?"),
                     _("Confirm"),
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
                 if (this.model.hasNotApplications(template)) {
@@ -388,7 +388,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                     messagesForUser
                             .showMessage(
                                     Level.ERROR,
-                                    _("This template can not be removed because it has applications."));
+                                    _("Template cannot be removed because it has applications"));
                 }
             }
         } catch (InterruptedException e) {

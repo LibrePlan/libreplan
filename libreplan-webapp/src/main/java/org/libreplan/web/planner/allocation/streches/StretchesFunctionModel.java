@@ -174,8 +174,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             }
             if (!stretchesFunction.checkOneHundredPercent()) {
                 throw new ValidationException(
-                        _("Last stretch should have one hundred percent for "
-                                + "length and amount of work percentage"));
+                        _("Last stretch should have 100% for length and amount of work"));
             }
             if (stretchesFunction.isInterpolated()) {
                 if (!stretchesFunction.checkHasAtLeastTwoStretches()) {

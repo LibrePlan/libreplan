@@ -30,7 +30,7 @@ public enum HoursManagementEnum {
 
     NUMBER_OF_HOURS(_("Number of assigned hours")),
     HOURS_CALCULATED_BY_CLOCK(_("Number of hours calculated by clock")),
-    NUMBER_OF_HOURS_AND_CLOCK(_("Number of assigned hours and the time"));
+    NUMBER_OF_HOURS_AND_CLOCK(_("Number of assigned hours and time"));
 
     private String description;
 

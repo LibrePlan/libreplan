@@ -263,7 +263,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The quality form item porcentage must be unique if the quality form type is by percentage.")
+    @AssertTrue(message = "percentages in quality form items must be unique")
     public boolean checkConstraintDuplicatesQualityFormItemPercentage() {
         if ((qualityFormType != null)
                 && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))

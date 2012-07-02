@@ -220,7 +220,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "date:the date must be not null if is shared by lines")
+    @AssertTrue(message = "date cannot be empty if it is shared by lines")
     public boolean checkConstraintDateMustBeNotNullIfIsSharedByLines() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -233,7 +233,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "resource:the resource must be not null if is shared by lines")
+    @AssertTrue(message = "resource cannot be empty if it is shared by lines")
     public boolean checkConstraintResourceMustBeNotNullIfIsSharedByLines() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -246,7 +246,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "orderElement:the order element must be not null if is shared by lines")
+    @AssertTrue(message = "task cannot be empty if it is shared by lines")
     public boolean checkConstraintOrderElementMustBeNotNullIfIsSharedByLines() {
         if (!firstLevelValidationsPassed()) {
             return true;

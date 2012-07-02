@@ -119,7 +119,7 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "order element associated to a milestone must be null")
+    @AssertTrue(message = "a milestone cannot have a task associated")
     private boolean theOrderElementMustBeNull() {
         return getOrderElement() == null;
     }

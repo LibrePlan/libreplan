@@ -133,7 +133,7 @@ public class WorkRelationshipsController extends GenericForwardComposer {
             }
             i++;
         }
-        throw new RuntimeException(_("Couldn't find criterion {0}", criterion));
+        throw new RuntimeException("Could not find the criterion " + criterion);
     }
 
     public void saveCriterionSatisfaction() {

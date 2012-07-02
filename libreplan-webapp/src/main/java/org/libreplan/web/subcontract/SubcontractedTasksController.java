@@ -181,7 +181,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
 
         private Button getExportButton(
                 final SubcontractedTaskData subcontractedTaskData) {
-            Button exportButton = new Button(_("XML"));
+            Button exportButton = new Button("XML");
             exportButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 IServletRequestHandler requestHandler = new IServletRequestHandler() {

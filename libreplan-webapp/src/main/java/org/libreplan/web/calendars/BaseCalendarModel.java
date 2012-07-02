@@ -603,7 +603,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
                     "{0} already exists", entity.getName()),
                     BaseCalendar.class, "name", entity.getName(), entity) };
             throw new ValidationException(invalidValues2,
-                    _("Could not save new calendar"));
+                    _("Could not save the new calendar"));
         }
     }
 

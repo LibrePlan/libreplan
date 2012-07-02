@@ -268,7 +268,7 @@ public class Worker extends Resource {
         }
     }
 
-    @AssertTrue(message = "Bound user has proper role")
+    @AssertTrue(message = "Bound user does not have the proper role")
     public boolean checkConstraintBoundUserHaveProperRole() {
         if (user == null) {
             return true;

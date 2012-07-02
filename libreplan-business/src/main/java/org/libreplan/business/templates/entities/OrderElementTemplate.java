@@ -454,7 +454,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return getParent() == null;
     }
 
-    @AssertTrue(message = "template name is already being used")
+    @AssertTrue(message = "template name is already in use")
     public boolean checkConstraintUniqueRootTemplateName() {
         if (getParent() != null) {
             return true;

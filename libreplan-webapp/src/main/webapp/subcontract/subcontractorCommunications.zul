@@ -34,7 +34,7 @@
 
     <vbox id="messagesContainer" />
     <div align="right">
-		<label class="subtitulo" value="${i18n:_('Show :')}" />
+		<label class="subtitulo" value="${i18n:_('Show')}:" />
         <listbox id="listFilter" mold="select" rows="1"
             model="@{controller.filterItems}"
             selectedItem="@{controller.currentFilterItem}"

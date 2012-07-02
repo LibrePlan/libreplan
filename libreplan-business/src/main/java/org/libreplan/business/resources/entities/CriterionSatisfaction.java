@@ -190,7 +190,7 @@ public class CriterionSatisfaction extends IntegrationEntity {
         return result;
     }
 
-    @NotNull(message="criterion satisfaction's start date not specified")
+    @NotNull(message="start date not specified")
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -203,7 +203,7 @@ public class CriterionSatisfaction extends IntegrationEntity {
         return Interval.range(startDate, finishDate);
     }
 
-    @NotNull(message="criterion satisfaction's criterion not specified")
+    @NotNull(message="criterion not specified")
     public Criterion getCriterion() {
         return criterion;
     }
@@ -212,7 +212,7 @@ public class CriterionSatisfaction extends IntegrationEntity {
         this.criterion = criterion;
     }
 
-    @NotNull(message="criterion satisfaction's resource not specified")
+    @NotNull(message="resource not specified")
     public Resource getResource() {
         return resource;
     }

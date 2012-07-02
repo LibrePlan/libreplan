@@ -346,7 +346,7 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the order must have a init date")
+    @AssertTrue(message = "the order must have a start date")
     private boolean ifSchedulingModeIsForwardOrderMustHaveStartDate() {
         return getSchedulingMode() != SchedulingMode.FORWARD
                 || getInitDate() != null;

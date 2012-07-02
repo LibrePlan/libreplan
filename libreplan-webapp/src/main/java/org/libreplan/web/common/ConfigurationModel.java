@@ -231,7 +231,7 @@ public class ConfigurationModel implements IConfigurationModel {
                 entitySequenceDAO.remove(entitySequence);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("Some sequences to be removed does not exist"));
+                        _("Some sequences to be removed do not exist"));
             } catch (IllegalArgumentException e) {
                 throw new ValidationException(e.getMessage());
             }

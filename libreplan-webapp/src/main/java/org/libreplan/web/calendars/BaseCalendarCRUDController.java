@@ -426,7 +426,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     .showMessage(
                             Level.ERROR,
                             _("Default calendar cannot be removed. "
-                                    + "Please, change the default calendar in the Configuration window before."));
+                                    + "Please, change the default calendar in the Main Settings window before."));
             return;
         }
         removeCalendar(calendar);
