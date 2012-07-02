@@ -31,6 +31,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
+import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.ResourceAllocation.Direction;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
@@ -68,6 +69,7 @@ public class AllocationResult {
     public static AllocationResult createCurrent(Scenario scenario, Task task) {
         Set<ResourceAllocation<?>> resourceAllocations = task
                 .getSatisfiedResourceAllocations();
+
         List<ModifiedAllocation> modifiedAllocations = ModifiedAllocation.copy(
                 scenario, resourceAllocations);
         AggregateOfResourceAllocations aggregate = AggregateOfResourceAllocations
@@ -137,6 +139,7 @@ public class AllocationResult {
                 newWorkableDays,
                 getCalculatedValue(), getNew(), modified,
                 getNotModified(originals(modified)));
+        updateDatesTask();
     }
 
     private List<ResourceAllocation<?>> originals(
@@ -215,6 +218,32 @@ public class AllocationResult {
             return task.getIntraDayEndDate();
         } else {
             return aggregate.getEnd();
+        }
+    }
+
+    public void updateDatesTask() {
+        if (!aggregate.isEmpty()) {
+            LocalDate startDate = aggregate.getStart().getDate();
+            LocalDate endDate = aggregate.getEnd().getDate();
+
+            task.setStartDate(startDate.toDateTimeAtStartOfDay().toDate());
+            if (task.isTask()) {
+                if (((Task) task).getPositionConstraint().getConstraintType()
+                        .equals(PositionConstraintType.START_NOT_EARLIER_THAN)) {
+                    ((Task) task).getPositionConstraint().update(
+                            PositionConstraintType.START_NOT_EARLIER_THAN,
+                            IntraDayDate.startOfDay(startDate));
+                }
+            }
+            task.setEndDate(endDate.toDateTimeAtStartOfDay().toDate());
+            if (task.isTask()) {
+                if (((Task) task).getPositionConstraint().getConstraintType()
+                        .equals(PositionConstraintType.FINISH_NOT_LATER_THAN)) {
+                    ((Task) task).getPositionConstraint().update(
+                            PositionConstraintType.FINISH_NOT_LATER_THAN,
+                            IntraDayDate.startOfDay(endDate));
+                }
+            }
         }
     }
 

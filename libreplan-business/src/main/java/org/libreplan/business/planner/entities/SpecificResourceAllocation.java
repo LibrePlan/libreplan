@@ -436,5 +436,11 @@ public class SpecificResourceAllocation extends
         return !intervalsRelatedWith.isEmpty();
     }
 
+    @Override
+    public IAllocateEffortOnInterval onIntervalUpdatingTask(LocalDate start,
+            LocalDate end) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

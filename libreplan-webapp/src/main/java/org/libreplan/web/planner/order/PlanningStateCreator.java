@@ -20,6 +20,7 @@ package org.libreplan.web.planner.order;
 
 import static org.libreplan.business.planner.entities.TaskElement.justTasks;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,6 +40,8 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
+import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -50,6 +53,7 @@ import org.libreplan.business.orders.entities.TaskSource.IOptionalPersistence;
 import org.libreplan.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.planner.entities.AggregateOfExpensesLines;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
@@ -177,6 +181,9 @@ public class PlanningStateCreator {
 
     @Autowired
     private IMoneyCostCalculator moneyCostCalculator;
+
+    @Autowired
+    private IExpenseSheetLineDAO expenseSheetLineDAO;
 
     void synchronizeWithSchedule(Order order, IOptionalPersistence persistence) {
         List<TaskSourceSynchronization> synchronizationsNeeded = order
@@ -1102,6 +1109,18 @@ public class PlanningStateCreator {
 
         public void updateSavedOrderState() {
             savedOrderState = order.getState();
+        }
+
+        public AggregateOfExpensesLines createAggregateExpenses(Task task) {
+            OrderElement orderElement = task.getOrderElement();
+            BigDecimal totalByTask = BigDecimal.ZERO;
+            if (orderElement.getSumExpenses() != null) {
+                totalByTask = orderElement.getSumExpenses()
+                        .getTotalDirectExpenses();
+            }
+            List<ExpenseSheetLine> lines = expenseSheetLineDAO
+                    .findByOrderElement(orderElement);
+            return AggregateOfExpensesLines.createFromAll(lines, totalByTask);
         }
 
     }

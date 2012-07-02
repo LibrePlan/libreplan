@@ -109,4 +109,7 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      */
     public IAllocateEffortOnInterval fromEndUntil(LocalDate start);
 
+    public IAllocateEffortOnInterval onIntervalUpdatingTask(LocalDate start,
+            LocalDate end);
+
 }

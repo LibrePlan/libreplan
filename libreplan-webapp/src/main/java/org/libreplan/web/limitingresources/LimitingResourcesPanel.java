@@ -303,7 +303,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
             @Override
             protected void updateCurrentDayScroll() {
-                System.out.println("updateCurrentDayScroll");
                 double previousPixelPerDay = getTimeTracker().getMapper()
                         .getPixelsPerDay().doubleValue();
 

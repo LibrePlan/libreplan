@@ -65,6 +65,7 @@ import org.libreplan.business.planner.entities.consolidations.Consolidation;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
+import org.libreplan.business.resources.entities.Interval;
 import org.libreplan.business.resources.entities.Machine;
 import org.libreplan.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.libreplan.business.resources.entities.Resource;
@@ -838,6 +839,28 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             checkStartLessOrEqualToEnd(start, end);
             return new OnSubIntervalAllocator(new AllocationIntervalInsideTask(
                     start, end));
+        }
+
+        @Override
+        public IAllocateEffortOnInterval onIntervalUpdatingTask(
+                final LocalDate start, final LocalDate end) {
+            checkStartLessOrEqualToEnd(start, end);
+            if (isTaskIncludedInside(start, end)) {
+                return new OnSubIntervalAllocator(
+                        new AllocationIntervalInsideTask(start, end));
+            } else {
+                return new OnSubIntervalAllocator(new AllocationInterval(start,
+                        end));
+            }
+        }
+
+        private boolean isTaskIncludedInside(LocalDate startInclusive,
+                LocalDate endExclusive) {
+            Interval intervalCell = Interval
+                    .range(startInclusive, endExclusive);
+            Interval intervalTask = Interval.range(task.getStartAsLocalDate(),
+                    task.getEndAsLocalDate());
+            return intervalCell.includes(intervalTask);
         }
 
         @Override

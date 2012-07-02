@@ -118,7 +118,9 @@ public class OnColumnsRowRenderer<C, T> implements RowRenderer {
         }
         for (C item : columns) {
             Component child = cellRenderer.cellFor(item, type.cast(data));
-            child.setParent(row);
+            if (child != null) {
+                child.setParent(row);
+            }
         }
     }
 

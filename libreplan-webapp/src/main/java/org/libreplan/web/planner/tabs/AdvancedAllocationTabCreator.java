@@ -35,6 +35,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.AggregateOfExpensesLines;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.Task;
@@ -291,8 +292,11 @@ public class AdvancedAllocationTabCreator {
 
     private AllocationInput createAllocationInputFor(
             PlanningState planningState, Task task) {
+        AggregateOfExpensesLines aggregateExpenses = planningState
+                .createAggregateExpenses(task);
         ResultReceiver resultReceiver = new ResultReceiver(planningState, task);
-        return new AllocationInput(resultReceiver.getAggregate(), task,
+        return new AllocationInput(resultReceiver.getAggregate(),
+                aggregateExpenses, task,
                 resultReceiver);
     }
 

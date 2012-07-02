@@ -23,6 +23,7 @@ package org.libreplan.web.planner.allocation;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,12 +44,14 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.libreplan.business.planner.entities.AggregateOfExpensesLines;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.AssignmentFunction.AssignmentFunctionName;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
 import org.libreplan.business.planner.entities.ManualFunction;
+import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.SigmoidFunction;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
@@ -57,11 +60,13 @@ import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.common.EffortDurationBox;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.libreplan.web.planner.allocation.streches.StrechesFunctionConfiguration;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -83,6 +88,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
@@ -107,17 +113,21 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     public static class AllocationInput {
         private final AggregateOfResourceAllocations aggregate;
 
+        private final AggregateOfExpensesLines aggregateExpenses;
+
         private final IAdvanceAllocationResultReceiver resultReceiver;
 
         private final TaskElement task;
 
         public AllocationInput(AggregateOfResourceAllocations aggregate,
+                AggregateOfExpensesLines aggregateExpenses,
                 TaskElement task,
                 IAdvanceAllocationResultReceiver resultReceiver) {
             Validate.notNull(aggregate);
             Validate.notNull(resultReceiver);
             Validate.notNull(task);
             this.aggregate = aggregate;
+            this.aggregateExpenses = aggregateExpenses;
             this.task = task;
             this.resultReceiver = resultReceiver;
         }
@@ -195,6 +205,31 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return start.toDateMidnight().toDate();
         }
 
+        public AggregateOfExpensesLines getAggregateExpenses() {
+            return aggregateExpenses;
+        }
+
+        private void updateDatesTask(LocalDate startInclusive,
+                LocalDate endExclusive) {
+            task.setStartDate(startInclusive.toDateTimeAtStartOfDay().toDate());
+            if (task.isTask()) {
+                if (((Task) task).getPositionConstraint().getConstraintType()
+                        .equals(PositionConstraintType.START_NOT_EARLIER_THAN)) {
+                    ((Task) task).getPositionConstraint().update(
+                            PositionConstraintType.START_NOT_EARLIER_THAN,
+                            IntraDayDate.startOfDay(startInclusive));
+                }
+            }
+            task.setEndDate(endExclusive.toDateTimeAtStartOfDay().toDate());
+            if (task.isTask()) {
+                if (((Task) task).getPositionConstraint().getConstraintType()
+                        .equals(PositionConstraintType.FINISH_NOT_LATER_THAN)) {
+                    ((Task) task).getPositionConstraint().update(
+                            PositionConstraintType.FINISH_NOT_LATER_THAN,
+                            IntraDayDate.startOfDay(endExclusive));
+                }
+            }
+        }
     }
 
     public interface IAdvanceAllocationResultReceiver {
@@ -687,11 +722,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 restriction.markInvalidEffort(groupingRow, totalEffort);
             }
         }
-        back.goBack();
         for (AllocationInput allocationInput : allocationInputs) {
             allocationInput.getResultReceiver().accepted(allocationInput
                     .getAggregate());
         }
+        back.goBack();
     }
 
     public void onClick$saveButton() {
@@ -770,6 +805,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 rowsCached.add(groupingRow);
 
                 position++;
+
+                RowExpenses rowExpenses = buildRowExpenses(allocationInput);
+                rowExpenses.setDescription(position + " "
+                        + allocationInput.getTaskName());
+                rowsCached.add(rowExpenses);
             }
         }
         populateVerticalListbox();
@@ -874,7 +914,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row createSpecificRow(
             SpecificResourceAllocation specificResourceAllocation,
             Restriction restriction, TaskElement task) {
-        return Row.createRow(messages, restriction,
+        return RowAllocation.createRow(messages, restriction,
                 specificResourceAllocation.getResource()
                         .getName(), 1, Arrays
                 .asList(specificResourceAllocation), specificResourceAllocation
@@ -895,7 +935,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation,
             Restriction restriction, TaskElement task) {
-        return Row.createRow(messages, restriction, Criterion
+        return RowAllocation.createRow(messages, restriction, Criterion
                 .getCaptionFor(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation), genericResourceAllocation
                 .isLimiting(), task);
@@ -903,10 +943,18 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
         String taskName = allocationInput.getTaskName();
-        Row groupingRow = Row.createRow(messages,
+        RowAllocation groupingRow = RowAllocation.createRow(messages,
                 Restriction.emptyRestriction(), taskName, 1,
                 allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
         return groupingRow;
+    }
+
+    private RowExpenses buildRowExpenses(AllocationInput allocationInput) {
+        String taskName = allocationInput.getTaskName();
+        RowExpenses rowExpenses = RowExpenses.createRow(messages,
+                Restriction.emptyRestriction(), taskName, allocationInput.task,
+                allocationInput.aggregateExpenses);
+        return rowExpenses;
     }
 
     private ICellForDetailItemRenderer<ColumnOnRow, Row> getLeftRenderer() {
@@ -921,26 +969,41 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<ColumnOnRow> getColumnsForLeft() {
         List<ColumnOnRow> result = new ArrayList<ColumnOnRow>();
-        result.add(new ColumnOnRow(_("Name")) {
+        result.add(new ColumnOnRow(_("Task")) {
 
             @Override
             public Component cellFor(Row row) {
-                return row.getNameLabel();
+                if (!row.isRowExpenses()) {
+                    Cell cell = new Cell();
+                    cell.setAlign("center");
+                    cell.setValign("center");
+                    cell.setRowspan(2);
+                    cell.appendChild(row.getNameLabel());
+                    return cell;
+                }
+                return null;
             }
         });
-        result.add(new ColumnOnRow(_("Efforts"), "50px") {
+        result.add(new ColumnOnRow(_("Total"), "150px") {
             @Override
             public Component cellFor(Row row) {
-                return row.getAllEffort();
+                Cell cell = new Cell();
+                cell.setAlign("center");
+                cell.setValign("center");
+                cell.appendChild(row.getAllEffort());
+                return cell;
             }
         });
-        result.add(new ColumnOnRow(_("Function"), "130px") {
+        result.add(new ColumnOnRow(_("Type"), "120px") {
             @Override
             public Component cellFor(Row row) {
-                return row.getFunction();
+                Cell cell = new Cell();
+                cell.setAlign("center");
+                cell.setValign("center");
+                cell.appendChild(row.getRowName());
+                return cell;
             }
         });
-
         return result;
     }
 
@@ -1024,42 +1087,46 @@ interface CellChangedListener {
     public void changeOnGlobal();
 }
 
-class Row {
+class RowAllocation extends Row {
 
-    static Row createRow(IMessagesForUser messages,
-            AdvancedAllocationController.Restriction restriction,
-            String name, int level,
- List<? extends ResourceAllocation<?>> allocations,
+    static RowAllocation createRow(IMessagesForUser messages,
+            AdvancedAllocationController.Restriction restriction, String name,
+            int level, List<? extends ResourceAllocation<?>> allocations,
             String description, boolean limiting, TaskElement task) {
-        Row newRow = new Row(messages, restriction, name, level, allocations,
+        RowAllocation newRow = new RowAllocation(messages, restriction, name,
+                level, allocations,
                 limiting, task);
         newRow.setDescription(description);
         return newRow;
     }
 
-    static Row createRow(IMessagesForUser messages,
+    static RowAllocation createRow(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction, String name,
             int level, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
-        return new Row(messages, restriction, name, level, allocations,
+        return new RowAllocation(messages, restriction, name, level,
+                allocations,
                 limiting, task);
     }
 
-    public void markErrorOnTotal(String message) {
-        throw new WrongValueException(allEffortInput, message);
+    protected RowAllocation(IMessagesForUser messages,
+            AdvancedAllocationController.Restriction restriction, String name,
+            int level, List<? extends ResourceAllocation<?>> allocations,
+            boolean limiting, TaskElement task) {
+        setName(name);
+        setTask(task);
+        setRowName(new Label(_("Allocations")));
+        this.messages = messages;
+        this.restriction = restriction;
+        this.level = level;
+        this.isLimiting = limiting;
+        this.aggregate = (allocations != null) ? AggregateOfResourceAllocations
+                .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(
+                        allocations)) : null;
+        this.functionName = getAssignmentFunctionName(allocations);
     }
 
-    private EffortDurationBox allEffortInput;
-
-    private Label nameLabel;
-
     private List<CellChangedListener> listeners = new ArrayList<CellChangedListener>();
-
-    private Map<DetailItem, Component> componentsByDetailItem = new WeakHashMap<DetailItem, Component>();
-
-    private String name;
-
-    private String description;
 
     private int level;
 
@@ -1071,7 +1138,7 @@ class Row {
 
     private final String functionName;
 
-    private TaskElement task;
+    private Label labelBudget;
 
     void listenTo(Collection<Row> rows) {
         for (Row row : rows) {
@@ -1090,7 +1157,8 @@ class Row {
 
             @Override
             public void changeOn(DetailItem detailItem) {
-                Component component = componentsByDetailItem.get(detailItem);
+                Component component = getComponentsByDetailItem().get(
+                        detailItem);
                 if (component == null) {
                     return;
                 }
@@ -1117,12 +1185,23 @@ class Row {
     }
 
     Component getAllEffort() {
-        if (allEffortInput == null) {
-            allEffortInput = buildSumAllEffort();
+        Hbox hbox = new Hbox();
+
+        if (getAllEffortInput() == null) {
+            setAllEffortInput(buildSumAllEffort());
             reloadAllEffort();
-            addListenerIfNeeded(allEffortInput);
+            addListenerIfNeeded(getAllEffortInput());
         }
-        return allEffortInput;
+        if (labelBudget == null) {
+            BigDecimal budget = BigDecimal.ZERO;
+            if (getTask() != null && getTask().getBudget() != null) {
+                budget = getTask().getBudget();
+            }
+            labelBudget = new Label(" ( " + budget + " ) ");
+        }
+        hbox.appendChild(getAllEffortInput());
+        hbox.appendChild(labelBudget);
+        return hbox;
     }
 
     private EffortDurationBox buildSumAllEffort() {
@@ -1161,21 +1240,21 @@ class Row {
     }
 
     private void reloadEffortsSameRowForDetailItems() {
-        for (Entry<DetailItem, Component> entry : componentsByDetailItem
+        for (Entry<DetailItem, Component> entry : getComponentsByDetailItem()
                 .entrySet()) {
             reloadEffortOnInterval(entry.getValue(), entry.getKey());
         }
     }
 
     private void reloadAllEffort() {
-        if (allEffortInput == null) {
+        if (getAllEffortInput() == null) {
             return;
         }
         EffortDuration allEffort = aggregate.getTotalEffort();
-        allEffortInput.setValue(allEffort);
-        Clients.closeErrorBox(allEffortInput);
+        getAllEffortInput().setValue(allEffort);
+        Clients.closeErrorBox(getAllEffortInput());
         if (isLimiting) {
-            allEffortInput.setDisabled(true);
+            getAllEffortInput().setDisabled(true);
         }
         if (restriction.isInvalidTotalEffort(allEffort)) {
             restriction.showInvalidEffort(messages, allEffort);
@@ -1345,7 +1424,7 @@ class Row {
                     .withPreviousAssociatedResources()
                     .onIntervalWithinTask(resourceAllocation.getStartDate(),
                             resourceAllocation.getEndDate())
-                    .allocate(allEffortInput.getEffortDurationValue());
+                    .allocate(getAllEffortInput().getEffortDurationValue());
             reloadEfforts();
         }
 
@@ -1413,12 +1492,12 @@ class Row {
 
         @Override
         protected ResourceAllocation<?> getAllocation() {
-            return Row.this.getAllocation();
+            return RowAllocation.this.getAllocation();
         }
 
         @Override
         protected Component getParentOnWhichOpenWindow() {
-            return allEffortInput.getParent();
+            return getAllEffortInput().getParent();
         }
     }
 
@@ -1550,36 +1629,6 @@ class Row {
         }
     }
 
-    Component getNameLabel() {
-        if (nameLabel == null) {
-            nameLabel = new Label();
-            nameLabel.setValue(name);
-            if (!StringUtils.isBlank(description)) {
-                nameLabel.setTooltiptext(description);
-            } else {
-                nameLabel.setTooltiptext(name);
-            }
-
-            nameLabel.setSclass("level" + level);
-        }
-        return nameLabel;
-    }
-
-    private Row(IMessagesForUser messages,
-            AdvancedAllocationController.Restriction restriction, String name,
-            int level, List<? extends ResourceAllocation<?>> allocations,
-            boolean limiting, TaskElement task) {
-        this.messages = messages;
-        this.restriction = restriction;
-        this.name = name;
-        this.level = level;
-        this.isLimiting = limiting;
-        this.task = task;
-        this.aggregate = AggregateOfResourceAllocations
-                .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(allocations));
-        this.functionName = getAssignmentFunctionName(allocations);
-    }
-
     private String getAssignmentFunctionName(
             List<? extends ResourceAllocation<?>> allocations) {
         AssignmentFunction function = getAssignmentFunction(allocations);
@@ -1599,15 +1648,17 @@ class Row {
     private EffortDuration getEffortForDetailItem(DetailItem item) {
         DateTime startDate = item.getStartDate();
         DateTime endDate = item.getEndDate();
-        return this.aggregate.effortBetween(startDate.toLocalDate(), endDate
+        EffortDuration duration = this.aggregate.effortBetween(
+                startDate.toLocalDate(), endDate
                 .toLocalDate());
+        return duration;
     }
 
     Component effortOnInterval(DetailItem item) {
         Component result = cannotBeEdited(item) ? new Label()
                 : disableIfNeeded(item, new EffortDurationBox());
         reloadEffortOnInterval(result, item);
-        componentsByDetailItem.put(item, result);
+        getComponentsByDetailItem().put(item, result);
         addListenerIfNeeded(item, result);
         return result;
     }
@@ -1637,9 +1688,8 @@ class Row {
                         .getStartDate().toLocalDate());
                 LocalDate endDate = restriction.limitEndDate(item.getEndDate()
                         .toLocalDate());
-                changeAssignmentFunctionToManual();
                 getAllocation().withPreviousAssociatedResources()
-                                   .onIntervalWithinTask(startDate, endDate)
+                        .onIntervalUpdatingTask(startDate, endDate)
                                    .allocate(value);
                 fireCellChanged(item);
                 effortBox.setRawValue(getEffortForDetailItem(item));
@@ -1685,29 +1735,25 @@ class Row {
         return "";
     }
 
-    public boolean isGroupingRow() {
-        return false;
-    }
-
     private boolean doesNotIntersectWithTask(DetailItem item) {
         return isBeforeTaskStartDate(item) || isAfterTaskEndDate(item);
     }
 
     private boolean isBeforeTaskStartDate(DetailItem item) {
-        return task.getIntraDayStartDate().compareTo(
+        return getTask().getIntraDayStartDate().compareTo(
                 item.getEndDate().toLocalDate()) >= 0;
     }
 
     private boolean isAfterTaskEndDate(DetailItem item) {
-        return task.getIntraDayEndDate().compareTo(
+        return getTask().getIntraDayEndDate().compareTo(
                 item.getStartDate().toLocalDate()) <= 0;
     }
 
     private boolean isBeforeLatestConsolidation(DetailItem item) {
-        if (!((Task) task).hasConsolidations()) {
+        if (!((Task) getTask()).hasConsolidations()) {
             return false;
         }
-        LocalDate d = ((Task) task).getFirstDayNotConsolidated().getDate();
+        LocalDate d = ((Task) getTask()).getFirstDayNotConsolidated().getDate();
         DateTime firstDayNotConsolidated = new DateTime(d.getYear(),
                 d.getMonthOfYear(), d.getDayOfMonth(), 0, 0, 0, 0);
         return item.getStartDate().compareTo(firstDayNotConsolidated) < 0;
@@ -1715,6 +1761,68 @@ class Row {
 
     private ResourceAllocation<?> getAllocation() {
         return aggregate.getAllocationsSortedByStartDate().get(0);
+    }
+
+    boolean isRowExpenses() {
+        return false;
+    }
+}
+
+
+abstract class Row {
+    abstract Component getAllEffort();
+
+    abstract Component effortOnInterval(DetailItem item);
+
+    abstract boolean isRowExpenses();
+
+    abstract void listenTo(Collection<Row> rows);
+
+    abstract void listenTo(Row row);
+
+    abstract void add(CellChangedListener listener);
+
+    private EffortDurationBox allEffortInput;
+
+    private Label nameLabel;
+
+    protected Label rowName;
+
+    private Map<DetailItem, Component> componentsByDetailItem = new WeakHashMap<DetailItem, Component>();
+
+    private String name;
+
+    private String description;
+
+    private TaskElement task;
+
+    Component getRowName() {
+        return rowName;
+    }
+
+    protected void setRowName(Label rowName) {
+        this.rowName = rowName;
+    }
+
+    Component getNameLabel() {
+        if (this.nameLabel == null) {
+            nameLabel = new Label();
+            nameLabel.setValue(name);
+            if (!StringUtils.isBlank(description)) {
+                nameLabel.setTooltiptext(description);
+            } else {
+                nameLabel.setTooltiptext(name);
+            }
+        }
+        return nameLabel;
+    }
+
+    public void markErrorOnTotal(String message) {
+        throw new WrongValueException(getAllEffortInput(), message);
+    }
+
+    public boolean isGroupingRow() {
+        return false;
     }
 
     public String getDescription() {
@@ -1731,6 +1839,124 @@ class Row {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    protected Map<DetailItem, Component> getComponentsByDetailItem() {
+        return componentsByDetailItem;
+    }
+
+    public void setAllEffortInput(EffortDurationBox allEffortInput) {
+        this.allEffortInput = allEffortInput;
+    }
+
+    public EffortDurationBox getAllEffortInput() {
+        return allEffortInput;
+    }
+
+    public void setNameLabel(Label nameLabel) {
+        this.nameLabel = nameLabel;
+    }
+
+    public void setTask(TaskElement task) {
+        this.task = task;
+    }
+
+    public TaskElement getTask() {
+        return task;
+    }
+
+}
+
+class RowExpenses extends Row {
+
+    protected RowExpenses(IMessagesForUser messages, Restriction restriction,
+            String name, TaskElement task,
+            AggregateOfExpensesLines aggregateExpenses) {
+        setName(name);
+        setTask(task);
+        setRowName(new Label(_("Expenses")));
+        this.aggregate = aggregateExpenses;
+    }
+
+    public static RowExpenses createRow(IMessagesForUser messages,
+            Restriction restriction, String taskName, TaskElement task,
+            AggregateOfExpensesLines aggregateExpenses) {
+        return new RowExpenses(messages, restriction, taskName, task,
+                aggregateExpenses);
+    }
+
+
+    private final AggregateOfExpensesLines aggregate;
+
+    @Override
+    Component getAllEffort() {
+        if (getAllEffortInput() == null) {
+            setAllEffortInput(buildSumAllEffort());
+            getAllEffortInput().setWidth("90px");
+            getAllEffortInput().setReadonly(true);
+            reloadAllEffort();
+        }
+        return getAllEffortInput();
+    }
+
+    @Override
+    Component effortOnInterval(DetailItem item) {
+        Label result = new Label();
+        reloadEffortOnInterval(result, item);
+        getComponentsByDetailItem().put(item, result);
+        return result;
+    }
+
+    @Override
+    Component getNameLabel() {
+        return null;
+    }
+
+    @Override
+    boolean isRowExpenses() {
+        return true;
+    }
+
+    private EffortDurationBox buildSumAllEffort() {
+        EffortDurationBox box = new EffortDurationBox();
+        box.setWidth("40px");
+        return box;
+    }
+
+    private void reloadAllEffort() {
+        if (getAllEffortInput() == null) {
+            return;
+        }
+        BigDecimal total = aggregate == null ? BigDecimal.ZERO : aggregate
+                .getTotalByTask();
+        EffortDuration allEffort = EffortDuration.fromHoursAsBigDecimal(total);
+        getAllEffortInput().setValue(allEffort);
+    }
+
+    private void reloadEffortOnInterval(Component component, DetailItem item) {
+        Label label = (Label) component;
+        label.setValue(getEffortForDetailItem(item).toFormattedString());
+        label.setClass("unmodifiable-hours");
+    }
+
+    private EffortDuration getEffortForDetailItem(DetailItem item) {
+        DateTime startDate = item.getStartDate();
+        DateTime endDate = item.getEndDate();
+        BigDecimal expensesValue = this.aggregate.expensesBetween(
+                startDate.toLocalDate(), endDate.toLocalDate());
+        return EffortDuration.fromHoursAsBigDecimal(expensesValue);
+    }
+
+    @Override
+    void listenTo(Collection<Row> rows) {
+    }
+
+    @Override
+    void listenTo(Row row) {
+    }
+
+    @Override
+    void add(CellChangedListener listener) {
     }
 
 }

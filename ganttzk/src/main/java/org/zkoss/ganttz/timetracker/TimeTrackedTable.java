@@ -57,7 +57,8 @@ public class TimeTrackedTable<T> extends HtmlMacroComponent {
     }
 
     public ListModel getTableModel() {
-        return new ListModelList(getData());
+        List<T> list = getData();
+        return new ListModelList(list);
     }
 
     private List<T> getData() {

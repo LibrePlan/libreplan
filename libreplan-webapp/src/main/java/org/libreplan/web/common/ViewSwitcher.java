@@ -25,11 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.libreplan.business.planner.entities.AggregateOfExpensesLines;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController;
-import org.libreplan.web.planner.allocation.AllocationResult;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
+import org.libreplan.web.planner.allocation.AllocationResult;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -55,20 +56,24 @@ public class ViewSwitcher implements Composer {
     }
 
     public void goToAdvancedAllocation(AllocationResult allocationResult,
-            IAdvanceAllocationResultReceiver resultReceiver) {
+            IAdvanceAllocationResultReceiver resultReceiver,
+            AggregateOfExpensesLines aggregateExpenses) {
         planningOrder = ComponentsReplacer.replaceAllChildren(parent,
-                "advance_allocation.zul", createArgsForAdvancedAllocation(
-                        allocationResult, resultReceiver));
+                "advance_allocation.zul",
+                createArgsForAdvancedAllocation(allocationResult,
+                        resultReceiver, aggregateExpenses));
         isInPlanningOrder = false;
     }
 
     private Map<String, Object> createArgsForAdvancedAllocation(
             AllocationResult allocationResult,
-            IAdvanceAllocationResultReceiver resultReceiver) {
+            IAdvanceAllocationResultReceiver resultReceiver,
+            AggregateOfExpensesLines aggregateExpenses) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("advancedAllocationController",
                 new AdvancedAllocationController(createBack(),
-                        asAllocationInput(allocationResult, resultReceiver)));
+                        asAllocationInput(allocationResult, resultReceiver,
+                                aggregateExpenses)));
         return result;
     }
 
@@ -89,9 +94,11 @@ public class ViewSwitcher implements Composer {
 
     private List<AllocationInput> asAllocationInput(
             AllocationResult allocationResult,
-            IAdvanceAllocationResultReceiver resultReceiver) {
+            IAdvanceAllocationResultReceiver resultReceiver,
+            AggregateOfExpensesLines aggregateExpenses) {
         return Collections.singletonList(new AllocationInput(allocationResult
-                .getAggregate(), allocationResult.getTask(), resultReceiver));
+                .getAggregate(), aggregateExpenses, allocationResult.getTask(),
+                resultReceiver));
     }
 
     public void goToPlanningOrderView() {

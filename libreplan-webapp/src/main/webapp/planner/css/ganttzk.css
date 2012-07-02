@@ -1446,9 +1446,12 @@ div.z-grid-header .second_level_ tr {
     height: 19px;
 }
 
-.filmingprogressdetails tr.z-row,
+.filmingprogressdetails tr.z-row{
+	height: 28px;
+}
+
 .taskspanelgap tr.z-row {
-    height: 29px;
+    height: 24px;
 }
 
 .filmingprogressdetails td {
