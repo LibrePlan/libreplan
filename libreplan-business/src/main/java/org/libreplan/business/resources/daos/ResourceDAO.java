@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -161,17 +161,28 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
 
         // Set labels
         if (labels != null && !labels.isEmpty()) {
-            if (labelFilterType.equals(LabelFilterType.ORDER_ELEMENT)) {
+            switch (labelFilterType) {
+            case ORDER_ELEMENT:
                 strQuery += " AND ( EXISTS (FROM wrl.orderElement.labels as etq WHERE etq IN (:labels)) "
                         + "OR EXISTS (FROM wrl.workReport.orderElement.labels as etqwr WHERE etqwr IN (:labels)) ) ";
-            } else if (labelFilterType.equals(LabelFilterType.WORK_REPORT)) {
+                break;
+            case WORK_REPORT:
                 strQuery += " AND ( EXISTS (FROM wrl.labels as etq WHERE etq IN (:labels)) "
                         + "OR EXISTS (FROM wrl.workReport.labels as etqwr WHERE etqwr IN (:labels)) ) ";
-            } else {
+                break;
+            case BOTH:
                 strQuery += " AND ( EXISTS (FROM wrl.labels as etq WHERE etq IN (:labels)) "
                         + "OR EXISTS (FROM wrl.workReport.labels as etqwr WHERE etqwr IN (:labels)) ) "
                         + "AND ( EXISTS (FROM wrl.orderElement.labels as etq WHERE etq IN (:labels)) "
                         + "OR EXISTS (FROM wrl.workReport.orderElement.labels as etqwr WHERE etqwr IN (:labels)) ) ";
+                break;
+            case ANY:
+            default:
+                strQuery += " AND ( ( EXISTS (FROM wrl.labels as etq WHERE etq IN (:labels)) "
+                        + "OR EXISTS (FROM wrl.workReport.labels as etqwr WHERE etqwr IN (:labels)) ) "
+                        + "OR ( EXISTS (FROM wrl.orderElement.labels as etq WHERE etq IN (:labels)) "
+                        + "OR EXISTS (FROM wrl.workReport.orderElement.labels as etqwr WHERE etqwr IN (:labels)) ) ) ";
+                break;
             }
         }
 

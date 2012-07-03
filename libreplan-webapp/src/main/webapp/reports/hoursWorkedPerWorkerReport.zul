@@ -113,7 +113,8 @@
                             <label value="${i18n:_('Apply filter to')}:"/>
                             <radio id="filterByWorkReports" label="${i18n:_('Timesheets')}" />
                             <radio id="filterByOrderElements" label="${i18n:_('Tasks')}" />
-                            <radio id="filterByBoth" label="${i18n:_('Both')}" checked="true" />
+                            <radio id="filterByBoth" label="${i18n:_('Both')}" />
+                            <radio id="filterByAny" label="${i18n:_('Any')}" checked="true" />
                         </radiogroup>
                     </hbox>
                 <separator spacing="10px"/>
