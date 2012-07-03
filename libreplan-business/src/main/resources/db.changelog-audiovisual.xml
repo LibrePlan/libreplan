@@ -154,6 +154,24 @@
             />
     </changeSet>
 
+    <changeSet id="change-direction-of-relation-between-budget-and-order" author="jaragunde">
+        <comment>
+            Change the direction of the relation between Budget and Order entities,
+            placing the foreign key attribute in Order table.
+        </comment>
+        <addColumn tableName="order_table">
+            <column name="budget_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <dropForeignKeyConstraint constraintName="fk_budget_order" baseTableName="budget"/>
+        <addForeignKeyConstraint constraintName="fk_order_budget"
+            baseTableName="order_table" baseColumnNames="budget_id"
+            referencedTableName="budget" referencedColumnNames="budget_id"
+            />
+        <dropColumn tableName="budget" columnName="order_element_id" />
+    </changeSet>
+
     <changeSet id="remove-calendar-from-order_template" author="jaragunde">
         <comment>Remove column base_calendar_id in order_template table</comment>
         <dropColumn tableName="order_template" columnName="base_calendar_id" />

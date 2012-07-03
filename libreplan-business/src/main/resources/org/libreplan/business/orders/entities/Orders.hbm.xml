@@ -167,8 +167,9 @@
 	                    <one-to-many class="org.libreplan.business.externalcompanies.entities.EndDateCommunication" />
                 </set>
 
-                <one-to-one name="associatedBudgetObject" access="field" cascade="delete"
-                    class="org.libreplan.business.templates.entities.Budget"  property-ref="associatedOrder" />
+                <many-to-one name="associatedBudgetObject" cascade="all"
+                    class="org.libreplan.business.templates.entities.Budget"
+                    column="budget_id" unique="true" />
             </joined-subclass>
 
         </joined-subclass>

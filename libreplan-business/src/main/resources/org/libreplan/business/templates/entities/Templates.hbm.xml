@@ -76,8 +76,8 @@
                 </joined-subclass>
                 <joined-subclass name="Budget" table="budget">
                     <key column="budget_id"></key>
-                    <many-to-one name="associatedOrder" column="order_element_id" cascade="none"
-                         unique="true" class="org.libreplan.business.orders.entities.Order" />
+                    <one-to-one name="associatedOrder" property-ref="associatedBudgetObject"
+                         class="org.libreplan.business.orders.entities.Order" />
                 </joined-subclass>
             </joined-subclass>
         </joined-subclass>
