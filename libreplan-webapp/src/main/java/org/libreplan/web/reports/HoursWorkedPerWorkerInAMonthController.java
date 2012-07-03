@@ -21,14 +21,14 @@
 
 package org.libreplan.web.reports;
 
-import static org.libreplan.web.I18nHelper._;
-
+import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -39,11 +39,6 @@ import org.zkoss.zul.Listitem;
 public class HoursWorkedPerWorkerInAMonthController extends LibrePlanReportController {
 
     private static final String REPORT_NAME = "hoursWorkedPerWorkerInAMonthReport";
-
-    private final String MONTHS[] = { _("January"), _("February"),
-        _("March"), _("April"), _("May"), _("June"), _("July"),
-        _("August"), _("September"), _("October"), _("November"),
-        _("December") };
 
     @Autowired
     private IHoursWorkedPerWorkerInAMonthModel hoursWorkedPerWorkerInAMonthModel;
@@ -62,9 +57,15 @@ public class HoursWorkedPerWorkerInAMonthController extends LibrePlanReportContr
     }
 
     private void initMonths() {
-        for (int i = 0; i < MONTHS.length; i++) {
+        String months[] = DateFormatSymbols.getInstance(Locales.getCurrent())
+                .getMonths();
+        // Using 12 instead of months.length because of the array has 13
+        // positions.
+        // The reason to return 13 positions is because of some lunar calendars
+        // would have 13 months instead of 12.
+        for (int i = 0; i < 12; i++) {
             Listitem month = new Listitem();
-            month.setLabel(MONTHS[i]);
+            month.setLabel(months[i]);
             month.setValue("" + (i + 1));
             if (Calendar.getInstance().get(Calendar.MONTH) == i)
                 month.setSelected(true);
@@ -143,7 +144,9 @@ public class HoursWorkedPerWorkerInAMonthController extends LibrePlanReportContr
 
     private String monthAsLiteral(String monthNumber) {
         Integer number = Integer.parseInt(monthNumber);
-        return MONTHS[number-1];
+        String months[] = DateFormatSymbols.getInstance(Locales.getCurrent())
+                .getMonths();
+        return months[number - 1];
     }
 
 }
