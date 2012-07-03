@@ -20,8 +20,6 @@
  */
 
 package org.libreplan.business.resources.entities;
-import static org.libreplan.business.i18n.I18nHelper._;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,21 +34,21 @@ import org.libreplan.business.common.Registry;
  */
 public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
 
-    LOCATION(_("LOCATION"), "Worker location",
+    LOCATION("LOCATION", "Worker location",
             false, true, true, ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return LocationCriteria.getCriterionNames();
         }
     },
-    CATEGORY(_("CATEGORY"), "Professional category", true, true, true,
+    CATEGORY("CATEGORY", "Professional category", true, true, true,
             ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
             return CategoryCriteria.getCriterionNames();
         }
     },
-    SKILL(_("SKILL"), "Worker skill", true, true, true,
+    SKILL("SKILL", "Worker skill", true, true, true,
             ResourceEnum.WORKER) {
         @Override
         public List<String> getPredefined() {
