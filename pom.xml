@@ -118,7 +118,7 @@
                 <jdbcDriver.version>8.3-603.jdbc4</jdbcDriver.version>
                 <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
-                <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
+                <dataSource.url>jdbc:postgresql://localhost/libreplanaudiovisual${libreplan.mode}</dataSource.url>
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
@@ -136,7 +136,7 @@
                 <jdbcDriver.version>5.0.5</jdbcDriver.version>
                 <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
-                <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}</dataSource.url>
+                <dataSource.url>jdbc:mysql://localhost/libreplanaudiovisual${libreplan.mode}</dataSource.url>
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
                 <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
