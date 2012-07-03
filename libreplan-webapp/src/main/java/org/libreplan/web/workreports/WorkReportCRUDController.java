@@ -765,7 +765,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             if (!getWorkReport().getWorkReportType()
                     .getOrderElementIsSharedInLines()) {
                 NewDataSortableColumn columnCode = new NewDataSortableColumn();
-                columnCode.setLabel(_("Task Code"));
+                columnCode.setLabel(_("Task"));
                 columnCode.setSclass("order-code-column");
                 columnCode.setHflex("min");
                 columns.appendChild(columnCode);
