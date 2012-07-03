@@ -315,7 +315,7 @@ sub generate_keys_pot_file()
     open FILE, ">>$keys_filename" || die("Could not open file: $keys_filename");
     # Print ENTRIES to file
     foreach $msgid (keys %ENTRIES) {
-        if ($msgid eq "") {
+        if (!defined($msgid) || $msgid eq "" || $msgid eq "\"\"") {
             next;
         }
         foreach $filename (@{$ENTRIES{$msgid}}) {
