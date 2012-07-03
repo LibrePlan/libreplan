@@ -208,17 +208,17 @@ public class QueueComponent extends XulElement implements
         final OrderElement order = getRootOrder(task);
 
         StringBuilder result = new StringBuilder();
-        result.append(_("Project: {0} ", order.getName()));
-        result.append(_("Task: {0} ", task.getName()));
-        result.append(_("Completed: {0}% ", element.getAdvancePercentage().multiply(new BigDecimal(100))));
+        result.append(_("Project: {0}", order.getName()) + " ");
+        result.append(_("Task: {0}", task.getName()) + " ");
+        result.append(_("Completed: {0}%", element.getAdvancePercentage().multiply(new BigDecimal(100))) + " ");
 
         final ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
         if (resourceAllocation instanceof SpecificResourceAllocation) {
             final SpecificResourceAllocation specific = (SpecificResourceAllocation) resourceAllocation;
-            result.append(_("Resource: {0} ", specific.getResource().getName()));
+            result.append(_("Resource: {0}", specific.getResource().getName()) + " ");
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            result.append(_("Criteria: {0} ", Criterion.getCaptionFor(generic.getCriterions())));
+            result.append(_("Criteria: {0}", Criterion.getCaptionFor(generic.getCriterions())) + " ");
         }
         result.append(_("Allocation: [{0},{1}]", element.getStartDate()
                 .toString(), element.getEndDate()));
