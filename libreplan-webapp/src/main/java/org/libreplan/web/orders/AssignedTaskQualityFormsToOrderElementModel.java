@@ -339,7 +339,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
 
     private void showMessageDeleteSpread() throws ValidationException {
         throw new ValidationException(
-                _("The operation does not perform because the task has progress reports that is spread associated with this quality form"));
+                _("Quality form cannot be removed as it is spreading progress"));
     }
 
     @Override

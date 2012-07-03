@@ -168,7 +168,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "order element associated to a task must be not null")
+    @AssertTrue(message = "order element associated to a task must be not empty")
     private boolean theOrderElementMustBeNotNull() {
         return getOrderElement() != null;
     }

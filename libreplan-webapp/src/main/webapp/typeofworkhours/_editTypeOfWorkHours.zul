@@ -24,7 +24,7 @@
     <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Type data')}"></tab>
+            <tab label="${i18n:_('Work hour type data')}"></tab>
         </tabs>
         <tabpanels>
             <tabpanel width="100%">

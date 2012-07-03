@@ -126,7 +126,7 @@ public class ManageOrderElementAdvancesController extends
             throw new InvalidValueException(_("values are not valid, the values must not be null"));
         }
         if (!validateReportGlobalAdvance()) {
-            throw new InvalidValueException(_("spread values are not valid, one progress must be checked as spread"));
+            throw new InvalidValueException(_("spread values are not valid, at least one value should be true"));
         }
     }
 
@@ -139,7 +139,7 @@ public class ManageOrderElementAdvancesController extends
             messagesForUser.showMessage(Level.ERROR, _("Cannot create another progress of the same type"));
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
-                    Level.ERROR, _("spread values are not valid, one progress must be checked as spread"));
+                    Level.ERROR, _("spread values are not valid, at least one value should be true"));
         } catch (InvalidValueException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         } catch (InstanceNotFoundException e) {
@@ -738,11 +738,11 @@ public class ManageOrderElementAdvancesController extends
                 && (advance.getAdvanceType().isQualityForm())) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Progress that are reported by quality forms can not be modified"));
+                    .setTooltiptext(_("Progress that are reported by quality forms cannot be modified"));
         } else if (advance instanceof IndirectAdvanceAssignment) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Calculated progress can not be removed"));
+                    .setTooltiptext(_("Calculated progress cannot be removed"));
         } else if (manageOrderElementAdvancesModel
                 .hasConsolidatedAdvances(advance)) {
             removeButton.setDisabled(true);
@@ -751,11 +751,11 @@ public class ManageOrderElementAdvancesController extends
         } else if (readOnly) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Subcontractor values are read only because they were reported by the subcontractor company."));
+                    .setTooltiptext(_("Subcontractor values are read only because they were reported by the subcontractor company"));
         } else if (manageOrderElementAdvancesModel.hasReportedProgress(advance)) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Progress assignment can not be removed because it has advance measurements already sent to customer."));
+                    .setTooltiptext(_("Advance assignment cannot be removed as it has advance measures that have already been reported to the customer"));
         }
 
         hbox.appendChild(removeButton);
@@ -1316,7 +1316,7 @@ public class ManageOrderElementAdvancesController extends
     private String validateValueAdvanceMeasurement(
             AdvanceMeasurement measurement) {
         if (manageOrderElementAdvancesModel.greatThanMaxValue(measurement)) {
-            return _("Value is not valid, the current value must be less than max value");
+            return _("Value is not valid. It must be smaller than max value");
         }
         if (!manageOrderElementAdvancesModel.isPrecisionValid(measurement)) {
             return _(
@@ -1357,11 +1357,11 @@ public class ManageOrderElementAdvancesController extends
                                 .getAdvanceAssignment());
                 if (consolidatedUntil != null) {
                     if (consolidatedUntil.compareTo(measurement.getDate()) >= 0) {
-                        return _("Date is not valid, it must be greater than the last progress consolidation");
+                        return _("Date is not valid, it must be later than the last progress consolidation");
                     }
                 }
                 if (manageOrderElementAdvancesModel.isAlreadyReportedProgressWith(value)) {
-                    return _("Date is not valid, it must be greater than the last progress reported to the customer");
+                    return _("Date is not valid, it must be later than the last progress reported to the customer");
                 }
             }
 

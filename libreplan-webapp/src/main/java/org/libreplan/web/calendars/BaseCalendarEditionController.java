@@ -1519,7 +1519,7 @@ public abstract class BaseCalendarEditionController extends
                     if (code != null && !code.isDisabled()
                             && code.getValue().isEmpty()) {
                         throw new WrongValueException(code,
-                                _("It can not be empty"));
+                                _("It cannot be empty"));
                     }
                 }
             }

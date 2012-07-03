@@ -385,7 +385,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         columns.appendChild(columnPercentage);
 
         Column columnPassed = new Column();
-        columnPassed.setLabel(_("Passed"));
+        columnPassed.setLabel(_("Checked"));
         columns.appendChild(columnPassed);
 
         Column columnDate = new Column();

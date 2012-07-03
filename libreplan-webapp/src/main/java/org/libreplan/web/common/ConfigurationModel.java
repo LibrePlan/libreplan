@@ -183,7 +183,7 @@ public class ConfigurationModel implements IConfigurationModel {
             }
             if (!checkConstraintPrefixNotRepeated(sequences)) {
                 throw new ValidationException(_(
-                        "The {0} sequence prefixes can not be repeated",
+                        "The {0} sequence prefixes cannot be repeated",
                         entityName.getDescription()));
             }
         }

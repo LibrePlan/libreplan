@@ -213,8 +213,8 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
 
     private <T extends Resource> List<T> getResourcesSatisfying(
             Class<T> resourceType, Criterion criterion) {
-        Validate.notNull(resourceType, _("ResourceType must be not-null"));
-        Validate.notNull(criterion, _("Criterion must be not-null"));
+        Validate.notNull(resourceType, _("Resource type cannot be empty"));
+        Validate.notNull(criterion, _("Criterion cannot be empty"));
         List<T> result = new ArrayList<T>();
         for (T r : resourceDAO.list(resourceType)) {
             if (criterion.isSatisfiedBy(r)) {

@@ -797,11 +797,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             if (!getWorkReport().getWorkReportType().getHoursManagement()
                     .equals(HoursManagementEnum.NUMBER_OF_HOURS)) {
                 NewDataSortableColumn columnHourStart = new NewDataSortableColumn();
-                columnHourStart.setLabel(_("Hour start"));
+                columnHourStart.setLabel(_("Start hour"));
                 columnHourStart.setSclass("column-hour-start");
                 columns.appendChild(columnHourStart);
                 NewDataSortableColumn columnHourFinish = new NewDataSortableColumn();
-                columnHourFinish.setLabel(_("Hour finish"));
+                columnHourFinish.setLabel(_("Finish Hour"));
                 columnHourStart.setSclass("column-hour-finish");
                 columns.appendChild(columnHourFinish);
             }

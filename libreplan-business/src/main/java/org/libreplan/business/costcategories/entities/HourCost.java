@@ -93,7 +93,7 @@ public class HourCost extends IntegrationEntity {
         this.priceCost = priceCost;
     }
 
-    @NotNull(message = "init date not specified")
+    @NotNull(message = "start date not specified")
     public LocalDate getInitDate() {
         return initDate;
     }

@@ -715,7 +715,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("You can not remove the task \"{0}\" because it has work reported on it or any of its children",
+                            _("You cannot remove the task \"{0}\" because it has work reported on it or any of its children",
                                     element.getName()));
         } else {
             super.remove(element);

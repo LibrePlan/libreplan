@@ -92,7 +92,7 @@
         <separator spacing="10px"/>
 
         <hbox align="bottom" sclass="add-resources-or-criteria">
-            <label value="${i18n:_('New deliver date')}" />
+            <label value="${i18n:_('New delivery date')}" />
             <datebox id="newDeliverDate" value="@{subController.endDate}" />
             <button label="${i18n:_('Add')}" onClick="subController.addDeliverDate(newDeliverDate)"/>
         </hbox>

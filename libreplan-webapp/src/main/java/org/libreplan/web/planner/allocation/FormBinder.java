@@ -337,8 +337,7 @@ public class FormBinder {
                                     .equals(specifiedWorkableDays)) {
                                 Clients.response(new AuWrongValue(
                                         taskWorkableDays,
-                                        _("The original workable days value {0}, "
-                                                + "is prevented because consolidated values cannot be modified",
+                                        _("The original workable days value {0} cannot be modified as it has consolidations",
                                                 specifiedWorkableDays)));
                                 taskWorkableDays
                                         .setValue(effectiveWorkableDays);

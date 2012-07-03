@@ -158,7 +158,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
             try {
                 if (Messagebox
                         .show(
-                                _("Deleting this item, it will disable the report progress option. Are you sure?"),
+                                _("Deleting this item will disable the report progress option. Are you sure?"),
                                 _("Confirm"),
                                 Messagebox.OK | Messagebox.CANCEL,
                                 Messagebox.QUESTION) == Messagebox.OK) {
