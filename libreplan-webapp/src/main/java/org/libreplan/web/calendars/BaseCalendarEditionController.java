@@ -24,6 +24,7 @@ package org.libreplan.web.calendars;
 import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.common.Util.findOrCreate;
 
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +59,7 @@ import org.libreplan.web.common.Util.ICreation;
 import org.libreplan.web.common.Util.Setter;
 import org.libreplan.web.common.components.CapacityPicker;
 import org.libreplan.web.common.components.EffortDurationPicker;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -410,8 +412,11 @@ public abstract class BaseCalendarEditionController extends
         }
 
         private void addLabelCell(Listitem item, final Days day) {
+            String days[] = DateFormatSymbols.getInstance(Locales.getCurrent())
+                    .getWeekdays();
+
             Listcell labelListcell = new Listcell();
-            labelListcell.appendChild(new Label(_(day.getName())));
+            labelListcell.appendChild(new Label(days[day.getIndex()]));
             item.appendChild(labelListcell);
         }
 

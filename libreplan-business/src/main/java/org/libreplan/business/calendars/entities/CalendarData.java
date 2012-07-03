@@ -23,6 +23,8 @@ package org.libreplan.business.calendars.entities;
 
 import static org.libreplan.business.workingday.EffortDuration.hours;
 
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -96,25 +98,26 @@ public class CalendarData extends IntegrationEntity {
     private BaseCalendar parent;
 
     public enum Days {
-        MONDAY(_("Monday")), TUESDAY(_("Tuesday")), WEDNESDAY(_("Wednesday")), THURSDAY(
-                _("Thursday")), FRIDAY(_("Friday")), SATURDAY(_("Saturday")), SUNDAY(
-                _("Sunday"));
+        MONDAY(Calendar.MONDAY),
+        TUESDAY(Calendar.TUESDAY),
+        WEDNESDAY(Calendar.WEDNESDAY),
+        THURSDAY(Calendar.THURSDAY),
+        FRIDAY(Calendar.FRIDAY),
+        SATURDAY(Calendar.SATURDAY),
+        SUNDAY(Calendar.SUNDAY);
+
+        private int index;
+
+        private Days(int index) {
+            this.index = index;
+        }
 
         /**
-         * Forces to mark the string as needing translation
+         * This is used to get the week day translated via
+         * {@link DateFormatSymbols#getWeekdays()}
          */
-        private static String _(String string) {
-            return string;
-        }
-
-        private String name;
-
-        private Days(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
+        public int getIndex() {
+            return index;
         }
 
     }
