@@ -90,7 +90,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{end}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Opaque" x="424" y="24" width="135" height="20" backcolor="#E0E4FB"/>
@@ -104,7 +104,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column6}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{labels}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Opaque" x="0" y="24" width="116" height="20" backcolor="#E0E4FB"/>
@@ -118,7 +118,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column4}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{task.code.name}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Opaque" x="116" y="24" width="70" height="20" backcolor="#E0E4FB"/>
@@ -132,7 +132,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column1}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{start}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Opaque" x="294" y="24" width="130" height="20" backcolor="#E0E4FB"/>
@@ -146,7 +146,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column5}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{text.fields}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Opaque" x="252" y="24" width="42" height="20" backcolor="#E0E4FB"/>
@@ -160,7 +160,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column3}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{hours}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
@@ -271,7 +271,7 @@
 				<textElement markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{labels}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{labels.colon}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="57" y="98" width="494" height="20"/>
