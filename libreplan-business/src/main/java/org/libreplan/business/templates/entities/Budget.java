@@ -22,6 +22,7 @@ import org.hibernate.validator.AssertTrue;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.qualityforms.entities.QualityForm;
+import org.libreplan.business.scenarios.entities.Scenario;
 
 /**
  * Marker class intended to differentiate two different kinds of OrderTemplate:
@@ -54,7 +55,8 @@ public class Budget extends OrderTemplate {
         return create(beingBuilt);
     }
 
-    public Order createOrderLineElementsForAssociatedOrder() {
+    public Order createOrderLineElementsForAssociatedOrder(Scenario scenario) {
+        associatedOrder.useSchedulingDataFor(scenario);
         for (OrderElementTemplate each : getChildren()) {
             each.createElement(associatedOrder);
         }

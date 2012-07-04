@@ -157,7 +157,12 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
 
     @Override
     public OrderElementTemplate getTemplate() {
-        return template;
+        if (template != null) {
+            return template;
+        } else if (planningState != null) {
+            return planningState.getOrder().getAssociatedBudgetObject();
+        }
+        return null;
     }
 
     @Override
@@ -207,6 +212,22 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
         this.template = template;
         loadAssociatedData(this.template);
         treeModel = new TemplatesTree(this.template);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(Order order, Desktop desktop) {
+        initializeAcompanyingObjectsOnConversation();
+        this.planningState = planningStateCreator.retrieveOrCreate(desktop,
+                order, new IActionsOnRetrieval() {
+
+                    @Override
+                    public void onRetrieval(PlanningState planningState) {
+                        planningState.reattach();
+                    }
+                });
+        loadAssociatedData(getTemplate());
+        treeModel = new TemplatesTree(getTemplate());
     }
 
     @Override
@@ -403,16 +424,7 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
 
     @Override
     @Transactional
-    public void saveThroughPlanningState(Desktop desktop,
-            boolean showSaveMessage) {
-        this.planningState = planningStateCreator.retrieveOrCreate(desktop,
-                getAssociatedOrder(), new IActionsOnRetrieval() {
-
-                    @Override
-                    public void onRetrieval(PlanningState planningState) {
-                        planningState.reattach();
-                    }
-                });
+    public void saveThroughPlanningState(boolean showSaveMessage) {
         if (showSaveMessage) {
             this.planningState.getSaveCommand().save(null);
         } else {
@@ -423,19 +435,20 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
     @Override
     @Transactional
     public void closeBudget() {
-        Budget budget = (Budget) getTemplate();
-        Order order = budget.getAssociatedOrder();
+        Order order = getAssociatedOrder();
+        Budget budget = order.getAssociatedBudgetObject();
         if (!order.getState().equals(OrderStatusEnum.BUDGET)) {
             throw new ValidationException(_("The budget is already closed"));
         }
         orderDAO.reattach(order);
         order.setState(OrderStatusEnum.OFFERED);
-        budget.createOrderLineElementsForAssociatedOrder();
+        budget.createOrderLineElementsForAssociatedOrder(scenarioManager
+                .getCurrent());
     }
 
     @Override
     public Order getAssociatedOrder() {
-        return ((Budget) getTemplate()).getAssociatedOrder();
+        return planningState.getOrder();
     }
 
     @Override

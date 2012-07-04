@@ -28,11 +28,13 @@ import org.zkoss.zk.ui.Desktop;
  */
 public interface IBudgetModel extends IBudgetTemplatesModel {
 
-    void saveThroughPlanningState(Desktop desktop, boolean showSaveMessage);
+    void saveThroughPlanningState(boolean showSaveMessage);
 
     void closeBudget();
 
     Order getAssociatedOrder();
 
     boolean isReadOnly();
+
+    void initEdit(Order order, Desktop desktop);
 }

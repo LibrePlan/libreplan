@@ -44,7 +44,6 @@ public class BudgetTemplate extends OrderTemplate {
         order.initializeTemplate(this);
 
         Budget budget = Budget.createFromTemplate(this);
-        budget.setAssociatedOrder(order);
         order.setAssociatedBudgetObject(budget);
 
         return order;

@@ -29,7 +29,6 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.web.planner.budget.BudgetController;
 import org.libreplan.web.planner.order.ISaveCommand;
 import org.libreplan.web.planner.order.PlanningStateCreator;
@@ -98,10 +97,9 @@ public class BudgetTabCreator {
             protected void afterShowAction() {
                 PlanningState planningState = getPlanningState(mode.getOrder(),
                         getDesktop());
-                Budget budget = planningState.getBudget();
                 Order currentOrder = planningState.getOrder();
                 ISaveCommand saveCommand = planningState.getSaveCommand();
-                budgetController.init(budget, saveCommand);
+                budgetController.init(currentOrder, saveCommand);
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));

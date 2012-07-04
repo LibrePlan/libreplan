@@ -22,7 +22,7 @@ package org.libreplan.web.planner.budget;
 import static org.libreplan.web.I18nHelper._;
 
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.templates.entities.Budget;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.order.ISaveCommand;
@@ -74,8 +74,8 @@ public class BudgetController extends GenericForwardComposer implements
 
     private IGlobalViewEntryPoints entryPointsController;
 
-    public void init(Budget budget, ISaveCommand saveCommand) {
-        model.initEdit(budget);
+    public void init(Order order, ISaveCommand saveCommand) {
+        model.initEdit(order, editWindow.getDesktop());
         showEditWindow();
     }
 
@@ -177,8 +177,7 @@ public class BudgetController extends GenericForwardComposer implements
                     @Override
                     public void onEvent(Event event) throws Exception {
                         try {
-                            model.saveThroughPlanningState(
-                                    editWindow.getDesktop(), true);
+                            model.saveThroughPlanningState(true);
                         } catch (ValidationException e) {
                             Messagebox.show(e.getMessage());
                         }
@@ -226,7 +225,7 @@ public class BudgetController extends GenericForwardComposer implements
                                             if (evt.getName().equals("onOK")) {
                                                 try {
                                                     model.closeBudget();
-                                                    model.saveThroughPlanningState(editWindow.getDesktop(), false);
+                                                    model.saveThroughPlanningState(false);
                                                     entryPointsController.goToOrderDetails(model.getAssociatedOrder());
                                                 } catch (ValidationException e) {
                                                     Messagebox.show(e.getMessage());
