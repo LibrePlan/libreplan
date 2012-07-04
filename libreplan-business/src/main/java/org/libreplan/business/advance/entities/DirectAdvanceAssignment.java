@@ -192,7 +192,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return null;
     }
 
-    @AssertTrue(message = "The previous advance measurements must have a value less than the value of the posterior advance measurements.")
+    @AssertTrue(message = "Progress measurements must have a value lower than their following progress measurements.")
     public boolean checkConstraintValidAdvanceMeasurements() {
         if (advanceMeasurements.isEmpty()) {
             return true;

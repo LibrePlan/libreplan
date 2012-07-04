@@ -263,7 +263,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
         }
     }
 
-    @AssertTrue(message = "the default max value must be greater than the precision value")
+    @AssertTrue(message = "Default Max value must be greater than precision value")
     public boolean checkDefaultMaxValueGreaterThanPrecision() {
         if (defaultMaxValue.compareTo(unitPrecision) == -1) {
             return false;

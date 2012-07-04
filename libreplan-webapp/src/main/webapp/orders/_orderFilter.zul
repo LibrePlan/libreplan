@@ -28,7 +28,7 @@
     <datebox id="filterStartDate" constraint = "@{orderFilterController.checkConstraintStartDate}"/>
     <label value="${i18n:_('to')}"/>
     <datebox id="filterFinishDate" constraint = "@{orderFilterController.checkConstraintFinishDate}"/>
-    <label value="${i18n:_('sub elements')}"/>
+    <label value="${i18n:_('subelements')}"/>
     <checkbox id="checkIncludeOrderElements"
         tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}" />
     <button mold="trendy" image="/common/img/ico_filter.png" style="margin-top: -4px"

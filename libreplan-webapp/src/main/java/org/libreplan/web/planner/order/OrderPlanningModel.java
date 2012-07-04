@@ -751,7 +751,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                         .getIndicatorsDefinitionInterval(), LocalDate
                         .fromDateFields(value))) {
                     throw new WrongValueException(comp,
-                            _("the date must be inside the visualization area"));
+                            _("Date must be inside visualization area"));
                 }
 
             }

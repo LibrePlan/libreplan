@@ -126,7 +126,7 @@ public class ManageOrderElementAdvancesController extends
             throw new InvalidValueException(_("values are not valid, the values must not be null"));
         }
         if (!validateReportGlobalAdvance()) {
-            throw new InvalidValueException(_("spread values are not valid, at least one value should be true"));
+            throw new InvalidValueException(_("Invalid Spread values. At least one value should be true"));
         }
     }
 
@@ -139,7 +139,7 @@ public class ManageOrderElementAdvancesController extends
             messagesForUser.showMessage(Level.ERROR, _("Cannot create another progress of the same type"));
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
-                    Level.ERROR, _("spread values are not valid, at least one value should be true"));
+                    Level.ERROR, _("Invalid Spread values. At least one value should be true"));
         } catch (InvalidValueException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         } catch (InstanceNotFoundException e) {
@@ -299,7 +299,7 @@ public class ManageOrderElementAdvancesController extends
             showMessageDeleteSpread();
         } else if (manageOrderElementAdvancesModel
                 .hasConsolidatedAdvances(advance)) {
-            showErrorMessage(_("This progress assignment cannot be deleted or changed because it has some progress consolidation"));
+            showErrorMessage(_("Progress Assignment cannot be deleted or changed. Progress Assignment contains Progress Consolidations values"));
         } else {
             manageOrderElementAdvancesModel
                     .removeLineAdvanceAssignment(advance);
@@ -327,7 +327,7 @@ public class ManageOrderElementAdvancesController extends
                     .removeLineAdvanceMeasurement(advance);
             reloadAdvances();
         } else {
-            showErrorMessage(_("This progress measurement cannot be deleted or changed because it is consolidated"));
+            showErrorMessage(_("Progress Measurement cannot be deleted. Progress Measurement already consolidated"));
         }
     }
 
@@ -506,7 +506,7 @@ public class ManageOrderElementAdvancesController extends
                         .hasConsolidatedAdvances(advanceAssignment)) {
                     throw new WrongValueException(
                             maxValue,
-                            _("This progress assignment cannot be deleted or changed because it has some progress consolidation"));
+                            _("Progress Assignment cannot be deleted or changed. Progress Assignment contains Progress Consolidations values"));
                 } else {
                     setPercentage();
                     reloadAdvances();
@@ -1094,7 +1094,7 @@ public class ManageOrderElementAdvancesController extends
                     } else {
                         throw new WrongValueException(
                                 value,
-                                _("This progress measurement cannot be deleted or changed because it is consolidated"));
+                                _("Progress Measurement cannot be deleted. Progress Measurement already consolidated"));
                     }
                 }
             });
@@ -1157,7 +1157,7 @@ public class ManageOrderElementAdvancesController extends
                     } else {
                         throw new WrongValueException(
                                 date,
-                                _("This progress measurement cannot be deleted or changed because it is consolidated"));
+                                _("Progress Measurement cannot be deleted. Progress Measurement already consolidated"));
                     }
                 }
             });
@@ -1227,11 +1227,11 @@ public class ManageOrderElementAdvancesController extends
                     .hasConsolidatedAdvances(measure)) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("Consolidated progress measurement can not be removed"));
+                        .setTooltiptext(_("Consolidated progress measurement cannot be removed"));
             } else if (manageOrderElementAdvancesModel.isAlreadyReportedProgress(measure)) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("Values are read only because they have already been sent to the customer company."));
+                        .setTooltiptext(_("Values already sent to the customer. Values cannot be changed "));
             } else if (isReadOnlyAdvanceMeasurements()) {
                 removeButton.setDisabled(isReadOnlyAdvanceMeasurements());
                 removeButton
@@ -1325,7 +1325,7 @@ public class ManageOrderElementAdvancesController extends
                             .stripTrailingZeros().toPlainString());
         }
         if (manageOrderElementAdvancesModel.lessThanPreviousMeasurements()) {
-            return _("Value is not valid, the value must be greater than the value of the previous progress.");
+            return _("Invalid value. Value must be greater than the value of previous progress.");
         }
         return null;
     }
@@ -1337,7 +1337,7 @@ public class ManageOrderElementAdvancesController extends
 
         if (!manageOrderElementAdvancesModel.isDistinctValidDate(value,
                 measurement)) {
-            return _("The date is not valid, the date must be unique for this progress assignment");
+            return _("Invalid date. Date must be unique for this Progress Assignment");
         }
         if (measurement != null) {
             if (manageOrderElementAdvancesModel
@@ -1347,7 +1347,7 @@ public class ManageOrderElementAdvancesController extends
                 manageOrderElementAdvancesModel.sortListAdvanceMeasurement();
                 if (manageOrderElementAdvancesModel
                         .lessThanPreviousMeasurements()) {
-                    return _("Value is not valid, the value must be greater than the value of the previous progress.");
+                    return _("Invalid value. Value must be greater than the value of previous progress.");
                 }
             }
 

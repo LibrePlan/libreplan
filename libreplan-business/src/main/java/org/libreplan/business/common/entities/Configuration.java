@@ -133,7 +133,7 @@ public class Configuration extends BaseEntity {
         return companyCode;
     }
 
-    @AssertTrue(message = "company code must not contain white spaces")
+    @AssertTrue(message = "company code cannot contain whitespaces")
     public boolean checkConstraintCompanyCodeWithoutWhiteSpaces() {
         if ((companyCode == null) || (companyCode.isEmpty())) {
             return false;

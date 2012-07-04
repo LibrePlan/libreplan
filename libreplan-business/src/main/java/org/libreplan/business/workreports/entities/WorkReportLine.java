@@ -271,7 +271,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "The start hour cannot be higher than finish hour")
+    @AssertTrue(message = "Start hour cannot be greater than finish hour")
     public boolean checkCannotBeHigher() {
         if (!firstLevelValidationsPassed()) {
             return true;

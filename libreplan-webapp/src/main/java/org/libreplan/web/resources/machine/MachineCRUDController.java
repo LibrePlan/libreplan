@@ -539,7 +539,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
             messagesForUser
                     .showMessage(
                             Level.WARNING,
-                            _("This machine cannot be deleted because it has assignments to projects or imputed hours"));
+                            _("Machine cannot be deleted. Machine is allocated to a project or contains imputed hours"));
             return false;
         }
         return true;

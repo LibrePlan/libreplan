@@ -285,7 +285,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     .isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
                 createTemplateButton.setDisabled(true);
                 createTemplateButton
-                        .setTooltiptext(_("You do not have permissions to create templates"));
+                        .setTooltiptext(_("Not enough permissions to create templates"));
             }
         }
     }

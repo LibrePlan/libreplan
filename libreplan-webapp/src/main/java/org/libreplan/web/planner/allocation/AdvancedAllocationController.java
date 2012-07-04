@@ -1311,7 +1311,7 @@ class Row {
         private int showConfirmChangeFunctionDialog()
                 throws InterruptedException {
             return Messagebox
-                    .show(_("You are going to change the assignment function. Are you sure?"),
+                    .show(_("Assignment function will be changed. Are you sure?"),
                             _("Confirm change"),
                             Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
         }

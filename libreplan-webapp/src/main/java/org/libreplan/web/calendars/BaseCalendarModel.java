@@ -532,7 +532,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
             }
         }
         throw new ValidationException(
-                _("This date can not include the whole next work week"));
+                _("Date cannot include the entire next work week"));
     }
 
     @Override

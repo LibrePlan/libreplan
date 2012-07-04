@@ -79,7 +79,7 @@ public class EntitySequenceDAO extends
         if (entitySequence.getLastValue() > 0) {
             throw new IllegalArgumentException(
                     I18nHelper
-                            ._("You can not remove this entity sequence, it is already in use"));
+                            ._("Entity Sequence cannot be deleted. Entity Sequence already in use"));
         }
 
         remove(entitySequence.getId());

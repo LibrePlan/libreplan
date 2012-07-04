@@ -313,7 +313,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                         _("Forward"), _("Schedule from start to deadline")));
                 schedulingMode.appendChild(createCombo(
                         SchedulingMode.BACKWARDS, _("Backwards"),
-                        _("Schedule from the deadline to start")));
+                        _("Schedule from deadline to start")));
             }
         }
 
@@ -1290,7 +1290,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
             buttonDerived.setDisabled(true);
             buttonDerived
-                    .setTooltiptext(_("You do not have permissions to create templates"));
+                    .setTooltiptext(_("Not enough permissions to create templates"));
         }
         hbox.appendChild(buttonDerived);
     }

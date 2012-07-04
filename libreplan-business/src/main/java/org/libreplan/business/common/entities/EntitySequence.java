@@ -143,7 +143,7 @@ public class EntitySequence extends BaseEntity {
         return numberOfDigits;
     }
 
-    @AssertTrue(message = "number of digits is out of range")
+    @AssertTrue(message = "number of digits out of range")
     public boolean checkConstraintNumberOfDigitsInRange() {
         if ((numberOfDigits != null)
                 && (numberOfDigits >= MIN_NUMBER_OF_DIGITS)

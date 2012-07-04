@@ -409,7 +409,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
             throws IllegalArgumentException {
         if ((code == null) || (code.isEmpty())) {
             throw new IllegalArgumentException(
-                    _("the code cannot be empty"));
+                    _("Code cannot be empty"));
         }
         if (code.contains("_")) {
             throw new IllegalArgumentException(

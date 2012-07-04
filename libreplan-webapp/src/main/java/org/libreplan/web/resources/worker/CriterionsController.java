@@ -213,7 +213,7 @@ public class CriterionsController extends GenericForwardComposer {
         }
         if(!criterionSatisfactionDTO.isLessToEndDate((Date) value)){
             throw new WrongValueException(comp,
-                _("Start date is not valid, the new start date must be lower than the end date"));
+                _("Invalid Start Date. New Start Date must be earlier than End Date"));
         }else if(!criterionSatisfactionDTO.isPreviousStartDate((Date) value)){
             throw new WrongValueException(
                     comp,
@@ -239,7 +239,7 @@ public class CriterionsController extends GenericForwardComposer {
                 _("End date is not valid, the new end date must be after start date"));
         }else if(!criterionSatisfactionDTO.isPostEndDate((Date) value)){
             throw new WrongValueException(comp,
-                _("End date is not valid, the new end date must be after the current end date"));
+                _("Invaldid End Date. New End Date must be after current End Date "));
         }
     }
 

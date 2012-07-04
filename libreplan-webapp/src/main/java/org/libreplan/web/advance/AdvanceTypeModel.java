@@ -88,7 +88,7 @@ public class AdvanceTypeModel implements IAdvanceTypeModel {
     private void checkCanBeModified(AdvanceType advanceType) {
         if (!canBeModified(advanceType)) {
             throw new IllegalArgumentException(
-                    _("The progress type cannot be modified"));
+                    _("Progress type cannot be modified"));
         }
     }
 

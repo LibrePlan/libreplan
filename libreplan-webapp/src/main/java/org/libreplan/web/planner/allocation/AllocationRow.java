@@ -823,8 +823,8 @@ public abstract class AllocationRow {
                 String firstLine = _(
                         "In the available periods {0} only {1} hours are available.",
                         validPeriods, sumReached.getHours());
-                String secondLine = isGeneric() ? _("The periods available depend on the satisfaction of the criteria by the resources and their calendars.")
-                        : _("The periods available depend on the resource's calendar.");
+                String secondLine = isGeneric() ? _("Periods available depend on the satisfaction of the criteria of resources and their calendars.")
+                        : _("Periods available depend on resources' calendar.");
                 throw new WrongValueException(effortInput, firstLine + "\n"
                         + secondLine);
             }

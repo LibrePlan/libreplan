@@ -253,11 +253,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     public void addCriterionRequirement(CriterionRequirement requirement) {
         if (!isValidResourceType(requirement)) {
             throw new IllegalStateException(
-                    "The criterion can not be assigned to this hoursGroup because its resource type is diferent");
+                    "Criterion cannot be assigned to this Hours Group. Criterion Resource Type is of a different type");
         }
         if (existSameCriterionRequirement(requirement)) {
             throw new IllegalStateException(
-                    "The criterion can not be assigned to this hoursGroup because it already exist into the hoursGroup");
+                    "Criterion cannot be assigned to this Hours Group. Criterion already exist within Hours Group");
 
         }
         requirement.setHoursGroup(this);

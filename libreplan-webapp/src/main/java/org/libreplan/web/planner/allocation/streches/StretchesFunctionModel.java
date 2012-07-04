@@ -287,7 +287,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
 
         if (date.compareTo(taskEndDate) > 0) {
             throw new IllegalArgumentException(
-                    _("Stretch date must not be after task end date: "
+                    _("Stretch date must be earlier than End date: "
                             + sameFormatAsDefaultZK(taskEndDate)));
         }
 

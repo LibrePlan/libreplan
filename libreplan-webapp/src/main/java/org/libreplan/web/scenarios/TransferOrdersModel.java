@@ -145,7 +145,7 @@ public class TransferOrdersModel implements ITransferOrdersModel {
         }
         if (destinationScenario == null) {
             throw new ValidationException(
-                    _("You should select a destination scenario"));
+                    _("Please, select a destination scenario"));
         }
 
         if (sourceScenario.getId().equals(destinationScenario.getId())) {

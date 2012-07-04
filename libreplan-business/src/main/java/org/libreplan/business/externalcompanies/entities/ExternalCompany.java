@@ -146,7 +146,7 @@ public class ExternalCompany extends BaseEntity implements IHumanIdentifiable,
         return ourCompanyPassword;
     }
 
-    @AssertTrue(message="company name has to be unique. It is already used")
+    @AssertTrue(message="company name must be unique. Company name already used")
     public boolean checkConstraintUniqueName() {
         IExternalCompanyDAO dao = Registry.getExternalCompanyDAO();
 

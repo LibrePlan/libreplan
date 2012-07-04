@@ -615,7 +615,7 @@ public abstract class BaseCalendarEditionController extends
                 .getSelectedItem().getValue();
         if (type == null) {
             throw new WrongValueException(exceptionTypes,
-                    _("You should select the type of exception"));
+                    _("Please, select type of exception"));
         } else {
             Clients.closeErrorBox(exceptionTypes);
         }
@@ -633,7 +633,7 @@ public abstract class BaseCalendarEditionController extends
         Date endDate = dateboxEndDate.getValue();
         if (endDate == null) {
             throw new WrongValueException(dateboxEndDate,
-                    _("You should select an end date for the exception"));
+                    _("Please, select an End Date for the Exception"));
         } else {
             Clients.closeErrorBox(dateboxEndDate);
         }
@@ -1269,7 +1269,7 @@ public abstract class BaseCalendarEditionController extends
         Date endDate = dateboxEndDate.getValue();
         if (endDate == null) {
             throw new WrongValueException(dateboxEndDate,
-                    _("You should select an end date for the exception"));
+                    _("Please, select an End Date for the Exception"));
         } else {
             Clients.closeErrorBox(dateboxEndDate);
         }

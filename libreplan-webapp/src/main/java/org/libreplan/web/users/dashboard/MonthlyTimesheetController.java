@@ -186,7 +186,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                         EffortDuration effortDuration = effortDurationFromString(value);
                         if (effortDuration == null) {
                             throw new WrongValueException(textbox,
-                                    _("Not a valid effort duration"));
+                                    _("Invalid Effort Duration"));
                         }
                         monthlyTimesheetModel.setEffortDuration(orderElement,
                                 textboxDate, effortDuration);

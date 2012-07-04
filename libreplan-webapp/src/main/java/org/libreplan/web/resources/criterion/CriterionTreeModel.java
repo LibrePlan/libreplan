@@ -341,7 +341,7 @@ public class CriterionTreeModel implements ICriterionTreeModel {
         throws ValidationException{
         if(name.isEmpty()){
                 InvalidValue[] invalidValues = {
-                    new InvalidValue(_("The name of the criterion is empty."),
+                    new InvalidValue(_("Name of criterion is empty."),
                             CriterionType.class, "name",
                             "",criterionType)};
                 throw new ValidationException(invalidValues);
