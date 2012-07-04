@@ -57,7 +57,7 @@
                 <groupbox closable="false">
                     <caption label="${i18n:_('Progress')}" />
                     <hbox>
-                        <n:div id="global-progress" style="height:200px; width:500px;"></n:div>
+                        <n:div id="global-progress" style="height:230px; width:500px;"></n:div>
                         <n:div id="task-status" style="height:200px; width:400px; margin-left: 100px;"></n:div>
                     </hbox>
                 </groupbox>
