@@ -65,7 +65,7 @@
                         </row>
                         <row>
                             <hbox>
-                                <label value="${i18n:_('Queue-based resource')}" />
+                                <label value="${i18n:_('Type')}" />
                                 <image height="15px" src="/common/img/axuda.gif" tooltip="limiting-resources-popup" />
                             </hbox>
                             <listbox mold="select" width="200px"

@@ -850,13 +850,6 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         LIMITING_RESOURCE(_("Queue-based resource")),
         NON_LIMITING_RESOURCE(_("Normal resource"));
 
-        /**
-         * Forces to mark the string as needing translation
-         */
-        private static String _(String string) {
-            return string;
-        }
-
         private String option;
 
         private LimitingResourceEnum(String option) {

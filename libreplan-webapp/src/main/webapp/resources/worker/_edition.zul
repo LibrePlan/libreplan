@@ -80,7 +80,7 @@
                                 <textbox value="@{controller.worker.nif}" constraint="no empty"/>
                             </row>
                             <row visible="@{controller.isRealWorker}">
-                                <hbox><label value="${i18n:_('Queue-based resource')}" /><image height="15px" src="/common/img/axuda.gif" tooltip="limiting-resources-popup" />
+                                <hbox><label value="${i18n:_('Type')}" /><image height="15px" src="/common/img/axuda.gif" tooltip="limiting-resources-popup" />
                                 </hbox>
                                 <listbox mold="select" width="200px"
                                     model="@{controller.limitingResourceOptionList}"
