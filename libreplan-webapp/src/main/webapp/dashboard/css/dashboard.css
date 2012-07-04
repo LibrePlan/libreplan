@@ -1,7 +1,7 @@
 .dashboard-label {
     color: #666;
     font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .dashboard-title {
@@ -15,7 +15,7 @@
 .dashboard-label-remarked {
     color: #666;
     font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
 }
 
