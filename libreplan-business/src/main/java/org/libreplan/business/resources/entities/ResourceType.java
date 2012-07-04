@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,9 +21,6 @@ package org.libreplan.business.resources.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
-import java.util.EnumSet;
-import java.util.Set;
-
 /**
  * Enumerate with the three basic types of resource: non-limiting, limiting and strategic.
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
@@ -31,8 +28,7 @@ import java.util.Set;
 public enum ResourceType {
 
     NON_LIMITING_RESOURCE(_("Normal resource")),
-    LIMITING_RESOURCE(_("Queue-based resource")),
-    STRATEGIC_RESOURCE(_("Strategic resource"));
+    LIMITING_RESOURCE(_("Queue-based resource"));
 
     private String option;
 
@@ -42,13 +38,6 @@ public enum ResourceType {
 
     public String toString() {
         return option;
-    }
-
-    public static Set<ResourceType> getResourceTypeList() {
-        return EnumSet.of(
-                ResourceType.NON_LIMITING_RESOURCE,
-                ResourceType.LIMITING_RESOURCE,
-                ResourceType.STRATEGIC_RESOURCE);
     }
 
 }
