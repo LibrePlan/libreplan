@@ -113,7 +113,7 @@
 
         <groupbox width="100%" closable="false" hflex="1" style="margin-top:5px">
             <!--  caption label="${i18n:_('Time tracking')}"  hflex="1" width="100%"  -->
-            <hbox align="center" hflex="1" width="100%">
+            <hbox align="center" hflex="1" width="100%" style="padding-bottom:5px">
                 <bandboxSearch
                     id="orderElementBandboxSearch"
                     finder="OrderElementBandboxFinder"
