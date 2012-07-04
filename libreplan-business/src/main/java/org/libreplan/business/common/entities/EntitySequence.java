@@ -104,7 +104,7 @@ public class EntitySequence extends BaseEntity {
         return lastValue;
     }
 
-    @AssertTrue(message = "prefix must not contain white spaces")
+    @AssertTrue(message = "Prefix cannot contain whitespaces")
     public boolean checkConstraintPrefixWithoutWhiteSpaces() {
         if ((prefix == null) || (prefix.isEmpty())) {
             return false;

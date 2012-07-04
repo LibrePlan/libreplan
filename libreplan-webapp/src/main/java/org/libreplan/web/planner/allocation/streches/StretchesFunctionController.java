@@ -125,7 +125,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
     public void cancel() throws InterruptedException {
         int status = Messagebox.show(
-                _("You will lose the changes. Are you sure?"),
+                _("All changes will be lost. Are you sure?"),
                 _("Confirm cancel"), Messagebox.YES | Messagebox.NO,
                 Messagebox.QUESTION);
         if (Messagebox.YES == status) {

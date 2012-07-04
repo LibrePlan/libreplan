@@ -442,7 +442,7 @@ public class CriterionType extends IntegrationEntity implements
 
     }
 
-    @AssertTrue(message="criterion type name is already being used")
+    @AssertTrue(message="Criterion Type name is already being used")
     public boolean checkConstraintUniqueCriterionTypeName() {
 
         /* Check if it makes sense to check the constraint .*/

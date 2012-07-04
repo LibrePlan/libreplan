@@ -113,7 +113,7 @@
     </groupbox>
 
     <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
-        <caption label="${i18n:_('Ended date communicated by the subcontractor.')}" />
+        <caption label="${i18n:_('End date communicated by the subcontractor.')}" />
 
         <separator spacing="10px"/>
 

@@ -146,7 +146,7 @@ public class DynamicDatebox extends GenericForwardComposer {
                 } catch (ParseException e) {
                     throw new WrongValueException(
                             dateTextBox,
-                            _("date format is wrong, please use the right format (for example for today the format would be: {0})",
+                            _("Date format is wrong. Please, use the following format: {0}",
                                     asString(new Date())));
                 }
             }

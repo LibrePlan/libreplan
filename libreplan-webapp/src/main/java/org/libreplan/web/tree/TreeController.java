@@ -1076,7 +1076,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     if (!getHoursGroupHandler().isTotalHoursValid(line, ((Integer) value))) {
                         throw new WrongValueException(
                                 comp,
-                                _("Value is not valid, taking into account the current list of HoursGroup"));
+                                _("Value is not valid in current list of Hours Group"));
                     }
                 }
 

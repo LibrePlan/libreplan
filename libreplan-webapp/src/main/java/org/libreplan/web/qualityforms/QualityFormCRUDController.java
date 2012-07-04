@@ -318,7 +318,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                     .getFellowIfAny("checkBoxReportProgress");
             throw new WrongValueException(
                     checkBoxReportProgress,
-                    _("The quality form must have an item with 100% value to report progress"));
+                    _("Quality form should include an item with a value of 100% in order to report progress"));
         }
     }
 

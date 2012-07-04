@@ -20,7 +20,7 @@
 -->
 
 <window visible="@{calendarController.editionController.creatingNewVersion}"
-    id="createNewVersion" title="${i18n:_('Create new work week')}" width="450px"
+    id="createNewVersion" title="${i18n:_('Create new Workweek')}" width="450px"
     closable="true" border="normal"
     onClose = "calendarController.editionController.cancelNewVersion();">
 

@@ -141,7 +141,7 @@ public class TransferOrdersModel implements ITransferOrdersModel {
 
         if (sourceScenario == null) {
             throw new ValidationException(
-                    _("You should select a source scenario"));
+                    _("Please select a source scenario"));
         }
         if (destinationScenario == null) {
             throw new ValidationException(

@@ -164,7 +164,7 @@ public class DashboardController extends GenericForwardComposer {
                                     relativeMargin.doubleValue() * 100));
         } else {
             lblAbsolute
-                    .setValue(_("It has not been defined a project deadline"));
+                    .setValue(_("Project Deadline not set"));
         }
 
     }

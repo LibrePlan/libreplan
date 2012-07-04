@@ -126,7 +126,7 @@ public class UnitTypeController extends BaseCRUDController<UnitType> {
                 String strValue = (String) value;
                 if (StringUtils.isBlank(strValue)) {
                     throw new WrongValueException(comp,
-                            _("Unit type name cannot be empty")
+                            _("Unit Type name cannot be empty")
                             );
                 }
 

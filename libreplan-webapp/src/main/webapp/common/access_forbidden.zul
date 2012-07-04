@@ -40,7 +40,7 @@
             <label value="${i18n:_('Please try to contact with any administrator in order to review your permissions in LibrePlan.')}" />
 
             <hbox>
-                <label value="${i18n:_('If you want to go to the initial page you can use the following link: ')}" />
+                <label value="${i18n:_('Click the following link to return to home page: ')}" />
                 <n:a href="${contextPath}/">
                     <label value="${i18n:_('Go to init')}" />
                 </n:a>

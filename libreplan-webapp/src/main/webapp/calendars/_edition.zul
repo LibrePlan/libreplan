@@ -234,7 +234,7 @@
 
                   <button
                     onClick="calendarController.editionController.createNewVersion();"
-                    label="${i18n:_('Create new work week')}"
+                    label="${i18n:_('Create new Workweek')}"
                     visible="@{calendarController.editionController.isEditing}"
                     style="margin-left: 5px;" />
 

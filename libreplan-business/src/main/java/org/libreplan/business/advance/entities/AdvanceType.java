@@ -241,7 +241,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
         return unitName;
     }
 
-    @AssertTrue(message = "the advance type name has to be unique. It is already used")
+    @AssertTrue(message = "Advance Type name already used. It must be unique")
     public boolean checkConstraintUniqueName() {
         if (StringUtils.isBlank(unitName)) {
             return true;

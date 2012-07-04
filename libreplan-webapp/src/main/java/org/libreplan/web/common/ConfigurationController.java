@@ -659,7 +659,7 @@ public class ConfigurationController extends GenericForwardComposer {
     private String validPrefix(EntitySequence sequence, String prefixValue) {
         sequence.setPrefix(prefixValue);
         if (!configurationModel.checkFrefixFormat(sequence)) {
-            String message = _("format prefix invalid. It cannot be empty or contain '_' or whitespaces.");
+            String message = _("Invalid format prefix. Format prefix cannot be empty, contain '_' or contain whitespaces.");
             if (sequence.getEntityName().canContainLowBar()) {
                 message = _("format prefix invalid. It cannot be empty or contain whitespaces.");
             }

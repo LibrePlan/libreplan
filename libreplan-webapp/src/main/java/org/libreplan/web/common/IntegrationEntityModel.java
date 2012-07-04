@@ -76,7 +76,7 @@ public abstract class IntegrationEntityModel implements IIntegrationEntityModel 
         String code = getEntitySequenceDAO().getNextEntityCode(getEntityName());
         if (code == null) {
             throw new ConcurrentModificationException(
-                    _("Could not get code, please try again later"));
+                    _("Could not retrieve Code. Please, try again later"));
         }
         getCurrentEntity().setCode(code);
     }

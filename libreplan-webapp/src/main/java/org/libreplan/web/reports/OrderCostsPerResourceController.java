@@ -176,7 +176,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         boolean result = orderCostsPerResourceModel.addSelectedLabel(label);
         if (!result) {
             throw new WrongValueException(bdLabels,
-                    _("This label has already been added."));
+                    _("Label has already been added."));
         } else {
             Util.reloadBindings(lbLabels);
         }

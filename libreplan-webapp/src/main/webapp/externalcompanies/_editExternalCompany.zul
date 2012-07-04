@@ -87,7 +87,7 @@
                                     value="@{controller.company.ourCompanyLogin}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Our company password')}:" />
+                                <label value="${i18n:_('Company password')}:" />
                                 <textbox id="ourCompanyPassword"
                                     value="@{controller.company.ourCompanyPassword}" />
                             </row>

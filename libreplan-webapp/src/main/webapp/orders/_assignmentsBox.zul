@@ -25,7 +25,7 @@
             <columns width="100%">
                 <newdatasortablecolumn label="${i18n:_('Code')}" />
                 <newdatasortablecolumn label="${i18n:_('Name')}" hflex="1" />
-                <newdatasortablecolumn label="${i18n:_('Receipt date')}" />
+                <newdatasortablecolumn label="${i18n:_('Reception date')}" />
                 <newdatasortablecolumn label="${i18n:_('Units')}" />
                 <newdatasortablecolumn label="${i18n:_('Unit type')}" align="center" />
                 <newdatasortablecolumn label="${i18n:_('Unit price')}" />

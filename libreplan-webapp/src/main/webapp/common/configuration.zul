@@ -117,7 +117,7 @@
                                         checked="@{configurationController.checkNewVersionEnabled}" />
                                     <checkbox
                                         label="${i18n:_('Help the project developers to collect information about which LibrePlan version you are using')}"
-                                        tooltiptext="${i18n:_('Check this option to send this information to LibrePlan developers in order to generate usage statistics')}"
+                                        tooltiptext="${i18n:_('Check this option if you would like to send feedback to LibrePlan developers about program usage')}"
                                         checked="@{configurationController.allowToGatherUsageStatsEnabled}" />
                                 </vbox>
                             </row>

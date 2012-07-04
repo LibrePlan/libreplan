@@ -195,7 +195,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the assigned label type can not repeat in the timeshet template.")
+    @AssertTrue(message = "Assigned Label Type cannot be repeated in a Timesheet Template.")
     public boolean checkConstraintNotExistRepeatedLabelTypes() {
         for (WorkReportLabelTypeAssigment assignedLabelType : this.workReportLabelTypeAssigments) {
             if (existRepeatedLabelType(assignedLabelType)) {

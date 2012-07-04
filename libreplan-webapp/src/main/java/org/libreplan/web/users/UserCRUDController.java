@@ -253,7 +253,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         userModel.initCreate();
         //password is compulsory when creating
         passwordBox.setConstraint("no empty:" +
-                _("The password for a new user cannot be empty"));
+                _("Password cannot be empty"));
         //clean the password boxes, they are not cleared automatically
         //because they are not directly associated to an attribute
         passwordBox.setRawValue("");

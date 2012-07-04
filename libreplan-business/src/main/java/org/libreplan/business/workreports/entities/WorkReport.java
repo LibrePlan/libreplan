@@ -492,7 +492,7 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
-    @AssertTrue(message = "all timesheet lines have to be in the same month in monthly timesheets")
+    @AssertTrue(message = "In monthly timesheets, all timesheet lines should be in the same month")
     public boolean checkConstraintAllWorkReportLinesInTheSameMonthInMonthlyTimesheet() {
         if (!getWorkReportType().isMonthlyTimesheetsType()) {
             return true;

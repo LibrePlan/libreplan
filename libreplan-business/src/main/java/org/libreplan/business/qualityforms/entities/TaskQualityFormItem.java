@@ -66,7 +66,7 @@ public class TaskQualityFormItem implements INewObject {
 
     private Date date;
 
-    @NotEmpty(message = "task quality form item name not specified")
+    @NotEmpty(message = "Task Quality Form item name not specified")
     public String getName() {
         return name;
     }

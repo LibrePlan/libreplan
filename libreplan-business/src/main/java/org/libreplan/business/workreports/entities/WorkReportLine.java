@@ -420,7 +420,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "number of hours is not properly calculated based on clock")
+    @AssertTrue(message = "Number of hours is not properly calculated according to start date and end date")
     public boolean checkConstraintHoursCalculatedByClock() {
         if (!firstLevelValidationsPassed()) {
             return true;

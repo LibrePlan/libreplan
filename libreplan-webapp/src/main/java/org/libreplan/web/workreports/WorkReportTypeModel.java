@@ -394,7 +394,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
             throws IllegalArgumentException {
         if ((name == null) || (name.isEmpty())) {
             throw new IllegalArgumentException(
-                    _("the name cannot be empty"));
+                    _("name cannot be empty"));
         }
 
         getWorkReportType().setName(name);

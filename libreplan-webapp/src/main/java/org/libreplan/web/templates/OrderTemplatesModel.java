@@ -308,7 +308,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public void validateTemplateName(String name)
             throws IllegalArgumentException {
         if ((name == null) || (name.isEmpty())) {
-            throw new IllegalArgumentException(_("the name cannot be empty"));
+            throw new IllegalArgumentException(_("name cannot be empty"));
         }
 
         getTemplate().setName(name);

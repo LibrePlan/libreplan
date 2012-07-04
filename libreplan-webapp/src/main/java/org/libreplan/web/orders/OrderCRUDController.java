@@ -837,7 +837,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         else {
             try {
-                Messagebox.show(_("You don't have permissions to edit this project"),
+                Messagebox.show(_("Not enough permissions to edit this project"),
                         _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -869,7 +869,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 try {
                     if (Messagebox
                             .show(
-                                    _("This is a subcontracted project, if you delete it you can not report progress anymore. Are you sure?"),
+                                    _("This project is a subcontracted project. If you delete it, you won't be able to report progress anymore. Are you sure?"),
                                     _("Confirm"), Messagebox.OK
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION) == Messagebox.CANCEL) {
