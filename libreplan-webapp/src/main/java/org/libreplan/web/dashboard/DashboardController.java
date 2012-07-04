@@ -180,8 +180,7 @@ public class DashboardController extends GenericForwardComposer {
         pieChart.addValue(_("No deadline"),
                 dashboardModel.getPercentageOfTasksWithNoDeadline());
 
-        // FIXME: Replace by more suitable colors
-        pieChart.addIntervalColors("red", "blue", "green");
+        pieChart.addIntervalColors("#8fbe86", "#eb6b71", "#cfcfcf");
 
         renderPieChart(pieChart, divId);
     }
@@ -289,8 +288,8 @@ public class DashboardController extends GenericForwardComposer {
                 statusLegend(TaskStatusEnum.BLOCKED, taskStatus),
                 dashboardModel.getPercentageOfBlockedTasks());
 
-        // FIXME: Replace by more suitable colors
-        taskStatusPieChart.addIntervalColors("red", "blue", "green", "yellow");
+        taskStatusPieChart.addIntervalColors("#d599e8", "#4c99e8", "#8fbe86",
+                "#ffbb6b");
 
         renderPieChart(taskStatusPieChart, divId);
     }
