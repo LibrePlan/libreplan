@@ -339,11 +339,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
                         restoreOldState();
                         editTaskController.showNonPermitChangeResourceAllocationType();
                     } else {
-                        if(newState.equals(ResourceAllocationTypeEnum.SUBCONTRACT) && checkCompatibleAllocation()){
-                            changeResourceAllocationType(oldState, newState);
-                            editTaskController.selectAssignmentTab(lbResourceAllocationType
-                                .getSelectedIndex() + 1);
-                        }else{
+                        if(newState.equals(ResourceAllocationTypeEnum.SUBCONTRACT)
+                                && !checkCompatibleAllocation()){
                             try {
                                 restoreOldState();
                                 Messagebox.show(_("This resource allocation type is incompatible. The task has an associated order element which has a progress that is of type subcontractor. "),
@@ -352,6 +349,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
+                        }else{
+                            changeResourceAllocationType(oldState,newState);
+                            editTaskController.selectAssignmentTab(lbResourceAllocationType.getSelectedIndex() + 1);
                         }
                     }
                 }
