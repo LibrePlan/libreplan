@@ -83,7 +83,7 @@
                         itemRenderer="@{controller.renderer}">
                     <listhead>
                         <listheader label="${i18n:_('Type')}" align="center" width="50px"/>
-                        <listheader label="${i18n:_('Limiting')}" align="center" width="60px"/>
+                        <listheader label="${i18n:_('Queue-based')}" align="center" width="60px"/>
                         <listheader label="${i18n:_('Name')}" sort="auto(name)" align="center" width="250px"/>
                         <listheader label="${i18n:_('Code')}" align="center" width="270px"/>
                         <listheader label="${i18n:_('Operations')}" align="center" width="70px"/>

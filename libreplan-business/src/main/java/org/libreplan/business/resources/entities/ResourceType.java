@@ -30,9 +30,9 @@ import java.util.Set;
  */
 public enum ResourceType {
 
-    NON_LIMITING_RESOURCE(_("NON LIMITING RESOURCE")),
-    LIMITING_RESOURCE(_("LIMITING RESOURCE")),
-    STRATEGIC_RESOURCE(_("STRATEGIC RESOURCE"));
+    NON_LIMITING_RESOURCE(_("Normal resource")),
+    LIMITING_RESOURCE(_("Queue-based resource")),
+    STRATEGIC_RESOURCE(_("Strategic resource"));
 
     private String option;
 

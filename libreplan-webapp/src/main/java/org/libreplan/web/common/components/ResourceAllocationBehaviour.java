@@ -35,7 +35,7 @@ import org.libreplan.web.common.components.NewAllocationSelector.AllocationType;
  */
 public enum ResourceAllocationBehaviour {
 
-    NON_LIMITING(_("NON_LIMITING")) {
+    NON_LIMITING(_("Normal")) {
 
         @Override
         public boolean allowMultipleSelection() {
@@ -60,7 +60,7 @@ public enum ResourceAllocationBehaviour {
         }
 
     },
-    LIMITING(_("LIMITING")) {
+    LIMITING(_("Queue-based")) {
 
         @Override
         public boolean allowMultipleSelection() {

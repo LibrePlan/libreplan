@@ -245,7 +245,7 @@ public class Worker extends Resource {
         return getId().equals(worker.getId());
     }
 
-    @AssertTrue(message = "Limiting resources cannot be bound to any user")
+    @AssertTrue(message = "Queue-based resources cannot be bound to any user")
     public boolean checkConstraintLimitingResourceNotBoundToUser() {
         if (isLimitingResource()) {
             return user == null;

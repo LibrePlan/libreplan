@@ -1198,7 +1198,7 @@ class Row {
         if (isGroupingRow()) {
             return new Label();
         } else if (isLimiting) {
-            return new Label(_("Limiting assignment"));
+            return new Label(_("Queue-based assignment"));
         } else {
             if (hboxAssigmentFunctionsCombo == null) {
                 initializeAssigmentFunctionsCombo();

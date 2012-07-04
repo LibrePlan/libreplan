@@ -846,9 +846,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public enum LimitingResourceEnum {
-        ALL(_("ALL")),
-        LIMITING_RESOURCE(_("LIMITING RESOURCE")),
-        NON_LIMITING_RESOURCE(_("NON LIMITING RESOURCE"));
+        ALL(_("All")),
+        LIMITING_RESOURCE(_("Queue-based resource")),
+        NON_LIMITING_RESOURCE(_("Normal resource"));
 
         /**
          * Forces to mark the string as needing translation

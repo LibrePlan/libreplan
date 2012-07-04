@@ -281,7 +281,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     globalView.goToCompanyLoad();
                 }
             }, "01-introducion.html#id1"));
-            planningItems.add(subItem(_("Limiting Resources"), new ICapture() {
+            planningItems.add(subItem(_("Queue-based Resources"), new ICapture() {
                 @Override
                 public void capture() {
                     globalView.goToLimitingResources();

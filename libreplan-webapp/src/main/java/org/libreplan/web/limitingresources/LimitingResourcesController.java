@@ -442,7 +442,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             Button result = new Button("", "/common/img/ico_editar1.png");
             result.setHoverImage("/common/img/ico_editar.png");
             result.setSclass("icono");
-            result.setTooltiptext(_("Edit limiting resource element"));
+            result.setTooltiptext(_("Edit queue-based resource element"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
@@ -476,7 +476,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             Button result = new Button("", "/common/img/ico_borrar1.png");
             result.setHoverImage("/common/img/ico_borrar.png");
             result.setSclass("icono");
-            result.setTooltiptext(_("Remove limiting resource element"));
+            result.setTooltiptext(_("Remove queue-based resource element"));
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override

@@ -43,7 +43,7 @@
     <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
 
     <!-- Limiting resource -->
-    <label value="${i18n:_('Limiting resource')}"/>
+    <label value="${i18n:_('Queue-based resource')}"/>
     <listbox id="filterLimitingResource" mold="select" />
     </hbox>
       </groupbox>

@@ -64,8 +64,8 @@
             <tabs>
                 <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}"
                     onSelect = "propertiesController.refreshTaskEndDate();"/>
-                <tab id="resourceAllocationTab" label="${i18n:_('Non limiting resource allocation')}" />
-                <tab id="limitingResourceAllocationTab" label="${i18n:_('Limiting resource allocation')}" />
+                <tab id="resourceAllocationTab" label="${i18n:_('Normal resource allocation')}" />
+                <tab id="limitingResourceAllocationTab" label="${i18n:_('Queue-based resource allocation')}" />
                 <tab id="subcontractTab" label="${i18n:_('Subcontract')}"
                     onSelect = "subController.refressGridEndDates();"/>
             </tabs>
