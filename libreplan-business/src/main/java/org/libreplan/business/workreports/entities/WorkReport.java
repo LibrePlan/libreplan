@@ -457,7 +457,7 @@ public class WorkReport extends IntegrationEntity implements
         lastWorkReportLineSequenceCode++;
     }
 
-    @NotNull(message = "last order element sequence code not specified")
+    @NotNull(message = "last timesheet line sequence code not specified")
     public Integer getLastWorkReportLineSequenceCode() {
         return lastWorkReportLineSequenceCode;
     }

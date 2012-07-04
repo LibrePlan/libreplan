@@ -78,7 +78,7 @@
                                     <column label="${i18n:_('Code')}" align="center"/>
                                     <column label="${i18n:_('Type')}" align="center"/>
                                     <column label="${i18n:_('Price per hour')}" align="center"/>
-                                    <column label="${i18n:_('Init date')}" align="center"/>
+                                    <column label="${i18n:_('Start date')}" align="center"/>
                                     <column label="${i18n:_('End date')}" align="center"/>
                                     <column label="${i18n:_('Operations')}" width="150px" align="center"/>
                                 </columns>

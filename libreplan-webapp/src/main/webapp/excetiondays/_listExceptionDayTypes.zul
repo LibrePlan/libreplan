@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.id}" title="${i18n:_('Exception Day Types List')}">
+<window id="${arg.id}">
 
     <newdatasortablegrid id="listExceptionDayTypes"
         model="@{controller.exceptionDayTypes}"

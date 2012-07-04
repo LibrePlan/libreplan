@@ -1517,7 +1517,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                         && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
                     filterStartDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be before finish date"));
+                            _("must be before end date"));
                 }
             }
         };

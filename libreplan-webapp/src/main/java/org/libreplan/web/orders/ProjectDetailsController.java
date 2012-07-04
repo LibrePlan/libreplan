@@ -250,7 +250,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
                     initDate.setValue(null);
                     getOrder().setInitDate(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };

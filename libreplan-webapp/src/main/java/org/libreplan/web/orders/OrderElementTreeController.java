@@ -692,7 +692,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                 .getValue()) > 0)) {
                     filterStartDateOrderElement.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };

@@ -129,7 +129,7 @@ public class CustomerCommunication extends BaseEntity {
         this.order = order;
     }
 
-    @NotNull(message = "order not specified")
+    @NotNull(message = "project not specified")
     public Order getOrder() {
         return order;
     }

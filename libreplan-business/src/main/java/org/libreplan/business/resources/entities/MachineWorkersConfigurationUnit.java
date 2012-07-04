@@ -171,7 +171,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity implements
         return (this.alpha.compareTo(new BigDecimal(0)) > 0);
     }
 
-    @AssertTrue(message = "All Machine worker assignments must have a start date earlier than the finish date")
+    @AssertTrue(message = "All machine worker assignments must have a start date earlier than the end date")
     public boolean checkWorkerAssignmentsIntervalsProperlyDefined() {
         boolean correctIntervals = true;
         for (MachineWorkerAssignment each : workerAssignments) {

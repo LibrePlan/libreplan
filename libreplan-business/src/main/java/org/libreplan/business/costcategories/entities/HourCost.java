@@ -150,7 +150,7 @@ public class HourCost extends IntegrationEntity {
         return (this.getEndDate() == null || !date.isAfter(this.getEndDate()));
     }
 
-    @AssertTrue(message="The end date cannot be before the init date")
+    @AssertTrue(message="The end date cannot be before the start date")
     public boolean checkPositiveTimeInterval() {
         if (initDate == null) {
             return true;

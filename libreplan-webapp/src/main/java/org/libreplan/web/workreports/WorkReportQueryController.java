@@ -153,7 +153,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
                                 .getValue()) > 0)) {
                     filterStartDateLine.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };

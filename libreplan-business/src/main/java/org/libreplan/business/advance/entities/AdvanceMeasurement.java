@@ -108,7 +108,7 @@ public class AdvanceMeasurement extends BaseEntity {
         this.advanceAssignment = advanceAssignment;
     }
 
-    @NotNull(message = "advance assignment not specified")
+    @NotNull(message = "progress assignment not specified")
     public AdvanceAssignment getAdvanceAssignment() {
         return this.advanceAssignment;
     }

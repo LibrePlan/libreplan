@@ -342,7 +342,7 @@ public class CostCategoryCRUDController extends BaseCRUDController<CostCategory>
     private void appendDateboxInitDate(final Row row) {
         Datebox initDateBox = new Datebox();
         bindDateboxInitDate(initDateBox, (HourCost) row.getValue());
-        initDateBox.setConstraint("no empty:" + _("Init date cannot be empty"));
+        initDateBox.setConstraint("no empty:" + _("Start date cannot be empty"));
         row.appendChild(initDateBox);
 
         initDateBox.addEventListener("onChange", new EventListener() {

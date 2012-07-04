@@ -1137,7 +1137,7 @@ public class OrderLineGroup extends OrderElement implements
         return result;
     }
 
-    @AssertTrue(message = "indirect advance assignments should have different types")
+    @AssertTrue(message = "indirect progress assignments should have different types")
     public boolean checkConstraintIndirectAdvanceAssignmentsWithDifferentType() {
         Set<String> types = new HashSet<String>();
         for (IndirectAdvanceAssignment each : indirectAdvanceAssignments) {

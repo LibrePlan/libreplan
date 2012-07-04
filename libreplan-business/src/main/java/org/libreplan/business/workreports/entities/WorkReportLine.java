@@ -173,7 +173,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
     }
 
     @Override
-    @NotNull(message = "order element not specified")
+    @NotNull(message = "task not specified")
     public OrderElement getOrderElement() {
         return orderElement;
     }

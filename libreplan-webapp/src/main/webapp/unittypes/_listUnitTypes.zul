@@ -19,12 +19,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Unit Measures List')}">
+<window id="${arg.top_id}">
     <newdatasortablegrid id="listing" model="@{controller.unitTypes}" mold="paging"
         pageSize="10" fixedLayout="true" sclass="clickable-rows"
         rowRenderer="@{controller.unitTypeRenderer}" >
         <columns>
-            <newdatasortablecolumn label="${i18n:_('Unit Measure')}"
+            <newdatasortablecolumn label="${i18n:_('Material Unit')}"
             sortDirection="ascending" sort="auto(measure)"/>
             <newdatasortablecolumn label="${i18n:_('Operations')}"/>
         </columns>

@@ -69,7 +69,7 @@ public class TaskQualityForm extends BaseEntity {
         this.taskQualityFormItems = taskQualityFormItems;
     }
 
-    @NotNull(message = "order element not specified")
+    @NotNull(message = "task not specified")
     public OrderElement getOrderElement() {
         return orderElement;
     }
@@ -168,7 +168,7 @@ public class TaskQualityForm extends BaseEntity {
         return true;
     }
 
-    @NotNull(message = "report advance not specified")
+    @NotNull(message = "report progress not specified")
     public Boolean isReportAdvance() {
         return BooleanUtils.toBoolean(reportAdvance);
     }

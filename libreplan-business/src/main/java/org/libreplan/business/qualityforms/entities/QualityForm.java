@@ -386,7 +386,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
         return (position >= 0 && position < qualityFormItems.size());
     }
 
-    @NotNull(message = "report advance not specified")
+    @NotNull(message = "report progress not specified")
     public Boolean isReportAdvance() {
         return BooleanUtils.toBoolean(reportAdvance);
     }
@@ -403,7 +403,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
         this.advanceType = advanceType;
     }
 
-    @AssertTrue(message = "advance type should not be null if report advance")
+    @AssertTrue(message = "progress type should must be defined if quality form reports progress")
     public boolean checkConstraintAdvanceTypeIsNotNullIfReportAdvance() {
         if (advanceType == null) {
             return !isReportAdvance();

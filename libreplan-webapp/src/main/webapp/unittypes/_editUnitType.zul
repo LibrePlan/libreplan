@@ -48,7 +48,7 @@
                             </hbox>
                         </row>
                         <row>
-                            <label value="${i18n:_('Unit measure name')}" />
+                            <label value="${i18n:_('Name')}" />
                             <textbox
                                 id="measureTextBox"
                                 value="@{controller.unitType.measure}"

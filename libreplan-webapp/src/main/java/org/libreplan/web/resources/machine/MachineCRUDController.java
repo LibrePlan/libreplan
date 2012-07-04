@@ -422,7 +422,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
                         && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
                     filterStartDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };

@@ -107,7 +107,7 @@ public class TaskGroup extends TaskElement {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "order element associated to a task group have to be defined")
+    @AssertTrue(message = "element associated to a task group have to be defined")
     private boolean theOrderElementMustBeNotNull() {
         return getOrderElement() != null;
     }
