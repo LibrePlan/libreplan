@@ -29,13 +29,14 @@ import java.util.TreeMap;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
+import org.libreplan.business.workingday.EffortDuration;
 
 /**
  * Computes aggregate values on a set{@link ExpenseSheetLine}.
  * <p>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class AggregateOfExpensesLines {
+public class AggregateOfExpensesLines implements IAggregate {
 
     public static AggregateOfExpensesLines createFromAll(
             Collection<ExpenseSheetLine> lines, BigDecimal totalByTask) {
@@ -48,7 +49,7 @@ public class AggregateOfExpensesLines {
 
     private SortedMap<LocalDate, BigDecimal> mapExpenses = new TreeMap<LocalDate, BigDecimal>();
 
-    private AggregateOfExpensesLines(
+    public AggregateOfExpensesLines(
             Collection<ExpenseSheetLine> expensesLines, BigDecimal totalByTask) {
         Validate.notNull(expensesLines);
         Validate.noNullElements(expensesLines);
@@ -93,4 +94,12 @@ public class AggregateOfExpensesLines {
         return sum;
     }
 
+    public EffortDuration getTotalEffort(){
+        return EffortDuration.fromHoursAsBigDecimal(getTotalByTask());
+    }
+
+    public EffortDuration effortBetween(LocalDate start, LocalDate end) {
+        return EffortDuration
+                .fromHoursAsBigDecimal(expensesBetween(start, end));
+    }
 }

@@ -50,6 +50,7 @@ import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.AssignmentFunction.AssignmentFunctionName;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
+import org.libreplan.business.planner.entities.IAggregate;
 import org.libreplan.business.planner.entities.ManualFunction;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.ResourceAllocation;
@@ -61,6 +62,7 @@ import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
+import org.libreplan.web.I18nHelper;
 import org.libreplan.web.common.EffortDurationBox;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
@@ -794,14 +796,17 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return filterRows(rowsCached);
         }
         rowsCached = new ArrayList<Row>();
+        List<Row> rowsExpenses = new ArrayList<Row>();
+        List<Row> rowsAllocations = new ArrayList<Row>();
         int position = 1;
         for (AllocationInput allocationInput : allocationInputs) {
             if (allocationInput.getAggregate()
                     .getAllocationsSortedByStartDate().isEmpty()) {
             } else {
-                Row groupingRow = buildGroupingRow(allocationInput);
+                Row groupingRow = buildRowAllocation(allocationInput);
                 groupingRow.setDescription(position + " " + allocationInput.getTaskName());
                 groupingRows.put(allocationInput, groupingRow);
+                rowsAllocations.add(groupingRow);
                 rowsCached.add(groupingRow);
 
                 position++;
@@ -809,9 +814,13 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 RowExpenses rowExpenses = buildRowExpenses(allocationInput);
                 rowExpenses.setDescription(position + " "
                         + allocationInput.getTaskName());
+                rowsExpenses.add(rowExpenses);
                 rowsCached.add(rowExpenses);
             }
         }
+
+        rowsCached.add(this.buildTotalAllocations(rowsAllocations));
+        rowsCached.add(this.buildTotalExpenses(rowsExpenses));
         populateVerticalListbox();
         return filterRows(rowsCached);
     }
@@ -941,11 +950,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 .isLimiting(), task);
     }
 
-    private Row buildGroupingRow(AllocationInput allocationInput) {
+    private Row buildRowAllocation(AllocationInput allocationInput) {
         String taskName = allocationInput.getTaskName();
         RowAllocation groupingRow = RowAllocation.createRow(messages,
                 Restriction.emptyRestriction(), taskName, 1,
-                allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
+                allocationInput.getAllocationsSortedByStartDate(), false,
+                allocationInput.task);
         return groupingRow;
     }
 
@@ -955,6 +965,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 Restriction.emptyRestriction(), taskName, allocationInput.task,
                 allocationInput.aggregateExpenses);
         return rowExpenses;
+    }
+
+    private Row buildTotalExpenses(List<Row> rows){
+        return new RowTotalExpenses(rows);
+    }
+
+    private Row buildTotalAllocations(List<Row> rows) {
+        return new RowTotalAllocation(rows);
     }
 
     private ICellForDetailItemRenderer<ColumnOnRow, Row> getLeftRenderer() {
@@ -1093,9 +1111,15 @@ class RowAllocation extends Row {
             AdvancedAllocationController.Restriction restriction, String name,
             int level, List<? extends ResourceAllocation<?>> allocations,
             String description, boolean limiting, TaskElement task) {
+        AggregateOfResourceAllocations aggregate = ((allocations != null) ? AggregateOfResourceAllocations
+                .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(
+                        allocations)) : null);
+        ResourceAllocation<?> resourceAllocation = aggregate
+                .getAllocationsSortedByStartDate().get(0);
+
         RowAllocation newRow = new RowAllocation(messages, restriction, name,
-                level, allocations,
-                limiting, task);
+                level, allocations, resourceAllocation, aggregate, limiting,
+                task);
         newRow.setDescription(description);
         return newRow;
     }
@@ -1104,25 +1128,30 @@ class RowAllocation extends Row {
             AdvancedAllocationController.Restriction restriction, String name,
             int level, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
+        AggregateOfResourceAllocations aggregate = ((allocations != null) ? AggregateOfResourceAllocations
+                .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(
+                        allocations)) : null);
+        ResourceAllocation<?> resourceAllocation = aggregate
+                .getAllocationsSortedByStartDate().get(0);
+
         return new RowAllocation(messages, restriction, name, level,
-                allocations,
-                limiting, task);
+                allocations, resourceAllocation, aggregate, limiting, task);
     }
 
     protected RowAllocation(IMessagesForUser messages,
             AdvancedAllocationController.Restriction restriction, String name,
             int level, List<? extends ResourceAllocation<?>> allocations,
+            ResourceAllocation<?> resourceAllocation, IAggregate aggregate,
             boolean limiting, TaskElement task) {
         setName(name);
         setTask(task);
-        setRowName(new Label(_("Allocations")));
+        setRowName(new Label(TypeRow.Allocations.toString()));
         this.messages = messages;
         this.restriction = restriction;
         this.level = level;
         this.isLimiting = limiting;
-        this.aggregate = (allocations != null) ? AggregateOfResourceAllocations
-                .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(
-                        allocations)) : null;
+        this.resourceAllocation = resourceAllocation;
+        this.aggregate = aggregate;
         this.functionName = getAssignmentFunctionName(allocations);
     }
 
@@ -1130,7 +1159,7 @@ class RowAllocation extends Row {
 
     private int level;
 
-    private final AggregateOfResourceAllocations aggregate;
+    private ResourceAllocation<?> resourceAllocation;
 
     private final AdvancedAllocationController.Restriction restriction;
 
@@ -1204,12 +1233,6 @@ class RowAllocation extends Row {
         return hbox;
     }
 
-    private EffortDurationBox buildSumAllEffort() {
-        EffortDurationBox box = new EffortDurationBox();
-        box.setWidth("40px");
-        return box;
-    }
-
     private void addListenerIfNeeded(Component allEffortComponent) {
         final EffortDurationBox effortDurationBox = (EffortDurationBox) allEffortComponent;
         effortDurationBox.addEventListener(Events.ON_CHANGE,
@@ -1250,7 +1273,7 @@ class RowAllocation extends Row {
         if (getAllEffortInput() == null) {
             return;
         }
-        EffortDuration allEffort = aggregate.getTotalEffort();
+        EffortDuration allEffort = getAggregate().getTotalEffort();
         getAllEffortInput().setValue(allEffort);
         Clients.closeErrorBox(getAllEffortInput());
         if (isLimiting) {
@@ -1648,7 +1671,7 @@ class RowAllocation extends Row {
     private EffortDuration getEffortForDetailItem(DetailItem item) {
         DateTime startDate = item.getStartDate();
         DateTime endDate = item.getEndDate();
-        EffortDuration duration = this.aggregate.effortBetween(
+        EffortDuration duration = this.getAggregate().effortBetween(
                 startDate.toLocalDate(), endDate
                 .toLocalDate());
         return duration;
@@ -1760,7 +1783,7 @@ class RowAllocation extends Row {
     }
 
     private ResourceAllocation<?> getAllocation() {
-        return aggregate.getAllocationsSortedByStartDate().get(0);
+        return this.resourceAllocation;
     }
 
     boolean isRowExpenses() {
@@ -1768,6 +1791,24 @@ class RowAllocation extends Row {
     }
 }
 
+enum TypeRow {
+    Expenses(_("Expenses")), Allocations(_("Allocations"));
+
+    private static String _(String string) {
+        return string;
+    }
+
+    private String option;
+
+    private TypeRow(String option) {
+        this.option = option;
+    }
+
+    public String toString() {
+        return I18nHelper._(option);
+    }
+
+}
 
 abstract class Row {
     abstract Component getAllEffort();
@@ -1787,6 +1828,8 @@ abstract class Row {
     private Label nameLabel;
 
     protected Label rowName;
+
+    protected IAggregate aggregate;
 
     private Map<DetailItem, Component> componentsByDetailItem = new WeakHashMap<DetailItem, Component>();
 
@@ -1815,6 +1858,12 @@ abstract class Row {
             }
         }
         return nameLabel;
+    }
+
+    protected EffortDurationBox buildSumAllEffort() {
+        EffortDurationBox box = new EffortDurationBox();
+        box.setWidth("40px");
+        return box;
     }
 
     public void markErrorOnTotal(String message) {
@@ -1865,6 +1914,10 @@ abstract class Row {
         return task;
     }
 
+    protected IAggregate getAggregate() {
+        return aggregate;
+    }
+
 }
 
 class RowExpenses extends Row {
@@ -1874,7 +1927,7 @@ class RowExpenses extends Row {
             AggregateOfExpensesLines aggregateExpenses) {
         setName(name);
         setTask(task);
-        setRowName(new Label(_("Expenses")));
+        setRowName(new Label(TypeRow.Expenses.toString()));
         this.aggregate = aggregateExpenses;
     }
 
@@ -1884,9 +1937,6 @@ class RowExpenses extends Row {
         return new RowExpenses(messages, restriction, taskName, task,
                 aggregateExpenses);
     }
-
-
-    private final AggregateOfExpensesLines aggregate;
 
     @Override
     Component getAllEffort() {
@@ -1908,28 +1958,15 @@ class RowExpenses extends Row {
     }
 
     @Override
-    Component getNameLabel() {
-        return null;
-    }
-
-    @Override
     boolean isRowExpenses() {
         return true;
-    }
-
-    private EffortDurationBox buildSumAllEffort() {
-        EffortDurationBox box = new EffortDurationBox();
-        box.setWidth("40px");
-        return box;
     }
 
     private void reloadAllEffort() {
         if (getAllEffortInput() == null) {
             return;
         }
-        BigDecimal total = aggregate == null ? BigDecimal.ZERO : aggregate
-                .getTotalByTask();
-        EffortDuration allEffort = EffortDuration.fromHoursAsBigDecimal(total);
+        EffortDuration allEffort = aggregate.getTotalEffort();
         getAllEffortInput().setValue(allEffort);
     }
 
@@ -1942,9 +1979,8 @@ class RowExpenses extends Row {
     private EffortDuration getEffortForDetailItem(DetailItem item) {
         DateTime startDate = item.getStartDate();
         DateTime endDate = item.getEndDate();
-        BigDecimal expensesValue = this.aggregate.expensesBetween(
-                startDate.toLocalDate(), endDate.toLocalDate());
-        return EffortDuration.fromHoursAsBigDecimal(expensesValue);
+        return aggregate.effortBetween(startDate.toLocalDate(),
+                endDate.toLocalDate());
     }
 
     @Override
@@ -1959,4 +1995,183 @@ class RowExpenses extends Row {
     void add(CellChangedListener listener) {
     }
 
+}
+
+abstract class RowTotals extends Row {
+
+    protected TypeRow typeRow;
+    protected List<Row> rows;
+
+    @Override
+    abstract Component getAllEffort();
+
+    @Override
+    Component effortOnInterval(DetailItem item) {
+        Label result = new Label();
+        reloadEffortOnInterval(result, item);
+        getComponentsByDetailItem().put(item, result);
+        return result;
+    }
+
+    protected void reloadAllEffort() {
+        if (getAllEffortInput() == null) {
+            return;
+        }
+        EffortDuration allEffort = calculateTotal();
+        getAllEffortInput().setValue(allEffort);
+    }
+
+    private EffortDuration calculateTotal() {
+        EffortDuration total = EffortDuration
+                .fromHoursAsBigDecimal(BigDecimal.ZERO);
+        for (Row row : rows) {
+            total = total.plus(row.getAggregate().getTotalEffort());
+        }
+        return total;
+    }
+
+    private EffortDuration calculateTotalBetween(LocalDate start, LocalDate end) {
+        EffortDuration total = EffortDuration
+                .fromHoursAsBigDecimal(BigDecimal.ZERO);
+        for(Row row : rows){
+            total = total.plus(row.getAggregate().effortBetween(start, end));
+        }
+        return total;
+    }
+
+    protected void reloadEffortOnInterval(Component component, DetailItem item) {
+        Label label = (Label) component;
+        label.setValue(getEffortForDetailItem(item).toFormattedString());
+        label.setClass("unmodifiable-hours");
+    }
+
+    private EffortDuration getEffortForDetailItem(DetailItem item) {
+        LocalDate startDate = item.getStartDate().toLocalDate();
+        LocalDate endDate = item.getEndDate().toLocalDate();
+        return calculateTotalBetween(startDate, endDate);
+    }
+
+    @Override
+    void listenTo(Collection<Row> rows) {
+    }
+
+    @Override
+    void listenTo(Row row) {
+    }
+
+    @Override
+    void add(CellChangedListener listener) {
+    }
+
+    public TypeRow getTypeRow() {
+        return typeRow;
+    }
+}
+
+class RowTotalExpenses extends RowTotals {
+
+    public RowTotalExpenses(List<Row> rows) {
+        super.typeRow = TypeRow.Expenses;
+        super.rows = rows;
+        setName(_("Total"));
+        setRowName(new Label(typeRow.toString()));
+    }
+
+    public Component getAllEffort() {
+        if (getAllEffortInput() == null) {
+            setAllEffortInput(buildSumAllEffort());
+            getAllEffortInput().setWidth("90px");
+            getAllEffortInput().setReadonly(true);
+            reloadAllEffort();
+        }
+        return getAllEffortInput();
+    }
+
+    @Override
+    public boolean isRowExpenses() {
+        return true;
+    }
+}
+
+class RowTotalAllocation extends RowTotals {
+
+    private Label labelBudget;
+    private List<CellChangedListener> listeners = new ArrayList<CellChangedListener>();
+
+    public RowTotalAllocation(List<Row> rows) {
+        super.typeRow = TypeRow.Allocations;
+        super.rows = rows;
+        setName(_("Total"));
+        setRowName(new Label(typeRow.toString()));
+        listenTo(rows);
+    }
+
+    void listenTo(Collection<Row> rows) {
+        for (Row row : rows) {
+            listenTo(row);
+        }
+    }
+
+    void listenTo(Row row) {
+        row.add(new CellChangedListener() {
+
+            @Override
+            public void changeOnGlobal() {
+                reloadAllEffort();
+                reloadEffortsSameRowForDetailItems();
+            }
+
+            @Override
+            public void changeOn(DetailItem detailItem) {
+                Component component = getComponentsByDetailItem().get(
+                        detailItem);
+                if (component == null) {
+                    return;
+                }
+                reloadEffortOnInterval(component, detailItem);
+                reloadAllEffort();
+            }
+        });
+    }
+
+    void add(CellChangedListener listener) {
+        listeners.add(listener);
+    }
+
+
+    public Component getAllEffort() {
+        Hbox hbox = new Hbox();
+        if (getAllEffortInput() == null) {
+            setAllEffortInput(buildSumAllEffort());
+            getAllEffortInput().setReadonly(true);
+            reloadAllEffort();
+        }
+        if (labelBudget == null) {
+            labelBudget = new Label(" ( " + calculateTotalBudget() + " ) ");
+        }
+        hbox.appendChild(getAllEffortInput());
+        hbox.appendChild(labelBudget);
+        return hbox;
+    }
+
+    private BigDecimal calculateTotalBudget() {
+        BigDecimal budget = BigDecimal.ZERO;
+        for (Row row : rows) {
+            if (row.getTask() != null && row.getTask().getBudget() != null) {
+                budget = budget.add(row.getTask().getBudget());
+            }
+        }
+        return budget;
+    }
+    @Override
+    public boolean isRowExpenses() {
+        return false;
+    }
+
+    private void reloadEffortsSameRowForDetailItems() {
+        for (Entry<DetailItem, Component> entry : getComponentsByDetailItem()
+                .entrySet()) {
+            reloadEffortOnInterval(entry.getValue(), entry.getKey());
+        }
+    }
 }

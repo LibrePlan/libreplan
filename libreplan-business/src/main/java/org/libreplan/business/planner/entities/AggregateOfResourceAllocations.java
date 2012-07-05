@@ -45,7 +45,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
  * It only contains satisfied resource allocations
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class AggregateOfResourceAllocations {
+public class AggregateOfResourceAllocations implements IAggregate {
 
     public static AggregateOfResourceAllocations createFromSatisfied(
             Collection<? extends ResourceAllocation<?>> allocations) {
