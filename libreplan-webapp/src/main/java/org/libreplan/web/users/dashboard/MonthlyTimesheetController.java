@@ -72,7 +72,7 @@ import org.zkoss.zul.api.Grid;
 public class MonthlyTimesheetController extends GenericForwardComposer
         implements IMonthlyTimesheetController {
 
-    private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "34px";
+    private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
     private final static String TOTAL_DURATION_TEXTBOX_WIDTH = "50px";
 
     private final static String WORK_REPORTS_URL = "/workreports/workReport.zul";
