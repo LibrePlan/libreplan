@@ -579,7 +579,11 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     }
 
     private void createOtherColumn() {
-        columns.appendChild(new Column(_("Other")));
+        Column other = new Column(_("Other"));
+        other.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
+        other.setSclass("totals-column");
+        other.setAlign("center");
+        columns.appendChild(other);
     }
 
     private void createTotalColumn() {
@@ -588,7 +592,6 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         total.setSclass("totals-column");
         total.setAlign("center");
         columns.appendChild(total);
-
     }
 
     public String getDate() {
