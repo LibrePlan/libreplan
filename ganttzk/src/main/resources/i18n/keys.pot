@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libreplan-1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-29 17:36+0200\n"
+"POT-Creation-Date: 2012-07-05 08:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,10 +50,6 @@ msgstr ""
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
 msgid "Zoom"
-msgstr ""
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/TabsRegistry.java:121
-msgid "Limiting resources"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:67
@@ -161,12 +157,12 @@ msgstr ""
 msgid "Show/Hide critical path"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
-msgid "showing criteria"
-msgstr ""
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
 msgid "Year"
+msgstr ""
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
+msgid "showing criteria"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
