@@ -275,7 +275,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             }, "01-introducion.html#id2"));
         }
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
-            planningItems.add(subItem(_("Resource Load"), new ICapture() {
+            planningItems.add(subItem(_("Resources Load"), new ICapture() {
                 @Override
                 public void capture() {
                     globalView.goToCompanyLoad();

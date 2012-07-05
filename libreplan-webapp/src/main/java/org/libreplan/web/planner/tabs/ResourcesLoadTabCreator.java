@@ -135,7 +135,7 @@ public class ResourcesLoadTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Resource Usage"), "company-load",
+        return new CreatedOnDemandTab(_("Resources Load"), "company-load",
                 componentCreator) {
             @Override
             protected void beforeShowAction() {
@@ -157,7 +157,7 @@ public class ResourcesLoadTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Resource Usage")));
+                breadcrumbs.appendChild(new Label(_("Resources Load")));
             }
         };
     }
