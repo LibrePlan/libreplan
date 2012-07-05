@@ -1049,7 +1049,7 @@ span.perspective, span.perspective-active {
 .perspective-active.limiting-resources .z-button-cm {
     background-image: url(../img/ico_limiting-resources.png);
 }
-.perspective.order-limiting-resources {
+.perspective.hidden {
     display: none;
 }
 .perspective.order-data .z-button-cm,

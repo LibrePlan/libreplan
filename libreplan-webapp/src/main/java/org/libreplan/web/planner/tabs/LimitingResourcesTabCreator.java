@@ -43,9 +43,6 @@ import org.zkoss.zul.Label;
  */
 public class LimitingResourcesTabCreator {
 
-    /* Unnecesary */
-    private String ORDER_LIMITING_RESOURCES_VIEW = _("Queue-based resources (project)");
-
     public static ITab create(Mode mode,
             LimitingResourcesController LimitingResourcesController,
             LimitingResourcesController LimitingResourcesControllerGlobal,
@@ -76,44 +73,8 @@ public class LimitingResourcesTabCreator {
 
     private ITab build() {
         return TabOnModeType.forMode(mode)
-.forType(ModeType.GLOBAL,
-                createGlobalLimitingResourcesTab()).forType(ModeType.ORDER,
-                createOrderLimitingResourcesTab())
-            .create();
-    }
-
-    private ITab createOrderLimitingResourcesTab() {
-        IComponentCreator componentCreator = new IComponentCreator() {
-
-            @Override
-            /* Should never be called */
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                Map<String, Object> arguments = new HashMap<String, Object>();
-                arguments.put("LimitingResourcesController",
-                        limitingResourcesController);
-                return Executions.createComponents(
-                        "/limitingresources/_limitingresources.zul", parent,
-                        arguments);
-            }
-
-        };
-        return new CreatedOnDemandTab(ORDER_LIMITING_RESOURCES_VIEW,
-                "order-limiting-resources",
-                componentCreator) {
-
-            @Override
-            protected void afterShowAction() {
-                breadcrumbs.getChildren().clear();
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs
-                        .appendChild(new Label(ORDER_LIMITING_RESOURCES_VIEW));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
-            }
-        };
+                .forType(ModeType.GLOBAL, createGlobalLimitingResourcesTab())
+                .create();
     }
 
     private ITab createGlobalLimitingResourcesTab() {
