@@ -66,7 +66,7 @@
                 <decimalbox id="budget"
                     value="@{detailsController.orderElement.budget}"
                     disabled="@{detailsController.container}"
-                    constraint="no negative:${i18n:_('Budget value cannot be negative')}"
+                    constraint="no empty,no negative:${i18n:_('cannot be negative or empty')}"
                     format="@{detailsController.moneyFormat}" />
             </row>
         </rows>

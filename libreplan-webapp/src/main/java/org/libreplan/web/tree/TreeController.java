@@ -947,9 +947,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 @Override
                 public void validate(Component comp, Object value)
                         throws WrongValueException {
+                    if (value == null) {
+                        throw new WrongValueException(comp,
+                                _("cannot be empty"));
+                    }
                     if (((BigDecimal) value).compareTo(BigDecimal.ZERO) < 0) {
                         throw new WrongValueException(comp,
-                                _("Budget value cannot be negative"));
+                                _("cannot be negative"));
                     }
                 }
 
