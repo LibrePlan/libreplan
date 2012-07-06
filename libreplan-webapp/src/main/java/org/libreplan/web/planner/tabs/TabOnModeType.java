@@ -125,13 +125,19 @@ public class TabOnModeType implements ITab {
     @Override
     public void hide() {
         beingShown = false;
-        getCurrentTab().hide();
+        ITab currentTab = getCurrentTab();
+        if (currentTab != null) {
+            currentTab.hide();
+        }
     }
 
     @Override
     public void show() {
         beingShown = true;
-        getCurrentTab().show();
+        ITab currentTab = getCurrentTab();
+        if (currentTab != null) {
+            currentTab.show();
+        }
     }
 
 }
