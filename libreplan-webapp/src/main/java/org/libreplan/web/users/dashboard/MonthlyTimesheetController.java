@@ -477,13 +477,6 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         URLHandlerRegistry.getRedirectorFor(IMonthlyTimesheetController.class)
                 .register(this, page);
-
-        Frozen frozen = new Frozen();
-        frozen.setColumns(2);
-        timesheet.appendChild(frozen);
-
-        adjustFrozenWidth();
-
     }
 
     private void adjustFrozenWidth() {
@@ -542,6 +535,12 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         timesheet.getChildren().clear();
         timesheet.appendChild(columns);
         createColumns(date);
+
+        Frozen frozen = new Frozen();
+        frozen.setColumns(2);
+        timesheet.appendChild(frozen);
+
+        adjustFrozenWidth();
     }
 
     private void createColumns(LocalDate date) {
