@@ -20,6 +20,7 @@
 package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -156,7 +157,8 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         if (BigDecimal.ZERO.compareTo(actualCost) == 0) {
             return BigDecimal.ZERO;
         }
-        return asPercentage(budgetedCost.divide(actualCost));
+        return asPercentage(budgetedCost.divide(actualCost,
+                RoundingMode.HALF_UP));
     }
 
     private BigDecimal asPercentage(BigDecimal value) {
