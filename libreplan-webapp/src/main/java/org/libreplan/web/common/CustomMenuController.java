@@ -366,6 +366,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             costItems.add(subItem(_("Timesheets Templates"),
                     "/workreports/workReportTypes.zul", "09-partes.html#id2"));
         }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEET_LINES_LIST)) {
+            costItems.add(subItem(_("Timesheet Lines List"),
+                    "/workreports/workReportQuery.zul", "09-partes.html#id4"));
+        }
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_EXPENSES)) {
             costItems.add(subItem(_("Expenses"),
                     "/expensesheet/expenseSheet.zul", ""));
@@ -439,11 +444,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         List<CustomMenuItem> reportsItems = new ArrayList<CustomMenuItem>();
-        if (SecurityUtils
-                .isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEET_LINES_LIST_REPORT)) {
-            reportsItems.add(subItem(_("Timesheet Lines List"),
-                    "/workreports/workReportQuery.zul", "09-partes.html#id4"));
-        }
         if (SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_HOURS_WORKED_PER_RESOURCE_REPORT)) {
             reportsItems.add(subItem(_("Hours Worked Per Resource"),
