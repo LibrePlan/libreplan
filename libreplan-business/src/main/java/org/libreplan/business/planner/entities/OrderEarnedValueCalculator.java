@@ -47,8 +47,7 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     @Override
     public BigDecimal getActualCostWorkPerformedAt(Order order, LocalDate date) {
         SortedMap<LocalDate, BigDecimal> actualCost = calculateActualCostWorkPerformed(order);
-        BigDecimal result = actualCost.get(date);
-        return (result != null) ? result : BigDecimal.ZERO;
+        return getValueAt(actualCost, date);
     }
 
     @Transactional(readOnly = true)
@@ -130,8 +129,24 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     @Transactional(readOnly = true)
     public BigDecimal getBudgetedCostWorkPerformedAt(Order order, LocalDate date) {
         SortedMap<LocalDate, BigDecimal> budgetedCost = calculateBudgetedCostWorkPerformed(order);
-        BigDecimal result = budgetedCost.get(date);
-        return (result != null) ? result : BigDecimal.ZERO;
+        return getValueAt(budgetedCost, date);
+    }
+
+    private BigDecimal getValueAt(SortedMap<LocalDate, BigDecimal> map,
+            LocalDate date) {
+        BigDecimal result = map.get(date);
+        if (result != null) {
+            return result;
+        }
+        for (LocalDate each : map.keySet()) {
+            if (date.isBefore(each)) {
+                return map.get(each);
+            }
+        }
+        if (date.isAfter(map.lastKey())) {
+            return map.get(map.lastKey());
+        }
+        return BigDecimal.ZERO;
     }
 
     @Override
