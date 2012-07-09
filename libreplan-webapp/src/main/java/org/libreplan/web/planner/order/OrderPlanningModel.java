@@ -27,6 +27,7 @@ import static org.libreplan.business.planner.chart.ContiguousDaysLine.toSortedMa
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -833,7 +834,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 value = value.multiply(new BigDecimal(100));
                 units = "%";
             }
-            Label valueLabel = new Label(value.intValue() + " " + units);
+            Label valueLabel = new Label(
+                    value.setScale(0, RoundingMode.HALF_UP) + " " + units);
 
             Hbox hbox = new Hbox();
             hbox.appendChild(checkbox);

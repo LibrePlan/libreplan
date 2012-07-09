@@ -172,12 +172,10 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         if (BigDecimal.ZERO.compareTo(actualCost) == 0) {
             return BigDecimal.ZERO;
         }
-        return multiplyByOneHundred(budgetedCost.setScale(2).divide(actualCost,
-                RoundingMode.HALF_UP));
-    }
-
-    private BigDecimal multiplyByOneHundred(BigDecimal value) {
-        return value.multiply(BigDecimal.valueOf(100));
+        return budgetedCost.setScale(4)
+                .divide(actualCost, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override
@@ -192,8 +190,9 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         if (BigDecimal.ZERO.compareTo(costPerformanceIndex) == 0) {
             return BigDecimal.ZERO;
         }
-        return multiplyByOneHundred(budgetAtCompletion.setScale(2).divide(
-                costPerformanceIndex, RoundingMode.HALF_UP));
+        return budgetAtCompletion.setScale(2)
+                .divide(costPerformanceIndex, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
     }
 
     @Override
