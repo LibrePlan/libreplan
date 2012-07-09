@@ -25,6 +25,8 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -150,6 +152,13 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         List<UserRole> roles = new ArrayList<UserRole>(Arrays.asList(UserRole
                 .values()));
         roles.remove(UserRole.ROLE_BOUND_USER);
+
+        Collections.sort(roles, new Comparator<UserRole> () {
+            @Override
+            public int compare(UserRole arg0, UserRole arg1) {
+                return arg0.getDisplayName().compareTo(arg1.getDisplayName());
+            }
+        });
 
         for (UserRole role : roles) {
             Comboitem item = combo.appendItem(_(role.getDisplayName()));
