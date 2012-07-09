@@ -1419,8 +1419,8 @@ display:none;
 }
 
 .filter-more-options .z-groupbox-cnt {
-    width: 900px;
-    left: -792px;
+    width: 600px;
+    left: -492px;
     position: relative;
     background-color: #F0FAFF;
 }
@@ -1446,6 +1446,8 @@ display:none;
 .filter-more-options .z-caption .z-caption-l,
 .filter-more-options .z-caption .z-caption-r {
     font-size:11px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .filter-more-options .z-groupbox-hl {
@@ -1895,6 +1897,15 @@ select {
     width: 250px;
 }
 
-.communication-not-reviewed div.z-row-cnt .z-label{ font-weight: bold; }
+.communication-not-reviewed div.z-row-cnt .z-label {
+    font-weight: bold;
+}
 
-.current-delivery-date div.z-row-cnt .z-label{ font-weight: bold; }
+.current-delivery-date div.z-row-cnt .z-label {
+    font-weight: bold;
+}
+
+.remarked {
+    font-weight: bold;
+    color: #0F3B82;
+}
