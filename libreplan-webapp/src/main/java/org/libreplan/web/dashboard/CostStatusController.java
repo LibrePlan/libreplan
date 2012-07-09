@@ -82,62 +82,42 @@ public class CostStatusController extends GenericForwardComposer {
         LocalDate today = LocalDate.fromDateFields(new Date());
         BigDecimal actualCost = costStatusModel
                 .getActualCostWorkPerformedAt(today);
-        setActualCostWorkPerformed(actualCost);
+        setHoursLabel(lblACWP, actualCost);
 
         BigDecimal budgetedCost = costStatusModel
                 .getBudgetedCostWorkPerformedAt(today);
         BigDecimal costVariance = costStatusModel.getCostVariance(budgetedCost,
                 actualCost);
-        setCostVariance(costVariance);
+        setHoursLabel(lblCV, costVariance);
 
         BigDecimal costPerformanceIndex = costStatusModel
                 .getCostPerformanceIndex(budgetedCost, actualCost);
-        setCostPerformanceIndex(costPerformanceIndex);
+        setPercentageLabel(lblCPI, costPerformanceIndex);
 
         BigDecimal budgetAtCompletion = costStatusModel.getBudgetAtCompletion();
-        setBudgetAtCompletion(budgetAtCompletion);
+        setHoursLabel(lblBAC, budgetAtCompletion);
 
         BigDecimal estimateAtCompletion = costStatusModel
                 .getEstimateAtCompletion(budgetAtCompletion,
                         costPerformanceIndex);
-        setEstimateAtCompletion(estimateAtCompletion);
+        setHoursLabel(lblEAC, estimateAtCompletion);
 
         BigDecimal varianceAtCompletion = costStatusModel
                 .getVarianceAtCompletion(budgetAtCompletion,
                         estimateAtCompletion);
-        setVarianceAtCompletion(varianceAtCompletion);
+        setHoursLabel(lblVAC, varianceAtCompletion);
 
         BigDecimal estimateToComplete = costStatusModel.getEstimateToComplete(
                 estimateAtCompletion, actualCost);
-        setEstimateToComplete(estimateToComplete);
+        setHoursLabel(lblETC, estimateToComplete);
     }
 
-    private void setEstimateAtCompletion(BigDecimal value) {
-        lblEAC.setValue(_("{0} h", value.setScale(0, RoundingMode.HALF_UP)));
+    private void setHoursLabel(Label label, BigDecimal value) {
+        label.setValue(_("{0} h", value.setScale(2, RoundingMode.HALF_UP)));
     }
 
-    private void setCostPerformanceIndex(BigDecimal value) {
-        lblCPI.setValue(value.setScale(0, RoundingMode.HALF_UP) + " %");
-    }
-
-    private void setBudgetAtCompletion(BigDecimal value) {
-        lblBAC.setValue(_("{0} h", value.toString()));
-    }
-
-    private void setCostVariance(BigDecimal value) {
-        lblCV.setValue(_("{0} h", value.toString()));
-    }
-
-    private void setVarianceAtCompletion(BigDecimal value) {
-        lblVAC.setValue(_("{0} h", value.toString()));
-    }
-
-    private void setActualCostWorkPerformed(BigDecimal value) {
-        lblACWP.setValue(_("{0} h", value.setScale(0, RoundingMode.HALF_UP)));
-    }
-
-    private void setEstimateToComplete(BigDecimal value) {
-        lblETC.setValue(_("{0} h", value.setScale(0, RoundingMode.HALF_UP)));
+    private void setPercentageLabel(Label label, BigDecimal value) {
+        label.setValue(value.setScale(2, RoundingMode.HALF_UP) + " %");
     }
 
 }
