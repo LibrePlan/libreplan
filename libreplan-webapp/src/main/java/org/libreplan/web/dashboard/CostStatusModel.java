@@ -104,4 +104,11 @@ public class CostStatusModel implements ICostStatusModel {
                 .getBudgetedCostWorkPerformedAt(order, date);
     }
 
+    @Override
+    public BigDecimal getEstimateToComplete(BigDecimal estimateAtCompletion,
+            BigDecimal actualCost) {
+        return earnedValueCalculator.getEstimateToComplete(
+                estimateAtCompletion, actualCost);
+    }
+
 }

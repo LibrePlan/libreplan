@@ -22,6 +22,7 @@ package org.libreplan.web.dashboard;
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import org.joda.time.LocalDate;
@@ -60,6 +61,12 @@ public class CostStatusController extends GenericForwardComposer {
     // Variance at Completion
     public Label lblVAC;
 
+    // Cost Variance
+    public Label lblACWP;
+
+    // Estimate To Complete
+    public Label lblETC;
+
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -73,11 +80,12 @@ public class CostStatusController extends GenericForwardComposer {
 
     public void render() {
         LocalDate today = LocalDate.fromDateFields(new Date());
-        BigDecimal budgetedCost = costStatusModel
-                .getBudgetedCostWorkPerformedAt(today);
         BigDecimal actualCost = costStatusModel
                 .getActualCostWorkPerformedAt(today);
+        setActualCostWorkPerformed(actualCost);
 
+        BigDecimal budgetedCost = costStatusModel
+                .getBudgetedCostWorkPerformedAt(today);
         BigDecimal costVariance = costStatusModel.getCostVariance(budgetedCost,
                 actualCost);
         setCostVariance(costVariance);
@@ -98,26 +106,38 @@ public class CostStatusController extends GenericForwardComposer {
                 .getVarianceAtCompletion(budgetAtCompletion,
                         estimateAtCompletion);
         setVarianceAtCompletion(varianceAtCompletion);
+
+        BigDecimal estimateToComplete = costStatusModel.getEstimateToComplete(
+                estimateAtCompletion, actualCost);
+        setEstimateToComplete(estimateToComplete);
     }
 
     private void setEstimateAtCompletion(BigDecimal value) {
-        lblEAC.setValue(String.format("%.2f %%", value.doubleValue()));
+        lblEAC.setValue(_("{0} h", value.setScale(0, RoundingMode.HALF_UP)));
     }
 
     private void setCostPerformanceIndex(BigDecimal value) {
-        lblCPI.setValue(String.format("%.2f %%", value.doubleValue()));
+        lblCPI.setValue(value.setScale(0, RoundingMode.HALF_UP) + " %");
     }
 
     private void setBudgetAtCompletion(BigDecimal value) {
-        lblBAC.setValue(String.format(_("%s h"), value.toString()));
+        lblBAC.setValue(_("{0} h", value.toString()));
     }
 
     private void setCostVariance(BigDecimal value) {
-        lblCV.setValue(String.format(_("%s h"), value.toString()));
+        lblCV.setValue(_("{0} h", value.toString()));
     }
 
     private void setVarianceAtCompletion(BigDecimal value) {
-        lblVAC.setValue(String.format(_("%s h"), value.toString()));
+        lblVAC.setValue(_("{0} h", value.toString()));
+    }
+
+    private void setActualCostWorkPerformed(BigDecimal value) {
+        lblACWP.setValue(_("{0} h", value.setScale(0, RoundingMode.HALF_UP)));
+    }
+
+    private void setEstimateToComplete(BigDecimal value) {
+        lblETC.setValue(_("{0} h", value.setScale(0, RoundingMode.HALF_UP)));
     }
 
 }
