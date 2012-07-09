@@ -630,7 +630,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     }
 
     private void goToEditMonthlyTimeSheet(WorkReport workReport) {
-        Date date = workReport.getWorkReportLines().iterator().next().getDate();
+        workReportModel.initEdit(workReport);
+        Date date = workReportModel.getFirstWorkReportLine().getDate();
         Resource resource = workReport.getResource();
         monthlyTimesheetController.goToCreateOrEditFormForResource(
                 LocalDate.fromDateFields(date), resource);
