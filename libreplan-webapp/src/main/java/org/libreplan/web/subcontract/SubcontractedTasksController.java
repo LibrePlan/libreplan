@@ -62,6 +62,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -123,7 +124,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             appendLabel(row, getOrderName(order));
             appendLabel(row, subcontractedTaskData.getSubcontractedCode());
             appendLabel(row, getTaskName(subcontractedTaskData));
-            appendLabel(row, subcontractedTaskData.getWorkDescription());
+            row.setTooltiptext(subcontractedTaskData.getWorkDescription());
             appendLabel(row, Util.addCurrencySymbol(subcontractedTaskData.getSubcontractPrice()));
             appendLabel(row,
                     toString(subcontractedTaskData.getLastRequiredDeliverDate(), "dd/MM/yyyy"));
@@ -173,10 +174,10 @@ public class SubcontractedTasksController extends GenericForwardComposer {
 
         private void appendOperations(Row row,
                 SubcontractedTaskData subcontractedTaskData) {
-            Hbox hbox = new Hbox();
-            hbox.appendChild(getExportButton(subcontractedTaskData));
-            hbox.appendChild(getSendButton(subcontractedTaskData));
-            row.appendChild(hbox);
+            Vbox vbox = new Vbox();
+            vbox.appendChild(getExportButton(subcontractedTaskData));
+            vbox.appendChild(getSendButton(subcontractedTaskData));
+            row.appendChild(vbox);
         }
 
         private Button getExportButton(

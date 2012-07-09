@@ -3,7 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
-  Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2010-2012 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -39,17 +39,17 @@
     <grid id="listing"
         model="@{controller.ordersWithExternalCodeInAnyOrderElement}"
         rowRenderer="@{controller.reportAdvancesOrderRenderer}"
-        mold="paging" pageSize="10" fixedLayout="true">
+        mold="paging" pageSize="10" sizedByContent="true">
         <columns>
-            <column label="${i18n:_('Project code')}" width="110px"/>
-            <column label="${i18n:_('Customer reference code')}" width="145px"/>
-            <column label="${i18n:_('Name')}" width="126px"/>
-            <column label="${i18n:_('Date last progress reported')}" width="160px"/>
-            <column label="${i18n:_('Value last progress reported')}" width="160px"/>
-            <column label="${i18n:_('Date last progress measurement')}" width="180px"/>
-            <column label="${i18n:_('Value last progress measurement')}" width="190px"/>
-            <column label="${i18n:_('State')}" width="80px"/>
-            <column label="${i18n:_('Operations')}" width="95px"/>
+            <column label="${i18n:_('Project code')}" />
+            <column label="${i18n:_('Customer reference code')}" />
+            <column label="${i18n:_('Name')}" hflex="1"/>
+            <column label="${i18n:_('Date last progress reported')}" />
+            <column label="${i18n:_('Value last progress reported')}" />
+            <column label="${i18n:_('Date last progress measurement')}" />
+            <column label="${i18n:_('Value last progress measurement')}" />
+            <column label="${i18n:_('State')}" />
+            <column label="${i18n:_('Operations')}" />
         </columns>
     </grid>
 
