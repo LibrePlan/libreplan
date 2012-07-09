@@ -28,6 +28,7 @@ import java.util.Date;
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -118,6 +119,38 @@ public class CostStatusController extends GenericForwardComposer {
 
     private void setPercentageLabel(Label label, BigDecimal value) {
         label.setValue(value.setScale(2, RoundingMode.HALF_UP) + " %");
+    }
+
+    public String getLabel(EarnedValueType type) {
+        return type.getAcronym() + " (" + type.getName() + ")";
+    }
+
+    public String getLabelCV() {
+        return getLabel(EarnedValueType.CV);
+    }
+
+    public String getLabelACWP() {
+        return getLabel(EarnedValueType.ACWP);
+    }
+
+    public String getLabelCPI() {
+        return getLabel(EarnedValueType.CPI);
+    }
+
+    public String getLabelETC() {
+        return getLabel(EarnedValueType.ETC);
+    }
+
+    public String getLabelEAC() {
+        return getLabel(EarnedValueType.EAC);
+    }
+
+    public String getLabelBAC() {
+        return getLabel(EarnedValueType.BAC);
+    }
+
+    public String getLabelVAC() {
+        return getLabel(EarnedValueType.VAC);
     }
 
 }
