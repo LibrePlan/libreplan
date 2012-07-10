@@ -264,7 +264,8 @@ public class DashboardController extends GenericForwardComposer {
 
     private String statusLegend(TaskStatusEnum status,
             Map<TaskStatusEnum, Integer> taskStatus) {
-        return status + String.format(_(" (%d tasks)"), taskStatus.get(status));
+        return _(status.toString())
+                + String.format(_(" (%d tasks)"), taskStatus.get(status));
     }
 
     private void renderTaskStatus() {
