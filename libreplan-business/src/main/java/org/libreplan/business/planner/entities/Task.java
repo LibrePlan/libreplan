@@ -1138,17 +1138,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    public TaskDeadlineViolationStatusEnum getDeadlineViolationStatus() {
-        LocalDate deadline = this.getDeadline();
-        if (deadline == null) {
-            return TaskDeadlineViolationStatusEnum.NO_DEADLINE;
-        } else if (this.getEndAsLocalDate().isAfter(deadline)) {
-            return TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED;
-        } else {
-            return TaskDeadlineViolationStatusEnum.ON_SCHEDULE;
-        }
-    }
-
     @Override
     /* If the status of the task was needed in the past was because
      * a TaskGroup needed to calculate children status, but only asked
