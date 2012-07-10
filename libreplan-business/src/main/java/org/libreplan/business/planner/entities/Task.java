@@ -1241,6 +1241,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return sumChargedEffort != null && !sumChargedEffort.isZero();
     }
 
+    @Override
     public void acceptVisitor(TaskElementVisitor visitor) {
         visitor.visit(this);
     }

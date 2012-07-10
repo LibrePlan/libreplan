@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -206,7 +205,7 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
 
     @Override
     public void acceptVisitor(TaskElementVisitor visitor) {
-        throw new RuntimeException("No visitors should visit this type of TaskElement");
+        visitor.visit(this);
     }
 
     @Override

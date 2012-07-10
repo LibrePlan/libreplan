@@ -369,6 +369,7 @@ public class TaskGroup extends TaskElement {
         return this.isInProgress.booleanValue();
     }
 
+    @Override
     public void acceptVisitor(TaskElementVisitor visitor) {
         visitor.visit(this);
     }
