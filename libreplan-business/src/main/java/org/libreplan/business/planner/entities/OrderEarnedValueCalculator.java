@@ -134,6 +134,9 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
 
     private BigDecimal getValueAt(SortedMap<LocalDate, BigDecimal> map,
             LocalDate date) {
+        if (map.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
         BigDecimal result = map.get(date);
         if (result != null) {
             return result;
