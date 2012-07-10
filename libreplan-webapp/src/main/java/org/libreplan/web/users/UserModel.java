@@ -31,6 +31,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.users.daos.IProfileDAO;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
@@ -66,6 +67,9 @@ public class UserModel implements IUserModel {
 
     @Autowired
     private IWorkerDAO workerDAO;
+
+    @Autowired
+    private IProfileDAO profileDAO;
 
     private User user;
 
@@ -263,6 +267,12 @@ public class UserModel implements IUserModel {
     public void unboundResource() {
         unboundWorker = user.getWorker();
         user.setWorker(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Profile> getAllProfiles() {
+        return profileDAO.list(Profile.class);
     }
 
 }

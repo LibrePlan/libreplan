@@ -132,4 +132,6 @@ public interface IUserModel {
 
     void unboundResource();
 
+    List<Profile> getAllProfiles();
+
 }

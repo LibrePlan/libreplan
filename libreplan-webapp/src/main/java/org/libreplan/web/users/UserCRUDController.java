@@ -40,7 +40,6 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
@@ -86,7 +85,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     private Groupbox boundResourceGroupbox;
 
-    private Autocomplete profileAutocomplete;
+    private Combobox profilesCombo;
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
@@ -133,9 +132,10 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
         passwordBox = (Textbox) editWindow.getFellowIfAny("password");
         passwordConfirmationBox = (Textbox) editWindow.getFellowIfAny("passwordConfirmation");
-        profileAutocomplete = (Autocomplete) editWindow.getFellowIfAny("profileAutocomplete");
+        profilesCombo = (Combobox) editWindow.getFellowIfAny("profilesCombo");
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRolesExceptRoleBoundUser(userRolesCombo);
+        appendAllProfiles(profilesCombo);
         boundResourceGroupbox = (Groupbox) editWindow
                 .getFellowIfAny("boundResourceGroupbox");
 
@@ -163,6 +163,19 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         for (UserRole role : roles) {
             Comboitem item = combo.appendItem(_(role.getDisplayName()));
             item.setValue(role);
+        }
+    }
+
+    /**
+     * Appends the existing Profiles to the Combobox passed.
+     *
+     * @param combo
+     */
+    private void appendAllProfiles(Combobox combo) {
+        List<Profile> profiles = userModel.getAllProfiles();
+        for (Profile profile : profiles) {
+            Comboitem item = combo.appendItem(profile.getProfileName());
+            item.setValue(profile);
         }
     }
 
@@ -205,7 +218,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     public void addSelectedProfile() {
-        Comboitem comboItem = profileAutocomplete.getSelectedItem();
+        Comboitem comboItem = profilesCombo.getSelectedItem();
         if(comboItem != null) {
             addProfile((Profile)comboItem.getValue());
         }

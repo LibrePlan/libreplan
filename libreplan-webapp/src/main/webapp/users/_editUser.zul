@@ -149,9 +149,7 @@
                         <label value="${i18n:_('Profiles of LDAP users cannot be managed because LDAP roles are being used.')}" visible="@{controller.ldapUserRolesLdapConfiguration}" />
                     </vbox>
                     <hbox align="center">
-                        <autocomplete id="profileAutocomplete"
-                            autodrop="true" constraint=""
-                            finder="ProfileFinder" />
+                        <combobox id="profilesCombo" autodrop="true" />
                         <button label="${i18n:_('Add profile')}"
                             onClick="controller.addSelectedProfile()"
                             disabled="@{controller.areRolesAndProfilesDisabled}" />
