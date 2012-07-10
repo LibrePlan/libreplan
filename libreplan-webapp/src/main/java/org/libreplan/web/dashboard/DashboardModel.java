@@ -519,12 +519,11 @@ public class DashboardModel implements IDashboardModel {
 
     @Override
     public BigDecimal getOvertimeRatio() {
-        EffortDuration load = sumAll(resourceLoadCalculator.getAllLoad());
+        EffortDuration totalLoad = sumAll(resourceLoadCalculator.getAllLoad());
         EffortDuration overload = sumAll(resourceLoadCalculator
                 .getAllOverload());
-        return EffortDuration.sum(load, overload)
-                .dividedByAndResultAsBigDecimal(load)
-                .setScale(2, RoundingMode.HALF_UP);
+        return overload.dividedByAndResultAsBigDecimal(totalLoad).setScale(2,
+                RoundingMode.HALF_UP);
     }
 
     private EffortDuration sumAll(
@@ -542,11 +541,15 @@ public class DashboardModel implements IDashboardModel {
 
     @Override
     public BigDecimal getAvailabilityRatio() {
-        EffortDuration load = sumAll(resourceLoadCalculator.getAllLoad());
+        EffortDuration totalLoad = sumAll(resourceLoadCalculator.getAllLoad());
+        EffortDuration overload = sumAll(resourceLoadCalculator
+                .getAllOverload());
+        EffortDuration load = totalLoad.minus(overload);
+
         EffortDuration capacity = sumAll(resourceLoadCalculator
                 .getMaxCapacityOnResources());
-        return load.dividedByAndResultAsBigDecimal(capacity).setScale(2,
-                RoundingMode.HALF_UP);
+        return BigDecimal.ONE.setScale(2, RoundingMode.HALF_UP).subtract(
+                load.dividedByAndResultAsBigDecimal(capacity));
     }
 
 }

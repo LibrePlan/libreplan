@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -126,19 +127,21 @@ public class DashboardController extends GenericForwardComposer {
 
     private void renderOvertimeRatio() {
         BigDecimal overtimeRatio = dashboardModel.getOvertimeRatio();
-        lblOvertimeRatio.setValue(String.format("%.2f", overtimeRatio.doubleValue()));
-        String valueMeaning = (overtimeRatio.doubleValue() > 1) ? "negative"
-                : "positive";
+        lblOvertimeRatio.setValue(showAsPercentage(overtimeRatio));
+        String valueMeaning = (overtimeRatio.compareTo(BigDecimal.ZERO) == 0) ? "positive"
+                : "negative";
         lblOvertimeRatio.setSclass("dashboard-label-remarked " + valueMeaning);
     }
 
+    private String showAsPercentage(BigDecimal overtimeRatio) {
+        return overtimeRatio.multiply(BigDecimal.valueOf(100)).setScale(0,
+                RoundingMode.HALF_UP)
+                + " %";
+    }
+
     private void renderAvailabilityRatio() {
-        lblAvailabilityRatio.setValue(String.format("%.2f", dashboardModel
-                .getAvailabilityRatio().doubleValue()));
-        String valueMeaning = (dashboardModel.getAvailabilityRatio()
-                .doubleValue() > 1) ? "negative" : "positive";
-        lblAvailabilityRatio.setSclass("dashboard-label-remarked "
-                + valueMeaning);
+        lblAvailabilityRatio.setValue(showAsPercentage(dashboardModel
+                .getAvailabilityRatio()));
     }
 
     private void renderCostStatus(Order order) {
