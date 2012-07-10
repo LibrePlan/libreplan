@@ -272,7 +272,7 @@ public class UserModel implements IUserModel {
     @Override
     @Transactional(readOnly = true)
     public List<Profile> getAllProfiles() {
-        return profileDAO.list(Profile.class);
+        return profileDAO.listSorted();
     }
 
 }

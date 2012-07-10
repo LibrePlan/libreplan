@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -119,6 +120,13 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
         Profile profile = findByProfileName(profileName);
         profile.getRoles().size();
         return profile;
+    }
+
+    @Override
+    public List<Profile> listSorted() {
+        Criteria c = getSession().createCriteria(Profile.class).addOrder(
+                Order.asc("profileName"));
+        return c.list();
     }
 
 }
