@@ -155,13 +155,39 @@
 
     <!-- Include jqPlot library and additional plugins -->
     <n:script type="text/javascript">
-        ${jquery_min_js}
-        ${jquery_jqplot_min_js}
-        ${jqplot_canvasTextRenderer_min_js}
-        ${jqplot_canvasAxisLabelRenderer_min_js}
-        ${jqplot_barRenderer_min_js}
-        ${jqplot_pieRenderer_min_js}
-        ${jqplot_categoryAxisRenderer_min_js}
+        <![CDATA[
+            ${jquery_min_js}
+        ]]>
+    </n:script>
+    <n:script type="text/javascript">
+        <![CDATA[
+            ${jquery_jqplot_min_js}
+        ]]>
+    </n:script>
+    <n:script type="text/javascript">
+        <![CDATA[
+            ${jqplot_canvasTextRenderer_min_js}
+        ]]>
+    </n:script>
+    <n:script type="text/javascript">
+        <![CDATA[
+            ${jqplot_canvasAxisLabelRenderer_min_js}
+        ]]>
+    </n:script>
+    <n:script type="text/javascript">
+        <![CDATA[
+            ${jqplot_barRenderer_min_js}
+        ]]>
+    </n:script>
+    <n:script type="text/javascript">
+        <![CDATA[
+            ${jqplot_pieRenderer_min_js}
+        ]]>
+    </n:script>
+    <n:script type="text/javascript">
+        <![CDATA[
+            ${jqplot_categoryAxisRenderer_min_js}
+        ]]>
     </n:script>
 
 </zk>
