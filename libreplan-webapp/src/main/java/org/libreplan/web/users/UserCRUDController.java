@@ -156,7 +156,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         Collections.sort(roles, new Comparator<UserRole> () {
             @Override
             public int compare(UserRole arg0, UserRole arg1) {
-                return arg0.getDisplayName().compareTo(arg1.getDisplayName());
+                return _(arg0.getDisplayName()).compareTo(
+                        _(arg1.getDisplayName()));
             }
         });
 
