@@ -93,13 +93,14 @@ public class GlobalProgressChart {
     private String jsonify(Collection<?> list) {
         Collection<String> result = new ArrayList<String>();
         for (Object each : list) {
-            if (each.getClass() == String.class) {
-                result.add(String.format("\"%s\"", each.toString()));
-            } else {
-                result.add(String.format("%s", each.toString()));
-            }
+            result.add(jsonify(each));
         }
-        return String.format("'[%s]'", StringUtils.join(result, ','));
+        return String.format("[%s]", StringUtils.join(result, ','));
+    }
+
+    private String jsonify(Object value) {
+        return (value.getClass().equals(String.class)) ? String.format("\"%s\"",
+                value.toString()) : String.format("%s", value.toString());
     }
 
     public String getSeries() {
@@ -116,9 +117,13 @@ public class GlobalProgressChart {
     }
 
     public void render() {
-        String command = String.format(
-                "global_progress.render(%s, %s, %s);", getPercentages(),
+        String params = String.format(
+                "'{\"title\": %s, \"label\": %s, \"ticks\": %s, \"series\": %s}'",
+                jsonify(_("Project progress percentage")),
+                jsonify(_("Progress percentage per progress type")),
                 getTicks(), getSeries());
+        String command = String.format("global_progress.render(%s, %s);",
+                getPercentages(), params);
         Clients.evalJavaScript(command);
     }
 

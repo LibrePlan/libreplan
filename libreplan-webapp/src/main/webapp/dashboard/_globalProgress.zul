@@ -56,12 +56,18 @@
             location: 'e',
             placement: 'outside',
         },
-        render: function(data, ticks, series) {
-            if (ticks !== undefined) {
-                this.axes.yaxis.ticks = jQuery.parseJSON(ticks);
+        render: function(data, params) {
+            if (params['title'] !== undefined) {
+                this.title = params['title'];
             }
-            if (series !== undefined) {
-                this.series = jQuery.parseJSON(series);
+            if (params['label'] !== undefined) {
+                this.axes.xaxis.label = params['label'];
+            }
+            if (params['ticks'] !== undefined) {
+                this.axes.yaxis.ticks = params['ticks'];
+            }
+            if (params['series'] !== undefined) {
+                this.series = params['series'];
             }
             data = jQuery.parseJSON(data);
             this.plot = $.jqplot(this.id, data, this);
