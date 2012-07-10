@@ -476,9 +476,10 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateDeadline() {
+        // Task mark is placed after midnight date of the deadline day
         if (task.getDeadline() != null) {
             String position = (getMapper().toPixels(
-                    LocalDate.fromDateFields(task.getDeadline())) - HALF_DEADLINE_MARK)
+                    LocalDate.fromDateFields(task.getDeadline()).plusDays(1)) - HALF_DEADLINE_MARK)
                     + "px";
             response(null, new AuInvoke(this, "moveDeadline", position));
         } else {
