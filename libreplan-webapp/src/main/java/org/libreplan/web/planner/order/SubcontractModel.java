@@ -86,7 +86,12 @@ public class SubcontractModel implements ISubcontractModel {
 
         if (subcontractedTaskData == null) {
             this.subcontractedTaskData = SubcontractedTaskData.create(task);
-            this.addDeliverDate(getEndDate());
+            if (task.getDeadline() != null) {
+                this.addDeliverDate(task.getDeadline().toDateMidnight()
+                        .toDate());
+            } else {
+                this.addDeliverDate(getEndDate());
+            }
         } else {
             subcontractedTaskDataDAO.reattach(subcontractedTaskData);
             loadRequiredDeliveringDates(subcontractedTaskData);
