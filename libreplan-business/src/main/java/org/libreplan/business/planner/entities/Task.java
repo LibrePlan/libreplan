@@ -192,6 +192,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 .getTotalHours();
     }
 
+    public EffortDuration getAssignedEffort() {
+        return AggregateOfResourceAllocations.createFromSatisfied(
+                resourceAllocations).getTotalEffort();
+    }
+
     private EffortDuration getTotalNonConsolidatedEffort() {
         return AggregateOfResourceAllocations
                 .createFromAll(resourceAllocations).getNonConsolidatedEffort();

@@ -53,23 +53,23 @@ public class CalculateFinishedTasksEstimationDeviationVisitor extends TaskElemen
 
     public void visit(Task task) {
         if (task.isFinished()) {
-            int hours = task.getAssignedHours();
-            if (hours == 0) {
-                hours = task.getOrderElement().getWorkHours();
+            EffortDuration effort = task.getAssignedEffort();
+            if (effort.isZero()) {
+                effort = EffortDuration.hours(task.getOrderElement()
+                        .getWorkHours());
             }
-            if (hours != 0) {
+            if (!effort.isZero()) {
                 SumChargedEffort sumChargedEffort = task.getOrderElement()
                         .getSumChargedEffort();
                 EffortDuration spentEffort = sumChargedEffort == null ? EffortDuration
                         .zero() : sumChargedEffort.getTotalChargedEffort();
                 if (!spentEffort.isZero()) {
-                    deviations
-                            .add(new Double(
-                                    ((1.0 * spentEffort.getHours() - hours) / hours) * 100));
+                    deviations.add(spentEffort.minus(effort)
+                            .dividedByAndResultAsBigDecimal(effort)
+                            .doubleValue() * 100);
                 }
             }
         }
-
     }
 
     public void visit(TaskGroup taskGroup) {
