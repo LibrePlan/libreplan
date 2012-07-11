@@ -30,6 +30,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
@@ -277,6 +278,7 @@ public class SubcontractedTaskData extends BaseEntity {
         this.requiredDeliveringDates.addAll(requiredDeliveringDates);
     }
 
+    @NotEmpty(message = "delivery date not specified")
     public SortedSet<SubcontractorDeliverDate> getRequiredDeliveringDates() {
         return Collections.unmodifiableSortedSet(this.requiredDeliveringDates);
     }
