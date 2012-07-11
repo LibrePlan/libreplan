@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
+import org.libreplan.web.dashboard.DashboardModel.IntegerInterval;
 import org.libreplan.web.dashboard.DashboardModel.Interval;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 
@@ -73,7 +74,7 @@ interface IDashboardModel {
     Integer getAbsoluteMarginWithDeadLine();
 
     /* Time KPI: "Estimation accuracy" */
-    Map<Interval, Integer> calculateEstimationAccuracy();
+    Map<IntegerInterval, Integer> calculateEstimationAccuracy();
 
     /* Time KPI: "Lead/Lag in task completion" */
     Map<Interval, Integer> calculateTaskCompletion();

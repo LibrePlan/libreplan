@@ -58,6 +58,7 @@ import org.springframework.stereotype.Component;
  * @author Nacho Barrientos <nacho@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  *
  *         Model for UI operations related to Order Dashboard View
  *
@@ -322,48 +323,110 @@ public class DashboardModel implements IDashboardModel {
     }
 
     /**
-     * Calculates the estimation accuracy deviations for the current order
+     * Calculates the estimation accuracy deviations for the current order.
      *
-     * All the deviations are groups in Interval.MAX_INTERVALS intervals of
-     * equal size. If the order contains just one single task then, the upper
-     * limit will be the deviation of the task + 30, and the lower limit will be
-     * deviation of the task - 20
+     * All the deviations are groups in 6 intervals of equal size (not less than
+     * 10). There're some restrictions:
+     * <ul>
+     * <li>If the order contains just one single task then, the upper limit will
+     * be the deviation of the task +30, and the lower limit will be deviation
+     * of the task -30.</li>
+     * <li>If the difference between values is bigger than 60, then the
+     * intervals will be bigger than 10 but it'll keep generating 6 intervals.
+     * For example with min -45 and max +45, we'll have 6 intervals of size 15.</li>
+     * <li>In the case that we have enough distance for, it doesn't need to set
+     * the min to -30. For example, with min 0 and max 60, it'll keep intervals
+     * of size 10.</li>
+     * <li>If the min was 10 and the max 40, it'll have to decrease the min and
+     * increase the max to get a difference of 60. For example setting min to
+     * -10 and max to 50. (In order to calculate this it subtracts 10 to the min
+     * and check if the difference is 60 again, if not it adds 10 to the max and
+     * check it again, repeating this till it has a difference of 60).</li>
+     * </ul>
      *
      * Each {@link Interval} contains the number of tasks that fit in that
-     * interval
-     *
-     * @return
+     * interval.
      */
     @Override
-    public Map<Interval, Integer> calculateEstimationAccuracy() {
-        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
-        Double max, min;
+    public Map<IntegerInterval, Integer> calculateEstimationAccuracy() {
+        Map<IntegerInterval, Integer> result = new LinkedHashMap<IntegerInterval, Integer>();
+        double maxDouble, minDouble;
 
         // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getEstimationAccuracyDeviations();
         if (deviations.isEmpty()) {
-            max = Double.valueOf(30);
-            min = Double.valueOf(-20);
+            minDouble = -30;
+            maxDouble = 30;
         } else if (deviations.size() == 1) {
-            max = deviations.get(0).doubleValue() + 30;
-            min = deviations.get(0).doubleValue() - 20;
+            minDouble = deviations.get(0) - 30;
+            maxDouble = deviations.get(0) + 30;
         } else {
-            max = Collections.max(deviations);
-            min = Collections.min(deviations);
+            minDouble = Collections.min(deviations);
+            maxDouble = Collections.max(deviations);
         }
-        double delta = (max - min) / Interval.MAX_INTERVALS;
 
-        // Create MAX_INTERVALS
-        double from = min;
-        for (int i = 0; i < Interval.MAX_INTERVALS; i++) {
-            result.put(Interval.create(from, from + delta), Integer.valueOf(0));
-            from = from + delta;
+        // If min and max are between -30 and +30, set -30 as min and +30 as max
+        if (minDouble >= -30 && maxDouble <= 30) {
+            minDouble = -30;
+            maxDouble = 30;
+        }
+
+        // If the difference between min and max is less than 60, decrease min
+        // and increase max till get that difference
+        boolean changeMin = true;
+        while (maxDouble - minDouble < 60) {
+            if (changeMin) {
+                minDouble -= 10;
+            } else {
+                maxDouble += 10;
+            }
+        }
+
+        // Round min and max properly depending on decimal part or not
+        int min;
+        double minDecimalPart = minDouble - (int) minDouble;
+        if (minDouble >= 0) {
+            min = (int) (minDouble - minDecimalPart);
+        } else {
+            min = (int) (minDouble - minDecimalPart);
+            if (minDecimalPart != 0) {
+                min--;
+            }
+        }
+        int max;
+        double maxDecimalPart = maxDouble - (int) maxDouble;
+        if (maxDouble >= 0) {
+            max = (int) (maxDouble - maxDecimalPart);
+            if (maxDecimalPart != 0) {
+                max++;
+            }
+        } else {
+            max = (int) (maxDouble - maxDecimalPart);
+        }
+
+        // Calculate intervals size
+        int intervalsNumber = 6;
+        double delta = (double) (max - min) / intervalsNumber;
+        double deltaDecimalPart = delta - (int) delta;
+
+        // Generate intervals
+        int from = min;
+        for (int i = 0; i < intervalsNumber; i++) {
+            int to = from + (int) delta;
+            // Fix to depending on decimal part if it's not the last interval
+            if (deltaDecimalPart == 0 && i != (intervalsNumber - 1)) {
+                to--;
+            }
+            result.put(new IntegerInterval(from, to), Integer.valueOf(0));
+
+            from = to + 1;
         }
 
         // Construct map with number of tasks for each interval
-        final Set<Interval> intervals = result.keySet();
+        final Set<IntegerInterval> intervals = result.keySet();
         for (Double each : deviations) {
-            Interval interval = Interval.containingValue(intervals, each);
+            IntegerInterval interval = IntegerInterval.containingValue(
+                    intervals, each);
             if (interval != null) {
                 Integer value = result.get(interval);
                 result.put(interval, value + 1);
@@ -380,6 +443,36 @@ public class DashboardModel implements IDashboardModel {
         TaskElement rootTask = getRootTask();
         rootTask.acceptVisitor(visitor);
         return visitor.getDeviations();
+    }
+
+    static class IntegerInterval {
+        private int min;
+        private int max;
+
+        public IntegerInterval(int min, int max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        public static IntegerInterval containingValue(
+                Collection<IntegerInterval> intervals, double value) {
+            for (IntegerInterval each : intervals) {
+                if (each.includes(value)) {
+                    return each;
+                }
+            }
+            return null;
+        }
+
+        private boolean includes(double value) {
+            return (value >= min) && (value <= max);
+        }
+
+        @Override
+        public String toString() {
+            return "[" + min + ", " + max + "]";
+        }
+
     }
 
     /**
