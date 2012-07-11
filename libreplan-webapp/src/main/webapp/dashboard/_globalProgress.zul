@@ -57,6 +57,7 @@
             placement: 'outside',
         },
         render: function(data, params) {
+            params = jQuery.parseJSON(params);
             if (params['title'] !== undefined) {
                 this.title = params['title'];
             }
