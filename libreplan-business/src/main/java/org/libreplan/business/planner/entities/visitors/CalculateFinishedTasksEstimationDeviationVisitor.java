@@ -64,9 +64,18 @@ public class CalculateFinishedTasksEstimationDeviationVisitor extends TaskElemen
                 EffortDuration spentEffort = sumChargedEffort == null ? EffortDuration
                         .zero() : sumChargedEffort.getTotalChargedEffort();
                 if (!spentEffort.isZero()) {
-                    deviations.add(spentEffort.minus(effort)
-                            .dividedByAndResultAsBigDecimal(effort)
-                            .doubleValue() * 100);
+                    double deviation;
+                    if (spentEffort.compareTo(effort) >= 0) {
+                        deviation = spentEffort.minus(effort)
+                                .dividedByAndResultAsBigDecimal(effort)
+                                .doubleValue();
+                    } else {
+                        deviation = -effort.minus(spentEffort)
+                                .dividedByAndResultAsBigDecimal(effort)
+                                .doubleValue();
+
+                    }
+                    deviations.add(deviation * 100);
                 }
             }
         }
