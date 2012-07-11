@@ -35,7 +35,6 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
 import org.libreplan.web.dashboard.DashboardModel.IntegerInterval;
-import org.libreplan.web.dashboard.DashboardModel.Interval;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -345,7 +344,7 @@ public class DashboardController extends GenericForwardComposer {
 
         private final IDashboardModel dashboardModel;
 
-        private Map<Interval, Integer> taskCompletationData;
+        private Map<IntegerInterval, Integer> taskCompletationData;
 
         private TaskCompletationData(IDashboardModel dashboardModel) {
             this.dashboardModel = dashboardModel;
@@ -355,7 +354,7 @@ public class DashboardController extends GenericForwardComposer {
             return new TaskCompletationData(dashboardModel);
         }
 
-        private Map<Interval, Integer> getData() {
+        private Map<IntegerInterval, Integer> getData() {
             if (taskCompletationData == null) {
                 taskCompletationData = dashboardModel
                         .calculateTaskCompletion();
@@ -364,10 +363,10 @@ public class DashboardController extends GenericForwardComposer {
         }
 
         public String[] getTicks() {
-            Set<Interval> intervals = getData().keySet();
+            Set<IntegerInterval> intervals = getData().keySet();
             String[] result = new String[intervals.size()];
             int i = 0;
-            for (Interval each : intervals) {
+            for (IntegerInterval each : intervals) {
                 result[i++] = each.toString();
 
             }

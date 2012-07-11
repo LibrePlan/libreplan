@@ -262,54 +262,19 @@ public class DashboardModel implements IDashboardModel {
     }
 
     /**
-     * Calculates the task completation deviations for the current order
+     * Calculates the task completion deviations for the current order
      *
-     * All the deviations are groups in Interval.MAX_INTERVALS intervals of
-     * equal size. If the order contains just one single task then, the upper
-     * limit will be the deviation of the task + 3, and the lower limit will be
-     * deviation of the task - 2
+     * All the deviations are groups in 6 intervals of equal size. If the order
+     * contains just one single task then, the upper limit will be the deviation
+     * of the task +3, and the lower limit will be deviation of the task -3
      *
      * Each {@link Interval} contains the number of tasks that fit in that
      * interval
-     *
-     * @return
      */
     @Override
-    public Map<Interval, Integer> calculateTaskCompletion() {
-        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
-        Double max, min;
-
-        // Get deviations of finished tasks, calculate max, min and delta
+    public Map<IntegerInterval, Integer> calculateTaskCompletion() {
         List<Double> deviations = getTaskLagDeviations();
-        if (deviations.isEmpty()) {
-            max = Double.valueOf(3);
-            min = Double.valueOf(-2);
-        } else if (deviations.size() == 1) {
-            max = deviations.get(0).doubleValue() + 3;
-            min = deviations.get(0).doubleValue() - 2;
-        } else {
-            max = Collections.max(deviations);
-            min = Collections.min(deviations);
-        }
-        double delta = (max - min) / Interval.MAX_INTERVALS;
-
-        // Create MAX_INTERVALS
-        double from = min;
-        for (int i = 0; i < Interval.MAX_INTERVALS; i++) {
-            result.put(Interval.create(from, from + delta), Integer.valueOf(0));
-            from = from + delta;
-        }
-
-        // Construct map with number of tasks for each interval
-        final Set<Interval> intervals = result.keySet();
-        for (Double each : deviations) {
-            Interval interval = Interval.containingValue(intervals, each);
-            if (interval != null) {
-                Integer value = result.get(interval);
-                result.put(interval, value + 1);
-            }
-        }
-        return result;
+        return calculateHistogramIntervals(deviations, 6, 1);
     }
 
     private List<Double> getTaskLagDeviations() {
@@ -349,36 +314,45 @@ public class DashboardModel implements IDashboardModel {
      */
     @Override
     public Map<IntegerInterval, Integer> calculateEstimationAccuracy() {
-        Map<IntegerInterval, Integer> result = new LinkedHashMap<IntegerInterval, Integer>();
-        double maxDouble, minDouble;
-
-        // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getEstimationAccuracyDeviations();
-        if (deviations.isEmpty()) {
-            minDouble = -30;
-            maxDouble = 30;
-        } else if (deviations.size() == 1) {
-            minDouble = deviations.get(0) - 30;
-            maxDouble = deviations.get(0) + 30;
+        return calculateHistogramIntervals(deviations, 6, 10);
+    }
+
+    private Map<IntegerInterval, Integer> calculateHistogramIntervals(
+            List<Double> values, int intervalsNumber, int intervalMinimumSize) {
+        Map<IntegerInterval, Integer> result = new LinkedHashMap<IntegerInterval, Integer>();
+
+        int totalMinimumSize = intervalsNumber * intervalMinimumSize;
+        int halfSize = totalMinimumSize / 2;
+
+        double maxDouble, minDouble;
+        if (values.isEmpty()) {
+            minDouble = -halfSize;
+            maxDouble = halfSize;
+        } else if (values.size() == 1) {
+            minDouble = values.get(0) - halfSize;
+            maxDouble = values.get(0) + halfSize;
         } else {
-            minDouble = Collections.min(deviations);
-            maxDouble = Collections.max(deviations);
+            minDouble = Collections.min(values);
+            maxDouble = Collections.max(values);
         }
 
-        // If min and max are between -30 and +30, set -30 as min and +30 as max
-        if (minDouble >= -30 && maxDouble <= 30) {
-            minDouble = -30;
-            maxDouble = 30;
+        // If min and max are between -halfSize and +halfSize, set -halfSize as
+        // min and +halfSize as max
+        if (minDouble >= -halfSize && maxDouble <= halfSize) {
+            minDouble = -halfSize;
+            maxDouble = halfSize;
         }
 
-        // If the difference between min and max is less than 60, decrease min
+        // If the difference between min and max is less than totalMinimumSize,
+        // decrease min
         // and increase max till get that difference
         boolean changeMin = true;
-        while (maxDouble - minDouble < 60) {
+        while (maxDouble - minDouble < totalMinimumSize) {
             if (changeMin) {
-                minDouble -= 10;
+                minDouble -= intervalMinimumSize;
             } else {
-                maxDouble += 10;
+                maxDouble += intervalMinimumSize;
             }
         }
 
@@ -405,7 +379,6 @@ public class DashboardModel implements IDashboardModel {
         }
 
         // Calculate intervals size
-        int intervalsNumber = 6;
         double delta = (double) (max - min) / intervalsNumber;
         double deltaDecimalPart = delta - (int) delta;
 
@@ -424,7 +397,7 @@ public class DashboardModel implements IDashboardModel {
 
         // Construct map with number of tasks for each interval
         final Set<IntegerInterval> intervals = result.keySet();
-        for (Double each : deviations) {
+        for (Double each : values) {
             IntegerInterval interval = IntegerInterval.containingValue(
                     intervals, each);
             if (interval != null) {
@@ -471,58 +444,6 @@ public class DashboardModel implements IDashboardModel {
         @Override
         public String toString() {
             return "[" + min + ", " + max + "]";
-        }
-
-    }
-
-    /**
-     *
-     * @author Diego Pino García<dpino@igalia.com>
-     *
-     */
-    static class Interval {
-
-        public static final double MAX_INTERVALS = 6;
-
-        private double min;
-
-        private double max;
-
-        private Interval() {
-
-        }
-
-        public static Interval create(double min, double max) {
-            return new Interval(min, max);
-        }
-
-        private Interval(double min, double max) {
-            this.min = min;
-            this.max = max;
-        }
-
-        public static Interval copy(Interval interval) {
-            return new Interval(interval.min, interval.max);
-        }
-
-        public static Interval containingValue(Collection<Interval> intervals,
-                Double value) {
-            for (Interval each : intervals) {
-                if (each.includes(value)) {
-                    return each;
-                }
-            }
-            return null;
-        }
-
-        private boolean includes(double value) {
-            return (value >= min) && (value <= max);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("[%d, %d]", (int) Math.ceil(min),
-                    (int) Math.ceil(max));
         }
 
     }
