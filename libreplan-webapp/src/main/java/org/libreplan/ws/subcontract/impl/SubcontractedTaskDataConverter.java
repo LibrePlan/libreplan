@@ -51,15 +51,15 @@ public final class SubcontractedTaskDataConverter {
                 toXmlDate(getDeliverDate(subcontractedTaskData)));
     }
 
-    public final static UpdateDeliveringDateDTO toUpdateDeliveringDateDTO(SubcontractedTaskData subTaskData){
+    public final static UpdateDeliveringDateDTO toUpdateDeliveringDateDTO(
+            String companyCode, SubcontractedTaskData subTaskData) {
         String customerReference = subTaskData.getSubcontractedCode();
         XMLGregorianCalendar deliverDate = toXmlDate(getDeliverDate(subTaskData));
         if(!subTaskData.getRequiredDeliveringDates().isEmpty()){
              deliverDate = toXmlDate(subTaskData.getRequiredDeliveringDates().first().getSubcontractorDeliverDate());
         }
-        String companyNif = subTaskData.getExternalCompany().getNif();
         String externalCode = subTaskData.getTask().getOrderElement().getCode();
-        return new UpdateDeliveringDateDTO(customerReference, externalCode, companyNif,deliverDate);
+        return new UpdateDeliveringDateDTO(customerReference, externalCode, companyCode, deliverDate);
     }
 
     private final static XMLGregorianCalendar toXmlDate(Date date) {
