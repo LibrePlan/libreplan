@@ -39,27 +39,28 @@ import org.zkoss.zk.ui.util.Clients;
 */
 public class GlobalProgressChart {
 
-    public static final String SPREAD_PROGRESS = _("Spreading progress");
+    public static String SPREAD_PROGRESS;
 
-    public static final String ALL_TASKS_HOURS = _("By all tasks hours");
+    public static String ALL_TASKS_HOURS;
 
-    public static final String CRITICAL_PATH_HOURS = _("By critical path hours");
+    public static String CRITICAL_PATH_HOURS;
 
-    public static final String CRITICAL_PATH_DURATION = _("By critical path duration");
+    public static String CRITICAL_PATH_DURATION;
 
-    private final Map<String, BigDecimal> current = new LinkedHashMap<String, BigDecimal>();
+    private Map<String, BigDecimal> current = new LinkedHashMap<String, BigDecimal>();
 
-    private final Map<String, BigDecimal> expected = new LinkedHashMap<String, BigDecimal>();
+    private Map<String, BigDecimal> expected = new LinkedHashMap<String, BigDecimal>();
 
-    private static List<Series> series = new ArrayList<Series>() {
-        {
-            add(Series.create(_("Current"), "#004469"));
-            add(Series.create(_("Expected"), "#3C90BE"));
-        }
-    };
+    private List<Series> series = new ArrayList<Series>();
 
     private GlobalProgressChart() {
+        series.add(Series.create(_("Current"), "#004469"));
+        series.add(Series.create(_("Expected"), "#3C90BE"));
 
+        SPREAD_PROGRESS = _("Spreading progress");
+        ALL_TASKS_HOURS = _("By all tasks hours");
+        CRITICAL_PATH_HOURS = _("By critical path hours");
+        CRITICAL_PATH_DURATION = _("By critical path duration");
     }
 
     public void current(String key, BigDecimal value) {
