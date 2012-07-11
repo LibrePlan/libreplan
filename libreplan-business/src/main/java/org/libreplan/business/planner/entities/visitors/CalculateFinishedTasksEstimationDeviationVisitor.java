@@ -28,6 +28,7 @@ package org.libreplan.business.planner.entities.visitors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -52,15 +53,20 @@ public class CalculateFinishedTasksEstimationDeviationVisitor extends TaskElemen
 
     public void visit(Task task) {
         if (task.isFinished()) {
-            int allocatedHours = task.getAssignedHours();
-            if (allocatedHours > 0) {
-                EffortDuration spentEffort = task.getOrderElement()
-                        .getSumChargedEffort().getTotalChargedEffort();
-                deviations.add(new Double(
-                        ((1.0*spentEffort.getHours() -
-                                allocatedHours)/allocatedHours)*100));
-            } else {
-                deviations.add(new Double(0.0));
+            int hours = task.getAssignedHours();
+            if (hours == 0) {
+                hours = task.getOrderElement().getWorkHours();
+            }
+            if (hours != 0) {
+                SumChargedEffort sumChargedEffort = task.getOrderElement()
+                        .getSumChargedEffort();
+                EffortDuration spentEffort = sumChargedEffort == null ? EffortDuration
+                        .zero() : sumChargedEffort.getTotalChargedEffort();
+                if (!spentEffort.isZero()) {
+                    deviations
+                            .add(new Double(
+                                    ((1.0 * spentEffort.getHours() - hours) / hours) * 100));
+                }
             }
         }
 
