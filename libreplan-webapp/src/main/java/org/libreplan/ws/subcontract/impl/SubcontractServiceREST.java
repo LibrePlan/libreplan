@@ -153,8 +153,8 @@ public class SubcontractServiceREST implements ISubcontractService {
     private void updateSubcontract(
             final UpdateDeliveringDateDTO updateDeliveringDateDTO) {
 
-        if (StringUtils.isEmpty(updateDeliveringDateDTO.companyNif)) {
-            throw new ViolationError(updateDeliveringDateDTO.companyNif,
+        if (StringUtils.isEmpty(updateDeliveringDateDTO.externalCompanyNif)) {
+            throw new ViolationError(updateDeliveringDateDTO.externalCompanyNif,
                     "external company Nif not specified");
         }
 
@@ -172,11 +172,11 @@ public class SubcontractServiceREST implements ISubcontractService {
                 .runOnTransaction(new IOnTransaction<ExternalCompany>() {
                     @Override
                     public ExternalCompany execute() {
-                        return findExternalCompanyFor(updateDeliveringDateDTO.companyNif);
+                        return findExternalCompanyFor(updateDeliveringDateDTO.externalCompanyNif);
                     }
                 });
         if (!externalCompany.isClient()) {
-            throw new ViolationError(updateDeliveringDateDTO.companyNif,
+            throw new ViolationError(updateDeliveringDateDTO.externalCompanyNif,
                     "external company is not registered as client");
         }
         try {
@@ -192,7 +192,7 @@ public class SubcontractServiceREST implements ISubcontractService {
         } catch (ValidationException e) {
             InstanceConstraintViolationsDTO violation = ConstraintViolationConverter
                     .toDTO(new InstanceConstraintViolationsDTOId(Long.valueOf(1),
-                            updateDeliveringDateDTO.companyNif, OrderDTO.ENTITY_TYPE), e);
+                            updateDeliveringDateDTO.externalCompanyNif, OrderDTO.ENTITY_TYPE), e);
             throw new ViolationError(violation);
         }
     }

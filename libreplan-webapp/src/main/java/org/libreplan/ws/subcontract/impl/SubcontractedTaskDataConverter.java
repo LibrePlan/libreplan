@@ -59,7 +59,7 @@ public final class SubcontractedTaskDataConverter {
              deliverDate = toXmlDate(subTaskData.getRequiredDeliveringDates().first().getSubcontractorDeliverDate());
         }
         String externalCode = subTaskData.getTask().getOrderElement().getCode();
-        return new UpdateDeliveringDateDTO(customerReference, externalCode, companyCode, deliverDate);
+        return new UpdateDeliveringDateDTO(companyCode, customerReference, externalCode, deliverDate);
     }
 
     private final static XMLGregorianCalendar toXmlDate(Date date) {

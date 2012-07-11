@@ -19,14 +19,9 @@
 
 package org.libreplan.web.subcontract;
 
-import java.util.Date;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.libreplan.business.planner.entities.SubcontractedTaskData;
-import org.libreplan.ws.common.impl.DateConverter;
 
 /**
  * DTO UpdateDeliveringDate
@@ -43,7 +38,7 @@ public class UpdateDeliveringDateDTO {
     public String externalCode;
 
     @XmlAttribute(name = "external-company-nif")
-    public String companyNif;
+    public String externalCompanyNif;
 
     @XmlAttribute(name = "deliver-date")
     public XMLGregorianCalendar deliverDate;
@@ -51,11 +46,12 @@ public class UpdateDeliveringDateDTO {
     public UpdateDeliveringDateDTO(){
     }
 
-    public UpdateDeliveringDateDTO(String customerReference,
-            String externalCode, String companyNif, XMLGregorianCalendar deliverDate) {
+    public UpdateDeliveringDateDTO(String externalCompanyNif,
+            String customerReference, String externalCode,
+            XMLGregorianCalendar deliverDate) {
         this.customerReference = customerReference;
         this.deliverDate = deliverDate;
-        this.companyNif = companyNif;
+        this.externalCompanyNif = externalCompanyNif;
         this.externalCode = externalCode;
     }
 }
