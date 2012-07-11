@@ -58,7 +58,9 @@ public class AccumulateTasksDeadlineStatusVisitor extends TaskElementVisitor {
     }
 
     public void visit(TaskGroup taskGroup) {
-        calculateDeadlineViolationStatus(taskGroup);
+        if (!taskGroup.isRoot()) {
+            calculateDeadlineViolationStatus(taskGroup);
+        }
         for (TaskElement each: taskGroup.getChildren()) {
             each.acceptVisitor(this);
         }
