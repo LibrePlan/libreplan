@@ -272,7 +272,7 @@ public class DashboardModel implements IDashboardModel {
      * interval
      */
     @Override
-    public Map<IntegerInterval, Integer> calculateTaskCompletion() {
+    public Map<Interval, Integer> calculateTaskCompletion() {
         List<Double> deviations = getTaskLagDeviations();
         return calculateHistogramIntervals(deviations, 6, 1);
     }
@@ -313,14 +313,14 @@ public class DashboardModel implements IDashboardModel {
      * interval.
      */
     @Override
-    public Map<IntegerInterval, Integer> calculateEstimationAccuracy() {
+    public Map<Interval, Integer> calculateEstimationAccuracy() {
         List<Double> deviations = getEstimationAccuracyDeviations();
         return calculateHistogramIntervals(deviations, 6, 10);
     }
 
-    private Map<IntegerInterval, Integer> calculateHistogramIntervals(
+    private Map<Interval, Integer> calculateHistogramIntervals(
             List<Double> values, int intervalsNumber, int intervalMinimumSize) {
-        Map<IntegerInterval, Integer> result = new LinkedHashMap<IntegerInterval, Integer>();
+        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
 
         int totalMinimumSize = intervalsNumber * intervalMinimumSize;
         int halfSize = totalMinimumSize / 2;
@@ -390,15 +390,15 @@ public class DashboardModel implements IDashboardModel {
             if (deltaDecimalPart == 0 && i != (intervalsNumber - 1)) {
                 to--;
             }
-            result.put(new IntegerInterval(from, to), Integer.valueOf(0));
+            result.put(new Interval(from, to), Integer.valueOf(0));
 
             from = to + 1;
         }
 
         // Construct map with number of tasks for each interval
-        final Set<IntegerInterval> intervals = result.keySet();
+        final Set<Interval> intervals = result.keySet();
         for (Double each : values) {
-            IntegerInterval interval = IntegerInterval.containingValue(
+            Interval interval = Interval.containingValue(
                     intervals, each);
             if (interval != null) {
                 Integer value = result.get(interval);
@@ -418,18 +418,18 @@ public class DashboardModel implements IDashboardModel {
         return visitor.getDeviations();
     }
 
-    static class IntegerInterval {
+    static class Interval {
         private int min;
         private int max;
 
-        public IntegerInterval(int min, int max) {
+        public Interval(int min, int max) {
             this.min = min;
             this.max = max;
         }
 
-        public static IntegerInterval containingValue(
-                Collection<IntegerInterval> intervals, double value) {
-            for (IntegerInterval each : intervals) {
+        public static Interval containingValue(
+                Collection<Interval> intervals, double value) {
+            for (Interval each : intervals) {
                 if (each.includes(value)) {
                     return each;
                 }

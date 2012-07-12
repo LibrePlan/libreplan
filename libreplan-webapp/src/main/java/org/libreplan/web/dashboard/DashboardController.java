@@ -34,7 +34,7 @@ import java.util.Set;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskStatusEnum;
-import org.libreplan.web.dashboard.DashboardModel.IntegerInterval;
+import org.libreplan.web.dashboard.DashboardModel.Interval;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -344,7 +344,7 @@ public class DashboardController extends GenericForwardComposer {
 
         private final IDashboardModel dashboardModel;
 
-        private Map<IntegerInterval, Integer> taskCompletationData;
+        private Map<Interval, Integer> taskCompletationData;
 
         private TaskCompletationData(IDashboardModel dashboardModel) {
             this.dashboardModel = dashboardModel;
@@ -354,7 +354,7 @@ public class DashboardController extends GenericForwardComposer {
             return new TaskCompletationData(dashboardModel);
         }
 
-        private Map<IntegerInterval, Integer> getData() {
+        private Map<Interval, Integer> getData() {
             if (taskCompletationData == null) {
                 taskCompletationData = dashboardModel
                         .calculateTaskCompletion();
@@ -363,10 +363,10 @@ public class DashboardController extends GenericForwardComposer {
         }
 
         public String[] getTicks() {
-            Set<IntegerInterval> intervals = getData().keySet();
+            Set<Interval> intervals = getData().keySet();
             String[] result = new String[intervals.size()];
             int i = 0;
-            for (IntegerInterval each : intervals) {
+            for (Interval each : intervals) {
                 result[i++] = each.toString();
 
             }
@@ -388,7 +388,7 @@ public class DashboardController extends GenericForwardComposer {
 
         private final IDashboardModel dashboardModel;
 
-        private Map<IntegerInterval, Integer> estimationAccuracyData;
+        private Map<Interval, Integer> estimationAccuracyData;
 
         private EstimationAccuracy(IDashboardModel dashboardModel) {
             this.dashboardModel = dashboardModel;
@@ -398,7 +398,7 @@ public class DashboardController extends GenericForwardComposer {
             return new EstimationAccuracy(dashboardModel);
         }
 
-        private Map<IntegerInterval, Integer> getData() {
+        private Map<Interval, Integer> getData() {
             if (estimationAccuracyData == null) {
                 estimationAccuracyData = dashboardModel
                         .calculateEstimationAccuracy();
@@ -407,10 +407,10 @@ public class DashboardController extends GenericForwardComposer {
         }
 
         public String[] getTicks() {
-            Set<IntegerInterval> intervals = getData().keySet();
+            Set<Interval> intervals = getData().keySet();
             String[] result = new String[intervals.size()];
             int i = 0;
-            for (IntegerInterval each : intervals) {
+            for (Interval each : intervals) {
                 result[i++] = each.toString();
 
             }
