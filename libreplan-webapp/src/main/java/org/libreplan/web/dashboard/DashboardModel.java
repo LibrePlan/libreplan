@@ -329,9 +329,6 @@ public class DashboardModel implements IDashboardModel {
         if (values.isEmpty()) {
             minDouble = -halfSize;
             maxDouble = halfSize;
-        } else if (values.size() == 1) {
-            minDouble = values.get(0) - halfSize;
-            maxDouble = values.get(0) + halfSize;
         } else {
             minDouble = Collections.min(values);
             maxDouble = Collections.max(values);
