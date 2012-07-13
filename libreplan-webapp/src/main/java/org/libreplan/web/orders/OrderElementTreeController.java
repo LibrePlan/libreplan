@@ -484,8 +484,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                             currentOrderElement.setDeadline(value);
                         }
                     });
-            if (readOnly || currentOrderElement.getTaskSource().
-                    getTask().isSubcontracted()) {
+            if (readOnly
+                    || (currentOrderElement.getTaskSource() != null && currentOrderElement
+                            .getTaskSource().getTask().isSubcontracted())) {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("end"));

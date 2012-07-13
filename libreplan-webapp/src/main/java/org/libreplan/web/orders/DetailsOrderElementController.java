@@ -72,7 +72,8 @@ public class DetailsOrderElementController extends
     }
 
     private boolean isSubcontracted() {
-        if (orderElementModel.getOrderElement() == null) {
+        if (orderElementModel.getOrderElement() == null
+                || orderElementModel.getOrderElement().getTaskSource() == null) {
             return false;
         }
         return orderElementModel.getOrderElement().getTaskSource().getTask()
