@@ -223,7 +223,7 @@ public class DashboardModel implements IDashboardModel {
         }
         TaskGroup rootTask = getRootTask();
         Days orderDuration = Days.daysBetween(rootTask.getStartAsLocalDate(),
-                rootTask.getEndAsLocalDate());
+                rootTask.getEndAsLocalDate().plusDays(1));
 
         LocalDate deadLineAsLocalDate = LocalDate.fromDateFields(currentOrder
                 .getDeadline());
