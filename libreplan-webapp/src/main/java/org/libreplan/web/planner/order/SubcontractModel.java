@@ -141,6 +141,8 @@ public class SubcontractModel implements ISubcontractModel {
                 }
 
                 task.removeAllSatisfiedResourceAllocations();
+                task.setDeadline(new LocalDate(currentSubcontractedTaskData
+                        .getLastRequiredDeliverDate()));
                 Task.convertOnStartInFixedDate(task);
             }
 

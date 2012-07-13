@@ -99,6 +99,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private Datebox endDateBox;
 
+    private Datebox deadLineDateBox;
+
     private Combobox startConstraintTypes;
 
     private Datebox startConstraintDate;
@@ -144,6 +146,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintTypes.setDisabled(disabledConstraintsAndAllocations);
         startConstraintDate.setDisabled(disabledConstraintsAndAllocations);
         lbResourceAllocationType.setDisabled(disabledConstraintsAndAllocations);
+        deadLineDateBox.setDisabled(currentTaskElement.isSubcontracted());
 
         if (context != null) {
             taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
