@@ -25,6 +25,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.api.Datebox;
 
 /**
  * Controller for {@link OrderElement} details
@@ -36,6 +37,8 @@ public class DetailsOrderElementController extends
         GenericForwardComposer {
 
     private IOrderElementModel orderElementModel;
+
+    private Datebox deadline;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -53,6 +56,7 @@ public class DetailsOrderElementController extends
 
     public void openWindow(IOrderElementModel model) {
         setOrderElementModel(model);
+        deadline.setDisabled(isSubcontracted());
         Util.reloadBindings(self);
     }
 
@@ -65,6 +69,14 @@ public class DetailsOrderElementController extends
             return false;
         }
         return !orderElementModel.getOrderElement().isLeaf();
+    }
+
+    private boolean isSubcontracted() {
+        if (orderElementModel.getOrderElement() == null) {
+            return false;
+        }
+        return orderElementModel.getOrderElement().getTaskSource().getTask()
+                .isSubcontracted();
     }
 
     public String getMoneyFormat() {
