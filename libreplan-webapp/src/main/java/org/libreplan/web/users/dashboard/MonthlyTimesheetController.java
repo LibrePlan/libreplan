@@ -22,6 +22,8 @@ package org.libreplan.web.users.dashboard;
 import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,7 @@ import org.libreplan.web.common.entrypoints.MatrixParameters;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.util.Assert;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -756,6 +759,20 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     private static EffortDuration effortDurationFromString(String effort) {
         if (StringUtils.isBlank(effort)) {
             return EffortDuration.zero();
+        }
+
+        String decimalSeparator = ((DecimalFormat) DecimalFormat
+                .getInstance(Locales.getCurrent()))
+                .getDecimalFormatSymbols().getDecimalSeparator() + "";
+        if (effort.contains(decimalSeparator) || effort.contains(".")) {
+            try {
+                effort = effort.replace(decimalSeparator, ".");
+                double hours = Double.parseDouble(effort);
+                return EffortDuration.fromHoursAsBigDecimal(new BigDecimal(
+                        hours));
+            } catch (NumberFormatException e) {
+                return null;
+            }
         }
 
         return EffortDuration.parseFromFormattedString(effort);
