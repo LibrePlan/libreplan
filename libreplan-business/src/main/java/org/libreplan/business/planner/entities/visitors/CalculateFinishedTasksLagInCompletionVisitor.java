@@ -25,6 +25,7 @@ package org.libreplan.business.planner.entities.visitors;
  * @author Nacho Barrientos <nacho@igalia.com>
  */
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.Days;
@@ -52,13 +53,27 @@ public class CalculateFinishedTasksLagInCompletionVisitor extends TaskElementVis
             List<WorkReportLine> workReportLines = task.
                     getOrderElement().getWorkReportLines(true);
             if (workReportLines.size() > 0) {
-                LocalDate lastRLDate = LocalDate.fromDateFields(
-                        workReportLines.get(workReportLines.size()-1).getDate());
-                LocalDate endDate = task.getEndAsLocalDate();
-                deviations.add((double)Days.
-                        daysBetween(endDate, lastRLDate).getDays());
+                WorkReportLine last = getLastWorkReportLineWithEffortDurationNoZero(workReportLines);
+                if (last != null) {
+                    LocalDate lastRLDate = LocalDate.fromDateFields(last
+                            .getDate());
+                    LocalDate endDate = task.getEndAsLocalDate();
+                    deviations.add((double) Days.daysBetween(endDate,
+                            lastRLDate).getDays());
+                }
             }
         }
+    }
+
+    private WorkReportLine getLastWorkReportLineWithEffortDurationNoZero(
+            List<WorkReportLine> workReportLines) {
+        Collections.reverse(workReportLines);
+        for (WorkReportLine each : workReportLines) {
+            if (!each.getEffort().isZero()) {
+                return each;
+            }
+        }
+        return null;
     }
 
     public void visit(TaskGroup taskGroup) {
