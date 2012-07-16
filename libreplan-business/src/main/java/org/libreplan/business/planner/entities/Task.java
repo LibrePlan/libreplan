@@ -1180,7 +1180,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
             return false;
         }
-        Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
+        Set<Dependency> dependencies = getDependenciesWithThisDestinationAndAllParents();
         for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
             if (dependencyType.equals(Type.END_START)) {
@@ -1201,7 +1201,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
             return false;
         }
-        Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
+        Set<Dependency> dependencies = getDependenciesWithThisDestinationAndAllParents();
         for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
             if (dependencyType.equals(Type.END_START)) {
