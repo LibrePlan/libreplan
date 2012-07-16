@@ -54,6 +54,7 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.SubcontractorCommunication;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
@@ -183,6 +184,8 @@ public class SubcontractorCommunicationDAOTest {
         Task task = createValidTask();
         SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData
                 .create(task);
+        subcontractedTaskData.addRequiredDeliveringDates(SubcontractorDeliverDate
+                .create(new Date(),new Date(), null));
         subcontractedTaskData.setExternalCompany(getSubcontractorExternalCompanySaved());
 
         task.setSubcontractedTaskData(subcontractedTaskData);
