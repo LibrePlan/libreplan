@@ -364,8 +364,7 @@ public class FormBinder {
         private void initializeDateAndDurationFieldsFromTaskOriginalValues() {
             Task task = getTask();
             showValueOfDateOn(labelTaskStart, task.getStartAsLocalDate());
-            showValueOfDateOn(labelTaskEnd, task.getIntraDayEndDate()
-                    .asExclusiveEnd());
+            showValueOfDateOn(labelTaskEnd, task.getEndAsLocalDate());
 
             taskWorkableDays.setConstraint(positiveValueRequired());
             taskWorkableDays.setValue(task.getWorkableDays());
