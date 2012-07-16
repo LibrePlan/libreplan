@@ -74,6 +74,7 @@ import org.libreplan.business.planner.daos.ISubcontractorCommunicationDAO;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
@@ -623,6 +624,8 @@ public class ReportAdvancesServiceTest {
             final OrderLine orderLine) {
         Task task = createValidTask(orderLine);
         SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData.create(task);
+        subcontractedTaskData.addRequiredDeliveringDates(SubcontractorDeliverDate
+                .create(new Date(),new Date(), null));
         subcontractedTaskData.setExternalCompany(getSubcontractorExternalCompanySaved());
 
         task.setSubcontractedTaskData(subcontractedTaskData);
