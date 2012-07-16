@@ -203,15 +203,10 @@ public class TaskSource extends BaseEntity {
             OrderElement orderElement) {
         task.setName(orderElement.getName());
         Date orderInitDate = orderElement.getOrder().getInitDate();
-        if (task.getStartDate() == null && orderInitDate != null) {
+        if (task.getIntraDayStartDate() == null && orderInitDate != null) {
             task.setStartDate(orderInitDate);
         }
-        if (task.getEndDate() == null) {
-            task.initializeDatesIfNeeded();
-        }
-        if (!hasSomeAllocationDone(task)) {
-            task.initializeDatesIfNeeded();
-        }
+        task.initializeDatesIfNeeded();
         task.updateDeadlineFromOrderElement();
     }
 
