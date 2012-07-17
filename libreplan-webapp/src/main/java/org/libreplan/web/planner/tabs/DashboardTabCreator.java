@@ -110,8 +110,11 @@ public class DashboardTabCreator {
 
             @Override
             protected void afterShowAction() {
-                List<TaskElement> criticalPath = getCriticalPath(mode.getOrder(),
-                        getDesktop());
+                List<TaskElement> criticalPath = orderPlanningController.getCriticalPath();
+                if (criticalPath == null) {
+                    criticalPath = getCriticalPath(mode.getOrder(),
+                            getDesktop());
+                }
                 PlanningState planningState = getPlanningState(mode.getOrder(), getDesktop());
                 Order currentOrder = planningState.getOrder();
                 dashboardController.setCurrentOrder(planningState,
