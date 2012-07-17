@@ -201,7 +201,7 @@ function configCheckCalendarProject($name){
 /* test values */
 var $listCheckoxes = ["Criteria", "Labels", "Timesheets", "Resources", "Hours Types",
 "Material categories", "Material Units", "Calendar", "Timesheet templates",
-"Calendar exception days", "Cost category", "Expense sheeets", "MonteCarlo method"];
+"Calendar exception days", "Cost category", "Expense sheets", "MonteCarlo method", "Enable/Disable"];
 var $listMenuOptions = ["Criteria", "Calendar Exception Days", "Labels", "Material Units", "Hours Types",
 "Timesheets Templates", "Cost Categories", "Calendars", "Workers", "Machines"];
 var $calendarName = "CalendarForConfig";
