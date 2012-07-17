@@ -247,7 +247,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     public void save() throws ValidationException{
-        assignedMachineCriterionsModel.save();
+        assignedMachineCriterionsModel.confirm();
     }
 
     /**
