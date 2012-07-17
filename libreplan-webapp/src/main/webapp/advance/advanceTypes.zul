@@ -34,7 +34,7 @@
         apply="org.libreplan.web.advance.AdvanceTypeCRUDController">
         <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
-        <edition top_id="editWindow" title="${i18n:_('Create Progress Type')}"
+        <edition top_id="editWindow"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}"
             save_and_continue_button_label="${i18n:_('Save &amp; Continue')}" />
     </window>
