@@ -36,7 +36,7 @@ function settingsCreateRequiredElements(){
 }
 
 function settingsPressCheckboxes($list, $press){
-    _click(_link("Settings"));
+    _click(_link("Preferences"));
     if ($press == "yes"){
 	for (var $i = 0; $i < $list.length; $i++){
 	    if (_condition(_checkbox(0, _near(_label($list[$i]))).checked == false)){
@@ -55,7 +55,7 @@ function settingsPressCheckboxes($list, $press){
 }
 
 function settingsCheckChartsExpanded($expanded){
-    _click(_link("Projects Planning"));
+    _click(_link("Company view"));
     if ($expanded == "yes"){
 	settingCheckExists();
     }

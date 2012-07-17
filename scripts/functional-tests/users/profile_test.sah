@@ -63,10 +63,10 @@ function profileEditForm($name) {
 }
 
 function profileAssign($account, $password, $profile){
-    commonCreate("Accounts");
+    commonCreate("User Accounts");
     accountsForm($account, $password, $profile);
     profileTryDelete($profile);
-    commonDelete("Accounts", $account, 4);
+    commonDelete("User Accounts", $account, 5);
     _log("Assign the profile to a account", "custom1");
 }
 
