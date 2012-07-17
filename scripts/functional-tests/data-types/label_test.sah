@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -68,8 +68,8 @@ function labelCreateDuplicateName($type, $name){
 
 /* test to check a that LibrePlan give us a error */
 function labelNotValid($labelType){
-    _assertExists(_div("name: "+$labelType+" already exists"));
-    _assert(_isVisible(_div("name: "+$labelType+" already exists")));
+    _assertExists(_div($labelType+" already exists"));
+    _assert(_isVisible(_div($labelType+" already exists")));
 }
 
 function labelEdit($oldName, $newName, $cell){
@@ -88,7 +88,7 @@ function labelAssig($project, $labelName, $labelType2){
 }
 
 function labelAssignProject($project){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_editar1.png", _in(_cell(8, _near(_cell($project))))));
     _click(_span("Label"));
     _click(_textbox(0, _near(_cell("Assign"))));
@@ -109,9 +109,9 @@ function labeltryDelete($labelNewType){
 }
 
 function labelCheckCode($labelType, $labelName){
-    commonConfigurationChangeCheckboxMainPreferences("Label");
+    commonConfigurationChangeCheckboxMainPreferences("Labels");
     labelCreateWithoutCode($labelType, $labelName);
-    commonConfigurationChangeCheckboxMainPreferences("Label");
+    commonConfigurationChangeCheckboxMainPreferences("Labels");
     _log("Check code label", "custom1");
 }
 
@@ -133,8 +133,8 @@ function labelFormEmptyCode($name, $labelName){
 }
 
 function labelEmptyCodeValidation(){
-    _assertExists(_div("code: code not specified"));
-    _assert(_isVisible(_div("code: code not specified")));
+    _assertExists(_div("code not specified"));
+    _assert(_isVisible(_div("code not specified")));
 }
 
 /* test values */

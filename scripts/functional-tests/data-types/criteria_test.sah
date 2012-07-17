@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,8 +45,8 @@ function criteriaCreateDuplicateType($type, $names){
 function criteriaCreateEmpty($type, $names){
     commonCreate("Criteria");
     commonCriteriaForm($type, $names);
-    _assertExists(_div("name: criterion type name not specified"));
-    _assert(_isVisible(_div("name: criterion type name not specified")));
+    _assertExists(_div("criterion type name not specified"));
+    _assert(_isVisible(_div("criterion type name not specified")));
     _log("Do not allow create a criterion with empty type", "custom1");
 }
 
@@ -57,8 +57,8 @@ function criteriaCreateDuplicateName($type, $name){
     _click(_cell("Add"));
     _setValue(_textbox(0, _near(_span("New criterion"))), $name);
     _click(_cell("Add"));
-    _assertExists(_div("Already exists other criterion with the same name"));
-    _assert(_isVisible(_div("Already exists other criterion with the same name")));
+    _assertExists(_div("Already exists another criterion with the same name"));
+    _assert(_isVisible(_div("Already exists another criterion with the same name")));
     _log("Do not allow create a criterion with duplicate name", "custom1");
 }
 
@@ -103,14 +103,14 @@ function criteriaEdit($oldName, $newName, $cell){
 
 /* test to check a that LibrePlan give us a error */
 function criteriaNotValid(){
-    _assertExists(_div("checkConstraintUniqueCriterionTypeName: criterion type name is already being used"));
-    _assert(_isVisible(_div("checkConstraintUniqueCriterionTypeName: criterion type name is already being used")));
+    _assertExists(_div("Criterion Type name is already being used"));
+    _assert(_isVisible(_div("Criterion Type name is already being used")));
 }
 
 function criteriaCheckCode($criteriaType){
-    commonConfigurationChangeCheckboxMainPreferences("Criterion");
+    commonConfigurationChangeCheckboxMainPreferences("Criteria");
     criteriaCreateWithoutCode($criteriaType);
-    commonConfigurationChangeCheckboxMainPreferences("Criterion");
+    commonConfigurationChangeCheckboxMainPreferences("Criteria");
     _log("Check code label", "custom1");
 }
 

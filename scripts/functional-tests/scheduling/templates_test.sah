@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,7 +35,7 @@
 _include("../common_functions.sah");
 
 function templateProjectCreateTemplate($projectName, $template){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_derived1.png", _in(_cell(8,_near(_cell($projectName))))));
     _setValue(_textbox(0, _near(_span("Name"))), $template);
     _click(_cell("Save & Continue"));
@@ -44,7 +44,7 @@ function templateProjectCreateTemplate($projectName, $template){
 }
 
 function templateProjectAssignTemplate($template){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_add.png"));
     _setValue(_textbox(0, _near(_span("Name"))), "ProjectTemplate");
     _click(_italic(0, _cell("z-caption-l")));
@@ -112,13 +112,13 @@ function templateDelete($name){
 
 
 function templateProjectCheckAssigned($projectTemplate){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _assertExists(_span($projectTemplate));
     _assert(_isVisible(_span($projectTemplate)));
 }
 
 function templateTaskCheckAssignedValidation($totalTaskhours){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _assertExists(_div($totalTaskhours));
     _assert(_isVisible(_div($totalTaskhours)));
 }

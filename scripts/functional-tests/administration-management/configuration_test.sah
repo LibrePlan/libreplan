@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -188,7 +188,7 @@ function configCheckCalendarWorker($name){
 }
 
 function configCheckCalendarProject($name){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_add.png"));
     if (_condition(_textbox(0, _near(_span("Calendar"))).value == $name)){
     _log("The correct calendar is assigned", "custom1");
