@@ -94,8 +94,8 @@ function accountsForm($name, $password) {
 
 /* test to check a that LibrePlan give us a error */
 function accountsNotValid(){
-    _assertExists(_span("checkConstraintUniqueLoginName: username is already being used by another user"));
-    _assert(_isVisible(_span("checkConstraintUniqueLoginName: username is already being used by another user")));
+    _assertExists(_span("username is already being used by another user"));
+    _assert(_isVisible(_span("username is already being used by another user")));
 }
 
 function accountsComprobateUser($name, $Password) {
@@ -110,7 +110,7 @@ function accountsEdit($oldName, $newName, $newPassword, $cell) {
     _setValue(_password(0, _near(_span("Password"))), $newPassword);
     _setValue(_password(0, _near(_span("Password confirmation"))), $newPassword);
     _click(_textbox(0, _near(_cell("Add role"))));
-    _click(_cell("Administration"));
+    _click(_cell("Superuser"));
     _click(_cell("Add role"));
     _click(_cell("Save"));
     commonSaveValidation("User", $newName);
