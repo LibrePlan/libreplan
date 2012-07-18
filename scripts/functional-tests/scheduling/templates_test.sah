@@ -61,13 +61,14 @@ function templateTaskCreateTaskChild($name, $hours){
     _setValue(_textbox(0, _near(_span("New task"))), $name);
     _setValue(_textbox("z-intbox", _near(_span("Hours"))), $hours);
     _click(_cell("Add"));
+    _setValue(_textbox(21), "subTaskforTasks2");
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
     _log("Create task tree", "custom1")
 }
 
 function templateTaskCreateTemplate(){
-    _click(_span("C"));
+    _click(_span("F"));
     _click(_image("ico_derived1.png", _near(_span("Selected node:"))));
     _click(_cell("OK"));
     _click(_cell("Save & Continue"));
@@ -79,7 +80,7 @@ function templateTaskAssignTemplate($projectName, $taskName){
     commonEditProject($projectName);
     _click(_cell("Add From Template"));
     _click(_italic(0, _cell("z-caption-l")));
-    _click(_div("new container"));
+    _click(_div("taskfortasks"));
     _click(_cell("Create task"));
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
@@ -87,7 +88,7 @@ function templateTaskAssignTemplate($projectName, $taskName){
 }
 
 function templateTryDeleteAssigned($name){
-    _click(_link("Project Templates"));
+    _click(_link("Templates"));
     _click(_image("ico_borrar1.png", _in(_cell(6, _near(_cell($name))))));
     _click(_cell("OK"));
     templateTaskTryDeleteValidation();
@@ -98,11 +99,11 @@ function templateDeleteAllRequiredElements(){
     commonDeleteProject($projectName);
     commonDeleteProject($projectTemplate);
     templateDelete($projectTemplate);
-    templateDelete("new container");
+    templateDelete("taskfortasks");
 }
 
 function templateDelete($name){
-    commonDelete("Project Templates", $name, 6);
+    commonDelete("Templates", $name, 6);
     _log("Delete template", "custom1")
 }
 
@@ -129,8 +130,8 @@ function templateSaveValidation(){
 }
 
 function templateTaskTryDeleteValidation(){
-    _assertExists(_div("This template can not be removed because it has applications."));
-    _assert(_isVisible(_div("This template can not be removed because it has applications.")));
+    _assertExists(_div("Template cannot be removed because it has applications"));
+    _assert(_isVisible(_div("Template cannot be removed because it has applications")));
 }
 
 /* test values */
@@ -155,7 +156,7 @@ templateTaskCreateTemplate();
 templateTaskAssignTemplate($projectName, $taskName);
 templateTaskCheckAssignedValidation($totalTaskhours);
 templateTryDeleteAssigned($projectTemplate);
-templateTryDeleteAssigned("new container");
+templateTryDeleteAssigned("taskfortasks");
 templateDeleteAllRequiredElements();
 
 commonLogout();

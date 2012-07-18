@@ -109,13 +109,13 @@ function planningCheckAssignedCriterion($criterion){
 }
 
 function planningCheckIncorrectWorkerValidation(){
-    _assertExists(_div("The resource's calendar has no available days starting from the start of the task."));
-    _assert(_isVisible(_div("The resource's calendar has no available days starting from the start of the task.")));
+    _assertExists(_div("Resource is not available from task's start"));
+    _assert(_isVisible(_div("Resource is not available from task's start")));
 }
 
 function planningCheckIncorrectCriterionValidation(){
-    _assertExists(_div("There are no days available due to not satisfying the criteria. Another possibility is that the resources don't have days available due to their calendars."));
-    _assert(_isVisible(_div("There are no days available due to not satisfying the criteria. Another possibility is that the resources don't have days available due to their calendars.")));
+    _assertExists(_div("There are no days available due to not satisfying the criteria. Another possibility is that the resources do not have days available due to their calendars."));
+    _assert(_isVisible(_div("There are no days available due to not satisfying the criteria. Another possibility is that the resources do not have days available due to their calendars.")));
 }
 
 function deleteRequiredElements(){
