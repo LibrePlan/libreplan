@@ -110,10 +110,10 @@ searchResourceCheckFilter($workerList);
 
 for (var $i = 0; $i < $virtualWorkerList.length; $i++){
     commonVirtualWorkerCreate($virtualWorkerList[$i][0], $virtualWorkerList[$i][1]);
-    commonResourceEditAssignedCriteriaForm("Virtual Workers Groups", $virtualWorkerList[$i][0], 3, $virtualWorkerList[$i][1]);
+    commonResourceEditAssignedCriteriaForm("Virtual Workers", $virtualWorkerList[$i][0], 3, $virtualWorkerList[$i][1]);
     _log("Create a virtual worker", "custom1");
 }
-commonResourceFilter("Virtual Workers Groups",$criteriaType1, $criteriaType1List[0]);
+commonResourceFilter("Virtual Workers",$criteriaType1, $criteriaType1List[0]);
 searchResourceCheckFilter($virtualWorkerList);
 
 searchResourcesDeleteWorkerElements($workerList, "Worker");

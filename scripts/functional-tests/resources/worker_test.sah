@@ -157,15 +157,16 @@ function workerAssignProjectForm($workerName, $workerSurName){
 }
 
 function workerTryDeleteAssigned($worker){
-    commonDelete ("Workers", $worker, 5);
+    _click(_link("Workers"));
+    _click(_image("ico_borrar1.png", _in(_cell(5, _near(_cell($worker))))));
     commonResourceTryDeleteAssignedValidation();
 }
 
 /* Validations */
 
 function workerNotValid($worker){
-    _assertExists(_span("checkConstraintUniqueFiscalCode: ID already used. It has to be be unique"));
-    _assert(_isVisible(_span("checkConstraintUniqueFiscalCode: ID already used. It has to be be unique")));
+    _assertExists(_span("ID already used. It has to be be unique"));
+    _assert(_isVisible(_span("ID already used. It has to be be unique")));
 }
 
 function workerEmptyFields(){

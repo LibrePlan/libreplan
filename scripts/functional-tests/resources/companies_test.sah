@@ -58,13 +58,13 @@ function companyEdit($oldName, $newName, $cell) {
  */
 
 function companyDuplicatedName(){
-    _assertExists(_span("checkConstraintUniqueName: company name has to be unique. It is already used"));
-    _assert(_isVisible(_span("checkConstraintUniqueName: company name has to be unique. It is already used")));
+    _assertExists(_span("company name must be unique. Company name already used"));
+    _assert(_isVisible(_span("company name must be unique. Company name already used")));
 }
 
 function companyDuplicatedId(){
-    _assertExists(_span("checkConstraintUniqueNif: Company ID already used. It has to be be unique"));
-    _assert(_isVisible(_span("checkConstraintUniqueNif: Company ID already used. It has to be be unique")));
+    _assertExists(_span("Company ID already used. It must be unique"));
+    _assert(_isVisible(_span("Company ID already used. It must be unique")));
 }
 
 function companyEmptyField(){

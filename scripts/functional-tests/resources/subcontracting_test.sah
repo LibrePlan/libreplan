@@ -50,7 +50,7 @@ function subcontractingTaskForSubcontractForm($company, $subProjectName){
     _setValue(_textbox(0, _near(_span("External company"))), $company);
     _setValue(_textbox(0, _near(_span("Work description    "))), $subProjectName);
     _setValue(_textbox(0, _near(_span("Subcontract price"))), "6000");
-    _setValue(_textbox(0, _near(_span("Subcontracted code"))), $companyId);
+    _setValue(_textbox(0, _near(_span("Subcontracting code"))), $companyId);
     _click(_checkbox(0, _near(_span("Hours groups"))));
     _click(_row("Accept[2]"));
     _click(_image("ico_save.png"));
@@ -58,7 +58,7 @@ function subcontractingTaskForSubcontractForm($company, $subProjectName){
 }
 
 function subcontractingSendTask(){
-    _click(_link("Subcontracted Tasks"));
+    _click(_link("Send To Subcontractors"));
     _click(_cell("Send"))
     subcontractingSendSubValidation();
     _log("Task was sent", "custom1");
@@ -66,7 +66,7 @@ function subcontractingSendTask(){
 
 function subcontractingReportTask($projectName, $progressName){
     commonProgressAssignProject($projectName, $progressName);
-    _click(_link("Report Progress"));
+    _click(_link("Send To Customers"));
     _click(_cell("Send"));
     subcontractingSendProgressValidation();
     _log("Progress was sent", "custom1");
@@ -107,8 +107,8 @@ function subcontractingSendProgressValidation(){
 }
 
 function subcontractingDeleteValidation(){
-    _assertExists(_span("Deleting this subcontracted project, you are going to lose the relation to report progress. Are you sure?"));
-    _assert(_isVisible(_span("Deleting this subcontracted project, you are going to lose the relation to report progress. Are you sure?")));
+    _assertExists(_span("This project is a subcontracted project. If you delete it, you won't be able to report progress anymore. Are you sure?"));
+    _assert(_isVisible(_span("This project is a subcontracted project. If you delete it, you won't be able to report progress anymore. Are you sure?")));
 }
 /* test values */
 var $companyName = "subcompany";
