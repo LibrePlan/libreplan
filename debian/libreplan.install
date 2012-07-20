@@ -7,3 +7,4 @@ debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.0
 debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.1
 debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.2
 debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.3
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.3.0
