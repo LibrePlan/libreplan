@@ -11,10 +11,10 @@ if [[ $1 = configure && -r /etc/dbconfig-common/libreplan.conf ]]
 then
 	. /etc/dbconfig-common/libreplan.conf
 
-	if [ -z "${dbc_dbhost}" ] ; then
+	if [ -z "${dbc_dbserver}" ] ; then
 		database_host='localhost'
 	else
-		database_host=${dbc_dbhost}
+		database_host=${dbc_dbserver}
 	fi
 
 	echo "Adding libreplan Tomcat configuration bits"
