@@ -135,6 +135,7 @@ public class SubcontractModel implements ISubcontractModel {
 
                 if (currentSubcontractedTaskData == null) {
                     task.setSubcontractedTaskData(subcontractedTaskData);
+                    currentSubcontractedTaskData = subcontractedTaskData;
                 } else {
                     currentSubcontractedTaskData
                             .applyChanges(subcontractedTaskData);
