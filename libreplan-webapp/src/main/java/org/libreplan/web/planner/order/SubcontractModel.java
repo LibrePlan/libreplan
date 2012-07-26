@@ -36,6 +36,7 @@ import org.libreplan.business.planner.entities.SubcontractState;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -58,8 +59,8 @@ public class SubcontractModel implements ISubcontractModel {
      */
     private Task task;
     private org.zkoss.ganttz.data.Task ganttTask;
-    private Date startDate;
-    private Date endDate;
+    private IntraDayDate startDate;
+    private IntraDayDate endDate;
     private SubcontractedTaskData subcontractedTaskData;
 
     private SubcontractedTaskData currentSubcontractedTaskData;
@@ -74,8 +75,8 @@ public class SubcontractModel implements ISubcontractModel {
     @Transactional(readOnly = true)
     public void init(Task task, org.zkoss.ganttz.data.Task ganttTask) {
         this.task = task;
-        this.startDate = task.getStartDate();
-        this.endDate = task.getEndDate();
+        this.startDate = task.getIntraDayStartDate();
+        this.endDate = task.getIntraDayEndDate();
 
         this.ganttTask = ganttTask;
 
@@ -90,7 +91,7 @@ public class SubcontractModel implements ISubcontractModel {
                 this.addDeliverDate(task.getDeadline().toDateMidnight()
                         .toDate());
             } else {
-                this.addDeliverDate(getEndDate());
+                this.addDeliverDate(task.getEndDate());
             }
         } else {
             subcontractedTaskDataDAO.reattach(subcontractedTaskData);
@@ -135,6 +136,7 @@ public class SubcontractModel implements ISubcontractModel {
 
                 if (currentSubcontractedTaskData == null) {
                     task.setSubcontractedTaskData(subcontractedTaskData);
+                    currentSubcontractedTaskData = subcontractedTaskData;
                 } else {
                     currentSubcontractedTaskData
                             .applyChanges(subcontractedTaskData);
@@ -151,8 +153,8 @@ public class SubcontractModel implements ISubcontractModel {
     }
 
     private void recalculateTaskLength() {
-        task.setStartDate(startDate);
-        task.setEndDate(endDate);
+        task.setIntraDayStartDate(startDate);
+        task.setIntraDayEndDate(endDate);
 
         ganttTask.enforceDependenciesDueToPositionPotentiallyModified();
     }
@@ -188,13 +190,9 @@ public class SubcontractModel implements ISubcontractModel {
     }
 
     @Override
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    @Override
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        this.endDate = IntraDayDate.startOfDay(LocalDate
+                .fromDateFields(endDate));
     }
 
     @Override
@@ -218,18 +216,9 @@ public class SubcontractModel implements ISubcontractModel {
             subcontractedTaskData
                     .addRequiredDeliveringDates(subcontractorDeliverDate);
 
-            //update the end date of the task
-            updateEndDateWithDeliverDate();
-
             //update the state of the subcontracted task data
             updateStateToPendingUpdateDeliveringDate();
         }
-    }
-
-    private void updateEndDateWithDeliverDate(){
-        SubcontractorDeliverDate lastDeliverDate = this
-                .getSubcontractedTaskData().getRequiredDeliveringDates().last();
-        task.setEndDate(lastDeliverDate.getSubcontractorDeliverDate());
     }
 
     private void updateStateToPendingUpdateDeliveringDate(){

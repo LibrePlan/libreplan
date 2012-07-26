@@ -127,14 +127,6 @@ public class SubcontractController extends GenericForwardComposer {
         }
     }
 
-    public Date getEndDate() {
-        return subcontractModel.getEndDate();
-    }
-
-    public void setEndDate(Date endDate) {
-        subcontractModel.setEndDate(endDate);
-    }
-
     public void removeSubcontractedTaskData() {
         subcontractModel.removeSubcontractedTaskData();
     }

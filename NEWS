@@ -1,6 +1,1410 @@
 NEWS
 ====
 
+Version 1.3.0 (26 Jul 2012)
+---------------------------
+
+Summary
+~~~~~~~
+
+After some delay the LibrePlan team is proud to announce the release of a new
+major version of the tool, LibrePlan 1.3. Hence, for those of you who were
+waiting for it, thank you for your patient and understanding! :)
+
+In LibrePlan 1.3 we have fulfilled the targets that we had identified as top
+priority in the roadmap and this makes us happy, because of the work done and
+because we think that with the new features included we are providing LibrePlan
+with new capabilities. With LibrePlan 1.3 we are making the planner better for
+collaborative, real-time scenarios where many different people in the
+organization interacts with the projects planning.
+
+The main features which come with this version are:
+
+* Resource binding to users
+* Monthly timesheets
+* Project dashboard
+* Expenses
+* Permission enhancements
+* Currency support
+* Work breakdown structure (WBS) setting up behavior
+* Outsourcing improvements
+* Concurrent usage improvements
+* Revamped menu
+* Languages supported
+* Timesheets search window enhancements
+
+Notes
+~~~~~
+
+.. WARNING::
+
+  Remove web browser cache to avoid any problem with changes in JavaScript
+  resources.
+
+.. WARNING::
+
+  If you are using PostgreSQL version 8 you need to execute the following
+  command over LibrePlan database in order to use the script
+  ``scripts/database/upgrade_1.3.0.sql``::
+
+    su postgres -c "createlang -d libreplan plpgsql"
+
+If you are upgrading from 1.2.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.1.sql``, ``scripts/database/upgrade_1.2.2.sql``,
+``scripts/database/upgrade_1.2.3.sql`` and
+``scripts/database/upgrade_1.3.0.sql``.
+
+If you are upgrading from 1.2.1 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.2.2.sql``, ``scripts/database/upgrade_1.2.3.sql``,
+and ``scripts/database/upgrade_1.3.0.sql``.
+
+If you are upgrading from 1.2.2 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.2.3.sql`` and
+``scripts/database/upgrade_1.3.0.sql``.
+
+If you are upgrading from 1.2.3 or 1.2.4 versions without using the Debian
+package, you will need to manually execute on your database the SQL sentences
+from file: ``scripts/database/upgrade_1.3.0.sql``.
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jacobo Aragunde Pérez
+* Nacho Barrientos
+* Ignacio Diaz Teijido
+* Lucia Garcia Fernandez
+* Óscar González Fernández
+* Susana Montes Pedreira
+* Javier Moran Rua
+* Adrian Perez
+* Diego Pino
+* Manuel Rego Casasnovas
+* Juan A. Suarez Romero
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [cs] Zbyněk Schwarz
+* [de] Joern Knechtel <j.knechtel@gmx.de>, Michael Taxis <mxtaxis@gmx.de>
+* [es] Manuel Rego Casasnovas
+* [fr] Philippe Poumaroux
+* [gl] Manuel Rego Casasnovas
+* [it] Giuseppe Zizza
+* [nl] Jeroen Baten
+
+Changes
+~~~~~~~
+
+* Bump version number to 1.3.0
+* Update NEWS file for LibrePlan 1.3.0
+* Update Fedora and openSUSE README files with warning about plpgsql
+* Update Debian package changelog for LibrePlan 1.3.0
+* Update RPM package for LibrePlan 1.3.0
+* doc: Update basic documentation files due to new major release
+* Avoid update task end date when subcontracting a task
+* Bug #1522: Use delivery date as deadline when subcontracting tasks
+* Bug #1521: Avoid update task end date when changing delivery date
+* Bug #1520: Fixed NPE when marking a task for subcontract
+* doc: Remove unused file in user help
+* doc: Update user help index files
+* [doc] Added project dashboard help in Galician
+* [doc] Added project dashboard help in Spanish
+* [doc] Added project dashboard help in English
+* doc: Update AUTHORS file info about new German translators
+* 18n: Add German language to enum and modify pom.xml to use English userguide
+* i18n: Add German translation
+* Update Debian package for LibrePlan 1.3.0
+* Debian: Enable plpgsql when using PostgreSQL 8.x
+* Debian: Use ${dbc_dbserver} instead of ${dbc_dbhost}
+* Update database scripts for LibrePlan 1.3.0
+* i18n: Update Italian translation
+* i18n: Update Czech translation
+* i18n: Update French translation
+* i18n: Update Dutch translation
+* Add suite for scheduling functional tests
+* Fix scheduling functional tests
+* Fix resources functional tests
+* Bug #1518: Prevent removing the same TaskSource twice.
+* Fix users functional tests
+* Fix administration-management functional tests
+* Fix account functional tests
+* Bug #123: Check the cases where the repeated criterion satisfaction was already deleted.
+* i18n: Use the same error messages in the assigned criteria tab for both workers and machines.
+* Merge branch 'bug-1513'
+* Revert "Bug #1513: Lazy exception going to project dashboard"
+* Fix data types functional tests
+* Change validation messages in material units editing window
+* Fix title in progress type editing window
+* Bug #1513: Lazy exception going to project dashboard
+* Bug #1508: Display the correct task end date in the task properties window.
+* Small code refactor. With these changes, the code runs exactly the same way.
+* Bug #1513: Lazy exception going to project dashboard
+* Bug #1511: Take into account dependencies to parents to calculate task status chart
+* Bug #1494: Add a valid SubcontractorDeliverDate to the SubcontractedTaskData used in ReportAdvancesServiceTest.
+* Bug #1494: Add a valid SubcontractorDeliverDate to the SubcontractedTaskData used in tests.
+* Bug #1507: Fix problem using runOnReadOnlyTransaction to calculate critical path
+* Bug #1494: Check for null TaskSources before calling getTask().isSubcontracted().
+* Allow to use decimal numbers to set effort in monthly timesheet
+* Bug #1503: Fix calculation of min and max in histogram charts
+* Do not take into account work report lines with effort zero for task completion chart
+* Bug #1494: Deadline field disabled for subcontracted tasks also in Project Details perspective.
+* Bug #1494: Deadline field disabled for subcontracted tasks, it corresponds to delivery date.
+* Bug #1494: Use deadline as delivery date for subcontracted tasks, if present, or use task end date otherwise.
+* Bug #1494: Check there is at least one delivery date to accept a subcontracted task.
+* Bug #1505: Fix division by zero calculating margin with deadline
+* Bug #1506: Prevent NPE in project dashboard if there is no tasks yet
+* Bug #1503: Rename IntegerInterval to Interval
+* Bug #1503: Fix intervals in task completion chart
+* Bug #1503: Fix intervals in estimation accuracy chart
+* Bug #1501: Translate label of GlobalProject chart
+* Bug #1501: Global progress chart axis in project dashboard are wrong painted
+* Bug #1489: Change attribute name and constructor in UpdateDeliveringDateDTO to resemble SubcontractedTaskDataDTO and prevent confusions.
+* Bug #1489: Build UpdateDeliveringDate requests placing the client code in the correct place.
+* Bug #1493: Modified project deadline vertical line position to show it after the deadline date
+* Bug #1493: Modified task deadline mark position to show it just after the deadline date
+* Fixed some graphical issues on subcontracting screens
+* Moved Timesheet Lines List page from 'Reports' menu section to 'Cost'
+* Modified styles of 'more options' element on search filters
+* Revamped component on timesheet lines report to show found tasks information
+* Fix problem with EffortDuration in CalculateFinishedTasksEstimationDeviationVisitor
+* Bug #1497: Do not count the project root task as we have a explicit line for project deadline
+* Use EffortDuration to calculate estimation deviation on completed tasks
+* Bug #1502: Fix NPE in deviation indicator
+* Bug #1500: Fix material needed at date report only showing information in projects with permissions
+* Bug #1499: Fix project costs report only showing information in projects with permissions
+* Bug #1497: Count also containers and milestones in deadline violations chart
+* Bug #1496: Fix issue when visiting project dashboard in a project with milestones
+* Bug #1486: Take into account i18n to sort UserRole list.
+* Bug #1495: Fix resource usage ratios
+* Bug #1492: Check if the role had been added before.
+* Corrected a typo in the name of one of the predefined profiles.
+* Bug #1486: Sort Profiles list before adding it to the combo box.
+* Bug #1486: Replace the widget used to select the roles with a Combobox.
+* Bug #1486: Sort UserRole list before adding it to the combo box.
+* Bug #1479: Fix error loading jqplot Javascript files
+* Bug #1491: Mark strings in GlobalChart to be translated
+* Fix exception in progress dashboard if there are no progress in the project yet
+* Fix translation of legend in task status indicator chart
+* Bug #1485: Call model.initEdit to ensure proxies are initialized before loading monthly timesheet screen.
+* Bug #1484: Allow to visit planning screens to ROLE_CREATE_PROJECTS
+* Bug #1483: Fix problem with rounding in cost indicators and earned value legend
+* Bug #1483: Improve labels in cost indicators
+* Bug #1483: Refactored code in CostStatusController
+* Bug #1483: Fix values in cost indicators
+* Bug #1483: Fix problem getting the last value calculated
+* Bug #1476: Mark title chart to be translated
+* i18n: Small corrections in Spanish and Galician translation.
+* Move frozen code to initTimesheet method
+* Fixed width problems on monthly timesheet on low resolutions
+* Bug #1475: Fix exception adding ROUNDING_MODE to divide method
+* Fix NPE entering an empty value in the budget inputs
+* Fix problem introduced in 896096272c2b3ee5ccf229726b42cb4f88dd8bd1
+* i18n: Update reports subtitles translation in Spanish and Galician
+* i18n: Update Spanish and Galician translations
+* i18n: Update keys.pot files
+* i18n: Replace resource usage for resources load
+* Remove unneeded code in LimitingResourcesTabCreator
+* Set width other column
+* Updated project dashboard piechart colors
+* Increased project progress chart height to allow fitting of spread  bars
+* Reduced font size on project dashboard labels
+* Updated jqplot label styles and improved ok/warning image files
+* Reordered indicators with more frequently populated with values charts first
+* Updated captions and labels on project dashboard
+* Updated dashboard ok/warning images for KPI values
+* Inserted extra padding to add task to timesheet widget
+* Added class to Total row on timesheets and moved up to be the first aggregation element
+* Increased monthly timesheet columns to show better non integer hours
+* Replaced 'Previous' and 'Next' monthly timesheet buttons for icons
+* Made project and task columns Frozen on monthly timesheet
+* Modified width calculations on timesheet grid
+* Style revamps on user dashboards
+* Added custom styles to monthly timesheet
+* Fix problem due to limiting resources renaming
+* i18n: Translate options in worker edition
+* Remove unused code in ResourceType
+* i18n: Rename limiting resources to queue-based
+* Remove unneeded check in TabsRegistry related to limiting resources tab
+* allows the limiting resource assignment when there are subcontractor progresses.
+* i18n: Fixing some English strings
+* i18n: Fix string
+* Script for replacing strings in Java files
+* i18n: Fix strings
+* i18n: Fix messages in Project Costs report
+* Change capitalization in task tooltip
+* Fix LazyInitializationException editing a monthly timesheet
+* Replace "Task code" for "Task" in timesheets edition form
+* i18n: updated the titles of all the reports.
+* i18n: review strings in workingProgressPerTask report.
+* i18n: review strings in workingArrangementsPerOrder report.
+* i18n: review strings in schedulingProgressPerOrder report.
+* i18n: review strings in orderCostsPerResource report.
+* i18n: change Spanish strings in hoursWorkedPerWorkerInAMonth report to utf-8.
+* i18n: review strings in hoursWorkedPerWorkerInAMonth report.
+* i18n: review strings in hoursWorkedPerWorker report.
+* i18n: review strings in completedEstimatedHours report.
+* Bug #1474: Fix issue adding a new option Any to the report filers
+* i18n: Fixing strings
+* Bug #1473: Using OrderVersion from project in updating
+* i18n: Prevent extract empty strings in gettext-keys-generator.pl
+* i18n: Do not mark to translate predefined criterion types
+* i18n: Get week days translation automatically from Java libraries
+* i18n: Get months translation automatically from Java libraries
+* i18n: Remove unneeded spaces in strings marked to translate into QueueComponent
+* i18n: Text string review
+* i18n: Review and fix several strings to be translated
+* i18n: Fix problem with break lines in strings extractor
+* Bug #1472: Hide the bar with the arrow buttons of the WBS in read-only mode.
+* i18n: Update keys.pot files
+* i18n: Fixing strings
+* Bug #1443: Review other places where InvalidValue is used and mark to translate
+* Bug #1443: Fix gettext keys extractor
+* Bug #1443: Show error messages translated and just once
+* Bug #1369: Fix problem when a template defines a calendar in new project pop-up
+* Bug #1369: Fix problems with dates from template in new project pop-up
+* Remove column code in template finder as templates do not have code attribute anymore
+* Bug #1369: Set calendar from selected template in new project pop-up
+* Bug #1369: Fix problems in previous patch due to bandbox listener
+* Bug #1440: Add calendar field while editing project templates
+* Bug #1471: Remove duplicate map for codes in OrderElementTreeController
+* Bug #1471: Update all the columns in the WBS and not only name, hours and budget
+* Bug #1471: Create new method updateColumnsFor to include all similar calls
+* Bug #1471: Add getter and setter for textbox of DynamicDatebox
+* Bug #1470: Fixed problem calculating SumChargedEffort when the task was modified
+* Bug #1464: Prevent NPE when setting progress in a task with parents hidden
+* Bug #1466: Fix NPE when there are milestones in the planning
+* Disable create new users from worker edition if user lacks ROLE_USER_ACCOUNTS
+* Add permissions for ROLE_SUPERUSER where ROLE_EDIT_ALL_PROJECTS is used
+* Fix columns in template assignment log tab
+* Protect entry point in templates assignment log
+* Fix SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization
+* Protect entry point in Timesheet Lines List report
+* Refactor code related to timesheet lines list report
+* Finally fixing users and profiles related tests changing the way to define default users
+* New attempt to fix tests in Jenkins machine
+* Fix tests failing on Jenkins due to new predefined users with profiles
+* Fix reports to filter projects by user permissions
+* Fix method SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization
+* Add role read all projects to reports responsible
+* Review page titles due to menu revamp
+* Fix compilation issue due to class rename in commit bdf731d4736730d26fb288f11e933758b48df003
+* Fix wrong syntax in template.zul
+* Fix issue in TemplateController and ProfileDAO due to new predefined users
+* Modified behavior of UsersBootstrapInDB in order to create users only if there are no users yet
+* Disable edition and removal of default user admin
+* Fixed some users related tests due to previous patch
+* Add new example users
+* Remove default user with login user and password user
+* Move default profiles bootstrap to proper package
+* Fix title in access_forbidden.zul
+* Configure error logging to add info about the request URI if a 403 status code is returned
+* Configure page when 403 (forbidden status code) is send to the user
+* Add info about status code in error logging
+* Translate into English page_not_found.zul and mark strings to be translated
+* Remove unused file error.jsp
+* Move index.zul to common folder
+* Protect monthly timesheet page depending on user roles
+* Move sendForbiddenStatusCodeInHttpServletResponse method to Util class
+* Protect entry points methods in expenses sheet window
+* Add check to avoid bound users to go directly (via URL) to expenses page
+* Bug #1468: Reload bindings only in the existing user panel
+* fixes the error that happens at filtering by dates in the report about order cost per resource.
+* Prevent users to create templates from project edition if they do not have ROLE_TEMPLATES
+* Prevent users to create labels from project edition if they do not have ROLE_LABELS
+* Change column "Administrator" for "Superuser" in users list
+* Configure initial page when user clicks on LibrePlan logo depending on roles
+* Set different initial page depending on user roles
+* Protect main perspectives depending on user roles
+* Limit visibility of planning pages depending on roles
+* update web services documentation and add scripts to test this case and some example files.
+* implements an empty method called "beforeSaving" in the GenericRESTService and overrides it in the ExpenseSheetServiceRest in order to save the sum of expenses.
+* fixes the empty block with the apropriate condition and the needed behaviour.
+* removes the validation in the method toDTO because there is already the annotation @NotEmpty in the ExpenseSheet class.
+* renames this method getLabel to getExpenseSheet in IExpenseSheetService.
+* changes the InstanceNotFoundException to ValidationException and if the entity is not found the function returns a null.
+* update the end date of the subcontracted task according to the end date communication sent by the subcontractor.
+* Remove ROLE_BOUND_USER from roles list in user and profile edition
+* Disable buttons to go to user or worker edition in bound users depending on roles
+* Configure permissions for ROLE_BOUND_USER
+* Managing special role ROLE_BOUND_USER in workers and users windows
+* Create default example profiles
+* Show menus entries depending on user roles
+* Configure basic permissions for each page in Spring Security file
+* Add new roles in UserRole enum
+* Review and rename current roles
+* Refactoring LibrePlan menu
+* doc: Fix problem in PDF generation for user help
+* Fix changeset in MySQL
+* Bug #1275: Montecarlo combo for selecting critical path is empty
+* Fix bug: Remove 'Expected Spread Progress' bar from 'Global Progress' chart
+* Fix bug: LazyInitializationException in WorkReportLines
+* Refactoring: Class for creating GanttDiagram
+* Bug #1451: Error rendering GanttView coming directly from MonteCarlo
+* Fix bug: WorkReportLines filtering not working if there's no Task selected
+* Add default user wssubcontracting/wssubcontracting
+* Add new role to protect subcontracting services
+* Bug #1463: Fix issue changing order in parameters of entry point
+* Bug #1461: NullPointerException in WorkReportLines
+* Add 'Spread Progress' bar to 'Global Progress' chart
+* Add pop-up tooltip in 'Global Progress' chart
+* keep sorted the expense sheet lines when some date is changed.
+* changes some functions names in ExpenseSheetModel in order to understand its behaviour easily.
+* Bug #1460: Fix issue checking if TaskElement is Task
+* Bug #1439: Fix issue changing JavaScript to show/hide labels
+* Remove unused methods and variable in TaskComponent
+* Fix bug: NullPointerException in calculation of OvertimeRatio
+* Fix bug: NullPointerException when opening Dashboard view
+* Refactoring: Create class CriticalPathBuilder
+* Fix bug: Cannot render GlobalProgress Chart
+* Fix bug: Tomcat cannot load resource file
+* Bug #1454: Force update task size after reassignations
+* Bug #1459: Fix order of columns in OrderElementBandboxFinder renderer
+* Add constraint to check that in a personal expense sheet the resource is the same in all the lines
+* Revert "Add restriction to prevent remove all the lines in a personal expense sheet"
+* Fix typo in GET parameter for saved timesheets
+* Add button to delete personal expense sheet
+* Add type information in expenses sheet list and form
+* Allow to sort monthly timesheest in user dashboard
+* Sort expenses area list
+* Add class to highlight clickable rows in user dashboard
+* Add button to edit personal expense sheet from user dashboard
+* Show list of personal expense sheets
+* Add restriction to prevent remove all the lines in a personal expense sheet
+* Implement button to create a new personal expense sheet
+* Add new attribute personal in ExpenseSheet
+* Add new section for expenses in user dashboard
+* Remove constant only used once and mark string to be internationalized
+* Add currency symbol in value decimalbox
+* Simplify code of BandboxSearch in ExpenseSheetCRUDController
+* Fix issues in ExpenseSheetCRUDController regarding to BaseCRUDController
+* Remove unused attribute in ExpenseSheetCRUDController
+* Fix wrong sortDirection and width attributes in expenses sheet listings
+* fixes the functions which are used to check out if the cost category and the hour cost are active in the specified work report line.
+* removed the class CostWorkReportLineDTO because it is not used.
+* Using OrderElement id as key in the map to avoid problems
+* Add timesheet summary box
+* Add other row and column with information about other work reports
+* Sort tasks in my tasks area
+* Hide user dashboard page from menu if current user is not bound
+* Add message about monthly timesheet being saved
+* Add operations column in my tasks area
+* Fix problem in constraint only one work report line per day and task
+* updates the sum of expenses if the task associated to the expense sheet line is changed.
+* import and export the expense sheets.
+* Add constraints in WorkReport entity to prevent wrong modifications of monthly timesheets
+* Fix problem in work reports web services
+* Fix issue in entry points renaming method
+* Fix ResourceWorkedHoursDTO that was not working properly
+* Bug #1452: Fix problem adding info about resource in work report lines
+* Add total work column in work reports list
+* Add info about resource in monthly timesheets in work reports list
+* Remove unneeded set methods in WorkReportDTO
+* Add possibility to create monthly timesheets from work reports list
+* Use monthly timesheet page to edit work reports of this type
+* Add method in WorkReportType to check if it is a monthly timesheet
+* Bug #1457: Wrong value of labels CRITICAL_PATH_DURATION and CRITICAL_PATH_NUMHOURS
+* Mark with bold the special rows (capacity, total and extra) in the monthly timesheet
+* Change the way to calculate total extra (summing extra of each day)
+* Prevent NPE in monthly timesheets are if WorkReport was not created yet
+* Fix typo in Hibernate mapping of Configuration class
+* Add new extra row in monthly timesheet
+* Add available hours column in monthly timesheets area
+* Add number of tasks column in monthly timesheets area
+* Add total work column in monthly timesheets area
+* Generate entity sequence codes in monthly timesheets
+* Set width of bandbox search to add tasks in monthly timesheets
+* Sort tasks in monthly timesheet
+* Remove jqplot files from src dir
+* Move jqPlot CSS and Javascript files to JAR
+* Fix TypeOfWorkHoursServiceTest in MySQL
+* Add "Save & continue" button in monthly timesheets
+* Mark the inputs modified in the monthly timesheet
+* Add previous and next buttons on monthly timesheet
+* Allow to add any task in the monthly timesheet
+* Code refactor moving info about first and last day to MonthlyTimesheetModel
+* rpm: Add support for CentOS 6
+* Show empty string instead of zero in monthly timesheet
+* Use disabled textbox for capacity row in monthly timesheets
+* Set a pink background for days with zero capacity in the monthly timesheet
+* Fix align issues due to colspan in the first column of capacity and total rows
+* Add capcity row to monthly timesheets
+* Add total row to monthly timesheets
+* Remove commented line
+* Add button to hide/show extra filtering options
+* Show summary of filtered results
+* Increase number of results per page to 15
+* Filter 'Work Report Lines' by type (all, direct, indirect)
+* Fix TypeOfWorkHoursServiceTest due to new configuration field
+* Use new TypeOfWorkHours for monthly timesheets
+* Prevent to remove or disable the configured TypeOfWorkHours for monthly timesheets
+* Create special bootstrap to set the new field to define the TypeOfWorkHours of monthlytimesheets.
+* Add new configuration field to define the TypeOfWorkHours for monthly timesheets.
+* Add total column in the monthly timesheet grid
+* Fix bug: Refresh 'Global Progress' chart dinamically (no need to save project)
+* Fix bug: Paths to Javascript files depend on URL context
+* Fix bug: Wrong path to jqplot
+* Fix bug: Return 0 if budgetAtCompletion has no elements
+* Fix NPE in my tasks area when SumCharegedEffort is still null
+* Bump version number to 1.2.4
+* Update NEWS file for LibrePlan 1.2.4
+* Update RPM package for LibrePlan 1.2.4
+* Update Debian package for LibrePlan 1.2.4
+* Add database script for MySQL
+* Bug #1423: Remove unneeded line
+* First basic implementation of monthly timesheet edition grid
+* Add breadcrumb to moonthly timesheet page
+* Add edit button in monthly timesheets list
+* Show the list of monthly timesheets in the user dashboard
+* Remove @OnConcurrentModification from MyTasksAreaModel
+* Separete my tasks area .zul, controller and model to different files
+* doc: Update AUTHORS file info about new Czech translator
+* i18n: Add Czech language to enum and modify pom.xml to use English userguide
+* i18n: Add Czech language
+* Exclude inclusion of ehcache-1.1.jar
+* Hide monthly timesheets work report type from the list of work report types
+* Add new work report type to be used in monthly timesheets
+* Bug #1448: Fix issue reattaching the work report before removing
+* Bug #1450: Fix issue rounding when setting budget scale.
+* Bug #1447: Remove the test checking the creation of NOT_LATER_THAN constraint when a deadline is set.
+* Remove unused code
+* Fix bug: Inclusion of 'GlobalProgress' html code was causing a side effect in other views
+* Turn on batch-fetching for collections in several entities
+* Turn on second-level cache
+* Add possibility to sort the my tasks list by the different columns
+* First implementation of my tasks area
+* Bug #1447: Prevent the creation of NOT_LATER_THAN constraint when a deadline is set.
+* doc: Update Eclipse document with 2 new sections (Maven profiles and MySQL development)
+* Configure a custom URL target resolver in order to define the proper URL for bound users
+* Configure a custom authentication filter
+* Move code related with 'GlobalProgressChart' to separate files
+* Add user dashboard page without content yet
+* Rename "settings" folder for .zul files to "myaccount"
+* Bug #1444: Renamed variable with a more meaningful name.
+* Fix bug: Include minimized version of jquery and jplot
+* Bug #1444: Save affected parent TaskElements in the end of the process.
+* Bug #1445: Fix issue adding purple color in CalendarExceptionTypeColorConverter
+* doc: Fix wrong path in web services documentation
+* Remove unused jqplot files
+* Remove included jqplot plugins that are not actually needed
+* Fix bug: Work around to make possible to set colors in a PieChart
+* Fix bug: 'Absolute margin with deadline' was not being refreshed even if the deadline of the project changed
+* Bug #1441: Fix rendering problems on general data tab for chrome
+* Added qualitative indicators to deadline ratios
+* Revamped standard jqplot label styles
+* Updated titles and captions in Progress chart
+* Modified Project progress percentage chart colors
+* Revamped appearance of cost status indicator boxes
+* Revamped appearance of resources usage box
+* Transformed deadline status grid into a natural language caption
+* Moved tasks status grid values inside chart legend series
+* Disable first name and last name in settings window if user is bound
+* Add some Javadoc to AssignedEffortForResource class
+* Fix Sahi tests due to removal of scenarios option
+* fixes the test ReportAdvancesServiceTest
+* fix the ExpenseSheetTestDAO
+* Refactor code
+* Bug #1428: Rename customAssignedEffortForResource to setAssignedEffortForResource
+* Bug #1428: Take into account the load of the other allocations when reassigning
+* Bug #1428: Fix bug
+* Bug #1428: Bring all files related to IAssignedEffortForResource to one unique file
+* Revert "Bug #1428: Possible fix"
+* Bug #1431: Sort the EffortModifications too
+* Bug #1431: Fix problem in commit 9d5e3d88dd4dacc4fc00af544a3306d4327dd674
+* doc: Update development guide with the line for the favicon
+* Bug #1284: Add favicon to new pages (expenses and subcontractor communications)
+* doc: Improve web services documentation with the list of available services
+* i18n: Update Dutch translation
+* i18n: Update Italian translation
+* Bug #1442: Fix regression.
+* Trying to fix tests related with unbound users in UserDAOTest
+* Improve UserDAOTest adding a new check for getUnboundUsers method
+* Fix UserDAOTest that was failing in some cases
+* Display value 'Availability ratio' in Dashboard
+* Display value 'Overtime ratio' in Dashboard
+* Moved constants to inner class as they were only being used inside that class
+* Refactor code
+* Fix problem with MySQL and description TEXT field in expense_sheet
+* Update Liquibase to 2.0.5
+* Fix issues with MySQL in some Liquibase changes
+* Bug #1284: Added favicon in all the screens.
+* Replace "Login name" for "Username"
+* Add option to unbound resource from user edition
+* Add warning about bound resource when removing a user
+* Add link from user edition to worker edition if the user is bound to any worker
+* Add info about bound resource in user edition
+* Add bound resource info in the users list
+* Refactor users list to use a RowRenderer
+* Disable first and last name in user edition if user is bound to any resource
+* Add option to remove bound user too when removing a resource
+* Move logic to remove order authorizations when removing a user to UserDAO
+* Add link from worker edition to user edition if the worker is bound to a user
+* Change user Listbox for a BandboxSearch
+* Modify worker edition UI to add the chance to bound a worker to a user
+* Add assert to check that a limiting or virtual resource is not bound to any user
+* Add assert to check that a worker is not bound to a user already bound with other worker
+* Create basic UI to bound a user to a worker
+* Add relationship between and Worker and User
+* Merge branch 'master' into expenses-tracking
+* Merge branch 'master' into subcontracting
+* Fix bug
+* Fix typo in method name
+* Fix bug
+* Fix bug, don't try to render Dashboard charts if the project doesn't have tasks
+* fixes the method addCurrencySymbol to return zero if the parameter is null
+* adds the currency symbol and set the right parameter to method reloadTotalBudget in the order edition view.
+* Merge branch 'master' into subcontracting
+* i18n: Fix small typo in Spanish and Galician translations.
+* Bug #1284: Added favicon.
+* Bug #1284: Fix NullPointerException.
+* Bug #1414: Reduced width of MultipleBandbox filter search
+* Bug #1421: Fixed the pagination bug when indenting nodes into containers on previous pages
+* Remove 'Overall progress' tab
+* adds some tests to check that the expenses calculation works properly.
+* changes the method getCostOfHours to getHoursMoneyCost in order to fix the Test.
+* Includes the currency format in the expenses module, and in the report of order cost per resource.
+* Code refactoring
+* Rename 'EarnedValueCalculator' to 'OrderEarnedValueCalculator'
+* Code refactoring
+* Code refactoring
+* Bug #1433: Fix the problem when there are multiple levels of tasks involved.
+* Bug #1433: Small code refactor of this bug fix.
+* Bug #1433: Make sure that old TaskSources are deleted also in the case of parent tasks.
+* Bug #1433: Make sure that old TaskSources are deleted when a task is unscheduled and re-scheduled.
+* Merge branch 'master' into expenses-tracking
+* Modify the Project cost report  to include a new area called Expenses, per OrderElement.
+* Add method in Util to include currency symbol in a BigDecimal
+* Include the cost because of expenses in the WBS imputed hours pop-up and updates the costs bar in Gantt chart with expenses.
+* create or update the sumExpenses when the expenseSheet is saved.
+* i18n: Update French translation
+* Remove unneeded calls to I18nHelper in web services
+* i18n: Update Spanish and Galician translations
+* i18n: Update keys.pot files
+* Fix wrong message in deadline constraints
+* i18n: Update keys.pot files
+* Implement Dashboard 'Cost Status' table
+* Bug #1431: Fix test because of now allocations are sorted (specific before generic)
+* Bug #1431: Fix test creating a standard list instead of an unmodifiable list
+* Bug #1431: Fix issue sorting allocations (first the specific ones)
+* Bug #1428: Possible fix
+* Bug #1430: Fixing issue checking code for each child and not for the parent node
+* Bug #1430: Fix problem with error messages in OrderElementConverter
+* Remove unused method in IntegrationEntityModel
+* Moved code attribute from InfoComponent to new class InfoComponentWithCode to fix regression.
+* Remove minor optimization
+* Fix bug, upper limit and lower limit in TaskCompletationLag should be +3,-2 when there's only one task
+* Revamp 'Estimation Accuracy' chart
+* Fix bug, wrong deviation calculator in 'TaskCompletationLeadLag' chart
+* Days interval in 'Task Completation Lead/Lag' should be Integer
+* Calculate 'Absolute Margin with Deadline'
+* Bug #1425: Fix problem change wrong parentheses
+* Bug #1263: Fix issue reseting the value of the textbox
+* Remove unused variable in TreeController.Renderer.updateBudgetFor(T)
+* Bug #1388: Fix issue updating name textbox when coming back from pop-up
+* Moved database changeset to the correct file.
+* Recode 'Margin with Deadline' chart
+* Recode 'Task Completation Lead/Lag' chart using jqplot4java
+* Recode 'Task Status' chart using jqplot4java
+* Recode 'Deadline Violation' chart using jqplot4java
+* Add jplot4java
+* Removed code attribute at template level.
+* Remove code column from template tree.
+* Remove code attribute from templates finder.
+* Remove code attribute from OrderElementTemplate entity and from DB.
+* create the sumExpenses class to represent the total money spent in expense lines for each OrderElement.
+* Remove dirs 'docs' and 'examples' from jqplot
+* Bug #1423: Fix bug adding root task to graph
+* Bug #1424: Fix issue loading derived allocations
+* Bug #1412: Avoid NPE if clockStart and clockFinish are not defined
+* Recode 'Task Completation Lead/Lag' using jqPlot
+* Add table with summary of the status of tasks
+* Recode 'Global Progress' and 'Task Status' using jqPlot
+* Add jqPlot
+* Fix rounding problems with BigDecimal in reports
+* Fix issue when a currency symbol includes some special chars (like ".")
+* Add currency symbol in all the decimalbox representing money
+* Moved method to get currency symbol to Util class
+* Avoid to delete an order element with expenses
+* Refactoring ExpenseSheetCRUDController to extend BaseCRUDController
+* Use currency symbol instead of euro symbol in report orderCostsPerResource
+* Use currency symbol instead of euro symbol in tasks tooltip
+* Add combo in configuration window to choose currency
+* Add new fields for currency code and symbol in configuration
+* Bug #1422: Fix issue calling onRetreival to force synchronization
+* change the properties with type Date to LocalDate in the ExpenseSheet and ExpenseSheetLine classes.
+* Upgrade ZK to 5.0.11
+* rpm: Make sure all update SQL scripts are installed
+* Fix problems with Liquibase 2.0.4 and MySQL for tag modifyDataType
+* add constraints and validations in the expense sheet view.
+* renamed the TaskInExpenseSheetBandboxFinder to OrderElementInExpenseSheetBandboxFinder
+* add the methods to set a constraint to the bandbox
+* reset the model in BandboxSearch when the finder is set, in order to update the model.
+* Refactoring the classes ExpenseSheet and ExpenseSheetLine
+* Update Liquibase to 2.0.4
+* create the test "expenseSheetTestDAO"
+* change the name of the entry Work Reports to be Time Tracking.
+* Configuring permissions to access and to save the expenses sheet with the role "Expenses tracking allowed".
+* create expense sheet list and the edition view for each one.
+* change Libreplan configuration view and add the expense sheet as a class whose code can be autogenerated.
+* create ExpenseSheet and ExpenseSheetLine classes.
+* doc: Fix some broken links to files in SourceForge.net
+* doc: Add note about removing browser cache in NEWS file
+* Corrected wrong indentation in NEWS file.
+* Bug #1416: Reload resources text in parent tasks too
+* Bump version number to 1.2.3
+* Update NEWS file for LibrePlan 1.2.3
+* Update RPM package for LibrePlan 1.2.3
+* Update Debian package for LibrePlan 1.2.3
+* Update database scripts for LibrePlan 1.2.3
+* Bug #1417: Add UI validation to prevent empty codes
+* doc: Update AUTHORS file info about new Polish translator
+* i18n: Add Polish language to enum and modify pom.xml to use English userguide
+* i18n: Add Polish translation
+* Bug #1384: Add validation in starting date and deadline depending on position constraints
+* Bug #1358: Removed unnecessary tooltip string
+* Bug #1358: Added CSS max dimensions restriction to configured company logo
+* Bug #1407: Run TaskComponent.updateProperties() after running the scheduling algorithm.
+* Remove unused fields in Order Costs Per Resource Report
+* Bug #1412: Fix problem converting to string clockStart and clockFinish
+* Bug #1409: Rename RelatedWithAnyOf to RelatedWith
+* Bug #1409: Fix problem replacing allocations for the ones related to the criterion
+* Revert "Bug #1320: When asking a container for start constraints, return the leftmost"
+* Bug #1411: Missing Spanish translation for "Project cost by resource"
+* Fix Sahi test due to change in string
+* i18n: Update Dutch translation
+* i18n: Update French translation
+* doc: Update HACKING file about the compilation options
+* Add new compilation option to disable default users (user, wsreader and wswriter)
+* Change the order and labels of the filtering area
+* Make coherent behavior of bandbox with the rest of elements in the filtering bar
+* Bug #1395: Fix issue setting width of date boxes to 100px
+* Rename WorkerMultipleFiltersFinder to ResourceFilterEnumByResourceAndCriterion
+* Allow to filter resources by criteria in the resource load window
+* Fix error in documentation of class ResourcesMultipleFiltersFinder
+* i18n: Update Italian translation
+* i18n: Update Spanish and Galician translations
+* enables the button "Update task end" in the subcontract pop-up, when the deadline is empty.
+* i18n: Update keys.pot files
+* Merge branch 'master' into subcontracting-merger-master
+* Bug #1402: Invalidate the TaskComponents instead of the whole GanttPanel
+* Refactor the class EndDateCommunicationToCustomer to be EndDateCommunication.
+* add tests to check out end dates requested from subcontract to customer are correctly reported.
+* Merge branch 'master' into project-dashboards
+* change the precision of delivery date requested by the customer in the subcontract pop-up.
+* if the project is regular, the tables of the delivery dates, requested by the subcontractor, and of the delivery dates, requested by the customer, wont be shown in the general tab.
+* modify the subcontract pop-up to view the information of the end dates communicated by subcontractors and add a button to update the deadline of the task.
+* set the new end date communications to customers as not transient object anymore.
+* modify the view of communications received from subcontractors to show the end date communications correctly.
+* Adaptation of the XML message to send end date communications from subcontractor to customer
+* Bug #1349: Fix translation issue in choosing template pop-up
+* Bug #1349: Mark to translate exception day type
+* Bug #1349: Fix translation in calendar type
+* Bug #1298: Mark to translate roles in user and profile edition
+* Remove CutyCaptTimeout
+* Bug #1406: Add UI validation for name field too
+* Bug #1406: Add validation in the UI and also a try catch for possible ValidationExceptions
+* Fix several issues in the new thread
+* Refactor the class OrderElementWithAdvanceMeasurementsDTO to be OrderElementWithAdvanceMeasurementsOrEndDateDTO.
+* modify the screen "Send to customers" to detect that there is a new end date pending to send from a subcontractor to its customer.
+* modify the General Data tab of a project in order to include the table to manage the end date communications to customer.
+* add to the Order class a list sorted of elements of the class EndDateCommunitationToCustomer.
+* Add a thread to perform SumChargedEffort recalculations
+* Improve database preconditions in Liquibase changeset
+* Bug #1400: Move call to do recalculations after doTheSaving
+* doc: Fix typo in INSTALL file
+* Bug #1400: Fix problem recalculating SumChargedEfforts if some elements are moved in the WBS
+* Avoid to delete a subcontractor progress that has been sent in subcontractor.
+* Include a column with the name of the project and other with the "Delivery date, and make the list sortable by the column "communication" or "company".
+* Fix the error for what the column "Communication" was not being updated.
+* Add map in order to avoid repeat find when SumChargedEffort has been already found before
+* Prevent NPE in OrderElement::getSumChargedEffort()
+* Create SumChargedEffort while saving the work reports
+* Change mapping between SumChargedEffort and OrderElement
+* doc: Fix broke link in INSTALL file
+* doc: Update information about how to install in Fedora and openSUSE
+* Changes the "General data" tab about subcontracting module.
+* doc: Add info about JAVA_OPTS configuration in INSTALL file
+* make the list sortable by default by state,but using alphabetic sort, but the first tasks will be the pending tasks.
+* include the hour, minute precision in the communication date received from customers.
+* Fix the layout of the screen "to customers" in subcontractor module.
+* Rebase the code of the .zul pages for the templates screen.
+* [Bug #1234] Fix the deletion of fields in progress reporting in subcontractor module.
+* [Bug #1234] Fix the deletion of fields in progress reporting in subcontractor module.
+* Fix problems in Liquibase changes in MySQL
+* Merge branch 'money-cost-monitoring-system'
+* Merge branch 'libreplan-1.2' into money-cost-monitoring-system
+* add one-to-many association from SubcontractedTaskData to SubcontractorCommunication with a cascade="delete" in order to delete SubcontractorCommunication when its associated SubcontractedTaskData is deleted.
+* doc: Add info about add-apt-repository command in INSTALL file
+* doc: Add info about add-apt-repository command in INSTALL file
+* Bug #1387: Code refactor of the previous patches for this bug.
+* Bug #1387: Fix bug when it happens in the opposite way.
+* Bug #1387: Fix bug
+* Bug #1387: Code refactor of the previous patches for this bug.
+* Bug #1387: Fix bug when it happens in the opposite way.
+* Show budget information in a read-only field inside task properties tab
+* Bug #1387: Fix bug
+* Change color of money cost bar to a darker one to avoid accessibility issues
+* Bug #1403: Only regenerate codes if isCodeAutogenerated() is true
+* Bug #1403: Only regenerate codes if isCodeAutogenerated() is true
+* update the deadline of the task and of the order in the subcontract side when a new deliver date is sent.
+* save the subcontract communication date if you send a subcontract communication and the previous state is Failed_Sent.
+* manage a optimistic locking exception which happens due to a subcontracted task has been modified by other instance.
+* set the fields of the subcontraction pop-up to read-only mode when a subcontracted task has been sent.
+* Add a map in MoneyCostCalculator to cache calculated values
+* Disable Money Cost Bar in company view to avoid performance issues
+* Bug #1289: Added subcontractor name to tasks when showing resources is enabled
+* Bug #1289: Added subcontractor name to tasks when showing resources is enabled
+* set the correct class to the button delete "Delivery date".
+* set the fields "Subcontracting date" and "Subcontracting communication date" in the subcontractor pop-up in read only mode.
+* Remove unneeded throws in MoneyCostCalculatorTest
+* Add unit tests to check MoneyCostCalculator with a different type of hours
+* set the progress values, which are sent from a subcontrated task, in read only mode.
+* Remove commented lines in MoneyCostCalculatorTest
+* Update Copyright info in user documentation
+* Update Copyright info in user documentation
+* Change the value format of the last progress in sent communications from subcontractors.
+* Improve sentence in "Imputed hours" tab editing a task
+* Improve sentence in "Imputed hours" tab editing a task
+* Add information about budget in "Imputed hours" tab
+* Add unit tests to check MoneyCostCalculator with a tree of tasks
+* Change name of the communication type from "Report advance" to "Progress Update".
+* Show in bold (the font) the rows which are not reviewed in the list of sent communications from customer and subcontractor.
+* Remove unused parameters in CutyPrint.createCSSFile
+* Remove unused parameters in CutyPrint.createCSSFile
+* Add option to print money cost bar
+* include a refresh button belonging to the list of customer and subcontractor communications, in order to update the selected filter.
+* Add a new test case to check MoneyCostCalculator when there is not relationship via cost category
+* add the appropiate icon, the class and the tooltip text in the edit button, in the subcontracting module.
+* change precision of the deadline to just show in format dd/mm/YYYY and according to the locale.
+* Change the name of the menus for the subcontracting module.
+* Merge branch 'master' into subcontracting
+* Prevent possible rounding problems dividing BigDecimals
+* Prevent NPE if there is not relationship between resource and type of hours via cost category
+* Reload budget field in "General data" of templates
+* Add field in "General data" tab to show the project budget
+* Print Money Cost Bar proportinal to task size
+* Prevent NPE calculating money cost for a TaskElement
+* Remove method getMoneyCostBarPercentage from ITaskFundamentalProperties
+* Improve tooltip message using budget, consumed money and percentage
+* Using the new MoneyCostCalculator to print the new Money Cost bar
+* Implement money cost calculation in a new class called MoneyCostCalculator
+* Fix Money Cost Bar position in containers
+* Add money cost percentage in the tooltip
+* Change CSS for the money cost bar and reported hours bar
+* Change icon for the new money cost bar
+* Add new money cost bar at this moment using value, icon and color of reported hours
+* doc: Update Fedora and openSUSE documentation for upgrade LibrePlan
+* doc: Update Fedora and openSUSE documentation for upgrade LibrePlan
+* Merge branch 'libreplan-1.2' into money-cost-monitoring-system
+* Fix typo in "Interporlation" (extra r)
+* Fix typo in "Interporlation" (extra r)
+* doc: Fix date format in on version at NEWS file
+* doc: Fix date format in on version at NEWS file
+* Bump version number to 1.2.2
+* Update NEWS file for LibrePlan 1.2.2
+* Update RPM package for LibrePlan 1.2.2
+* Update Debian package for LibrePlan 1.2.2
+* Update database scripts for LibrePlan 1.2.2
+* Bump version number to 1.2.2
+* Update NEWS file for LibrePlan 1.2.2
+* Update RPM package for LibrePlan 1.2.2
+* Update Debian package for LibrePlan 1.2.2
+* Update database scripts for LibrePlan 1.2.2
+* Remove some unneeded lines in libreplan.spec
+* Remove some unneeded lines in libreplan.spec
+* www: Add new README files for Fedora and openSUSE in libreplan.org
+* www: Add new README files for Fedora and openSUSE in libreplan.org
+* Rename database scripts to create database and user
+* Prepare libreplan spec file for the release 1.2.2.
+* Add LibrePlan RPM spec file
+* Add instructions to configure LibrePlan in openSUSE
+* Add instructions to configure LibrePlan in Fedora
+* Add Tomcat6 configuration file
+* Add scripts to create database and user libreplan
+* Add CutyCapt RPM spec file
+* Rename database scripts to create database and user
+* Prepare libreplan spec file for the release 1.2.2.
+* Add LibrePlan RPM spec file
+* Add instructions to configure LibrePlan in openSUSE
+* Add instructions to configure LibrePlan in Fedora
+* Add Tomcat6 configuration file
+* Add scripts to create database and user libreplan
+* Add CutyCapt RPM spec file
+* Updated documentation about the new i18n profile
+* Wrap gettext plugin inside a new profile i18n to save time while developing
+* Bug #1362: Specify type of property in Templates.hbm.xml to avoid problems with MySQL
+* Bug #1362: Specify type of property in Templates.hbm.xml to avoid problems with MySQL
+* doc: Removed legacy project logos from documentation screenshots
+* doc: Removed legacy project logos from documentation screenshots
+* Updated documentation about the new i18n profile
+* Wrap gettext plugin inside a new profile i18n to save time while developing
+* Add no negative constraint in budget fields in edition forms
+* Make bigger the description field in templates edition
+* Make bigger the description field in templates edition
+* Add budget field in order element template edition form
+* Use budget field when creating a template from a task or vice versa
+* Renamed 'Order dashboard' perspective by 'Dashboard'
+* Added new perspective icon for project dashboard
+* Fixed nullpointer exception when there are not elements in deviations array
+* Improved layout disposition and chart fonts in order dashboard
+* Add budget field in order element details form
+* Add budget cell in WBS
+* Add new field budget to OrderLineTemplate
+* Bug #1398: Fix problem with long descriptions in templates
+* Bug #1398: Fix problem with long descriptions in templates
+* Bug #1397: Revert a previous commit to avoid the problem
+* Bug #1397: Revert a previous commit to avoid the problem
+* Add basic tests for new attribute budget
+* Add new field budget to OrderLine
+* Bug #1393: Fix NPE moving milestone
+* Bug #1393: Fix NPE moving milestone
+* Bug #1394: Fix problem because of deletedWorkReportLinesSet set was not reseted
+* Bug #1394: Fix problem because of deletedWorkReportLinesSet set was not reseted
+* Change URL to demo in REST services example scripts
+* Change URL to demo in REST services example scripts
+* Sorts the configuration units by name
+* Sort workers by lastname, name
+* Bug #1387: Reset the TaskSource when an OrderGroup changes to scheduling point.
+* Bug #1387: Reset the TaskSource when an OrderGroup changes to scheduling point.
+* Bug #1390: correct method TaskComponent.setClass to overwrite the classes instead of adding them.
+* Bug #1390: correct method TaskComponent.setClass to overwrite the classes instead of adding them.
+* doc: Update AUTHORS file info about new Dutch translator
+* doc: Update AUTHORS file info about new Dutch translator
+* i18n: Add Dutch language to enum and modify pom.xml to use English userguide
+* i18n: Add Dutch translation
+* i18n: Add Dutch language to enum and modify pom.xml to use English userguide
+* i18n: Add Dutch translation
+* Bug #1382: Fix the bug in all cases.
+* Bug #1382: Fix the bug in all cases.
+* Bug #1382: Synchronize deadline dates between the WBS and the Gantt views.
+* Bug 1383: Fixed corner case of deadline and current day right position
+* Displayed project start vertical line with independency of project deadline
+* Bug #1382: Synchronize deadline dates between the WBS and the Gantt views.
+* Bug 1383: Fixed corner case of deadline and current day right position
+* Displayed project start vertical line with independency of project deadline
+* Added vertical line in scheduling perspective to display project start date
+* Bug #1344: Fix bug moving the addition of ConstraintViolationListeners to doAfterCompose instead of constructor.
+* Bug #1344: Fix bug moving the addition of ConstraintViolationListeners to doAfterCompose instead of constructor.
+* Remove redundant call to scheduling algorithm from TaskPropertiesController.
+* Some API docs for the entering/reentering part
+* Remove uneeded parameters to prevent redundant invocations to scheduling algorithm.
+* Use more accurate name
+* Bug #1354: Fix bug
+* Remove redundant call to scheduling algorithm from TaskPropertiesController.
+* Some API docs for the entering/reentering part
+* Remove uneeded parameters to prevent redundant invocations to scheduling algorithm.
+* Use more accurate name
+* Bug #1354: Fix bug
+* Added vertical line in scheduling perspective to display project start date
+* Fixed vertical positioning of resources string next to containers
+* Fixed focus at textbox on created leaves with the ancestor hours
+* Set focus in the element with empty name
+* Fix some tests due to previous change
+* Set name to empty for the order element moved inside the new container
+* i18n: Update Portuguese translation
+* i18n: Update Italian translation
+* i18n: Update Portuguese translation
+* i18n: Update Italian translation
+* Update French translation
+* Update French translation
+* Bug #1355: transform AS SOON AS POSSIBLE and AS LATE AS POSSIBLE constraints to the correct constraint based on the scheduling mode.
+* Bug #1355: transform AS SOON AS POSSIBLE and AS LATE AS POSSIBLE constraints to the correct constraint based on the scheduling mode.
+* Bug #1380: Don't allow ASAP constraint for tasks in projects where init date is not set.
+* Bug #1355: transform NOT EARLIER THAN and NOT LATER THAN constraints to the correct constraint based on the scheduling mode.
+* Bug #1355: transform NOT EARLIER THAN and NOT LATER THAN constraints to the correct constraint based on the scheduling mode.
+* Bug #1380: Don't allow ASAP constraint for tasks in projects where init date is not set.
+* Keep task name for the new container if it is an empty leaf
+* Change leaf creation behavior when selected parent is an empty leaf
+* i18n: Update Spanish and Galician translations
+* i18n: Update Spanish and Galician translations
+* i18n: Update keys.pot files
+* i18n: Update keys.pot files
+* Bug 1302: Fix changing ResourcesPerDay scale to 4 and rounding EffortDuration to minutes
+* Bug #1374: Move capacity field to calendar tab in order to be edited together
+* Bug #1374: Move capacity field to calendar tab in order to be edited together
+* Remove scenarios option from configuration window
+* i18n: Avoid to translate language names and use the original ones
+* i18n: Avoid to translate language names and use the original ones
+* Bug #1355: START IN FIXED DATE constraints don't change to NOT EARLIER THAN after drag & drop.
+* Bug #1355: START IN FIXED DATE constraints don't change to NOT EARLIER THAN after drag & drop.
+* Bug #1281: Remove unneeded checkVersion when editing progresses
+* Bug #1281: Remove unneeded checkVersion when editing progresses
+* Bug #1375: Added a constraint for 24 hours and 0 minutes
+* Bug #1375: Added a constraint for 24 hours and 0 minutes
+* Disables the button save in change password window and remove role and profile button on edit user
+* Added condition to method isLdapUser to check configuration
+* Disallow to change roles and profiles in admin panel for LDAP users when roles are imported from LDAP
+* Disallow managing passwords in admin users panel for LDAP users when LDAP is being used for authentication
+* Disallow to change passwords to LDAP users
+* Disables the button save in change password window and remove role and profile button on edit user
+* Added condition to method isLdapUser to check configuration
+* Disallow to change roles and profiles in admin panel for LDAP users when roles are imported from LDAP
+* Disallow managing passwords in admin users panel for LDAP users when LDAP is being used for authentication
+* Disallow to change passwords to LDAP users
+* Mark "Group by weeks" by default in MonteCarlo as it returns better results
+* Bug #1379: Disable "Go" button in MonteCarlo if there is no tasks in a project
+* Mark "Group by weeks" by default in MonteCarlo as it returns better results
+* Bug #1379: Disable "Go" button in MonteCarlo if there is no tasks in a project
+* Bug #1348: Added effort to predefined calendar exception types
+* Bug #1348: Added effort to predefined calendar exception types
+* Bug #1282, #1376: Prevent exception when deleting a milestone inside a container.
+* Bug #1282, #1376: Prevent exception when deleting a milestone inside a container.
+* Correct a typo in an English string.
+* Bug #1362: Specify type of property in hbm.xml to avoid problems with MySQL
+* Bug #1362: Specify type of property in hbm.xml to avoid problems with MySQL
+* Bug #1343: Only closed projects in company view perspective are displayed in grey
+* Bug #1343: Made graphically less relevant component showing project state
+* Bug #1345: Added project state to name string in breadcrumbs line
+* Bug #1343: Styled in grey all closed/finished/cancelled projects in company view
+* Bug #1370: Fixed progress bars not being properly placed inside containers
+* Bug #1373: When creating new projects from template the explicitly filled start date and deadline values are used
+* Bug #1369: Moved the template combobox over autogenerated code checkbox in new project popup
+* Bug #1369: Improved behaviour of project creation popup when using templates
+* Bug #1343: Added method isRoot() to gantt tasks.
+* Bug #1343: Only closed projects in company view perspective are displayed in grey
+* Bug #1343: Made graphically less relevant component showing project state
+* Bug #1345: Added project state to name string in breadcrumbs line
+* Bug #1343: Styled in grey all closed/finished/cancelled projects in company view
+* Bug #1370: Fixed progress bars not being properly placed inside containers
+* Bug #1373: When creating new projects from template the explicitly filled start date and deadline values are used
+* Bug #1369: Moved the template combobox over autogenerated code checkbox in new project popup
+* Bug #1369: Improved behaviour of project creation popup when using templates
+* Bug #1343: Added method isRoot() to gantt tasks.
+* doc: Update translators info in documentation
+* doc: Update translators info in documentation
+* Update AUTHORS file info about translators
+* i18n: Add French language to enum and modify pom.xml to use English userguide
+* i18n: Add French translation
+* Update AUTHORS file info about translators
+* i18n: Add French language to enum and modify pom.xml to use English userguide
+* i18n: Add French translation
+* Bug #1343: Prevent NullPointerException when creating a new milestone.
+* Bug #1343: Prevent NullPointerException when creating a new milestone.
+* Correct a typo in an English string.
+* Remove unnecessary method.
+* Remove redraw listeners for dependencies once these dependencies are removed.
+* Prevent unnecessary redraws of dependencies when opening a container.
+* Bug #1363: Remove visibility listeners corresponding to deleted tasks.
+* Remove redraw listeners for dependencies once these dependencies are removed.
+* Prevent unnecessary redraws of dependencies when opening a container.
+* Bug #1363: Remove visibility listeners corresponding to deleted tasks.
+* Bug #1343: Prevent NullPointerException when showing default filtering dates on company view.
+* Bug #1343: Prevent NullPointerException when showing default filtering dates on company view.
+* Bug #1368: Allows to create users with null password when LDAP is used.
+* Bug #1368: Allows to create users with null password when LDAP is used.
+* Removed two warnings in the build process, which can cause problems with newer versions of maven.
+* Removed two warnings in the build process, which can cause problems with newer versions of maven.
+* Bug #1343: Ensure that getDefaultPredicate is run in a transactional context.
+* Bug #1343: Ensure that getDefaultPredicate is run in a transactional context.
+* Bug #1343: Mark closed projects with a special class in the gantt.
+* Bug #1343: Use getRawValue instead of getValue in date constraint checkers.
+* Bug #1343: Allow showing closed projects in the company view, if they are inside the filter dates.
+* Bug #1343: Show default filtering dates on company view.
+* Bug #1343: Rewrite part of the code for company view initialization.
+* Bug #1343: Mark closed projects with a special class in the gantt.
+* Bug #1343: Use getRawValue instead of getValue in date constraint checkers.
+* Bug #1343: Allow showing closed projects in the company view, if they are inside the filter dates.
+* Bug #1343: Show default filtering dates on company view.
+* Bug #1343: Rewrite part of the code for company view initialization.
+* Bug #1353: Create Tabpanels object for load/earned value Tabbox when the screen is loaded, not in the open event.
+* Bug #1353: Create Tabpanels object for load/earned value Tabbox when the screen is loaded, not in the open event.
+* Bug #1359: Initialize the resources when the page is loaded, independently from the hidden/shown property of the load chart.
+* Bug #1359: Initialize the resources when the page is loaded, independently from the hidden/shown property of the load chart.
+* Bug #1357: Use end date minus one day as default date for earned value chart.
+* Bug #1357: Use end date minus one day as default date for earned value chart.
+* Bug #1351: Replaced by a label the disabled listbox to display material unit type
+* Bug #1351: fixed space for elements
+* Bug #1330: Setted focus on new progress measurement after pressing on *Add measure*
+* Bug #1351: Replaced by a label the disabled listbox to display material unit type
+* Bug #1351: fixed space for elements
+* Bug #1330: Setted focus on new progress measurement after pressing on *Add measure*
+* Bug #1357: Check if the date is out of the visualization area, and in that case set a new date before updating the legend.
+* Bug #1357: Small code rewrite to simplify the fix of the bug
+* Bug #1357: Check if the date is out of the visualization area, and in that case set a new date before updating the legend.
+* Bug #1357: Small code rewrite to simplify the fix of the bug
+* Update TODO file with roadmap to LibrePlan 1.3
+* Update TODO file with roadmap to LibrePlan 1.3
+* Bug #1366: Fix issue subtracting the value when you are removing work report lines
+* Bug #1366: Fix issue subtracting the value when you are removing work report lines
+* Bug #1360: Refresh work report line from database before subtracting it from order elements
+* Bug #1360: Refresh work report line from database before subtracting it from order elements
+* Bug #1364: Milestones are filtered now like any other task
+* Bug #1364: Milestones are filtered now like any other task
+* Bug #1362: Fix problem with long descriptions in projects
+* Bug #1362: Fix problem with long descriptions in projects
+* Bug #1352: Fix issue not saving tasks without order element
+* Bug #1352: Fix issue not saving tasks without order element
+* Bug #1320: When asking a container for start constraints, return the leftmost of children's start-in-fixed-date constraints.
+* Revert "[Bug #1273] Reimplement coerceToString as a workaround for the bug in Decimalbox."
+* Revert "[Bug #1273] Reimplement coerceToString as a workaround for the bug in Decimalbox."
+* Bug #1320: When asking a container for start constraints, return the leftmost of children's start-in-fixed-date constraints.
+* Upgrade ZK version to 5.0.10
+* Upgrade ZK version to 5.0.10
+* doc: Update information in UPDATE file
+* doc: Update information in UPDATE file
+* Release new version LibrePlan 1.2.2
+* Release new version LibrePlan 1.2.2
+* i18n: Update Portuguese translation
+* i18n: Update Portuguese translation
+* Bug #1335: Don't force the check of the earned value legend date box every time the gantt is reloaded.
+* Bug #1335: Don't force the check of the earned value legend date box every time the gantt is reloaded.
+* Improve logging of possible exceptions checking version information
+* Improve logging of possible exceptions checking version information
+* Bug #1342: Move initial order state to PlanningState and use it from Gantt view too
+* Bug #1342: Move initial order state to PlanningState and use it from Gantt view too
+* Bug #1346: Fix the cause of the bug removing TaskElement from parent if it is removed
+* Bug #1346: Fix the cause of the bug removing TaskElement from parent if it is removed
+* Bug #1342: Show save button in Gantt view when it is disabled
+* Bug #1342: Now it's possible to mark a project like STORED
+* Bug #1342: Show save button in Gantt view when it is disabled
+* Bug #1342: Now it's possible to mark a project like STORED
+* Bug #1335: Update the earned value chart legend every time the chart is reloaded.
+* Bug #1335: Update the earned value chart legend every time the chart is reloaded.
+* doc: Update LDAP configuration translations
+* doc: Update LDAP configuration translations
+* Remove unused code in LibrePlanReportController
+* i18: Remove unneeded code to manage languages in reports
+* Remove unused code in LibrePlanReportController
+* i18: Remove unneeded code to manage languages in reports
+* i18n: Add support to Italian language in reports
+* i18n: Update Italian translation and add missing files for reports
+* i18n: Update Spanish and Galician translations
+* i18n: Add support to Italian language in reports
+* i18n: Update Italian translation and add missing files for reports
+* i18n: Update Spanish and Galician translations
+* Bug #1340: Add a listener to refresh the earned value chart in AdvanceAssignmentPlanningController.
+* Bug #1334: Prevent the accumulation of the values when building the BCWP chart.
+* Bug #1340: Add a listener to refresh the earned value chart in AdvanceAssignmentPlanningController.
+* Bug #1334: Prevent the accumulation of the values when building the BCWP chart.
+* Fix typo precision is just with 1 s
+* Fix typo precision is just with 1 s
+* i18n: Update keys.pot files
+* Fix typo in open reports string
+* i18n: Update keys.pot files
+* Fix typo in open reports string
+* Fix typo in new version string
+* Fix typo in new version string
+* Add information about current version in GET requests
+* Add VERSION file just with version number in a text file
+* Add configuration option to allow LibrePlan developers collect usage stats
+* Add configuration option to disable warning about new LibrePlan versions
+* Show a warning if there is a new project version published.
+* Add information about current version in GET requests
+* Add VERSION file just with version number in a text file
+* Add configuration option to allow LibrePlan developers collect usage stats
+* Add configuration option to disable warning about new LibrePlan versions
+* Show a warning if there is a new project version published.
+* Bug #1336: Checked permissions to enable project creation button
+* Fixed chart tooltips scroll problem on resources load window
+* Bug #1336: Checked permissions to enable project creation button
+* Fixed chart tooltips scroll problem on resources load window
+* Bug #1338: Fix some wrong strings in timeLineRequiredMaterial report
+* Bug #1338: Fix some wrong strings in timeLineRequiredMaterial report
+* Bug 1295: Remove TaskElements (except milestones) with TaskSource null when saving
+* Bug 1295: Remove TaskElements (except milestones) with TaskSource null when saving
+* Fixed wrong criteria string format
+* Bug #1337: Removed unnecesary response when redrawing earned value
+* Bug #1324: Modified behaviour of west end arrow on violated dependencies
+* Display timeplot graph values when pointing over the chart
+* Fixed wrong criteria string format
+* Bug #1337: Removed unnecesary response when redrawing earned value
+* Bug #1324: Modified behaviour of west end arrow on violated dependencies
+* Display timeplot graph values when pointing over the chart
+* doc: Update LDAP configuration doc
+* Bug #1333: Allow specify * in role matching
+* doc: Update LDAP configuration doc
+* Bug #1333: Allow specify * in role matching
+* i18n: Add Italian language language to enum and modify pom.xml to use English userguide
+* i18n: Add Giuseppe Zizza as Italian translator in AUTHORS file
+* i18n: Add Italian translation
+* i18n: Add Italian language language to enum and modify pom.xml to use English userguide
+* i18n: Add Giuseppe Zizza as Italian translator in AUTHORS file
+* i18n: Add Italian translation
+* Bug #1333: Fix issue as property and search query are needed for group strategy too
+* Bug #1332: Fix problem allowing to set empty values for userDn and password
+* Bug #1333: Fix issue as property and search query are needed for group strategy too
+* Bug #1332: Fix problem allowing to set empty values for userDn and password
+* Bug #1329: Fix problem in StretchesFunctionTest due to changes in previous test
+* Bug #1329: Fix issue calculating properly end date of stretches
+* Bug #1329: Now tasks are not enlarged and nothing breaks just after selecting a stretches function
+* Bug #1329: Update advanced allocation row after applying default stretches function
+* Bug #1329: Fix problem in StretchesFunctionTest due to changes in previous test
+* Bug #1329: Fix issue calculating properly end date of stretches
+* Bug #1329: Now tasks are not enlarged and nothing breaks just after selecting a stretches function
+* Bug #1329: Update advanced allocation row after applying default stretches function
+* Merge branch 'master' into subcontracting
+* Bug #1328: Fix issue calling onClose method on controller
+* Bug #1328: Fix issue calling onClose method on controller
+* Bug #1261: Extract method createTab with common functionality for each tab
+* Bug #1261: Allows tabs to be memorized when changing perspective
+* Bug #1261: Extract method createTab with common functionality for each tab
+* Bug #1261: Allows tabs to be memorized when changing perspective
+* Bug #1327: Fix issue changing method to do reassignments in consolidation process
+* Modify GenericDayAssignment.toString to add info about consolidation
+* Bug #1327: Fix issue changing method to do reassignments in consolidation process
+* www: Folder and script for libreplan.org documentation
+* www: Folder and script for libreplan.org documentation
+* [Bug #1326] Fix issue calculating properly hours to allocate
+* [Bug #1326] Fix issue calculating properly hours to allocate
+* [Bug #1325] Fix issue remove criteria from configuration unit
+* [Bug #1325] Fix issue remove criteria from configuration unit
+* [Bug #1322] Fix bug
+* Allow to include or exclude DerivedDayAssignments
+* Allow reported hours bar in gantt diagram to be wider than the task.
+* [Bug #1242] Don't allow progress end dates superior to the corresponding task end date.
+* [Bug #1311] Replace Date objects with IntraDayDate objects in SaveCommandBuilder.
+* [Bug #1311] Replace Date objects with IntraDayDate objects in SaveCommandBuilder.
+* [Bug #1242] Don't allow progress end dates superior to the corresponding task end date.
+* Allow reported hours bar in gantt diagram to be wider than the task.
+* [Bug #1321] Reseting highlighted days in calendar to prevent issue
+* [Bug #1321] Reseting highlighted days in calendar to prevent issue
+* [Bug #1323] Fix lazy loading properly derived allocations
+* [Bug #1323] Fix lazy loading properly derived allocations
+* [Bug #1242] Return end date directly when calculating advance and percentage is 100%.
+* [Bug #1242] Use IntraDayDate to draw the progress bar in leaf Tasks.
+* [Bug #1242] Return end date directly when calculating advance and percentage is 100%.
+* [Bug #1242] Use IntraDayDate to draw the progress bar in leaf Tasks.
+* [Bug #1319] Change division method of EffortDuration
+* [Bug #1304] Make sumOfAssignedEffort return the cached value only for orders.
+* [Bug #1304] Reorder the code to improve the performance with TaskGroups.
+* Replace attribute TaskElement.sumOfHoursAllocated with an equivalent attribute measured in EffortDuration.
+* [Bug #1304] Don't use the cached value sumOfHoursAllocated when drawing the progress bars of tasks.
+* Revert "[Bug #1319] Change division method of EffortDuration"
+* [Bug #1309] Fix problem with reported hours bar when progress type is changed
+* [Bug #1309] Fix problem with reported hours bar when progress type is changed
+* [Bug #1319] Change division method of EffortDuration
+* [Bug #1319] Change division method of EffortDuration
+* [Bug #1309] Invalidate each TaskComponent instead of the whole TaskList when progress type is changed
+* [Bug #1309] Invalidate each TaskComponent instead of the whole TaskList when progress type is changed
+* Hide warning messages on bottom when user is not admin
+* Hide warning messages on bottom when user is not admin
+* [Bug #1288] Return null instead of zero in a just created AdvanceMeasurement
+* [Bug #1288] Fix message regarding progress type precision
+* [Bug #1288] Set Decimalbox scale according to progress type precision
+* [Bug #1288] Return null instead of zero in a just created AdvanceMeasurement
+* [Bug #1288] Fix message regarding progress type precision
+* [Bug #1288] Set Decimalbox scale according to progress type precision
+* [Bug #1307] Prevent changing spread progress in children when parents are consolidated
+* [Bug #1307] Prevent changing spread progress in children when parents are consolidated
+* [Bug #1307] Prevent add progress measurement before consolidated day in any parent
+* Refactor method getSpreadIndirectAdvanceAssignmentWithSameType to be used in more places
+* [Bug #1307] Prevent add progress measurement before consolidated day in any parent
+* Refactor method getSpreadIndirectAdvanceAssignmentWithSameType to be used in more places
+* Prevent NPE editing progress measurements
+* Prevent NPE editing progress measurements
+* [doc] Add warning on INSTALL file about how to create database structure
+* [doc] Add warning on INSTALL file about how to create database structure
+* [Bug #1308] Remove unneeded preventing create default progress in containers
+* [Bug #1308] Remove unneeded preventing create default progress in containers
+* [Bug #1305] Prevent adding progress measurement before last consolidated date
+* Fix messages related with progress management and consolidations
+* Disable some options in progress management if there is a consolidated progress
+* [Bug #1305] Prevent adding progress measurement before last consolidated date
+* Fix messages related with progress management and consolidations
+* Disable some options in progress management if there is a consolidated progress
+* [doc] Update SourceForge.net URLs due to rename to LibrePlan
+* [doc] Update SourceForge.net URLs due to rename to LibrePlan
+* [Bug #1316] Use correct JS selectors to work both with leaf tasks and task groups.
+* [Bug #1304] Make sumOfAssignedEffort return the cached value only for orders.
+* [Bug #1304] Reorder the code to improve the performance with TaskGroups.
+* [Bug #1316] Use correct JS selectors to work both with leaf tasks and task groups.
+* Fix NPE removed advance measurement
+* Remove unused method
+* Fix NPE removed advance measurement
+* Remove unused method
+* Replace attribute TaskElement.sumOfHoursAllocated with an equivalent attribute measured in EffortDuration.
+* [Bug #1301] Fix issue creating a container in a task with dependencies
+* [Bug #1301] Fix issue creating a container in a task with dependencies
+* Remove duplicated method in QualityForm
+* Remove duplicated method in QualityForm
+* [Bug #1314] Fix problem in materials report
+* [Bug #1314] Fix problem in materials report
+* Skipping some tests in ScenarioModelTest because they were causing problems in Debian Wheezy
+* Remove uneeded test as it was causing problems in Debian Wheezy
+* Fix problems in MaterialDAOTest and MaterialServiceTest
+* Fix problem with consolidation and specific assignments
+* [Bug #1300] Updated intended resources per day after consolidation is added or removed
+* Fix problem with consolidation and specific assignments
+* [Bug #1300] Updated intended resources per day after consolidation is added or removed
+* [Bug #1304] Don't use the cached value sumOfHoursAllocated when drawing the progress bars of tasks.
+* [Bug #1312] Fix issue with printing in HTTPs is enabled
+* [Bug #1312] Fix issue with printing in HTTPs is enabled
+* [Bug #1303] Fix issue removing consolidation using IntraDayDate for task end
+* [Bug #1303] Fix issue adding consolidation using IntraDayDate for task end
+* [Bug #1303] Fix issue removing consolidation using IntraDayDate for task end
+* [Bug #1303] Fix issue adding consolidation using IntraDayDate for task end
+* Skipping some tests in ScenarioModelTest because they were causing problems in Debian Wheezy
+* Remove uneeded test as it was causing problems in Debian Wheezy
+* Fix problems in MaterialDAOTest and MaterialServiceTest
+* [Bug #1310] Reorder the code to fix the two exceptions happening here.
+* [Bug #1310] Reorder the code to fix the two exceptions happening here.
+* set the relationship owner, in order to save the reference of the order, without the need of a property on the other side of relation, with the class DeadlineCustomer
+* revamp the interface of the General Data tab in the Project Details perspective, in order to show the deliver dates.
+* It fixes and adds constraints for adding and deleting the deliver dates correctly.
+* Create new subcontractor state for sending updates of the delivering date, while it is created a new customer communication.
+* Create new subcontractor communication type: UPDATE_DELIVERING_DATE
+* Changes the fields in the subcontraction pop-up to read-only if subcontracted task has been sent.
+* [Bug #1299] Enable scrollbars in the tasks input buffer grid.
+* [Bug #1299] Enable scrollbars in the tasks input buffer grid.
+* [Bug #1297] Add listeners to 'See schedule allocation' buttons every time the panel is redrawn.
+* [Bug #1297] Add listeners to 'See schedule allocation' buttons every time the panel is redrawn.
+* [Bug #1297] Replaced the misleading word "Filter" with "Show".
+* [Bug #1297] Reset the list listenersToAdd when changing perspectives.
+* [Bug #1297] Replaced the misleading word "Filter" with "Show".
+* [Bug #1297] Reset the list listenersToAdd when changing perspectives.
+* [Bug #1073] Fix issue introduced by me while reviewing the previous patch
+* [Bug #1073] Fix issue introduced by me while reviewing the previous patch
+* [Bug #1294] Revert "Update i18n files with the new translations for the replaced string."
+* [Bug #1073] Add dependencies with its parent when a milestone is added.
+* [Bug #1073] Add dependencies with its parent when a milestone is added.
+* [Bug #1294] Update i18n files with the new translations for the replaced string.
+* [Bug #1294] Replace the sentence 'Click on direct link to go to output directly' with a better alternative.
+* [Bug #1294] Replace the sentence 'Click on direct link to go to output directly' with a better alternative.
+* [doc] Move images to a proper folder
+* [doc] Create new document about how to develop LibrePlan in Eclipse
+* changes on interface and fixes several issues in the subcontract pop-up for adding new subcontractor deliver date.
+* [doc] Add warning about printing issues in Debian Squeeze
+* [doc] Add instructions to install Cutycapt from testing
+* [doc] Add warning about printing issues in Debian Squeeze
+* [doc] Add instructions to install Cutycapt from testing
+* [Bug #1296] Rename Spanish and Galician .properties files as country was not needed
+* [Bug #1296] Remove duplicated *_en_US.properties files after updating *.properties when required
+* [Bug #1296] Rename Spanish and Galician .properties files as country was not needed
+* [Bug #1296] Remove duplicated *_en_US.properties files after updating *.properties when required
+* [Bug #1292] Replace Toolbarbutton object for the link to the PDF with an A object.
+* [Bug #1292] Replace Toolbarbutton object for the link to the PDF with an A object.
+* Remove an unnecessary check.
+* [Bug #1287] Fix NPE opening a project from Gantt view
+* [Bug #1287] Fix NPE opening a project from Gantt view
+* [Bug #1290] Fix NPE issue launching LibrePlan
+* [Bug #1290] Fix NPE issue launching LibrePlan
+* [Bug #1291] Fix NPE when a task with a dependency is removed
+* [Bug #1291] Fix NPE when a task with a dependency is removed
+* Remove duplicated method in TaskElement
+* creates a new field in the SubcontratedTaskData to store the collection of subcontrator delivering dates.
+* create the interface DeliverDate and the comparator DeliverDateComparator to sort the SubcontractorDeliverDate and the DeadlineCommunications.
+* [Bug #1229] Look for new resources when moving a task
+* [Bug #1229] Wrap all position mofications
+* Create the class SubcontractorDeliverDate
+* creates a new field in the Order entity to store the delivering dates communications.
+* creates a new field in the Order entity to store the delivering dates communications.
+* create the class DeadlineCommunication
+* [Bug #1285] Avoided NPE when dropping a treerow in the same component
+* Add vertical borders in watermarks to improve differentiation between days
+* Added transparency effect to hover treerow
+* [Bug #1256] Removed inner padding on help tooltip
+* Made more explicit links styles in headers
+* Changed treerow input style for over elements
+* [Bug #1285] Avoided NPE when dropping a treerow in the same component
+* Add vertical borders in watermarks to improve differentiation between days
+* Added transparency effect to hover treerow
+* [Bug #1256] Removed inner padding on help tooltip
+* Made more explicit links styles in headers
+* Changed treerow input style for over elements
+* [i18n] Update Portuguese translation
+* [i18n] Update Portuguese translation
+* Remove an unnecessary check.
+* Merge branch 'master' into project-dashboards
+* Depending on jfreechartengine 1.1 in order to use new charts
+* Handle charts visibility in a more elegant way.
+* Reset cached task status after setting new advance percentage.
+* Add style to warning message.
+* Create interface IDashboardModel to do dependency injection correctly, as Developers reference recommends.
+* Avoid storing references to domain objects in DashboardController.
+* Handle projects with no tasks in a nicer way.
+* Bring time KPI "Lead/Lag in task completion" to the UI.
+* Extract local variables to class static attributes.
+* Preliminar business logic implementation for time KPI "Lead/Lag in task completion".
+* Set a method transactional.
+* Refactor. Extract some code to a private method because the same logic is gonna be called from other methods in the future.
+* Fix marginWithDeadline chart.
+* Fix window scrolling.
+* Cache margin with deadline KPI because now it's requested by the controller twice.
+* Refactor local variable name.
+* Customize X axis tick font, series color and range axis bounds.
+* Bring time KPI "Estimation accuracy" to the UI.
+* Fix typo in static member name.
+* Adjust upper bound for EA stretches.
+* Add visitor to calculate hours estimation deviation for finished tasks.
+* Business logic for time KPI "Estimation accuracy"
+* Temporary UI for time KPI "Margin with deadline"
+* Implement business logic for time KPI "Margin with deadline"
+* Avoid to add subcontractor progress in a project with subcontracted tasks.
+* Avoid to subcontract a task if there are subcontractor progresses incompatible with receiving progress reporting from the provider
+* it removes unnecessary prints of text.
+* Refactoring the code for replacing the occurences of comunication by communication.
+* it changes REPORT_ADVANCE for REPORT_PROGRESS and set properly the copyright
+* it removes trailing whitespaces.
+* it reduces the visibility of the constructor and uses the inherited method create
+* Merge branch 'master' into project-dashboards
+* Add a generic method to calculate percentages to avoid duplicate code.
+* Coding style and minor issues.
+* i18nize user-space strings.
+* Bring progress KPI "Deadline violation" to the UI.
+* Cancel planning state reattaching.
+* Add pie chart to represent progress KPI "Number of tasks by status".
+* Add bar chart to represent progress KPI "Global progress of the project".
+* Bring progress KPI "Global progress of the project" to DashboardModel.
+* Add extra methods to calculate working days until date that consider limit dates more recent than the end date of the task.
+* Assign EfforDuration references again to the result of the sum as they are immutable.
+* Add method to retrieve theoretical progress.
+* Several changes to the UI: * Use bindings to link ZUL items to controller methods. * Add Model for DashboardController * Implement methods to bring data and calculate progress KPI "Task Status" * Fetch PlanningState to get updated planning status * Add dumb Label to the view to do preliminary tests.
+* Add a new empty tab to the UI.
+* Initialize Map before traversing task graph.
+* Enable recursion.
+* Request only first-level children when traversing task graph.
+* Create a new Integer when incrementing status counts as wrappers are immutable.
+* Fix test. Reset task status.
+* Avoid using equals to compare if task progress is zero or one, use compareTo instead.
+* Add visitor to reset task statuses.
+* Cache task status (only if FINISHED or IN_PROGRESS) to avoid doing unnecessary calculations (especially in nodes if type TaskGroup).
+* Fix coding style. Add space in for/if statements.
+* Add description to two classes.
+* Rename class (Visitor -> TaskElementVisitor)
+* Initialize Map before traversing task tree.
+* Create a list with all the communications received from subcontractors
+* add new communication type 'Report advance'
+* renamed file FilterCustomerComunicationEnum to ICustomerComunicationModel
+* use private visibility in constructors.
+* Create the entity SubcontractorComunication, the dao SubcontractorComunicationDAO, the test SubcontractorComunicationDAOTest and add the changes of the database in a new file db.changelog-1.2.xml
+* Merge branch 'master' into project-dashboards
+* Refactor getter name.
+* Implement bussiness logic for KPI "Deadline violation".
+* Add header to newly created files.
+* Add test.
+* Drop unnecessary assert.
+* Preliminary implementation of task status resolvers.
+* Change method visibility to call it from unit tests while mocking Dependency.
+* Add a helper method to test if an instance of SumChargedEffort is zero.
+* Improve ComunicationType enum and include the translate method.
+* Update the routing of the css with libreplan.
+* Add the relationship from order entity with its customer comunications.
+* Create a customer comunication when a subcontractor receives the communication of a new project to be developed.
+* Add the external code when a whole order is imported as subcontrated task.
+* Create a list of incoming projects accepted by customers and contracted with the company
+* Create the entity CustomerComunication, the dao CustomerComunicationDAO, the test CustomerComunicationDAOTest and add the changes of the database in a new file db.changelog-1.2.xml
+* Fix 2 style mini-issues
+* Turn ResourceCalendar mock creator static to reuse it from another test.
+* Fix copyright.
+* Refactor attribute names and getters.
+* Remove TODO.
+* Use EffortDuration to compute time instead of using raw hours.
+* Add a method to return division result as BigDecimal.
+* Calculate total assigned hours instead of relaying on getSumOfHoursAllocated.
+* * Use the correct method to sum all allocated hours. * Prevent division by zero.
+* Implement indicator 3.3
+* Use private method for dividing.
+* Implement KPI 3.2 (Global progress of the project) and bring 3.1 to PlanningData.
+* Implement business logic to calculate Global Progress Indicator number 3.1.
+
+
 Version 1.2.4 (23 May 2012)
 ---------------------------
 

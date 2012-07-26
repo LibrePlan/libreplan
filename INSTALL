@@ -46,11 +46,11 @@ Instructions:
 
 * Download the package::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.3.0-1_amd64.deb
 
 * Install package::
 
-    # dpkg -i libreplan_1.2.0-1_amd64.deb
+    # dpkg -i libreplan_1.3.0-1_amd64.deb
 
 * Install dependencies::
 
@@ -133,7 +133,7 @@ Debian/Ubuntu
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.2.0.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.3.0.sql
 
 * Create database structure::
 
@@ -150,7 +150,7 @@ Debian/Ubuntu
 
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.3.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
@@ -249,7 +249,7 @@ openSUSE
 
 * Download database installation script::
 
-    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.2.0.sql
+    $ wget -O install.sql http://downloads.sourceforge.net/project/libreplan/LibrePlan/install_1.3.0.sql
 
 * Create database structure::
 
@@ -266,7 +266,7 @@ openSUSE
 
 * Download ``.war`` file from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.0.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.3.0.war
 
 * Create a new file ``/etc/tomcat6/Catalina/localhost/libreplan.xml`` (file
   name has to match with ``.war`` name) with database configuration for
