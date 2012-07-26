@@ -26,11 +26,11 @@ Instructions:
 
 * Download the new package::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.1-1_amd64.deb
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.3.0-1_amd64.deb
 
 * Install package::
 
-    # dpkg -i libreplan_1.2.1-1_amd64.deb
+    # dpkg -i libreplan_1.3.0-1_amd64.deb
 
 * Install new dependencies if needed::
 
@@ -40,6 +40,21 @@ Instructions:
 LibrePlan manual update
 -----------------------
 
+.. WARNING::
+
+    It is recommended to create a backup of the database, just in case any
+    problem appear during the upgrade.
+
+.. IMPORTANT::
+
+    If you are upgrading between version a.b.c to version x.y.z, you need to
+    execute all the upgrade scripts starting from the next one to a.b.c in
+    order.
+
+    For example, if you are upgrading from LibrePlan 1.2.1 to 1.3.0 you will
+    have to upgrade your database using the scripts: ``upgrade_1.2.2.sql``,
+    ``upgrade_1.2.3.sql`` and ``upgrade_1.3.0.sql``.
+
 Debian/Ubuntu
 ~~~~~~~~~~~~~
 
@@ -48,18 +63,18 @@ Debian/Ubuntu
     # /etc/init.d/tomcat6 stop
 
 * Download database upgrade scripts from previous version. For example, if you
-  are upgrading from *LibrePlan 1.2.0* to *LibrePlan 1.2.1* you should download
-  ``upgrade_1.2.1.sql``::
+  are upgrading from *LibrePlan 1.2.4* to *LibrePlan 1.3.0* you should download
+  ``upgrade_1.3.0.sql``::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/upgrade_1.2.1.sql
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/upgrade_1.3.0.sql
 
 * Upgrade database::
 
-    $ psql -h localhost -U libreplan -W libreplan < upgrade_1.2.1.sql
+    $ psql -h localhost -U libreplan -W libreplan < upgrade_1.3.0.sql
 
 * Download ``.war`` file of new version from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.3.0.war
 
 * Backup current deployed application::
 
@@ -84,18 +99,18 @@ openSUSE
     # /etc/init.d/tomcat6 stop
 
 * Download database upgrade scripts from previous version. For example, if you
-  are upgrading from *LibrePlan 1.2.0* to *LibrePlan 1.2.1* you should download
-  ``upgrade_1.2.1.sql``::
+  are upgrading from *LibrePlan 1.2.4* to *LibrePlan 1.3.0* you should download
+  ``upgrade_1.3.0.sql``::
 
-    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/upgrade_1.2.1.sql
+    $ wget http://downloads.sourceforge.net/project/libreplan/LibrePlan/upgrade_1.3.0.sql
 
 * Upgrade database::
 
-    $ psql -h localhost -U libreplan -W libreplan < upgrade_1.2.1.sql
+    $ psql -h localhost -U libreplan -W libreplan < upgrade_1.3.0.sql
 
 * Download ``.war`` file of new version from SourceForge.net::
 
-    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.2.1.war
+    $ wget -O libreplan.war http://downloads.sourceforge.net/project/libreplan/LibrePlan/libreplan_1.3.0.war
 
 * Backup current deployed application::
 
