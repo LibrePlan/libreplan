@@ -1275,9 +1275,9 @@ Changes
 * [doc] Add warning about printing issues in Debian Squeeze
 * [doc] Add instructions to install Cutycapt from testing
 * [Bug #1296] Rename Spanish and Galician .properties files as country was not needed
-* [Bug #1296] Remove duplicated *_en_US.properties files after updating *.properties when required
+* [Bug #1296] Remove duplicated \*_en_US.properties files after updating \*.properties when required
 * [Bug #1296] Rename Spanish and Galician .properties files as country was not needed
-* [Bug #1296] Remove duplicated *_en_US.properties files after updating *.properties when required
+* [Bug #1296] Remove duplicated \*_en_US.properties files after updating \*.properties when required
 * [Bug #1292] Replace Toolbarbutton object for the link to the PDF with an A object.
 * [Bug #1292] Replace Toolbarbutton object for the link to the PDF with an A object.
 * Remove an unnecessary check.
