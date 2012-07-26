@@ -77,6 +77,10 @@ This section explains how to upgrade LibrePlan from version a.b.c to version x.y
 
 *VERY IMPORTANT*: If there are other versions between a.b.c and x.y.z, we need to execute those scripts in order, so the upgrade is done correctly.
 
+*WARNING*: If you are using PostgreSQL version 8 you will have to execute the next command over LibrePlan database in order to use the upgrade script for version 1.3.0:
+
+# su postgres -c "createlang -d libreplan plpgsql"
+
 
 2) Stop Tomcat6
 ---------------
