@@ -332,16 +332,18 @@ public class SubcontractServiceREST implements ISubcontractService {
         order.setCustomerReference(subcontractedTaskDataDTO.subcontractedCode);
         order.setWorkBudget(subcontractedTaskDataDTO.subcontractPrice);
 
+        if (subcontractedTaskDataDTO.deliverDate != null) {
+            Date deliveryDate = DateConverter
+                    .toDate(subcontractedTaskDataDTO.deliverDate);
+            DeadlineCommunication deadlineCommunication = DeadlineCommunication
+                    .create(new Date(), deliveryDate);
+            order.getDeliveringDates().add(deadlineCommunication);
+            order.setDeadline(deliveryDate);
+        }
+
         synchronizeWithSchedule(order,
                 TaskSource.persistTaskSources(taskSourceDAO));
         order.writeSchedulingDataChanges();
-
-        if (subcontractedTaskDataDTO.deliverDate != null) {
-            DeadlineCommunication deadlineCommunication = DeadlineCommunication
-                    .create(new Date(), DateConverter
-                            .toDate(subcontractedTaskDataDTO.deliverDate));
-            order.getDeliveringDates().add(deadlineCommunication);
-        }
 
         order.validate();
         orderElementDAO.save(order);
