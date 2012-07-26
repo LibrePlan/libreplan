@@ -219,18 +219,9 @@ public class SubcontractModel implements ISubcontractModel {
             subcontractedTaskData
                     .addRequiredDeliveringDates(subcontractorDeliverDate);
 
-            //update the end date of the task
-            updateEndDateWithDeliverDate();
-
             //update the state of the subcontracted task data
             updateStateToPendingUpdateDeliveringDate();
         }
-    }
-
-    private void updateEndDateWithDeliverDate(){
-        SubcontractorDeliverDate lastDeliverDate = this
-                .getSubcontractedTaskData().getRequiredDeliveringDates().last();
-        task.setEndDate(lastDeliverDate.getSubcontractorDeliverDate());
     }
 
     private void updateStateToPendingUpdateDeliveringDate(){
