@@ -240,7 +240,7 @@
                        <separator spacing="20px"/>
                        <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false"
                            visible="@{controller.subcontractedProject}" hflex="1">
-                       <caption label="${i18n:_('Delivery dates requested by the customer. ')}" />
+                       <caption label="${i18n:_('Delivery dates requested by customer. ')}" />
                        <grid id="gridDeliveryDates"
                             model="@{controller.deliverDates}"
                             mold="paging" pageSize="4" fixedLayout="true" width="400px"

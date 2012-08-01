@@ -289,7 +289,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{total.hours}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="80" y="21" width="80" height="15"/>
@@ -303,7 +303,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column1.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{estimated}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="80" y="36" width="80" height="15"/>
@@ -317,7 +317,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column1.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{planned}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="80" y="51" width="80" height="20"/>
@@ -331,7 +331,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{measured}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="80" y="71" width="80" height="20"/>
@@ -345,7 +345,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{imputed}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="80" y="91" width="80" height="20"/>
@@ -359,7 +359,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2.column3}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{planned}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="260" y="21" width="85" height="30" backcolor="#E0E4FB"/>
@@ -373,7 +373,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column3}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{hours.up.to.date}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="345" y="21" width="106" height="15"/>
@@ -387,7 +387,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column3.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{planned}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="345" y="36" width="106" height="15"/>
@@ -401,7 +401,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column3.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{real}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="345" y="51" width="106" height="15"/>
@@ -415,7 +415,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column4.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{cost}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="345" y="66" width="106" height="15"/>
@@ -429,7 +429,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column4.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{planned}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="345" y="81" width="106" height="15"/>
@@ -443,7 +443,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column4.column3}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{cost.ratio}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="345" y="96" width="106" height="15"/>
@@ -457,7 +457,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column4.column4}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{planned.ratio}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="17" width="552" height="1">
@@ -476,7 +476,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{progress}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="260" y="51" width="85" height="60" backcolor="#E0E4FB"/>
@@ -490,7 +490,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column4}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{difference}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
 				<reportElement x="160" y="51" width="94" height="20"/>

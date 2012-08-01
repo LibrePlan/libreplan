@@ -194,7 +194,18 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     }
 
     public void addProfile(Profile profile) {
-        profiles.add(profile);
+        if (!containsProfile(profile)) {
+            profiles.add(profile);
+        }
+    }
+
+    private boolean containsProfile(Profile profile) {
+        for (Profile assignedProfile : profiles) {
+            if (assignedProfile.getId().equals(profile.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void removeProfile(Profile profile) {

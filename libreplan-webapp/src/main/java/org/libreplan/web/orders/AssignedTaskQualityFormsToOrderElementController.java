@@ -204,9 +204,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                 deleteTaskQualityForm(taskQualityForm);
             }
         } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", taskQualityForm
-                    .getId()), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -387,7 +385,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         columns.appendChild(columnPercentage);
 
         Column columnPassed = new Column();
-        columnPassed.setLabel(_("Passed"));
+        columnPassed.setLabel(_("Checked"));
         columns.appendChild(columnPassed);
 
         Column columnDate = new Column();
@@ -520,14 +518,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                             && (!item.checkConstraintIfDateCanBeNull())) {
                         item.setDate(null);
                         throw new WrongValueException(comp,
-                                _("date not specified."));
+                                _("date not specified"));
                     }
                     if (!assignedTaskQualityFormsToOrderElementModel
                             .isCorrectConsecutiveDate(taskQualityForm, item)) {
                         item.setDate(null);
                         throw new WrongValueException(
                                 comp,
-                                _("must be greater than the previous date."));
+                                _("must be after the previous date"));
                     }
                 }
             }
@@ -609,14 +607,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                     if (TaskQualityFormItem.propertyDate.equals(propertyName)) {
                         openDetails(rowItem);
                         Datebox datebox = getDatebox(rowItem);
-                        throw new WrongValueException(datebox, invalidValue
-                            .getMessage());
+                        throw new WrongValueException(datebox,
+                                _(invalidValue.getMessage()));
                     }
                     if (TaskQualityFormItem.propertyPassed.equals(propertyName)) {
                         openDetails(rowItem);
                         Checkbox checkbox = getCheckbox(rowItem);
-                        throw new WrongValueException(checkbox, invalidValue
-                                .getMessage());
+                        throw new WrongValueException(checkbox,
+                                _(invalidValue.getMessage()));
                     }
                 }
             }

@@ -20,7 +20,6 @@
  */
 package org.libreplan.web.planner.tabs;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 
@@ -67,9 +66,8 @@ public class TabOnModeType implements ITab {
 
     public TabOnModeType(Mode mode, EnumMap<ModeType, ITab> tabs) {
         Validate.notNull(mode);
-        Validate.isTrue(handleAllCases(tabs), "must handle all ModeTypes: "
-                + Arrays.toString(ModeType.values()) + ". It only handles: "
-                + tabs.keySet());
+        Validate.isTrue(handleAtLeatOneCase(tabs),
+                "must handle at least one ModeType");
         this.mode = mode;
         this.tabs = new EnumMap<ModeType, ITab>(tabs);
         this.mode.addListener(new ModeTypeChangedListener() {
@@ -91,13 +89,13 @@ public class TabOnModeType implements ITab {
         newTab.show();
     }
 
-    private boolean handleAllCases(EnumMap<ModeType, ITab> tabs) {
+    private boolean handleAtLeatOneCase(EnumMap<ModeType, ITab> tabs) {
         for (ModeType modeType : ModeType.values()) {
-            if (tabs.get(modeType) == null) {
-                return false;
+            if (tabs.get(modeType) != null) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private ITab getCurrentTab() {
@@ -114,24 +112,32 @@ public class TabOnModeType implements ITab {
 
     @Override
     public String getName() {
-        return getCurrentTab().getName();
+        ITab currentTab = getCurrentTab();
+        return currentTab == null ? "" : currentTab.getName();
     }
 
     @Override
     public String getCssClass() {
-        return getCurrentTab().getCssClass();
+        ITab currentTab = getCurrentTab();
+        return currentTab == null ? "hidden" : currentTab.getCssClass();
     }
 
     @Override
     public void hide() {
         beingShown = false;
-        getCurrentTab().hide();
+        ITab currentTab = getCurrentTab();
+        if (currentTab != null) {
+            currentTab.hide();
+        }
     }
 
     @Override
     public void show() {
         beingShown = true;
-        getCurrentTab().show();
+        ITab currentTab = getCurrentTab();
+        if (currentTab != null) {
+            currentTab.show();
+        }
     }
 
 }

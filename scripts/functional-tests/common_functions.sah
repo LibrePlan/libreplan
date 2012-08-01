@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -49,7 +49,7 @@ function commonDelete ($something, $name, $cell) {
 
 /* Create new project */
 function commonCreateProject($name, $calendar){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_add.png"));
     _setValue(_textbox(0, _near(_span("Name"))), $name);
     if ($calendar != null){
@@ -62,13 +62,13 @@ function commonCreateProject($name, $calendar){
 }
 
 function commonEditProject($name){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($name))))));
 }
 
 /* Delete a project */
 function commonDeleteProject($name){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_borrar1.png", _in(_cell(8, _near(_cell($name))))));
     _click(_cell("OK"));
     _assertExists(_div("Removed "+$name));
@@ -78,7 +78,7 @@ function commonDeleteProject($name){
 
 /* Create a task in a project */
 function commonCreateTask($projectName, $name, $hours){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($projectName))))));
     _setValue(_textbox(0, _near(_span("New task"))), $name);
     _setValue(_textbox("z-intbox", _near(_span("Hours"))), $hours);
@@ -89,7 +89,7 @@ function commonCreateTask($projectName, $name, $hours){
 }
 
 function commonConfigurationChangeCheckboxMainPreferences($element){
-    _click(_link("LibrePlan Configuration"));
+    _click(_link("Main Settings"));
     _click(_checkbox(0, _near(_label($element))));
     _click(_cell("Save"));
     commonSaveConfigurationValidation();
@@ -114,8 +114,8 @@ function commonSaveConfigurationValidation(){
 }
 
 function commonEmptyCodeValidation(){
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
 
 function commonProjectPlanningFilterValidation(){
@@ -199,8 +199,8 @@ function commonResourceEmptyCategoryName(){
 }
 
 function commonResourceEmptyCategoryDate(){
-_assertExists(_div("The init date cannot be empty"));
-_assert(_isVisible(_div("The init date cannot be empty")));
+_assertExists(_div("Start date cannot be empty"));
+_assert(_isVisible(_div("Start date cannot be empty")));
 }
 
 function commonResourceTryDeleteAssignedValidation(){
@@ -273,7 +273,7 @@ function commonVirtualWorkerCreate($name) {
 }
 
 function commonVirtualWorkerGoToCreate (){
-    _click(_link("Virtual Workers Groups"));
+    _click(_link("Virtual Workers"));
     _click(_cell("Create Virtual Worker"));
 }
 
@@ -283,7 +283,7 @@ function commonVirtualWorkerForm($name) {
 }
 
 function commonVirtualWorkerDelete($name){
-    commonDelete("Virtual Workers Groups", $name, 3);
+    commonDelete("Virtual Workers", $name, 3);
     commonVirtualWorkerAcctionValidation("deleted");
     _log("Delete the virtual worker", "custom1");
 }
@@ -298,14 +298,14 @@ function commonVirtualWorkerAcctionValidation($action){
  */
 
 function commonWorkReportDelete ($name){
-    commonDelete("Work Reports", $name, 4);
+    commonDelete("Timesheets", $name, 5);
     commonWorkReportDeleteValidation();
     _log("Delete the work report", "custom1");
 }
 
 function commonWorkReportDeleteValidation (){
-    _assertExists(_span("Work report removed successfully"));
-    _assert(_isVisible(_span("Work report removed successfully")));
+    _assertExists(_span("Timesheet removed successfully"));
+    _assert(_isVisible(_span("Timesheet removed successfully")));
 }
 
 /*
@@ -324,11 +324,11 @@ function commonCompanyForm($name, $ID) {
     _setValue(_textbox(0, _near(_span("Company ID:"))), $ID);
     _click(_checkbox(0, _near(_span("Client:"))));
     _click(_checkbox(0, _near(_span("Subcontractor:"))));
-    _setValue(_textbox(0, _near(_span("User:"))), "wswriter");
+    _setValue(_textbox(0, _near(_span("User:"))), "wssubcontracting");
     _click(_checkbox(0, _near(_span("Interacts with applications:"))));
     _setValue(_textbox(0, _near(_span("Application URI:"))), "http://localhost:8080/libreplan-webapp/");
-    _setValue(_textbox(0, _near(_span("Our company login:"))), "wswriter");
-    _setValue(_textbox(0, _near(_span("Our company password:"))), "wswriter");
+    _setValue(_textbox(0, _near(_span("Our company username:"))), "wssubcontracting");
+    _setValue(_textbox(0, _near(_span("Company password:"))), "wssubcontracting");
     _click(_cell("Save"));
 }
 
@@ -409,7 +409,7 @@ function commonCostCategoryTryDeleteAssignedCostCategory($cCategory, $cell){
  */
 
 function commonProgressCreate($name) {
-    commonCreate("Progress");
+    commonCreate("Progress Types");
     commonProgressForm($name);
     commonSaveValidation("Progress Type", $name);
     _log("Create a progress", "custom1");
@@ -425,7 +425,7 @@ function commonProgressForm($name) {
 function commonProgressAssigned($projectName, $progressNewName){
     commonCreateProject($projectName);
     commonProgressAssignProject($projectName, $progressNewName);
-    _click(_link("Progress"));
+    _click(_link("Progress Types"));
     commonDeleteProject($projectName);
 }
 
@@ -435,14 +435,14 @@ function commonProgressAssignProject($projectName, $progressNewName){
     _click(_cell("Add new progress assignment"));
     _setValue(_textbox("z-combobox-inp", _near(_row("footer"))), $progressNewName);
     _click(_cell("z-button-cm", _near(_textbox("z-combobox-inp"))));
-    _setValue(_textbox(0, _near(_parentTable(_div("Value")))), "30");
+    _setValue(_textbox(0, _near(_parentTable(_div("Value[1]")))), "30");
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
     _log("Progress assigned", "custom1");
 }
 
 function commonProgressDelete($name){
-    commonDelete("Progress", $progressNewName, 3);
+    commonDelete("Progress Types", $progressNewName, 3);
     commonDeleteValidation("Progress Type", $progressNewName);
     _log("Delete the progress", "custom1");
 }
@@ -488,8 +488,8 @@ function commonCriteriaDelete($criteriaName){
 function commonCriteriaTryDeleteAssigned($criteriaName){
     _click(_link("Criteria"));
     _click(_image("ico_borrar1.png", _in(_cell(4, _near(_cell($criteriaName))))));
-    _assertExists(_span("This criterion type cannot be deleted because it has assignments to projects or resources"));
-    _assert(_isVisible(_span("This criterion type cannot be deleted because it has assignments to projects or resources")));
+    _assertExists(_span("This criterion type cannot be deleted because it is assigned to projects or resources"));
+    _assert(_isVisible(_span("This criterion type cannot be deleted because it is assigned to projects or resources")));
     _log("Do not allow criteria because it's assigned", "custom1");
 }
 
@@ -522,14 +522,14 @@ function commonLabelDelete($name){
 }
 
 /*
- * Common functions for Work Report Model
+ * Common functions for Timesheet Model
  */
 
 function commonWorkReportModelCreate($name, $type){
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
     commonWorkReportModelForm($name, $type);
-    commonSaveValidation("Work Report Type", $name);
-    _log("Create a new Work Report Model", "custom1");
+    commonSaveValidation("Timesheets Template", $name);
+    _log("Create a new Timesheet Model", "custom1");
 }
 
 function commonWorkReportModelForm($name, $type){
@@ -545,14 +545,14 @@ function commonWorkReportModelForm($name, $type){
 function commonWorkReportModelEdit($oldName, $newName, $cell){
     commonEdit($oldName, $cell);
     commonWorkReportModelForm($newName);
-    commonSaveValidation("Work Report Type", $newName);
-    _log("Edit a Work Report Model", "custom1");
+    commonSaveValidation("Timesheets Template", $newName);
+    _log("Edit a Timesheet Model", "custom1");
 }
 
 function commonWorkReportModelDelete($name){
-    commonDelete("Work Report Models", $name, 1);
-    commonDeleteValidation("Work Report Type", $name);
-    _log("Delete the Work Report Model", "custom1");
+    commonDelete("Timesheets Templates", $name, 1);
+    commonDeleteValidation("Timesheets Template", $name);
+    _log("Delete the Timesheet Model", "custom1");
 }
 
 /*
@@ -560,10 +560,10 @@ function commonWorkReportModelDelete($name){
  */
 
 function commonWorkHourCreate($type, $price){
-    commonCreate("Work Hours");
+    commonCreate("Hours Types");
     commonWorkHourForm($type, $price);
-    commonSaveValidation("Type of hours", $type);
-    _log("Create a new Work Hour", "custom1");
+    commonSaveValidation("Hours Type", $type);
+    _log("Create a new Hours Type", "custom1");
 }
 
 function commonWorkHourForm($name, $price){
@@ -573,7 +573,7 @@ function commonWorkHourForm($name, $price){
 }
 
 function commonWorkHourDelete($name){
-    commonDelete("Work Hours", $name, 4);
-    commonDeleteValidation("Type of hours", $name);
-    _log("Delete the Work Hour", "custom1");
+    commonDelete("Hours Types", $name, 8);
+    commonDeleteValidation("Hours Type", $name);
+    _log("Delete the Hours Type", "custom1");
 }

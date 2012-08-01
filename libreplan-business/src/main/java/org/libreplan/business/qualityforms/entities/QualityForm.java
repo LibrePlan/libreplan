@@ -213,7 +213,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The quality item positions must be unique and consecutive.")
+    @AssertTrue(message = "The quality form item positions must be unique and consecutive.")
     public boolean checkConstraintConsecutivesAndUniquesQualityFormItemPositions() {
         List<QualityFormItem> result = getListToNull(qualityFormItems);
         for (QualityFormItem qualityFormItem : qualityFormItems) {
@@ -263,7 +263,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The quality form item porcentage must be unique if the quality form type is by percentage.")
+    @AssertTrue(message = "percentages in quality form items must be unique")
     public boolean checkConstraintDuplicatesQualityFormItemPercentage() {
         if ((qualityFormType != null)
                 && (qualityFormType.equals(QualityFormType.BY_PERCENTAGE))
@@ -386,7 +386,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
         return (position >= 0 && position < qualityFormItems.size());
     }
 
-    @NotNull(message = "report advance not specified")
+    @NotNull(message = "report progress not specified")
     public Boolean isReportAdvance() {
         return BooleanUtils.toBoolean(reportAdvance);
     }
@@ -403,7 +403,7 @@ public class QualityForm extends BaseEntity implements IHumanIdentifiable{
         this.advanceType = advanceType;
     }
 
-    @AssertTrue(message = "advance type should not be null if report advance")
+    @AssertTrue(message = "progress type should must be defined if quality form reports progress")
     public boolean checkConstraintAdvanceTypeIsNotNullIfReportAdvance() {
         if (advanceType == null) {
             return !isReportAdvance();

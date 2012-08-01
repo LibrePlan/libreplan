@@ -352,14 +352,14 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the order must have a init date")
+    @AssertTrue(message = "the project must have a start date")
     private boolean ifSchedulingModeIsForwardOrderMustHaveStartDate() {
         return getSchedulingMode() != SchedulingMode.FORWARD
                 || getInitDate() != null;
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the order must have a deadline")
+    @AssertTrue(message = "the project must have a deadline")
     private boolean ifSchedulingModeIsBackwardsOrderMustHaveDeadline() {
         return getSchedulingMode() != SchedulingMode.BACKWARDS
                 || getDeadline() != null;
@@ -372,7 +372,7 @@ public class Order extends OrderLineGroup implements Comparable {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "At least one HoursGroup is needed for each OrderElement")
+    @AssertTrue(message = "At least one hours group is needed for each task")
     private boolean checkConstraintAtLeastOneHoursGroupForEachOrderElement() {
         for (OrderElement orderElement : this.getOrderElements()) {
             if (!orderElement.checkAtLeastOneHoursGroup()) {
@@ -426,7 +426,7 @@ public class Order extends OrderLineGroup implements Comparable {
         this.calendar = calendar;
     }
 
-    @NotNull(message = "order calendar not specified")
+    @NotNull(message = "project calendar not specified")
     public BaseCalendar getCalendar() {
         return calendar;
     }
@@ -438,7 +438,7 @@ public class Order extends OrderLineGroup implements Comparable {
         this.lastOrderElementSequenceCode++;
     }
 
-    @NotNull(message = "last order element sequence code not specified")
+    @NotNull(message = "last task sequence code not specified")
     public Integer getLastOrderElementSequenceCode() {
         return lastOrderElementSequenceCode;
     }

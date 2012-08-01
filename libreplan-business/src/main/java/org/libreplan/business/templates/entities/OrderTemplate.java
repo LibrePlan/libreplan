@@ -58,4 +58,9 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         return _("Project");
     }
 
+    @Override
+    public boolean isOrderTemplate() {
+        return true;
+    }
+
 }

@@ -107,7 +107,7 @@ public class TemplatesTreeController extends
                             element.setName(value);
                         }
                     });
-            textBox.setConstraint("no empty:" + _("cannot be null or empty"));
+            textBox.setConstraint("no empty:" + _("cannot be empty"));
             addCell(textBox);
             putNameTextbox(element, textBox);
         }
@@ -324,12 +324,24 @@ public class TemplatesTreeController extends
         };
     }
 
+    @Override
+    protected ICodeHandler<OrderElementTemplate> getCodeHandler() {
+        return new ICodeHandler<OrderElementTemplate>() {
+
+            @Override
+            public String getCodeFor(OrderElementTemplate element) {
+                // Empty as OrderElementTemplate doesn't have code
+                return "";
+            }
+
+        };
+    }
+
     public void refreshRow(Treeitem item) {
         try {
             OrderElementTemplate orderElement = (OrderElementTemplate) item
                     .getValue();
-            getRenderer().updateNameFor(orderElement);
-            getRenderer().updateBudgetFor(orderElement);
+            getRenderer().updateColumnsFor(orderElement);
             getRenderer().render(item, orderElement);
         } catch (Exception e) {
             e.printStackTrace();

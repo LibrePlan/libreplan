@@ -3,7 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
-  Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2010-2012 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -33,14 +33,13 @@
 
         <vbox id="messagesContainer"></vbox>
 
-        <panel title="${i18n:_('Filter timesheet lines by')}" border="normal"
-                    style="overflow:auto">
-        <panelchildren>
-        <separator bar="false" spacing="5px" orient="horizontal"/>
+        <groupbox closable="false">
+        <caption label="${i18n:_('Filter timesheet lines by')}" />
         <div align="center">
 
             <!-- Filter work report lines -->
             <hbox>
+                <hbox align="pack">
                 <!-- Resource -->
                 <label value="${i18n:_('Resource')}"/>
                 <autocomplete id="filterResource" buttonVisible="true"
@@ -58,6 +57,7 @@
                 <!-- To -->
                 <label value="${i18n:_('to')}"/>
                 <datebox id="filterFinishDateLine" constraint = "@{controller.checkConstraintFinishDateLine}"/>
+                </hbox>
 
                 <!-- More options -->
                 <groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false"
@@ -80,15 +80,15 @@
                     </hbox>
                 </groupbox>
 
-                <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+                <button label="${i18n:_('Filter')}"
                     onClick="controller.onApplyFilterWorkReportLines(event)"/>
             </hbox>
         </div>
+        </groupbox>
 
-        <separator bar="false" spacing="5px" orient="horizontal"/>
-        </panelchildren>
-            </panel>
-            <separator bar="false" spacing="20px" orient="horizontal"/>
+            <hbox style="padding:10px;">
+                <label id="gridSummary" sclass="remarked"/>
+            </hbox>
 
             <grid id="gridListQuery"  mold="paging" pageSize="15"
                 model="@{controller.queryWorkReportLines}"
@@ -140,20 +140,6 @@
 
             <separator bar="false" spacing="20px" orient="horizontal"/>
 
-            <grid id="gridSummary">
-                <columns>
-                    <column label="${i18n:_('Resource')}" align="center"/>
-                    <column label="${i18n:_('Task')}" align="center"/>
-                    <column label="${i18n:_('From')}" align="center"/>
-                    <column label="${i18n:_('To')}" align="center"/>
-                    <column label="${i18n:_('Hours type')}" align="center"/>
-                    <column label="${i18n:_('Type')}" align="center"/>
-                    <column label="${i18n:_('Total tasks')}" align="center"/>
-                    <column label="${i18n:_('Total hours')}" align="center"/>
-                </columns>
-                <rows>
-                </rows>
-            </grid>
 
         </window>
 

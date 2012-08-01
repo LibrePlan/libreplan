@@ -47,7 +47,7 @@
             <listhead>
                 <listheader label="${i18n:_('Date')}" tooltiptext="${i18n:_('Measurement date')}" />
                 <listheader label="${i18n:_('Length')}" tooltiptext="${i18n:_('Length percentage')}" />
-                <listheader label="${i18n:_('Amount work')}" tooltiptext="${i18n:_('Amount work percentage')}" />
+                <listheader label="${i18n:_('Work amount')}" tooltiptext="${i18n:_('Amount work percentage')}" />
                 <listheader label="${i18n:_('Op.')}" tooltiptext="${i18n:_('Operations')}" width="50px"/>
             </listhead>
         </listbox>

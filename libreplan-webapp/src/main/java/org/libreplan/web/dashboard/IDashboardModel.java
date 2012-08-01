@@ -80,10 +80,14 @@ interface IDashboardModel {
 
     /* Resources KPI: "Overtime Ratio" */
 
-    // (Load + Overload) / Load
+    /**
+     * Formula: Overload / (Load + Overload)
+     */
     BigDecimal getOvertimeRatio();
 
-    // Load / Capacity
+    /**
+     * Formula: 1 - (Load / Capacity)
+     */
     BigDecimal getAvailabilityRatio();
 
 }

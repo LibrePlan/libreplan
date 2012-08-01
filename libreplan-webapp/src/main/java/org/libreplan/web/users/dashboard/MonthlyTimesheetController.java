@@ -22,6 +22,8 @@ package org.libreplan.web.users.dashboard;
 import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,14 +48,17 @@ import org.libreplan.web.common.entrypoints.MatrixParameters;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.services.CustomTargetUrlResolver;
 import org.springframework.util.Assert;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
+import org.zkoss.zul.Frozen;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
@@ -71,6 +76,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         implements IMonthlyTimesheetController {
 
     private final static String EFFORT_DURATION_TEXTBOX_WIDTH = "30px";
+    private final static String TOTAL_DURATION_TEXTBOX_WIDTH = "50px";
 
     private final static String WORK_REPORTS_URL = "/workreports/workReport.zul";
 
@@ -171,7 +177,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                 final LocalDate textboxDate = day;
 
                 final Textbox textbox = new Textbox();
-                textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
+                textbox.setHflex("true");
 
                 Util.bind(textbox, new Util.Getter<String>() {
                     @Override
@@ -186,7 +192,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                         EffortDuration effortDuration = effortDurationFromString(value);
                         if (effortDuration == null) {
                             throw new WrongValueException(textbox,
-                                    _("Not a valid effort duration"));
+                                    _("Invalid Effort Duration"));
                         }
                         monthlyTimesheetModel.setEffortDuration(orderElement,
                                 textboxDate, effortDuration);
@@ -221,7 +227,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         }
 
         private void markAsModified(final Textbox textbox) {
-            textbox.setStyle("border-color: red;");
+            textbox.setStyle("font-weight: bold");
         }
 
         private void appendOtherColumn(Row row, final OrderElement orderElement) {
@@ -249,6 +255,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         private void renderTotalRow(Row row) {
             appendLabelSpaningTwoColumns(row, _("Total"));
             appendTotalForDays(row);
+            row.setSclass("total-row");
             appendTotalColumn(row);
         }
 
@@ -429,7 +436,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         private Textbox getDisabledTextbox(String id) {
             Textbox textbox = new Textbox();
-            textbox.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
+            textbox.setHflex("true");
             textbox.setId(id);
             textbox.setDisabled(true);
             return textbox;
@@ -473,6 +480,11 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
         URLHandlerRegistry.getRedirectorFor(IMonthlyTimesheetController.class)
                 .register(this, page);
+    }
+
+    private void adjustFrozenWidth() {
+        // Hack to reduce frozen scrollarea
+        Clients.evalJavaScript("jq('.z-frozen-inner div').width(jq('.totals-column').offset().left);");
     }
 
     private void checkUserComesFromEntryPointsOrSendForbiddenCode() {
@@ -522,9 +534,16 @@ public class MonthlyTimesheetController extends GenericForwardComposer
 
     private void initTimesheet(LocalDate date) {
         columns = new Columns();
+        columns.setSizable(true);
         timesheet.getChildren().clear();
         timesheet.appendChild(columns);
         createColumns(date);
+
+        Frozen frozen = new Frozen();
+        frozen.setColumns(2);
+        timesheet.appendChild(frozen);
+
+        adjustFrozenWidth();
     }
 
     private void createColumns(LocalDate date) {
@@ -537,8 +556,15 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     }
 
     private void createProjectAndTaskColumns() {
-        columns.appendChild(new Column(_("Project")));
-        columns.appendChild(new Column(_("Task")));
+        Column project = new Column(_("Project"));
+        project.setStyle("min-width:100px");
+        columns.appendChild(project);
+
+        Column task = new Column(_("Task"));
+        task.setStyle("min-width:100px");
+
+        columns.appendChild(project);
+        columns.appendChild(task);
     }
 
     private void createColumnsForDays(LocalDate date) {
@@ -548,16 +574,26 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                 .plusDays(1)) {
             Column column = new Column(day.getDayOfMonth() + "");
+            column.setAlign("center");
+            column.setWidth(EFFORT_DURATION_TEXTBOX_WIDTH);
             columns.appendChild(column);
         }
     }
 
     private void createOtherColumn() {
-        columns.appendChild(new Column(_("Other")));
+        Column other = new Column(_("Other"));
+        other.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
+        other.setSclass("totals-column");
+        other.setAlign("center");
+        columns.appendChild(other);
     }
 
     private void createTotalColumn() {
-        columns.appendChild(new Column(_("Total")));
+        Column total = new Column(_("Total"));
+        total.setWidth(TOTAL_DURATION_TEXTBOX_WIDTH);
+        total.setSclass("totals-column");
+        total.setAlign("center");
+        columns.appendChild(total);
     }
 
     public String getDate() {
@@ -575,8 +611,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         if (monthlyTimesheetModel.hasOtherReports()) {
             result.add(MonthlyTimesheetRow.createOtherRow());
         }
-        result.add(MonthlyTimesheetRow.createCapacityRow());
         result.add(MonthlyTimesheetRow.createTotalRow());
+        result.add(MonthlyTimesheetRow.createCapacityRow());
         result.add(MonthlyTimesheetRow.createExtraRow());
         return result;
     }
@@ -623,6 +659,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             monthlyTimesheetModel.addOrderElement(orderElement);
             orderElementBandboxSearch.setSelectedElement(null);
             Util.reloadBindings(timesheet);
+            adjustFrozenWidth();
         }
     }
 
@@ -724,6 +761,20 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             return EffortDuration.zero();
         }
 
+        String decimalSeparator = ((DecimalFormat) DecimalFormat
+                .getInstance(Locales.getCurrent()))
+                .getDecimalFormatSymbols().getDecimalSeparator() + "";
+        if (effort.contains(decimalSeparator) || effort.contains(".")) {
+            try {
+                effort = effort.replace(decimalSeparator, ".");
+                double hours = Double.parseDouble(effort);
+                return EffortDuration.fromHoursAsBigDecimal(new BigDecimal(
+                        hours));
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
         return EffortDuration.parseFromFormattedString(effort);
     }
 
@@ -762,6 +813,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     public boolean hasOtherReports() {
         return monthlyTimesheetModel.hasOtherReports();
     }
+
 
 }
 

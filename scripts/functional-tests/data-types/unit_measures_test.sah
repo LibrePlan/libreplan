@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,48 +19,48 @@
 
 /* Included tests
  *
- * 1 - Create a new Unit Measure
- * 2 - Create a Unit Measure with duplicate type (it should be a failure)
- * 3 - Create a Unit Measure with empty type (it should be a failure)
- * 4 - Edit a Unit Measure
- * 5 - Assign a Unit Measure to a material
+ * 1 - Create a new Material Unit
+ * 2 - Create a Material Unit with duplicate type (it should be a failure)
+ * 3 - Create a Material Unit with empty type (it should be a failure)
+ * 4 - Edit a Material Unit
+ * 5 - Assign a Material Unit to a material
  *   5.1 Create a material and assign the Unit
  *   5.1 Try to delete the assigned Unit (it should be a failure)
  *   5.2 Delete the material
  * 6 - Check code
  *   6.1 - Change configuration
- *   6.2 - Try to create a new Unit Measure without Code (it should be a failure)
+ *   6.2 - Try to create a new Material Unit without Code (it should be a failure)
  *   6.3 - Change configuration like before
- * 7 - Delete Unit Measure
+ * 7 - Delete Material Unit
  *
 */
 _include("../common_functions.sah");
 
 function unitMeasureCreate($type){
-    commonCreate("Unit Measures");
+    commonCreate("Material Units");
     unitMeasureForm($type);
-    commonSaveValidation("Unit Measure", $type);
-    _log("Create a new Unit Measure", "custom1");
+    commonSaveValidation("Material Unit", $type);
+    _log("Create a new Material Unit", "custom1");
 }
 
 function unitMeasureCreateDuplicate($type){
-    commonCreate("Unit Measures");
+    commonCreate("Material Units");
     unitMeasureForm($type);
     unitMeasureNotValidation($type);
-    _log("Create Unit Measure Duplicate", "custom1");
+    _log("Create Material Unit Duplicate", "custom1");
 }
 
 function unitMeasureCreateEmpty(){
-    commonCreate("Unit Measures");
+    commonCreate("Material Units");
     unitMeasureForm("");
-    _assertExists(_div("Unit type name cannot be empty"));
-    _assert(_isVisible(_div("Unit type name cannot be empty")));
-    _log("Create Unit Measure Empty", "custom1");
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
+    _log("Create Material Unit Empty", "custom1");
 }
 
 function unitMeasureForm($name){
-    _setValue(_textbox(0, _near(_span("Unit measure name"))), $name);
-    _removeFocus(_textbox(0, _near(_span("Unit measure name"))));
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_span("Name"))));
     _click(_cell("Save & Continue"));
 }
 
@@ -73,15 +73,15 @@ function unitMeasureNotValidation(){
 function unitMeasureEdit($oldName, $newName, $cell){
     commonEdit($oldName, $cell);
     unitMeasureForm($newName);
-    commonSaveValidation("Unit Measure", $newName);
-    _log("Edit the Unit Measure", "custom1");
+    commonSaveValidation("Material Unit", $newName);
+    _log("Edit the Material Unit", "custom1");
 }
 
 function unitMeasureAssign($UMeasure, $materialName){
     materialFormCreate($materialName, $UMeasure);
     unitMeasureTryDeleteAssigned($UMeasure);
     materialFormDelete($materialName);
-    _log("Assign an Unit Measure to a material", "custom1");
+    _log("Assign an Material Unit to a material", "custom1");
 }
 
 function materialFormCreate($material, $measure){
@@ -96,7 +96,7 @@ function materialFormCreate($material, $measure){
 }
 
 function unitMeasureTryDeleteAssigned($UMeasure){
-    _click(_link("Unit Measures"));
+    _click(_link("Material Units"));
     _click(_image("ico_borrar1.png", _in(_cell(1, _near(_cell($UMeasure))))));
     _assertNotExists(_cell("OK"));
     _assertNull(_cell("OK"));
@@ -105,21 +105,21 @@ function unitMeasureTryDeleteAssigned($UMeasure){
 }
 
 function unitMeasureCheckCode($unitMeasureName){
-    commonConfigurationChangeCheckboxMainPreferences("Unit Measures");
+    commonConfigurationChangeCheckboxMainPreferences("Material Units");
     unitMeasureCreateWithoutCode($unitMeasureName);
-    commonConfigurationChangeCheckboxMainPreferences("Unit Measures");
+    commonConfigurationChangeCheckboxMainPreferences("Material Units");
     _log("Check code label", "custom1");
 }
 
 function unitMeasureCreateWithoutCode($name){
-    commonCreate("Unit Measures");
+    commonCreate("Material Units");
     unitMeasureForm($name);
     unitMeasureEmptyCodeValidation();
 }
 
 function unitMeasureEmptyCodeValidation(){
-    _assertExists(_div("Unit type code cannot be empty"));
-    _assert(_isVisible(_div("Unit type code cannot be empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
 
 function materialFormDelete($materialName){
@@ -147,7 +147,7 @@ unitMeasureCreateEmpty();
 unitMeasureEdit($UMeasureName, $UMeasureName2, 1);
 unitMeasureAssign($UMeasureName2, $materialName);
 unitMeasureCheckCode($UMeasureName);
-commonDelete("Unit Measures", $UMeasureName2, 1);
-commonDeleteValidation("Unit Measure", $UMeasureName2);
-_log("Delete the Unit Measure", "custom1");
+commonDelete("Material Units", $UMeasureName2, 1);
+commonDeleteValidation("Material Unit", $UMeasureName2);
+_log("Delete the Material Unit", "custom1");
 commonLogout();

@@ -332,15 +332,13 @@ public class AssignedCriterionsModel extends IntegrationEntityModel implements
                     .getCriterion();
             if (checkSameCriterionAndSameInterval(satisfactionDTO)) {
                 throw new IllegalStateException(
-                        _(" The "
-                                + criterion.getName()
-                                + " can not be assigned to this resource. Its interval overlap with other criterion"));
+                        _("The {0} can not be assigned to this resource. Its interval overlaps with other criterion",
+                                criterion.getName()));
             }
             if (checkNotAllowSimultaneousCriterionsPerResource(satisfactionDTO)) {
                 throw new IllegalStateException(
-                        _(" The "
-                                + criterion.getName()
-                                + "is not valid, the criterionType overlap other criterionSatisfaction whith same criterionType"));
+                        _("The {0} is not valid. Other value exists from the same criterion type",
+                                criterion.getName()));
             }
         }
     }

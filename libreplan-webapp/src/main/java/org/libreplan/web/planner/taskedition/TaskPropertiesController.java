@@ -99,6 +99,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private Datebox endDateBox;
 
+    private Datebox deadLineDateBox;
+
     private Combobox startConstraintTypes;
 
     private Datebox startConstraintDate;
@@ -144,6 +146,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintTypes.setDisabled(disabledConstraintsAndAllocations);
         startConstraintDate.setDisabled(disabledConstraintsAndAllocations);
         lbResourceAllocationType.setDisabled(disabledConstraintsAndAllocations);
+        deadLineDateBox.setDisabled(currentTaskElement.isSubcontracted());
 
         if (context != null) {
             taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
@@ -339,11 +342,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
                         restoreOldState();
                         editTaskController.showNonPermitChangeResourceAllocationType();
                     } else {
-                        if(newState.equals(ResourceAllocationTypeEnum.SUBCONTRACT) && checkCompatibleAllocation()){
-                            changeResourceAllocationType(oldState, newState);
-                            editTaskController.selectAssignmentTab(lbResourceAllocationType
-                                .getSelectedIndex() + 1);
-                        }else{
+                        if(newState.equals(ResourceAllocationTypeEnum.SUBCONTRACT)
+                                && !checkCompatibleAllocation()){
                             try {
                                 restoreOldState();
                                 Messagebox.show(_("This resource allocation type is incompatible. The task has an associated order element which has a progress that is of type subcontractor. "),
@@ -352,6 +352,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
+                        }else{
+                            changeResourceAllocationType(oldState,newState);
+                            editTaskController.selectAssignmentTab(lbResourceAllocationType.getSelectedIndex() + 1);
                         }
                     }
                 }
@@ -434,8 +437,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
      *
      */
     public enum ResourceAllocationTypeEnum {
-        NON_LIMITING_RESOURCES(_("Non limiting resource assignation")),
-        LIMITING_RESOURCES(_("Limiting resource assignation")),
+        NON_LIMITING_RESOURCES(_("Normal resource assignment")),
+        LIMITING_RESOURCES(_("Queue-based resource assignation")),
         SUBCONTRACT(_("Subcontract"));
 
         /**

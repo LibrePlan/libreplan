@@ -219,7 +219,7 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
         if (!areAllLimitingResources(resources)) {
             getMessagesForUser().showMessage(Level.ERROR,
-                    _("All resources must be limiting. "));
+                    _("All resources must be queue-based"));
             return;
         }
 

@@ -216,7 +216,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
         this.qualityForm = BooleanUtils.toBoolean(qualityForm);
     }
 
-    @AssertTrue(message = "advance type marked as quality form but is updatable")
+    @AssertTrue(message = "progress type marked as quality form but is updatable")
     public boolean checkConstraintIfIsQualityFormIsNotUpdatable() {
         if (isQualityForm()) {
             if (isUpdatable()) {
@@ -226,7 +226,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
         return true;
     }
 
-    @AssertTrue(message = "default max value of percentage advance type must be 100")
+    @AssertTrue(message = "default maximum value of percentage progress type must be 100")
     public boolean checkConstraintDefaultMaxValueMustBe100ForPercentage() {
         if (percentage) {
             if (defaultMaxValue.compareTo(new BigDecimal(100)) != 0) {
@@ -241,7 +241,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
         return unitName;
     }
 
-    @AssertTrue(message = "the advance type name has to be unique. It is already used")
+    @AssertTrue(message = "progress type name is already in use")
     public boolean checkConstraintUniqueName() {
         if (StringUtils.isBlank(unitName)) {
             return true;
@@ -263,7 +263,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
         }
     }
 
-    @AssertTrue(message = "the default max value must be greater than the precision value")
+    @AssertTrue(message = "default maximum value must be greater than precision value")
     public boolean checkDefaultMaxValueGreaterThanPrecision() {
         if (defaultMaxValue.compareTo(unitPrecision) == -1) {
             return false;

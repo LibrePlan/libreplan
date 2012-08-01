@@ -27,6 +27,7 @@ import static org.libreplan.business.planner.chart.ContiguousDaysLine.toSortedMa
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -752,7 +753,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                         .getIndicatorsDefinitionInterval(), LocalDate
                         .fromDateFields(value))) {
                     throw new WrongValueException(comp,
-                            _("the date must be inside the visualization area"));
+                            _("Date must be inside visualization area"));
                 }
 
             }
@@ -764,7 +765,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Date today = LocalDate.fromDateFields(new Date())
                 .toDateTimeAtStartOfDay().toDate();
         if (value != null && (value.compareTo(today) > 0)) {
-            throw new WrongValueException(datebox, _("date in future"));
+            throw new WrongValueException(datebox, _("date in the future"));
         }
     }
 
@@ -834,7 +835,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 value = value.multiply(new BigDecimal(100));
                 units = "%";
             }
-            Label valueLabel = new Label(value.intValue() + " " + units);
+            Label valueLabel = new Label(
+                    value.setScale(0, RoundingMode.HALF_UP) + " " + units);
 
             Hbox hbox = new Hbox();
             hbox.appendChild(checkbox);

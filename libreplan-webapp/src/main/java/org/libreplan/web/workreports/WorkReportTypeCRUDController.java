@@ -335,16 +335,10 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
 
     private Button createRemoveButton() {
         Button removeButton = new Button();
-        if (isReadOnly()) {
-            removeButton.setSclass("icono");
-            removeButton.setImage("/common/img/ico_borrar_out.png");
-            removeButton.setTooltiptext(_("Not deletable"));
-        } else {
-            removeButton.setSclass("icono");
-            removeButton.setImage("/common/img/ico_borrar1.png");
-            removeButton.setHoverImage("/common/img/ico_borrar.png");
-            removeButton.setTooltiptext(_("Delete"));
-        }
+        removeButton.setSclass("icono");
+        removeButton.setImage("/common/img/ico_borrar1.png");
+        removeButton.setHoverImage("/common/img/ico_borrar.png");
+        removeButton.setTooltiptext(_("Delete"));
         return removeButton;
     }
 
@@ -654,7 +648,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
             workReportLabelTypeAssigment.setLabelType(null);
             throw new WrongValueException(
                     comboLabelTypes,
-                    _("This label type already is assigned to the timesheet template."));
+                    _("Label type already assigned"));
         }
     }
 
@@ -671,7 +665,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
                     descriptionField.setFieldName(null);
                     throw new WrongValueException(
                             comp,
-                            _("A description field of the same name already exists."));
+                            _("A description field with the same name already exists."));
                 }
             }
         };
@@ -769,7 +763,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         Row row = findRowByValue(listDescriptionFields.getRows(), field);
             Textbox fieldName = (Textbox) row.getFirstChild();
         throw new WrongValueException(fieldName,
-                _("The field name must be unique, not null and not empty"));
+                _("The field name must be unique and not empty"));
     }
 
     private void showInvalidDescriptionFieldLength(DescriptionField field) {
@@ -777,7 +771,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
         Row row = findRowByValue(listDescriptionFields.getRows(), field);
         Intbox fieldName = (Intbox) row.getChildren().get(1);
         throw new WrongValueException(fieldName,
-                _("The length must be greater than 0, and not null."));
+                _("The length must be greater than 0 and not empty"));
     }
 
     private void showInvalidWorkReportLabelTypeAssigment(int combo,
@@ -903,7 +897,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
             messagesForUserSortedLabelsAndFields
                     .showMessage(
                             Level.ERROR,
-                            _("The index fields and labels must be uniques and consecutives"));
+                            _("Index fields and labels must be unique and consecutive"));
         }
     }
 
@@ -975,9 +969,7 @@ public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportT
                         .show(_("Cannot delete timesheet template. There are some timesheets bound to it."),
                                 _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
             } catch (InterruptedException e) {
-                LOG.error(
-                        _("Error on showing warning message removing workReportType: ",
-                                workReportType.getHumanId()), e);
+                throw new RuntimeException(e);
             }
             return false;
         }

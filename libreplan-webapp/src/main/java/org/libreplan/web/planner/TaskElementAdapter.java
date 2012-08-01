@@ -1073,7 +1073,7 @@ public class TaskElementAdapter {
                             .append("<br/>");
                     result.append(
 _(
-                            "cost because of worked hours: {0}, cost because of expenses: {1}",
+                            "Hours cost: {0}, Expenses cost: {1}",
                             costHours, costExpenses));
                 }
 

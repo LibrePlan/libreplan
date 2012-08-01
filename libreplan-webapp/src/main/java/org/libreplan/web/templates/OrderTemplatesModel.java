@@ -52,6 +52,7 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.libreplan.web.orders.QualityFormsOnConversation;
 import org.libreplan.web.orders.labels.LabelsOnConversation;
@@ -191,11 +192,19 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     }
 
     private void loadAssociatedData(OrderElementTemplate template) {
+        loadCalendar(template);
         loadAdvanceAssignments(template);
         loadQualityForms(template);
         loadLabels(template);
         loadCriterionRequirements(template);
         getOrderElementsOnConversation().initialize(template);
+    }
+
+    private void loadCalendar(OrderElementTemplate template) {
+        if (template.isOrderTemplate()) {
+            OrderTemplate orderTemplate = (OrderTemplate) template;
+            orderTemplate.getCalendar().getName();
+        }
     }
 
     private static void loadCriterionRequirements(OrderElementTemplate orderElement) {
@@ -299,13 +308,13 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public void validateTemplateName(String name)
             throws IllegalArgumentException {
         if ((name == null) || (name.isEmpty())) {
-            throw new IllegalArgumentException(_("the name must be not empty"));
+            throw new IllegalArgumentException(_("name cannot be empty"));
         }
 
         getTemplate().setName(name);
         if (!getTemplate().checkConstraintUniqueRootTemplateName()) {
             throw new IllegalArgumentException(
-                    _("There exists other template with the same name."));
+                    _("Already exists another template with the same name"));
         }
     }
 

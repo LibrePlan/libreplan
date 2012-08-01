@@ -165,7 +165,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
                     id="warningDefaultPasswdReports"
                     style="display:${templateCtrl.defaultPasswdReportsVisible}">[reports]</n:a>
                 <n:span class="footer-messages-area">
-                    ${i18n:_('default password were not changed')}.
+                    ${i18n:_('default password was not changed')}.
                 </n:span>
             </div>
         </n:div>

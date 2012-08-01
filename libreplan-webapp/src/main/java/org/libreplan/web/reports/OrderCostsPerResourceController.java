@@ -142,7 +142,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
                         && (startDateLine.compareTo(getEndingDate()) > 0)) {
                     ((Datebox) comp).setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };
@@ -158,7 +158,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
                         && (endingDate.compareTo(getStartingDate()) < 0)) {
                     ((Datebox) comp).setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than finish date"));
+                            _("must be after end date"));
                 }
             }
         };
@@ -176,7 +176,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         boolean result = orderCostsPerResourceModel.addSelectedLabel(label);
         if (!result) {
             throw new WrongValueException(bdLabels,
-                    _("This label has already been added."));
+                    _("Label has already been added."));
         } else {
             Util.reloadBindings(lbLabels);
         }

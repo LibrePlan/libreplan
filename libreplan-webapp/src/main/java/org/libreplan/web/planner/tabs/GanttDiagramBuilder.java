@@ -52,6 +52,9 @@ public class GanttDiagramBuilder {
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
                 order, adapter);
         TaskSource taskSource = order.getTaskSource();
+        if (taskSource == null) {
+            return graph;
+        }
         graph.addTopLevel(taskSource.getTask());
         for (Dependency each : getAllDependencies(order)) {
             graph.addWithoutEnforcingConstraints(DependencyWithVisibility

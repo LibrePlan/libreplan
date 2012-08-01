@@ -306,4 +306,8 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         return copy;
     }
 
+    public boolean isOrderTemplate() {
+        return false;
+    }
+
 }

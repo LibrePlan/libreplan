@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -43,7 +43,7 @@ _include("../common_functions.sah");
  */
 
 function configChangeInCheckboxes($list) {
-    _click(_link("LibrePlan Configuration"));
+    _click(_link("Main Settings"));
     configPressCheckboxes($list);
     _click(_cell("Save"));
     configSaveValidation();
@@ -73,7 +73,7 @@ function configCheckMonteCarlo(){
     _assertExists(_cell("MonteCarlo Method"));
     _assert(_isVisible(_cell("MonteCarlo Method")));
     _log("Monte Carlo is showed", "custom1");
-    _click(_link("LibrePlan Configuration"));
+    _click(_link("Main Settings"));
     _click(_checkbox(0, _near(_label("MonteCarlo method"))));
     _click(_cell("Save"));
     commonDeleteProject("projectForCheckMontecarlo");
@@ -116,20 +116,20 @@ function configCheckMaterial(){
 }
 
 function configCheckWorkReport(){
-    _click(_link("LibrePlan Configuration"));
-    _click(_checkbox(0, _near(_label("Work report types"))));
+    _click(_link("Main Settings"));
+    _click(_checkbox(0, _near(_label("Timesheet templates"))));
     _click(_cell("Save"));
     commonWorkReportModelCreate("modelForConfiguration", "line")
     configCheckWorkReportCreate();
     commonWorkReportModelDelete("modelForConfiguration");
-    _click(_link("LibrePlan Configuration"));
-    _click(_checkbox(0, _near(_label("Work report types"))));
+    _click(_link("Main Settings"));
+    _click(_checkbox(0, _near(_label("Timesheet templates"))));
     _click(_cell("Save"));
 }
 
 function configCheckWorkReportCreate(){
     var $code;
-    _click(_cell("New work report"));
+    _click(_cell("New timesheet"));
     _click(_cell("Add new row"));
     _set($code, _textbox(0, _near(_span("Code"))).value);
     if ($code == ""){
@@ -165,7 +165,7 @@ function configChangeCalendar($name){
 }
 
 function configChangeCalendarOption($name){
-    _click(_link("LibrePlan Configuration"));
+    _click(_link("Main Settings"));
     _click(_italic(0, _near(_span("Default calendar"))));
     _click(_div($name));
     _click(_cell("Save"));
@@ -188,7 +188,7 @@ function configCheckCalendarWorker($name){
 }
 
 function configCheckCalendarProject($name){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_add.png"));
     if (_condition(_textbox(0, _near(_span("Calendar"))).value == $name)){
     _log("The correct calendar is assigned", "custom1");
@@ -199,11 +199,11 @@ function configCheckCalendarProject($name){
 }
 
 /* test values */
-var $listCheckoxes = ["Criterion", "Label", "Work report", "Resources", "Types of work hours",
-"Material categories", "Unit Measures", "Calendar", "Work report types",
-"Calendar exception types", "Cost category", "MonteCarlo method", "Enable/Disable"];
-var $listMenuOptions = ["Criteria", "Exception Days", "Labels", "Unit Measures", "Work Hours",
-"Work Report Models", "Cost Categories", "Calendars", "Workers", "Machines"];
+var $listCheckoxes = ["Criteria", "Labels", "Timesheets", "Resources", "Hours Types",
+"Material categories", "Material Units", "Calendar", "Timesheet templates",
+"Calendar exception days", "Cost category", "Expense sheets", "MonteCarlo method", "Enable/Disable"];
+var $listMenuOptions = ["Criteria", "Calendar Exception Days", "Labels", "Material Units", "Hours Types",
+"Timesheets Templates", "Cost Categories", "Calendars", "Workers", "Machines"];
 var $calendarName = "CalendarForConfig";
 
 /* test actions */

@@ -176,8 +176,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     public void setWorkingHours(Integer workingHours)
             throws IllegalArgumentException {
         if ((workingHours != null) && (workingHours < 0)) {
-            throw new IllegalArgumentException(
-                    _("Working hours shouldn't be negative"));
+            throw new IllegalArgumentException("Working hours should not be negative");
         }
         if (workingHours == null) {
             workingHours = 0;
@@ -254,11 +253,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     public void addCriterionRequirement(CriterionRequirement requirement) {
         if (!isValidResourceType(requirement)) {
             throw new IllegalStateException(
-                    _("The criterion can not be assigned to this hoursGroup because its resource type is diferent"));
+                    "Criterion cannot be assigned to this Hours Group. Criterion Resource Type is of a different type");
         }
         if (existSameCriterionRequirement(requirement)) {
             throw new IllegalStateException(
-                    _("The criterion can not be assigned to this hoursGroup because it already exist into the hoursGroup"));
+                    "Criterion cannot be assigned to this Hours Group. Criterion already exist within Hours Group");
 
         }
         requirement.setHoursGroup(this);

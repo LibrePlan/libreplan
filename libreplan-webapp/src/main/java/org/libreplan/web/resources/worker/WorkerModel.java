@@ -413,7 +413,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
             Validate
                     .isTrue(
                             type.isAllowSimultaneousCriterionsPerResource(),
-                            _("You must allow multiple active criteria for this type to use this assignment strategy"));
+                            _("Please, allow Multiple Active Criteria in this type in order to use selected Assignment Strategy"));
             this.criterionDAO = criterionDAO;
             this.resource = resource;
             this.type = type;

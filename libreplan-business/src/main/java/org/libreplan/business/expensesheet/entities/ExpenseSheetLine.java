@@ -107,7 +107,7 @@ public class ExpenseSheetLine extends IntegrationEntity {
         this.orderElement = orderElement;
     }
 
-    @NotNull(message = "order element not specified")
+    @NotNull(message = "task not specified")
     public OrderElement getOrderElement() {
         return orderElement;
     }

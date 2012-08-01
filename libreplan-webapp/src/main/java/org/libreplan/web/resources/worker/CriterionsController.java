@@ -179,11 +179,11 @@ public class CriterionsController extends GenericForwardComposer {
             }
             if(assignedCriterionsModel.checkSameCriterionAndSameInterval(satisfaction)){
                 throw new WrongValueException(comp,
-                                        _("Criterion is not valid, it overlaps other criterionSatisfaction with the same criterion"));
+                                        _("Criterion already assigned"));
             }
             if(assignedCriterionsModel.checkNotAllowSimultaneousCriterionsPerResource(satisfaction)){
                 throw new WrongValueException(comp,
-                                        _("CriterionType is not valid, it overlaps other criterionSatisfaction with the same criterionType"));
+                                        _("This criterion type cannot have multiple values in the same period"));
             }
     }
 
@@ -209,11 +209,11 @@ public class CriterionsController extends GenericForwardComposer {
             (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
         if(value == null) {
             throw new WrongValueException(comp,
-                    _("Start date cannot be null"));
+                    _("cannot be empty"));
         }
         if(!criterionSatisfactionDTO.isLessToEndDate((Date) value)){
             throw new WrongValueException(comp,
-                _("Start date is not valid, the new start date must be lower than the end date"));
+                _("Invalid Start Date. New Start Date must be earlier than End Date"));
         }else if(!criterionSatisfactionDTO.isPreviousStartDate((Date) value)){
             throw new WrongValueException(
                     comp,
@@ -236,10 +236,10 @@ public class CriterionsController extends GenericForwardComposer {
             (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
         if(!criterionSatisfactionDTO.isGreaterStartDate((Date) value)){
             throw new WrongValueException(comp,
-                _("End date is not valid, the new end date must be greater than the start date"));
+                _("End date is not valid, the new end date must be after start date"));
         }else if(!criterionSatisfactionDTO.isPostEndDate((Date) value)){
             throw new WrongValueException(comp,
-                _("End date is not valid, the new end date must be later the current end date"));
+                _("Invaldid End Date. New End Date must be after current End Date "));
         }
     }
 
@@ -259,10 +259,8 @@ public class CriterionsController extends GenericForwardComposer {
             reload();
         } catch (ValidationException e) {
             showInvalidValues(e);
-             for (InvalidValue invalidValue : e.getInvalidValues()) {
-                messages.showMessage(Level.ERROR, invalidValue.getPropertyName()+invalidValue.getMessage());
-                return false;
-            }
+            messages.showInvalidValues(e);
+            return false;
         } catch (IllegalStateException e) {
                 messages.showMessage(Level.ERROR,e.getMessage());
                 return false;
@@ -342,7 +340,7 @@ public class CriterionsController extends GenericForwardComposer {
                     // Value is incorrect, clear
                     startDate.setValue(null);
                     throw new WrongValueException(startDate,
-                            _("The start date cannot be null"));
+                            _("cannot be empty"));
                 }
                 if (CriterionSatisfactionDTO.CRITERION_WITH_ITS_TYPE.equals(propertyName)) {
                     // Locate TextboxResource
@@ -350,7 +348,7 @@ public class CriterionsController extends GenericForwardComposer {
                     // Value is incorrect, clear
                     bandType.setValue(null);
                     throw new WrongValueException(bandType,
-                            _("The criterion and its type cannot be null"));
+                            _("cannot be empty"));
                 }
             }
         }

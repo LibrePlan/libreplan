@@ -55,6 +55,10 @@ interface ICostStatusModel {
     BigDecimal getVarianceAtCompletion(BigDecimal budgetAtCompletion,
             BigDecimal estimateAtCompletion);
 
+    // Estimate to Complete (ETC)
+    BigDecimal getEstimateToComplete(BigDecimal estimateAtCompletion,
+            BigDecimal actualCost);
+
     void setCurrentOrder(Order order);
 
 }

@@ -227,8 +227,8 @@ public class EarnedValueCalculator implements IEarnedValueCalculator {
             @Override
             public void operate(LocalDate key, BigDecimal dividendValue,
                     BigDecimal divisorValue) {
-                result.put(key,
-                        dividendValue.divide(divisorValue, RoundingMode.DOWN));
+                result.put(key, dividendValue.divide(divisorValue,
+                        RoundingMode.HALF_UP));
             }
 
             @Override

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,7 +25,6 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +87,8 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
 
     private Radio filterByOrderElements;
 
+    private Radio filterByBoth;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -114,11 +115,16 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
     }
 
     private LabelFilterType getSelectedFilterLabels() {
-        if (filterByWorkReports.isChecked())
+        if (filterByWorkReports.isChecked()) {
             return LabelFilterType.WORK_REPORT;
-        if (filterByOrderElements.isChecked())
+        }
+        if (filterByOrderElements.isChecked()) {
             return LabelFilterType.ORDER_ELEMENT;
-        return LabelFilterType.BOTH;
+        }
+        if (filterByBoth.isChecked()) {
+            return LabelFilterType.BOTH;
+        }
+        return LabelFilterType.ANY;
     }
 
     private List<Resource> getSelectedResources() {
@@ -304,7 +310,7 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
         boolean result = hoursWorkedPerWorkerModel.addSelectedLabel(label);
         if (!result) {
             throw new WrongValueException(bdLabels,
-                    _("This label has already been added."));
+                    _("Label has already been added."));
         } else {
             Util.reloadBindings(lbLabels);
         }

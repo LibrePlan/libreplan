@@ -22,6 +22,7 @@
 package org.libreplan.business.materials.daos;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -136,6 +137,9 @@ public class MaterialDAO extends IntegrationEntityDAO<Material> implements
     public List<MaterialAssignment> getFilterMaterial(
             MaterialStatusEnum filterStatus, List<Order> orders,
             List<MaterialCategory> categories, List<Material> materials) {
+        if (orders.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         boolean addedWhere = false;
         boolean addfilterCategory = false;
@@ -163,14 +167,14 @@ public class MaterialDAO extends IntegrationEntityDAO<Material> implements
             addedWhere = true;
             strQuery += "WHERE materialAssignment.status = :filterStatus ";
         }
-        if (!allOrders.isEmpty()) {
-            if (addedWhere) {
-                strQuery += "AND orderElement IN (:allOrders) ";
-            } else {
-                addedWhere = true;
-                strQuery += "WHERE orderElement IN (:allOrders) ";
-            }
+
+        if (addedWhere) {
+            strQuery += "AND orderElement IN (:allOrders) ";
+        } else {
+            addedWhere = true;
+            strQuery += "WHERE orderElement IN (:allOrders) ";
         }
+
         if (categories != null && !categories.isEmpty()) {
             if (addedWhere) {
                 strQuery += "AND ";

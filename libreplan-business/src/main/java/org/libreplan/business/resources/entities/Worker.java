@@ -245,7 +245,7 @@ public class Worker extends Resource {
         return getId().equals(worker.getId());
     }
 
-    @AssertTrue(message = "Limiting resources cannot be bound to any user")
+    @AssertTrue(message = "Queue-based resources cannot be bound to any user")
     public boolean checkConstraintLimitingResourceNotBoundToUser() {
         if (isLimitingResource()) {
             return user == null;
@@ -268,7 +268,7 @@ public class Worker extends Resource {
         }
     }
 
-    @AssertTrue(message = "Bound user has proper role")
+    @AssertTrue(message = "Bound user does not have the proper role")
     public boolean checkConstraintBoundUserHaveProperRole() {
         if (user == null) {
             return true;

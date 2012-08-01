@@ -83,7 +83,7 @@
                         itemRenderer="@{controller.renderer}">
                     <listhead>
                         <listheader label="${i18n:_('Type')}" align="center" width="50px"/>
-                        <listheader label="${i18n:_('Limiting')}" align="center" width="60px"/>
+                        <listheader label="${i18n:_('Queue-based')}" align="center" width="60px"/>
                         <listheader label="${i18n:_('Name')}" sort="auto(name)" align="center" width="250px"/>
                         <listheader label="${i18n:_('Code')}" align="center" width="270px"/>
                         <listheader label="${i18n:_('Operations')}" align="center" width="70px"/>
@@ -113,7 +113,8 @@
                             <label value="${i18n:_('Apply filter to')}:"/>
                             <radio id="filterByWorkReports" label="${i18n:_('Timesheets')}" />
                             <radio id="filterByOrderElements" label="${i18n:_('Tasks')}" />
-                            <radio id="filterByBoth" label="${i18n:_('Both')}" checked="true" />
+                            <radio id="filterByBoth" label="${i18n:_('Both')}" />
+                            <radio id="filterByAny" label="${i18n:_('Any')}" checked="true" />
                         </radiogroup>
                     </hbox>
                 <separator spacing="10px"/>

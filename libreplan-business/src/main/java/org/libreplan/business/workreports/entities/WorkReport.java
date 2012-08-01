@@ -220,7 +220,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "date:the date must be not null if is shared by lines")
+    @AssertTrue(message = "date cannot be empty if it is shared by lines")
     public boolean checkConstraintDateMustBeNotNullIfIsSharedByLines() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -233,7 +233,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "resource:the resource must be not null if is shared by lines")
+    @AssertTrue(message = "resource cannot be empty if it is shared by lines")
     public boolean checkConstraintResourceMustBeNotNullIfIsSharedByLines() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -246,7 +246,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "orderElement:the order element must be not null if is shared by lines")
+    @AssertTrue(message = "task cannot be empty if it is shared by lines")
     public boolean checkConstraintOrderElementMustBeNotNullIfIsSharedByLines() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -281,7 +281,7 @@ public class WorkReport extends IntegrationEntity implements
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "description value:the timesheet have not assigned the description field")
+    @AssertTrue(message = "description value: the timesheet has some description field missing")
     public boolean checkConstraintAssignedDescriptionValues() {
         if (this.workReportType == null) {
             return true;
@@ -457,7 +457,7 @@ public class WorkReport extends IntegrationEntity implements
         lastWorkReportLineSequenceCode++;
     }
 
-    @NotNull(message = "last order element sequence code not specified")
+    @NotNull(message = "last timesheet line sequence code not specified")
     public Integer getLastWorkReportLineSequenceCode() {
         return lastWorkReportLineSequenceCode;
     }
@@ -492,7 +492,7 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
-    @AssertTrue(message = "all timesheet lines have to be in the same month in monthly timesheets")
+    @AssertTrue(message = "In monthly timesheets, all timesheet lines should be in the same month")
     public boolean checkConstraintAllWorkReportLinesInTheSameMonthInMonthlyTimesheet() {
         if (!getWorkReportType().isMonthlyTimesheetsType()) {
             return true;

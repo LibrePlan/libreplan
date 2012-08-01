@@ -577,6 +577,7 @@ public final class OrderElementConverter {
                 }
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
+            OrderVersion orderVersion = null;
             if (orderElementDTO instanceof OrderDTO) {
                 if (!(orderElement instanceof Order)) {
                     throw new ValidationException(MessageFormat.format(
@@ -586,7 +587,7 @@ public final class OrderElementConverter {
 
                 }
                 Order order = (Order) orderElement;
-                OrderVersion orderVersion = order.getOrderVersionFor(Registry
+                orderVersion = order.getOrderVersionFor(Registry
                         .getScenarioManager()
                         .getCurrent());
                 order.useSchedulingDataFor(orderVersion);
@@ -636,8 +637,8 @@ public final class OrderElementConverter {
                                 "Hours Group {0}: Duplicate code in DB",
                                 childDTO.code));
                     }
-                    ((OrderLineGroup) orderElement).add(toEntity(childDTO,
-                            configuration));
+                    ((OrderLineGroup) orderElement).add(toEntity(orderVersion,
+                            childDTO, configuration));
                 }
             }
 
@@ -710,9 +711,8 @@ public final class OrderElementConverter {
                     .findByCode(orderElement.code);
             return existsByCode != null;
         } catch (InstanceNotFoundException e) {
-            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     /**
@@ -739,7 +739,7 @@ public final class OrderElementConverter {
                 }
             }
         } catch (InstanceNotFoundException e) {
-            e.printStackTrace();
+            // Do nothing
         }
         return false;
     }
@@ -821,7 +821,7 @@ public final class OrderElementConverter {
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
                 throw new ValidationException(
                         MessageFormat
-                                .format("Duplicate value true report global progress for task {0}",
+                                .format("More than one progress marked as report global for task {0}",
                                         orderElement.getCode()));
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
                 throw new ValidationException(MessageFormat.format(

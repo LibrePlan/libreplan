@@ -263,7 +263,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutivePassed(item))) {
                 throw new ValidationException(new InvalidValue(
-                        _("can not pass until the previous item is passed."),
+                        _("cannot be checked until the previous item is checked before"),
                         TaskQualityForm.class,
                         "passed", item.getName(), taskQualityForm));
 
@@ -271,7 +271,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
             if ((!taskQualityForm.isByItems())
                     && (!taskQualityForm.isCorrectConsecutiveDate(item))) {
                 throw new ValidationException(new InvalidValue(
-                        _("must be greater than the previous date."),
+                        _("must be after the previous date"),
                         TaskQualityForm.class,
                         "date", item.getName(), taskQualityForm));
             }
@@ -339,7 +339,7 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
 
     private void showMessageDeleteSpread() throws ValidationException {
         throw new ValidationException(
-                _("The operation does not perform because the task has progress reports that is spread associated with this quality form"));
+                _("Quality form cannot be removed as it is spreading progress"));
     }
 
     @Override

@@ -394,13 +394,13 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
             throws IllegalArgumentException {
         if ((name == null) || (name.isEmpty())) {
             throw new IllegalArgumentException(
-                    _("the name must be not null or not empty"));
+                    _("name cannot be empty"));
         }
 
         getWorkReportType().setName(name);
         if (!getWorkReportType().checkConstraintUniqueWorkReportTypeName()) {
             throw new IllegalArgumentException(
-                    _("There exists other workReportType with the same name."));
+                    _("There is another timesheet template with the same name"));
         }
     }
 
@@ -409,7 +409,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
             throws IllegalArgumentException {
         if ((code == null) || (code.isEmpty())) {
             throw new IllegalArgumentException(
-                    _("the code must be not null or not empty"));
+                    _("Code cannot be empty"));
         }
         if (code.contains("_")) {
             throw new IllegalArgumentException(
@@ -419,7 +419,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
         getWorkReportType().setCode(code);
         if (!getWorkReportType().checkConstraintUniqueCode()) {
             throw new IllegalArgumentException(
-                    _("Exist other workReportType with the same code."));
+                    _("There is another timesheet template with the same code"));
         }
     }
 

@@ -115,7 +115,7 @@ public class ScenarioModel implements IScenarioModel {
         boolean isMainScenario = PredefinedScenarios.MASTER.getScenario().getId().equals(scenario.getId());
         if (isMainScenario) {
             throw new IllegalArgumentException(
-                    _("You can not remove the default scenario called \"{0}\"", PredefinedScenarios.MASTER.getName()));
+                    _("You cannot remove the default scenario \"{0}\"", PredefinedScenarios.MASTER.getName()));
         }
 
         Scenario currentScenario = scenarioManager.getCurrent();
@@ -123,13 +123,13 @@ public class ScenarioModel implements IScenarioModel {
                 scenario.getId());
         if (isCurrentScenario) {
             throw new IllegalArgumentException(
-                    _("You can not remove the current scenario"));
+                    _("You cannot remove the current scenario"));
         }
 
         List<Scenario> derivedScenarios = getDerivedScenarios(scenario);
         if (!derivedScenarios.isEmpty()) {
             throw new IllegalArgumentException(
-                    _("You can not remove a scenario with derived scenarios"));
+                    _("You cannot remove a scenario with derived scenarios"));
         }
 
         List<User> users = userDAO.findByLastConnectedScenario(scenario);

@@ -1,5 +1,5 @@
 Name:           libreplan
-Version:        1.2.4
+Version:        1.3.0
 Release:        1
 Summary:        Web application for project planning, monitoring and control
 License:        AGPLv3
@@ -106,6 +106,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{name}/conf/*
 
 %changelog
+* Thu Jul 26 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.3.0-1
+- Released LibrePlan 1.3.0
 * Wed May 23 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.2.4-1
 - Released LibrePlan 1.2.4
 * Wed Apr 18 2012 Jacobo Aragunde Pérez <jaragunde@igalia.com> - 1.2.3-1

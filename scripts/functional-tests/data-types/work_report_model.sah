@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,24 +40,24 @@
 _include("../common_functions.sah");
 
 function workReportModelCreate($name){
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
     workReportModelForm($name);
-   commonSaveValidation("Work Report Type", $name);
+   commonSaveValidation("Timesheets Template", $name);
     _log("Create a new Work Report Model", "custom1");
 }
 
 function workReportModelCreateDuplicateName($name){
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
     workReportModelForm($name);
     workReportModelNotValid();
     _log("Do not allow create a duplicate Work Report Model", "custom1");
 }
 
 function workReportModelCreateEmpty(){
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
     workReportModelForm("");
-    _assertExists(_div("the name must be not null or not empty"));
-    _assert(_isVisible(_div("the name must be not null or not empty")));
+    _assertExists(_div("name cannot be empty"));
+    _assert(_isVisible(_div("name cannot be empty")));
     _log("Do not allow create Work Report Model without name", "custom1");
 }
 
@@ -73,14 +73,14 @@ function workReportModelForm($name){
 
 /* test to check a that LibrePlan give us a error */
 function workReportModelNotValid(){
-    _assertExists(_div("There exists other workReportType with the same name."));
-    _assert(_isVisible(_div("There exists other workReportType with the same name.")));
+    _assertExists(_div("There is another timesheet template with the same name"));
+    _assert(_isVisible(_div("There is another timesheet template with the same name")));
 }
 
 function workReportModelEdit($oldName, $newName, $cell){
     commonEdit($oldName, $cell);
     workReportModelEditForm($newName);
-    commonSaveValidation("Work Report Type", $newName);
+    commonSaveValidation("Timesheets Template", $newName);
     _log("Edit a Work Report Model", "custom1");
 }
 
@@ -91,9 +91,9 @@ function workReportModelEditForm($name){
 }
 
 function workReportModelCheckCode($name){
-    commonConfigurationChangeCheckboxMainPreferences("Work report types");
+    commonConfigurationChangeCheckboxMainPreferences("Timesheet templates");
     workReportModelCreateWithoutCode($name);
-    commonConfigurationChangeCheckboxMainPreferences("Work report types");
+    commonConfigurationChangeCheckboxMainPreferences("Timesheet templates");
     _log("Check code label", "custom1");
 }
 
@@ -105,18 +105,18 @@ function workReportModelCheckValues($name, $name2){
 }
 
 function workReportModelCreateWithoutCode($type){
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
     workReportModelForm($type);
     workReportModelEmptyCodeValidation();
 }
 
 function workReportModelEmptyCodeValidation(){
-    _assertExists(_div("the code must be not null or not empty"));
-    _assert(_isVisible(_div("the code must be not null or not empty")));
+    _assertExists(_div("Code cannot be empty"));
+    _assert(_isVisible(_div("Code cannot be empty")));
 }
 
 function workReportModelCheckComplementaryTextFields($name){
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
    _setValue(_textbox(0, _near(_span("Name"))), $name);
     _removeFocus(_textbox(0, _near(_div("Name"))));
     _click(_cell("Add New Complementary Field"));
@@ -130,18 +130,18 @@ function workReportModelCheckComplementaryTextFields($name){
 }
 
 function workReportModelCheckComplementaryTextFieldsValidationName(){
-    _assertExists(_div("The field name must be unique, not null and not empty"));
-    _assert(_isVisible(_div("The field name must be unique, not null and not empty")));
+    _assertExists(_div("The field name must be unique and not empty"));
+    _assert(_isVisible(_div("The field name must be unique and not empty")));
 }
 
 function workReportModelCheckComplementaryTextFieldsValidationLength(){
-    _assertExists(_div("The length must be greater than 0, and not null."));
-    _assert(_isVisible(_div("The length must be greater than 0, and not null.")))
+    _assertExists(_div("The length must be greater than 0 and not empty"));
+    _assert(_isVisible(_div("The length must be greater than 0 and not empty")))
 }
 
 function workReportModelCheckLabelTypeFields($name){
     commonLabelCreate("labelforModel",["New"]);
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
     _setValue(_textbox(0, _near(_span("Name"))), $name);
     _removeFocus(_textbox(0, _near(_div("Name"))));
     _click(_cell("Add New Label Type Field"));
@@ -180,10 +180,10 @@ workReportModelEdit($workReportModelName, $workReportModelNewName, 1);
 workReportModelCheckCode($workReportModelName);
 workReportModelCheckValues($workReportModelName, $workReportModelName2);
 
-commonDelete("Work Report Models", $workReportModelNewName, 1);
-commonDeleteValidation("Work Report Type", $workReportModelNewName);
-commonDelete("Work Report Models", $workReportModelName, 1);
-commonDeleteValidation("Work Report Type", $workReportModelName);
+commonDelete("Timesheets Templates", $workReportModelNewName, 1);
+commonDeleteValidation("Timesheets Template", $workReportModelNewName);
+commonDelete("Timesheets Templates", $workReportModelName, 1);
+commonDeleteValidation("Timesheets Template", $workReportModelName);
 _log("Delete the Work Report Model", "custom1");
 
 commonLogout();

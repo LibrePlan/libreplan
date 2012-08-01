@@ -37,16 +37,13 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
 import org.libreplan.business.externalcompanies.entities.EndDateCommunication;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.daos.IOrderDAO;
-import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -125,47 +122,6 @@ import org.zkoss.zul.api.Window;
 public class OrderCRUDController extends GenericForwardComposer {
 
     private static final String DEFAULT_TAB = "tabOrderElements";
-
-    private static final class LabelCreatorForInvalidValues implements
-            IMessagesForUser.ICustomLabelCreator {
-
-        @Override
-        public Component createLabelFor(
-                InvalidValue invalidValue) {
-            if (invalidValue.getBean() instanceof OrderElement) {
-                Label result = new Label();
-
-                String orderElementName;
-                if (invalidValue.getBean() instanceof Order) {
-                    orderElementName = _("Project");
-                } else {
-                    orderElementName = ((OrderElement) invalidValue
-                            .getBean()).getName();
-                }
-
-                result.setValue(orderElementName + " "
-                        + invalidValue.getPropertyName() + ": "
-                        + invalidValue.getMessage());
-                return result;
-            } else if (invalidValue.getBean() instanceof HoursGroup) {
-                Label result = new Label();
-                HoursGroup hoursGroup = (HoursGroup) invalidValue.getBean();
-                result.setValue(_("Hours Group at ")
-                        + getParentName(hoursGroup) + ". "
-                        + invalidValue.getPropertyName() + ": "
-                        + invalidValue.getMessage());
-                return result;
-            }else {
-                return MessagesForUser.createLabelFor(invalidValue);
-            }
-        }
-
-        private String getParentName(HoursGroup hoursGroup) {
-            return (hoursGroup.getParentOrderLine() != null) ? hoursGroup
-                    .getParentOrderLine().getName() : hoursGroup
-                    .getOrderLineTemplate().getName();
-        }
-    }
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(OrderCRUDController.class);
@@ -358,7 +314,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                         _("Forward"), _("Schedule from start to deadline")));
                 schedulingMode.appendChild(createCombo(
                         SchedulingMode.BACKWARDS, _("Backwards"),
-                        _("Schedule from the deadline to start")));
+                        _("Schedule from deadline to start")));
             }
         }
 
@@ -693,11 +649,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.reloadBindings(orderElementAuthorizations);
     }
 
-    private void saveOrderAuthorizations() {
-        setupOrderAuthorizationController();
-        orderAuthorizationController.save();
-    }
-
     public List<Order> getOrders() {
         return orderModel.getOrders();
     }
@@ -807,11 +758,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         orderModel.save(showSaveMessage);
-        try {
-            saveOrderAuthorizations();
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e, new LabelCreatorForInvalidValues());
-        }
     }
 
     Tab tabGeneralData;
@@ -887,14 +833,12 @@ public class OrderCRUDController extends GenericForwardComposer {
                     remove(order);
                 }
             } catch (InterruptedException e) {
-                messagesForUser.showMessage(
-                        Level.ERROR, e.getMessage());
-                LOG.error(_("Error on showing removing element: ", order.getId()), e);
+                throw new RuntimeException(e);
             }
         }
         else {
             try {
-                Messagebox.show(_("You don't have permissions to edit this project"),
+                Messagebox.show(_("Not enough permissions to edit this project"),
                         _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -919,23 +863,21 @@ public class OrderCRUDController extends GenericForwardComposer {
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the project \"{0}\" because of any of its tasks are already in use in some timesheets and the project just exists in the current scenario",
+                                    "You can not remove the project \"{0}\" because it has time tracked at some of its tasks",
                                     order.getName()));
         } else {
             if (!StringUtils.isBlank(order.getExternalCode())) {
                 try {
                     if (Messagebox
                             .show(
-                                    _("Deleting this subcontracted project, you are going to lose the relation to report progress. Are you sure?"),
+                                    _("This project is a subcontracted project. If you delete it, you won't be able to report progress anymore. Are you sure?"),
                                     _("Confirm"), Messagebox.OK
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION) == Messagebox.CANCEL) {
                         return;
                     }
                 } catch (InterruptedException e) {
-                    messagesForUser.showMessage(Level.ERROR, e.getMessage());
-                    LOG.error(_("Error on showing removing element: ", order
-                            .getId()), e);
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -1349,7 +1291,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (!SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
             buttonDerived.setDisabled(true);
             buttonDerived
-                    .setTooltiptext(_("You do not have permissions to create templates"));
+                    .setTooltiptext(_("Not enough permissions to create templates"));
         }
         hbox.appendChild(buttonDerived);
     }
@@ -1377,7 +1319,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                         && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };
@@ -1394,7 +1336,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                         && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
                     filterStartDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };
@@ -1561,7 +1503,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
                 if (StringUtils.isBlank((String) value)) {
                     throw new WrongValueException(comp,
-                            _("cannot be null or empty"));
+                            _("cannot be empty"));
                 }
                 try {
                     Order found = orderDAO
@@ -1585,7 +1527,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
                 if (StringUtils.isBlank((String) value)) {
                     throw new WrongValueException(comp,
-                            _("cannot be null or empty"));
+                            _("cannot be empty"));
                 }
                 try {
                     Order found = orderDAO
@@ -1645,7 +1587,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("It will only be possible to add a end date if all the exiting ones in the table have already been sent to customer.."));
+                            _("It will only be possible to add an end date if all the exiting ones in the table have already been sent to the customer."));
             return;
         }
         if (orderModel.alreadyExistsRepeatedEndDate(newEndDate.getValue())) {

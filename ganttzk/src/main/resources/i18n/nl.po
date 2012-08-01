@@ -8,10 +8,10 @@
 # Jeroen Baten <jeroen@jeroenbaten.nl>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: libreplan-1.2.3\n"
+"Project-Id-Version: libreplan-1.3.0\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
-"POT-Creation-Date: 2012-04-11 08:32+0200\n"
-"PO-Revision-Date: 2012-04-13 14:30+0000\n"
+"POT-Creation-Date: 2012-07-05 08:07+0200\n"
+"PO-Revision-Date: 2012-07-06 09:59+0000\n"
 "Last-Translator: Jeroen Baten <jeroen@jeroenbaten.nl>\n"
 "Language-Team: Nederlands\n"
 "MIME-Version: 1.0\n"
@@ -45,10 +45,6 @@ msgstr "Start"
 msgid "Show reported hours"
 msgstr "Toon gerapporteerde uren"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
-msgid "by criteria"
-msgstr "op criterium"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
 msgid "Show/Hide reported hours"
 msgstr "Toon/Verberg gerapporteerde uren"
@@ -57,10 +53,6 @@ msgstr "Toon/Verberg gerapporteerde uren"
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
 msgid "Zoom"
 msgstr "Zoom"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/TabsRegistry.java:121
-msgid "Limiting resources"
-msgstr "Begrensde resources"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:67
 msgid "The specified dependency is not allowed"
@@ -77,10 +69,6 @@ msgstr "Toon/Verberg voortgang"
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "Task"
 msgstr "Taak"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
-msgid "by resources"
-msgstr "per resources"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
 msgid "available effort: {0}, assigned effort: {1}"
@@ -110,13 +98,13 @@ msgstr "filteren op naam"
 msgid "See scheduling"
 msgstr "Zie planning"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
-msgid "Show"
-msgstr "Toon"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
 msgid "End"
 msgstr "Einde"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
+msgid "Resources"
+msgstr "Resources"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:243
 msgid "changing zoom"
@@ -126,9 +114,21 @@ msgstr "wijzig zoom"
 msgid "Show/Hide money cost bar"
 msgstr "Toon/verberg geldelijke kosten balk"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
+msgid "Group by"
+msgstr "Groeperen op"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
+msgid "Generic allocation criteria"
+msgstr "Algemene allocatie criteria"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
 msgid "Quarter"
 msgstr "Kwartaal"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
+msgid "Page"
+msgstr "Pagina"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "None"
@@ -147,10 +147,6 @@ msgstr "Project"
 msgid "Name"
 msgstr "Naam"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:50
-msgid "Name filter"
-msgstr "Naam filter "
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:641
 msgid "Show progress"
 msgstr "Toon voortgang"
@@ -163,13 +159,13 @@ msgstr "Inklappen/Uitklappen alles"
 msgid "Show/Hide critical path"
 msgstr "Toon/Verberg kritieke pad"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
-msgid "showing criteria"
-msgstr "tonen criteria"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
 msgid "Year"
 msgstr "Jaar"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
+msgid "showing criteria"
+msgstr "tonen criteria"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
 msgid "Month"

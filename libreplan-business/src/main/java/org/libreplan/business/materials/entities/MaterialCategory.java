@@ -219,7 +219,7 @@ public class MaterialCategory extends IntegrationEntity {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "The subcategories names must be unique.")
+    @AssertTrue(message = "Subcategory names must be unique.")
     public boolean checkConstraintUniqueSubcategoryName() {
         Set<String> subcategoriesNames = new HashSet<String>();
         for (MaterialCategory mc : this.getAllSubcategories()) {

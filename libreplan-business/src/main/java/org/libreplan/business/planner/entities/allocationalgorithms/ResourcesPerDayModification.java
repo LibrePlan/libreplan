@@ -93,7 +93,7 @@ public abstract class ResourcesPerDayModification extends
         @Override
         public String getNoValidPeriodsMessage() {
             String firstLine = _("There are no days available due to not satisfying the criteria.");
-            String secondLine = _("Another possibility is that the resources don't have days available due to their calendars.");
+            String secondLine = _("Another possibility is that the resources do not have days available due to their calendars.");
             return firstLine + "\n" + secondLine;
         }
 
@@ -172,12 +172,12 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public String getNoValidPeriodsMessage() {
-            return _("The resource's calendar has no available days starting from the start of the task.");
+            return _("Resource is not available from task's start");
         }
 
         @Override
         public String getNoValidPeriodsMessageDueToIntersectionMessage() {
-            return _("There are no days available at resource's calendar in the days marked available by the task's calendar.");
+            return _("Resource is not available according to task's calendar");
         }
 
         private Resource getAssociatedResource() {

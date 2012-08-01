@@ -494,7 +494,7 @@ public class ConfigurationController extends GenericForwardComposer {
             appendOperations(row, entitySequence);
 
             if (entitySequence.isAlreadyInUse()) {
-                row.setTooltiptext(_("The code sequence is already in use and it can not be updated."));
+                row.setTooltiptext(_("Code sequence is already in use and cannot be updated"));
             }
 
             if ((row.getPreviousSibling() != null)
@@ -659,7 +659,7 @@ public class ConfigurationController extends GenericForwardComposer {
     private String validPrefix(EntitySequence sequence, String prefixValue) {
         sequence.setPrefix(prefixValue);
         if (!configurationModel.checkFrefixFormat(sequence)) {
-            String message = _("format prefix invalid. It cannot be empty or contain '_' or whitespaces.");
+            String message = _("Invalid format prefix. Format prefix cannot be empty, contain '_' or contain whitespaces.");
             if (sequence.getEntityName().canContainLowBar()) {
                 message = _("format prefix invalid. It cannot be empty or contain whitespaces.");
             }
@@ -746,7 +746,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
             if (prefixBox.getValue() == null || prefixBox.getValue().isEmpty()) {
                 throw new WrongValueException(prefixBox,
-                        _("cannot be null or empty"));
+                        _("cannot be empty"));
             }
 
             try {

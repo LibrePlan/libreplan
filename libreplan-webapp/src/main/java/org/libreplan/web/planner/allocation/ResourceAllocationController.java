@@ -622,7 +622,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         private void renderAggregatingRow(Row row) {
             ResourceAllocationController controller = ResourceAllocationController.this;
             append(row, new Label());
-            append(row, new Label(_("Sum of all rows")));
+            append(row, new Label(_("Total")));
             append(row, allOriginalEffort);
             append(row, allTotalEffort);
             append(row, allConsolidatedEffort);

@@ -155,9 +155,7 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
             Messagebox.show(_(message), _("Warning"), Messagebox.OK,
                     Messagebox.EXCLAMATION);
         } catch (InterruptedException e) {
-            LOG.error(
-                    _("Error on showing warning message removing typeOfWorkHours: ",
-                            profile.getId()), e);
+            throw new RuntimeException(e);
         }
     }
     @Override

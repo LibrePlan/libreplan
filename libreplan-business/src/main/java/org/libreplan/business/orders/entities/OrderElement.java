@@ -37,6 +37,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -298,15 +299,16 @@ public abstract class OrderElement extends IntegrationEntity implements
                 //this element was a container but now it's a scheduling point
                 //we have to remove the TaskSource which contains a TaskGroup instead of TaskElement
                 removeTaskSource(result);
-            }
-            if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
-                //this element was unscheduled and then scheduled again. Its TaskSource has
-                //been recreated but we have to remove the old one.
-                if(!getParent().currentTaskSourceIsNotTheSame()) {
-                    //we only remove the TaskSource if the parent is not in the same situation.
-                    //In case the parent is in the same situation, it will remove the related
-                    //TaskSources in children tasks.
-                    removeTaskSource(result);
+            } else {
+                if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
+                    //this element was unscheduled and then scheduled again. Its TaskSource has
+                    //been recreated but we have to remove the old one.
+                    if(!getParent().currentTaskSourceIsNotTheSame()) {
+                        //we only remove the TaskSource if the parent is not in the same situation.
+                        //In case the parent is in the same situation, it will remove the related
+                        //TaskSources in children tasks.
+                        removeTaskSource(result);
+                    }
                 }
             }
             result
@@ -315,14 +317,15 @@ public abstract class OrderElement extends IntegrationEntity implements
             removeUnscheduled(result);
             if (wasASchedulingPoint()) {
                 result.add(taskSourceRemoval());
-            }
-            if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
-                //all the children of this element were unscheduled and then scheduled again,
-                //its TaskSource has been recreated but we have to remove the old one.
-                if(getParent() == null || !getParent().currentTaskSourceIsNotTheSame()) {
-                    //if it's a container node inside another container we could have the
-                    //same problem than in the case of leaf tasks.
-                    result.add(taskSourceRemoval());
+            } else {
+                if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
+                    //all the children of this element were unscheduled and then scheduled again,
+                    //its TaskSource has been recreated but we have to remove the old one.
+                    if(getParent() == null || !getParent().currentTaskSourceIsNotTheSame()) {
+                        //if it's a container node inside another container we could have the
+                        //same problem than in the case of leaf tasks.
+                        result.add(taskSourceRemoval());
+                    }
                 }
             }
             result
@@ -515,6 +518,7 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public abstract List<HoursGroup> getHoursGroups();
 
+    @NotEmpty(message = "name not specified")
     public String getName() {
         return getInfoComponent().getName();
     }
@@ -582,6 +586,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         this.getInfoComponent().setCode(code);
     }
 
+    @NotEmpty(message = "code not specified")
     public String getCode() {
         return getInfoComponent().getCode();
     }
@@ -656,8 +661,8 @@ public abstract class OrderElement extends IntegrationEntity implements
 
         if (!checkAncestorsNoOtherLabelRepeated(label)) {
             throw new IllegalArgumentException(
-                    _("Some ancestor has the same label assigned, "
-                            + "so this element is already inheriting this label"));
+                    "An ancestor has the same label assigned, "
+                            + "so this element is already inheriting this label");
         }
 
         removeLabelOnChildren(label);
@@ -1290,7 +1295,6 @@ public abstract class OrderElement extends IntegrationEntity implements
         return directAdvanceAssignment;
     }
 
-    @Valid
     public InfoComponentWithCode getInfoComponent() {
         if (infoComponent == null) {
             infoComponent = new InfoComponentWithCode();
@@ -1427,7 +1431,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         return getOrder() != null ? getOrder().isCodeAutogenerated() : false;
     }
 
-    @AssertTrue(message = "a quality form can not be assigned twice to the same order element")
+    @AssertTrue(message = "a quality form cannot be assigned twice to the same task")
     public boolean checkConstraintUniqueQualityForm() {
         Set<QualityForm> qualityForms = new HashSet<QualityForm>();
         for (TaskQualityForm each : taskQualityForms) {

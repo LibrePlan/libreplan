@@ -25,6 +25,8 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -38,7 +40,6 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Util;
-import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
 import org.libreplan.web.resources.worker.IWorkerCRUDControllerEntryPoints;
@@ -84,7 +85,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
     private Groupbox boundResourceGroupbox;
 
-    private Autocomplete profileAutocomplete;
+    private Combobox profilesCombo;
 
     private IURLHandlerRegistry URLHandlerRegistry;
 
@@ -131,9 +132,10 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
         passwordBox = (Textbox) editWindow.getFellowIfAny("password");
         passwordConfirmationBox = (Textbox) editWindow.getFellowIfAny("passwordConfirmation");
-        profileAutocomplete = (Autocomplete) editWindow.getFellowIfAny("profileAutocomplete");
+        profilesCombo = (Combobox) editWindow.getFellowIfAny("profilesCombo");
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRolesExceptRoleBoundUser(userRolesCombo);
+        appendAllProfiles(profilesCombo);
         boundResourceGroupbox = (Groupbox) editWindow
                 .getFellowIfAny("boundResourceGroupbox");
 
@@ -151,9 +153,30 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                 .values()));
         roles.remove(UserRole.ROLE_BOUND_USER);
 
+        Collections.sort(roles, new Comparator<UserRole> () {
+            @Override
+            public int compare(UserRole arg0, UserRole arg1) {
+                return _(arg0.getDisplayName()).compareTo(
+                        _(arg1.getDisplayName()));
+            }
+        });
+
         for (UserRole role : roles) {
             Comboitem item = combo.appendItem(_(role.getDisplayName()));
             item.setValue(role);
+        }
+    }
+
+    /**
+     * Appends the existing Profiles to the Combobox passed.
+     *
+     * @param combo
+     */
+    private void appendAllProfiles(Combobox combo) {
+        List<Profile> profiles = userModel.getAllProfiles();
+        for (Profile profile : profiles) {
+            Comboitem item = combo.appendItem(profile.getProfileName());
+            item.setValue(profile);
         }
     }
 
@@ -196,7 +219,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     public void addSelectedProfile() {
-        Comboitem comboItem = profileAutocomplete.getSelectedItem();
+        Comboitem comboItem = profilesCombo.getSelectedItem();
         if(comboItem != null) {
             addProfile((Profile)comboItem.getValue());
         }
@@ -253,7 +276,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         userModel.initCreate();
         //password is compulsory when creating
         passwordBox.setConstraint("no empty:" +
-                _("The password for a new user cannot be empty"));
+                _("Password cannot be empty"));
         //clean the password boxes, they are not cleared automatically
         //because they are not directly associated to an attribute
         passwordBox.setRawValue("");

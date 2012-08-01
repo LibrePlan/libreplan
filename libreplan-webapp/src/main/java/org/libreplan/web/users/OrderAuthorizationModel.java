@@ -108,12 +108,6 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
     }
 
     @Override
-    @Transactional
-    public void confirmSave() {
-        // Do nothing
-    }
-
-    @Override
     public List<ProfileOrderAuthorization> getProfileOrderAuthorizations() {
         return profileOrderAuthorizationList;
     }

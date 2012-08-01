@@ -147,7 +147,9 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
             TaskList taskList = taskComponent.getTaskList();
             for (Task task : parents) {
                 TaskComponent parentComponent = taskList.find(task);
-                updateTaskComponent(parentComponent);
+                if (parentComponent != null) {
+                    updateTaskComponent(parentComponent);
+                }
             }
         }
     }

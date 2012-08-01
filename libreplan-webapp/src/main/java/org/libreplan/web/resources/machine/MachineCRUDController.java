@@ -405,7 +405,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
                         && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
                     filterFinishDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };
@@ -422,7 +422,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
                         && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
                     filterStartDate.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };
@@ -539,7 +539,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
             messagesForUser
                     .showMessage(
                             Level.WARNING,
-                            _("This machine cannot be deleted because it has assignments to projects or imputed hours"));
+                            _("Machine cannot be deleted. Machine is allocated to a project or contains imputed hours"));
             return false;
         }
         return true;
@@ -551,7 +551,7 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
             machineModel.confirmRemove(machine);
         } catch (InstanceNotFoundException e) {
             messagesForUser.showMessage(Level.INFO,
-                    _("This machine was already removed by other user"));
+                    _("Machine was already removed"));
         }
     }
 

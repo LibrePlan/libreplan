@@ -82,7 +82,7 @@ public class UnitType extends IntegrationEntity implements IHumanIdentifiable {
         this.measure = measure;
     }
 
-    @AssertTrue(message = "the measure unit type has to be unique. It is already used")
+    @AssertTrue(message = "the measure has to be unique")
     public boolean checkConstraintUniqueName() {
         if (StringUtils.isBlank(measure)) {
             return true;

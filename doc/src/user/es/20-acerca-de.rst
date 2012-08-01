@@ -67,6 +67,8 @@ Traductores
 -----------
 
 * [cs] Zbyněk Schwarz <zbynek.schwarz@gmail.com>
+* [de] Joern Knechtel <j.knechtel@gmx.de>,
+  Michael Taxis <mxtaxis@gmx.de>
 * [es] Jacobo Aragunde Pérez <jaragunde@igalia.com>,
   Manuel Rego Casasnovas <rego@igalia.com>,
   Diego Pino García <dpino@igalia.com>

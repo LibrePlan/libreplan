@@ -95,7 +95,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{name}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="213" y="126" width="100" height="20" backcolor="#E0E4FB"/>
@@ -109,7 +109,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{hours}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

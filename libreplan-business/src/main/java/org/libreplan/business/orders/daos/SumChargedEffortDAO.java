@@ -31,7 +31,9 @@ import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.SumChargedEffort;
+import org.libreplan.business.util.Pair;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
@@ -79,37 +81,68 @@ public class SumChargedEffortDAO extends
     private void updateRelatedSumChargedEffortWithAddedOrModifiedWorkReportLine(
             final WorkReportLine workReportLine) {
         boolean increase = true;
+        boolean sameOrderElement = true;
         EffortDuration effort = workReportLine.getEffort();
+        OrderElement orderElement = workReportLine.getOrderElement();
+
+        EffortDuration previousEffort = null;
+        OrderElement previousOrderElement = null;
 
         if (!workReportLine.isNewObject()) {
-            EffortDuration previousEffort = transactionService
-                    .runOnAnotherTransaction(new IOnTransaction<EffortDuration>() {
+            Pair<EffortDuration, OrderElement> previous = transactionService
+                    .runOnAnotherTransaction(new IOnTransaction<Pair<EffortDuration, OrderElement>>() {
                         @Override
-                        public EffortDuration execute() {
+                        public Pair<EffortDuration, OrderElement> execute() {
                             try {
-                                return workReportLineDAO.find(
-                                        workReportLine.getId()).getEffort();
+                                WorkReportLine line = workReportLineDAO
+                                        .find(workReportLine.getId());
+
+                                OrderElement orderElement = line
+                                        .getOrderElement();
+                                forceLoadParents(orderElement);
+
+                                return Pair.create(line.getEffort(),
+                                        orderElement);
                             } catch (InstanceNotFoundException e) {
                                 throw new RuntimeException(e);
                             }
                         }
+
+                        private void forceLoadParents(OrderElement orderElement) {
+                            OrderLineGroup parent = orderElement.getParent();
+                            if (parent != null) {
+                                forceLoadParents(parent);
+                            }
+                        }
                     });
 
-            if (effort.compareTo(previousEffort) >= 0) {
-                effort = effort.minus(previousEffort);
-            } else {
-                increase = false;
-                effort = previousEffort.minus(effort);
-            }
+            previousEffort = previous.getFirst();
+            previousOrderElement = previous.getSecond();
+
+            sameOrderElement = orderElement.getId().equals(
+                    previousOrderElement.getId());
         }
 
-        if (!effort.isZero()) {
-            if (increase) {
-                addDirectChargedEffort(workReportLine.getOrderElement(), effort);
-            } else {
-                substractDirectChargedEffort(workReportLine.getOrderElement(),
-                        effort);
+        if (sameOrderElement) {
+            if (previousEffort != null) {
+                if (effort.compareTo(previousEffort) >= 0) {
+                    effort = effort.minus(previousEffort);
+                } else {
+                    increase = false;
+                    effort = previousEffort.minus(effort);
+                }
             }
+
+            if (!effort.isZero()) {
+                if (increase) {
+                    addDirectChargedEffort(orderElement, effort);
+                } else {
+                    substractDirectChargedEffort(orderElement, effort);
+                }
+            }
+        } else {
+            substractDirectChargedEffort(previousOrderElement, previousEffort);
+            addDirectChargedEffort(orderElement, effort);
         }
     }
 

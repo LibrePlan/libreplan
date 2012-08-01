@@ -158,7 +158,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
             try {
                 if (Messagebox
                         .show(
-                                _("Deleting this item, it will disable the report progress option. Are you sure?"),
+                                _("Deleting this item will disable the report progress option. Are you sure?"),
                                 _("Confirm"),
                                 Messagebox.OK | Messagebox.CANCEL,
                                 Messagebox.QUESTION) == Messagebox.OK) {
@@ -250,13 +250,13 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                         .checkConstraintOutOfRangeQualityFormItemPercentage(item)) {
                     item.setPercentage(null);
                     throw new WrongValueException(comp,
-                            _("percentage must be in range (0,100]"));
+                            _("percentage should be between 1 and 100"));
                 }
                 if (!qualityFormModel
                         .checkConstraintUniqueQualityFormItemPercentage()) {
                     item.setPercentage(null);
                     throw new WrongValueException(comp,
-                            _("percentage cannot be duplicated"));
+                            _("percentage must be unique"));
                 }
             }
         };
@@ -318,7 +318,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
                     .getFellowIfAny("checkBoxReportProgress");
             throw new WrongValueException(
                     checkBoxReportProgress,
-                    _("The quality form must have an item with 100% value to report progress"));
+                    _("Quality form should include an item with a value of 100% in order to report progress"));
         }
     }
 
@@ -391,9 +391,7 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
             Messagebox.show(_(message), _("Warning"), Messagebox.OK,
                     Messagebox.EXCLAMATION);
         } catch (InterruptedException e) {
-            LOG.error(
-                    _("Error on showing warning message removing qualityForm: ",
-                            qualityForm.getId()), e);
+            throw new RuntimeException(e);
         }
     }
 }

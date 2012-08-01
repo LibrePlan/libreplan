@@ -47,7 +47,7 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
 
     @Override
     public String[] getHeaders() {
-        return new String[] { "Code", "Name" };
+        return new String[] { "Name" };
     }
 
     @Override
@@ -58,7 +58,11 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
             public void render(Listitem item, Object data) {
                 T template = type.cast(data);
                 item.setValue(data);
-                generateColumnsForRenderer(item, template);
+
+                Listcell nameCell = new Listcell();
+                nameCell.setParent(item);
+                nameCell.setLabel(template.getName());
+                nameCell.setStyle("width:300px");
             }
         };
     }
@@ -89,16 +93,5 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
     }
 
     protected abstract List<T> getTemplates();
-
-    protected void generateColumnsForRenderer(Listitem item, T template) {
-        final Listcell codeCell = new Listcell();
-        codeCell.setParent(item);
-        codeCell.setStyle("width:200px");
-
-        final Listcell nameCell = new Listcell();
-        nameCell.setParent(item);
-        nameCell.setLabel(template.getName());
-        nameCell.setStyle("width:300px");
-    }
 
 }

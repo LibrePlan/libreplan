@@ -55,7 +55,7 @@
             <row>
                 <label value="${i18n:_('Work description')}" />
                 <textbox value="@{subController.subcontractedTaskData.workDescription}"
-                    readonly="@{subController.sent}"/>
+                    readonly="@{subController.sent}" hflex="1"/>
             </row>
             <row>
                 <label value="${i18n:_('Subcontract price')}" />
@@ -63,7 +63,7 @@
                     readonly="@{subController.sent}" format="@{subController.moneyFormat}"/>
             </row>
             <row>
-                <label value="${i18n:_('Subcontracted code')}" />
+                <label value="${i18n:_('Subcontracting code')}" />
                 <textbox value="@{subController.subcontractedTaskData.subcontractedCode}"
                     readonly="@{subController.sent}"/>
             </row>
@@ -92,8 +92,8 @@
         <separator spacing="10px"/>
 
         <hbox align="bottom" sclass="add-resources-or-criteria">
-            <label value="${i18n:_('New deliver date')}" />
-            <datebox id="newDeliverDate" value="@{subController.endDate}" />
+            <label value="${i18n:_('New delivery date')}" />
+            <datebox id="newDeliverDate" />
             <button label="${i18n:_('Add')}" onClick="subController.addDeliverDate(newDeliverDate)"/>
         </hbox>
 
@@ -113,7 +113,7 @@
     </groupbox>
 
     <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
-        <caption label="${i18n:_('Ended date communicated by the subcontractor.')}" />
+        <caption label="${i18n:_('End date communicated by the subcontractor.')}" />
 
         <separator spacing="10px"/>
 

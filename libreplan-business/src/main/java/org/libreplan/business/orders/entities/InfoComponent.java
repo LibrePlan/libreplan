@@ -20,7 +20,6 @@
  */
 package org.libreplan.business.orders.entities;
 
-import org.hibernate.validator.NotEmpty;
 
 /**
  * @author  Óscar González Fernández <ogonzalez@igalia.com>
@@ -38,7 +37,6 @@ public class InfoComponent {
         this.name = name;
     }
 
-    @NotEmpty(message = "name not specified")
     public String getName() {
         return name;
     }

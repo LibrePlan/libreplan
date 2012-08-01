@@ -164,7 +164,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "timeshet template name is already being used")
+    @AssertTrue(message = "timesheet template name is already being used")
     public boolean checkConstraintUniqueWorkReportTypeName() {
         IWorkReportTypeDAO workReportTypeDAO = Registry.getWorkReportTypeDAO();
         if (isNewObject()) {
@@ -195,7 +195,7 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the assigned label type can not repeat in the timeshet template.")
+    @AssertTrue(message = "Assigned Label Type cannot be repeated in a Timesheet Template.")
     public boolean checkConstraintNotExistRepeatedLabelTypes() {
         for (WorkReportLabelTypeAssigment assignedLabelType : this.workReportLabelTypeAssigments) {
             if (existRepeatedLabelType(assignedLabelType)) {
@@ -418,13 +418,13 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "In Heading the index labels and fields  must be unique and consecutive.")
+    @AssertTrue(message = "In the heading part, index labels and fields must be unique and consecutive")
     public boolean checkConstraintTheIndexHeadingFieldsAndLabelMustBeUniqueAndConsecutive() {
         return validateTheIndexFieldsAndLabels(getHeadingFieldsAndLabels());
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "In Lines the index labels and fields  must be unique and consecutive.")
+    @AssertTrue(message = "In the lines part, index labels and fields must be unique and consecutive")
     public boolean checkConstraintTheIndexLineFieldsAndLabelMustBeUniqueAndConsecutive() {
         return validateTheIndexFieldsAndLabels(getLineFieldsAndLabels());
     }

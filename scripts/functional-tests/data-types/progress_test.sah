@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,18 +39,18 @@
 _include("../common_functions.sah");
 
 function progressCreateDuplicate($name) {
-    commonCreate("Progress");
+    commonCreate("Progress Types");
     commonProgressForm($name);
     progressNotValid();
     _log("Do not allow create a progress with duplicate name", "custom1");
 }
 
 function progressCreateEmpty() {
-    commonCreate("Progress");
+    commonCreate("Progress Types");
     _click(_cell("Save"));
     _assertExists(_div("The name is not valid, the name must not be null"));
     _assert(_isVisible(_div("The name is not valid, the name must not be null")));
-    _click(_link("Progress"));
+    _click(_link("Progress Types"));
     _log("Do not allow create a progress without name", "custom1");
 }
 
@@ -67,18 +67,18 @@ function progressCreateWrongPrecisson($name, $maxValue, $precission){
 }
 
 function progressPrecisson($name, $maxValue, $precission){
-    commonCreate("Progress");
+    commonCreate("Progress Types");
     _setValue(_textbox(0, _near(_div("Unit name"))), $name);
     _removeFocus(_textbox(0, _near(_div("Unit name"))));
     _setValue(_textbox(0, _near(_div("Default max value"))), $maxValue);
     _setValue(_textbox(0, _near(_div("Precision"))), $precission);
     _click(_cell("Save"));
-    _assertExists(_div("Value is not valid, the Precision value must be less than the defalt max value."));
-    _assert(_isVisible(_div("Value is not valid, the Precision value must be less than the defalt max value.")));
+    _assertExists(_div("Invalid value. Precission value must be lower than the Default Max value."));
+    _assert(_isVisible(_div("Invalid value. Precission value must be lower than the Default Max value.")));
 }
 
 function progressMaxValue($name, $maxValue, $precission){
-    commonCreate("Progress");
+    commonCreate("Progress Types");
     _setValue(_textbox(0, _near(_div("Unit name"))), $name);
     _removeFocus(_textbox(0, _near(_div("Unit name"))));
     _setValue(_textbox(0, _near(_div("Precision"))), $precission);
@@ -104,7 +104,7 @@ function progressTryEditDefault($defaultValue){
     _assertNull(_cell("Progress Type \""+$fakeName+"\" saved"));
     _assertExists(_div("Percentage"));
     _assert(_isVisible(_div("Percentage")));
-    _click(_link("Progress"));
+    _click(_link("Progress Types"));
     _log("Try to edit a default progress", "custom1");
 }
 

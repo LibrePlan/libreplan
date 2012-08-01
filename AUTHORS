@@ -6,9 +6,7 @@ Authors
 LibrePlan Team
 --------------
 
-* Cristina Alvariño Pérez <cristina.alvarino@cafedered.es>
 * Jacobo Aragunde Pérez <jaragunde@igalia.com>
-* Nacho Barrientos Arias <nacho@igalia.com>
 * Xavier Castaño García <xcastanho@igalia.com>
 * Ignacio Díaz Teijido <ignacio.diaz@cafedered.es>
 * Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -21,6 +19,8 @@ LibrePlan Team
 Previous Team Members
 ---------------------
 
+* Cristina Alvariño Pérez <cristina.alvarino@cafedered.es>
+* Nacho Barrientos Arias <nacho@igalia.com>
 * Fernando Bellas Permuy <fbellas@udc.es>
 * José María Casanova Crespo <jmcasanova@igalia.com>
 * Óscar González Fernández <ogonzalez@igalia.com>
@@ -32,6 +32,8 @@ Translators
 -----------
 
 * [cs] Zbyněk Schwarz <zbynek.schwarz@gmail.com>
+* [de] Joern Knechtel <j.knechtel@gmx.de>,
+  Michael Taxis <mxtaxis@gmx.de>
 * [es] Jacobo Aragunde Pérez <jaragunde@igalia.com>,
   Manuel Rego Casasnovas <rego@igalia.com>,
   Diego Pino García <dpino@igalia.com>
@@ -54,6 +56,7 @@ Contributors
 
 * Eloy Calatayud <ecalatayud@wirelessgalicia.com>
 * Sergio Carracedo <cto@opsou.com>
+* Lucía García Fernández <lucia.garcia@cafedered.com>
 * Pedro Figueras <sales@opsou.com>
 * Dmytro Melanchenko <melanchenko@gmail.com>
 * Adrián Pérez <aperez@igalia.com>

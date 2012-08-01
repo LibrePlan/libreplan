@@ -140,7 +140,7 @@ public class ReassignController extends GenericForwardComposer {
             Date value = associatedDate.getValue();
             if (value == null) {
                 throw new WrongValueException(associatedDate,
-                        _("must be not empty"));
+                        _("cannot be empty"));
             }
         }
         window.setVisible(false);

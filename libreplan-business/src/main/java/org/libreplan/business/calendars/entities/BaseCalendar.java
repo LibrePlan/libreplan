@@ -1091,7 +1091,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the work week: the dates should be corrects and sorted and could not overlap ")
+    @AssertTrue(message = "dates must be sorted and cannot overlap")
     public boolean checkConstraintDateCouldNotOverlap() {
 
         if (calendarDataVersions == null || calendarDataVersions.isEmpty()) {

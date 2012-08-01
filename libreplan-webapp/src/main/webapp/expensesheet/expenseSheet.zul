@@ -31,7 +31,7 @@
 
         <vbox id="messagesContainer"></vbox>
 
-        <window id="listWindow" title="${i18n:_('Expense Sheet List')}">
+        <window id="listWindow" title="${i18n:_('Expense Sheets List')}">
             <div align="left">
                 <hbox align="center">
                     <!-- Create new Expense Sheet -->
@@ -124,7 +124,7 @@
             </groupbox>
 			<separator bar="false" spacing="5px" orient="horizontal"/>
             <groupbox closable="false">
-                <caption label="${i18n:_('Expenses lines')}" />
+                <caption label="${i18n:_('Expense lines')}" />
                 <hbox>
                     <label value="${i18n:_('Task')}"/>
                     <bandboxSearch id="bandboxTasks"

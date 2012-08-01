@@ -285,7 +285,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     .isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
                 createTemplateButton.setDisabled(true);
                 createTemplateButton
-                        .setTooltiptext(_("You do not have permissions to create templates"));
+                        .setTooltiptext(_("Not enough permissions to create templates"));
             }
         }
     }
@@ -356,10 +356,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
-    private Map<OrderElement, Textbox> orderElementCodeTextboxes = new HashMap<OrderElement, Textbox>();
-
     public Map<OrderElement, Textbox> getOrderElementCodeTextboxes() {
-        return orderElementCodeTextboxes;
+        return getRenderer().getCodeTextboxByElement();
     }
 
     public class OrderElementTreeitemRenderer extends Renderer {
@@ -410,10 +408,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             IOrderElementModel model = orderModel
                     .getOrderElementModel(currentOrderElement);
             orderElementController.openWindow(model);
-            updateNameFor(currentOrderElement);
-            updateBudgetFor(currentOrderElement);
+            updateColumnsFor(currentOrderElement);
         }
 
+        @Override
         protected void addCodeCell(final OrderElement orderElement) {
             Textbox textBoxCode = new Textbox();
             Util.bind(textBoxCode, new Util.Getter<String>() {
@@ -445,7 +443,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
 
             addCell(textBoxCode);
-            orderElementCodeTextboxes.put(orderElement, textBoxCode);
+            putCodeTextbox(orderElement, textBoxCode);
         }
 
         void addInitDateCell(final OrderElement currentOrderElement) {
@@ -468,6 +466,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("init"));
+            putInitDateDynamicDatebox(currentOrderElement, dinamicDatebox);
         }
 
         void addEndDateCell(final OrderElement currentOrderElement) {
@@ -485,10 +484,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                             currentOrderElement.setDeadline(value);
                         }
                     });
-            if (readOnly) {
+            if (readOnly
+                    || (currentOrderElement.getTaskSource() != null && currentOrderElement
+                            .getTaskSource().getTask().isSubcontracted())) {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("end"));
+            putEndDateDynamicDatebox(currentOrderElement, dinamicDatebox);
         }
 
         @Override
@@ -512,6 +514,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
 
         @Override
+
         protected void addCostSalaryCell(OrderElement element) {
             // TODO Auto-generated method stub
         }
@@ -539,6 +542,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         @Override
         public void addBudgetLineTypeCell(OrderElement element) {
             // TODO Auto-generated method stub
+        }
+
+        public void removeCodeTextbox(OrderElement key) {
+            super.removeCodeTextbox(key);
         }
 
     }
@@ -666,8 +673,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public void refreshRow(Treeitem item) {
         try {
-            getRenderer().updateNameFor((OrderElement) item.getValue());
-            getRenderer().updateBudgetFor((OrderElement) item.getValue());
+            getRenderer().updateColumnsFor((OrderElement) item.getValue());
             getRenderer().render(item, item.getValue());
         } catch (Exception e) {
             e.printStackTrace();
@@ -700,7 +706,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                 .getValue()) < 0)) {
                     filterFinishDateOrderElement.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };
@@ -718,7 +724,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                 .getValue()) > 0)) {
                     filterStartDateOrderElement.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };
@@ -741,11 +747,11 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("You can not remove the task \"{0}\" because of this or any of its children are already in use in some timesheets",
+                            _("You cannot remove the task \"{0}\" because it has work reported on it or any of its children",
                                     element.getName()));
         } else {
             super.remove(element);
-            orderElementCodeTextboxes.remove(element);
+            getRenderer().removeCodeTextbox(element);
         }
     }
 
@@ -806,6 +812,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             @Override
             public String getNameFor(OrderElement element) {
                 return element.getName();
+            }
+
+        };
+    }
+
+    @Override
+    protected ICodeHandler<OrderElement> getCodeHandler() {
+        return new ICodeHandler<OrderElement>() {
+
+            @Override
+            public String getCodeFor(OrderElement element) {
+                return element.getCode();
             }
 
         };

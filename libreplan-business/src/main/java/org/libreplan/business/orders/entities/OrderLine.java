@@ -323,7 +323,7 @@ public class OrderLine extends OrderElement {
         return lastHoursGroupSequenceCode;
     }
 
-    @AssertTrue(message = "some code is repeated between hours group codes")
+    @AssertTrue(message = "Code already included in Hours Group codes")
     public boolean checkConstraintHoursGroupsCodeNotRepeated() {
         Set<String> codes = new HashSet<String>();
 

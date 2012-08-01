@@ -21,8 +21,6 @@
 
 package org.zkoss.ganttz;
 
-import static org.zkoss.ganttz.i18n.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +29,6 @@ import java.util.Map;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 
@@ -118,11 +115,7 @@ public class TabsRegistry {
 
                 @Override
                 public void onEvent(Event event) {
-                    if (_("Limiting resources").equals(t.getName())) {
-                        Executions.sendRedirect("/planner/index.zul;limiting_resources");
-                    } else {
-                        show(t);
-                    }
+                    show(t);
                 }
             });
             fromTabToMenuKey.put(t, key);

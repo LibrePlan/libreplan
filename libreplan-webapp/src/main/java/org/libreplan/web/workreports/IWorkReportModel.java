@@ -243,4 +243,6 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
      */
     boolean isMonthlyTimesheet(WorkReport workReport);
 
+    WorkReportLine getFirstWorkReportLine();
+
 }

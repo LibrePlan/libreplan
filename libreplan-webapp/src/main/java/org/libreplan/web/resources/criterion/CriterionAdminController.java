@@ -211,7 +211,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
         try {
             setupCriterionTreeController(editWindow);
         } catch (Exception e) {
-            LOG.error("Error setting up creationg form for Criterion Type", e);
+            LOG.error("Error setting up creating form for Criterion Type", e);
         }
         setResourceComboboxValue((Combobox) editWindow
                 .getFellowIfAny("resourceCombobox"));
@@ -254,7 +254,7 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
             messagesForUser
                     .showMessage(
                             Level.WARNING,
-                            _("This criterion type cannot be deleted because it has assignments to projects or resources"));
+                            _("This criterion type cannot be deleted because it is assigned to projects or resources"));
             return false;
         }
         return true;

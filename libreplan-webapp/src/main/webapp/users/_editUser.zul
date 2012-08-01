@@ -47,7 +47,7 @@
                                 <label value="${i18n:_('Username')}" />
                                 <textbox id="loginName"
                                     value="@{controller.user.loginName}" width="300px"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                    constraint="no empty:${i18n:_('cannot be empty')}"
                                     onBlur="controller.updateWindowTitle()"
                                     disabled="@{controller.ldapUserOrDefaultAdmin}" />
                             </row>
@@ -149,9 +149,7 @@
                         <label value="${i18n:_('Profiles of LDAP users cannot be managed because LDAP roles are being used.')}" visible="@{controller.ldapUserRolesLdapConfiguration}" />
                     </vbox>
                     <hbox align="center">
-                        <autocomplete id="profileAutocomplete"
-                            autodrop="true" constraint=""
-                            finder="ProfileFinder" />
+                        <combobox id="profilesCombo" autodrop="true" />
                         <button label="${i18n:_('Add profile')}"
                             onClick="controller.addSelectedProfile()"
                             disabled="@{controller.areRolesAndProfilesDisabled}" />

@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Min;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -323,7 +324,6 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         this.parent = parent;
     }
 
-    @Valid
     private InfoComponentWithCode getInfoComponent() {
         if (infoComponent == null) {
             infoComponent = new InfoComponentWithCode();
@@ -372,6 +372,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         getInfoComponent().setDescription(description);
     }
 
+    @NotEmpty(message = "name not specified")
     public String getName() {
         return getInfoComponent().getName();
     }
@@ -464,7 +465,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return getParent() == null;
     }
 
-    @AssertTrue(message = "template name is already being used")
+    @AssertTrue(message = "template name is already in use")
     public boolean checkConstraintUniqueRootTemplateName() {
         if (getParent() != null) {
             return true;
@@ -599,5 +600,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     public abstract BigDecimal getBudget();
 
     public abstract OrderElementTemplate createCopy();
+
+    public abstract boolean isOrderTemplate();
 
 }

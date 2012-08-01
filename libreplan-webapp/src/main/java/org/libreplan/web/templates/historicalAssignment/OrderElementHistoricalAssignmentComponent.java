@@ -146,7 +146,7 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
                     globalView.goToOrderElementDetails(order, orderElement);
                 } else {
                     Messagebox
-                            .show(_("You do not have permissions to edit the project"),
+                            .show(_("Not enough permissions to edit this project"),
                                     _("Warning"), Messagebox.OK,
                                     Messagebox.EXCLAMATION);
                 }

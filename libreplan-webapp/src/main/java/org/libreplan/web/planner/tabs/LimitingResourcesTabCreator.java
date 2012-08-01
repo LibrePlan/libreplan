@@ -43,9 +43,6 @@ import org.zkoss.zul.Label;
  */
 public class LimitingResourcesTabCreator {
 
-    /* Unnecesary */
-    private String ORDER_LIMITING_RESOURCES_VIEW = _("Limiting resources (project)");
-
     public static ITab create(Mode mode,
             LimitingResourcesController LimitingResourcesController,
             LimitingResourcesController LimitingResourcesControllerGlobal,
@@ -77,43 +74,7 @@ public class LimitingResourcesTabCreator {
     private ITab build() {
         return TabOnModeType.forMode(mode)
                 .forType(ModeType.GLOBAL, createGlobalLimitingResourcesTab())
-                .forType(ModeType.ORDER, createOrderLimitingResourcesTab())
-                .forType(ModeType.BUDGET, createOrderLimitingResourcesTab())
                 .create();
-    }
-
-    private ITab createOrderLimitingResourcesTab() {
-        IComponentCreator componentCreator = new IComponentCreator() {
-
-            @Override
-            /* Should never be called */
-            public org.zkoss.zk.ui.Component create(
-                    org.zkoss.zk.ui.Component parent) {
-                Map<String, Object> arguments = new HashMap<String, Object>();
-                arguments.put("LimitingResourcesController",
-                        limitingResourcesController);
-                return Executions.createComponents(
-                        "/limitingresources/_limitingresources.zul", parent,
-                        arguments);
-            }
-
-        };
-        return new CreatedOnDemandTab(ORDER_LIMITING_RESOURCES_VIEW,
-                "order-limiting-resources",
-                componentCreator) {
-
-            @Override
-            protected void afterShowAction() {
-                breadcrumbs.getChildren().clear();
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs
-                        .appendChild(new Label(ORDER_LIMITING_RESOURCES_VIEW));
-                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
-            }
-        };
     }
 
     private ITab createGlobalLimitingResourcesTab() {
@@ -132,7 +93,7 @@ public class LimitingResourcesTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Limiting Resources Planning"),
+        return new CreatedOnDemandTab(_("Queue-based Resources Planning"),
                 "limiting-resources",
                 componentCreator) {
             @Override
@@ -153,7 +114,7 @@ public class LimitingResourcesTabCreator {
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(
-                        _("Limiting Resources Planning")));
+                        _("Queue-based Resources Planning")));
             }
         };
     }

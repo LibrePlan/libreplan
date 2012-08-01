@@ -1,7 +1,7 @@
 .dashboard-label {
     color: #666;
     font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .dashboard-title {
@@ -15,7 +15,7 @@
 .dashboard-label-remarked {
     color: #666;
     font-family: Trebuchet MS,Arial,Helvetica,sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
 }
 
@@ -23,8 +23,7 @@
 .dashboard-label-remarked.negative {
     background-position: 100%;
     background-repeat: no-repeat;
-    padding-right: 25px;
-    background-size: 25px;
+    padding-right: 30px;
 }
 
 .dashboard-label-remarked.negative {
@@ -54,11 +53,17 @@
     font-size: 12px !important;
 }
 
+.jqplot-yaxis-label {
+    font-size: 11px !important;
+    width: 40px;
+}
+
+
 .jqplot-yaxis {
     font-size: 11px !important;
 }
 
 .jqplot-axis .jqplot-yaxis-tick {
     white-space: normal;
-    width: 80px;
+    font-size: 11px !important;
 }

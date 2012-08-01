@@ -34,7 +34,7 @@
                     rowRenderer="@{assignmentController.costCategoryAssignmentsRenderer}">
                 <columns>
                     <column label="${i18n:_('Category name')}" align="center"/>
-                    <column label="${i18n:_('Init date')}" align="center"/>
+                    <column label="${i18n:_('Start date')}" align="center"/>
                     <column label="${i18n:_('End date')}" align="center"/>
                     <column label="${i18n:_('Operations')}" width="150px" align="center"/>
                 </columns>

@@ -260,9 +260,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
                     updateCriterionsWithDiferentResourceType(hoursGroupWrapper);
                 }
             } catch (InterruptedException e) {
-                messagesForUser.showMessage(Level.ERROR, e.getMessage());
-                LOG.error(_("Error on showing removing element: ",
-                        hoursGroupWrapper.getHoursGroup().getId()), e);
+                throw new RuntimeException(e);
             }
         }
         Util.reloadBindings(listHoursGroups);
@@ -319,7 +317,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
             Bandbox bandType = getBandType(requirementWrapper, row);
             bandType.setValue(null);
             throw new WrongValueException(bandType,
-                    _("The criterion and its type cannot be null"));
+                    _("cannot be empty"));
         }
     }
 

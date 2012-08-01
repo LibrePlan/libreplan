@@ -158,22 +158,22 @@ public class TimeLineRequiredMaterialModel implements
             Date endingDate, MaterialStatusEnum status, List<Order> listOrders,
             List<MaterialCategory> categories, List<Material> materials) {
 
-        List<Order> orderToInitialized = new ArrayList<Order>(listOrders);
+        List<Order> orders = listOrders;
         if (listOrders.isEmpty()) {
-            orderToInitialized.addAll(getOrders());
+            orders = allOrders;
         }
 
-        for (Order each : orderToInitialized) {
+        for (Order each : orders) {
             reattachmentOrder(each);
         }
 
         Scenario currentScenario = scenarioManager.getCurrent();
-        for (Order each : orderToInitialized) {
+        for (Order each : orders) {
             each.useSchedulingDataFor(currentScenario);
         }
 
         List<TimeLineRequiredMaterialDTO> result = filterConsult(startingDate,
-                endingDate, status, listOrders, categories, materials);
+                endingDate, status, orders, categories, materials);
 
 
          if (result != null && !result.isEmpty()) {

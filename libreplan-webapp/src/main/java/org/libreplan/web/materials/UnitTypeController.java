@@ -125,9 +125,7 @@ public class UnitTypeController extends BaseCRUDController<UnitType> {
             public void validate(Component comp, Object value) {
                 String strValue = (String) value;
                 if (StringUtils.isBlank(strValue)) {
-                    throw new WrongValueException(comp,
-                            _("Unit type name cannot be empty")
-                            );
+                    throw new WrongValueException(comp, _("cannot be empty"));
                 }
 
                 if (unitTypeModel.existsAnotherUnitTypeWithName(strValue)) {
@@ -147,8 +145,7 @@ public class UnitTypeController extends BaseCRUDController<UnitType> {
             public void validate(Component comp, Object value) {
                 String strValue = (String) value;
                 if (StringUtils.isBlank(strValue)) {
-                    throw new WrongValueException(comp,
-                            _("Unit type code cannot be empty"));
+                    throw new WrongValueException(comp, _("cannot be empty"));
                 }
 
                 if (unitTypeModel.existsAnotherUnitTypeWithCode(strValue)) {

@@ -312,7 +312,7 @@ public class StretchesFunction extends AssignmentFunction {
         return getStretchesPlusConsolidated().size() > 2;
     }
 
-    @AssertTrue(message = "Some stretch has lower or equal values than the "
+    @AssertTrue(message = "A stretch has lower or equal values than the "
             + "previous stretch")
     public boolean checkStretchesOrder() {
         List<Stretch> stretchesPlusConsolidated = getStretchesPlusConsolidated();
@@ -347,8 +347,8 @@ public class StretchesFunction extends AssignmentFunction {
                 .sortByLengthPercentage(result));
     }
 
-    @AssertTrue(message = "Last stretch should have one hundred percent for "
-            + "length and amount of work percentage")
+    @AssertTrue(message = "Last stretch should have one hundred percent "
+            + "length and one hundred percent of work percentage")
     public boolean checkOneHundredPercent() {
         List<Stretch> stretches = getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {

@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -95,7 +95,7 @@ function qualityFormAssign($qualityFormName, $project){
 }
 
 function qualityFormAssingProject($qualityFormName, $project){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($project))))));
     _click(_span("Task quality forms"));
     _click(_italic(0, _near(_span("Assign quality form"))));

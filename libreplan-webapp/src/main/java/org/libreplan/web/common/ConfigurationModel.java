@@ -183,7 +183,7 @@ public class ConfigurationModel implements IConfigurationModel {
             }
             if (!checkConstraintPrefixNotRepeated(sequences)) {
                 throw new ValidationException(_(
-                        "The {0} sequence prefixes can not be repeated",
+                        "The {0} sequence prefixes cannot be repeated",
                         entityName.getDescription()));
             }
         }
@@ -231,7 +231,7 @@ public class ConfigurationModel implements IConfigurationModel {
                 entitySequenceDAO.remove(entitySequence);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("Some sequences to remove not existed"));
+                        _("Some sequences to be removed do not exist"));
             } catch (IllegalArgumentException e) {
                 throw new ValidationException(e.getMessage());
             }

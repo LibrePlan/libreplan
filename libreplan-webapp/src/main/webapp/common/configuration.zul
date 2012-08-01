@@ -57,7 +57,7 @@
                                     value="${i18n:_('Company code')}" />
                                 <textbox id="companyCode"
                                     value="@{configurationController.companyCode}"
-                                    constraint="no empty:${i18n:_('Cannot be empty or null')}" />
+                                    constraint="no empty:${i18n:_('cannot be empty')}" />
                             </row>
                             <row>
                                 <label
@@ -69,7 +69,7 @@
                                     selectedElement="@{configurationController.defaultCalendar}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Type of hours for monthly timesheets')}" />
+                                <label value="${i18n:_('Hours type for monthly timesheets')}" />
                                 <bandboxSearch
                                     finder="TypeOfWorkHoursBandboxFinder"
                                     selectedElement="@{configurationController.monthlyTimesheetsTypeOfWorkHours, access='both'}" />
@@ -104,7 +104,7 @@
                                 <checkbox id="enableAutocompleteLogin"
                                     label="${i18n:_('Enable/Disable')}"
                                     disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
-                                    tooltiptext = "${i18n:_('Enable/Disable autocomplete property in login form, if the admin password is still in default')}"
+                                    tooltiptext = "${i18n:_('Enable/Disable autocomplete property in login form, if the admin password is still the default one')}"
                                     checked="@{configurationController.autocompleteLogin}"
                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                             </row>
@@ -116,8 +116,8 @@
                                         tooltiptext="${i18n:_('Enable/Disable warning about new LibrePlan versions available')}"
                                         checked="@{configurationController.checkNewVersionEnabled}" />
                                     <checkbox
-                                        label="${i18n:_('Help project developers to collect information about which LibrePlan version you are using')}"
-                                        tooltiptext="${i18n:_('Check this option to send this information to LibrePlan developers in order to generate usage statistics')}"
+                                        label="${i18n:_('Help the project developers to collect information about which LibrePlan version you are using')}"
+                                        tooltiptext="${i18n:_('Check this option if you would like to send feedback to LibrePlan developers about program usage')}"
                                         checked="@{configurationController.allowToGatherUsageStatsEnabled}" />
                                 </vbox>
                             </row>

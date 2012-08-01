@@ -192,7 +192,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return null;
     }
 
-    @AssertTrue(message = "The previous advance measurements must have a value less than the value of the posterior advance measurements.")
+    @AssertTrue(message = "Progress measurements must have a value lower than their following progress measurements.")
     public boolean checkConstraintValidAdvanceMeasurements() {
         if (advanceMeasurements.isEmpty()) {
             return true;
@@ -223,7 +223,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return fake;
     }
 
-    @AssertTrue(message = "max value of percentage advance type must be 100")
+    @AssertTrue(message = "maxixum value of percentage progress type must be 100")
     public boolean checkConstraintMaxValueMustBe100ForPercentage() {
         AdvanceType advanceType = getAdvanceType();
         if ((advanceType != null) && (advanceType.getPercentage())) {
@@ -234,7 +234,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return true;
     }
 
-    @AssertTrue(message = "max value must be greater than zero")
+    @AssertTrue(message = "maximum value must be greater than zero")
     public boolean checkConstraintMaxValueMustBeGreaterThanZero() {
         return maxValue.compareTo(BigDecimal.ZERO) > 0;
     }

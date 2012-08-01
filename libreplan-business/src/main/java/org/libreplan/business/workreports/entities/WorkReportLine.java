@@ -173,7 +173,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
     }
 
     @Override
-    @NotNull(message = "order element not specified")
+    @NotNull(message = "task not specified")
     public OrderElement getOrderElement() {
         return orderElement;
     }
@@ -198,7 +198,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         this.labels = labels;
     }
 
-    @NotNull(message = "work report not specified")
+    @NotNull(message = "timesheet not specified")
     public WorkReport getWorkReport() {
         return workReport;
     }
@@ -258,7 +258,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "clockFinish:the clockStart must be not null if number of hours is calcultate by clock")
+    @AssertTrue(message = "clock finish cannot be empty if number of hours is calcultate by clock")
     public boolean checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -271,7 +271,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "The start hour cannot be higher than finish hour")
+    @AssertTrue(message = "Start hour cannot be greater than finish hour")
     public boolean checkCannotBeHigher() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -395,7 +395,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return Registry.getWorkReportLineDAO();
     }
 
-    @AssertTrue(message = "fields should match with work report data if are shared by lines")
+    @AssertTrue(message = "fields should match with timesheet data if are shared by lines")
     public boolean checkConstraintFieldsMatchWithWorkReportIfAreSharedByLines() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -420,7 +420,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "number of hours is not properly calculated based on clock")
+    @AssertTrue(message = "Number of hours is not properly calculated according to start date and end date")
     public boolean checkConstraintHoursCalculatedByClock() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -441,7 +441,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
                 && (orderElement != null);
     }
 
-    @AssertTrue(message = "label type:the work report have not assigned this label type")
+    @AssertTrue(message = "label type: the timesheet has not assigned this label type")
     public boolean checkConstraintAssignedLabelTypes() {
         if (this.workReport == null
                 || this.workReport.getWorkReportType() == null) {
@@ -464,7 +464,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "description value:the work report have not assigned the description field")
+    @AssertTrue(message = "description value: the timesheet has not assigned the description field")
     public boolean checkConstraintAssignedDescriptionValues() {
         if (this.workReport == null
                 || this.workReport.getWorkReportType() == null) {
@@ -487,7 +487,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "There are repeated description values in the work report line")
+    @AssertTrue(message = "there are repeated description values in the timesheet lines")
     public boolean checkConstraintAssignedRepeatedDescriptionValues() {
 
         Set<String> textFields = new HashSet<String>();

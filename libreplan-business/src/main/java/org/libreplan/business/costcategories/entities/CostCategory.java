@@ -106,7 +106,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                     // this is not exactly an overlapping but a
                     // problem with missing compulsory fields
                     throw ValidationException.invalidValue(
-                            _("Hours cost type cannot be empty or null"),
+                            "Hours cost type cannot be empty",
                             listElement);
                 }
                 if (listElement.getType().getId()
@@ -115,12 +115,12 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                         // this is not exactly an overlapping but a
                         // problem with missing compulsory fields
                         throw ValidationException.invalidValue(
-                                _("Init date cannot be empty or null"),
+                                "Init date cannot be empty",
                                 listElement);
                     }
                     if (endDate == null && listElement.getEndDate() == null) {
                         throw ValidationException.invalidValue(
-                                _("End date cannot be empty or null"),
+                                "End date cannot be empty",
                                 listElement);
                     } else if ((endDate == null && listElement.getEndDate()
                             .compareTo(initDate) >= 0)
@@ -128,7 +128,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                                     .getInitDate().compareTo(endDate) <= 0)) {
                         throw ValidationException
                                 .invalidValue(
-                                        _("Two hour costs with the same type overlap in time"),
+                                        _("Two Hour Cost of the same type overlap in time"),
                                         listElement);
                     } else if ((endDate != null && listElement.getEndDate() != null)
                             && ((listElement.getEndDate().compareTo(initDate) >= 0 && listElement
@@ -137,7 +137,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
                                     .getInitDate().compareTo(endDate) <= 0))) {
                         throw ValidationException
                                 .invalidValue(
-                                        _("Two hour costs with the same type overlap in time"),
+                                        _("Two Hour Cost of the same type overlap in time"),
                                         listElement);
                     }
                 }
@@ -267,7 +267,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
         throw new InstanceNotFoundException(code, HourCost.class.getName());
     }
 
-    @AssertFalse(message="Two hour costs with the same type overlap in time")
+    @AssertFalse(message="Two Hour Cost of the same type overlap in time")
     public boolean checkHourCostsOverlap() {
         try {
             validateHourCostsOverlap(getHourCosts());
@@ -319,7 +319,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
         return name;
     }
 
-    @AssertTrue(message = "the cost category name has to be unique. It is already used")
+    @AssertTrue(message = "the cost category name has to be unique and it is already in use")
     public boolean checkConstraintUniqueName() {
         if (StringUtils.isBlank(name)) {
             return true;

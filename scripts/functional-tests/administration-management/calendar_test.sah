@@ -50,7 +50,7 @@ function calendarCreateDuplicateType($name) {
 function calendarCreateEmpty() {
     commonCreate("Calendars");
     commonCalendarForm("");
-    /* calendarNotEmptyNameValidation(); */
+    calendarNotEmptyNameValidation();
     _log("Do not allow create a calendar without name", "custom1");
 }
 
@@ -112,22 +112,19 @@ function calendarAssignProject($projectName, $calendar){
  * Validations
  */
 
-/* Text will be changed pending of a bug
-
 function calendarNotEmptyNameValidation(){
-    _assertExists(_div("name: no debe ser nulo o vacío"));
-    _assert(_isVisible(_div("name: no debe ser nulo o vacío")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
-*/
 
 function calendarNotValid($calendar){
-    _assertExists(_div("name: "+$calendar+" already exists"));
-    _assert(_isVisible(_div("name: "+$calendar+" already exists")));
+    _assertExists(_div($calendar+" already exists"));
+    _assert(_isVisible(_div($calendar+" already exists")));
 }
 
 function calendarNotAllowDeleteWithChildValidation(){
-    _assertExists(_span("Calendar cannot be removed because it still has children. Some other calendar is derived from this one."));
-    _assert(_isVisible(_span("Calendar cannot be removed because it still has children. Some other calendar is derived from this one.")));
+    _assertExists(_span("Calendar cannot be removed as it has other derived calendars from it"));
+    _assert(_isVisible(_span("Calendar cannot be removed as it has other derived calendars from it")));
 }
 
 function calendarTryDeleteAssignedToProjectCalendar($name, $cell) {

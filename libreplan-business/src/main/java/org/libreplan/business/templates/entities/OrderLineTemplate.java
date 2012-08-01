@@ -243,4 +243,8 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return null;
     }
 
+    public boolean isOrderTemplate() {
+        return false;
+    }
+
 }

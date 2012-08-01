@@ -20,6 +20,7 @@
 package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -46,8 +47,7 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     @Override
     public BigDecimal getActualCostWorkPerformedAt(Order order, LocalDate date) {
         SortedMap<LocalDate, BigDecimal> actualCost = calculateActualCostWorkPerformed(order);
-        BigDecimal result = actualCost.get(date);
-        return (result != null) ? result : BigDecimal.ZERO;
+        return getValueAt(actualCost, date);
     }
 
     @Transactional(readOnly = true)
@@ -129,8 +129,27 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
     @Transactional(readOnly = true)
     public BigDecimal getBudgetedCostWorkPerformedAt(Order order, LocalDate date) {
         SortedMap<LocalDate, BigDecimal> budgetedCost = calculateBudgetedCostWorkPerformed(order);
-        BigDecimal result = budgetedCost.get(date);
-        return (result != null) ? result : BigDecimal.ZERO;
+        return getValueAt(budgetedCost, date);
+    }
+
+    private BigDecimal getValueAt(SortedMap<LocalDate, BigDecimal> map,
+            LocalDate date) {
+        if (map.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal result = map.get(date);
+        if (result != null) {
+            return result;
+        }
+        for (LocalDate each : map.keySet()) {
+            if (date.isBefore(each)) {
+                return map.get(each);
+            }
+        }
+        if (date.isAfter(map.lastKey())) {
+            return map.get(map.lastKey());
+        }
+        return BigDecimal.ZERO;
     }
 
     @Override
@@ -156,11 +175,10 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         if (BigDecimal.ZERO.compareTo(actualCost) == 0) {
             return BigDecimal.ZERO;
         }
-        return asPercentage(budgetedCost.divide(actualCost));
-    }
-
-    private BigDecimal asPercentage(BigDecimal value) {
-        return value.multiply(BigDecimal.valueOf(100)).setScale(2);
+        return budgetedCost.setScale(4)
+                .divide(actualCost, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override
@@ -175,7 +193,15 @@ public class OrderEarnedValueCalculator extends EarnedValueCalculator implements
         if (BigDecimal.ZERO.compareTo(costPerformanceIndex) == 0) {
             return BigDecimal.ZERO;
         }
-        return asPercentage(budgetAtCompletion.divide(costPerformanceIndex));
+        return budgetAtCompletion.setScale(2)
+                .divide(costPerformanceIndex, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
+    }
+
+    @Override
+    public BigDecimal getEstimateToComplete(BigDecimal estimateAtCompletion,
+            BigDecimal actualCostWorkPerformed) {
+        return estimateAtCompletion.subtract(actualCostWorkPerformed);
     }
 
 }

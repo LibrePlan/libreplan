@@ -141,11 +141,11 @@ public class TransferOrdersModel implements ITransferOrdersModel {
 
         if (sourceScenario == null) {
             throw new ValidationException(
-                    _("You should select a source scenario"));
+                    _("Please select a source scenario"));
         }
         if (destinationScenario == null) {
             throw new ValidationException(
-                    _("You should select a destination scenario"));
+                    _("Please, select a destination scenario"));
         }
 
         if (sourceScenario.getId().equals(destinationScenario.getId())) {

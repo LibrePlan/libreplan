@@ -21,8 +21,6 @@
 
 package org.libreplan.business.orders.entities;
 
-import static org.libreplan.business.i18n.I18nHelper._;
-
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -257,7 +255,7 @@ public abstract class HoursGroupHandler<T> implements IHoursGroupHandler<T> {
 
         if (workHours < 0) {
             throw new IllegalArgumentException(
-                    _("workHours should be greater or equals to 0"));
+                    "workHours should be greater or equals to 0");
         }
 
         if (hoursGroupsIsEmpty(orderLine)) {
@@ -269,8 +267,8 @@ public abstract class HoursGroupHandler<T> implements IHoursGroupHandler<T> {
 
             if (!isTotalHoursValid(workHours, getHoursGroup(orderLine))) {
                 throw new IllegalArgumentException(
-                        _("\"workHours\" value is not valid, taking into "
-                                + "account the current list of HoursGroup"));
+                        "\"workHours\" value is not valid, taking into "
+                                + "account the current list of HoursGroup");
             }
 
             updateHoursGroups(orderLine, workHours);

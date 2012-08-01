@@ -74,7 +74,7 @@ public class CriticalPathBuilder {
         IAdHocTransactionService transactionService = Registry
                 .getTransactionService();
         return transactionService
-                .runOnTransaction(new IOnTransaction<List<TaskElement>>() {
+                .runOnReadOnlyTransaction(new IOnTransaction<List<TaskElement>>() {
                     @Override
                     public List<TaskElement> execute() {
                         PlanningState state = retrieveOrCreate();

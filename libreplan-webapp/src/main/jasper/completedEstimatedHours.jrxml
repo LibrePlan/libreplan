@@ -68,7 +68,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{total.hours}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="374" y="173" width="122" height="15"/>
@@ -82,7 +82,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column3}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{hours.up.to.date}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="252" y="188" width="57" height="15"/>
@@ -96,7 +96,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{estimated}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="309" y="188" width="65" height="15"/>
@@ -110,7 +110,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{planned}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="374" y="188" width="57" height="15"/>
@@ -124,7 +124,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{estimated}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="431" y="188" width="65" height="15"/>
@@ -138,7 +138,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="9" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column2.column2}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{planned}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="24" y="188" width="228" height="15"/>
@@ -152,7 +152,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{headers.column1}]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{name}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="72" width="142" height="20"/>

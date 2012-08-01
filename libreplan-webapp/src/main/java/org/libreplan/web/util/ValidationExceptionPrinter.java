@@ -19,6 +19,8 @@
 
 package org.libreplan.web.util;
 
+import static org.libreplan.web.I18nHelper._;
+
 import org.hibernate.validator.InvalidValue;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.zkoss.ganttz.util.ComponentsFinder;
@@ -47,13 +49,13 @@ public class ValidationExceptionPrinter {
     }
 
     private static void showAt(Component comp, InvalidValue invalidValue) {
-        throw new WrongValueException(comp, invalidValue.getMessage());
+        throw new WrongValueException(comp, _(invalidValue.getMessage()));
     }
 
     private static void showAt(Grid comp, InvalidValue invalidValue) {
         Row row = ComponentsFinder.findRowByValue(comp, invalidValue.getValue());
         if (row != null) {
-            throw new WrongValueException(row, invalidValue.getMessage());
+            throw new WrongValueException(row, _(invalidValue.getMessage()));
         }
     }
 

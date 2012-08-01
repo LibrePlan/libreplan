@@ -77,6 +77,7 @@ import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.api.Hbox;
 import org.zkoss.zul.impl.api.InputElement;
 
 /**
@@ -601,11 +602,17 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         }
 
+        private Map<T, Textbox> codeTextboxByElement = new HashMap<T, Textbox>();
+
         private Map<T, Textbox> nameTextboxByElement = new HashMap<T, Textbox>();
 
         private Map<T, Intbox> hoursIntBoxByElement = new HashMap<T, Intbox>();
 
         protected Map<T, Decimalbox> budgetDecimalboxByElement = new HashMap<T, Decimalbox>();
+
+        private Map<T, DynamicDatebox> initDateDynamicDateboxByElement = new HashMap<T, DynamicDatebox>();
+
+        private Map<T, DynamicDatebox> endDateDynamicDateboxByElement = new HashMap<T, DynamicDatebox>();
 
         private KeyboardNavigationHandler navigationHandler = new KeyboardNavigationHandler();
 
@@ -622,8 +629,30 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             return nameTextboxByElement.get(key);
         }
 
+        public Map<T, Textbox> getCodeTextboxByElement() {
+            return Collections.unmodifiableMap(codeTextboxByElement);
+        }
+
+        protected void putCodeTextbox(T key, Textbox textbox) {
+            codeTextboxByElement.put(key, textbox);
+        }
+
+        protected void removeCodeTextbox(T key) {
+            codeTextboxByElement.remove(key);
+        }
+
         protected void putNameTextbox(T key, Textbox textbox) {
             nameTextboxByElement.put(key, textbox);
+        }
+
+        protected void putInitDateDynamicDatebox(T key,
+                DynamicDatebox dynamicDatebox) {
+            initDateDynamicDateboxByElement.put(key, dynamicDatebox);
+        }
+
+        protected void putEndDateDynamicDatebox(T key,
+                DynamicDatebox dynamicDatebox) {
+            endDateDynamicDateboxByElement.put(key, dynamicDatebox);
         }
 
         protected void registerFocusEvent(final InputElement inputElement) {
@@ -694,8 +723,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             InvalidValue[] invalidValues = validator.getPotentialInvalidValues(
                     property, value);
             if (invalidValues.length > 0) {
-                throw new WrongValueException(component, invalidValues[0]
-                        .getMessage());
+                throw new WrongValueException(component,
+                        _(invalidValues[0].getMessage()));
             }
         }
 
@@ -882,7 +911,23 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             };
         }
 
-        public void updateBudgetFor(T element) {
+        public void updateColumnsFor(T element) {
+            updateCodeFor(element);
+            updateNameFor(element);
+            updateHoursFor(element);
+            updateBudgetFor(element);
+            updateInitDateFor(element);
+            updateEndDateFor(element);
+        }
+
+        private void updateCodeFor(T element) {
+            if (!readOnly) {
+                Textbox textbox = codeTextboxByElement.get(element);
+                textbox.setValue(getCodeHandler().getCodeFor(element));
+            }
+        }
+
+        private void updateBudgetFor(T element) {
             if (!readOnly && element.isLeaf()) {
                 Decimalbox decimalbox = budgetDecimalboxByElement.get(element);
                 decimalbox.invalidate();
@@ -890,10 +935,26 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             }
         }
 
-        public void updateNameFor(T element) {
+        private void updateNameFor(T element) {
             if (!readOnly) {
                 Textbox textbox = nameTextboxByElement.get(element);
                 textbox.setValue(getNameHandler().getNameFor(element));
+            }
+        }
+
+        private void updateInitDateFor(T element) {
+            if (!readOnly) {
+                DynamicDatebox dynamicDatebox = initDateDynamicDateboxByElement
+                        .get(element);
+                dynamicDatebox.updateComponents();
+            }
+        }
+
+        private void updateEndDateFor(T element) {
+            if (!readOnly) {
+                DynamicDatebox dynamicDatebox = endDateDynamicDateboxByElement
+                        .get(element);
+                dynamicDatebox.updateComponents();
             }
         }
 
@@ -919,9 +980,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 @Override
                 public void validate(Component comp, Object value)
                         throws WrongValueException {
+                    if (value == null) {
+                        throw new WrongValueException(comp,
+                                _("cannot be empty"));
+                    }
                     if (((BigDecimal) value).compareTo(BigDecimal.ZERO) < 0) {
                         throw new WrongValueException(comp,
-                                _("Budget value cannot be negative"));
+                                _("cannot be negative"));
                     }
                 }
 
@@ -943,7 +1008,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             if (!readOnly && element.isLeaf()) {
                 if (getHoursGroupHandler().hasMoreThanOneHoursGroup(element)) {
                     boxHours.setReadonly(true);
-                    tc.setTooltiptext(_("Not editable for containing more that an hours group."));
+                    tc.setTooltiptext(_("Disabled because of it contains more than one hours group"));
                 } else {
                     boxHours.setReadonly(false);
                     tc.setTooltiptext("");
@@ -1012,7 +1077,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             };
         }
 
-        public void updateHoursFor(T element) {
+        private void updateHoursFor(T element) {
             if (!readOnly && element.isLeaf()) {
                 Intbox boxHours = (Intbox) hoursIntBoxByElement.get(element);
                 Treecell tc = (Treecell) boxHours.getParent();
@@ -1048,7 +1113,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     if (!getHoursGroupHandler().isTotalHoursValid(line, ((Integer) value))) {
                         throw new WrongValueException(
                                 comp,
-                                _("Value is not valid, taking into account the current list of HoursGroup"));
+                                _("Value is not valid in current list of Hours Group"));
                     }
                 }
 
@@ -1223,6 +1288,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     protected abstract IBudgetHandler<T> getBudgetHandler();
 
+    public interface ICodeHandler<T> {
+
+        String getCodeFor(T element);
+
+    }
+
+    protected abstract ICodeHandler<T> getCodeHandler();
+
     public interface INameHandler<T> {
 
         String getNameFor(T element);
@@ -1284,6 +1357,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             ((Combobox) orderElementTreeComponent
                     .getFellowIfAny("newBudgetLineTemplateType"))
                     .setDisabled(readOnly);
+            ((Hbox) orderElementTreeComponent.getFellowIfAny("selectedRowButtons")).setVisible(!readOnly);
             Util.reloadBindings(orderElementTreeComponent);
         }
     }

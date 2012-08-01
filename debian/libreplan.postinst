@@ -1,6 +1,32 @@
 #! /bin/bash
 set -e
 
+# If the database exists already *before* running dbconfig, it means that
+# an upgrade is being done. In case PostgreSQL 8.x is being used, make
+# sure that support for plpgsql is enabled. This is needed starting with
+# Libreplan 1.3
+#
+if [[ $1 = configure && -r /etc/dbconfig-common/libreplan.conf ]]
+then
+	PGSQL_MAJOR=$(createlang --version |
+		sed -e '1s/^[^0-9]*\([0-9]\+\)\..*$/\1/p' -e d)
+	if [[ ${PGSQL_MAJOR} -eq 8 ]]
+	then
+		. /etc/dbconfig-common/libreplan.conf
+
+		conn_args=""
+		if [[ ${dbc_dbserver} != localhost ]] ; then
+			conn_args="${conn_args} --host='${dbc_dbserver}'"
+		fi
+		if [[ -n ${dbc_dbport} ]] ; then
+			conn_args="${conn_args} --port=${dbc_dbport}"
+		fi
+
+		su postgres -c "createlang -d ${dbc_dbname} ${conn_args} plpgsql" || true
+	fi
+fi
+
+
 . /usr/share/debconf/confmodule
 . /usr/share/dbconfig-common/dpkg/postinst.pgsql
 
@@ -11,10 +37,10 @@ if [[ $1 = configure && -r /etc/dbconfig-common/libreplan.conf ]]
 then
 	. /etc/dbconfig-common/libreplan.conf
 
-	if [ -z "${dbc_dbhost}" ] ; then
+	if [ -z "${dbc_dbserver}" ] ; then
 		database_host='localhost'
 	else
-		database_host=${dbc_dbhost}
+		database_host=${dbc_dbserver}
 	fi
 
 	echo "Adding libreplan Tomcat configuration bits"

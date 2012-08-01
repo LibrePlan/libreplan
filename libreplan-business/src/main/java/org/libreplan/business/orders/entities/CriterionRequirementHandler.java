@@ -536,7 +536,7 @@ public abstract class CriterionRequirementHandler<T, S, R> {
                             newRequirement);
         } else {
             throw new IllegalStateException(
-                    _("The criterion already exist into other task"));
+                    _("The criterion already exists into another task"));
         }
     }
 

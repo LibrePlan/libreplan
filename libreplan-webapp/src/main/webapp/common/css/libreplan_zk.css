@@ -1056,7 +1056,8 @@ span.perspective, span.perspective-active {
 }
 
 .perspective.limiting-resources, .perspective-active.limiting-resources,
-.perspective.order-limiting-resources {
+.perspective.order-limiting-resources
+.perspective.hidden {
     display: none;
 }
 .perspective.order-data .z-button-cm,
@@ -1426,8 +1427,8 @@ display:none;
 }
 
 .filter-more-options .z-groupbox-cnt {
-    width: 900px;
-    left: -792px;
+    width: 600px;
+    left: -492px;
     position: relative;
     background-color: #F0FAFF;
 }
@@ -1453,7 +1454,8 @@ display:none;
 .filter-more-options .z-caption .z-caption-l,
 .filter-more-options .z-caption .z-caption-r {
     font-size:11px;
-    padding: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .filter-more-options .z-groupbox-hl {
@@ -1952,4 +1954,17 @@ select {
 }
 .reported-hours, .show-advances {
     display: none;
+}
+
+.communication-not-reviewed div.z-row-cnt .z-label {
+    font-weight: bold;
+}
+
+.current-delivery-date div.z-row-cnt .z-label {
+    font-weight: bold;
+}
+
+.remarked {
+    font-weight: bold;
+    color: #0F3B82;
 }

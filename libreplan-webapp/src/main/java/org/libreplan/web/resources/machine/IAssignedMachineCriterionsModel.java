@@ -60,8 +60,6 @@ public interface IAssignedMachineCriterionsModel extends
 
     void remove(CriterionSatisfactionDTO criterionSatisfactionDTO);
 
-    void save() throws ValidationException;
-
     public void setCriterionWithItsType(
             CriterionSatisfactionDTO criterionSatisfactionDTO,
             CriterionWithItsType criterionAndType) throws WrongValueException;

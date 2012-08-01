@@ -99,11 +99,11 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         super.remove(id);
     }
 
-    private boolean isOrderNameContained(String code, List<Order> orders) {
+    private boolean isOrderContained(Order order, List<Order> orders) {
         for (Order each : orders) {
-                if (each.getCode().equals(code)) {
-                    return true;
-                }
+            if (each.getId().equals(order.getId())) {
+                return true;
+            }
         }
         return false;
     }
@@ -157,13 +157,11 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         List<OrderCostsPerResourceDTO> filteredList = new ArrayList<OrderCostsPerResourceDTO>();
         for (OrderCostsPerResourceDTO each : list) {
 
-            OrderElement order = loadOrderAvoidingProxyFor(each
-                    .getOrderElement());
+            Order order = loadOrderAvoidingProxyFor(each.getOrderElement());
 
             // Apply filtering
             if (matchFilterCriterion(each.getOrderElement(), criterions)
-                    && (orders.isEmpty() || isOrderNameContained(order
-                            .getCode(), orders))) {
+                    && isOrderContained(order, orders)) {
 
                 // Attach ordername value
                 each.setOrderName(order.getName());

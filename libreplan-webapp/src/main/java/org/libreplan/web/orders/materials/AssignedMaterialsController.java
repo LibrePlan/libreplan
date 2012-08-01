@@ -391,7 +391,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
                 removeMaterialAssignment(materialAssignment);
             }
         } catch (InterruptedException e) {
-            LOG.error(_("Error on showing delete confirm"), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -456,7 +456,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     public void showSplitMaterialAssignmentDlg(A materialAssignment) {
         MessageboxDlg dialogSplitAssignment;
 
-        final String message = _("Create new material assignment out of material assignment {0}. Are you sure?",
+        final String message = _("Do you want to split the material assignment {0}?",
                 getMaterial(materialAssignment).getCode());
 
         Map args = new HashMap();
@@ -479,9 +479,9 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
                 splitMaterialAssignment(materialAssignment, dbUnits.getValue());
             }
         } catch (SuspendNotAllowedException e) {
-            LOG.error(_("Error on splitting"), e);
+            throw new RuntimeException(e);
         } catch (InterruptedException e) {
-            LOG.error(_("Error on splitting"), e);
+            throw new RuntimeException(e);
         }
     }
 

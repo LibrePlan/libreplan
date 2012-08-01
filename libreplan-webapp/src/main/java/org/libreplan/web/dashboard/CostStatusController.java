@@ -22,11 +22,13 @@ package org.libreplan.web.dashboard;
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -60,6 +62,12 @@ public class CostStatusController extends GenericForwardComposer {
     // Variance at Completion
     public Label lblVAC;
 
+    // Cost Variance
+    public Label lblACWP;
+
+    // Estimate To Complete
+    public Label lblETC;
+
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -73,51 +81,76 @@ public class CostStatusController extends GenericForwardComposer {
 
     public void render() {
         LocalDate today = LocalDate.fromDateFields(new Date());
-        BigDecimal budgetedCost = costStatusModel
-                .getBudgetedCostWorkPerformedAt(today);
         BigDecimal actualCost = costStatusModel
                 .getActualCostWorkPerformedAt(today);
+        setHoursLabel(lblACWP, actualCost);
 
+        BigDecimal budgetedCost = costStatusModel
+                .getBudgetedCostWorkPerformedAt(today);
         BigDecimal costVariance = costStatusModel.getCostVariance(budgetedCost,
                 actualCost);
-        setCostVariance(costVariance);
+        setHoursLabel(lblCV, costVariance);
 
         BigDecimal costPerformanceIndex = costStatusModel
                 .getCostPerformanceIndex(budgetedCost, actualCost);
-        setCostPerformanceIndex(costPerformanceIndex);
+        setPercentageLabel(lblCPI, costPerformanceIndex);
 
         BigDecimal budgetAtCompletion = costStatusModel.getBudgetAtCompletion();
-        setBudgetAtCompletion(budgetAtCompletion);
+        setHoursLabel(lblBAC, budgetAtCompletion);
 
         BigDecimal estimateAtCompletion = costStatusModel
                 .getEstimateAtCompletion(budgetAtCompletion,
                         costPerformanceIndex);
-        setEstimateAtCompletion(estimateAtCompletion);
+        setHoursLabel(lblEAC, estimateAtCompletion);
 
         BigDecimal varianceAtCompletion = costStatusModel
                 .getVarianceAtCompletion(budgetAtCompletion,
                         estimateAtCompletion);
-        setVarianceAtCompletion(varianceAtCompletion);
+        setHoursLabel(lblVAC, varianceAtCompletion);
+
+        BigDecimal estimateToComplete = costStatusModel.getEstimateToComplete(
+                estimateAtCompletion, actualCost);
+        setHoursLabel(lblETC, estimateToComplete);
     }
 
-    private void setEstimateAtCompletion(BigDecimal value) {
-        lblEAC.setValue(String.format("%.2f %%", value.doubleValue()));
+    private void setHoursLabel(Label label, BigDecimal value) {
+        label.setValue(_("{0} h", value.setScale(2, RoundingMode.HALF_UP)));
     }
 
-    private void setCostPerformanceIndex(BigDecimal value) {
-        lblCPI.setValue(String.format("%.2f %%", value.doubleValue()));
+    private void setPercentageLabel(Label label, BigDecimal value) {
+        label.setValue(value.setScale(2, RoundingMode.HALF_UP) + " %");
     }
 
-    private void setBudgetAtCompletion(BigDecimal value) {
-        lblBAC.setValue(String.format(_("%s h"), value.toString()));
+    public String getLabel(EarnedValueType type) {
+        return type.getAcronym() + " (" + type.getName() + ")";
     }
 
-    private void setCostVariance(BigDecimal value) {
-        lblCV.setValue(String.format(_("%s h"), value.toString()));
+    public String getLabelCV() {
+        return getLabel(EarnedValueType.CV);
     }
 
-    private void setVarianceAtCompletion(BigDecimal value) {
-        lblVAC.setValue(String.format(_("%s h"), value.toString()));
+    public String getLabelACWP() {
+        return getLabel(EarnedValueType.ACWP);
+    }
+
+    public String getLabelCPI() {
+        return getLabel(EarnedValueType.CPI);
+    }
+
+    public String getLabelETC() {
+        return getLabel(EarnedValueType.ETC);
+    }
+
+    public String getLabelEAC() {
+        return getLabel(EarnedValueType.EAC);
+    }
+
+    public String getLabelBAC() {
+        return getLabel(EarnedValueType.BAC);
+    }
+
+    public String getLabelVAC() {
+        return getLabel(EarnedValueType.VAC);
     }
 
 }

@@ -639,4 +639,9 @@ public class WorkReportModel extends IntegrationEntityModel implements
         }
     }
 
+    @Override
+    public WorkReportLine getFirstWorkReportLine() {
+        return workReport.getWorkReportLines().iterator().next();
+    }
+
 }

@@ -303,9 +303,11 @@ public class PlanningStateCreator {
             for (DirectAdvanceAssignment direct : each.getDirectAdvanceAssignments()) {
                 direct.getAdvanceMeasurements().size();
                 direct.getAdvanceType().getHumanId();
+                direct.getAdvanceType().getUnitName();
             }
             for (IndirectAdvanceAssignment indirect : each
                     .getIndirectAdvanceAssignments()) {
+                indirect.getAdvanceType().getUnitName();
                 Set<CalculatedConsolidation> consolidation = indirect
                         .getCalculatedConsolidation();
                 for (CalculatedConsolidation c : consolidation) {

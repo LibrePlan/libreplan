@@ -141,7 +141,7 @@ public class DashboardTabCreator {
         IAdHocTransactionService transactionService = Registry
                 .getTransactionService();
         return transactionService
-                .runOnTransaction(new IOnTransaction<PlanningState>() {
+                .runOnReadOnlyTransaction(new IOnTransaction<PlanningState>() {
                     @Override
                     public PlanningState execute() {
                         return planningStateCreator.retrieveOrCreate(desktop,

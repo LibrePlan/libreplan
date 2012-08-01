@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,62 +19,62 @@
 
 /* Included tests
  *
- * 1 - Create a new Work Hour
- * 2 - Create a Work Hour with duplicate name (it should be a failure)
- * 3 - Create a Work Hour with empty name (it should be a failure)
- * 4 - Edit a Work Hour
+ * 1 - Create a new Hours Type
+ * 2 - Create a Hours Type with duplicate name (it should be a failure)
+ * 3 - Create a Hours Type with empty name (it should be a failure)
+ * 4 - Edit a Hours Type
  * 5 - Assign a work Hour to a project with Work Report Model
  *   5.1  - Create a new Work Report Models
  *   5.2  - Create a new proyect
  *   5.3  - Create a new Machine
  *   5.4  - Create a new Work Report and assign our Work hour and Work Report Models
- *   5.5  - Try to delete the assigned Work Hour (it should be a failure)
+ *   5.5  - Try to delete the assigned Hours Type (it should be a failure)
  *   5.6  - Try to delete the assigned Work Report Models (it should be a failure)
  *   5.7  - Try to delete the project (it should be a failure)
  *   5.8  - Delete the Work Report
  *   5.9  - Delete the project
  *   5.10 - Delete the machine
  *   5.11 - Delete the work report model
- * 6 - Delete Work Hour
+ * 6 - Delete Hours Type
  * 7 - Check code
  *   7.1 - Change configuration
- *   7.2 - Try to create a new Work Hour without Code (it should be a failure)
+ *   7.2 - Try to create a new Hours Type without Code (it should be a failure)
  *   7.3 - Change configuration like before
  * 8 - Assign a work Hour to a Cost Category
- *   8.1 - Create a Work Hour again
- *   8.2 - Create a Cost Category and associate our Work Hour
- *   8.3 - Try to delete the Work Hour
+ *   8.1 - Create a Hours Type again
+ *   8.2 - Create a Cost Category and associate our Hours Type
+ *   8.3 - Try to delete the Hours Type
  *   8.4 - Delete the Cost Category
- *   8.5 - Delete the Work Hour
+ *   8.5 - Delete the Hours Type
 */
 _include("../common_functions.sah");
 
 function workHourCreateDuplicateType($type, $price){
-    commonCreate("Work Hours");
+    commonCreate("Hours Types");
     commonWorkHourForm($type, $price);
     workHourNotValid($type);
-    _log("Do not allow create a duplicate Work Hour", "custom1");
+    _log("Do not allow create a duplicate Hours Type", "custom1");
 }
 
 function workHourCreateEmpty(){
-    commonCreate("Work Hours");
+    commonCreate("Hours Types");
     commonWorkHourForm("", 10);
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
-    _log("Do not allow create a empty Work Hour", "custom1");
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
+    _log("Do not allow create a empty Hours Type", "custom1");
 }
 
 /* test to check a that LibrePlan give us a error */
 function workHourNotValid($hWorkType){
-    _assertExists(_span("checkConstraintUniqueName: the type of work hours name has to be unique. It is already used"));
-    _assert(_isVisible(_span("checkConstraintUniqueName: the type of work hours name has to be unique. It is already used")));
+    _assertExists(_span("the type of work hours name has to be unique. It is already used"));
+    _assert(_isVisible(_span("the type of work hours name has to be unique. It is already used")));
 }
 
 function workHourEdit($oldName, $newName, $hWorkPrice, $cell) {
     commonEdit($oldName, $cell);
     commonWorkHourForm($newName, $hWorkPrice);
-    commonSaveValidation("Type of hours", $newName);
-    _log("Edit the Work Hour", "custom1");
+    commonSaveValidation("Hours Type", $newName);
+    _log("Edit the Hours Type", "custom1");
 }
 
 function workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescription){
@@ -82,7 +82,7 @@ function workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescr
     commonCreateProject("new project");
     commonMachineCreate($materialName, $materialDescription);
     workReportCreate($materialName, "new project", $hWorkNewName, $ModelName);
-    workHourTryDelete($hWorkNewName, "work report line");
+    workHourTryDelete($hWorkNewName, "timesheet line");
     reportModelTryDelete($ModelName);
     commonTryDeleteProject("new project");
     commonWorkReportDelete($ModelName);
@@ -93,23 +93,23 @@ function workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescr
 }
 
 function workHourTryDelete($hWorkNewName,$something){
-    _click(_link("Work Hours"));
-    _click(_image("ico_borrar1.png", _in(_cell(4, _near(_cell($hWorkNewName))))));
+    _click(_link("Hours Types"));
+    _click(_image("ico_borrar1.png", _in(_cell(8, _near(_cell($hWorkNewName))))));
     _assertExists(_span("Cannot delete type of work hours. It is being used at this moment in some "+$something+"."));
     _assert(_isVisible(_span("Cannot delete type of work hours. It is being used at this moment in some "+$something+".")));
     _click(_cell("OK"));
-    _log("Do not allow delete the Work Hour", "custom1");
+    _log("Do not allow delete the Hours Type", "custom1");
 }
 
 function workHourCheckCode($workHourName){
-    commonConfigurationChangeCheckboxMainPreferences("Types of work hours");
+    commonConfigurationChangeCheckboxMainPreferences("Hours Types");
     workHourCreateWithoutCode($workHourName);
-    commonConfigurationChangeCheckboxMainPreferences("Types of work hours");
+    commonConfigurationChangeCheckboxMainPreferences("Hours Types");
     _log("Check code label", "custom1");
 }
 
 function workHourCreateWithoutCode($type){
-    commonCreate("Work Hours");
+    commonCreate("Hours Types");
     commonWorkHourForm($type);
     commonEmptyCodeValidation();
 }
@@ -119,10 +119,10 @@ function workHourCreateWithoutCode($type){
  * */
 
 function reportModelTryDelete($ModelName){
-    _click(_link("Work Report Models"));
+    _click(_link("Timesheets Templates"));
     _click(_image("ico_borrar1.png", _in(_cell(1, _near(_cell($ModelName))))));
-    _assertExists(_span("Cannot delete work report type. There are some work reports bound to it."));
-    _assert(_isVisible(_span("Cannot delete work report type. There are some work reports bound to it.")));
+    _assertExists(_span("Cannot delete timesheet template. There are some timesheets bound to it."));
+    _assert(_isVisible(_span("Cannot delete timesheet template. There are some timesheets bound to it.")));
     _click(_cell("OK"));
     _log("Do not allow delete Work Report Model", "custom1");
     }
@@ -132,31 +132,31 @@ function reportModelTryDelete($ModelName){
  * */
 
 function workReportCreate($wReport, $project, $workHour, $modelName) {
-    _click(_link("Work Reports"));
+    _click(_link("Timesheets"));
     workReportForm($wReport, $project, $workHour, $modelName);
     _log("Create a Work Report", "custom1");
 }
 
 function workReportForm($machine, $project, $workHour, $modelName) {
-    _setSelected(_select(0, _near(_span("Select type:"))), $modelName);
-    _click(_cell("New work report"));
+    _setSelected(_select(0, _near(_span("Select template:"))), $modelName);
+    _click(_cell("New timesheet"));
     _click(_cell("Add new row"));
-    _setValue(_textbox(2, _near(_span("Work report lines"))), $machine);
-    _click(_italic(0, _near(_textbox(3, _near(_span("Work report lines"))))));
+    _setValue(_textbox(2, _near(_span("Timesheet lines"))), $machine);
+    _click(_italic(0, _near(_textbox(3, _near(_span("Timesheet lines"))))));
     _click(_div($project+"[2]", _parentTable(_div("Project code[1]"))));
     _setValue(_textbox("z-textbox[1]"), "8");
     _setSelected(_select(2), $workHour);
     _click(_cell("Save"));
-    _assertExists(_div("Work report saved"));
-    _assert(_isVisible(_div("Work report saved")));
+    _assertExists(_div("Timesheet saved"));
+    _assert(_isVisible(_div("Timesheet saved")));
 }
 
 function commonTryDeleteProject($name){
-    _click(_link("Projects List"));
+    _click(_link("Projects"));
     _click(_image("ico_borrar1.png", _in(_cell(8, _near(_cell($name))))));
     _click(_cell("OK"));
-    _assertExists(_div("You can not remove the project \"new project\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario"));
-    _assert(_isVisible(_div("You can not remove the project \"new project\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario")));
+    _assertExists(_div("You can not remove the project \"new project\" because it has time tracked at some of its tasks"));
+    _assert(_isVisible(_div("You can not remove the project \"new project\" because it has time tracked at some of its tasks")));
     _log("Do not allow delete Work Report", "custom1");
 }
 
@@ -186,7 +186,7 @@ commonLogin("admin", "admin");
 commonWorkHourCreate($hWorkName, $hWorkPrice);
 workHourCreateDuplicateType($hWorkName, $hWorkPrice);
 workHourCreateEmpty();
-workHourEdit($hWorkName, $hWorkNewName, $hWorkPrice, 4);
+workHourEdit($hWorkName, $hWorkNewName, $hWorkPrice, 8);
 workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescription);
 workHourCheckCode($hWorkName);
 commonWorkHourDelete($hWorkNewName);

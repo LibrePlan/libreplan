@@ -132,7 +132,7 @@ function machineAssignProjectForm($machine){
     _click(_div($machine));
     _click(_cell($machine));
     _click(_cell("Add"));
-    _setValue(_textbox(0, _near(_span("Sum of all rows"))), "1");
+    _setValue(_textbox(0, _near(_span("Total"))), "1");
     _click(_row("Accept[2]"));
     _assertExists(_div("box standard-task assigned"));
     _log("Task assigned", "custom1");
@@ -174,13 +174,13 @@ function criteriaForm($name){
  * */
 
 function machineNameEmptyValidation(){
-    _assertExists(_div("Name cannot be null or empty"));
-    _assert(_isVisible(_div("Name cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
 
 function machineDescriptionEmptyValidation(){
-    _assertExists(_div("Description cannot be null or empty"));
-    _assert(_isVisible(_div("Description cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
 
 function machineEmptyFields(){
@@ -189,8 +189,8 @@ _assert(_isVisible(_div("This field may not be empty or contain only spaces.")))
 }
 
 function machineTryDeleteAssignedValidation(){
-    _assertExists(_span("This machine cannot be deleted because it has assignments to projects or imputed hours"));
-    _assert(_isVisible(_span("This machine cannot be deleted because it has assignments to projects or imputed hours")));
+    _assertExists(_span("Machine cannot be deleted. Machine is allocated to a project or contains imputed hours"));
+    _assert(_isVisible(_span("Machine cannot be deleted. Machine is allocated to a project or contains imputed hours")));
 }
 
 /* test values */

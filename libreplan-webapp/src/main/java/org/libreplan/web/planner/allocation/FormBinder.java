@@ -337,8 +337,7 @@ public class FormBinder {
                                     .equals(specifiedWorkableDays)) {
                                 Clients.response(new AuWrongValue(
                                         taskWorkableDays,
-                                        _("The original workable days value {0}, "
-                                                + "is prevented because consolidated values cannot be modified",
+                                        _("The original workable days value {0} cannot be modified as it has consolidations",
                                                 specifiedWorkableDays)));
                                 taskWorkableDays
                                         .setValue(effectiveWorkableDays);
@@ -365,8 +364,7 @@ public class FormBinder {
         private void initializeDateAndDurationFieldsFromTaskOriginalValues() {
             Task task = getTask();
             showValueOfDateOn(labelTaskStart, task.getStartAsLocalDate());
-            showValueOfDateOn(labelTaskEnd, task.getIntraDayEndDate()
-                    .asExclusiveEnd());
+            showValueOfDateOn(labelTaskEnd, task.getEndAsLocalDate());
 
             taskWorkableDays.setConstraint(positiveValueRequired());
             taskWorkableDays.setValue(task.getWorkableDays());
@@ -674,7 +672,7 @@ public class FormBinder {
 
     public void markNoEmptyResourcesPerDay(List<AllocationRow> rows) {
         Validate.isTrue(!rows.isEmpty());
-        final String message = _("resources per day must be not empty and bigger than zero");
+        final String message = _("resources per day cannot be empty or less than zero");
         if (!recommendedAllocation) {
             AllocationRow first = rows.get(0);
             throw new WrongValueException(

@@ -28,6 +28,7 @@ package org.libreplan.business.planner.entities.visitors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -52,18 +53,32 @@ public class CalculateFinishedTasksEstimationDeviationVisitor extends TaskElemen
 
     public void visit(Task task) {
         if (task.isFinished()) {
-            int allocatedHours = task.getAssignedHours();
-            if (allocatedHours > 0) {
-                EffortDuration spentEffort = task.getOrderElement()
-                        .getSumChargedEffort().getTotalChargedEffort();
-                deviations.add(new Double(
-                        ((1.0*spentEffort.getHours() -
-                                allocatedHours)/allocatedHours)*100));
-            } else {
-                deviations.add(new Double(0.0));
+            EffortDuration effort = task.getAssignedEffort();
+            if (effort.isZero()) {
+                effort = EffortDuration.hours(task.getOrderElement()
+                        .getWorkHours());
+            }
+            if (!effort.isZero()) {
+                SumChargedEffort sumChargedEffort = task.getOrderElement()
+                        .getSumChargedEffort();
+                EffortDuration spentEffort = sumChargedEffort == null ? EffortDuration
+                        .zero() : sumChargedEffort.getTotalChargedEffort();
+                if (!spentEffort.isZero()) {
+                    double deviation;
+                    if (spentEffort.compareTo(effort) >= 0) {
+                        deviation = spentEffort.minus(effort)
+                                .dividedByAndResultAsBigDecimal(effort)
+                                .doubleValue();
+                    } else {
+                        deviation = -effort.minus(spentEffort)
+                                .dividedByAndResultAsBigDecimal(effort)
+                                .doubleValue();
+
+                    }
+                    deviations.add(deviation * 100);
+                }
             }
         }
-
     }
 
     public void visit(TaskGroup taskGroup) {

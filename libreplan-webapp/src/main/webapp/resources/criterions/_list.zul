@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="listWindow" title="${i18n:_('Criterion Type List')}">
+<window id="listWindow" title="${i18n:_('Criterion Types List')}">
 <newdatasortablegrid model="@{controller.criterionTypes}" fixedLayout="true" sclass="clickable-rows">
    <columns>
         <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />

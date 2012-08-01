@@ -345,7 +345,7 @@ public class TemplateModel implements ITemplateModel {
     }
 
     private IDesktopUpdate showProgress(int remaining) {
-        return sendMessage(_("{0} projects reassignation remaining", remaining));
+        return sendMessage(_("{0} projects remaining to reassign", remaining));
     }
 
     private IDesktopUpdate sendMessage(final String message) {

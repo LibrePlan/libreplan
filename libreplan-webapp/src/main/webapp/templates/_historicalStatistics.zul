@@ -44,7 +44,7 @@
                             <label value="@{historicalStatistics.finishApplications}"/>
                          </row>
                          <row>
-                            <label value="${i18n:_('Average of estimated hours')}"/>
+                            <label value="${i18n:_('Estimated hours average')}"/>
                             <label value="@{historicalStatistics.averageEstimatedHours}"/>
                          </row>
                          <row>

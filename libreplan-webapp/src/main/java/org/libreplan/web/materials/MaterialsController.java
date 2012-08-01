@@ -295,8 +295,7 @@ public class MaterialsController extends
                 removeMaterialCategory(materialCategory);
             }
         } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", materialCategory.getId()), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -308,7 +307,7 @@ public class MaterialsController extends
     public void addMaterialCategory() {
         String categoryName = txtCategory.getValue();
         if (categoryName == null || categoryName.isEmpty()) {
-            throw new WrongValueException(txtCategory, _("cannot be null or empty"));
+            throw new WrongValueException(txtCategory, _("cannot be empty"));
         }
 
         MaterialCategory parent = null;
@@ -327,7 +326,8 @@ public class MaterialsController extends
                      MaterialCategory materialCategory = (MaterialCategory) value;
                      Component comp = findInMaterialCategoryTree(materialCategory);
                      if (comp != null) {
-                         throw new WrongValueException(comp, invalidValue.getMessage());
+                        throw new WrongValueException(comp,
+                                _(invalidValue.getMessage()));
                      }
                  }
             }
@@ -418,10 +418,14 @@ public class MaterialsController extends
                 final Treeitem treeitem = findTreeItemByMaterialCategory(categoriesTree, materialCategory);
                 if (treeitem != null) {
                     if(each.getPropertyName().equals("name")) {
-                        throw new WrongValueException(getCategoryTextbox(treeitem), each.getMessage());
+                        throw new WrongValueException(
+                                getCategoryTextbox(treeitem),
+                                _(each.getMessage()));
                     }
                     if(each.getPropertyName().equals("code")) {
-                        throw new WrongValueException(getCategoryCodeTextbox(treeitem), each.getMessage());
+                        throw new WrongValueException(
+                                getCategoryCodeTextbox(treeitem),
+                                _(each.getMessage()));
                     }
                 }
             }

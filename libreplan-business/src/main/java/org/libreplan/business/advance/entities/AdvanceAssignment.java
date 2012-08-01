@@ -72,7 +72,7 @@ public abstract class AdvanceAssignment extends BaseEntity {
         }
     }
 
-    @NotNull(message = "advance type not specified")
+    @NotNull(message = "progress type not specified")
     public AdvanceType getAdvanceType() {
         return this.advanceType;
     }

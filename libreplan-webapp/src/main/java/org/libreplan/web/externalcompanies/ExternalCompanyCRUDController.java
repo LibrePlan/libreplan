@@ -118,11 +118,11 @@ public class ExternalCompanyCRUDController extends
         appURI.setDisabled(false);
         ourCompanyLogin.setDisabled(false);
         ourCompanyPassword.setDisabled(false);
-        appURI.setConstraint("no empty:" + _("cannot be null or empty"));
+        appURI.setConstraint("no empty:" + _("cannot be empty"));
         ourCompanyLogin.setConstraint("no empty:"
-                + _("cannot be null or empty"));
+                + _("cannot be empty"));
         ourCompanyPassword.setConstraint("no empty:"
-                + _("cannot be null or empty"));
+                + _("cannot be empty"));
     }
 
     private void disableInteractionFields() {

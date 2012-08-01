@@ -78,7 +78,7 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
                 if (!(advanceTypeModel.isPrecisionValid((BigDecimal) value))) {
                     throw new WrongValueException(
                             comp,
-                            _("Value is not valid, the Precision value must be less than the defalt max value."));
+                            _("Invalid value. Precission value must be lower than the Default Max value."));
                 }
             }
         };
@@ -92,7 +92,7 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
                     throws WrongValueException {
                 if (((BigDecimal) value) == null) {
                     throw new WrongValueException(comp,
-                            _("Value is not valid, the default max value must not be empty "));
+                            _("Invalid value. Default Max Value cannot be empty"));
                 }
                 if (!(advanceTypeModel
                         .isDefaultMaxValueValid((BigDecimal) value))) {

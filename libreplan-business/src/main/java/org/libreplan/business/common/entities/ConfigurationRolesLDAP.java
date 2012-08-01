@@ -53,7 +53,7 @@ public class ConfigurationRolesLDAP {
         return roleLdap;
     }
 
-    @NotEmpty(message = "role libreplan not specified")
+    @NotEmpty(message = "LibrePlan role not specified")
     public String getRoleLibreplan() {
         return roleLibreplan;
     }

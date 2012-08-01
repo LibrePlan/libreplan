@@ -58,6 +58,7 @@ import org.springframework.stereotype.Component;
  * @author Nacho Barrientos <nacho@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  *
  *         Model for UI operations related to Order Dashboard View
  *
@@ -222,7 +223,7 @@ public class DashboardModel implements IDashboardModel {
         }
         TaskGroup rootTask = getRootTask();
         Days orderDuration = Days.daysBetween(rootTask.getStartAsLocalDate(),
-                rootTask.getEndAsLocalDate());
+                rootTask.getEndAsLocalDate().plusDays(1));
 
         LocalDate deadLineAsLocalDate = LocalDate.fromDateFields(currentOrder
                 .getDeadline());
@@ -261,54 +262,19 @@ public class DashboardModel implements IDashboardModel {
     }
 
     /**
-     * Calculates the task completation deviations for the current order
+     * Calculates the task completion deviations for the current order
      *
-     * All the deviations are groups in Interval.MAX_INTERVALS intervals of
-     * equal size. If the order contains just one single task then, the upper
-     * limit will be the deviation of the task + 3, and the lower limit will be
-     * deviation of the task - 2
+     * All the deviations are groups in 6 intervals of equal size. If the order
+     * contains just one single task then, the upper limit will be the deviation
+     * of the task +3, and the lower limit will be deviation of the task -3
      *
      * Each {@link Interval} contains the number of tasks that fit in that
      * interval
-     *
-     * @return
      */
     @Override
     public Map<Interval, Integer> calculateTaskCompletion() {
-        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
-        Double max, min;
-
-        // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getTaskLagDeviations();
-        if (deviations.isEmpty()) {
-            max = Double.valueOf(3);
-            min = Double.valueOf(-2);
-        } else if (deviations.size() == 1) {
-            max = deviations.get(0).doubleValue() + 3;
-            min = deviations.get(0).doubleValue() - 2;
-        } else {
-            max = Collections.max(deviations);
-            min = Collections.min(deviations);
-        }
-        double delta = (max - min) / Interval.MAX_INTERVALS;
-
-        // Create MAX_INTERVALS
-        double from = min;
-        for (int i = 0; i < Interval.MAX_INTERVALS; i++) {
-            result.put(Interval.create(from, from + delta), Integer.valueOf(0));
-            from = from + delta;
-        }
-
-        // Construct map with number of tasks for each interval
-        final Set<Interval> intervals = result.keySet();
-        for (Double each : deviations) {
-            Interval interval = Interval.containingValue(intervals, each);
-            if (interval != null) {
-                Integer value = result.get(interval);
-                result.put(interval, value + 1);
-            }
-        }
-        return result;
+        return calculateHistogramIntervals(deviations, 6, 1);
     }
 
     private List<Double> getTaskLagDeviations() {
@@ -322,48 +288,115 @@ public class DashboardModel implements IDashboardModel {
     }
 
     /**
-     * Calculates the estimation accuracy deviations for the current order
+     * Calculates the estimation accuracy deviations for the current order.
      *
-     * All the deviations are groups in Interval.MAX_INTERVALS intervals of
-     * equal size. If the order contains just one single task then, the upper
-     * limit will be the deviation of the task + 30, and the lower limit will be
-     * deviation of the task - 20
+     * All the deviations are groups in 6 intervals of equal size (not less than
+     * 10). There're some restrictions:
+     * <ul>
+     * <li>If the order contains just one single task then, the upper limit will
+     * be the deviation of the task +30, and the lower limit will be deviation
+     * of the task -30.</li>
+     * <li>If the difference between values is bigger than 60, then the
+     * intervals will be bigger than 10 but it'll keep generating 6 intervals.
+     * For example with min -45 and max +45, we'll have 6 intervals of size 15.</li>
+     * <li>In the case that we have enough distance for, it doesn't need to set
+     * the min to -30. For example, with min 0 and max 60, it'll keep intervals
+     * of size 10.</li>
+     * <li>If the min was 10 and the max 40, it'll have to decrease the min and
+     * increase the max to get a difference of 60. For example setting min to
+     * -10 and max to 50. (In order to calculate this it subtracts 10 to the min
+     * and check if the difference is 60 again, if not it adds 10 to the max and
+     * check it again, repeating this till it has a difference of 60).</li>
+     * </ul>
      *
      * Each {@link Interval} contains the number of tasks that fit in that
-     * interval
-     *
-     * @return
+     * interval.
      */
     @Override
     public Map<Interval, Integer> calculateEstimationAccuracy() {
-        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
-        Double max, min;
-
-        // Get deviations of finished tasks, calculate max, min and delta
         List<Double> deviations = getEstimationAccuracyDeviations();
-        if (deviations.isEmpty()) {
-            max = Double.valueOf(30);
-            min = Double.valueOf(-20);
-        } else if (deviations.size() == 1) {
-            max = deviations.get(0).doubleValue() + 30;
-            min = deviations.get(0).doubleValue() - 20;
-        } else {
-            max = Collections.max(deviations);
-            min = Collections.min(deviations);
-        }
-        double delta = (max - min) / Interval.MAX_INTERVALS;
+        return calculateHistogramIntervals(deviations, 6, 10);
+    }
 
-        // Create MAX_INTERVALS
-        double from = min;
-        for (int i = 0; i < Interval.MAX_INTERVALS; i++) {
-            result.put(Interval.create(from, from + delta), Integer.valueOf(0));
-            from = from + delta;
+    private Map<Interval, Integer> calculateHistogramIntervals(
+            List<Double> values, int intervalsNumber, int intervalMinimumSize) {
+        Map<Interval, Integer> result = new LinkedHashMap<Interval, Integer>();
+
+        int totalMinimumSize = intervalsNumber * intervalMinimumSize;
+        int halfSize = totalMinimumSize / 2;
+
+        double maxDouble, minDouble;
+        if (values.isEmpty()) {
+            minDouble = -halfSize;
+            maxDouble = halfSize;
+        } else {
+            minDouble = Collections.min(values);
+            maxDouble = Collections.max(values);
+        }
+
+        // If min and max are between -halfSize and +halfSize, set -halfSize as
+        // min and +halfSize as max
+        if (minDouble >= -halfSize && maxDouble <= halfSize) {
+            minDouble = -halfSize;
+            maxDouble = halfSize;
+        }
+
+        // If the difference between min and max is less than totalMinimumSize,
+        // decrease min
+        // and increase max till get that difference
+        boolean changeMin = true;
+        while (maxDouble - minDouble < totalMinimumSize) {
+            if (changeMin) {
+                minDouble -= intervalMinimumSize;
+            } else {
+                maxDouble += intervalMinimumSize;
+            }
+        }
+
+        // Round min and max properly depending on decimal part or not
+        int min;
+        double minDecimalPart = minDouble - (int) minDouble;
+        if (minDouble >= 0) {
+            min = (int) (minDouble - minDecimalPart);
+        } else {
+            min = (int) (minDouble - minDecimalPart);
+            if (minDecimalPart != 0) {
+                min--;
+            }
+        }
+        int max;
+        double maxDecimalPart = maxDouble - (int) maxDouble;
+        if (maxDouble >= 0) {
+            max = (int) (maxDouble - maxDecimalPart);
+            if (maxDecimalPart != 0) {
+                max++;
+            }
+        } else {
+            max = (int) (maxDouble - maxDecimalPart);
+        }
+
+        // Calculate intervals size
+        double delta = (double) (max - min) / intervalsNumber;
+        double deltaDecimalPart = delta - (int) delta;
+
+        // Generate intervals
+        int from = min;
+        for (int i = 0; i < intervalsNumber; i++) {
+            int to = from + (int) delta;
+            // Fix to depending on decimal part if it's not the last interval
+            if (deltaDecimalPart == 0 && i != (intervalsNumber - 1)) {
+                to--;
+            }
+            result.put(new Interval(from, to), Integer.valueOf(0));
+
+            from = to + 1;
         }
 
         // Construct map with number of tasks for each interval
         final Set<Interval> intervals = result.keySet();
-        for (Double each : deviations) {
-            Interval interval = Interval.containingValue(intervals, each);
+        for (Double each : values) {
+            Interval interval = Interval.containingValue(
+                    intervals, each);
             if (interval != null) {
                 Integer value = result.get(interval);
                 result.put(interval, value + 1);
@@ -382,38 +415,17 @@ public class DashboardModel implements IDashboardModel {
         return visitor.getDeviations();
     }
 
-    /**
-     *
-     * @author Diego Pino García<dpino@igalia.com>
-     *
-     */
     static class Interval {
+        private int min;
+        private int max;
 
-        public static final double MAX_INTERVALS = 6;
-
-        private double min;
-
-        private double max;
-
-        private Interval() {
-
-        }
-
-        public static Interval create(double min, double max) {
-            return new Interval(min, max);
-        }
-
-        private Interval(double min, double max) {
+        public Interval(int min, int max) {
             this.min = min;
             this.max = max;
         }
 
-        public static Interval copy(Interval interval) {
-            return new Interval(interval.min, interval.max);
-        }
-
-        public static Interval containingValue(Collection<Interval> intervals,
-                Double value) {
+        public static Interval containingValue(
+                Collection<Interval> intervals, double value) {
             for (Interval each : intervals) {
                 if (each.includes(value)) {
                     return each;
@@ -428,8 +440,7 @@ public class DashboardModel implements IDashboardModel {
 
         @Override
         public String toString() {
-            return String.format("[%d, %d]", (int) Math.ceil(min),
-                    (int) Math.ceil(max));
+            return "[" + min + ", " + max + "]";
         }
 
     }
@@ -519,12 +530,11 @@ public class DashboardModel implements IDashboardModel {
 
     @Override
     public BigDecimal getOvertimeRatio() {
-        EffortDuration load = sumAll(resourceLoadCalculator.getAllLoad());
+        EffortDuration totalLoad = sumAll(resourceLoadCalculator.getAllLoad());
         EffortDuration overload = sumAll(resourceLoadCalculator
                 .getAllOverload());
-        return EffortDuration.sum(load, overload)
-                .dividedByAndResultAsBigDecimal(load)
-                .setScale(2, RoundingMode.HALF_UP);
+        return overload.dividedByAndResultAsBigDecimal(totalLoad).setScale(2,
+                RoundingMode.HALF_UP);
     }
 
     private EffortDuration sumAll(
@@ -542,11 +552,15 @@ public class DashboardModel implements IDashboardModel {
 
     @Override
     public BigDecimal getAvailabilityRatio() {
-        EffortDuration load = sumAll(resourceLoadCalculator.getAllLoad());
+        EffortDuration totalLoad = sumAll(resourceLoadCalculator.getAllLoad());
+        EffortDuration overload = sumAll(resourceLoadCalculator
+                .getAllOverload());
+        EffortDuration load = totalLoad.minus(overload);
+
         EffortDuration capacity = sumAll(resourceLoadCalculator
                 .getMaxCapacityOnResources());
-        return load.dividedByAndResultAsBigDecimal(capacity).setScale(2,
-                RoundingMode.HALF_UP);
+        return BigDecimal.ONE.setScale(2, RoundingMode.HALF_UP).subtract(
+                load.dividedByAndResultAsBigDecimal(capacity));
     }
 
 }

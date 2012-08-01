@@ -258,6 +258,9 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private void forceLoad(OrderElement orderElement) {
         orderElement.getName();
+        if (orderElement.getParent() != null) {
+            forceLoad(orderElement.getParent());
+        }
     }
 
     private void initOtherMaps() {

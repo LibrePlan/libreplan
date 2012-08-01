@@ -3,7 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
-  Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2010-2012 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -43,12 +43,12 @@
     <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
 
     <!-- Limiting resource -->
-    <label value="${i18n:_('Limiting resource')}"/>
+    <label value="${i18n:_('Type')}"/>
     <listbox id="filterLimitingResource" mold="select" />
     </hbox>
       </groupbox>
 
-    <button label="${i18n:_('Filter')}" style="margin-top: -4px"
+    <button label="${i18n:_('Filter')}"
         tooltiptext="${i18n:_('Apply filtering to resources satisfying required criteria')}"
         onClick="controller.onApplyFilter()"/>
 

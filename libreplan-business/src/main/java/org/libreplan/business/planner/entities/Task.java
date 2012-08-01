@@ -168,7 +168,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "order element associated to a task must be not null")
+    @AssertTrue(message = "element associated to a task must be not empty")
     private boolean theOrderElementMustBeNotNull() {
         return getOrderElement() != null;
     }
@@ -190,6 +190,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public int getAssignedHours() {
         return AggregateOfResourceAllocations.createFromSatisfied(resourceAllocations)
                 .getTotalHours();
+    }
+
+    public EffortDuration getAssignedEffort() {
+        return AggregateOfResourceAllocations.createFromSatisfied(
+                resourceAllocations).getTotalEffort();
     }
 
     private EffortDuration getTotalNonConsolidatedEffort() {
@@ -1138,17 +1143,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    public TaskDeadlineViolationStatusEnum getDeadlineViolationStatus() {
-        LocalDate deadline = this.getDeadline();
-        if (deadline == null) {
-            return TaskDeadlineViolationStatusEnum.NO_DEADLINE;
-        } else if (this.getEndAsLocalDate().isAfter(deadline)) {
-            return TaskDeadlineViolationStatusEnum.DEADLINE_VIOLATED;
-        } else {
-            return TaskDeadlineViolationStatusEnum.ON_SCHEDULE;
-        }
-    }
-
     @Override
     /* If the status of the task was needed in the past was because
      * a TaskGroup needed to calculate children status, but only asked
@@ -1186,7 +1180,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
             return false;
         }
-        Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
+        Set<Dependency> dependencies = getDependenciesWithThisDestinationAndAllParents();
         for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
             if (dependencyType.equals(Type.END_START)) {
@@ -1207,7 +1201,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         if (!this.advancePercentageIsZero() || this.hasAttachedWorkReports()) {
             return false;
         }
-        Set<Dependency> dependencies = this.getDependenciesWithThisDestination();
+        Set<Dependency> dependencies = getDependenciesWithThisDestinationAndAllParents();
         for (Dependency dependency: dependencies) {
             Type dependencyType = dependency.getType();
             if (dependencyType.equals(Type.END_START)) {
@@ -1241,6 +1235,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return sumChargedEffort != null && !sumChargedEffort.isZero();
     }
 
+    @Override
     public void acceptVisitor(TaskElementVisitor visitor) {
         visitor.visit(this);
     }

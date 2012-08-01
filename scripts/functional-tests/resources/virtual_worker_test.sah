@@ -94,20 +94,20 @@ function virtualWorkerCheckTabs(){
 
 function virtualWorkerCheckAssignedCriteria($workerName, $cell, $criterion){
     commonCriteriaCreate($criteriaName, [$criteriaName]);
-    commonResourceEditAssignedCriteriaForm("Virtual Workers Groups", $workerName, $cell, $criterion);
+    commonResourceEditAssignedCriteriaForm("Virtual Workers", $workerName, $cell, $criterion);
     commonCriteriaTryDeleteAssigned($criteriaName);
 }
 
 function virtualWorkerCheckAssignedCalendar($workerName, $cell, $calendar){
     commonCalendarCreate($calendar);
-    commonResourceEditAssignedCalendarForm("Virtual Workers Groups", $workerName, $cell, $calendar);
+    commonResourceEditAssignedCalendarForm("Virtual Workers", $workerName, $cell, $calendar);
     commonCalendarTryDeleteAssignedCalendar($calendar, 3);
 }
 
 function virtualWorkerCheckAssignedCostCategory($workerName, $cell, $cCategory){
     commonWorkHourCreate("HourForWorker", "12");
     commonCostCategoryCreate($cCategory, "HourForWorker");
-    commonResourceEditAssignedCostCategoryForm("Virtual Workers Groups", $workerName, $cell, $cCategory);
+    commonResourceEditAssignedCostCategoryForm("Virtual Workers", $workerName, $cell, $cCategory);
     commonVirtualWorkerAcctionValidation("saved");
     _log("Assign the created cost category", "custom1");
     commonCostCategoryTryDeleteAssignedCostCategory($cCategory, 3);
@@ -145,14 +145,15 @@ function virtualWorkerAssignProjectForm($workerName){
 }
 
 function virtualWorkerTryDeleteAssigned($worker){
-    commonDelete ("Virtual Workers Groups", $worker, 3);
+    _click(_link("Virtual Workers"));
+    _click(_image("ico_borrar1.png", _in(_cell(3, _near(_cell($worker))))));
     commonResourceTryDeleteAssignedValidation();
 }
 
 /* Validations */
 function virtualWorkerNotValid($worker){
-    _assertExists(_span("checkConstraintUniqueVirtualGroupName: Virtual worker group name must be unique"));
-    _assert(_isVisible(_span("checkConstraintUniqueVirtualGroupName: Virtual worker group name must be unique")));
+    _assertExists(_span("Virtual worker group name must be unique"));
+    _assert(_isVisible(_span("Virtual worker group name must be unique")));
 }
 
 /* test values */

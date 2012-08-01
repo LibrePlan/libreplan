@@ -58,7 +58,6 @@ public interface ISubcontractModel {
 
     boolean hasResourceAllocations();
 
-    Date getEndDate();
     void setEndDate(Date endDate);
     void removeSubcontractedTaskData();
 

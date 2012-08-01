@@ -486,7 +486,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
             if (version.equals(getBaseCalendar().getFirstCalendarData())) {
                 return;
             } else {
-                throw new ValidationException(_("This date can not be empty"));
+                throw new ValidationException(_("This date cannot be empty"));
             }
         }
 
@@ -518,7 +518,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
             if (version.equals(getBaseCalendar().getLastCalendarData())) {
                 return;
             } else {
-                throw new ValidationException(_("This date can not be empty"));
+                throw new ValidationException(_("This date cannot be empty"));
             }
         }
 
@@ -532,7 +532,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
             }
         }
         throw new ValidationException(
-                _("This date can not include the whole next work week"));
+                _("Date cannot include the entire next work week"));
     }
 
     @Override
@@ -603,7 +603,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
                     "{0} already exists", entity.getName()),
                     BaseCalendar.class, "name", entity.getName(), entity) };
             throw new ValidationException(invalidValues2,
-                    _("Could not save new calendar"));
+                    _("Could not save the new calendar"));
         }
     }
 

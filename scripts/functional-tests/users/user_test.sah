@@ -39,43 +39,43 @@
 _include("../common_functions.sah");
 
 function accountsCreate($name, $password) {
-    commonCreate("Accounts");
+    commonCreate("User Accounts");
     accountsForm($name, $password);
     commonSaveValidation("User", $name);
     _log("Create a new Account", "custom1");
 }
 
 function accountsCreateTwoUserSamePass($name, $password) {
-    commonCreate("Accounts");
+    commonCreate("User Accounts");
     accountsForm($name, $password);
     commonSaveValidation("User", $name);
     _log("Create a new Account same password", "custom1");
 }
 
 function accountsCreateDuplicateType($name, $password) {
-    commonCreate("Accounts");
+    commonCreate("User Accounts");
     accountsForm($name, $password);
     accountsNotValid($name);
     _log("Do not allow create an Account Duplicate", "custom1");
 }
 
 function accountsCreateEmpty($name, $password) {
-    commonCreate("Accounts");
+    commonCreate("User Accounts");
     accountsForm($name, $password);
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
     _log("Do not allow create a Account with empty Name", "custom1");
 }
 
 function accountsCreateTwoUserSamePass($name, $password) {
-    commonCreate("Accounts");
+    commonCreate("User Accounts");
     accountsForm($name, $password);
     commonSaveValidation("User", $name);
     _log("Create a new Account same password", "custom1");
 }
 
 function accountsCreateTwoPass($name, $password, $newPassword){
-    commonCreate("Accounts");
+    commonCreate("User Accounts");
     _setValue(_textbox(0, _near(_span("Username"))), $name);
     _setValue(_password(0, _near(_span("Password"))), $password);
     _setValue(_password(0, _near(_span("Password confirmation"))), $newPassword);
@@ -94,8 +94,8 @@ function accountsForm($name, $password) {
 
 /* test to check a that LibrePlan give us a error */
 function accountsNotValid(){
-    _assertExists(_span("checkConstraintUniqueLoginName: username is already being used by another user"));
-    _assert(_isVisible(_span("checkConstraintUniqueLoginName: username is already being used by another user")));
+    _assertExists(_span("username is already being used by another user"));
+    _assert(_isVisible(_span("username is already being used by another user")));
 }
 
 function accountsComprobateUser($name, $Password) {
@@ -104,13 +104,13 @@ function accountsComprobateUser($name, $Password) {
 }
 
 function accountsEdit($oldName, $newName, $newPassword, $cell) {
-    _click(_link("Accounts"));
+    _click(_link("User Accounts"));
     commonEdit($oldName, $cell);
     _setValue(_textbox(0, _near(_span("Username"))), $newName);
     _setValue(_password(0, _near(_span("Password"))), $newPassword);
     _setValue(_password(0, _near(_span("Password confirmation"))), $newPassword);
     _click(_textbox(0, _near(_cell("Add role"))));
-    _click(_cell("Administration"));
+    _click(_cell("Superuser"));
     _click(_cell("Add role"));
     _click(_cell("Save"));
     commonSaveValidation("User", $newName);
@@ -121,12 +121,12 @@ function accountsComprobateNoUser($name, $Password){
 }
 
 function accountsNoAdmin(){
-    _assertNotExists(_link("Accounts"));
-    _assertNull(_link("Accounts"));
+    _assertNotExists(_link("User Accounts"));
+    _assertNull(_link("User Accounts"));
 }
 
 function accountsAdminYes(){
-    _assertExists(_link("Accounts"));
+    _assertExists(_link("User Accounts"));
 }
 
 function accountsNoValidationLogin(){
@@ -158,7 +158,7 @@ accountsCreateDuplicateType($user, $password);
 accountsCreateEmpty("", $password);
 accountsCreateTwoPass($user, $password, $newPassword);
 
-accountsEdit($user, $newUser, $newPassword, 4);
+accountsEdit($user, $newUser, $newPassword, 5);
 accountsComprobateUser( $newUser, $newPassword);
 accountsAdminYes();
 _log("Comprobate Account with Administrator rights", "custom1");
@@ -181,10 +181,10 @@ _log("Comprobate Account with fake user and password", "custom1");
 
 commonLogin("admin", "admin");
 
-commonDelete("Accounts", $newUser, 4);
+commonDelete("User Accounts", $newUser, 5);
 commonDeleteValidation("User", $newUser);
 _log("Delete an Account Duplicate", "custom1");
-commonDelete("Accounts", $user2, 4);
+commonDelete("User Accounts", $user2, 5);
 commonDeleteValidation("User", $user2);
 _log("Delete an Account Duplicate", "custom1");
 commonLogout();

@@ -123,7 +123,7 @@ public abstract class AssignedLabelsController<T, M> extends
         final String labelName = txtLabelName.getValue();
         if (labelName == null || labelName.isEmpty()) {
             throw new WrongValueException(txtLabelName,
-                    _("cannot be null or empty"));
+                    _("cannot be empty"));
         }
 
         // Label does not exist, create

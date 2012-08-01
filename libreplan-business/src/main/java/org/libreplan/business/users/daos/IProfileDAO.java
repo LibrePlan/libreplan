@@ -54,4 +54,6 @@ public interface IProfileDAO extends IGenericDAO<Profile, Long>{
     Profile findByProfileNameLoadingRoles(String profileName)
             throws InstanceNotFoundException;
 
+    List<Profile> listSorted();
+
 }

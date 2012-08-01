@@ -123,8 +123,11 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     @Override
     @Transactional(readOnly = true)
-    public JRDataSource getOrderReport(final List<Order> orders, Date startingDate,
+    public JRDataSource getOrderReport(List<Order> orders, Date startingDate,
             Date endingDate, List<Label> labels, List<Criterion> criterions) {
+        if (orders.isEmpty()) {
+            orders = allOrders;
+        }
 
         reattachLabels();
 

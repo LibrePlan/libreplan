@@ -1290,7 +1290,7 @@ class RowAllocation extends Row {
         if (isGroupingRow()) {
             return new Label();
         } else if (isLimiting) {
-            return new Label(_("Limiting assignment"));
+            return new Label(_("Queue-based assignment"));
         } else {
             if (hboxAssigmentFunctionsCombo == null) {
                 initializeAssigmentFunctionsCombo();
@@ -1403,7 +1403,7 @@ class RowAllocation extends Row {
         private int showConfirmChangeFunctionDialog()
                 throws InterruptedException {
             return Messagebox
-                    .show(_("You are going to change the assignment function. Are you sure?"),
+                    .show(_("Assignment function will be changed. Are you sure?"),
                             _("Confirm change"),
                             Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
         }

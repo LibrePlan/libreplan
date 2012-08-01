@@ -85,9 +85,7 @@ public class EntitySequence extends BaseEntity {
 
     public void setPrefix(String prefix) throws IllegalArgumentException {
         if (isAlreadyInUse()) {
-            throw new IllegalArgumentException(
-                    I18nHelper
-                            ._("You can not modifiy this entity sequence, it is already in use"));
+            throw new IllegalArgumentException("You cannot modifiy this entity sequence, it is already in use");
         }
 
         this.prefix = prefix;
@@ -106,7 +104,7 @@ public class EntitySequence extends BaseEntity {
         return lastValue;
     }
 
-    @AssertTrue(message = "prefix must not contain white spaces")
+    @AssertTrue(message = "Prefix cannot contain whitespaces")
     public boolean checkConstraintPrefixWithoutWhiteSpaces() {
         if ((prefix == null) || (prefix.isEmpty())) {
             return false;
@@ -126,9 +124,7 @@ public class EntitySequence extends BaseEntity {
     public void setNumberOfDigits(Integer numberOfDigits)
             throws IllegalArgumentException {
         if (isAlreadyInUse()) {
-            throw new IllegalArgumentException(
-                    I18nHelper
-                            ._("You can not modifiy this entity sequence, it is already in use"));
+            throw new IllegalArgumentException("You cannot modifiy this entity sequence, it is already in use");
         }
 
         if ((numberOfDigits != null)
@@ -147,7 +143,7 @@ public class EntitySequence extends BaseEntity {
         return numberOfDigits;
     }
 
-    @AssertTrue(message = "number of digits is out of range")
+    @AssertTrue(message = "number of digits out of range")
     public boolean checkConstraintNumberOfDigitsInRange() {
         if ((numberOfDigits != null)
                 && (numberOfDigits >= MIN_NUMBER_OF_DIGITS)
@@ -203,7 +199,7 @@ public class EntitySequence extends BaseEntity {
         this.entityName = entityName;
     }
 
-    @AssertTrue(message = "Only one sequence for each entity can be active at the same time.")
+    @AssertTrue(message = "Only one sequence per entity can be active at the same time.")
     public boolean checkConstraintOnlyOneSequenceForEachEntityIsActive() {
         if (!isActive()) {
             return true;

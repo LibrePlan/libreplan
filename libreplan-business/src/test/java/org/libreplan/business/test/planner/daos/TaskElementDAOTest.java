@@ -70,6 +70,7 @@ import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.SubcontractorDeliverDate;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -510,6 +511,8 @@ public class TaskElementDAOTest {
 
         SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData
                 .create(task);
+        subcontractedTaskData.addRequiredDeliveringDates(SubcontractorDeliverDate
+                .create(new Date(),new Date(), null));
         subcontractedTaskData.setExternalCompany(getSubcontractorExternalCompanySaved());
 
         task.setSubcontractedTaskData(subcontractedTaskData);

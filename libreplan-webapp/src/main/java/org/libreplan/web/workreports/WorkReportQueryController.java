@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -59,7 +59,7 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Row;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Window;
 
@@ -97,7 +97,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
 
     private Grid gridListQuery;
 
-    private Grid gridSummary;
+    private Label gridSummary;
 
     private Window listQueryWindow;
 
@@ -135,7 +135,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
                                 .getValue()) < 0)) {
                     filterFinishDateLine.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be greater than start date"));
+                            _("must be after start date"));
                 }
             }
         };
@@ -153,7 +153,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
                                 .getValue()) > 0)) {
                     filterStartDateLine.setValue(null);
                     throw new WrongValueException(comp,
-                            _("must be lower than finish date"));
+                            _("must be lower than end date"));
                 }
             }
         };
@@ -193,11 +193,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
         WorkReportLineSummary summary = new WorkReportLineSummary(
                 totalTasks(workReportLines), totalHours(workReportLines));
 
-        // Remove row if it exists
-        if (gridSummary.getRows().getFirstChild() != null) {
-            gridSummary.getRows().getFirstChild().detach();
-        }
-        gridSummary.getRows().appendChild(summary.toRow());
+        gridSummary.setValue(summary.toString());
     }
 
     private Integer totalTasks(List<WorkReportLine> workReportLines) {
@@ -339,7 +335,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
                     .goToCreateOrEditForm(line.getLocalDate());
         } else {
             messagesForUser.showMessage(Level.WARNING,
-                    _("You do not have permissions to edit this work report"));
+                    _("You do not have permissions to edit this timesheet"));
         }
     }
 
@@ -355,56 +351,14 @@ public class WorkReportQueryController extends GenericForwardComposer {
      */
     class WorkReportLineSummary {
 
-        private Resource resource;
-
-        private OrderElement task;
-
-        private Date startDate;
-
-        private Date finishDate;
-
-        private TypeOfWorkHours hoursType;
-
-        private String type;
-
         private Integer totalTasks;
 
         private EffortDuration totalHours;
 
         private WorkReportLineSummary(Integer totalTasks,
                 EffortDuration totalHours) {
-            this.resource = getSelectedResource();
-            this.task = getSelectedOrderElement();
-            this.startDate = filterStartDateLine.getValue();
-            this.finishDate = filterFinishDateLine.getValue();
-            this.hoursType = getSelectedHoursType();
-            this.type = filterType.getValue();
             this.totalTasks = totalTasks;
             this.totalHours = totalHours;
-        }
-
-        public String getResource() {
-            return resource != null ? resource.getShortDescription() : "";
-        }
-
-        public String getTask() {
-            return task != null ? task.getName() : "";
-        }
-
-        public String getStartDate() {
-            return startDate != null ? startDate.toString() : "";
-        }
-
-        public String getFinishDate() {
-            return finishDate != null ? finishDate.toString() : "";
-        }
-
-        public String getHoursType() {
-            return hoursType != null ? hoursType.getName() : "";
-        }
-
-        public String getType() {
-            return type;
         }
 
         public String getTotalTasks() {
@@ -415,21 +369,9 @@ public class WorkReportQueryController extends GenericForwardComposer {
             return totalHours.toFormattedString();
         }
 
-        public Row toRow() {
-            Row result = new Row();
-            result.appendChild(label(getResource()));
-            result.appendChild(label(getTask()));
-            result.appendChild(label(getStartDate()));
-            result.appendChild(label(getFinishDate()));
-            result.appendChild(label(getHoursType()));
-            result.appendChild(label(getType()));
-            result.appendChild(label(getTotalTasks()));
-            result.appendChild(label(getTotalHours()));
-            return result;
-        }
-
-        private org.zkoss.zul.Label label(String value) {
-            return new org.zkoss.zul.Label(value);
+        public String toString() {
+            return _("Tasks") + " " + getTotalTasks() + ". "
+                    + _("Total hours") + " " + getTotalHours() + ".";
         }
 
     }

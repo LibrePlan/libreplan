@@ -8,10 +8,10 @@
 # Zbyněk Schwarz <zbynek.schwarz@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: libreplan-1.2.3\n"
+"Project-Id-Version: libreplan-1.3.0\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
-"POT-Creation-Date: 2012-04-11 08:32+0200\n"
-"PO-Revision-Date: 2012-05-20 05:10+0000\n"
+"POT-Creation-Date: 2012-07-05 08:07+0200\n"
+"PO-Revision-Date: 2012-07-05 07:14+0000\n"
 "Last-Translator: Zbyněk Schwarz <zbynek.schwarz@gmail.com>\n"
 "Language-Team: Čeština\n"
 "MIME-Version: 1.0\n"
@@ -45,10 +45,6 @@ msgstr "Začátek"
 msgid "Show reported hours"
 msgstr "Zobrazit zaznamenané hodiny"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
-msgid "by criteria"
-msgstr "podle kritérií"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
 msgid "Show/Hide reported hours"
 msgstr "Zobrazit/Skrýt zaznamenané hodiny"
@@ -57,10 +53,6 @@ msgstr "Zobrazit/Skrýt zaznamenané hodiny"
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
 msgid "Zoom"
 msgstr "Přiblížení"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/TabsRegistry.java:121
-msgid "Limiting resources"
-msgstr "Omezující zdroj"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:67
 msgid "The specified dependency is not allowed"
@@ -77,10 +69,6 @@ msgstr "Zobrazit/Skrýt postup"
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "Task"
 msgstr "Úkol"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
-msgid "by resources"
-msgstr "podle zdrojů"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
 msgid "available effort: {0}, assigned effort: {1}"
@@ -110,13 +98,13 @@ msgstr "filtrování podle názvu"
 msgid "See scheduling"
 msgstr "Zobrazit plánování"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
-msgid "Show"
-msgstr "Zobrazit"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
 msgid "End"
 msgstr "Konec"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
+msgid "Resources"
+msgstr "Zdroje"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:243
 msgid "changing zoom"
@@ -126,9 +114,21 @@ msgstr "změna přiblížení"
 msgid "Show/Hide money cost bar"
 msgstr "Zobrazit/Skrýt lištu peněžních nákladů"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
+msgid "Group by"
+msgstr "Seskupit podle"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
+msgid "Generic allocation criteria"
+msgstr "Obecné přidělení kritérií"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
 msgid "Quarter"
 msgstr "Čtvrtletí"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
+msgid "Page"
+msgstr "Stránka"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "None"
@@ -147,10 +147,6 @@ msgstr "Projekt"
 msgid "Name"
 msgstr "Název"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:50
-msgid "Name filter"
-msgstr "Filtr názvu"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:641
 msgid "Show progress"
 msgstr "Zobrazit postup"
@@ -163,13 +159,13 @@ msgstr "Rozbalit/Sbalit vše"
 msgid "Show/Hide critical path"
 msgstr "Zobrazit/Skrýt kritickou cestu"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
-msgid "showing criteria"
-msgstr "zobrazování kritérií"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
 msgid "Year"
 msgstr "Rok"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
+msgid "showing criteria"
+msgstr "zobrazování kritérií"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
 msgid "Month"

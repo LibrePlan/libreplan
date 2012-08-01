@@ -124,7 +124,7 @@ public class LabelType extends IntegrationEntity implements Comparable,
         return true;
     }
 
-    @AssertTrue(message = "label type name is already being used")
+    @AssertTrue(message = "label type name is already in use")
     public boolean checkConstraintUniqueLabelTypeName() {
         if (!firstLevelValidationsPassed()) {
             return true;

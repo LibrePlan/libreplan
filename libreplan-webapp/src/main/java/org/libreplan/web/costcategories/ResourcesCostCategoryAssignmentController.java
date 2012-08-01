@@ -146,8 +146,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
                 removeCostCategoryAssignment(assignment);
             }
         } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", assignment.getId()), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -178,7 +177,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     private void appendDateboxInitDate(final Row row) {
         Datebox initDateBox = new Datebox();
         bindDateboxInitDate(initDateBox, (ResourcesCostCategoryAssignment) row.getValue());
-        initDateBox.setConstraint("no empty:" + _("The init date cannot be empty"));
+        initDateBox.setConstraint("no empty:" + _("Start date cannot be empty"));
         row.appendChild(initDateBox);
 
         initDateBox.addEventListener("onChange", new EventListener() {

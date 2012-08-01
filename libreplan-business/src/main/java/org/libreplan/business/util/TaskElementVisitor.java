@@ -27,11 +27,20 @@ package org.libreplan.business.util;
  */
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskGroup;
+import org.libreplan.business.planner.entities.TaskMilestone;
 
 public abstract class TaskElementVisitor {
 
     public abstract void visit(Task task);
 
     public abstract void visit(TaskGroup taskGroup);
+
+    /**
+     * As most of the visitors doesn't need to process the {@link TaskMilestone
+     * TaskMilestones} is provided a default implementation doing nothing.
+     */
+    public void visit(TaskMilestone taskMilestone) {
+        // Do nothing
+    }
 
 }

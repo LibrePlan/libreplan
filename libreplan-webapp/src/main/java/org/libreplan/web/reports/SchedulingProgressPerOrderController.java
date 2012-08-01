@@ -206,7 +206,7 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
         final Date endingDate = (Date) dbEnding.getValue();
 
         if (endingDate != null && startingDate != null && startingDate.compareTo(endingDate) > 0) {
-            throw new WrongValueException(dbStarting, _("Cannot be higher than Ending date"));
+            throw new WrongValueException(dbStarting, _("Cannot be higher than Ending Date"));
         }
     }
 

@@ -32,7 +32,6 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.AllocationSelector;
 import org.libreplan.web.common.components.NewAllocationSelector;
 import org.libreplan.web.common.components.NewAllocationSelectorCombo;
-import org.libreplan.web.common.components.ResourceAllocationBehaviour;
 import org.libreplan.web.planner.allocation.TaskInformation;
 import org.libreplan.web.planner.allocation.TaskInformation.ITotalHoursCalculationListener;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
@@ -91,8 +90,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        limitingNewAllocationSelector
-                .setBehaviour(ResourceAllocationBehaviour.LIMITING.toString());
+        limitingNewAllocationSelector.setBehaviour("LIMITING");
     }
 
     public void setDisableHours(boolean disable) {

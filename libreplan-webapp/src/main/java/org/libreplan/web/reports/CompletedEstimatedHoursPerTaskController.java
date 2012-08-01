@@ -133,7 +133,7 @@ public class CompletedEstimatedHoursPerTaskController extends LibrePlanReportCon
                 .addSelectedLabel(label);
         if (!result) {
             throw new WrongValueException(bdLabels,
-                    _("This label has already been added."));
+                    _("Label has already been added."));
         } else {
             Util.reloadBindings(lbLabels);
         }

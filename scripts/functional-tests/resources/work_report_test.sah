@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,10 +20,10 @@
 /* Included tests
  *
  * 1 - Create a work report without any work report model (it should be a failure)
- * 2 - Create a Work report from a lineal work report model
+ * 2 - Create a Timesheet from a lineal work report model
  *   2.1 - Create a lineal work report model
  *   2.2 - Create a work report
- * 3 - Create a Work report from a heading work report model
+ * 3 - Create a Timesheet from a heading work report model
  *   3.1 - Create a heading work report model
  *   3.2 - Try to create a work report from heading model without task (it should be a failure)
  * 4 - Edit the work report including a line
@@ -40,19 +40,19 @@ _include("../common_functions.sah");
 
 function workReportCreateLineModel($modelName){
     workReportModelLineCreate($modelName);
-    _click(_link("Work Reports"));
-    _setSelected(_select(0, _near(_span("Select type:"))), $modelName);
-    _click(_cell("New work report"));
+    _click(_link("Timesheets"));
+    _setSelected(_select(0, _near(_span("Select template:"))), $modelName);
+    _click(_cell("New timesheet"));
     _click(_cell("Save"));
     workReportAcctionValidation("saved");
     _log("Create a new work report from a model type line", "custom1");
 }
 
 function workReportModelLineCreate($name){
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
     workReportModelLineForm($name);
-    commonSaveValidation("Work Report Type", $name);
-    _log("Create a new Work Report Model", "custom1");
+    commonSaveValidation("Timesheets Template", $name);
+    _log("Create a new Timesheets Template", "custom1");
 }
 
 function workReportModelLineForm($name){
@@ -66,19 +66,19 @@ function workReportModelLineForm($name){
 
 function workReportCreateHeadingModel($modelName){
     workReportModelHeadingCreate($modelName);
-    _click(_link("Work Reports"));
-    _setSelected(_select(0, _near(_span("Select type:"))), $modelName);
-    _click(_cell("New work report"));
+    _click(_link("Timesheets"));
+    _setSelected(_select(0, _near(_span("Select template:"))), $modelName);
+    _click(_cell("New timesheet"));
     _click(_cell("Save"));
     workReportHeadingCodeValidation();
     _log("Do not allow create a new work report from a model type heading without task", "custom1");
 }
 
 function workReportModelHeadingCreate($name){
-    commonCreate("Work Report Models");
+    commonCreate("Timesheets Templates");
     workReportModelHeadingForm($name);
-    commonSaveValidation("Work Report Type", $name);
-    _log("Create a new Work Report Model", "custom1");
+    commonSaveValidation("Timesheets Template", $name);
+    _log("Create a new Timesheets Template", "custom1");
 }
 
 function workReportModelHeadingForm($name){
@@ -97,15 +97,15 @@ function workReportEdit($name){
 }
 
 function workReportEditForm($name){
-    _click(_link("Work Reports"));
-    commonEdit($name, 4);
+    _click(_link("Timesheets"));
+    commonEdit($name, 5);
     _click(_cell("Add new row"));
     _click(_cell("Save"));
     workReportResourceValidation();
-    _setValue(_textbox(2, _near(_span("Work report lines"))), $machineName);
+    _setValue(_textbox(2, _near(_span("Timesheet lines"))), $machineName);
     _click(_cell("Save"));
     workReportTaskValidation();
-    _click(_italic(0, _near(_textbox(3, _near(_span("Work report lines"))))));
+    _click(_italic(0, _near(_textbox(3, _near(_span("Timesheet lines"))))));
     _click(_div($projectName+"[2]", _parentTable(_div("Project code[1]"))));
     _click(_cell("Save"));
     workReportHourValidation();
@@ -136,23 +136,23 @@ function DeleteRequiredElements(){
  */
 
 function workReportAcctionValidation($action){
-    _assertExists(_span("Work report "+$action));
-    _assert(_isVisible(_span("Work report "+$action)));
+    _assertExists(_span("Timesheet "+$action));
+    _assert(_isVisible(_span("Timesheet "+$action)));
 }
 
 function workReportHeadingCodeValidation(){
-    _assertExists(_div("Task code cannot be null"));
-    _assert(_isVisible(_div("Task code cannot be null")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
 
 function workReportResourceValidation(){
-    _assertExists(_div("The resource cannot be null"));
-    _assert(_isVisible(_div("The resource cannot be null")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
 
 function workReportTaskValidation(){
-    _assertExists(_div("The task code cannot be null"));
-    _assert(_isVisible(_div("The task code cannot be null")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
 }
 
 function workReportHourValidation(){

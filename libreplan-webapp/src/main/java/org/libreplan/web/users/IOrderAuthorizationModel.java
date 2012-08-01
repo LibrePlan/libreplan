@@ -42,8 +42,6 @@ public interface IOrderAuthorizationModel {
 
     void initEdit(PlanningState planningState);
 
-    void confirmSave();
-
     List<ProfileOrderAuthorization> getProfileOrderAuthorizations();
 
     List<UserOrderAuthorization> getUserOrderAuthorizations();

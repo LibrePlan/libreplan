@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2011-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,39 +19,39 @@
 
 /* Included tests
  *
- * 1 - Create a new Exception Day
- * 2 - Create a Exception Day with duplicate type (it should be a failure)
- * 3 - Create a Exception Day with empty type (it should be a failure)
- * 4 - Create a Exception Day with duplicate name (it should be a failure)
- * 5 - Edit a Exception Day
+ * 1 - Create a new Calendar Exception Day
+ * 2 - Create a Calendar Exception Day with duplicate type (it should be a failure)
+ * 3 - Create a Calendar Exception Day with empty type (it should be a failure)
+ * 4 - Create a Calendar Exception Day with duplicate name (it should be a failure)
+ * 5 - Edit a Calendar Exception Day
  * 6 - Check code label
  *   6.1 - Change configuration
  *   6.2 - Try to create a new Exception day without Code (it should be a failure)
  *   6.3 - Change configuration like before
- * 7 - Delete Exception Day
+ * 7 - Delete Calendar Exception Day
  *
 */
 _include("../common_functions.sah");
 
 function exceptDayCreate($name, $standar, $color) {
-    commonCreate("Exception Days");
+    commonCreate("Calendar Exception Days");
     exceptDayForm($name, $standar, $color);
-    commonSaveValidation("Exception Day Type", $name);
-    _log("Create a new Exception Day", "custom1");
+    commonSaveValidation("Calendar Exception Day", $name);
+    _log("Create a new Calendar Exception Day", "custom1");
 }
 
 function exceptDayCreateDuplicateName($name, $standar, $color) {
-    commonCreate("Exception Days");
+    commonCreate("Calendar Exception Days");
     exceptDayForm($name, $standar, $color);
     exceptDayNotValid($name);
     _log("Do not allow create an exception day with duplicate name", "custom1");
 }
 
 function exceptDayCreateEmpty($name, $standar, $color) {
-    commonCreate("Exception Days");
+    commonCreate("Calendar Exception Days");
     exceptDayForm($name, $standar, $color);
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+    _assertExists(_div("cannot be empty"));
+    _assert(_isVisible(_div("cannot be empty")));
     _log("Do not allow create an exception day without name", "custom1");
 }
 
@@ -66,14 +66,14 @@ function exceptDayForm($name, $standar, $color){
 
 /* test to check a that LibrePlan give us a error */
 function exceptDayNotValid($ExceptDayName){
-    _assertExists(_span("checkConstraintUniqueName: name is already used"));
-    _assert(_isVisible(_span("checkConstraintUniqueName: name is already used")));
+    _assertExists(_span("name is already used"));
+    _assert(_isVisible(_span("name is already used")));
 }
 
 function exceptDayEdit($oldName, $newName, $cell){
     commonEdit($oldName, $cell);
     exceptDayFormSaveAndContinue($newName);
-    commonSaveValidation("Exception Day Type", $newName);
+    commonSaveValidation("Calendar Exception Day", $newName);
     _log("Edit the exception day", "custom1");
 }
 
@@ -86,14 +86,14 @@ function exceptDayFormSaveAndContinue($name){
 }
 
 function exceptDayCheckCode($exceptDayName){
-    commonConfigurationChangeCheckboxMainPreferences("Calendar exception types");
+    commonConfigurationChangeCheckboxMainPreferences("Calendar exception days");
     exceptDayCreateWithoutCode($exceptDayName);
-    commonConfigurationChangeCheckboxMainPreferences("Calendar exception types");
+    commonConfigurationChangeCheckboxMainPreferences("Calendar exception days");
     _log("Check code label", "custom1");
 }
 
 function exceptDayCreateWithoutCode($name){
-    commonCreate("Exception Days");
+    commonCreate("Calendar Exception Days");
     exceptDayForm($name,"","");
     commonEmptyCodeValidation();
 }
@@ -116,8 +116,8 @@ exceptDayEdit($exceptDayName, $exceptDayNewName, 5);
 
 exceptDayCheckCode($exceptDayName);
 
-commonDelete("Exception Days", $exceptDayNewName, 5);
-commonDeleteValidation("Exception Day Type", $exceptDayNewName);
+commonDelete("Calendar Exception Days", $exceptDayNewName, 5);
+commonDeleteValidation("Calendar Exception Day", $exceptDayNewName);
 _log("Delete the exception day", "custom1");
 
 commonLogout();

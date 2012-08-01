@@ -63,4 +63,8 @@ public interface IOrderEarnedValueCalculator extends IEarnedValueCalculator {
     BigDecimal getEstimateAtCompletion(BigDecimal budgetAtCompletion,
             BigDecimal costPerformanceIndex);
 
+    // ETC (Estimate To Complete)
+    BigDecimal getEstimateToComplete(BigDecimal estimateAtCompletion,
+            BigDecimal actualCostWorkPerformed);
+
 }

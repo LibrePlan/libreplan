@@ -40,14 +40,14 @@
                                 <label value="${i18n:_('Company name')}:" />
                                 <textbox id="name"
                                     value="@{controller.company.name}" width="500px"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                    constraint="no empty:${i18n:_('cannot be empty')}"
                                     onBlur="controller.updateWindowTitle()"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Company ID')}:" />
                                 <textbox id="nif"
                                     value="@{controller.company.nif}"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                                    constraint="no empty:${i18n:_('cannot be empty')}"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Client')}:" />
@@ -82,12 +82,12 @@
                                 </hbox>
                             </row>
                             <row>
-                                <label value="${i18n:_('Our company login')}:" />
+                                <label value="${i18n:_('Our company username')}:" />
                                 <textbox id="ourCompanyLogin"
                                     value="@{controller.company.ourCompanyLogin}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Our company password')}:" />
+                                <label value="${i18n:_('Company password')}:" />
                                 <textbox id="ourCompanyPassword"
                                     value="@{controller.company.ourCompanyPassword}" />
                             </row>

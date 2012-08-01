@@ -416,8 +416,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("Calendar cannot be removed because it still has children. "
-                                    + "Some other calendar is derived from this one."));
+                            _("Calendar cannot be removed as it has other derived calendars from it"));
             return;
         }
 
@@ -427,7 +426,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     .showMessage(
                             Level.ERROR,
                             _("Default calendar cannot be removed. "
-                                    + "Please, change the default calendar in the Configuration window before."));
+                                    + "Please, change the default calendar in the Main Settings window before."));
             return;
         }
         removeCalendar(calendar);
@@ -453,11 +452,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                             calendar.getName()), _("Delete"), Messagebox.OK
                             | Messagebox.CANCEL, Messagebox.QUESTION);
         } catch (InterruptedException e) {
-            LOG.error(
-                    _("Error on showing removing element: ", calendar.getId()),
-                    e);
+            throw new RuntimeException(e);
         }
-        return Messagebox.CANCEL;
     }
 
     private boolean isReferencedByOtherEntities(BaseCalendar calendar) {
@@ -476,9 +472,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             Messagebox.show(_(message), _("Warning"), Messagebox.OK,
                     Messagebox.EXCLAMATION);
         } catch (InterruptedException e) {
-            LOG.error(
-                    _("Error on showing warning message removing calendar: ",
-                            calendar.getId()), e);
+            throw new RuntimeException(e);
         }
     }
 

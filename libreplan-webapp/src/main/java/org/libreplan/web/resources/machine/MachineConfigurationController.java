@@ -219,7 +219,7 @@ public class MachineConfigurationController extends GenericForwardComposer {
                 if (startDateBox.getValue().compareTo((Date) value) > 0) {
                     throw new WrongValueException(
                             comp,
-                            _("End date is not valid, the new end date must be greater than the start date"));
+                            _("End date is not valid, the new end date must be after start date"));
                 }
             }
         }

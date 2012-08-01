@@ -79,7 +79,7 @@ public class OrdersTreeComponent extends TreeComponent {
         });
         columns.add(new OrdersTreeColumn(_("Start"),
                         "estimated_init",
-                _("Cost prevision start date")) {
+                        _("Estimated start date for the task (press enter in textbox to open calendar popup or type in date directly)")) {
 
             @Override
             protected void doCell(OrderElementTreeitemRenderer treeRenderer,

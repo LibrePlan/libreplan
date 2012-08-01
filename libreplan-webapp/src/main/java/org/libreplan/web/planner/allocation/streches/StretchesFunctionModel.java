@@ -174,8 +174,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             }
             if (!stretchesFunction.checkOneHundredPercent()) {
                 throw new ValidationException(
-                        _("Last stretch should have one hundred percent for "
-                                + "length and amount of work percentage"));
+                        _("Last stretch should have 100% for length and amount of work"));
             }
             if (stretchesFunction.isInterpolated()) {
                 if (!stretchesFunction.checkHasAtLeastTwoStretches()) {
@@ -282,13 +281,13 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             throws IllegalArgumentException {
         if (date.compareTo(task.getStartDate()) < 0) {
             throw new IllegalArgumentException(
-                    _("Stretch date must not be less than task start date: "
+                    _("Stretch date must not be before task start date: "
                             + sameFormatAsDefaultZK(task.getStartDate())));
         }
 
         if (date.compareTo(taskEndDate) > 0) {
             throw new IllegalArgumentException(
-                    _("Stretch date must not be greater than the task's end date: "
+                    _("Stretch date must be earlier than End date: "
                             + sameFormatAsDefaultZK(taskEndDate)));
         }
 

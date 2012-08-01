@@ -49,7 +49,7 @@ import static org.libreplan.business.users.entities.UserRole.ROLE_TASK_SCHEDULIN
 import static org.libreplan.business.users.entities.UserRole.ROLE_TEMPLATES;
 import static org.libreplan.business.users.entities.UserRole.ROLE_TIMESHEETS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_TIMESHEETS_TEMPLATES;
-import static org.libreplan.business.users.entities.UserRole.ROLE_TIMESHEET_LINES_LIST_REPORT;
+import static org.libreplan.business.users.entities.UserRole.ROLE_TIMESHEET_LINES_LIST;
 import static org.libreplan.business.users.entities.UserRole.ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT;
 import static org.libreplan.business.users.entities.UserRole.ROLE_USER_ACCOUNTS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_VIRTUAL_WORKERS;
@@ -88,7 +88,7 @@ public enum PredefinedProfiles {
             ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT,
             ROLE_MATERIALS_NEED_AT_DATE_REPORT),
 
-    HUMAN_RESOURCES_AND_COSTS_MANAGER("Human Resoruces & Costs Maganer",
+    HUMAN_RESOURCES_AND_COSTS_MANAGER("Human Resources & Costs Manager",
             ROLE_WORKERS, ROLE_MACHINES, ROLE_VIRTUAL_WORKERS, ROLE_CALENDARS,
             ROLE_CALENDAR_EXCEPTION_DAYS, ROLE_COST_CATEGORIES,
             ROLE_HOURS_TYPES, ROLE_PROJECT_COSTS_REPORT),
@@ -96,7 +96,7 @@ public enum PredefinedProfiles {
     TIME_TRACKING_AND_EXPENSES_RESPONSIBLE(
             "Time Tracking & Expenses Responsible", ROLE_TIMESHEETS,
             ROLE_TIMESHEETS_TEMPLATES, ROLE_EXPENSES, ROLE_HOURS_TYPES,
-            ROLE_TIMESHEET_LINES_LIST_REPORT,
+            ROLE_TIMESHEET_LINES_LIST,
             ROLE_HOURS_WORKED_PER_RESOURCE_REPORT,
             ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT),
 
@@ -105,7 +105,6 @@ public enum PredefinedProfiles {
             ROLE_SEND_TO_CUSTOMERS, ROLE_RECEIVED_FROM_CUSTOMERS),
 
     REPORTS_RESPONSIBLE("Reports Responsible", ROLE_READ_ALL_PROJECTS,
-            ROLE_TIMESHEET_LINES_LIST_REPORT,
             ROLE_HOURS_WORKED_PER_RESOURCE_REPORT,
             ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT,
             ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT,
