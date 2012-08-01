@@ -108,7 +108,8 @@ public class FilmingProgressTabCreator {
 
     PlanningState getPlanningState(final Order order, final Desktop desktop) {
         IAdHocTransactionService transactionService = Registry.getTransactionService();
-        return transactionService.runOnTransaction(new IOnTransaction<PlanningState>() {
+        return transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<PlanningState>() {
             public PlanningState execute() {
                 return planningStateCreator.retrieveOrCreate(desktop, order);
             }

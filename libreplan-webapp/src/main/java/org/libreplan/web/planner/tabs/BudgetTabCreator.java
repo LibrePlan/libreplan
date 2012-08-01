@@ -115,7 +115,7 @@ public class BudgetTabCreator {
         IAdHocTransactionService transactionService = Registry
                 .getTransactionService();
         return transactionService
-                .runOnTransaction(new IOnTransaction<PlanningState>() {
+                .runOnReadOnlyTransaction(new IOnTransaction<PlanningState>() {
                     public PlanningState execute() {
                         return planningStateCreator.retrieveOrCreate(desktop,
                                 order);
