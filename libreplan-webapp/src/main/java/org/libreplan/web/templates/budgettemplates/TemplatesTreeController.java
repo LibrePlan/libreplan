@@ -540,7 +540,7 @@ public class TemplatesTreeController extends
             OrderElementTemplate orderElement = (OrderElementTemplate) item
                     .getValue();
             // getRenderer().updateHoursFor(orderElement);
-            getRenderer().updateBudgetFor(orderElement);
+            getRenderer().updateColumnsFor(orderElement);
             getRenderer().render(item, orderElement);
         } catch (Exception e) {
             e.printStackTrace();
@@ -617,6 +617,19 @@ public class TemplatesTreeController extends
             @Override
             public String getNameFor(OrderElementTemplate element) {
                 return element.getName();
+            }
+
+        };
+    }
+
+    @Override
+    protected ICodeHandler<OrderElementTemplate> getCodeHandler() {
+        return new ICodeHandler<OrderElementTemplate>() {
+
+            @Override
+            public String getCodeFor(OrderElementTemplate element) {
+                // Empty as OrderElementTemplate doesn't have code
+                return "";
             }
 
         };
