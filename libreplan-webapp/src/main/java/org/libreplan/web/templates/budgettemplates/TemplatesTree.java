@@ -36,38 +36,33 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
 
     @Override
     protected OrderElementTemplate createNewElement() {
-        BudgetLineTemplate result = BudgetLineTemplate.createNew();
-        result.setName(_("New template"));
-        result.setCode("");
-        return result;
+        return createNewElement(_("New code"), _("New template"), null, 0);
     }
 
     @Override
     protected OrderElementTemplate createNewElement(String name, int hours) {
-        BudgetLineTemplate result = BudgetLineTemplate.createNew();
-        result.setName(name);
-        result.setCode(_("New code"));
-        result.setWorkHours(hours);
-        return result;
+        return createNewElement(_("New code"), name, null, hours);
     }
 
     @Override
     protected OrderElementTemplate createNewElement(String name,
             BudgetLineTypeEnum type) {
-        BudgetLineTemplate result = BudgetLineTemplate.createNew();
-        result.setName(name);
-        result.setCode("");
-        result.setBudgetLineType(type);
-        return result;
+        return createNewElement(_("New code"), name, type, 0);
     }
 
     @Override
     protected OrderElementTemplate createNewElement(String code, String name,
             BudgetLineTypeEnum type) {
+        return createNewElement(code, name, type, 0);
+    }
+
+    private OrderElementTemplate createNewElement(String code, String name,
+            BudgetLineTypeEnum type, int hours) {
         BudgetLineTemplate result = BudgetLineTemplate.createNew();
         result.setName(name);
         result.setCode(code);
         result.setBudgetLineType(type);
+        result.setWorkHours(hours);
         return result;
     }
 

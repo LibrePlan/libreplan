@@ -19,8 +19,11 @@
 package org.libreplan.business.templates.entities;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 
 /**
@@ -141,6 +144,11 @@ public class BudgetLineTemplate extends OrderLineTemplate {
         for (QualityForm form : getQualityForms()) {
             copy.addQualityForm(form);
         }
+        Set<HoursGroup> hoursGroup = new HashSet<HoursGroup>();
+        for (HoursGroup each : getHoursGroups()) {
+            hoursGroup.add(HoursGroup.copyFrom(each, copy));
+        }
+        copy.setHoursGroups(hoursGroup);
 
         return copy;
     }
