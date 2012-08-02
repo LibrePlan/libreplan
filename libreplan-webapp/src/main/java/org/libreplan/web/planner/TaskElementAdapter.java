@@ -824,7 +824,7 @@ public class TaskElementAdapter {
                     result.add(taskElement.getSubcontractionName());
                 }
                 Collections.sort(result);
-                return StringUtils.join(result, ", ");
+                return StringUtils.join(result, "; ");
             }
 
             private String extractRepresentationForGeneric(
