@@ -603,4 +603,10 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     public abstract boolean isOrderTemplate();
 
+    /**
+     * THIS IS A HACK FOR LP AUDIOVISUAL the budget attribute is transformed to
+     * hours, so OrderLines created from this template can schedule money
+     */
+    public abstract void convertBudgetIntoHours();
+
 }

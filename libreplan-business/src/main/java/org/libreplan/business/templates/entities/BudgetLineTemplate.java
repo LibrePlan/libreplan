@@ -152,4 +152,9 @@ public class BudgetLineTemplate extends OrderLineTemplate {
 
         return copy;
     }
+
+    @Override
+    public void convertBudgetIntoHours() {
+        setWorkHours(getBudget().intValue());
+    }
 }

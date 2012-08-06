@@ -58,6 +58,7 @@ public class Budget extends OrderTemplate {
     public Order createOrderLineElementsForAssociatedOrder(Scenario scenario) {
         associatedOrder.useSchedulingDataFor(scenario);
         for (OrderElementTemplate each : getChildren()) {
+            each.convertBudgetIntoHours();
             each.createElement(associatedOrder);
         }
         return associatedOrder;
