@@ -919,7 +919,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void updateColumnsFor(T element) {
             updateCodeFor(element);
             updateNameFor(element);
-            updateHoursFor(element);
+            // updateHoursFor(element);
             updateBudgetFor(element);
             updateInitDateFor(element);
             updateEndDateFor(element);
