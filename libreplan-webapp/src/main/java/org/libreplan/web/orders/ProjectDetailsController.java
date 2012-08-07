@@ -227,9 +227,11 @@ public class ProjectDetailsController extends GenericForwardComposer {
             public void validate(Component comp, Object value)
                     throws WrongValueException {
                 Date finishDate = (Date) value;
-                if ((finishDate != null) && (initDate.getValue() != null)
-                        && (finishDate.compareTo(initDate.getValue()) < 0)) {
-                    deadline.setValue(null);
+                if (finishDate == null) {
+                    throw new WrongValueException(comp, _("cannot be empty"));
+                }
+                if ((initDate.getRawValue() != null)
+                        && (finishDate.compareTo((Date) initDate.getRawValue()) < 0)) {
                     getOrder().setDeadline(null);
                     throw new WrongValueException(comp,
                             _("must be after start date"));
@@ -244,9 +246,11 @@ public class ProjectDetailsController extends GenericForwardComposer {
             public void validate(Component comp, Object value)
                     throws WrongValueException {
                 Date startDate = (Date) value;
-                if ((startDate != null) && (deadline.getValue() != null)
-                        && (startDate.compareTo(deadline.getValue()) > 0)) {
-                    initDate.setValue(null);
+                if (startDate == null) {
+                    throw new WrongValueException(comp, _("cannot be empty"));
+                }
+                if ((deadline.getRawValue() != null)
+                        && (startDate.compareTo((Date) deadline.getRawValue()) > 0)) {
                     getOrder().setInitDate(null);
                     throw new WrongValueException(comp,
                             _("must be lower than end date"));
