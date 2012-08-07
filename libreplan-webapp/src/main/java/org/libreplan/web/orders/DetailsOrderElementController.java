@@ -21,7 +21,10 @@
 
 package org.libreplan.web.orders;
 
+import java.math.BigDecimal;
+
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -82,6 +85,24 @@ public class DetailsOrderElementController extends
 
     public String getMoneyFormat() {
         return Util.getMoneyFormat();
+    }
+
+    public BigDecimal getBudget() {
+        if (getOrderElement() == null) {
+            return null;
+        }
+        return getOrderElement().getBudget();
+    }
+
+    public void setBudget(BigDecimal value) {
+        if (getOrderElement() instanceof OrderLine) {
+            OrderLine line = (OrderLine) getOrderElement();
+
+            // LIBREPLAN AUDIOVISUAL HACK
+            // hours and budget are the same attribute
+            line.setBudget(value);
+            line.setWorkHours(value.intValue());
+        }
     }
 
 }

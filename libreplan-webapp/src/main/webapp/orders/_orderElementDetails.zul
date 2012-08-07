@@ -64,7 +64,7 @@
             <row>
                 <label value="${i18n:_('Budget')}" />
                 <decimalbox id="budget"
-                    value="@{detailsController.orderElement.budget}"
+                    value="@{detailsController.budget}"
                     disabled="@{detailsController.container}"
                     constraint="no empty,no negative:${i18n:_('cannot be negative or empty')}"
                     format="@{detailsController.moneyFormat}" />

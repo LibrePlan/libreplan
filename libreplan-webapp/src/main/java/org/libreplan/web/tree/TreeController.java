@@ -875,6 +875,11 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             return new Util.Setter<BigDecimal>() {
                 @Override
                 public void set(BigDecimal value) {
+                    // LIBREPLAN AUDIOVISUAL HACK
+                    // hours and budget are the same attribute
+                    getHoursGroupHandler().setWorkHours(element,
+                            value.intValue());
+
                     getBudgetHandler().setBudgetHours(element, value);
                     List<T> parentNodes = getModel().getParents(element);
                     // Remove the last element because it's an
