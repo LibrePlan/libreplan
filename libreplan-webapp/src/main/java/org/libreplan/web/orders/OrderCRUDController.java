@@ -48,7 +48,6 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
-import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
@@ -364,16 +363,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                 public void validate(Component comp, Object value)
                         throws WrongValueException {
                     if (value == null) {
-                        if (mode == SchedulingMode.FORWARD) {
-                            throw new WrongValueException(
-                                    comp,
-                                    _("Starting date cannot be empty in forward mode"));
-                        }
-                        if (orderModel
-                                .isAnyTaskWithConstraint(PositionConstraintType.AS_SOON_AS_POSSIBLE)) {
-                            throw new WrongValueException(comp,
-                                    _("Starting date cannot be empty because there is a task with constraint \"as soon as possible\""));
-                        }
+                        throw new WrongValueException(comp,
+                                _("Starting date cannot be empty"));
                     }
                 }
             });
@@ -383,16 +374,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                 public void validate(Component comp, Object value)
                         throws WrongValueException {
                     if (value == null) {
-                        if (mode == SchedulingMode.BACKWARDS) {
-                            throw new WrongValueException(
-                                    comp,
-                                    _("Deadline cannot be empty in backwards mode"));
-                        }
-                        if (orderModel
-                                .isAnyTaskWithConstraint(PositionConstraintType.AS_LATE_AS_POSSIBLE)) {
-                            throw new WrongValueException(comp,
-                                    _("Deadline cannot be empty because there is a task with constraint \"as late as possible\""));
-                        }
+                        throw new WrongValueException(comp,
+                                _("Deadline cannot be empty"));
                     }
                 }
             });
