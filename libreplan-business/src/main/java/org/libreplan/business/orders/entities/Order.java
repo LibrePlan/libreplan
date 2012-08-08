@@ -692,4 +692,14 @@ public class Order extends OrderLineGroup implements Comparable {
         this.associatedBudgetObject = associatedBudgetObject;
     }
 
+    @NotNull(message = "project start date cannot be empty")
+    public Date getInitDate() {
+        return super.getInitDate();
+    }
+
+    @NotNull(message = "project deadline cannot be empty")
+    public Date getDeadline() {
+        return super.getDeadline();
+    }
+
 }
