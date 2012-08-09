@@ -925,6 +925,23 @@ public class OrderCRUDController extends GenericForwardComposer {
         prepareEditWindow(_("Edit project"));
     }
 
+    public void initEditInBudgetMode(Order order) {
+        if (!orderModel.userCanRead(order,
+                SecurityUtils.getSessionUserLoginName())) {
+            try {
+                Messagebox
+                        .show(_("Sorry, you do not have permissions to access this project"),
+                                _("Information"), Messagebox.OK,
+                                Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        orderModel.initEdit(order, getDesktop());
+        prepareEditWindowForBudgetEditionMode(_("Edit project"));
+    }
+
     private Desktop getDesktop() {
         return listWindow.getDesktop();
     }
@@ -950,6 +967,29 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (editWindow == null) {
             showEditWindow(title);
         }
+    }
+
+    private void prepareEditWindowForBudgetEditionMode(String title) {
+        resetTabControllers();
+        addEditWindowIfNecessary();
+        updateDisabilitiesOnInterface();
+        showAndHideTabsForBudgetModeEdition();
+        selectTab("tabGeneralData");
+        setupOrderDetails();
+
+        if (editWindow == null) {
+            showEditWindow(title);
+        }
+    }
+
+    private void showAndHideTabsForBudgetModeEdition() {
+        Tabbox tabboxOrder = (Tabbox) editWindow.getFellow("tabboxOrder");
+        for (Object child : tabboxOrder.getTabs().getChildren()) {
+            Tab tab = (Tab) child;
+            tab.setVisible(false);
+        }
+        Tab tabGeneralData = (Tab) editWindow.getFellow("tabGeneralData");
+        tabGeneralData.setVisible(true);
     }
 
     private void showEditWindow(String title) {

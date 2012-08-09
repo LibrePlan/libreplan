@@ -313,7 +313,7 @@ public class MultipleTabsPlannerController implements Composer,
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
                 .add(tabNotVisibleInBudgetMode(planningTab, typeChanged))
-                .add(tabNotVisibleInBudgetMode(ordersTab, typeChanged));
+                .add(tabWithNameReloading(ordersTab, typeChanged));
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
             tabsConfiguration.add(
                     tabNotVisibleInBudgetMode(resourceLoadTab, typeChanged))
@@ -400,6 +400,11 @@ public class MultipleTabsPlannerController implements Composer,
             }
         });
         return result;
+    }
+
+    private ChangeableTab tabWithNameReloading(ITab tab,
+            final State<Void> typeChanged) {
+        return configure(tab).reloadNameOn(typeChanged);
     }
 
     private State<Void> typeChangedState() {

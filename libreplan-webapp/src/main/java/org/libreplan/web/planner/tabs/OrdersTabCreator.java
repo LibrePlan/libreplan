@@ -97,7 +97,7 @@ public class OrdersTabCreator {
         return TabOnModeType.forMode(mode)
                 .forType(ModeType.GLOBAL, createGlobalOrdersTab())
                 .forType(ModeType.ORDER, createOrderOrdersTab())
-                .forType(ModeType.BUDGET, createOrderOrdersTab())
+                .forType(ModeType.BUDGET, createBudgetOrdersTab())
                 .create();
     }
 
@@ -148,13 +148,29 @@ public class OrdersTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PROJECT_DETAILS));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                if (mode.isOf(ModeType.ORDER)) {
-                    orderCRUDController.showOrderElementFilter();
-                    orderCRUDController.showCreateButtons(false);
-                    orderCRUDController.initEdit(mode.getOrder());
-                    breadcrumbs
-                            .appendChild(new Label(mode.getOrder().getName()));
-                }
+                orderCRUDController.showOrderElementFilter();
+                orderCRUDController.showCreateButtons(false);
+                orderCRUDController.initEdit(mode.getOrder());
+                breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
+
+            }
+        };
+    }
+
+    private ITab createBudgetOrdersTab() {
+        return new CreatedOnDemandTab(PROJECT_DETAILS, "order-data",
+                ordersTabCreator) {
+            @Override
+            protected void afterShowAction() {
+                breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(PROJECT_DETAILS));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                orderCRUDController.showCreateButtons(false);
+                orderCRUDController.initEditInBudgetMode(mode.getOrder());
+                breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
 
             }
         };

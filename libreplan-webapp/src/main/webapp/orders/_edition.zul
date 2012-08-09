@@ -61,7 +61,7 @@
             <tabpanel sclass="orderelements-tab">
                 <orderElementTree id="orderElementTree" showCreateTemplateButton="true" />
             </tabpanel>
-            <tabpanel id="tabPanelGeneralData" fulfill="tabGeneralData.onSelect">
+            <tabpanel id="tabPanelGeneralData">
              <hbox width="100%">
                 <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false" hflex="1">
                     <caption label="${i18n:_('Identification')}" />
