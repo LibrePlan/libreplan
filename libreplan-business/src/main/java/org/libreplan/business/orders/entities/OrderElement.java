@@ -524,6 +524,9 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public void setName(String name) {
+        if (name.length() > 255) {
+            name = name.substring(0, 255);
+        }
         this.getInfoComponent().setName(name);
     }
 
