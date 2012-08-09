@@ -136,8 +136,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         showOrderElementFilter();
         showCreateButtons(false);
         orderModel.prepareCreationFrom(template, getDesktop());
-        prepareEditWindow();
-        showEditWindow(_("Create project from Template"));
+        prepareEditWindow(_("Create project from Template"));
     }
 
     @Resource
@@ -923,15 +922,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         orderModel.initEdit(order, getDesktop());
-        if (editWindow != null) {
-            resetTabControllers();
-            setupOrderElementTreeController();
-            selectDefaultTab();
-            return;
-        }
-
-        prepareEditWindow();
-        showEditWindow(_("Edit project"));
+        prepareEditWindow(_("Edit project"));
     }
 
     private Desktop getDesktop() {
@@ -949,11 +940,16 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderAuthorizationController = null;
     }
 
-    private void prepareEditWindow() {
+    private void prepareEditWindow(String title) {
+        resetTabControllers();
         addEditWindowIfNecessary();
         updateDisabilitiesOnInterface();
         setupOrderElementTreeController();
         selectDefaultTab();
+
+        if (editWindow == null) {
+            showEditWindow(title);
+        }
     }
 
     private void showEditWindow(String title) {
@@ -1053,8 +1049,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void editNewCreatedOrder(Window detailsWindow) {
         showOrderElementFilter();
         hideCreateButtons();
-        prepareEditWindow();
-        showEditWindow(_("Create project"));
+        prepareEditWindow(_("Create project"));
         detailsWindow.setVisible(false);
         setupOrderAuthorizationController();
         detailsWindow.getAttributes();
