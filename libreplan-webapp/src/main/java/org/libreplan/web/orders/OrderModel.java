@@ -37,6 +37,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.Hibernate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.entities.IndirectAdvanceAssignment;
@@ -284,7 +285,15 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         forceLoadMaterialAssignments(order);
         forceLoadTaskQualityForms(order);
         forceLoadEndDateCommunicationToCustomer(order);
+        forceLoadBudget(order);
         initOldCodes();
+    }
+
+    private void forceLoadBudget(Order order) {
+        Budget budget = order.getAssociatedBudgetObject();
+        if (budget != null) {
+            Hibernate.initialize(budget);
+        }
     }
 
     private void forceLoadEndDateCommunicationToCustomer(Order order) {
