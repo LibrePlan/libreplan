@@ -2022,8 +2022,7 @@ abstract class RowTotals extends Row {
     }
 
     private EffortDuration calculateTotal() {
-        EffortDuration total = EffortDuration
-                .fromHoursAsBigDecimal(BigDecimal.ZERO);
+        EffortDuration total = EffortDuration.zero();
         for (Row row : rows) {
             total = total.plus(row.getAggregate().getTotalEffort());
         }
@@ -2031,8 +2030,7 @@ abstract class RowTotals extends Row {
     }
 
     private EffortDuration calculateTotalBetween(LocalDate start, LocalDate end) {
-        EffortDuration total = EffortDuration
-                .fromHoursAsBigDecimal(BigDecimal.ZERO);
+        EffortDuration total = EffortDuration.zero();
         for(Row row : rows){
             total = total.plus(row.getAggregate().effortBetween(start, end));
         }

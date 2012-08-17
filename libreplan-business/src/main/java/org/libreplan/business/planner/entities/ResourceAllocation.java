@@ -1060,7 +1060,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             if (availability.isValid(day.getDate())) {
                 return getCapacityAt(day);
             } else {
-                return Capacity.create(hours(0))
+                return Capacity.create(zero())
                         .notOverAssignableWithoutLimit();
             }
         }

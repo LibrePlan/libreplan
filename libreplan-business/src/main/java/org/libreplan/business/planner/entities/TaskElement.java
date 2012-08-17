@@ -723,7 +723,7 @@ public abstract class TaskElement extends BaseEntity {
                 each.getType());
     }
 
-    private EffortDuration sumOfAssignedEffort = EffortDuration.hours(0);
+    private EffortDuration sumOfAssignedEffort = EffortDuration.zero();
 
     public void setSumOfAssignedEffort(EffortDuration sumOfAssignedEffort) {
         this.sumOfAssignedEffort = sumOfAssignedEffort;
@@ -740,7 +740,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     private EffortDuration getSumOfAssignedEffortCalculated() {
-        EffortDuration result = EffortDuration.hours(0);
+        EffortDuration result = EffortDuration.zero();
         for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
             result = result.plus(allocation.getAssignedEffort());
         }
