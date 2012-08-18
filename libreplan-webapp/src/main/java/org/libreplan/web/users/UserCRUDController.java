@@ -65,6 +65,7 @@ import org.zkoss.zul.api.Groupbox;
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @SuppressWarnings("serial")
 public class UserCRUDController extends BaseCRUDController<User> implements
@@ -184,6 +185,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return userModel.getUsers();
     }
 
+    @Override
     protected void save() throws ValidationException {
         userModel.confirmSave();
         PasswordUtil.showOrHideDefaultPasswordWarnings();
@@ -352,7 +354,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                         removeRole(role);
                     }
                 });
-                removeButton.setDisabled(getLdapUserRolesLdapConfiguration()
+                removeButton.setDisabled(areRolesAndProfilesDisabled()
                         || role.equals(UserRole.ROLE_BOUND_USER)
                         || isUserDefaultAdmin());
                 row.appendChild(removeButton);
@@ -452,7 +454,8 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     public boolean areRolesAndProfilesDisabled() {
-        return isLdapUserLdapConfiguration() || isUserDefaultAdmin();
+        return (isLdapUser() && userModel.isLDAPBeingUsed() && userModel
+                .isLDAPRolesBeingUsed()) || isUserDefaultAdmin();
     }
 
     public boolean isLdapUserOrDefaultAdmin() {
