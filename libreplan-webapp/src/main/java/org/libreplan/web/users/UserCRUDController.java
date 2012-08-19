@@ -100,7 +100,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             Util.appendLabel(row, user.getLoginName());
             Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
             Util.appendLabel(row, user.isSuperuser() ? _("Yes") : _("No"));
-            Util.appendLabel(row, getAuthenticationType(user));
+            Util.appendLabel(row, _(user.getUserType()));
             Util.appendLabel(row, user.isBound() ? user.getWorker()
                     .getShortDescription() : "");
 
@@ -360,21 +360,6 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                 row.appendChild(removeButton);
             }
         };
-    }
-
-    public String getAuthenticationType() {
-        User user = getUser();
-        if (user != null) {
-            return getAuthenticationType(user);
-        }
-        return "";
-    }
-
-    private String getAuthenticationType(User user) {
-        if (user.isLibrePlanUser()) {
-            return _("Database");
-        }
-        return _("LDAP");
     }
 
     public RowRenderer getUsersRenderer() {

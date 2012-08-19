@@ -21,6 +21,8 @@
 
 package org.libreplan.business.users.entities;
 
+import static org.libreplan.business.i18n.I18nHelper._;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,6 +45,7 @@ import org.libreplan.business.users.daos.IUserDAO;
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public class User extends BaseEntity implements IHumanIdentifiable{
 
@@ -336,4 +339,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return worker != null;
     }
 
+    public String getUserType() {
+        return isLibrePlanUser().equals(Boolean.TRUE) ? _("Database")
+                : _("LDAP");
+    }
 }
