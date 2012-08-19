@@ -34,14 +34,15 @@ import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zul.Column;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Textbox;
 
 /**
  * Controller for CRUD actions over a {@link User}
+ *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @SuppressWarnings("serial")
 public class ExternalCompanyCRUDController extends
@@ -78,6 +79,7 @@ public class ExternalCompanyCRUDController extends
         goToEditForm(dto.getCompany());
     }
 
+    @Override
     protected void save() throws ValidationException {
         externalCompanyModel.confirmSave();
     }
@@ -132,19 +134,6 @@ public class ExternalCompanyCRUDController extends
         appURI.setConstraint("");
         ourCompanyLogin.setConstraint("");
         ourCompanyPassword.setConstraint("");
-    }
-
-    public void sortByDefaultByName() {
-        Column column = (Column) listWindow.getFellowIfAny("columnName");
-        if (column != null) {
-            if (column.getSortDirection().equals("ascending")) {
-                column.sort(false, false);
-                column.setSortDirection("ascending");
-            } else if (column.getSortDirection().equals("descending")) {
-                column.sort(true, false);
-                column.setSortDirection("descending");
-            }
-        }
     }
 
     @Override

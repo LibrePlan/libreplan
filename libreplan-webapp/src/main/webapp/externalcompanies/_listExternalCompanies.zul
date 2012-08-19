@@ -21,10 +21,9 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Companies List')}">
     <newdatasortablegrid id="listing" model="@{controller.companiesDTO}" mold="paging"
-        pageSize="10" sclass="clickable-rows"
-        onInitRender="controller.sortByDefaultByName();">
+        pageSize="10" sclass="clickable-rows">
         <columns sizable="true">
-            <newdatasortablecolumn id="columnName" label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="descending"/>
+            <newdatasortablecolumn id="columnName" label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending"/>
             <newdatasortablecolumn label="${i18n:_('Company ID')}" />
             <newdatasortablecolumn label="${i18n:_('Client')}" />
             <newdatasortablecolumn label="${i18n:_('Subcontractor')}" />
