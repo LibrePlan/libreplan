@@ -70,13 +70,10 @@
 
             <joined-subclass name="OrderTemplate" table="order_template">
                 <key column="order_template_id"></key>
-
-                <!-- Budget Template -->
+                <!-- Not indexed -->
                 <joined-subclass name="BudgetTemplate" table="budget_template">
                     <key column="budget_template_id"></key>
                 </joined-subclass>
-
-                <!-- Budget -->
                 <joined-subclass name="Budget" table="budget">
                     <key column="budget_id"></key>
                     <one-to-one name="associatedOrder" property-ref="associatedBudgetObject"

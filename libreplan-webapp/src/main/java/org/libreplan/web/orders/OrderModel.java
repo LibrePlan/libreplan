@@ -75,7 +75,6 @@ import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
-import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.templates.entities.BudgetTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderTemplate;
@@ -501,7 +500,6 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     @Override
-    @Transactional
     public void save(boolean showSaveMessage) {
         IBeforeSaveActions beforeSaveActions = new IBeforeSaveActions() {
 
@@ -511,20 +509,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
                 reattachCriterions();
             }
         };
-
-        saveBudgetIfNeeded();
         if (showSaveMessage) {
             this.planningState.getSaveCommand().save(beforeSaveActions);
         } else {
             this.planningState.getSaveCommand().save(beforeSaveActions, null);
-        }
-    }
-
-    private void saveBudgetIfNeeded() {
-        Budget budget = planningState.getOrder().getAssociatedBudgetObject();
-        if (budget != null) {
-            templateDAO.save(budget);
-            budget.dontPoseAsTransientObjectAnymore();
         }
     }
 
