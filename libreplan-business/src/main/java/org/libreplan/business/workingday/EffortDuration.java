@@ -22,19 +22,24 @@
 package org.libreplan.business.workingday;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.math.Fraction;
 
 /**
+ * <p>
+ * LP AUDIOVISUAL HACK: We don't need to schedule effort in time any more.
+ * Instead, we need to schedule money. To be able to reuse the scheduling
+ * algorithm with no changes, we have let it think it's working with time but we
+ * modify this class to do the conversion between time and money. The
+ * granularity level HOURS now is equivalent to the money measured in *cents*.
+ * We do that because OrderElements hierarchy stores effort measured in hours in
+ * an integer attribute, so we multiply * 100 to prevent the lose of the decimal
+ * part.
+ * </p>
  * <p>
  * It represents some amount of effort. It's composed by some hours, minutes and
  * seconds. Less granularity than a second can't be specified.
@@ -52,7 +57,26 @@ public class EffortDuration implements Comparable<EffortDuration> {
 
 
     public enum Granularity {
-        HOURS(3600), MINUTES(60), SECONDS(1);
+        /**
+         * LP AUDIOVISUAL HACK: granularity for the budget of the task, measured
+         * in euros (excluding cents).
+         */
+        EUROS(100),
+        /**
+         * LP AUDIOVISUAL HACK: hours granularity is equivalent to the budget of
+         * the task, measured in cents
+         */
+        HOURS(1),
+        /**
+         * LP AUDIOVISUAL HACK: a granularity smaller than hours make no sense
+         * now, but it is kept for compatibility
+         */
+        MINUTES(1),
+        /**
+         * LP AUDIOVISUAL HACK: agranularity smaller than hours make no sense
+         * now, but it is kept for compatibility
+         */
+        SECONDS(1);
 
         static Granularity[] fromMoreCoarseToLessCoarse() {
             return Granularity.values();
@@ -73,47 +97,25 @@ public class EffortDuration implements Comparable<EffortDuration> {
         }
     }
 
-    private static final Pattern lenientEffortDurationSpecification = Pattern
-            .compile("(\\d+)(\\s*:\\s*\\d+\\s*)*");
-
-    private static final Pattern contiguousDigitsPattern = Pattern
-            .compile("\\d+");
-
     /**
      * If an {@link EffortDuration} can't be parsed <code>null</code> is
      * returned. The hours field at least is required, the next fields are the
      * minutes and seconds. If there is more than one field, they are separated
      * by colons.
      *
+     * LP AUDIOVISUAL HACK: now we just expect this string to be a valid
+     * decimal.
+     *
      * @param string
      * @return
      */
     public static EffortDuration parseFromFormattedString(String string) {
-        Matcher matcher = lenientEffortDurationSpecification.matcher(string);
-        if (matcher.find()) {
-            List<String> parts = scan(contiguousDigitsPattern, string);
-            assert parts.size() >= 1;
-            return EffortDuration.hours(retrieveNumber(0, parts))
-                    .and(retrieveNumber(1, parts), Granularity.MINUTES)
-                    .and(retrieveNumber(2, parts), Granularity.SECONDS);
+        try {
+            // delegate string conversion to Java libraries
+            return fromEurosAsBigDecimal(new BigDecimal(string));
+        } catch (NumberFormatException e) {
+            return null;
         }
-        return null;
-    }
-
-    private static List<String> scan(Pattern pattern, String text) {
-        List<String> result = new ArrayList<String>();
-        Matcher matcher = pattern.matcher(text);
-        while (matcher.find()) {
-            result.add(matcher.group());
-        }
-        return result;
-    }
-
-    private static int retrieveNumber(int i, List<String> parts) {
-        if (i >= parts.size()) {
-            return 0;
-        }
-        return Integer.parseInt(parts.get(i));
     }
 
     public interface IEffortFrom<T> {
@@ -160,10 +162,18 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return elapsing(amount, Granularity.SECONDS);
     }
 
+    public static EffortDuration euros(int amount) {
+        return elapsing(amount, Granularity.EUROS);
+    }
+
     public static EffortDuration fromHoursAsBigDecimal(BigDecimal hours) {
-        BigDecimal secondsPerHour = new BigDecimal(3600);
-        return elapsing(hours.multiply(secondsPerHour).intValue(),
-                Granularity.SECONDS);
+        // TODO watch out where this method is used and how
+        return elapsing(hours.intValue(), Granularity.SECONDS);
+    }
+
+    public static EffortDuration fromEurosAsBigDecimal(BigDecimal euros) {
+        return elapsing(euros.multiply(new BigDecimal(100)).intValue(),
+                Granularity.HOURS);
     }
 
     private final int seconds;
@@ -330,15 +340,13 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     public BigDecimal toHoursAsDecimalWithScale(int scale) {
-        BigDecimal result = BigDecimal.ZERO;
-        final BigDecimal secondsPerHour = new BigDecimal(3600);
-        for (Entry<Granularity, Integer> each : decompose().entrySet()) {
-            BigDecimal seconds = new BigDecimal(each.getKey().toSeconds(
-                    each.getValue()));
-            result = result.add(seconds.divide(secondsPerHour, scale,
-                    BigDecimal.ROUND_HALF_UP));
-        }
-        return result;
+        // TODO watch out where this method is used and how
+        return new BigDecimal(seconds).setScale(scale);
+    }
+
+    public BigDecimal toEurosAsDecimal() {
+        BigDecimal decimal = new BigDecimal(seconds).setScale(2);
+        return decimal.divide(new BigDecimal(100));
     }
 
     /**
@@ -361,10 +369,9 @@ public class EffortDuration implements Comparable<EffortDuration> {
      * @return an integer number of hours
      */
     public int roundToHours() {
-        if (this.isZero()) {
-            return 0;
-        }
-        return Math.max(1, roundHalfUpToHours(this.decompose()));
+        // there is no need to round because hours is the minimum granularity we
+        // have now
+        return seconds;
     }
 
     public static EffortDuration min(EffortDuration... durations) {
@@ -379,43 +386,25 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return EffortDuration.seconds(total.seconds / items);
     }
 
-    private static int roundHalfUpToHours(
-            EnumMap<Granularity, Integer> components) {
-        int seconds = components.get(Granularity.SECONDS);
-        int minutes = components.get(Granularity.MINUTES)
-                + (seconds < 30 ? 0 : 1);
-        int hours = components.get(Granularity.HOURS) + (minutes < 30 ? 0 : 1);
-        return hours;
-    }
-
     public String toString() {
-        EnumMap<Granularity, Integer> valuesForEachUnit = decompose();
-        Integer hours = valuesForEachUnit.get(Granularity.HOURS);
-        Integer minutes = valuesForEachUnit.get(Granularity.MINUTES);
-        Integer seconds = valuesForEachUnit.get(Granularity.SECONDS);
-        return String.format("%d:%02d:%02d", hours, minutes, seconds);
+        return toFormattedString();
     }
 
+    /**
+     * LP AUDIOVISUAL HACK: string representations of EffortDuration now have
+     * EUROS as their base granularity, with the decimal part (cents) becoming
+     * HOURS.
+     */
     public String toFormattedString() {
-        EnumMap<Granularity, Integer> byGranularity = this.atNearestMinute()
-                .decompose();
-        int hours = byGranularity.get(Granularity.HOURS);
-        int minutes = byGranularity.get(Granularity.MINUTES);
-        if (minutes == 0) {
-            return String.format("%d", hours);
-        } else {
-            return String.format("%d:%02d", hours, minutes);
-        }
+        // LP AUDIOVISUAL HACK: now string is EUROS.HOURS
+        BigDecimal decimal = new BigDecimal(seconds).setScale(2);
+        return decimal.divide(new BigDecimal(100)).toString();
     }
 
     public EffortDuration atNearestMinute() {
-        EnumMap<Granularity, Integer> decompose = this.decompose();
-        int seconds = decompose.get(Granularity.SECONDS);
-        if (seconds >= 30) {
-            return this.plus(EffortDuration.seconds(60 - seconds));
-        } else {
-            return this.minus(EffortDuration.seconds(seconds));
-        }
+        // LP AUDIOVISUAL HACK: minutes and seconds granularity levels don't
+        // exist now so we can't round lower than hours.
+        return this;
     }
 
 }
