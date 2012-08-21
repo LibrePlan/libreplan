@@ -447,4 +447,12 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return isLdapUser() || isUserDefaultAdmin();
     }
 
+    public String getAuthenticationType() {
+        User user = getUser();
+        if (user != null) {
+            return _(user.getUserType());
+        }
+        return "";
+    }
+
 }
