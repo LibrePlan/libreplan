@@ -10,4 +10,10 @@
         <modifyDataType tableName="task_element" columnName="notes" newDataType="TEXT" />
     </changeSet>
 
+    <changeSet id="change-column-notes-in-task_element-to-text-in-mysql"
+        author="jaragunde" dbms="mysql">
+        <comment>Change column notes in task_element to TEXT in MySQL.</comment>
+        <sql>ALTER TABLE task_element MODIFY notes TEXT</sql>
+    </changeSet>
+
 </databaseChangeLog>
