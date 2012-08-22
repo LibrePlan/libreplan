@@ -433,14 +433,12 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
     }
 
     @Override
-    @Transactional
     public void closeBudget() {
         Order order = getAssociatedOrder();
         Budget budget = order.getAssociatedBudgetObject();
         if (!order.getState().equals(OrderStatusEnum.BUDGET)) {
             throw new ValidationException(_("The budget is already closed"));
         }
-        orderDAO.reattach(order);
         order.setState(OrderStatusEnum.OFFERED);
         budget.createOrderLineElementsForAssociatedOrder(scenarioManager
                 .getCurrent());

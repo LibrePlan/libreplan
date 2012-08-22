@@ -197,15 +197,13 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     protected <T extends OrderElement> T setupElementParts(T orderElement) {
-        // FIXME: some lines were commented out because they don't work well
-        // with BudgetTemplates. We might have to rethink this hierarchy.
         setupInfoComponent(orderElement);
         setupDates(orderElement);
-        // setupCriterionRequirements(orderElement);
-        // setupMaterialAssignments(orderElement);
+        setupCriterionRequirements(orderElement);
+        setupMaterialAssignments(orderElement);
         setupLabels(orderElement);
         setupQualityForms(orderElement);
-        // setupAdvances(orderElement);
+        setupAdvances(orderElement);
         return orderElement;
     }
 
