@@ -85,6 +85,7 @@ import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueEle
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
+import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.workingday.IntraDayDate;
@@ -305,6 +306,8 @@ public class SaveCommandBuilder {
                     dontPoseAsTransientObjectAnymore(state.getOrder());
                     dontPoseAsTransientObjectAnymore(state.getOrder()
                             .getEndDateCommunicationToCustomer());
+                    dontPoseAsTransientObjectAnymore(state.getOrder()
+                            .getAssociatedBudgetObject());
                     state.getScenarioInfo().afterCommit();
 
                     if (state.getOrder()
@@ -352,6 +355,16 @@ public class SaveCommandBuilder {
                 }
             }
 
+        }
+
+        private void dontPoseAsTransientObjectAnymore(
+                OrderElementTemplate template) {
+            template.dontPoseAsTransientObjectAnymore();
+            List<OrderElementTemplate> childrenTemplates = template
+                    .getChildrenTemplates();
+            for (OrderElementTemplate each : childrenTemplates) {
+                dontPoseAsTransientObjectAnymore(each);
+            }
         }
 
         private void fireAfterSave() {
@@ -986,6 +999,7 @@ public class SaveCommandBuilder {
                     .getAllMaterialAssignments());
 
             for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+                hoursGroup.dontPoseAsTransientObjectAnymore();
                 dontPoseAsTransientObjectAnymore(hoursGroup
                         .getCriterionRequirements());
             }
