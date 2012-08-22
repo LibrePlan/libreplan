@@ -136,6 +136,7 @@ public class BudgetLineTemplate extends OrderLineTemplate {
         copy.setHolidaySalary(getHolidaySalary());
         copy.setIndemnizationSalary(getIndemnizationSalary());
         copy.setQuantity(getQuantity());
+        copy.setDuration(getDuration());
         for (Label label : getLabels()) {
             copy.addLabel(label);
         }
