@@ -310,11 +310,4 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         return false;
     }
 
-    @Override
-    public void convertBudgetIntoHours() {
-        for (OrderElementTemplate each : getChildren()) {
-            each.convertBudgetIntoHours();
-        }
-    }
-
 }

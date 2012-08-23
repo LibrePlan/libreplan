@@ -150,15 +150,4 @@ public class BudgetLineTemplate extends OrderLineTemplate {
         return copy;
     }
 
-    @Override
-    /**
-     * LP AUDIOVISUAL HACK: since we want to schedule money instead of time, we
-     * use budget attribute as the value of the work hours, so we don't have to
-     * change the scheduling algorithm.
-     * We multiply by 100 because the hours is an integer, and we don't want to
-     * lose the first two decimal positions of the budget (cents).
-     */
-    public void convertBudgetIntoHours() {
-        setWorkHours(getBudget().multiply(new BigDecimal(100)).intValue());
-    }
 }

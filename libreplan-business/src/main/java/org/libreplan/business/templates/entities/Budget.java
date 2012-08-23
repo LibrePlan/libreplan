@@ -21,6 +21,7 @@ package org.libreplan.business.templates.entities;
 import org.hibernate.validator.AssertTrue;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.scenarios.entities.Scenario;
 
@@ -58,8 +59,8 @@ public class Budget extends OrderTemplate {
     public Order createOrderLineElementsForAssociatedOrder(Scenario scenario) {
         associatedOrder.useSchedulingDataFor(scenario);
         for (OrderElementTemplate each : getChildren()) {
-            each.convertBudgetIntoHours();
-            each.createElement(associatedOrder);
+            OrderElement element = each.createElement(associatedOrder);
+            element.convertBudgetIntoHours();
         }
         return associatedOrder;
     }
