@@ -245,10 +245,4 @@ public class OrderLineTemplate extends OrderElementTemplate {
         return false;
     }
 
-    @Override
-    public void convertBudgetIntoHours() {
-        throw new UnsupportedOperationException(
-                "OrderLineTemplate.convertBudgetIntoHours() is not supported");
-    }
-
 }
