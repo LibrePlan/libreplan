@@ -83,12 +83,14 @@ import org.libreplan.business.scenarios.daos.IOrderVersionDAO;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.ProfileOrderAuthorization;
 import org.libreplan.business.users.entities.UserOrderAuthorization;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.planner.TaskElementAdapter;
+import org.libreplan.web.templates.OrderTemplatesModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -322,6 +324,11 @@ public class PlanningStateCreator {
                 hours.getValidCriterions().size();
             }
         }
+        forceLoadBudget(order.getAssociatedBudgetObject());
+    }
+
+    private void forceLoadBudget(Budget budget) {
+        OrderTemplatesModel.loadAssociatedData(budget);
     }
 
     private void forceLoadDayAssignments(Set<Resource> resources) {

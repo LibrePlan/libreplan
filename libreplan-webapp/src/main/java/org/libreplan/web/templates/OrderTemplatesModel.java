@@ -187,15 +187,15 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         initializeAcompanyingObjectsOnConversation();
         this.template = dao.findExistingEntity(template.getId());
         loadAssociatedData(this.template);
+        getOrderElementsOnConversation().initialize(template);
         treeModel = new TemplatesTree(this.template);
     }
 
-    private void loadAssociatedData(OrderElementTemplate template) {
+    public static void loadAssociatedData(OrderElementTemplate template) {
         loadAdvanceAssignments(template);
         loadQualityForms(template);
         loadLabels(template);
         loadCriterionRequirements(template);
-        getOrderElementsOnConversation().initialize(template);
     }
 
     private static void loadCriterionRequirements(OrderElementTemplate orderElement) {
@@ -221,7 +221,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         }
     }
 
-    private void loadQualityForms(OrderElementTemplate template) {
+    private static void loadQualityForms(OrderElementTemplate template) {
         for (QualityForm each : template.getQualityForms()) {
             each.getName();
         }
@@ -230,7 +230,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         }
     }
 
-    private void loadLabels(OrderElementTemplate template) {
+    private static void loadLabels(OrderElementTemplate template) {
         for (Label each : template.getLabels()) {
             each.getName();
         }
@@ -240,7 +240,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     }
 
-    private void loadAdvanceAssignments(OrderElementTemplate template) {
+    private static void loadAdvanceAssignments(OrderElementTemplate template) {
         for (AdvanceAssignmentTemplate each : template
                 .getAdvanceAssignmentTemplates()) {
             each.getMaxValue();
