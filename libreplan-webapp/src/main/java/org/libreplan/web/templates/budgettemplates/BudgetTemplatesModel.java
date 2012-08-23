@@ -423,7 +423,6 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
     }
 
     @Override
-    @Transactional
     public void saveThroughPlanningState(boolean showSaveMessage) {
         if (showSaveMessage) {
             this.planningState.getSaveCommand().save(null);
