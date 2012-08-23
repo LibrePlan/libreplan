@@ -328,7 +328,9 @@ public class PlanningStateCreator {
     }
 
     private void forceLoadBudget(Budget budget) {
-        OrderTemplatesModel.loadAssociatedData(budget);
+        if (budget != null) {
+            OrderTemplatesModel.loadAssociatedData(budget);
+        }
     }
 
     private void forceLoadDayAssignments(Set<Resource> resources) {
