@@ -998,10 +998,12 @@ public class SaveCommandBuilder {
             dontPoseAsTransientObjectAnymore(orderElement
                     .getAllMaterialAssignments());
 
-            for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
-                hoursGroup.dontPoseAsTransientObjectAnymore();
-                dontPoseAsTransientObjectAnymore(hoursGroup
-                        .getCriterionRequirements());
+            if (orderElement.isLeaf()) {
+                for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+                    hoursGroup.dontPoseAsTransientObjectAnymore();
+                    dontPoseAsTransientObjectAnymore(hoursGroup
+                            .getCriterionRequirements());
+                }
             }
 
             for (OrderElement child : orderElement.getAllChildren()) {
