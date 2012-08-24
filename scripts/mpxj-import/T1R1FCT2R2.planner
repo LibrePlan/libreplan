@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project name="" company="" manager="" phase="" project-start="20120803T000000Z" mrproject-version="2" calendar="1">
+  <properties/>
+  <phases/>
+  <calendars>
+    <day-types>
+      <day-type id="0" name="Working" description="A default working day"/>
+      <day-type id="1" name="Nonworking" description="A default non working day"/>
+      <day-type id="2" name="Use base" description="Use day from base calendar"/>
+    </day-types>
+    <calendar id="1" name="Default">
+      <default-week mon="0" tue="0" wed="0" thu="0" fri="0" sat="1" sun="1"/>
+      <overridden-day-types>
+        <overridden-day-type id="0">
+          <interval start="0800" end="1200"/>
+          <interval start="1300" end="1700"/>
+        </overridden-day-type>
+      </overridden-day-types>
+      <days/>
+    </calendar>
+  </calendars>
+  <tasks>
+    <task id="1" name="Tarea1" note="" work="201600" start="20120803T000000Z" end="20120813T170000Z" work-start="20120803T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work"/>
+    <task id="2" name="Tarea2" note="" work="288000" start="20120805T000000Z" end="20120817T170000Z" work-start="20120806T080000Z" percent-complete="0" priority="0" type="normal" scheduling="fixed-work">
+      <constraint type="must-start-on" time="20120805T000000Z"/>
+      <predecessors>
+        <predecessor id="1" predecessor-id="1" type="FS"/>
+      </predecessors>
+    </task>
+  </tasks>
+  <resource-groups/>
+  <resources>
+    <resource id="1" name="Recurso1" short-name="R1" type="1" units="0" email="" note="" std-rate="0"/>
+    <resource id="2" name="Recurso2" short-name="R2" type="2" units="0" email="" note="" std-rate="0"/>
+  </resources>
+  <allocations>
+    <allocation task-id="1" resource-id="1" units="100"/>
+    <allocation task-id="2" resource-id="2" units="100"/>
+  </allocations>
+</project>
