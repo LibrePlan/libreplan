@@ -34,7 +34,7 @@ import org.libreplan.business.orders.entities.Order;
 public interface OrderImporter {
 
     /**
-     * Makes a {@link ImportData} from a InputStream.
+     * Makes a {@link OrderDTO} from a InputStream.
      *
      * @param file
      *            InputStream to extract data from.
@@ -42,16 +42,16 @@ public interface OrderImporter {
      *            String with the name of the original file of the InputStream.
      * @return ImportData with the data that we want to import.
      */
-    public ImportData getImportData(InputStream file, String filename);
+    public OrderDTO getImportData(InputStream file, String filename);
 
     /**
-     * Makes a {@link Order} from a {@link ImportData}.
+     * Makes a {@link Order} from a {@link OrderDTO}.
      *
      * @param project
      *            ImportData to extract data from.
      * @return Order with all the data that we want.
      */
-    public Order convertImportDataToOrder(ImportData project);
+    public Order convertImportDataToOrder(OrderDTO project);
 
     /**
      * Saves a {@link Order} which has all the data that we want to store in the

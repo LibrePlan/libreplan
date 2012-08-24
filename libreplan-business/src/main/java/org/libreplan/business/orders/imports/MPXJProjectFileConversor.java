@@ -26,7 +26,7 @@ import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
 
 /**
- * Class that is a conversor from the MPXJ format File to {@link ImportData}.
+ * Class that is a conversor from the MPXJ format File to {@link OrderDTO}.
  *
  * At these moment it only converts the tasks and its subtasks.
  *
@@ -36,7 +36,7 @@ import net.sf.mpxj.Task;
 public class MPXJProjectFileConversor {
 
     /**
-     * Converts a ProjectFile into a {@link ImportData}.
+     * Converts a ProjectFile into a {@link OrderDTO}.
      *
      * This method contains a switch that is going to select the method to call
      * for each format. At this time it only differences between planner and
@@ -46,9 +46,9 @@ public class MPXJProjectFileConversor {
      *            ProjectFile to extract data from.
      * @return ImportData with the data that we want to import.
      */
-    public static ImportData convert(ProjectFile file, String filename) {
+    public static OrderDTO convert(ProjectFile file, String filename) {
 
-        ImportData importData;
+        OrderDTO importData;
 
         switch (file.getMppFileType()) {
 
@@ -65,7 +65,7 @@ public class MPXJProjectFileConversor {
     }
 
     /**
-     * Converts a ProjectFile into a {@link ImportData}.
+     * Converts a ProjectFile into a {@link OrderDTO}.
      *
      * Assumes that the ProjectFile comes for a .planner file.
      *
@@ -73,10 +73,10 @@ public class MPXJProjectFileConversor {
      *            ProjectFile to extract data from.
      * @return ImportData with the data that we want to import.
      */
-    private static ImportData getImportDataFromPlanner(ProjectFile file,
+    private static OrderDTO getImportDataFromPlanner(ProjectFile file,
             String filename) {
 
-        ImportData importData = new ImportData();
+        OrderDTO importData = new OrderDTO();
 
         importData.name = filename
                 .substring(0, filename.length() - 8/* ".planner" */);
@@ -88,7 +88,7 @@ public class MPXJProjectFileConversor {
     }
 
     /**
-     * Converts a ProjectFile into a {@link ImportData}
+     * Converts a ProjectFile into a {@link OrderDTO}
      *
      * Assumes that the ProjectFile comes for a .mpp file.
      *
@@ -96,10 +96,10 @@ public class MPXJProjectFileConversor {
      *            ProjectFile to extract data from.
      * @return ImportData with the data that we want to import.
      */
-    private static ImportData getImportDataFromMPP(ProjectFile file,
+    private static OrderDTO getImportDataFromMPP(ProjectFile file,
             String filename) {
 
-        ImportData importData = new ImportData();
+        OrderDTO importData = new OrderDTO();
 
         for (Task task : file.getChildTasks()) {
             // Projects are represented as a level 0 task with all

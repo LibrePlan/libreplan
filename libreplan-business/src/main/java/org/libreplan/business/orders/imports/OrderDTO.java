@@ -29,7 +29,7 @@ import java.util.List;
  * @author Alba Carro Pérez <alba.carro@gmail.com>
  * @todo It last relationships. resources, calendars, hours, etc
  */
-public class ImportData {
+public class OrderDTO {
     /**
      * Name of the project that is going to be imported.
      */

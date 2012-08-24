@@ -30,7 +30,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.libreplan.business.orders.imports.ImportData;
+import org.libreplan.business.orders.imports.OrderDTO;
 import org.libreplan.business.orders.imports.OrderImporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,7 +60,7 @@ public class OrderImporterTest {
         try {
             file = new FileInputStream(filename);
 
-            ImportData importData = orderImporter.getImportData(file, filename);
+            OrderDTO importData = orderImporter.getImportData(file, filename);
 
             assertEquals(importData.name, "T1R1FCT2R2");
 
@@ -89,7 +89,7 @@ public class OrderImporterTest {
         try {
             file = new FileInputStream(filename);
 
-            ImportData importData = orderImporter.getImportData(file, filename);
+            OrderDTO importData = orderImporter.getImportData(file, filename);
 
             assertEquals(importData.tasks.size(), 2);
 

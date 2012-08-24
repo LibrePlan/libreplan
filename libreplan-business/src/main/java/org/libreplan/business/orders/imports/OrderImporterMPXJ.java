@@ -76,7 +76,7 @@ public class OrderImporterMPXJ implements OrderImporter {
     private IScenarioManager scenarioManager;
 
     /**
-     * Makes a {@link ImportData} from a InputStream.
+     * Makes a {@link OrderDTO} from a InputStream.
      *
      * Uses the filename in order to get the specific ProjectReader for each
      * kind of file (.mpp, .planner, etc).
@@ -88,7 +88,7 @@ public class OrderImporterMPXJ implements OrderImporter {
      * @return ImportData with the data that we want to import.
      */
     @Override
-    public ImportData getImportData(InputStream file, String filename) {
+    public OrderDTO getImportData(InputStream file, String filename) {
         try {
 
             ProjectReader reader = ProjectReaderUtility
@@ -119,7 +119,7 @@ public class OrderImporterMPXJ implements OrderImporter {
 
 
     /**
-     * Makes a {@link Order} from a {@link ImportData}.
+     * Makes a {@link Order} from a {@link OrderDTO}.
      *
      * @param project
      *            ImportData to extract data from.
@@ -127,7 +127,7 @@ public class OrderImporterMPXJ implements OrderImporter {
      */
     @Override
     @Transactional(readOnly = true)
-    public Order convertImportDataToOrder(ImportData project) {
+    public Order convertImportDataToOrder(OrderDTO project) {
 
         String code = getCode(EntityNameEnum.ORDER);
 
