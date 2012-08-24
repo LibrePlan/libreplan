@@ -31,7 +31,7 @@ import java.io.InputStream;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.orders.imports.OrderDTO;
-import org.libreplan.business.orders.imports.OrderImporter;
+import org.libreplan.business.orders.imports.IOrderImporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -47,7 +47,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class OrderImporterTest {
 
     @Autowired
-    private OrderImporter orderImporter;
+    private IOrderImporter orderImporter;
 
     @Test
     public void testCreatingImportDataFromMPPFile() {

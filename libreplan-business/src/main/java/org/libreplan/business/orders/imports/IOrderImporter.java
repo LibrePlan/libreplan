@@ -31,7 +31,7 @@ import org.libreplan.business.orders.entities.Order;
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
  */
-public interface OrderImporter {
+public interface IOrderImporter {
 
     /**
      * Makes a {@link OrderDTO} from a InputStream.

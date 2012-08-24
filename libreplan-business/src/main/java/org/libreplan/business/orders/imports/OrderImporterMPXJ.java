@@ -58,7 +58,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class OrderImporterMPXJ implements OrderImporter {
+public class OrderImporterMPXJ implements IOrderImporter {
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
