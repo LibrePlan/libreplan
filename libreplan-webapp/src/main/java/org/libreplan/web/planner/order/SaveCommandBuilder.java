@@ -362,6 +362,13 @@ public class SaveCommandBuilder {
             template.dontPoseAsTransientObjectAnymore();
             List<OrderElementTemplate> childrenTemplates = template
                     .getChildrenTemplates();
+            if (template.isLeaf()) {
+                for (HoursGroup hoursGroup : template.getHoursGroups()) {
+                    hoursGroup.dontPoseAsTransientObjectAnymore();
+                    dontPoseAsTransientObjectAnymore(hoursGroup
+                            .getCriterionRequirements());
+                }
+            }
             for (OrderElementTemplate each : childrenTemplates) {
                 dontPoseAsTransientObjectAnymore(each);
             }
