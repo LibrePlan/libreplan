@@ -755,6 +755,12 @@
                 <artifactId>jqplot4java</artifactId>
                 <version>1.2.3-javascript</version>
             </dependency>
+            <!-- MPXJ Library -->
+            <dependency>
+                <groupId>net.sourceforge</groupId>
+                <artifactId>mpxj</artifactId>
+                <version>4.3.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
