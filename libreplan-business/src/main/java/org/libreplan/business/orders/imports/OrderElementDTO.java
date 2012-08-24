@@ -29,7 +29,7 @@ import java.util.List;
  * @author Alba Carro Pérez <alba.carro@gmail.com>
  * @todo It last hours, resources, relationships, etc.
  */
-public class ImportTask {
+public class OrderElementDTO {
 
     /**
      * Name of the task
@@ -39,6 +39,6 @@ public class ImportTask {
     /**
      * List of task that are children of this task
      */
-    public List<ImportTask> children;
+    public List<OrderElementDTO> children;
 
 }

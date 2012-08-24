@@ -154,7 +154,7 @@ public class OrderImporterMPXJ implements OrderImporter {
 
         List<OrderElement> children = new ArrayList<OrderElement>();
 
-        for (ImportTask task : project.tasks) {
+        for (OrderElementDTO task : project.tasks) {
             children.add(convertImportTaskToOrderElement(orderVersion, task));
         }
 
@@ -174,7 +174,7 @@ public class OrderImporterMPXJ implements OrderImporter {
     /**
      * Private method.
      *
-     * It makes a {@link OrderElement} from a {@link ImportTask}
+     * It makes a {@link OrderElement} from a {@link OrderElementDTO}
      *
      * @param task
      *            ImportTask to extract data from.
@@ -183,7 +183,7 @@ public class OrderImporterMPXJ implements OrderImporter {
      * @return OrderElement OrderElement that represent the data.
      */
     private OrderElement convertImportTaskToOrderElement(
-            OrderVersion orderVersion, ImportTask task) {
+            OrderVersion orderVersion, OrderElementDTO task) {
 
         Validate.notNull(orderVersion);
         OrderElement orderElement;
@@ -208,7 +208,7 @@ public class OrderImporterMPXJ implements OrderImporter {
 
         List<OrderElement> children = new ArrayList<OrderElement>();
 
-        for (ImportTask childrenTask : task.children) {
+        for (OrderElementDTO childrenTask : task.children) {
             children.add(convertImportTaskToOrderElement(orderVersion,
                     childrenTask));
         }

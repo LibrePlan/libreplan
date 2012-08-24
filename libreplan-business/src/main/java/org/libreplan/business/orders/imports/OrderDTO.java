@@ -36,8 +36,8 @@ public class OrderDTO {
     public String name;
 
     /**
-     * List of {@link ImportTask} of the project that is going to be imported.
+     * List of {@link OrderElementDTO} of the project that is going to be imported.
      */
-    public List<ImportTask> tasks;
+    public List<OrderElementDTO> tasks;
 
 }

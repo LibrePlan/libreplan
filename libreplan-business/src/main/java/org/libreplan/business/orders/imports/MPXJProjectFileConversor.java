@@ -132,20 +132,20 @@ public class MPXJProjectFileConversor {
     }
 
     /**
-     * Converts a List of MPXJ Tasks into a List of {@link ImportTask}.
+     * Converts a List of MPXJ Tasks into a List of {@link OrderElementDTO}.
      *
      * @param tasks
      *            List of MPXJ Tasks to extract data from.
      * @return List<ImportTask> List of ImportTask with the data that we want to
      *         import.
      */
-    private static List<ImportTask> getImportTasks(List<Task> tasks) {
+    private static List<OrderElementDTO> getImportTasks(List<Task> tasks) {
 
-        List<ImportTask> importTasks = new ArrayList<ImportTask>();
+        List<OrderElementDTO> importTasks = new ArrayList<OrderElementDTO>();
 
         for (Task task : tasks) {
 
-            ImportTask importTask = getTaskData(task);
+            OrderElementDTO importTask = getTaskData(task);
 
             importTask.children = getImportTasks(task.getChildTasks());
 
@@ -158,15 +158,15 @@ public class MPXJProjectFileConversor {
     }
 
     /**
-     * Converts a MPXJ Task into a {@link ImportTask}.
+     * Converts a MPXJ Task into a {@link OrderElementDTO}.
      *
      * @param task
      *            MPXJ Task to extract data from.
      * @return ImportTask ImportTask with the data that we want to import.
      */
-    private static ImportTask getTaskData(Task task) {
+    private static OrderElementDTO getTaskData(Task task) {
 
-        ImportTask importTask = new ImportTask();
+        OrderElementDTO importTask = new OrderElementDTO();
 
         importTask.name = task.getName();
 
