@@ -199,4 +199,11 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         return criteria.list();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Worker findByFirstName(String name) {
+        return (Worker) getSession().createCriteria(Worker.class)
+                .add(Restrictions.eq("firstName", name)).uniqueResult();
+    }
+
 }

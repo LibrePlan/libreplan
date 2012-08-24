@@ -127,4 +127,6 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
      * Return the list of {@link Worker Workers} bound to any {@link User}.
      */
     List<Worker> getBound();
+
+    Worker findByFirstName(String name);
 }

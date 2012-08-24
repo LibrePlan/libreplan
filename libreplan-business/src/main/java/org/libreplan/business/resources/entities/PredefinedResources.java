@@ -18,6 +18,8 @@
  */
 package org.libreplan.business.resources.entities;
 
+import org.libreplan.business.common.Registry;
+
 /**
  * Defines a default {@link Resource} for LibrePlan Audiovisual.
  *
@@ -39,6 +41,10 @@ public enum PredefinedResources {
     public Resource getResource() {
         Worker worker = Worker.create(name, name, name);
         return worker;
+    }
+
+    public Resource getFromDB() {
+        return Registry.getWorkerDAO().findByFirstName(name);
     }
 
 }
