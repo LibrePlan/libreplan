@@ -80,9 +80,11 @@ public class OrderLineTemplate extends OrderElementTemplate {
     }
 
     private void setupHoursGroups(OrderLine orderLine) {
+        Set<HoursGroup> hoursGroups = new HashSet<HoursGroup>();
         for (HoursGroup each : getHoursGroups()) {
-            orderLine.addHoursGroup(HoursGroup.copyFrom(each, orderLine));
+            hoursGroups.add(HoursGroup.copyFrom(each, orderLine));
         }
+        orderLine.setHoursGroups(hoursGroups);
     }
 
     private void setupBudget(OrderLine orderLine) {

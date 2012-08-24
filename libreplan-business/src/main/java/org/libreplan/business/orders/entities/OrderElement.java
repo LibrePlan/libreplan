@@ -1538,10 +1538,4 @@ public abstract class OrderElement extends IntegrationEntity implements
         return this.sumExpenses;
     }
 
-    /**
-     * THIS IS A HACK FOR LP AUDIOVISUAL the budget attribute is transformed to
-     * hours, so OrderLines created from this template can schedule money
-     */
-    public abstract void convertBudgetIntoHours();
-
 }

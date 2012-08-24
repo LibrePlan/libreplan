@@ -1159,11 +1159,4 @@ public class OrderLineGroup extends OrderElement implements
         return budget;
     }
 
-    @Override
-    public void convertBudgetIntoHours() {
-        for (OrderElement each : getChildren()) {
-            each.convertBudgetIntoHours();
-        }
-    }
-
 }

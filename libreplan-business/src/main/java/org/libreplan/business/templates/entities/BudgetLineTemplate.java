@@ -144,7 +144,7 @@ public class BudgetLineTemplate extends OrderLineTemplate {
             copy.addQualityForm(form);
         }
         for (HoursGroup each : getHoursGroups()) {
-            copy.getHoursGroups().add(HoursGroup.copyFrom(each, copy));
+            copy.addHoursGroup(HoursGroup.copyFrom(each, copy));
         }
 
         return copy;
