@@ -273,6 +273,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     globalView.goToOrdersList();
                 }
             }, "01-introducion.html#id2"));
+            // In order of see the Import project option in the menu
+            planningItems.add(subItem(_("Import project"),
+                    "/orders/imports/projectImport.zul", ""));
         }
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
             planningItems.add(subItem(_("Resources Load"), new ICapture() {

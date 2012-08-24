@@ -1,0 +1,42 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2010-2011 Wireless Galicia, S.L.
+  Copyright (C) 2012 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page id="projectImport" title="${i18n:_('LibrePlan: Import Project')}"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+
+
+
+<zk>
+     <window id="importProject" self="@{define(content)}"
+        apply="org.libreplan.web.orders.imports.ProjectImportController"
+        title="${i18n:_('Import Project')}">
+
+        <vbox id="messagesContainer" />
+
+        <hbox>
+            <button id="btnImportProject" label="${i18n:_('Upload Project')}" upload="true,maxsize=500" onUpload="projectImportController.importProject(event.getMedia())"/>
+        </hbox>
+    </window>
+</zk>

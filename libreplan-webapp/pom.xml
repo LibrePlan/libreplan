@@ -448,5 +448,10 @@
             <groupId>br.com.digilabs.jqplot</groupId>
             <artifactId>jqplot4java</artifactId>
         </dependency>
+        <!-- ZK fileupload -->
+        <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </dependency>
    </dependencies>
 </project>
