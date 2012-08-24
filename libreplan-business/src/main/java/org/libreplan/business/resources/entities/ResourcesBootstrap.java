@@ -1,7 +1,6 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2011 CafédeRed Solutions, S.L.
  * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,21 +26,15 @@ import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.business.workreports.entities.WorkReportType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Creates the default {@link WorkReportType WorkReportTypes}.<br />
+ * Creates a default {@link Resource} for LibrePlan Audiovisual with maximum
+ * availability.
  *
- * If there is no work report types, it creates a default work report type.<br />
- *
- * Even if there are already some work report types defined, it creates a work
- * report type for monthly timesheets if it is not present in the database yet.
- *
- * @author Ignacio Díaz Teijido <ignacio.diaz@cafedered.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Component

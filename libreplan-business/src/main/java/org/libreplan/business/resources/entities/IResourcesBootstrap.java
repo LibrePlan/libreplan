@@ -19,10 +19,9 @@
 package org.libreplan.business.resources.entities;
 
 import org.libreplan.business.IDataBootstrap;
-import org.libreplan.business.workreports.entities.WorkReportTypeBootstrap;
 
 /**
- * Interface for {@link WorkReportTypeBootstrap}.
+ * Interface for {@link ResourcesBootstrap}.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
