@@ -157,9 +157,9 @@ public class FilmingProgressController extends GenericForwardComposer {
         clearPlots();
         resetMapCharts();
 
-        Timeplot timeplotScenes = new Timeplot();
-        Timeplot timeplotPages = new Timeplot();
-        Timeplot timeplotMinutes = new Timeplot();
+        Timeplot timeplotScenes = createTimeplot();
+        Timeplot timeplotPages = createTimeplot();
+        Timeplot timeplotMinutes = createTimeplot();
 
         ValueGeometry vg = new DefaultValueGeometry();
         vg.setGridColor("#000000");
@@ -197,7 +197,13 @@ public class FilmingProgressController extends GenericForwardComposer {
         filmingProgressChartPages.appendChild(timeplotPages);
     }
 
-    private ListModel createListModel(ProgressValue progressValue) {
+    private Timeplot createTimeplot() {
+		Timeplot timeplot = new Timeplot();
+		timeplot.setTimeFlagFormat("yyyy-MM-dd");
+		return timeplot;
+	}
+
+	private ListModel createListModel(ProgressValue progressValue) {
         ListModelList lm = new ListModelList();
         BigDecimal sumProgressValues = BigDecimal.ZERO;
 
