@@ -21,6 +21,9 @@
 
 package org.libreplan.ws.workreports.impl;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -37,7 +40,9 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.daos.ISumChargedEffortDAO;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.libreplan.ws.common.impl.GenericRESTService;
 import org.libreplan.ws.workreports.api.IWorkReportService;
@@ -61,6 +66,9 @@ public class WorkReportServiceREST extends
 
     @Autowired
     private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -136,6 +144,23 @@ public class WorkReportServiceREST extends
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
                             .getWorkReportLines());
             workReportDAO.remove(workReport.getId());
+            return Response.ok().build();
+        } catch (InstanceNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
+
+    @Override
+    @DELETE
+    @Path("/line/{code}/")
+    @Transactional
+    public Response removeWorkReportLine(@PathParam("code") String code) {
+        try {
+            WorkReportLine workReportLine = workReportLineDAO.findByCode(code);
+            sumChargedEffortDAO
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(new HashSet<WorkReportLine>(
+                            Arrays.asList(workReportLine)));
+            workReportLineDAO.remove(workReportLine.getId());
             return Response.ok().build();
         } catch (InstanceNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();

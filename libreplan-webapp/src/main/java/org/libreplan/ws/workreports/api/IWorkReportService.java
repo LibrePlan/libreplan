@@ -41,4 +41,6 @@ public interface IWorkReportService {
 
     Response removeWorkReport(String code);
 
+    Response removeWorkReportLine(String code);
+
 }
