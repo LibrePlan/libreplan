@@ -22,6 +22,7 @@ package org.libreplan.web.users.dashboard;
 import java.util.List;
 
 import org.libreplan.business.calendars.entities.CalendarAvailability;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -52,5 +53,10 @@ public interface IMonthlyTimesheetsAreaModel {
      * tracked time in the specified <code>workReport</code>.
      */
     int getNumberOfOrderElementsWithTrackedTime(WorkReport workReport);
+
+    /**
+     * Returns configured periodicity for personal timesheets.
+     */
+    PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity();
 
 }

@@ -51,7 +51,9 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
             final MonthlyTimesheetDTO monthlyTimesheet = (MonthlyTimesheetDTO) data;
             row.setValue(monthlyTimesheet);
 
-            Util.appendLabel(row, monthlyTimesheet.getDate().toString("MMMM y"));
+            Util.appendLabel(row, monthlyTimesheet
+                    .toString(monthlyTimesheetsAreaModel
+                            .getPersonalTimesheetsPeriodicity()));
             Util.appendLabel(row, monthlyTimesheet.getResourceCapacity()
                     .toFormattedString());
             Util.appendLabel(row, monthlyTimesheet.getTotalHours()

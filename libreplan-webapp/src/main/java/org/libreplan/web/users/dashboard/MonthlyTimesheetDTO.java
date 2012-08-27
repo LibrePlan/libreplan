@@ -19,7 +19,10 @@
 
 package org.libreplan.web.users.dashboard;
 
+import static org.libreplan.web.I18nHelper._;
+
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
 
@@ -45,8 +48,7 @@ public class MonthlyTimesheetDTO {
 
     /**
      * @param date
-     *            Only the year and month are used, the day is reseted to first
-     *            day of the month. As there's only one timesheet per month.
+     *            The date of the timesheet.
      * @param workReport
      *            The work report of the monthly timesheet, it could be
      *            <code>null</code> if it doesn't exist yet.
@@ -62,7 +64,7 @@ public class MonthlyTimesheetDTO {
     MonthlyTimesheetDTO(LocalDate date, WorkReport workReport,
             EffortDuration resourceCapacity, EffortDuration totalHours,
             int tasksNumber) {
-        this.date = date.dayOfMonth().withMaximumValue();
+        this.date = date;
         this.workReport = workReport;
         this.resourceCapacity = resourceCapacity;
         this.totalHours = totalHours;
@@ -87,6 +89,20 @@ public class MonthlyTimesheetDTO {
 
     public int getTasksNumber() {
         return tasksNumber;
+    }
+
+    public String toString(PersonalTimesheetsPeriodicityEnum periodicity) {
+        switch (periodicity) {
+            case WEEKLY:
+                return _("Week {0}", date.toString("w"));
+            case TWICE_MONTHLY:
+                return (date.getDayOfMonth() <= 15) ?
+                        _("{0} 1st fortnight",date.toString("MMMM")) :
+                            _("{0} 2nd fortnight",date.toString("MMMM"));
+            case MONTHLY:
+            default:
+                return date.toString("MMMM y");
+        }
     }
 
 }

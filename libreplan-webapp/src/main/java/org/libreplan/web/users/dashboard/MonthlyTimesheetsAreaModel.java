@@ -25,6 +25,9 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
+import org.joda.time.Weeks;
+import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
@@ -56,6 +59,9 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
     @Autowired
     private IWorkReportDAO workReportDAO;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     @Override
     @Transactional(readOnly = true)
     public List<MonthlyTimesheetDTO> getMonthlyTimesheets() {
@@ -69,19 +75,68 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
         LocalDate activationDate = getActivationDate(user.getWorker());
         LocalDate currentDate = new LocalDate();
         return getMonthlyTimesheets(user.getWorker(), activationDate,
-                currentDate.plusMonths(1));
+                currentDate.plusMonths(1), getPersonalTimesheetsPeriodicity());
     }
 
     private List<MonthlyTimesheetDTO> getMonthlyTimesheets(Resource resource,
-            LocalDate start, LocalDate end) {
-        int months = Months.monthsBetween(start, end).getMonths();
+            LocalDate start, LocalDate end,
+            PersonalTimesheetsPeriodicityEnum periodicity) {
+        int items;
+        switch (periodicity) {
+            case WEEKLY:
+                start = start.dayOfWeek().withMinimumValue();
+                end = end.dayOfWeek().withMaximumValue();
+                items = Weeks.weeksBetween(start, end).getWeeks();
+                break;
+            case TWICE_MONTHLY:
+                if (start.getDayOfMonth() <= 15) {
+                    start = start.dayOfMonth().withMinimumValue();
+                } else {
+                    start = start.dayOfMonth().withMinimumValue().plusDays(15);
+                }
+                if (end.getDayOfMonth() <= 15) {
+                    end = end.dayOfMonth().withMinimumValue().plusDays(14);
+                } else {
+                    end = end.dayOfMonth().withMaximumValue();
+                }
+                items = Months.monthsBetween(start, end).getMonths() * 2;
+                break;
+            case MONTHLY:
+            default:
+                start = start.dayOfMonth().withMinimumValue();
+                end = end.dayOfMonth().withMaximumValue();
+                items = Months.monthsBetween(start, end).getMonths();
+                break;
+        }
 
         List<MonthlyTimesheetDTO> result = new ArrayList<MonthlyTimesheetDTO>();
 
         // In decreasing order to provide a list sorted with the more recent
         // monthly timesheets at the beginning
-        for (int i = months; i >= 0; i--) {
-            LocalDate date = start.plusMonths(i);
+        for (int i = items; i >= 0; i--) {
+            LocalDate date;
+            switch (periodicity) {
+                case WEEKLY:
+                    date = start.plusWeeks(i);
+                    break;
+                case TWICE_MONTHLY:
+                int months = (i % 2 == 0) ? (i / 2) : ((i - 1) / 2);
+                    date = start.plusMonths(months);
+                    if (i % 2 != 0) {
+                        if (date.getDayOfMonth() <= 15) {
+                            date = date.dayOfMonth().withMinimumValue()
+                                    .plusDays(15);
+                        } else {
+                            date = date.plusMonths(1).dayOfMonth()
+                                    .withMinimumValue();
+                        }
+                    }
+                    break;
+                case MONTHLY:
+                default:
+                    date = start.plusMonths(i);
+                    break;
+            }
 
             WorkReport workReport = getWorkReport(resource, date);
 
@@ -93,7 +148,8 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
             }
 
             result.add(new MonthlyTimesheetDTO(date, workReport,
-                    getResourceCapcity(resource, date), hours, tasksNumber));
+                    getResourceCapcity(resource, date, periodicity), hours,
+                    tasksNumber));
         }
 
         return result;
@@ -106,10 +162,33 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
         return workReport;
     }
 
-    private EffortDuration getResourceCapcity(Resource resource, LocalDate date) {
+    private EffortDuration getResourceCapcity(Resource resource,
+            LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
+        LocalDate start;
+        LocalDate end;
+        switch (periodicity) {
+            case WEEKLY:
+                start = date.dayOfWeek().withMinimumValue();
+                end = date.dayOfWeek().withMaximumValue();
+                break;
+            case TWICE_MONTHLY:
+                if (date.getDayOfMonth() <= 15) {
+                    start = date.dayOfMonth().withMinimumValue();
+                    end = start.plusDays(14);
+                } else {
+                    start = date.dayOfMonth().withMinimumValue().plusDays(15);
+                    end = date.dayOfMonth().withMaximumValue();
+                }
+                break;
+            default:
+            case MONTHLY:
+                start = date.dayOfMonth().withMinimumValue();
+                end = date.dayOfMonth().withMaximumValue();
+                break;
+        }
+
         EffortDuration capacity = EffortDuration.zero();
-        for (LocalDate day = date.dayOfMonth().withMinimumValue(); day
-                .compareTo(date.dayOfMonth().withMaximumValue()) <= 0; day = day
+        for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                 .plusDays(1)) {
             capacity = capacity.plus(resource.getCalendar().getCapacityOn(
                     PartialDay.wholeDay(day)));
@@ -147,6 +226,13 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
             }
         }
         return orderElements.size();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return configurationDAO.getConfiguration()
+                .getPersonalTimesheetsPeriodicity();
     }
 
 }
