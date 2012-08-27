@@ -27,7 +27,7 @@ package org.libreplan.business.workreports.entities;
  */
 public enum PredefinedWorkReportTypes {
     DEFAULT("Default", false, false, false),
-    MONTHLY_TIMESHEETS("Monthly timesheets", false, true, false);
+    MONTHLY_TIMESHEETS("Personal timesheets", false, true, false);
 
     private WorkReportType workReportType;
 

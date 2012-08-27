@@ -16,4 +16,16 @@
         <sql>ALTER TABLE task_element MODIFY notes TEXT</sql>
     </changeSet>
 
+    <changeSet id="update-work_report_type-name-to-personal-timehseets"
+        author="mrego">
+        <comment>
+            Update work_report_type name from "Monthly timesheets" to "Personal
+            timehsheets"
+        </comment>
+        <update tableName="work_report_type">
+            <column name="name" value="Personal timesheets"/>
+            <where>name='Monthly timesheets'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
