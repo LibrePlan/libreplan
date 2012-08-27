@@ -124,7 +124,7 @@ public class FormBinder {
 
     private IMessagesForUser messagesForUser;
 
-    private final IResourceAllocationModel resourceAllocationModel;
+    private IResourceAllocationModel resourceAllocationModel;
 
     private List<AllocationRow> rows = Collections.emptyList();
 
@@ -194,6 +194,10 @@ public class FormBinder {
         this.lastAllocation = this.allocationRowsHandler
                 .getInitialAllocation(currentScenario);
         this.aggregate = this.lastAllocation.getAggregate();
+    }
+
+    protected FormBinder(AllocationRowsHandler allocationRowsHandler) {
+        this.allocationRowsHandler = allocationRowsHandler;
     }
 
     public void setAssignedEffortComponent(
@@ -446,7 +450,7 @@ public class FormBinder {
                 workableDaysAndDatesBinder.getValue());
     }
 
-    private Task getTask() {
+    protected Task getTask() {
         return allocationRowsHandler.getTask();
     }
 

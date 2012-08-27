@@ -276,6 +276,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 && resourceAllocation.isLimitingAndHasDayAssignments();
     }
 
+    public boolean hasDayAssignments() {
+        ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
+        return resourceAllocation != null
+                && resourceAllocation.isLimitingAndHasDayAssignments();
+    }
+
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         addResourceAllocation(resourceAllocation, true);
     }

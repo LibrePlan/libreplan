@@ -36,6 +36,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.entities.IndirectAdvanceAssignment;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.Flagged;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
@@ -55,10 +56,12 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.AggregateOfExpensesLines;
 import org.libreplan.business.planner.entities.AssignmentFunction;
+import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.DerivedAllocation;
+import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ResourceAllocation;
@@ -77,7 +80,9 @@ import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.IAssignmentsOnResourceCalculator;
+import org.libreplan.business.resources.entities.PredefinedResources;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.daos.IOrderVersionDAO;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
@@ -90,6 +95,10 @@ import org.libreplan.business.users.entities.ProfileOrderAuthorization;
 import org.libreplan.business.users.entities.UserOrderAuthorization;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.planner.TaskElementAdapter;
+import org.libreplan.web.planner.allocation.AllocationResult;
+import org.libreplan.web.planner.allocation.AllocationRow;
+import org.libreplan.web.planner.allocation.AllocationRowsHandler;
+import org.libreplan.web.planner.allocation.AllocationRowsHandler.Warnings;
 import org.libreplan.web.templates.OrderTemplatesModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -270,7 +279,8 @@ public class PlanningStateCreator {
 
     private PlanningState createPlanning(Order orderReloaded) {
         Scenario currentScenario = scenarioManager.getCurrent();
-        final List<Resource> allResources = resourceDAO.list(Resource.class);
+        final List<Resource> allResources = Collections
+                .singletonList(PredefinedResources.DEFAULT.getFromDB());
         criterionDAO.list(Criterion.class);
         forceLoadOfOrderAssociatedData(orderReloaded);
         TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
@@ -770,7 +780,67 @@ public class PlanningStateCreator {
             cachedConfiguration = null;
             synchronizeScheduling();
             generateOrderElementCodes();
+            doDefaultResourceAssignments();
             rebuildTasksState();
+        }
+
+        private void doDefaultResourceAssignments() {
+            // LP AUDIOVISUAL: do default RESOURCES_PER_DAY allocation for the
+            // tasks with no allocations
+            TaskGroup rootTask = getRootTask();
+            if (rootTask == null) {
+                // nothing to do, there are no tasks yet
+                return;
+            }
+            List<TaskElement> children = rootTask.getAllChildren();
+            for (TaskElement child : children) {
+                if (child.isLeaf() && !child.isMilestone()
+                        && !((Task) child).hasResourceAllocations()) {
+                    Task task = (Task) child;
+                    AllocationRowsHandler allocationRowsHandler = AllocationRowsHandler
+                            .create((Task) task,
+                                    Collections.<AllocationRow> emptyList(),
+                                    createWorkerFinder());
+                    allocationRowsHandler.createFakeFormBinder();
+                    allocationRowsHandler
+                            .setCalculatedValue(CalculatedValue.RESOURCES_PER_DAY);
+
+                    Resource resource = PredefinedResources.DEFAULT.getFromDB();
+                    allocationRowsHandler
+                            .addSpecificResourceAllocationFor(Collections
+                                    .singletonList(resource));
+
+                    Flagged<AllocationResult, Warnings> allocationResult =
+                            allocationRowsHandler.doAllocation();
+                    if (!allocationResult.isFlagged()) {
+                        allocationResult.getValue().applyTo(
+                                getCurrentScenario(), task);
+                    } else {
+                        String string = "FAIL APPLYING ALLOCATION RESULT:\n";
+                        for (Warnings warning : allocationResult.getFlags()) {
+                            string += warning.toString() + "\n";
+                        }
+                        throw new RuntimeException(string);
+                    }
+                    // detach resource from session, or else the reattach done
+                    // later will fail
+                    // (at PlanningState.reassociateResourcesWithSession())
+                    resourceDAO.detach(resource);
+                }
+            }
+        }
+
+        private IWorkerFinder createWorkerFinder() {
+            return new IWorkerFinder() {
+
+                @Override
+                public Collection<Worker> findWorkersMatching(
+                        Collection<? extends Criterion> requiredCriteria) {
+                    return Collections
+                            .singleton((Worker) PredefinedResources.DEFAULT
+                                    .getFromDB());
+                }
+            };
         }
 
         void synchronizeScheduling() {

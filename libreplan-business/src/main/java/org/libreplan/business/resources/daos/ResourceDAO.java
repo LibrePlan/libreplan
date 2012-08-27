@@ -264,4 +264,8 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
         return result;
     }
 
+    @Override
+    public void detach(Resource resource) {
+        getSession().evict(resource);
+    }
 }

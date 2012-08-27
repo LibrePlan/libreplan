@@ -382,6 +382,15 @@ public class AllocationRowsHandler {
         return formBinder;
     }
 
+    public FormBinder createFakeFormBinder() {
+        if (formBinder != null) {
+            throw new IllegalStateException(
+                    "there is already a binder associated with this object");
+        }
+        formBinder = new FakeFormBinder(this);
+        return formBinder;
+    }
+
     public CalculatedValue getCalculatedValue() {
         return this.calculatedValue;
     }
