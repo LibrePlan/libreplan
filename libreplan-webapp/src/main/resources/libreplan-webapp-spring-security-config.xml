@@ -25,6 +25,9 @@
         <intercept-url pattern="/ws/rest/**"
             access="ROLE_WS_WRITER"
             method="POST" />
+        <intercept-url pattern="/ws/rest/**"
+            access="ROLE_WS_WRITER"
+            method="DELETE" />
 
         <!-- Web application -->
         <intercept-url pattern="/common/img/**"

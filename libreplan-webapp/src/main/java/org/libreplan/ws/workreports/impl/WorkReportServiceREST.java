@@ -22,12 +22,14 @@
 package org.libreplan.ws.workreports.impl;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -122,4 +124,22 @@ public class WorkReportServiceREST extends
     public Response getWorkReport(@PathParam("code") String code) {
         return getDTOByCode(code);
     }
+
+    @Override
+    @DELETE
+    @Path("/{code}/")
+    @Transactional
+    public Response removeWorkReport(@PathParam("code") String code) {
+        try {
+            WorkReport workReport = workReportDAO.findByCode(code);
+            sumChargedEffortDAO
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
+                            .getWorkReportLines());
+            workReportDAO.remove(workReport.getId());
+            return Response.ok().build();
+        } catch (InstanceNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
+
 }
