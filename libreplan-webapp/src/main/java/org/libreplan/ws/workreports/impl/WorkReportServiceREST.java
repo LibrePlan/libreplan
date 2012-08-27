@@ -29,7 +29,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -39,7 +38,6 @@ import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.libreplan.ws.common.impl.GenericRESTService;
-import org.libreplan.ws.common.impl.RecoverableErrorException;
 import org.libreplan.ws.workreports.api.IWorkReportService;
 import org.libreplan.ws.workreports.api.WorkReportDTO;
 import org.libreplan.ws.workreports.api.WorkReportListDTO;
@@ -110,56 +108,11 @@ public class WorkReportServiceREST extends
 
     }
 
-    /**
-     * It saves (inserts or updates) an entity DTO by using a new transaction.
-     *
-     * @throws ValidationException if validations are not passed
-     * @throws RecoverableErrorException if a recoverable error occurs
-     * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
-     *
-     */
-    protected void insertOrUpdate(final WorkReportDTO entityDTO)
-        throws ValidationException, RecoverableErrorException {
-        /*
-         * NOTE: ValidationException and RecoverableErrorException are runtime
-         * exceptions. In consequence, if any of them occurs, transaction is
-         * automatically rolled back.
-         */
-
-        IOnTransaction<Void> save = new IOnTransaction<Void>() {
-
-            @Override
-            public Void execute() {
-
-                WorkReport entity = null;
-                IIntegrationEntityDAO<WorkReport> entityDAO =
-                    getIntegrationEntityDAO();
-
-                /* Insert or update? */
-                try {
-                    entity = entityDAO.findByCode(entityDTO.code);
-                    updateEntity(entity, entityDTO);
-                } catch (InstanceNotFoundException e) {
-                    entity = toEntity(entityDTO);
-                }
-
-                /*
-                 * Validate and save (insert or update) the entity.
-                 */
-                entity.validate();
-                sumChargedEffortDAO
-                        .updateRelatedSumChargedEffortWithWorkReportLineSet(entity
-                                .getWorkReportLines());
-                entityDAO.saveWithoutValidating(entity);
-
-                return null;
-
-            }
-
-        };
-
-        transactionService.runOnAnotherTransaction(save);
-
+    @Override
+    protected void beforeSaving(WorkReport entity) {
+        sumChargedEffortDAO
+                .updateRelatedSumChargedEffortWithWorkReportLineSet(entity
+                        .getWorkReportLines());
     }
 
     @Override
