@@ -28,6 +28,7 @@ import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 
@@ -171,5 +172,10 @@ public interface IConfigurationModel {
     TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours();
 
     void setMonthlyTimesheetsTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
+
+    PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity();
+
+    void setPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity);
 
 }

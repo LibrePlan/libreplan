@@ -43,6 +43,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -632,6 +633,18 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
         }
+    }
+
+    @Override
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return configuration.getPersonalTimesheetsPeriodicity();
+    }
+
+    @Override
+    public void setPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+        configuration
+                .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
     }
 
 }

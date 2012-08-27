@@ -40,6 +40,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
@@ -876,6 +877,31 @@ public class ConfigurationController extends GenericForwardComposer {
     public void setMonthlyTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
         configurationModel.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+    }
+
+    public List<PersonalTimesheetsPeriodicityEnum> getPersonalTimesheetsPeriodicities() {
+        return Arrays.asList(PersonalTimesheetsPeriodicityEnum.values());
+    }
+
+    public ListitemRenderer getPersonalTimesheetsPeriodicityRenderer() {
+        return new ListitemRenderer() {
+            @Override
+            public void render(Listitem item, Object data) throws Exception {
+                PersonalTimesheetsPeriodicityEnum periodicity = (PersonalTimesheetsPeriodicityEnum) data;
+                item.setLabel(_(periodicity.getName()));
+                item.setValue(periodicity);
+            }
+        };
+    }
+
+    public PersonalTimesheetsPeriodicityEnum getSelectedPersonalTimesheetsPeriodicity() {
+        return configurationModel.getPersonalTimesheetsPeriodicity();
+    }
+
+    public void setSelectedPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+        configurationModel
+                .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
     }
 
 }

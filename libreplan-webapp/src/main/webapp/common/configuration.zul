@@ -75,6 +75,13 @@
                                     selectedElement="@{configurationController.monthlyTimesheetsTypeOfWorkHours, access='both'}" />
                             </row>
                             <row>
+                                <label value="${i18n:_('Personal timesheets peridocity')}" />
+                                <listbox model="@{configurationController.personalTimesheetsPeriodicities}"
+                                    itemRenderer="@{configurationController.personalTimesheetsPeriodicityRenderer}"
+                                    selectedItem="@{configurationController.selectedPersonalTimesheetsPeriodicity}"
+                                    mold="select" />
+                            </row>
+                            <row>
                                 <label
                                     value="${i18n:_('Show progress')}" />
                                 <listbox id="lbTypeProgress"
