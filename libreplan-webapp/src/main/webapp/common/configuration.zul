@@ -69,7 +69,7 @@
                                     selectedElement="@{configurationController.defaultCalendar}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Hours type for monthly timesheets')}" />
+                                <label value="${i18n:_('Hours type for personal timesheets')}" />
                                 <bandboxSearch
                                     finder="TypeOfWorkHoursBandboxFinder"
                                     selectedElement="@{configurationController.monthlyTimesheetsTypeOfWorkHours, access='both'}" />

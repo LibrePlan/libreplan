@@ -508,7 +508,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
         breadcrumbs.appendChild(new Label(_("My dashboard")));
         breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-        breadcrumbs.appendChild(new Label(_("Monthly timesheet")));
+        breadcrumbs.appendChild(new Label(_("Personal timesheet")));
     }
 
     @Override
@@ -639,7 +639,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
             goToCreateOrEditFormForResource(monthlyTimesheetModel.getDate(),
                     monthlyTimesheetModel.getWorker());
         }
-        messagesForUser.showMessage(Level.INFO, _("Monthly timesheet saved"));
+        messagesForUser.showMessage(Level.INFO, _("Personal timesheet saved"));
         Util.reloadBindings(timesheet);
     }
 
@@ -675,7 +675,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         if (monthlyTimesheetModel.isModified()) {
             throw new WrongValueException(
                     previousMonth,
-                    _("There are unsaved changes in the current monthly timesheet, please save before moving"));
+                    _("There are unsaved changes in the current personal timesheet, please save before moving"));
         }
         sendToMonthlyTimesheet(monthlyTimesheetModel.getDate().minusMonths(1));
     }
@@ -684,7 +684,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         if (monthlyTimesheetModel.isModified()) {
             throw new WrongValueException(
                     nextMonth,
-                    _("There are unsaved changes in the current monthly timesheet, please save before moving"));
+                    _("There are unsaved changes in the current personal timesheet, please save before moving"));
         }
 
         sendToMonthlyTimesheet(monthlyTimesheetModel.getDate().plusMonths(1));

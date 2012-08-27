@@ -18,7 +18,7 @@
   <http://www.gnu.org/licenses/>.
  -->
 
-<?page id="exceptionDayTypesList" title="${i18n:_('LibrePlan: Monthly timesheet')}" ?>
+<?page id="exceptionDayTypesList" title="${i18n:_('LibrePlan: Personal timesheet')}" ?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -29,7 +29,7 @@
 
 <zk>
     <window apply="org.libreplan.web.users.dashboard.MonthlyTimesheetController"
-        self="@{define(content)}" title="${i18n:_('Monthly timesheet')}">
+        self="@{define(content)}" title="${i18n:_('Personal timesheet')}">
 
         <div id="messagesContainer" />
 
@@ -81,7 +81,7 @@
                     </columns>
                     <rows>
                         <row visible="@{controller.hasOtherReports}">
-                            <label value="${i18n:_('Total monthly timesheet')}" />
+                            <label value="${i18n:_('Total personal timesheet')}" />
                             <label id="summaryTotalMonthlyTimesheet" />
                         </row>
                         <row visible="@{controller.hasOtherReports}">

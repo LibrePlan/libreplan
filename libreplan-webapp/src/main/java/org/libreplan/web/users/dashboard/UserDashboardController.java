@@ -57,7 +57,7 @@ public class UserDashboardController extends GenericForwardComposer {
             String monthlyTimesheet = new LocalDate(timesheetSave)
                     .toString("MMMM y");
             messagesForUser.showMessage(Level.INFO,
-                    _("Monthly timesheet \"{0}\" saved", monthlyTimesheet));
+                    _("Personal timesheet \"{0}\" saved", monthlyTimesheet));
         }
 
         String expenseSheetSaved = Executions.getCurrent().getParameter(

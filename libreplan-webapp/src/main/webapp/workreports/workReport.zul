@@ -129,7 +129,7 @@
                     </rows>
                 </grid>
                 <button onClick="controller.createOrEditMonthlyTimesheet();"
-                    label="${i18n:_('Go to monthly timesheet')}" />
+                    label="${i18n:_('Go to personal timesheet')}" />
             </popup>
         </window>
 

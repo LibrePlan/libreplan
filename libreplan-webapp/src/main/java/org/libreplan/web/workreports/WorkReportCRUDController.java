@@ -190,7 +190,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 "timesheet_saved");
         if (!StringUtils.isBlank(timesheetSave)) {
             messagesForUser.showMessage(Level.INFO,
-                    _("Monthly timesheet saved"));
+                    _("Personal timesheet saved"));
         }
     }
 

@@ -19,7 +19,7 @@
  -->
 
 <groupbox apply="org.libreplan.web.users.dashboard.MonthlyTimesheetsAreaController">
-    <caption label="${i18n:_('Monthly timesheets')}" />
+    <caption label="${i18n:_('Personal timesheets')}" />
 
     <grid model="@{controller.monthlyTimesheets}" mold="paging"
         pageSize="10" rowRenderer="@{controller.monthlyTimesheetsRenderer}"

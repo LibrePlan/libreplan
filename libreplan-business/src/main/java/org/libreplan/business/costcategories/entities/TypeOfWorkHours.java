@@ -143,7 +143,7 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
         }
     }
 
-    @AssertTrue(message = "type of work hours for monthly timesheets cannot be disabled")
+    @AssertTrue(message = "type of work hours for personal timesheets cannot be disabled")
     public boolean checkMonthlyTimesheetsTypeOfWorkHoursNotDisabled() {
         if (!isNewObject() && !getEnabled()) {
             TypeOfWorkHours typeOfWorkHours = Registry.getConfigurationDAO()

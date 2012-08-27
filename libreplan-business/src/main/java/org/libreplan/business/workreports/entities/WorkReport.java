@@ -470,7 +470,7 @@ public class WorkReport extends IntegrationEntity implements
         return result;
     }
 
-    @AssertTrue(message = "only one timesheet line per day and task is allowed in monthly timesheets")
+    @AssertTrue(message = "only one timesheet line per day and task is allowed in personal timesheets")
     public boolean checkConstraintOnlyOneWorkReportLinePerDayAndOrderElementInMonthlyTimesheet() {
         if (!getWorkReportType().isMonthlyTimesheetsType()) {
             return true;
@@ -492,7 +492,7 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
-    @AssertTrue(message = "In monthly timesheets, all timesheet lines should be in the same month")
+    @AssertTrue(message = "In personal timesheets, all timesheet lines should be in the same month")
     public boolean checkConstraintAllWorkReportLinesInTheSameMonthInMonthlyTimesheet() {
         if (!getWorkReportType().isMonthlyTimesheetsType()) {
             return true;
@@ -516,7 +516,7 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
-    @AssertTrue(message = "resource has to be bound to a user in monthly timesheets")
+    @AssertTrue(message = "resource has to be bound to a user in personal timesheets")
     public boolean checkConstraintResourceIsBoundInMonthlyTimesheet() {
         if (!getWorkReportType().isMonthlyTimesheetsType()) {
             return true;
