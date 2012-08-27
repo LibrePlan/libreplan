@@ -1,10 +1,10 @@
-package org.libreplan.web.orders.imports;
+package org.libreplan.web.importers;
 
 import static org.libreplan.web.I18nHelper._;
 
 import java.io.InputStream;
 
-import org.libreplan.business.orders.imports.IOrderImporter;
+import org.libreplan.importers.IOrderImporter;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;

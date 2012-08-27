@@ -448,6 +448,11 @@
             <groupId>br.com.digilabs.jqplot</groupId>
             <artifactId>jqplot4java</artifactId>
         </dependency>
+        <!-- MPXJ Library -->
+        <dependency>
+            <groupId>net.sourceforge</groupId>
+            <artifactId>mpxj</artifactId>
+        </dependency>
         <!-- ZK fileupload -->
         <dependency>
           <groupId>commons-io</groupId>

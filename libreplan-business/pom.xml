@@ -120,11 +120,6 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-maven-plugin</artifactId>
         </dependency>
-        <!-- MPXJ Library -->
-        <dependency>
-            <groupId>net.sourceforge</groupId>
-            <artifactId>mpxj</artifactId>
-        </dependency>
     </dependencies>
 
     <profiles>

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.orders.imports;
+package org.libreplan.importers;
 
 import java.io.InputStream;
 

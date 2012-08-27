@@ -30,7 +30,7 @@
 
 <zk>
      <window id="importProject" self="@{define(content)}"
-        apply="org.libreplan.web.orders.imports.ProjectImportController"
+        apply="org.libreplan.web.importers.ProjectImportController"
         title="${i18n:_('Import Project')}">
 
         <vbox id="messagesContainer" />
