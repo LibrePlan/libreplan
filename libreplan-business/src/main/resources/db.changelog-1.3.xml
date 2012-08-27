@@ -28,4 +28,15 @@
         </update>
     </changeSet>
 
+    <changeSet id="add-personal_timesheets_periodicity-column-to-configuration"
+        author="mrego">
+        <comment>Add personal_timesheets_periodicity column to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="personal_timesheets_periodicity" type="INT" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="personal_timesheets_periodicity" value="0" />
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

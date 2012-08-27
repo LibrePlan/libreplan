@@ -111,6 +111,7 @@ public class Configuration extends BaseEntity {
 
     private TypeOfWorkHours monthlyTimesheetsTypeOfWorkHours;
 
+    private PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity = PersonalTimesheetsPeriodicityEnum.MONTHLY;
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
@@ -458,6 +459,15 @@ public class Configuration extends BaseEntity {
     public void setMonthlyTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
         monthlyTimesheetsTypeOfWorkHours = typeOfWorkHours;
+    }
+
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return personalTimesheetsPeriodicity;
+    }
+
+    public void setPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+        this.personalTimesheetsPeriodicity = personalTimesheetsPeriodicity;
     }
 
 }
