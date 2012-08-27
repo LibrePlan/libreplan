@@ -54,4 +54,6 @@ public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
      */
     WorkReport getMonthlyTimesheetWorkReport(Resource resource, LocalDate date);
 
+    boolean isAnyPersonalTimesheetAlreadySaved();
+
 }

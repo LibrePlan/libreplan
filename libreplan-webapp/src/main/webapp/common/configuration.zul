@@ -79,6 +79,8 @@
                                 <listbox model="@{configurationController.personalTimesheetsPeriodicities}"
                                     itemRenderer="@{configurationController.personalTimesheetsPeriodicityRenderer}"
                                     selectedItem="@{configurationController.selectedPersonalTimesheetsPeriodicity}"
+                                    disabled="@{configurationController.personalTimesheetsPeriodicityDisabled}"
+                                    tooltiptext="@{configurationController.personalTimesheetsPeriodicityTooltip}"
                                     mold="select" />
                             </row>
                             <row>

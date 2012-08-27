@@ -174,4 +174,22 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
         return null;
     }
 
+    @Override
+    public boolean isAnyPersonalTimesheetAlreadySaved() {
+        WorkReportType workReportType;
+        try {
+            workReportType = workReportTypeDAO
+                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                            .getName());
+        } catch (NonUniqueResultException e) {
+            throw new RuntimeException(e);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Criteria criteria = getSession().createCriteria(WorkReport.class);
+        criteria.add(Restrictions.eq("workReportType", workReportType));
+        return criteria.list().isEmpty();
+    }
+
 }

@@ -178,4 +178,6 @@ public interface IConfigurationModel {
     void setPersonalTimesheetsPeriodicity(
             PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity);
 
+    boolean isAnyPersonalTimesheetAlreadySaved();
+
 }

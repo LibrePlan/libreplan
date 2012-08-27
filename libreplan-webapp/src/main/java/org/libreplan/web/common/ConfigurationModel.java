@@ -48,6 +48,7 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -82,6 +83,9 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
+
+    @Autowired
+    private IWorkReportDAO workReportDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -645,6 +649,12 @@ public class ConfigurationModel implements IConfigurationModel {
             PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
         configuration
                 .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAnyPersonalTimesheetAlreadySaved() {
+        return !workReportDAO.isAnyPersonalTimesheetAlreadySaved();
     }
 
 }

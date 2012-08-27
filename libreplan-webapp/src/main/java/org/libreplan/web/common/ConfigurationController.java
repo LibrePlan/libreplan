@@ -904,4 +904,15 @@ public class ConfigurationController extends GenericForwardComposer {
                 .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
     }
 
+    public boolean isPersonalTimesheetsPeriodicityDisabled() {
+        return configurationModel.isAnyPersonalTimesheetAlreadySaved();
+    }
+
+    public String getPersonalTimesheetsPeriodicityTooltip() {
+        if (isPersonalTimesheetsPeriodicityDisabled()) {
+            return _("Periocity cannot be changed because there is already any personal timesheet stored");
+        }
+        return "";
+    }
+
 }
