@@ -679,7 +679,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                     previousMonth,
                     _("There are unsaved changes in the current personal timesheet, please save before moving"));
         }
-        sendToMonthlyTimesheet(monthlyTimesheetModel.getDate().minusMonths(1));
+        sendToMonthlyTimesheet(monthlyTimesheetModel.getPrevious());
     }
 
     public void nextMonth() {
@@ -689,7 +689,7 @@ public class MonthlyTimesheetController extends GenericForwardComposer
                     _("There are unsaved changes in the current personal timesheet, please save before moving"));
         }
 
-        sendToMonthlyTimesheet(monthlyTimesheetModel.getDate().plusMonths(1));
+        sendToMonthlyTimesheet(monthlyTimesheetModel.getNext());
     }
 
     private void sendToMonthlyTimesheet(final LocalDate date) {

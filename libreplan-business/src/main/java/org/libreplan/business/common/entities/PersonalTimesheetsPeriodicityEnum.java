@@ -52,6 +52,16 @@ public enum PersonalTimesheetsPeriodicityEnum {
         public LocalDate getDateForItemFromDate(int item, LocalDate fromDate) {
             return fromDate.plusMonths(item);
         }
+
+        @Override
+        public LocalDate previous(LocalDate date) {
+            return getStart(date).minusMonths(1);
+        }
+
+        @Override
+        public LocalDate next(LocalDate date) {
+            return getStart(date).plusMonths(1);
+        }
     },
     TWICE_MONTHLY(_("Twice-monthly")) {
         @Override
@@ -90,6 +100,25 @@ public enum PersonalTimesheetsPeriodicityEnum {
             }
             return date;
         }
+
+        @Override
+        public LocalDate previous(LocalDate date) {
+            if (date.getDayOfMonth() <= 15) {
+                return date.minusMonths(1).dayOfMonth().withMinimumValue()
+                        .plusDays(15);
+            } else {
+                return date.dayOfMonth().withMinimumValue();
+            }
+        }
+
+        @Override
+        public LocalDate next(LocalDate date) {
+            if (date.getDayOfMonth() <= 15) {
+                return date.dayOfMonth().withMinimumValue().plusDays(15);
+            } else {
+                return date.plusMonths(1).dayOfMonth().withMinimumValue();
+            }
+        }
     },
     WEEKLY(_("Weekly")) {
         @Override
@@ -111,6 +140,16 @@ public enum PersonalTimesheetsPeriodicityEnum {
         public LocalDate getDateForItemFromDate(int item, LocalDate fromDate) {
             return fromDate.plusWeeks(item);
         }
+
+        @Override
+        public LocalDate previous(LocalDate date) {
+            return getStart(date).minusWeeks(1);
+        }
+
+        @Override
+        public LocalDate next(LocalDate date) {
+            return getStart(date).plusWeeks(1);
+        }
     };
 
     private String name;
@@ -131,5 +170,9 @@ public enum PersonalTimesheetsPeriodicityEnum {
 
     public abstract LocalDate getDateForItemFromDate(int item,
             LocalDate fromDate);
+
+    public abstract LocalDate previous(LocalDate date);
+
+    public abstract LocalDate next(LocalDate date);
 
 }

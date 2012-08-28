@@ -217,4 +217,16 @@ public interface IMonthlyTimesheetModel {
      */
     String getTimesheetString();
 
+    /**
+     * Returns the previous personal timesheet to the current one depending on
+     * the configured periodicity.
+     */
+    LocalDate getPrevious();
+
+    /**
+     * Returns the next personal timesheet to the current one depending on the
+     * configured periodicity.
+     */
+    LocalDate getNext();
+
 }

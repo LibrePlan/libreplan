@@ -571,4 +571,14 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         return MonthlyTimesheetDTO.toString(periodicity, date);
     }
 
+    @Override
+    public LocalDate getPrevious() {
+        return periodicity.previous(date);
+    }
+
+    @Override
+    public LocalDate getNext() {
+        return periodicity.next(date);
+    }
+
 }
