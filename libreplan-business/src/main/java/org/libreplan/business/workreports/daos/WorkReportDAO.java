@@ -36,6 +36,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -141,7 +142,7 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     @Override
     @SuppressWarnings("unchecked")
     public WorkReport getMonthlyTimesheetWorkReport(Resource resource,
-            LocalDate date) {
+            LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
         WorkReportType workReportType;
         try {
             workReportType = workReportTypeDAO
@@ -158,14 +159,18 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
         List<WorkReport> monthlyTimesheets = criteria.add(
                 Restrictions.eq("resource", resource)).list();
 
+        LocalDate start = periodicity.getStart(date);
+        LocalDate end = periodicity.getEnd(date);
+
         for (WorkReport workReport : monthlyTimesheets) {
             Set<WorkReportLine> workReportLines = workReport
                     .getWorkReportLines();
             if (workReportLines.size() > 0) {
-                Date workReportDate = workReportLines.iterator().next()
-                        .getDate();
-                if (LocalDate.fromDateFields(workReportDate).monthOfYear()
-                        .equals(date.monthOfYear())) {
+                LocalDate workReportDate = LocalDate
+                        .fromDateFields(workReportLines.iterator().next()
+                                .getDate());
+                if (workReportDate.compareTo(start) >= 0
+                        && workReportDate.compareTo(end) <= 0) {
                     return workReport;
                 }
             }

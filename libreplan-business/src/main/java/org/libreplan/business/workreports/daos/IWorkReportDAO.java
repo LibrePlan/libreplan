@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportType;
@@ -48,11 +49,13 @@ public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
 
     /**
      * Returns the {@link WorkReport} of the predefined type monthly timesheet
-     * for the given <code>resource</code> in the specified <code>date</code>.<br />
+     * for the given <code>resource</code> in the specified <code>date</code>
+     * depending on the configured <code>periodicity</code>.<br />
      *
      * If there isn't any, it returns <code>null</code>.
      */
-    WorkReport getMonthlyTimesheetWorkReport(Resource resource, LocalDate date);
+    WorkReport getMonthlyTimesheetWorkReport(Resource resource, LocalDate date,
+            PersonalTimesheetsPeriodicityEnum periodicity);
 
     boolean isAnyPersonalTimesheetAlreadySaved();
 

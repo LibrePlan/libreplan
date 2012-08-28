@@ -22,6 +22,8 @@ package org.libreplan.web.users.dashboard;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.entities.Configuration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
@@ -202,5 +204,11 @@ public interface IMonthlyTimesheetModel {
      * WorkReports} for the current resource in the month of the timesheet.
      */
     EffortDuration getTotalOtherEffortDuration();
+
+    /**
+     * Returns the {@link PersonalTimesheetsPeriodicityEnum} from
+     * {@link Configuration}.
+     */
+    PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity();
 
 }

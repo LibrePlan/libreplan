@@ -568,8 +568,10 @@ public class MonthlyTimesheetController extends GenericForwardComposer
     }
 
     private void createColumnsForDays(LocalDate date) {
-        LocalDate start = date.dayOfMonth().withMinimumValue();
-        LocalDate end = date.dayOfMonth().withMaximumValue();
+        LocalDate start = monthlyTimesheetModel
+                .getPersonalTimesheetsPeriodicity().getStart(date);
+        LocalDate end = monthlyTimesheetModel
+                .getPersonalTimesheetsPeriodicity().getEnd(date);
 
         for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                 .plusDays(1)) {

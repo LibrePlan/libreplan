@@ -90,7 +90,7 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
         for (int i = items; i >= 0; i--) {
             LocalDate date = periodicity.getDateForItemFromDate(i, start);
 
-            WorkReport workReport = getWorkReport(resource, date);
+            WorkReport workReport = getWorkReport(resource, date, periodicity);
 
             EffortDuration hours = EffortDuration.zero();
             int tasksNumber = 0;
@@ -107,9 +107,10 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
         return result;
     }
 
-    private WorkReport getWorkReport(Resource resource, LocalDate date) {
+    private WorkReport getWorkReport(Resource resource, LocalDate date,
+            PersonalTimesheetsPeriodicityEnum periodicity) {
         WorkReport workReport = workReportDAO.getMonthlyTimesheetWorkReport(
-                resource, date);
+                resource, date, periodicity);
         forceLoad(workReport);
         return workReport;
     }

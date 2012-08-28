@@ -34,6 +34,7 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -102,6 +103,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private Map<LocalDate, EffortDuration> otherEffortPerDay;
 
+    private PersonalTimesheetsPeriodicityEnum periodicity;
+
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
 
@@ -147,6 +150,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     private void initFields(LocalDate date) {
         this.date = date;
 
+        periodicity = getPersonalTimesheetsPeriodicity();
+
         initDates();
 
         initCapacityMap();
@@ -173,8 +178,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     private void initDates() {
-        firstDay = date.dayOfMonth().withMinimumValue();
-        lastDay = date.dayOfMonth().withMaximumValue();
+        firstDay = periodicity.getStart(date);
+        lastDay = periodicity.getEnd(date);
     }
 
     private void initCapacityMap() {
@@ -197,7 +202,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     private void initWorkReport() {
         // Get work report representing this monthly timesheet
         workReport = workReportDAO.getMonthlyTimesheetWorkReport(
-                user.getWorker(), date);
+                user.getWorker(), date, periodicity);
         if (workReport == null) {
             // If it doesn't exist yet create a new one
             workReport = WorkReport
@@ -502,16 +507,18 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isFirstMonth() {
         LocalDate activationDate = getWorker().getCalendar()
                 .getFistCalendarAvailability().getStartDate();
-        return firstDay.equals(activationDate.dayOfMonth().withMinimumValue());
+        return firstDay.equals(periodicity.getStart(activationDate));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isLastMonth() {
-        return firstDay.equals(new LocalDate().plusMonths(1).dayOfMonth()
-                .withMinimumValue());
+        return firstDay.equals(periodicity.getStart(new LocalDate()
+                .plusMonths(1)));
     }
 
     @Override
@@ -550,6 +557,13 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             result = result.plus(effort);
         }
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return configurationDAO.getConfiguration()
+                .getPersonalTimesheetsPeriodicity();
     }
 
 }
