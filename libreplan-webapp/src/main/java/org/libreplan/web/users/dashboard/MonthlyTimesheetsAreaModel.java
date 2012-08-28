@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.joda.time.Months;
-import org.joda.time.Weeks;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -81,62 +79,16 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
     private List<MonthlyTimesheetDTO> getMonthlyTimesheets(Resource resource,
             LocalDate start, LocalDate end,
             PersonalTimesheetsPeriodicityEnum periodicity) {
-        int items;
-        switch (periodicity) {
-            case WEEKLY:
-                start = start.dayOfWeek().withMinimumValue();
-                end = end.dayOfWeek().withMaximumValue();
-                items = Weeks.weeksBetween(start, end).getWeeks();
-                break;
-            case TWICE_MONTHLY:
-                if (start.getDayOfMonth() <= 15) {
-                    start = start.dayOfMonth().withMinimumValue();
-                } else {
-                    start = start.dayOfMonth().withMinimumValue().plusDays(15);
-                }
-                if (end.getDayOfMonth() <= 15) {
-                    end = end.dayOfMonth().withMinimumValue().plusDays(14);
-                } else {
-                    end = end.dayOfMonth().withMaximumValue();
-                }
-                items = Months.monthsBetween(start, end).getMonths() * 2;
-                break;
-            case MONTHLY:
-            default:
-                start = start.dayOfMonth().withMinimumValue();
-                end = end.dayOfMonth().withMaximumValue();
-                items = Months.monthsBetween(start, end).getMonths();
-                break;
-        }
+        start = periodicity.getStart(start);
+        end = periodicity.getEnd(end);
+        int items = periodicity.getItemsBetween(start, end);
 
         List<MonthlyTimesheetDTO> result = new ArrayList<MonthlyTimesheetDTO>();
 
         // In decreasing order to provide a list sorted with the more recent
         // monthly timesheets at the beginning
         for (int i = items; i >= 0; i--) {
-            LocalDate date;
-            switch (periodicity) {
-                case WEEKLY:
-                    date = start.plusWeeks(i);
-                    break;
-                case TWICE_MONTHLY:
-                int months = (i % 2 == 0) ? (i / 2) : ((i - 1) / 2);
-                    date = start.plusMonths(months);
-                    if (i % 2 != 0) {
-                        if (date.getDayOfMonth() <= 15) {
-                            date = date.dayOfMonth().withMinimumValue()
-                                    .plusDays(15);
-                        } else {
-                            date = date.plusMonths(1).dayOfMonth()
-                                    .withMinimumValue();
-                        }
-                    }
-                    break;
-                case MONTHLY:
-                default:
-                    date = start.plusMonths(i);
-                    break;
-            }
+            LocalDate date = periodicity.getDateForItemFromDate(i, start);
 
             WorkReport workReport = getWorkReport(resource, date);
 
@@ -164,28 +116,8 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
 
     private EffortDuration getResourceCapcity(Resource resource,
             LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
-        LocalDate start;
-        LocalDate end;
-        switch (periodicity) {
-            case WEEKLY:
-                start = date.dayOfWeek().withMinimumValue();
-                end = date.dayOfWeek().withMaximumValue();
-                break;
-            case TWICE_MONTHLY:
-                if (date.getDayOfMonth() <= 15) {
-                    start = date.dayOfMonth().withMinimumValue();
-                    end = start.plusDays(14);
-                } else {
-                    start = date.dayOfMonth().withMinimumValue().plusDays(15);
-                    end = date.dayOfMonth().withMaximumValue();
-                }
-                break;
-            default:
-            case MONTHLY:
-                start = date.dayOfMonth().withMinimumValue();
-                end = date.dayOfMonth().withMaximumValue();
-                break;
-        }
+        LocalDate start = periodicity.getStart(date);
+        LocalDate end = periodicity.getEnd(date);
 
         EffortDuration capacity = EffortDuration.zero();
         for (LocalDate day = start; day.compareTo(end) <= 0; day = day

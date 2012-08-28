@@ -21,6 +21,10 @@ package org.libreplan.business.common.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
+import org.joda.time.LocalDate;
+import org.joda.time.Months;
+import org.joda.time.Weeks;
+
 /**
  * Different values for personal timesheets periodicity.
  *
@@ -28,9 +32,86 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum PersonalTimesheetsPeriodicityEnum {
 
-    MONTHLY(_("Monthly")),
-    TWICE_MONTHLY(_("Twice-monthly")),
-    WEEKLY(_("Weekly"));
+    MONTHLY(_("Monthly")) {
+        @Override
+        public LocalDate getStart(LocalDate date) {
+            return date.dayOfMonth().withMinimumValue();
+        }
+
+        @Override
+        public LocalDate getEnd(LocalDate date) {
+            return date.dayOfMonth().withMaximumValue();
+        }
+
+        @Override
+        public int getItemsBetween(LocalDate start, LocalDate end) {
+            return Months.monthsBetween(start, end).getMonths();
+        }
+
+        @Override
+        public LocalDate getDateForItemFromDate(int item, LocalDate fromDate) {
+            return fromDate.plusMonths(item);
+        }
+    },
+    TWICE_MONTHLY(_("Twice-monthly")) {
+        @Override
+        public LocalDate getStart(LocalDate date) {
+            if (date.getDayOfMonth() <= 15) {
+                return date.dayOfMonth().withMinimumValue();
+            } else {
+                return date.dayOfMonth().withMinimumValue().plusDays(15);
+            }
+        }
+
+        @Override
+        public LocalDate getEnd(LocalDate date) {
+            if (date.getDayOfMonth() <= 15) {
+                return date.dayOfMonth().withMinimumValue().plusDays(14);
+            } else {
+                return date.dayOfMonth().withMaximumValue();
+            }
+        }
+
+        @Override
+        public int getItemsBetween(LocalDate start, LocalDate end) {
+            return Months.monthsBetween(start, end).getMonths() * 2;
+        }
+
+        @Override
+        public LocalDate getDateForItemFromDate(int item, LocalDate fromDate) {
+            int months = (item % 2 == 0) ? (item / 2) : ((item - 1) / 2);
+            LocalDate date = fromDate.plusMonths(months);
+            if (item % 2 != 0) {
+                if (date.getDayOfMonth() <= 15) {
+                    date = date.dayOfMonth().withMinimumValue().plusDays(15);
+                } else {
+                    date = date.plusMonths(1).dayOfMonth().withMinimumValue();
+                }
+            }
+            return date;
+        }
+    },
+    WEEKLY(_("Weekly")) {
+        @Override
+        public LocalDate getStart(LocalDate date) {
+            return date.dayOfWeek().withMinimumValue();
+        }
+
+        @Override
+        public LocalDate getEnd(LocalDate date) {
+            return date.dayOfWeek().withMaximumValue();
+        }
+
+        @Override
+        public int getItemsBetween(LocalDate start, LocalDate end) {
+            return Weeks.weeksBetween(start, end).getWeeks();
+        }
+
+        @Override
+        public LocalDate getDateForItemFromDate(int item, LocalDate fromDate) {
+            return fromDate.plusWeeks(item);
+        }
+    };
 
     private String name;
 
@@ -41,5 +122,14 @@ public enum PersonalTimesheetsPeriodicityEnum {
     public String getName() {
         return name;
     }
+
+    public abstract LocalDate getStart(LocalDate date);
+
+    public abstract LocalDate getEnd(LocalDate date);
+
+    public abstract int getItemsBetween(LocalDate start, LocalDate end);
+
+    public abstract LocalDate getDateForItemFromDate(int item,
+            LocalDate fromDate);
 
 }
