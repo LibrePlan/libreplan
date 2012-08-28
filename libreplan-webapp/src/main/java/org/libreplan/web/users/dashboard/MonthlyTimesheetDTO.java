@@ -102,11 +102,26 @@ public class MonthlyTimesheetDTO {
     public static String toString(PersonalTimesheetsPeriodicityEnum periodicity, LocalDate date) {
         switch (periodicity) {
             case WEEKLY:
-                return _("Week {0}", date.toString("w"));
+                LocalDate start = periodicity.getStart(date);
+                LocalDate end = periodicity.getEnd(date);
+
+                String string = date.toString("w");
+                    if (start.getMonthOfYear() == end.getMonthOfYear()) {
+                    string += " (" + date.toString("MMMM y") + ")";
+                } else {
+                    if (start.getYear() == end.getYear()) {
+                        string += " (" + start.toString("MMMM") + " - "
+                                + end.toString("MMMM y") + ")";
+                    } else {
+                        string += " (" + start.toString("MMMM y") + " - "
+                                + end.toString("MMMM y") + ")";
+                    }
+                }
+                return _("Week {0}", string);
             case TWICE_MONTHLY:
                 return (date.getDayOfMonth() <= 15) ?
-                        _("{0} 1st fortnight", date.toString("MMMM")) :
-                            _("{0} 2nd fortnight", date.toString("MMMM"));
+                        _("{0} 1st fortnight", date.toString("MMMM y")) :
+                            _("{0} 2nd fortnight", date.toString("MMMM y"));
             case MONTHLY:
             default:
                 return date.toString("MMMM y");
