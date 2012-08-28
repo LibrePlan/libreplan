@@ -95,6 +95,10 @@ public class MonthlyTimesheetDTO {
         return toString(periodicity, date);
     }
 
+    /**
+     * Returns a string representing the personal timehseet in a given
+     * <code>date</code> depending on the <code>periodicity</code>.
+     */
     public static String toString(PersonalTimesheetsPeriodicityEnum periodicity, LocalDate date) {
         switch (periodicity) {
             case WEEKLY:

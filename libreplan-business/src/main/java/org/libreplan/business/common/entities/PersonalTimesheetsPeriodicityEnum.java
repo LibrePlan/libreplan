@@ -162,17 +162,40 @@ public enum PersonalTimesheetsPeriodicityEnum {
         return name;
     }
 
+    /**
+     * Returns the start date of the personal timesheet which includes the
+     * specified <code>date</code>.
+     */
     public abstract LocalDate getStart(LocalDate date);
 
+    /**
+     * Returns the end date of the personal timesheet which includes the
+     * specified <code>date</code>.
+     */
     public abstract LocalDate getEnd(LocalDate date);
 
+    /**
+     * Returns the number of personal timesheets between the specified dates.
+     */
     public abstract int getItemsBetween(LocalDate start, LocalDate end);
 
+    /**
+     * Returns the date of the personal timesheet in the position specified by
+     * <code>item</code> taking into account the <code>fromDate</code>.
+     */
     public abstract LocalDate getDateForItemFromDate(int item,
             LocalDate fromDate);
 
+    /**
+     * Returns the date of the previous personal timesheet to the one which
+     * includes the specified <code>date</code>.
+     */
     public abstract LocalDate previous(LocalDate date);
 
+    /**
+     * Returns the date of the next personal timesheet to the one which includes
+     * the specified <code>date</code>.
+     */
     public abstract LocalDate next(LocalDate date);
 
 }
