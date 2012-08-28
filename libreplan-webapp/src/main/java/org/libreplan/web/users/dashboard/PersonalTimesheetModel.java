@@ -68,14 +68,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Model for creation/edition of a monthly timesheet
+ * Model for creation/edition of a personal timesheet
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/myaccount/userDashboard.zul")
-public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
+public class PersonalTimesheetModel implements IPersonalTimesheetModel {
 
     private User user;
 
@@ -200,13 +200,13 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     private void initWorkReport() {
-        // Get work report representing this monthly timesheet
-        workReport = workReportDAO.getMonthlyTimesheetWorkReport(
+        // Get work report representing this personal timesheet
+        workReport = workReportDAO.getPersonalTimesheetWorkReport(
                 user.getWorker(), date, periodicity);
         if (workReport == null) {
             // If it doesn't exist yet create a new one
             workReport = WorkReport
-                    .create(getMonthlyTimesheetsWorkReportType());
+                    .create(getPersonalTimesheetsWorkReportType());
             workReport
                     .setCode(entitySequenceDAO
                             .getNextEntityCodeWithoutTransaction(EntityNameEnum.WORK_REPORT));
@@ -216,10 +216,10 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         forceLoad(workReport.getWorkReportType());
     }
 
-    private WorkReportType getMonthlyTimesheetsWorkReportType() {
+    private WorkReportType getPersonalTimesheetsWorkReportType() {
         try {
             WorkReportType workReportType = workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                    .findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS
                             .getName());
             return workReportType;
         } catch (NonUniqueResultException e) {
@@ -418,7 +418,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private TypeOfWorkHours getTypeOfWorkHours() {
         return configurationDAO.getConfiguration()
-                .getMonthlyTimesheetsTypeOfWorkHours();
+                .getPersonalTimesheetsTypeOfWorkHours();
     }
 
     @Override
@@ -429,7 +429,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             // Do nothing.
             // A new work report if it doesn't have work report lines is not
             // saved as it will not be possible to find it later with
-            // WorkReportDAO.getMonthlyTimesheetWorkReport() method.
+            // WorkReportDAO.getPersonalTimesheetWorkReport() method.
         } else {
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithWorkReportLineSet(workReport
@@ -508,7 +508,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isFirstMonth() {
+    public boolean isFirstPeriod() {
         LocalDate activationDate = getWorker().getCalendar()
                 .getFistCalendarAvailability().getStartDate();
         return firstDay.equals(periodicity.getStart(activationDate));
@@ -516,7 +516,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isLastMonth() {
+    public boolean isLastPeriod() {
         return firstDay.equals(periodicity.getStart(new LocalDate()
                 .plusMonths(1)));
     }
@@ -568,7 +568,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     @Override
     public String getTimesheetString() {
-        return MonthlyTimesheetDTO.toString(periodicity, date);
+        return PersonalTimesheetDTO.toString(periodicity, date);
     }
 
     @Override

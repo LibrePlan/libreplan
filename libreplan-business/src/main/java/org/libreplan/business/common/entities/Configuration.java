@@ -109,7 +109,7 @@ public class Configuration extends BaseEntity {
     private String currencyCode = "EUR";
     private String currencySymbol = "€";
 
-    private TypeOfWorkHours monthlyTimesheetsTypeOfWorkHours;
+    private TypeOfWorkHours personalTimesheetsTypeOfWorkHours;
 
     private PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity = PersonalTimesheetsPeriodicityEnum.MONTHLY;
 
@@ -452,13 +452,13 @@ public class Configuration extends BaseEntity {
         this.currencySymbol = currencySymbol;
     }
 
-    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
-        return monthlyTimesheetsTypeOfWorkHours;
+    public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
+        return personalTimesheetsTypeOfWorkHours;
     }
 
-    public void setMonthlyTimesheetsTypeOfWorkHours(
+    public void setPersonalTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
-        monthlyTimesheetsTypeOfWorkHours = typeOfWorkHours;
+        personalTimesheetsTypeOfWorkHours = typeOfWorkHours;
     }
 
     public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {

@@ -39,4 +39,21 @@
         </update>
     </changeSet>
 
+    <changeSet id="rename-column-from-monthly-to-personal-in-configuration"
+        author="mrego">
+        <comment>
+            Rename column monthly_timesheets_type_of_work_hours to
+            personal_timesheets_type_of_work_hours in configuration table
+        </comment>
+        <dropForeignKeyConstraint baseTableName="configuration"
+            constraintName="configuration_type_of_work_hours_fkey"/>
+        <renameColumn tableName="configuration"
+            oldColumnName="monthly_timesheets_type_of_work_hours"
+            newColumnName="personal_timesheets_type_of_work_hours"
+            columnDataType="BIGINT" />
+        <addForeignKeyConstraint constraintName="configuration_type_of_work_hours_fkey"
+            baseTableName="configuration" baseColumnNames="personal_timesheets_type_of_work_hours"
+            referencedTableName="type_of_work_hours" referencedColumnNames="id" />
+    </changeSet>
+
 </databaseChangeLog>

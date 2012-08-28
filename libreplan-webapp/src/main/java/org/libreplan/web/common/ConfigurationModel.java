@@ -137,7 +137,7 @@ public class ConfigurationModel implements IConfigurationModel {
 
     private void forceLoad(Configuration configuration) {
         forceLoad(configuration.getDefaultCalendar());
-        forceLoad(configuration.getMonthlyTimesheetsTypeOfWorkHours());
+        forceLoad(configuration.getPersonalTimesheetsTypeOfWorkHours());
     }
 
     private void forceLoad(BaseCalendar calendar) {
@@ -627,15 +627,15 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
-        return configuration.getMonthlyTimesheetsTypeOfWorkHours();
+    public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
+        return configuration.getPersonalTimesheetsTypeOfWorkHours();
     }
 
     @Override
-    public void setMonthlyTimesheetsTypeOfWorkHours(
+    public void setPersonalTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
         if (configuration != null) {
-            configuration.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+            configuration.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
         }
     }
 

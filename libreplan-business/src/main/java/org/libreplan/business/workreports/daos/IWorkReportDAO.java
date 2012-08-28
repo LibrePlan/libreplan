@@ -48,13 +48,13 @@ public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
     int getLastReportYear();
 
     /**
-     * Returns the {@link WorkReport} of the predefined type monthly timesheet
+     * Returns the {@link WorkReport} of the predefined type personal timesheet
      * for the given <code>resource</code> in the specified <code>date</code>
      * depending on the configured <code>periodicity</code>.<br />
      *
      * If there isn't any, it returns <code>null</code>.
      */
-    WorkReport getMonthlyTimesheetWorkReport(Resource resource, LocalDate date,
+    WorkReport getPersonalTimesheetWorkReport(Resource resource, LocalDate date,
             PersonalTimesheetsPeriodicityEnum periodicity);
 
     boolean isAnyPersonalTimesheetAlreadySaved();

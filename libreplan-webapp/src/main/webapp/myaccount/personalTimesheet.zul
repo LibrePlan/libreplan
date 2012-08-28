@@ -28,7 +28,7 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/user_dashboard.css"?>
 
 <zk>
-    <window apply="org.libreplan.web.users.dashboard.MonthlyTimesheetController"
+    <window apply="org.libreplan.web.users.dashboard.PersonalTimesheetController"
         self="@{define(content)}" title="${i18n:_('Personal timesheet')}">
 
         <div id="messagesContainer" />
@@ -50,18 +50,18 @@
                             <label value="${i18n:_('Date')}" />
                             <hbox align="pack">
                                 <div visible="@{controller.currentUser}">
-                                    <button id="previousMonth"
+                                    <button id="previousPeriod"
                                         image="/common/img/ico_step_left.png" sclass="icono"
-                                        onClick="controller.previousMonth();"
+                                        onClick="controller.previousPeriod();"
                                         tooltiptext="${i18n:_('Previous')}"
-                                        disabled="@{controller.firstMonth}" />
+                                        disabled="@{controller.firstPeriod}" />
                                 </div>
                                 <label value="@{controller.timesheetString}" />
                                 <div visible="@{controller.currentUser}">
-                                    <button id="nextMonth"
-                                        onClick="controller.nextMonth();" image="/common/img/ico_step_right.png"
+                                    <button id="nextPeriod"
+                                        onClick="controller.nextPeriod();" image="/common/img/ico_step_right.png"
                                         tooltiptext="${i18n:_('Next')}" sclass="icono"
-                                        disabled="@{controller.lastMonth}" />
+                                        disabled="@{controller.lastPeriod}" />
                                 </div>
                             </hbox>
                         </row>
@@ -82,7 +82,7 @@
                     <rows>
                         <row visible="@{controller.hasOtherReports}">
                             <label value="${i18n:_('Total personal timesheet')}" />
-                            <label id="summaryTotalMonthlyTimesheet" />
+                            <label id="summaryTotalPersonalTimesheet" />
                         </row>
                         <row visible="@{controller.hasOtherReports}">
                             <label value="${i18n:_('Total other')}" />

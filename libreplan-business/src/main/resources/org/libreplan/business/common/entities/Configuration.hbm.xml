@@ -79,8 +79,8 @@
         <property name="currencyCode" not-null="true" column="currency_code" />
         <property name="currencySymbol" not-null="true" column="currency_symbol" />
 
-        <many-to-one name="monthlyTimesheetsTypeOfWorkHours" cascade="none"
-            column="monthly_timesheets_type_of_work_hours" />
+        <many-to-one name="personalTimesheetsTypeOfWorkHours" cascade="none"
+            column="personal_timesheets_type_of_work_hours" />
 
         <property name="personalTimesheetsPeriodicity" column="personal_timesheets_periodicity">
             <type name="org.hibernate.type.EnumType">

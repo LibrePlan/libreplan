@@ -27,14 +27,14 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
 
 /**
- * Simple class to represent the monthly timesheets to be shown in the list.<br />
+ * Simple class to represent the personal timesheets to be shown in the list.<br />
  *
  * This is only a utility class for the UI, everything will be saved using
  * {@link WorkReport} class.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class MonthlyTimesheetDTO {
+public class PersonalTimesheetDTO {
 
     private LocalDate date;
 
@@ -50,18 +50,18 @@ public class MonthlyTimesheetDTO {
      * @param date
      *            The date of the timesheet.
      * @param workReport
-     *            The work report of the monthly timesheet, it could be
+     *            The work report of the personal timesheet, it could be
      *            <code>null</code> if it doesn't exist yet.
      * @param resourceCapacity
      *            The capacity of the resource bound to current user in the
-     *            month of this timesheet.
+     *            period of this timesheet.
      * @param totalHours
      *            Total hours worked by the resource bound to the current user
-     *            in the monthly timesheet
+     *            in the personal timesheet
      * @param tasksNumber
-     *            Number of tasks in the monthly timesheet
+     *            Number of tasks in the personal timesheet
      */
-    MonthlyTimesheetDTO(LocalDate date, WorkReport workReport,
+    PersonalTimesheetDTO(LocalDate date, WorkReport workReport,
             EffortDuration resourceCapacity, EffortDuration totalHours,
             int tasksNumber) {
         this.date = date;

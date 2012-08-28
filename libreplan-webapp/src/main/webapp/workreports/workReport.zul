@@ -107,7 +107,7 @@
                         onClick="controller.onCreateNewWorkReport()"/>
                 </hbox>
                 </div>
-            <popup id="monthlyTimesheetsPopup" width="300px">
+            <popup id="personalTimesheetsPopup" width="300px">
                 <grid>
                     <columns>
                         <column width="50px"/>
@@ -116,11 +116,11 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Date')}" />
-                            <datebox id="monthlyTimesheetsDatebox" />
+                            <datebox id="personalTimesheetsDatebox" />
                         </row>
                         <row>
                             <label value="${i18n:_('Worker')}" />
-                            <bandboxSearch id="monthlyTimesheetsBandboxSearch"
+                            <bandboxSearch id="personalTimesheetsBandboxSearch"
                                 finder="ResourceBandboxFinder"
                                 model="@{controller.boundWorkers}"
                                 widthBandbox="200px"
@@ -128,7 +128,7 @@
                         </row>
                     </rows>
                 </grid>
-                <button onClick="controller.createOrEditMonthlyTimesheet();"
+                <button onClick="controller.createOrEditPersonalTimesheet();"
                     label="${i18n:_('Go to personal timesheet')}" />
             </popup>
         </window>

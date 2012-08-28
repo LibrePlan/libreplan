@@ -629,11 +629,11 @@ public class WorkReportModel extends IntegrationEntityModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isMonthlyTimesheet(WorkReport workReport) {
+    public boolean isPersonalTimesheet(WorkReport workReport) {
         try {
             return workReportTypeDAO.find(
                     workReport.getWorkReportType().getId())
-                    .isMonthlyTimesheetsType();
+                    .isPersonalTimesheetsType();
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

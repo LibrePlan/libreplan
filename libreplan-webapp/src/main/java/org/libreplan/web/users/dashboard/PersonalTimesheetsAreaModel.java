@@ -46,13 +46,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Model for for "Monthly timesheets" area in the user dashboard window
+ * Model for for "Personal timesheets" area in the user dashboard window
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
+public class PersonalTimesheetsAreaModel implements IPersonalTimesheetsAreaModel {
 
     @Autowired
     private IWorkReportDAO workReportDAO;
@@ -62,7 +62,7 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MonthlyTimesheetDTO> getMonthlyTimesheets() {
+    public List<PersonalTimesheetDTO> getPersonalTimesheets() {
         User user = UserUtil.getUserFromSession();
         if (!user.isBound()) {
             return Collections.emptyList();
@@ -72,21 +72,21 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
 
         LocalDate activationDate = getActivationDate(user.getWorker());
         LocalDate currentDate = new LocalDate();
-        return getMonthlyTimesheets(user.getWorker(), activationDate,
+        return getPersonalTimesheets(user.getWorker(), activationDate,
                 currentDate.plusMonths(1), getPersonalTimesheetsPeriodicity());
     }
 
-    private List<MonthlyTimesheetDTO> getMonthlyTimesheets(Resource resource,
+    private List<PersonalTimesheetDTO> getPersonalTimesheets(Resource resource,
             LocalDate start, LocalDate end,
             PersonalTimesheetsPeriodicityEnum periodicity) {
         start = periodicity.getStart(start);
         end = periodicity.getEnd(end);
         int items = periodicity.getItemsBetween(start, end);
 
-        List<MonthlyTimesheetDTO> result = new ArrayList<MonthlyTimesheetDTO>();
+        List<PersonalTimesheetDTO> result = new ArrayList<PersonalTimesheetDTO>();
 
         // In decreasing order to provide a list sorted with the more recent
-        // monthly timesheets at the beginning
+        // personal timesheets at the beginning
         for (int i = items; i >= 0; i--) {
             LocalDate date = periodicity.getDateForItemFromDate(i, start);
 
@@ -99,7 +99,7 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
                 tasksNumber = getNumberOfOrderElementsWithTrackedTime(workReport);
             }
 
-            result.add(new MonthlyTimesheetDTO(date, workReport,
+            result.add(new PersonalTimesheetDTO(date, workReport,
                     getResourceCapcity(resource, date, periodicity), hours,
                     tasksNumber));
         }
@@ -109,7 +109,7 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
 
     private WorkReport getWorkReport(Resource resource, LocalDate date,
             PersonalTimesheetsPeriodicityEnum periodicity) {
-        WorkReport workReport = workReportDAO.getMonthlyTimesheetWorkReport(
+        WorkReport workReport = workReportDAO.getPersonalTimesheetWorkReport(
                 resource, date, periodicity);
         forceLoad(workReport);
         return workReport;

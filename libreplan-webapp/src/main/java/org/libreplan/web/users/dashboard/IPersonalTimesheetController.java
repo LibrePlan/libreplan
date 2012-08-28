@@ -25,12 +25,12 @@ import org.libreplan.web.common.entrypoints.EntryPoint;
 import org.libreplan.web.common.entrypoints.EntryPoints;
 
 /**
- * Entry points for monthly timesheet creation/edition window
+ * Entry points for personal timesheet creation/edition window
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@EntryPoints(page = "/myaccount/monthlyTimesheet.zul", registerAs = "monthlyTimesheetController")
-public interface IMonthlyTimesheetController {
+@EntryPoints(page = "/myaccount/personalTimesheet.zul", registerAs = "personalTimesheetController")
+public interface IPersonalTimesheetController {
 
     @EntryPoint("date")
     void goToCreateOrEditForm(LocalDate date);

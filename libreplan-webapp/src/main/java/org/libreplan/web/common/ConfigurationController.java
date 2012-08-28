@@ -870,13 +870,13 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setCurrency(currencyCode);
     }
 
-    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
-        return configurationModel.getMonthlyTimesheetsTypeOfWorkHours();
+    public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
+        return configurationModel.getPersonalTimesheetsTypeOfWorkHours();
     }
 
-    public void setMonthlyTimesheetsTypeOfWorkHours(
+    public void setPersonalTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
-        configurationModel.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+        configurationModel.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
     }
 
     public List<PersonalTimesheetsPeriodicityEnum> getPersonalTimesheetsPeriodicities() {

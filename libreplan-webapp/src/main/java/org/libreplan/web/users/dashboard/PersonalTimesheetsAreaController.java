@@ -32,39 +32,39 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 /**
- * Controller for "Monthly timesheets" area in the user dashboard window
+ * Controller for "Personal timesheets" area in the user dashboard window
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @SuppressWarnings("serial")
-public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
+public class PersonalTimesheetsAreaController extends GenericForwardComposer {
 
-    private IMonthlyTimesheetsAreaModel monthlyTimesheetsAreaModel;
+    private IPersonalTimesheetsAreaModel personalTimesheetsAreaModel;
 
     @Resource
-    private IMonthlyTimesheetController monthlyTimesheetController;
+    private IPersonalTimesheetController personalTimesheetController;
 
-    private RowRenderer monthlyTimesheetsRenderer = new RowRenderer() {
+    private RowRenderer personalTimesheetsRenderer = new RowRenderer() {
 
         @Override
         public void render(Row row, Object data) throws Exception {
-            final MonthlyTimesheetDTO monthlyTimesheet = (MonthlyTimesheetDTO) data;
-            row.setValue(monthlyTimesheet);
+            final PersonalTimesheetDTO personalTimesheet = (PersonalTimesheetDTO) data;
+            row.setValue(personalTimesheet);
 
-            Util.appendLabel(row, monthlyTimesheet
-                    .toString(monthlyTimesheetsAreaModel
+            Util.appendLabel(row, personalTimesheet
+                    .toString(personalTimesheetsAreaModel
                             .getPersonalTimesheetsPeriodicity()));
-            Util.appendLabel(row, monthlyTimesheet.getResourceCapacity()
+            Util.appendLabel(row, personalTimesheet.getResourceCapacity()
                     .toFormattedString());
-            Util.appendLabel(row, monthlyTimesheet.getTotalHours()
+            Util.appendLabel(row, personalTimesheet.getTotalHours()
                     .toFormattedString());
-            Util.appendLabel(row, monthlyTimesheet.getTasksNumber() + "");
+            Util.appendLabel(row, personalTimesheet.getTasksNumber() + "");
 
             Util.appendOperationsAndOnClickEvent(row, new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    monthlyTimesheetController.goToCreateOrEditForm(monthlyTimesheet
+                    personalTimesheetController.goToCreateOrEditForm(personalTimesheet
                             .getDate());
                 }
             }, null);
@@ -78,12 +78,12 @@ public class MonthlyTimesheetsAreaController extends GenericForwardComposer {
         comp.setAttribute("controller", this);
     }
 
-    public List<MonthlyTimesheetDTO> getMonthlyTimesheets() {
-        return monthlyTimesheetsAreaModel.getMonthlyTimesheets();
+    public List<PersonalTimesheetDTO> getPersonalTimesheets() {
+        return personalTimesheetsAreaModel.getPersonalTimesheets();
     }
 
-    public RowRenderer getMonthlyTimesheetsRenderer() {
-        return monthlyTimesheetsRenderer;
+    public RowRenderer getPersonalTimesheetsRenderer() {
+        return personalTimesheetsRenderer;
     }
 
 }

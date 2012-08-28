@@ -54,7 +54,7 @@ public class MyTasksAreaController extends GenericForwardComposer {
     private IMyTasksAreaModel myTasksAreaModel;
 
     @Resource
-    private IMonthlyTimesheetController monthlyTimesheetController;
+    private IPersonalTimesheetController personalTimesheetController;
 
     private RowRenderer tasksRenderer = new RowRenderer() {
 
@@ -112,11 +112,11 @@ public class MyTasksAreaController extends GenericForwardComposer {
             EventListener trackTimeButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    monthlyTimesheetController
-                            .goToCreateOrEditForm(getMonthlyTimesheetDateForTask(task));
+                    personalTimesheetController
+                            .goToCreateOrEditForm(getPersonalTimesheetDateForTask(task));
                 }
 
-                private LocalDate getMonthlyTimesheetDateForTask(Task task) {
+                private LocalDate getPersonalTimesheetDateForTask(Task task) {
                     LocalDate start = task.getStartAsLocalDate();
                     LocalDate end = task.getEndAsLocalDate();
 

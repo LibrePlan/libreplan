@@ -118,11 +118,11 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<WorkReportType> getWorkReportTypesExceptMonthlyTimeSheets() {
+    public List<WorkReportType> getWorkReportTypesExceptPersonalTimeSheets() {
         List<WorkReportType> list = workReportTypeDAO.list(WorkReportType.class);
         try {
             list.remove(workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                    .findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS
                             .getName()));
         } catch (NonUniqueResultException e) {
             throw new RuntimeException(e);
@@ -151,9 +151,9 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     @Override
     @Transactional(readOnly = true)
     public void initEdit(WorkReportType workReportType) {
-        if (workReportType.isMonthlyTimesheetsType()) {
+        if (workReportType.isPersonalTimesheetsType()) {
             throw new IllegalArgumentException(
-                    "Monthly timesheets timesheet template cannot be edited");
+                    "Personal timesheets timesheet template cannot be edited");
         }
 
         setListing(false);
@@ -220,9 +220,9 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     @Override
     @Transactional
     public void confirmRemove(WorkReportType workReportType) {
-        if (workReportType.isMonthlyTimesheetsType()) {
+        if (workReportType.isPersonalTimesheetsType()) {
             throw new IllegalArgumentException(
-                    "Monthly timesheets timesheet template cannot be removed");
+                    "Personal timesheets timesheet template cannot be removed");
         }
 
         try {

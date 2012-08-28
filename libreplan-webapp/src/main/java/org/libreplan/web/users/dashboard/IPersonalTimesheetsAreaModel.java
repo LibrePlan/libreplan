@@ -28,25 +28,25 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.workreports.entities.WorkReport;
 
 /**
- * Interface for "Monthly timesheets" area model
+ * Interface for "Personal timesheets" area model
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IMonthlyTimesheetsAreaModel {
+public interface IPersonalTimesheetsAreaModel {
 
     /**
-     * Returns the list of {@link MonthlyTimesheetDTO MonthlyTimesheets} for the
-     * resource bound to current {@link User}.<br />
+     * Returns the list of {@link PersonalTimesheetDTO PersonalTimesheetDTOs}
+     * for the resource bound to current {@link User}.<br />
      *
      * There's no need that a {@link WorkReport} is saved in order to a
-     * {@link MonthlyTimesheetDTO} exists for a month.<br />
+     * {@link PersonalTimesheetDTO} exists for a period.<br />
      *
-     * The list of {@link MonthlyTimesheetDTO MonthlyTimesheets} will be since the
-     * date the resource is activated in the system (checking
+     * The list of {@link PersonalTimesheetDTO PersonalTimesheetDTOs} will be
+     * since the date the resource is activated in the system (checking
      * {@link CalendarAvailability} for the resource) to next month of current
      * date.
      */
-    List<MonthlyTimesheetDTO> getMonthlyTimesheets();
+    List<PersonalTimesheetDTO> getPersonalTimesheets();
 
     /**
      * Returns the number of different {@link OrderElement OrderElements} with

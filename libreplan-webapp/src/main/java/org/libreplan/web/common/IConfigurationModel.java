@@ -169,9 +169,9 @@ public interface IConfigurationModel {
 
     void setCurrency(String currencyCode);
 
-    TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours();
+    TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours();
 
-    void setMonthlyTimesheetsTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
+    void setPersonalTimesheetsTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
 
     PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity();
 

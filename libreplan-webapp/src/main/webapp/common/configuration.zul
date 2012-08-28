@@ -72,7 +72,7 @@
                                 <label value="${i18n:_('Hours type for personal timesheets')}" />
                                 <bandboxSearch
                                     finder="TypeOfWorkHoursBandboxFinder"
-                                    selectedElement="@{configurationController.monthlyTimesheetsTypeOfWorkHours, access='both'}" />
+                                    selectedElement="@{configurationController.personalTimesheetsTypeOfWorkHours, access='both'}" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Personal timesheets peridocity')}" />

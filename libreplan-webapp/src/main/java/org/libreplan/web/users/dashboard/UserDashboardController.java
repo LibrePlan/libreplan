@@ -35,7 +35,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
  * Controller for user dashboard window.<br />
  *
  * At this moment it's only used to show a message to user after saving a
- * monthly timesheet.
+ * personal timesheet.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -55,13 +55,13 @@ public class UserDashboardController extends GenericForwardComposer {
         String timesheetSave = Executions.getCurrent().getParameter(
                 "timesheet_saved");
         if (!StringUtils.isBlank(timesheetSave)) {
-            String monthlyTimesheet = MonthlyTimesheetDTO.toString(Registry
+            String personalTimesheet = PersonalTimesheetDTO.toString(Registry
                     .getConfigurationDAO()
                     .getConfigurationWithReadOnlyTransaction()
                     .getPersonalTimesheetsPeriodicity(), new LocalDate(
                     timesheetSave));
             messagesForUser.showMessage(Level.INFO,
-                    _("Personal timesheet \"{0}\" saved", monthlyTimesheet));
+                    _("Personal timesheet \"{0}\" saved", personalTimesheet));
         }
 
         String expenseSheetSaved = Executions.getCurrent().getParameter(

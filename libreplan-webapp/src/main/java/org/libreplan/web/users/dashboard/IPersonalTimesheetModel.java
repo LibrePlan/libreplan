@@ -32,40 +32,38 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
 
 /**
- * Interface for creation/edition of a monthly timesheet model
+ * Interface for creation/edition of a personal timesheet model
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IMonthlyTimesheetModel {
+public interface IPersonalTimesheetModel {
 
     /**
-     * Edits the monthly timesheet for the specified <code>date</code> and
+     * Edits the personal timesheet for the specified <code>date</code> and
      * resource bound to current user or creates a new one if it doesn't exist
      * yet.
      */
     void initCreateOrEdit(LocalDate date);
 
     /**
-     * Edits the monthly timesheet for the specified <code>date</code> and
+     * Edits the personal timesheet for the specified <code>date</code> and
      * resource bound to the {@link Worker} specified by the
      * <code>resource</code> or creates a new one if it doesn't exist yet.
      */
     void initCreateOrEdit(LocalDate date, Resource resource);
 
     /**
-     * Returns the date of the monthly timesheet (only year and month should
-     * take into account as the day is not important to define a monthly
-     * timesheet).
+     * Returns the date of the personal timesheet.
      */
     LocalDate getDate();
 
     /**
-     * Returns the first day of the month of the current monthly timesheet.
+     * Returns the first day of the current personal timesheet.
      */
     LocalDate getFirstDay();
 
     /**
-     * Returns the last day of the month of the current monthly timesheet.
+     * Returns the last day of the current personal timesheet.
      */
     LocalDate getLastDate();
 
@@ -81,45 +79,45 @@ public interface IMonthlyTimesheetModel {
     List<OrderElement> getOrderElements();
 
     /**
-     * Returns the {@link EffortDuration} in the current monthly timesheet for
+     * Returns the {@link EffortDuration} in the current personal timesheet for
      * the specified <code>orderElement</code> and <code>date</code>.
      */
     EffortDuration getEffortDuration(OrderElement orderElement, LocalDate date);
 
     /**
-     * Sets the {@link EffortDuration} in the current monthly timesheet for the
+     * Sets the {@link EffortDuration} in the current personal timesheet for the
      * specified <code>orderElement</code> and <code>date</code>.<br />
      *
-     * Marks the current monthly timesheet as modified.
+     * Marks the current personal timesheet as modified.
      */
     void setEffortDuration(OrderElement orderElement, LocalDate date,
             EffortDuration effortDuration);
 
     /**
-     * Save {@link WorkReport} for the monthly timesheet.
+     * Save {@link WorkReport} for the personal timesheet.
      */
     void save();
 
     /**
-     * Cancel changes in {@link WorkReport} for the monthly timesheet.
+     * Cancel changes in {@link WorkReport} for the personal timesheet.
      */
     void cancel();
 
     /**
-     * Returns the {@link EffortDuration} in the current monthly timesheet for
+     * Returns the {@link EffortDuration} in the current personal timesheet for
      * the specified <code>orderElement</code>.
      */
     EffortDuration getEffortDuration(OrderElement orderElement);
 
     /**
      * Returns the {@link EffortDuration} for all the {@link OrderElement
-     * OrderElements} in the current monthly timesheet in the specified
+     * OrderElements} in the current personal timesheet in the specified
      * <code>date</code>.
      */
     EffortDuration getEffortDuration(LocalDate date);
 
     /**
-     * Returns the total {@link EffortDuration} for the currently monthly
+     * Returns the total {@link EffortDuration} for the currently personal
      * timesheet.
      */
     EffortDuration getTotalEffortDuration();
@@ -131,7 +129,7 @@ public interface IMonthlyTimesheetModel {
     EffortDuration getResourceCapacity(LocalDate date);
 
     /**
-     * Adds the <code>orderElement</code> to the current monthly timehseet.
+     * Adds the <code>orderElement</code> to the current personal timehseet.
      */
     void addOrderElement(OrderElement orderElement);
 
@@ -142,22 +140,22 @@ public interface IMonthlyTimesheetModel {
     Order getOrder(OrderElement orderElement);
 
     /**
-     * Returns <code>true</code> if current monthly timesheet has been modified
+     * Returns <code>true</code> if current personal timesheet has been modified
      * by the user.
      */
     boolean isModified();
 
     /**
-     * Checks if current monthly timesheet is the first month, that means the
+     * Checks if current personal timesheet is the first period, that means the
      * first activation period of the resource.
      */
-    boolean isFirstMonth();
+    boolean isFirstPeriod();
 
     /**
-     * Checks if current monthly timesheet is the last month, that means the
+     * Checks if current personal timesheet is the last period, that means the
      * next month of current date.
      */
-    boolean isLastMonth();
+    boolean isLastPeriod();
 
     /**
      * Returns true if the value for the specified <code>orderElement</code> in
@@ -167,7 +165,7 @@ public interface IMonthlyTimesheetModel {
 
     /**
      * Returns <code>true</code> or <code>false</code> depending on if it's
-     * editing a monthly timesheet of the current user or not.<br />
+     * editing a personal timesheet of the current user or not.<br />
      *
      * That means if you entered via:
      * <ul>
@@ -179,29 +177,29 @@ public interface IMonthlyTimesheetModel {
     boolean isCurrentUser();
 
     /**
-     * Returns <code>true</code> if the resource of the current monthly
+     * Returns <code>true</code> if the resource of the current personal
      * timesheet has any effort reported in other {@link WorkReport WorkReports}
-     * in the month of the timesheet.
+     * in the period of the timesheet.
      */
     boolean hasOtherReports();
 
     /**
      * Returns the {@link EffortDuration} of the specified
      * <code>orderElement</code> from other {@link WorkReport WorkReports} for
-     * the current resource in the month of the timesheet.<br />
+     * the current resource in the period of the timesheet.<br />
      */
     EffortDuration getOtherEffortDuration(OrderElement orderElement);
 
     /**
      * Returns the {@link EffortDuration} in the specified <code>date</code>
      * from other {@link WorkReport WorkReports} for the current resource in the
-     * month of the timesheet.
+     * period of the timesheet.
      */
     EffortDuration getOtherEffortDuration(LocalDate date);
 
     /**
      * Returns the total {@link EffortDuration} from other {@link WorkReport
-     * WorkReports} for the current resource in the month of the timesheet.
+     * WorkReports} for the current resource in the period of the timesheet.
      */
     EffortDuration getTotalOtherEffortDuration();
 

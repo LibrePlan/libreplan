@@ -141,12 +141,12 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
 
     @Override
     @SuppressWarnings("unchecked")
-    public WorkReport getMonthlyTimesheetWorkReport(Resource resource,
+    public WorkReport getPersonalTimesheetWorkReport(Resource resource,
             LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
         WorkReportType workReportType;
         try {
             workReportType = workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                    .findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS
                             .getName());
         } catch (NonUniqueResultException e) {
             throw new RuntimeException(e);
@@ -156,13 +156,13 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
 
         Criteria criteria = getSession().createCriteria(WorkReport.class);
         criteria.add(Restrictions.eq("workReportType", workReportType));
-        List<WorkReport> monthlyTimesheets = criteria.add(
+        List<WorkReport> personalTimesheets = criteria.add(
                 Restrictions.eq("resource", resource)).list();
 
         LocalDate start = periodicity.getStart(date);
         LocalDate end = periodicity.getEnd(date);
 
-        for (WorkReport workReport : monthlyTimesheets) {
+        for (WorkReport workReport : personalTimesheets) {
             Set<WorkReportLine> workReportLines = workReport
                     .getWorkReportLines();
             if (workReportLines.size() > 0) {
@@ -184,7 +184,7 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
         WorkReportType workReportType;
         try {
             workReportType = workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                    .findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS
                             .getName());
         } catch (NonUniqueResultException e) {
             throw new RuntimeException(e);
