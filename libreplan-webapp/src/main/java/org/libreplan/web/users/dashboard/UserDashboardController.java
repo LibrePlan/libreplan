@@ -23,6 +23,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.Registry;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -54,8 +55,11 @@ public class UserDashboardController extends GenericForwardComposer {
         String timesheetSave = Executions.getCurrent().getParameter(
                 "timesheet_saved");
         if (!StringUtils.isBlank(timesheetSave)) {
-            String monthlyTimesheet = new LocalDate(timesheetSave)
-                    .toString("MMMM y");
+            String monthlyTimesheet = MonthlyTimesheetDTO.toString(Registry
+                    .getConfigurationDAO()
+                    .getConfigurationWithReadOnlyTransaction()
+                    .getPersonalTimesheetsPeriodicity(), new LocalDate(
+                    timesheetSave));
             messagesForUser.showMessage(Level.INFO,
                     _("Personal timesheet \"{0}\" saved", monthlyTimesheet));
         }

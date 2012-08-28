@@ -598,8 +598,8 @@ public class MonthlyTimesheetController extends GenericForwardComposer
         columns.appendChild(total);
     }
 
-    public String getDate() {
-        return monthlyTimesheetModel.getDate().toString("MMMM y");
+    public String getTimesheetString() {
+        return monthlyTimesheetModel.getTimesheetString();
     }
 
     public String getResource() {

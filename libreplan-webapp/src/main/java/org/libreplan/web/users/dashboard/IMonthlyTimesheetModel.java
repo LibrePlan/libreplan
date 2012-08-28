@@ -211,4 +211,10 @@ public interface IMonthlyTimesheetModel {
      */
     PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity();
 
+    /**
+     * Returns the string that represents the personal timesheet depending on
+     * the configured periodicity.
+     */
+    String getTimesheetString();
+
 }

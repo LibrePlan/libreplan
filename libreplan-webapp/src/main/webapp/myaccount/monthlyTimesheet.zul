@@ -48,22 +48,22 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Date')}" />
-                                <hbox align="pack">
-                                    <div visible="@{controller.currentUser}">
-            <button id="previousMonth"
-                image="/common/img/ico_step_left.png" sclass="icono"
-                onClick="controller.previousMonth();"
-                tooltiptext="${i18n:_('Previous')}"
-                disabled="@{controller.firstMonth}" />
-                </div>
-
-                <label value="@{controller.date}" />
-                                    <div visible="@{controller.currentUser}">
-            <button id="nextMonth"
-                onClick="controller.nextMonth();" image="/common/img/ico_step_right.png"
-                tooltiptext="${i18n:_('Next')}" sclass="icono"
-                disabled="@{controller.lastMonth}" />
-                            </div></hbox>
+                            <hbox align="pack">
+                                <div visible="@{controller.currentUser}">
+                                    <button id="previousMonth"
+                                        image="/common/img/ico_step_left.png" sclass="icono"
+                                        onClick="controller.previousMonth();"
+                                        tooltiptext="${i18n:_('Previous')}"
+                                        disabled="@{controller.firstMonth}" />
+                                </div>
+                                <label value="@{controller.timesheetString}" />
+                                <div visible="@{controller.currentUser}">
+                                    <button id="nextMonth"
+                                        onClick="controller.nextMonth();" image="/common/img/ico_step_right.png"
+                                        tooltiptext="${i18n:_('Next')}" sclass="icono"
+                                        disabled="@{controller.lastMonth}" />
+                                </div>
+                            </hbox>
                         </row>
                         <row>
                             <label value="${i18n:_('Resource')}" />

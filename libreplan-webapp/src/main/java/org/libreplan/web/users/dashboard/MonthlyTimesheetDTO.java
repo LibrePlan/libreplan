@@ -92,13 +92,17 @@ public class MonthlyTimesheetDTO {
     }
 
     public String toString(PersonalTimesheetsPeriodicityEnum periodicity) {
+        return toString(periodicity, date);
+    }
+
+    public static String toString(PersonalTimesheetsPeriodicityEnum periodicity, LocalDate date) {
         switch (periodicity) {
             case WEEKLY:
                 return _("Week {0}", date.toString("w"));
             case TWICE_MONTHLY:
                 return (date.getDayOfMonth() <= 15) ?
-                        _("{0} 1st fortnight",date.toString("MMMM")) :
-                            _("{0} 2nd fortnight",date.toString("MMMM"));
+                        _("{0} 1st fortnight", date.toString("MMMM")) :
+                            _("{0} 2nd fortnight", date.toString("MMMM"));
             case MONTHLY:
             default:
                 return date.toString("MMMM y");

@@ -566,4 +566,9 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
                 .getPersonalTimesheetsPeriodicity();
     }
 
+    @Override
+    public String getTimesheetString() {
+        return MonthlyTimesheetDTO.toString(periodicity, date);
+    }
+
 }
