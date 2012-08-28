@@ -98,16 +98,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     @Override
     protected void initializeDates() {
-        EffortDuration workHours = EffortDuration.hours(getWorkHours());
-        DurationBetweenDates duration = fromFixedDuration(workHours);
-
-        IntraDayDate start = getIntraDayStartDate();
-        if (start != null) {
-            setIntraDayEndDate(duration.fromStartToEnd(start));
-        } else {
-            IntraDayDate end = getIntraDayEndDate();
-            setIntraDayStartDate(duration.fromEndToStart(end));
-        }
+        // LP AUDIOVISUAL:
+        // there is no need to do a default calculation of effort to estimate
+        // the start and end dates, those from the OrderLine are re-used
     }
 
     /**
