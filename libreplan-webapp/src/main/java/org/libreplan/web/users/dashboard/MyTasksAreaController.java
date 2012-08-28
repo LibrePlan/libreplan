@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.planner.entities.Task;
@@ -121,8 +122,10 @@ public class MyTasksAreaController extends GenericForwardComposer {
                     LocalDate end = task.getEndAsLocalDate();
 
                     LocalDate currentDate = new LocalDate();
-                    LocalDate min = currentDate.dayOfMonth().withMinimumValue();
-                    LocalDate max = currentDate.dayOfMonth().withMaximumValue();
+                    PersonalTimesheetsPeriodicityEnum periodicity = myTasksAreaModel
+                            .getPersonalTimesheetsPeriodicity();
+                    LocalDate min = periodicity.getStart(currentDate);
+                    LocalDate max = periodicity.getEnd(currentDate);
 
                     if (dateBetween(start, min, max)) {
                         return start;
