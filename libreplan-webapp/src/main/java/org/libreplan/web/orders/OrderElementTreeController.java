@@ -36,6 +36,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
@@ -417,7 +418,15 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             Util.bind(textBoxCode, new Util.Getter<String>() {
                 @Override
                 public String get() {
-                    return orderElement.getCode();
+                    // LibrePlan Audiovisual
+                    // Hide order code prefix in the WBS input for the code
+                    return orderElement.getCode() == null ? ""
+                            : orderElement
+                                    .getCode()
+                                    .replace(
+                                            orderElement.getOrder().getCode()
+                                                    + EntitySequence.CODE_SEPARATOR_CHILDREN,
+                                            "");
                 }
             }, new Util.Setter<String>() {
 
