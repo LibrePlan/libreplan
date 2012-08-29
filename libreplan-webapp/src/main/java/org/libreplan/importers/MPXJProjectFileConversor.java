@@ -23,17 +23,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.ProjectHeader;
 import net.sf.mpxj.Task;
 
 /**
  * Class that is a conversor from the MPXJ format File to {@link OrderDTO}.
  *
- * At these moment it only converts the tasks and its subtasks.
+ * At these moment it only converts the tasks and its subtasks with the dates.
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
  * @todo It last relationships. resources, calendars, hours, etc.
  */
 public class MPXJProjectFileConversor {
+
+    private static ProjectHeader header;
 
     /**
      * Converts a ProjectFile into a {@link OrderDTO}.
@@ -81,6 +84,10 @@ public class MPXJProjectFileConversor {
         importData.name = filename
                 .substring(0, filename.length() - 8/* ".planner" */);
 
+        header = file.getProjectHeader();
+
+        importData.startDate = header.getStartDate();
+
         importData.tasks = getImportTasks(file.getChildTasks());
 
         return importData;
@@ -100,6 +107,10 @@ public class MPXJProjectFileConversor {
             String filename) {
 
         OrderDTO importData = new OrderDTO();
+
+        header = file.getProjectHeader();
+
+        importData.startDate = header.getStartDate();
 
         for (Task task : file.getChildTasks()) {
             // Projects are represented as a level 0 task with all
@@ -169,6 +180,10 @@ public class MPXJProjectFileConversor {
         OrderElementDTO importTask = new OrderElementDTO();
 
         importTask.name = task.getName();
+
+        importTask.startDate = task.getStart();
+
+        importTask.endDate = task.getFinish();
 
         return importTask;
 
