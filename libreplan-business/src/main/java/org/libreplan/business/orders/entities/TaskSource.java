@@ -52,6 +52,29 @@ public class TaskSource extends BaseEntity {
         return result;
     }
 
+    /**
+     * Needed for import external tasks.
+     *
+     * @return Task New Task
+     */
+    public Task createTaskWithoutDatesInitializedAndLinkItToTaskSource() {
+        TaskElement task = Task.createTaskWithoutDatesInitialized(this);
+        this.setTask(task);
+        return (Task) task;
+    }
+
+    /**
+     * Needed for import external tasks.
+     *
+     * @return Task New Task
+     */
+    public TaskGroup createTaskGroupWithoutDatesInitializedAndLinkItToTaskSource() {
+        TaskElement task = TaskGroup.create(this);
+        this.setTask(task);
+        return (TaskGroup) task;
+    }
+
+
     public static TaskSourceSynchronization mustAdd(
             TaskSource taskSource) {
         return new TaskSourceMustBeAdded(taskSource);

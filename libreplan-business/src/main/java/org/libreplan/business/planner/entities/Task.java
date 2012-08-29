@@ -96,6 +96,24 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return result;
     }
 
+    /**
+     * Needed for import external tasks.
+     *
+     * Creates a Task without initializing the dates.
+     *
+     * @param taskSource
+     *            TaskSouce for create the task
+     *
+     * @return Task New Task
+     */
+    public static Task createTaskWithoutDatesInitialized(TaskSource taskSource) {
+        Task task = new Task();
+        OrderElement orderElement = taskSource.getOrderElement();
+        orderElement.applyInitialPositionConstraintTo(task);
+        Task result = create(task, taskSource);
+        return result;
+    }
+
     @Override
     protected void initializeDates() {
         EffortDuration workHours = EffortDuration.hours(getWorkHours());
