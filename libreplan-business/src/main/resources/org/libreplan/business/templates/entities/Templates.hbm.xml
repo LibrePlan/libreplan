@@ -104,6 +104,10 @@
                 <property name="quantity" column="quantity" access="field" />
                 <property name="indemnizationSalary" column="indemnization_salary" access="field" />
                 <property name="holidaySalary" column="holiday_salary" access="field" />
+                <property name="startDate" column="start_date"
+                        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+                <property name="endDate" column="end_date"
+                        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
                 <property name="budgetLineType" column="budget_line_type" access="field" >
                     <type name="org.hibernate.type.EnumType">
                         <param name="enumClass">org.libreplan.business.templates.entities.BudgetLineTypeEnum</param>

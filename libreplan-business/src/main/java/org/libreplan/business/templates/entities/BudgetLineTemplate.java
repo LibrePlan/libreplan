@@ -20,6 +20,7 @@ package org.libreplan.business.templates.entities;
 
 import java.math.BigDecimal;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.qualityforms.entities.QualityForm;
@@ -52,6 +53,10 @@ public class BudgetLineTemplate extends OrderLineTemplate {
     private BigDecimal indemnizationSalary = BigDecimal.ZERO.setScale(2);
 
     private BigDecimal holidaySalary = BigDecimal.ZERO.setScale(2);
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
     public BigDecimal getCostOrSalary() {
         return costOrSalary;
@@ -148,6 +153,22 @@ public class BudgetLineTemplate extends OrderLineTemplate {
         }
 
         return copy;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
 }

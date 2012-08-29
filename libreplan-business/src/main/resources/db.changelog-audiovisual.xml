@@ -219,4 +219,16 @@
             referencedTableName="order_table" referencedColumnNames="order_element_id" />
     </changeSet>
 
+    <changeSet id="add-start-and-end-date-to-budget_line_template" author="jaragunde">
+        <comment>
+            Add two date fields for start and end date to budget_line_template table
+        </comment>
+        <addColumn tableName="budget_line_template">
+            <column name="start_date" type="DATE" />
+        </addColumn>
+        <addColumn tableName="budget_line_template">
+            <column name="end_date" type="DATE" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
