@@ -224,7 +224,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         orderElement.setDescription(getDescription());
     }
 
-    private <T> void setupDates(OrderElement orderElement) {
+    protected <T> void setupDates(OrderElement orderElement) {
         Date orderInitDate = orderElement.getOrder().getInitDate();
         if (getStartAsDaysFromBeginning() != null) {
             orderElement.setInitDate(plusDays(orderInitDate,

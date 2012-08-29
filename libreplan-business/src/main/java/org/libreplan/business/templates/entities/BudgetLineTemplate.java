@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import org.joda.time.LocalDate;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.HoursGroup;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 
 /**
@@ -169,6 +170,16 @@ public class BudgetLineTemplate extends OrderLineTemplate {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    @Override
+    protected <T> void setupDates(OrderElement orderElement) {
+        if (getStartDate() != null) {
+            orderElement.setInitDate(getStartDate().toDateMidnight().toDate());
+        }
+        if (getEndDate() != null) {
+            orderElement.setDeadline(getEndDate().toDateMidnight().toDate());
+        }
     }
 
 }
