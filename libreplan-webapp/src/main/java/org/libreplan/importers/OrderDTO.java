@@ -19,7 +19,10 @@
 
 package org.libreplan.importers;
 
+import java.util.Date;
 import java.util.List;
+
+import org.libreplan.business.orders.entities.Order;
 
 /**
  * Class that represents no persistent imported data.
@@ -34,6 +37,16 @@ public class OrderDTO {
      * Name of the project that is going to be imported.
      */
     public String name;
+
+    /**
+     * Start date of the project
+     */
+    public Date startDate;
+
+    /**
+     * Order created with this data
+     */
+    public Order order;
 
     /**
      * List of {@link OrderElementDTO} of the project that is going to be imported.

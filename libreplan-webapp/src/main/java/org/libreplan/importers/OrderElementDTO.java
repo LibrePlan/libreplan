@@ -19,7 +19,10 @@
 
 package org.libreplan.importers;
 
+import java.util.Date;
 import java.util.List;
+
+import org.libreplan.business.orders.entities.OrderElement;
 
 /**
  * Class that represents no persistent imported tasks. <br />
@@ -35,6 +38,21 @@ public class OrderElementDTO {
      * Name of the task
      */
     public String name;
+
+    /**
+     * Start date of the task
+     */
+    public Date startDate;
+
+    /**
+     * end date of the task
+     */
+    public Date endDate;
+
+    /**
+     * Order created with this data
+     */
+    public OrderElement orderElement;
 
     /**
      * List of task that are children of this task
