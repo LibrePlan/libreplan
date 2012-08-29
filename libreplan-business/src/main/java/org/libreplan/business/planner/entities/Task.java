@@ -44,6 +44,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.ICalendar;
 import org.libreplan.business.calendars.entities.SameWorkHoursEveryDay;
+import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -152,6 +153,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private Integer workableDays;
 
     private Direction lastAllocationDirection = Direction.FORWARD;
+
+    private CashflowPlan cashflowPlan = CashflowPlan.create();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -1247,6 +1250,14 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     @Override
     public boolean isAnyTaskWithConstraint(PositionConstraintType type) {
         return getPositionConstraint().getConstraintType().equals(type);
+    }
+
+    public CashflowPlan getCashflowPlan() {
+        return cashflowPlan;
+    }
+
+    public void setCashflowPlan(CashflowPlan cashflowPlan) {
+        this.cashflowPlan = cashflowPlan;
     }
 
 }
