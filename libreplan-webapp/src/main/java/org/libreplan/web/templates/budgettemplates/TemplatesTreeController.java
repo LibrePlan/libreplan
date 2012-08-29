@@ -24,11 +24,13 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.ClassValidator;
+import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.templates.entities.BudgetLineTemplate;
 import org.libreplan.business.templates.entities.BudgetLineTypeEnum;
@@ -37,6 +39,7 @@ import org.libreplan.business.templates.entities.OrderLineTemplate;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.Util.Getter;
 import org.libreplan.web.common.Util.Setter;
+import org.libreplan.web.orders.DynamicDatebox;
 import org.libreplan.web.tree.EntitiesTree;
 import org.libreplan.web.tree.TreeController;
 import org.zkoss.zk.ui.Component;
@@ -418,6 +421,72 @@ public class TemplatesTreeController extends
                 addCell(box);
             }
             else {
+                addEmptyBox();
+            }
+        }
+
+        void addStartDateCell(OrderElementTemplate element) {
+            if (element.isLeaf()) {
+                final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
+                DynamicDatebox dinamicDatebox = new DynamicDatebox(
+                        new DynamicDatebox.Getter<Date>() {
+
+                            @Override
+                            public Date get() {
+                                if (budgetLine.getStartDate() != null) {
+                                    return budgetLine.getStartDate()
+                                            .toDateMidnight().toDate();
+                                }
+                                return null;
+                            }
+                        }, new DynamicDatebox.Setter<Date>() {
+
+                            @Override
+                            public void set(Date value) {
+                                budgetLine.setStartDate(LocalDate
+                                        .fromDateFields(value));
+
+                            }
+                        });
+                if (readOnly) {
+                    dinamicDatebox.setDisabled(true);
+                }
+                addDateCell(dinamicDatebox, _("init"));
+                putInitDateDynamicDatebox(budgetLine, dinamicDatebox);
+            } else {
+                addEmptyBox();
+            }
+        }
+
+        void addEndDateCell(OrderElementTemplate element) {
+            if (element.isLeaf()) {
+                final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
+                DynamicDatebox dinamicDatebox = new DynamicDatebox(
+                        new DynamicDatebox.Getter<Date>() {
+
+                            @Override
+                            public Date get() {
+                                if (budgetLine.getEndDate() != null) {
+                                    return budgetLine.getEndDate()
+                                            .toDateMidnight().toDate();
+                                }
+                                return null;
+                            }
+                        }, new DynamicDatebox.Setter<Date>() {
+
+                            @Override
+                            public void set(Date value) {
+                                budgetLine.setEndDate(LocalDate
+                                        .fromDateFields(value));
+
+                            }
+                        });
+                if (readOnly) {
+                    dinamicDatebox.setDisabled(true);
+                }
+                addDateCell(dinamicDatebox, _("init"));
+                putInitDateDynamicDatebox(budgetLine, dinamicDatebox);
+            } else {
                 addEmptyBox();
             }
         }
