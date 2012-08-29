@@ -160,7 +160,8 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
         if (template != null) {
             return template;
         } else if (planningState != null) {
-            return planningState.getOrder().getAssociatedBudgetObject();
+            template = planningState.getOrder().getAssociatedBudgetObject();
+            return template;
         }
         return null;
     }
