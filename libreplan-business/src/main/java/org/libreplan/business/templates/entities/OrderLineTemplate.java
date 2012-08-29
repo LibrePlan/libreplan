@@ -84,7 +84,9 @@ public class OrderLineTemplate extends OrderElementTemplate {
         for (HoursGroup each : getHoursGroups()) {
             hoursGroups.add(HoursGroup.copyFrom(each, orderLine));
         }
-        orderLine.setHoursGroups(hoursGroups);
+        if (!hoursGroups.isEmpty()) {
+            orderLine.setHoursGroups(hoursGroups);
+        }
     }
 
     private void setupBudget(OrderLine orderLine) {
