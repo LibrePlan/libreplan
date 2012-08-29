@@ -459,10 +459,17 @@ public class Order extends OrderLineGroup implements Comparable {
                 if ((orderElement.getCode() == null)
                         || (orderElement.getCode().isEmpty())
                         || (!orderElement.getCode().startsWith(this.getCode()))) {
-                    this.incrementLastOrderElementSequenceCode();
-                    String orderElementCode = EntitySequence.formatValue(
-                            numberOfDigits,
-                            this.getLastOrderElementSequenceCode());
+                    // LibrePlan Audiovisual
+                    // Use the code already set to the order element (this is
+                    // set from the budget) and add the prefix with the order
+                    // code
+                    String orderElementCode = orderElement.getCode();
+                    if (StringUtils.isEmpty(orderElementCode)) {
+                        this.incrementLastOrderElementSequenceCode();
+                        orderElementCode = EntitySequence.formatValue(
+                                numberOfDigits,
+                                this.getLastOrderElementSequenceCode());
+                    }
                     orderElement.setCode(this.getCode()
                             + EntitySequence.CODE_SEPARATOR_CHILDREN
                             + orderElementCode);

@@ -219,7 +219,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     private void setupInfoComponent(OrderElement orderElement) {
-        // orderElement.setCode(getCode());
+        orderElement.setCode(getCode());
         orderElement.setName(getName());
         orderElement.setDescription(getDescription());
     }
