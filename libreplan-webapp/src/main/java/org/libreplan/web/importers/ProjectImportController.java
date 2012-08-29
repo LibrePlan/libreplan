@@ -4,7 +4,10 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.io.InputStream;
 
+import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.importers.IOrderImporter;
+import org.libreplan.importers.OrderDTO;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -70,9 +73,13 @@ public class ProjectImportController extends GenericForwardComposer {
     @Transactional
     private void importProject(InputStream streamData, String file) {
 
-        orderImporterMPXJ.storeOrder(orderImporterMPXJ
-                .convertImportDataToOrder(orderImporterMPXJ.getImportData(
-                        streamData, file)));
+        OrderDTO importData = orderImporterMPXJ.getImportData(streamData, file);
+
+        Order order = orderImporterMPXJ.convertImportDataToOrder(importData);
+
+        TaskGroup taskGroup = orderImporterMPXJ.createTask(importData);
+
+        orderImporterMPXJ.storeOrder(order, taskGroup);
 
     }
 

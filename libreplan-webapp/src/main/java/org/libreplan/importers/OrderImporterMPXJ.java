@@ -22,7 +22,6 @@ package org.libreplan.importers;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,10 +35,16 @@ import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.daos.ITaskElementDAO;
+import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
@@ -71,6 +76,15 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private ITaskElementDAO taskDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
 
     @Autowired
     private IScenarioManager scenarioManager;
@@ -167,7 +181,9 @@ public class OrderImporterMPXJ implements IOrderImporter {
         orderElement.setName(project.name + ": " + project.hashCode());
         orderElement.setCode(code);
 
-        orderElement.setInitDate(new Date());
+        orderElement.setInitDate(project.startDate);
+
+        project.order = (Order) orderElement;
 
         ((Order) orderElement).generateOrderElementCodes(entitySequenceDAO
                 .getNumberOfDigitsCode(EntityNameEnum.ORDER));
@@ -203,8 +219,10 @@ public class OrderImporterMPXJ implements IOrderImporter {
             }
 
         } else {
+
             orderElement = OrderLineGroup.createUnvalidated(UUID.randomUUID()
                     .toString());
+
             orderElement.useSchedulingDataFor(orderVersion);
         }
 
@@ -221,23 +239,141 @@ public class OrderImporterMPXJ implements IOrderImporter {
         }
 
         orderElement.setName(task.name);
-        orderElement.setInitDate(new Date());
+
+        task.orderElement = orderElement;
 
         return orderElement;
     }
 
     /**
-     * Saves an {@link Order} which has all the data that we want to store in
-     * the database.
+     * Creates a {@link TaskGroup} from a {@link ImportData}
      *
-     * @param Order
-     *            Order with the data.
+     * @param project
+     *            ImportData to extract data from
+     *
+     * @return TaskGroup TaskGroup with the data extracted.
      */
     @Override
     @Transactional
-    public void storeOrder(final Order order) {
+    public TaskGroup createTask(OrderDTO project) {
+
+        Order order = project.order;
+
+        TaskSource taskSource = TaskSource.createForGroup(order
+                .getCurrentSchedulingDataForVersion());
+
+        TaskGroup taskGroup = taskSource
+                .createTaskGroupWithoutDatesInitializedAndLinkItToTaskSource();
+
+        BaseCalendar calendar = configurationDAO.getConfiguration()
+                .getDefaultCalendar();
+
+        taskGroup.setCalendar(calendar);
+
+        List<TaskElement> taskElements = new ArrayList<TaskElement>();
+
+        for (OrderElementDTO importTask : project.tasks) {
+
+            taskElements.add(createTask(importTask));
+
+        }
+
+        for (TaskElement taskElement : taskElements) {
+            taskGroup.addTaskElement(taskElement);
+        }
+
+        return taskGroup;
+
+    }
+
+    /**
+     * Private method.
+     *
+     * It makes a {@link TaskElement} from a {@link ImportTask}
+     *
+     * @param task
+     *            ImportTask to extract data from.
+     *
+     * @return TaskElement TaskElement that represent the data.
+     */
+    private TaskElement createTask(OrderElementDTO task) {
+
+        OrderElement orderElement = task.orderElement;
+
+        TaskElement taskElement;
+
+        TaskSource taskSource;
+
+        if (task.children.size() == 0) {
+
+            taskSource = TaskSource.create(
+                    orderElement.getCurrentSchedulingDataForVersion(),
+                    orderElement.getHoursGroups());
+
+            taskElement = taskSource
+                    .createTaskWithoutDatesInitializedAndLinkItToTaskSource();
+
+        } else {
+
+            taskSource = TaskSource.createForGroup(orderElement
+                    .getCurrentSchedulingDataForVersion());
+
+            taskElement = taskSource
+                    .createTaskGroupWithoutDatesInitializedAndLinkItToTaskSource();
+
+            List<TaskElement> taskElements = new ArrayList<TaskElement>();
+
+            for (OrderElementDTO importTask : task.children) {
+
+                taskElements.add(createTask(importTask));
+
+            }
+
+            for (TaskElement childTaskElement : taskElements) {
+                ((TaskGroup) taskElement).addTaskElement(childTaskElement);
+            }
+
+        }
+
+        taskElement.setStartDate(task.startDate);
+        taskElement.setEndDate(task.endDate);
+
+        return taskElement;
+    }
+
+    /**
+     * Saves an {@link Order} which has all the data that we want to store in
+     * the database. Also save all the related {@link TaskElement} and its
+     * {@link TaskSource}
+     *
+     * @param Order
+     *            Order with the data.
+     * @param TaskGroup
+     *            TaskGroup with the data. It also contains the link to the
+     *            TaskSources.
+     */
+    @Override
+    @Transactional
+    public void storeOrder(final Order order, final TaskGroup taskGroup) {
+
+        final List<TaskSource> taskSources = new ArrayList<TaskSource>();
+
+        taskSources.add(taskGroup.getTaskSource());
+
+        for (TaskElement taskElement : taskGroup.getAllChildren()) {
+            taskSources.add(taskElement.getTaskSource());
+        }
 
         orderDAO.save(order);
+
+        taskDAO.save(taskGroup);
+
+        for (TaskSource taskSource : taskSources) {
+
+            taskSource.validate();
+            taskSourceDAO.save(taskSource);
+
+        }
 
     }
 

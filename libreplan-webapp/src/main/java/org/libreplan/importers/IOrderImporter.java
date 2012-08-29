@@ -22,6 +22,7 @@ package org.libreplan.importers;
 import java.io.InputStream;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.TaskGroup;
 
 /**
  * Contract for the {@link OrderImporterMPXJ}.
@@ -54,12 +55,24 @@ public interface IOrderImporter {
     public Order convertImportDataToOrder(OrderDTO project);
 
     /**
-     * Saves a {@link Order} which has all the data that we want to store in the
-     * database.
+     * Makes a {@link TaskGroup} from a {@link ImportData}.
+     *
+     * @param project
+     *            ImportData to extract data from.
+     * @return TaskGroup with the data that we want.
+     */
+    public TaskGroup createTask(OrderDTO project);
+
+    /**
+     * Saves a {@link Order} and a {@link TaskGroup} which has all the data that
+     * we want to store in the database.
      *
      * @param Order
      *            Order with the data.
+     *
+     * @param TaskGroup
+     *            TaskGroup with the data.
      */
-    public void storeOrder(Order order);
+    public void storeOrder(Order order, TaskGroup taskGroup);
 
 }
