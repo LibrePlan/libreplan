@@ -74,6 +74,17 @@ public class BudgetController extends GenericForwardComposer implements
 
     private IGlobalViewEntryPoints entryPointsController;
 
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+
+        editWindow = (Div) comp.getFellow("editWindow");
+        saveOrderAndContinueButton = (Button) comp
+                .getFellow("saveOrderAndContinueButton");
+        cancelEditionButton = (Button) comp.getFellow("cancelEditionButton");
+        closeBudgetButton = (Button) comp.getFellow("closeBudgetButton");
+    }
+
     public void init(Order order, ISaveCommand saveCommand) {
         model.initEdit(order, editWindow.getDesktop());
         showEditWindow();
