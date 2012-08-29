@@ -141,9 +141,22 @@ public abstract class TaskElement extends BaseEntity {
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
         taskElement.updateAdvancePercentageFromOrderElement();
-        Order order = taskElement.getOrderElement().getOrder();
-        taskElement.setEndDate(order.getDeadline());
-        taskElement.setStartDate(order.getInitDate());
+
+        // setup dates correctly: if there are start and end dates in the order
+        // element, use them; if there aren't, use order start and end dates.
+        OrderElement orderElement = taskElement.getOrderElement();
+        Order order = orderElement.getOrder();
+        if (orderElement.getInitDate() != null) {
+            taskElement.setStartDate(orderElement.getInitDate());
+        } else {
+            taskElement.setStartDate(order.getInitDate());
+        }
+        if (orderElement.getDeadline() != null) {
+            taskElement.setEndDate(orderElement.getDeadline());
+        } else {
+            taskElement.setEndDate(order.getDeadline());
+        }
+
         return create(taskElement);
     }
 
