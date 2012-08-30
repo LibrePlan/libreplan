@@ -28,61 +28,98 @@
     <window title="@{cashflowPlanController.windowTitle}"
         apply="${cashflowPlanController}">
 
-        <groupbox closable="false" id="cashflowGroupbox">
-            <caption label="${i18n:_('Cashflow')}" />
-
-            <grid fixedLayout="true">
-                <columns>
-                    <column width="200px" />
-                    <column />
-                </columns>
-                <rows>
-                    <row>
-                        <label value="${i18n:_('Type')}" />
-                        <listbox model="@{cashflowPlanController.cashflowTypes}"
-                            selectedItem="@{cashflowPlanController.selectedCashflowType}"
-                            mold="select" />
-                    </row>
-                    <row>
-                        <label value="${i18n:_('Total')}" />
-                        <decimalbox value="@{cashflowPlanController.total}"
-                            format="@{cashflowPlanController.moneyFormat}"
-                            disabled="true" />
-                    </row>
-                    <row>
-                        <label value="${i18n:_('Outputs')}" />
-                        <vbox>
-                            <hbox>
-                                <label value="${i18n:_('New output')}: " />
-                                <label value="${i18n:_('Date')}" />
-                                <datebox id="dateDatebox" />
-                                <label value="${i18n:_('Amount')}" />
-                                <decimalbox id="amountDecimalbox" />
-                                <button label="${i18n:_('Add')}"
-                                    onClick="cashflowPlanController.addOutput();" />
-                            </hbox>
-                            <grid
-                                rowRenderer="@{cashflowPlanController.cashflowOutputRenderer}"
-                                model="@{cashflowPlanController.cashflowOutputs}"
-                                mold="paging" pageSize="10" fixedLayout="true">
-                                <columns>
-                                    <column label="${i18n:_('Date')}" />
-                                    <column label="${i18n:_('Amount')}" />
-                                    <column label="${i18n:_('Operations')}" />
-                                </columns>
-                            </grid>
-                        </vbox>
-                    </row>
-                </rows>
-            </grid>
-
-        </groupbox>
-
         <hbox>
-            <button label="${i18n:_('Back')}"
-                onClick="cashflowPlanController.back()"
-                sclass="back-button global-action" />
+
+            <groupbox closable="false" id="cashflowGroupbox">
+                <caption label="${i18n:_('Cashflow')}" />
+
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Type')}" />
+                            <listbox model="@{cashflowPlanController.cashflowTypes}"
+                                selectedItem="@{cashflowPlanController.selectedCashflowType}"
+                                mold="select" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Total')}" />
+                            <decimalbox value="@{cashflowPlanController.total}"
+                                format="@{cashflowPlanController.moneyFormat}"
+                                disabled="true" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Outputs')}" />
+                            <vbox>
+                                <hbox>
+                                    <label value="${i18n:_('New output')}: " />
+                                    <label value="${i18n:_('Date')}" />
+                                    <datebox id="dateDatebox" />
+                                    <label value="${i18n:_('Amount')}" />
+                                    <decimalbox id="amountDecimalbox" />
+                                    <button label="${i18n:_('Add')}"
+                                        onClick="cashflowPlanController.addOutput();" />
+                                </hbox>
+                                <grid
+                                    rowRenderer="@{cashflowPlanController.cashflowOutputRenderer}"
+                                    model="@{cashflowPlanController.cashflowOutputs}"
+                                    mold="paging" pageSize="10" fixedLayout="true">
+                                    <columns>
+                                        <column label="${i18n:_('Date')}" />
+                                        <column label="${i18n:_('Amount')}" />
+                                        <column label="${i18n:_('Operations')}" />
+                                    </columns>
+                                </grid>
+                            </vbox>
+                        </row>
+                    </rows>
+                </grid>
+
+            </groupbox>
+
+            <groupbox closable="false">
+                <caption label="${i18n:_('Expenses')}" />
+
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Total')}" />
+                            <decimalbox value="@{cashflowPlanController.totalExpenses}"
+                                format="@{cashflowPlanController.moneyFormat}"
+                                disabled="true" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Expenses')}" />
+                            <vbox>
+                                <grid
+                                    rowRenderer="@{cashflowPlanController.expenseSheetLineRenderer}"
+                                    model="@{cashflowPlanController.expenseSheetLines}"
+                                    mold="paging" pageSize="10" fixedLayout="true">
+                                    <columns>
+                                        <column label="${i18n:_('Date')}" />
+                                        <column label="${i18n:_('Amount')}" />
+                                        <column label="${i18n:_('Concept')}" />
+                                    </columns>
+                                </grid>
+                            </vbox>
+                        </row>
+                    </rows>
+                </grid>
+
+            </groupbox>
+
         </hbox>
+
+        <button label="${i18n:_('Back')}"
+            onClick="cashflowPlanController.back()"
+            sclass="back-button global-action" />
 
     </window>
 </zk>

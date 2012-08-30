@@ -1972,8 +1972,7 @@ class RowExpenses extends Row {
     }
 
     private void openCashflowPlanWindow(final Component parent) {
-        CashflowPlanController cashflowPlanController = new CashflowPlanController(
-                cashflowPlan, getName());
+        CashflowPlanController cashflowPlanController = new CashflowPlanController();
 
         HashMap<String, Object> args = new HashMap<String, Object>();
         args.put("cashflowPlanController", cashflowPlanController);
@@ -1982,6 +1981,7 @@ class RowExpenses extends Row {
                 "/planner/cashflow_plan.zul", parent, args);
         Util.createBindingsFor(window);
 
+        cashflowPlanController.setTask((Task) getTask());
         cashflowPlanController.showWindow();
     }
 

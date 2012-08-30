@@ -32,6 +32,8 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.cashflow.entities.CashflowOutput;
 import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.cashflow.entities.CashflowType;
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -62,16 +64,11 @@ public class CashflowPlanController extends GenericForwardComposer {
 
     private Groupbox cashflowGroupbox;
 
-    private CashflowPlan cashflowPlan;
-
-    private String taskName;
-
     private RowRenderer cashflowOutputRenderer;
 
-    public CashflowPlanController(CashflowPlan cashflowPlan, String taskName) {
-        this.cashflowPlan = cashflowPlan;
-        this.taskName = taskName;
-    }
+    private ICashflowPlanModel cashflowPlanModel;
+
+    private RowRenderer expenseSheetLineRenderer;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -79,8 +76,17 @@ public class CashflowPlanController extends GenericForwardComposer {
         window = (Window) comp;
     }
 
+    public void setTask(Task task) {
+        cashflowPlanModel.setTask(task);
+        Util.reloadBindings(window);
+    }
+
     public String getWindowTitle() {
-        return _("Cashflow plan for task: {0}", taskName);
+        Task task = cashflowPlanModel.getTask();
+        if (task == null) {
+            return "";
+        }
+        return _("Cashflow plan for task: {0}", task.getName());
     }
 
     public List<CashflowType> getCashflowTypes() {
@@ -88,11 +94,15 @@ public class CashflowPlanController extends GenericForwardComposer {
     }
 
     public CashflowType getSelectedCashflowType() {
+        CashflowPlan cashflowPlan = getCashflowPlan();
+        if (cashflowPlan == null) {
+            return CashflowType.MANUAL;
+        }
         return cashflowPlan.getType();
     }
 
     public void setSelectedCashflowType(CashflowType cashflowType) {
-        cashflowPlan.setType(cashflowType);
+        getCashflowPlan().setType(cashflowType);
     }
 
     public void showWindow() {
@@ -110,6 +120,11 @@ public class CashflowPlanController extends GenericForwardComposer {
     }
 
     public List<CashflowOutput> getCashflowOutputs() {
+        CashflowPlan cashflowPlan = getCashflowPlan();
+        if (cashflowPlan == null) {
+            return Collections.emptyList();
+        }
+
         List<CashflowOutput> outputs = new ArrayList<CashflowOutput>(
                 cashflowPlan.getOutputs());
         Collections.sort(outputs, new Comparator<CashflowOutput>() {
@@ -138,7 +153,8 @@ public class CashflowPlanController extends GenericForwardComposer {
                                 @Override
                                 public void onEvent(Event event)
                                         throws Exception {
-                                    cashflowPlan.removeOutput(output.getDate(),
+                                    getCashflowPlan().removeOutput(
+                                            output.getDate(),
                                             output.getAmount());
                                     Util.reloadBindings(cashflowGroupbox);
                                 }
@@ -160,7 +176,7 @@ public class CashflowPlanController extends GenericForwardComposer {
                     _("cannot be empty"));
         }
 
-        cashflowPlan.addOutput(date, amount);
+        getCashflowPlan().addOutput(date, amount);
 
         resetOutputInputs();
 
@@ -173,11 +189,53 @@ public class CashflowPlanController extends GenericForwardComposer {
     }
 
     public BigDecimal getTotal() {
+        CashflowPlan cashflowPlan = getCashflowPlan();
+        if (cashflowPlan == null) {
+            return BigDecimal.ZERO;
+        }
         return cashflowPlan.calculateTotal();
     }
 
     public String getMoneyFormat() {
         return Util.getMoneyFormat();
+    }
+
+    private CashflowPlan getCashflowPlan() {
+        return cashflowPlanModel.getCashflowPlan();
+    }
+
+    public List<ExpenseSheetLine> getExpenseSheetLines() {
+        List<ExpenseSheetLine> lines = cashflowPlanModel.getExpenseSheetLines();
+        Collections.sort(lines, new Comparator<ExpenseSheetLine>() {
+            @Override
+            public int compare(ExpenseSheetLine o1, ExpenseSheetLine o2) {
+                return o1.getDate().compareTo(o2.getDate());
+            }
+        });
+        return lines;
+    }
+
+    public BigDecimal getTotalExpenses() {
+        return cashflowPlanModel.getTotalExpenses();
+    }
+
+    public RowRenderer getExpenseSheetLineRenderer() {
+        if (expenseSheetLineRenderer == null) {
+            expenseSheetLineRenderer = new RowRenderer() {
+
+                @Override
+                public void render(Row row, Object data) throws Exception {
+                    ExpenseSheetLine line = (ExpenseSheetLine) data;
+                    row.setValue(line);
+
+                    Util.appendLabel(row, line.getDate().toString());
+                    Util.appendLabel(row,
+                            Util.addCurrencySymbol(line.getValue()));
+                    Util.appendLabel(row, line.getConcept());
+                }
+            };
+        }
+        return expenseSheetLineRenderer;
     }
 
 }
