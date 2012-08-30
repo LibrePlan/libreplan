@@ -65,6 +65,8 @@ public class CashflowPlanTest {
         assertEquals(outputs.get(0).getAmount(), amount1);
         assertEquals(outputs.get(1).getDate(), date2);
         assertEquals(outputs.get(1).getAmount(), amount2);
+
+        assertEquals(plan.calculateTotal(), amount1.add(amount2));
     }
 
     @Test
@@ -83,6 +85,7 @@ public class CashflowPlanTest {
         // date1 - amount2 output doesn't exist
         plan.removeOutput(date1, amount2);
         assertEquals(plan.getOutputs().size(), 2);
+        assertEquals(plan.calculateTotal(), amount1.add(amount2));
 
         // date1 - amount1 output exists
         plan.removeOutput(date1, amount1);
@@ -91,6 +94,8 @@ public class CashflowPlanTest {
         assertEquals(outputs.size(), 1);
         assertEquals(outputs.get(0).getDate(), date2);
         assertEquals(outputs.get(0).getAmount(), amount2);
+
+        assertEquals(plan.calculateTotal(), amount2);
     }
 
 }

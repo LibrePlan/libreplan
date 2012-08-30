@@ -88,4 +88,12 @@ public class CashflowPlan extends BaseEntity {
         return -1;
     }
 
+    public BigDecimal calculateTotal() {
+        BigDecimal total = BigDecimal.ZERO;
+        for (CashflowOutput output : outputs) {
+            total = total.add(output.getAmount());
+        }
+        return total;
+    }
+
 }
