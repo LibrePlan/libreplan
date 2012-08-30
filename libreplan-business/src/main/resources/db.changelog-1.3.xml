@@ -32,7 +32,7 @@
         author="mrego">
         <comment>Add personal_timesheets_periodicity column to configuration</comment>
         <addColumn tableName="configuration">
-            <column name="personal_timesheets_periodicity" type="INT" />
+            <column name="personal_timesheets_periodicity" type="INTEGER" />
         </addColumn>
         <update tableName="configuration">
             <column name="personal_timesheets_periodicity" value="0" />
