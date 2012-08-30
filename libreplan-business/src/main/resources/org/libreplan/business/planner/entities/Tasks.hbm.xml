@@ -98,6 +98,10 @@
 
             <property name="priority" />
 
+            <many-to-one name="cashflowPlan" column="cashflow_plan_id"
+                class="org.libreplan.business.cashflow.entities.CashflowPlan"
+                cascade="all" unique="true" lazy="false" />
+
         </joined-subclass>
 
         <joined-subclass name="TaskGroup" table="task_group">

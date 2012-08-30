@@ -99,6 +99,9 @@
                 <value>
                     org/libreplan/business/filmingprogress/entities/FilmingProgress.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/cashflow/entities/Cashflow.hbm.xml
+                </value>
             </list>
         </property>
 

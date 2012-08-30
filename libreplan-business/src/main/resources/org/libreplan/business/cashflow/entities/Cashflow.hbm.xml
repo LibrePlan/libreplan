@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.libreplan.business.cashflow.entities"
+    default-access="field">
+
+    <!-- CashflowPlan -->
+    <class name="CashflowPlan" table="cashflow_plan">
+        <id name="id" access="property" type="long">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+
+        <property name="type" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.cashflow.entities.CashflowType</param>
+            </type>
+        </property>
+
+        <list name="outputs" table="cashflow_output" lazy="false">
+            <key column="cashflow_plan_id" />
+            <list-index column="cashflow_output_position" />
+            <composite-element class="CashflowOutput">
+                <property name="date" column="date"
+                    type="org.joda.time.contrib.hibernate.PersistentLocalDate"
+                    not-null="true" />
+                <property name="amount" column="amount"
+                    not-null="true" />
+            </composite-element>
+        </list>
+
+    </class>
+
+</hibernate-mapping>
