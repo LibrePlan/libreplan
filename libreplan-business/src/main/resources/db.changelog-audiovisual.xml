@@ -231,4 +231,68 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="create-tables-related-to-cashflow-entities" author="mrego">
+        <comment>Create new new tables and indexes related to cashflow enitities</comment>
+
+        <createTable tableName="cashflow_plan">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cashflow_plan_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="cashflow_output">
+            <column name="cashflow_plan_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="DECIMAL(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cashflow_output_position" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+            columnNames="cashflow_plan_id, cashflow_output_position"
+            constraintName="cashflow_output_pkey"
+            tableName="cashflow_output"/>
+
+        <addForeignKeyConstraint
+            baseColumnNames="cashflow_plan_id"
+            baseTableName="cashflow_output"
+            constraintName="cashflow_output_cashflow_plan_id_fkey"
+            deferrable="false" initiallyDeferred="false"
+            onDelete="NO ACTION" onUpdate="NO ACTION"
+            referencedColumnNames="id"
+            referencedTableName="cashflow_plan"
+            referencesUniqueColumn="false" />
+    </changeSet>
+
+    <changeSet id="add-relationship-between-task-and-cashflow_plan"
+        author="mrego">
+        <comment>
+            Add column and constraints needed for relationship between
+            Task and CashflowPlan
+        </comment>
+        <addColumn tableName="task">
+            <column name="cashflow_plan_id" type="BIGINT" />
+        </addColumn>
+        <addUniqueConstraint tableName="task"
+            columnNames="cashflow_plan_id"
+            constraintName="task_cashflow_plan_id_key" />
+        <addForeignKeyConstraint
+            constraintName="task_cashflow_plan_fkey"
+            baseTableName="task" baseColumnNames="cashflow_plan_id"
+            referencedTableName="cashflow_plan" referencedColumnNames="id" />
+    </changeSet>
+
 </databaseChangeLog>
