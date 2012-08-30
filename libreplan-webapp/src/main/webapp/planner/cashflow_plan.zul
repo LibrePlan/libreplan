@@ -1,0 +1,88 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2012 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
+
+<zk>
+
+    <zscript><![CDATA[
+        cashflowPlanController = arg.get("cashflowPlanController");
+    ]]></zscript>
+
+    <window title="@{cashflowPlanController.windowTitle}"
+        apply="${cashflowPlanController}">
+
+        <groupbox closable="false" id="cashflowGroupbox">
+            <caption label="${i18n:_('Cashflow')}" />
+
+            <grid fixedLayout="true">
+                <columns>
+                    <column width="200px" />
+                    <column />
+                </columns>
+                <rows>
+                    <row>
+                        <label value="${i18n:_('Type')}" />
+                        <listbox model="@{cashflowPlanController.cashflowTypes}"
+                            selectedItem="@{cashflowPlanController.selectedCashflowType}"
+                            mold="select" />
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Total')}" />
+                        <decimalbox value="@{cashflowPlanController.total}"
+                            format="@{cashflowPlanController.moneyFormat}"
+                            disabled="true" />
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Outputs')}" />
+                        <vbox>
+                            <hbox>
+                                <label value="${i18n:_('New output')}: " />
+                                <label value="${i18n:_('Date')}" />
+                                <datebox id="dateDatebox" />
+                                <label value="${i18n:_('Amount')}" />
+                                <decimalbox id="amountDecimalbox" />
+                                <button label="${i18n:_('Add')}"
+                                    onClick="cashflowPlanController.addOutput();" />
+                            </hbox>
+                            <grid
+                                rowRenderer="@{cashflowPlanController.cashflowOutputRenderer}"
+                                model="@{cashflowPlanController.cashflowOutputs}"
+                                mold="paging" pageSize="10" fixedLayout="true">
+                                <columns>
+                                    <column label="${i18n:_('Date')}" />
+                                    <column label="${i18n:_('Amount')}" />
+                                    <column label="${i18n:_('Operations')}" />
+                                </columns>
+                            </grid>
+                        </vbox>
+                    </row>
+                </rows>
+            </grid>
+
+        </groupbox>
+
+        <hbox>
+            <button label="${i18n:_('Back')}"
+                onClick="cashflowPlanController.back()"
+                sclass="back-button global-action" />
+        </hbox>
+
+    </window>
+</zk>

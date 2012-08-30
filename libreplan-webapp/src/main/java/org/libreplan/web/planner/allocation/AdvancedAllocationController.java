@@ -44,6 +44,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.planner.entities.AggregateOfExpensesLines;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.AssignmentFunction;
@@ -83,6 +84,7 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -103,6 +105,7 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Column;
+import org.zkoss.zul.api.Window;
 
 /**
  *
@@ -232,6 +235,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 }
             }
         }
+
     }
 
     public interface IAdvanceAllocationResultReceiver {
@@ -1922,6 +1926,8 @@ abstract class Row {
 
 class RowExpenses extends Row {
 
+    private CashflowPlan cashflowPlan;
+
     protected RowExpenses(IMessagesForUser messages, Restriction restriction,
             String name, TaskElement task,
             AggregateOfExpensesLines aggregateExpenses) {
@@ -1929,6 +1935,9 @@ class RowExpenses extends Row {
         setTask(task);
         setRowName(new Label(TypeRow.Expenses.toString()));
         this.aggregate = aggregateExpenses;
+        if (task.isTask()) {
+            cashflowPlan = ((Task) task).getCashflowPlan();
+        }
     }
 
     public static RowExpenses createRow(IMessagesForUser messages,
@@ -1946,7 +1955,34 @@ class RowExpenses extends Row {
             getAllEffortInput().setReadonly(true);
             reloadAllEffort();
         }
-        return getAllEffortInput();
+        final Hbox hbox = new Hbox();
+        hbox.appendChild(getAllEffortInput());
+
+        if (cashflowPlan != null) {
+            Button cashflowButton = Util.createEditButton(new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    openCashflowPlanWindow(hbox);
+                }
+            });
+            cashflowButton.setTooltiptext(_("Cashflow plan"));
+            hbox.appendChild(cashflowButton);
+        }
+        return hbox;
+    }
+
+    private void openCashflowPlanWindow(final Component parent) {
+        CashflowPlanController cashflowPlanController = new CashflowPlanController(
+                cashflowPlan, getName());
+
+        HashMap<String, Object> args = new HashMap<String, Object>();
+        args.put("cashflowPlanController", cashflowPlanController);
+
+        Window window = (Window) Executions.createComponents(
+                "/planner/cashflow_plan.zul", parent, args);
+        Util.createBindingsFor(window);
+
+        cashflowPlanController.showWindow();
     }
 
     @Override
