@@ -30,10 +30,10 @@ public enum CashflowType {
 
     MANUAL(
             _("Manual"),
-            _("Cashflow outputs are defined manually by the user")),
+            _("Cashflow payments are defined manually by the user")),
     DEFERRED_PAYMENT(
             _("Defferred payment"),
-            _("Cashflow outputs are defined automatically within the configured days taken into account the task expenses"));
+            _("Cashflow payments are defined automatically within the configured days taken into account the task expenses"));
 
     private String name;
 

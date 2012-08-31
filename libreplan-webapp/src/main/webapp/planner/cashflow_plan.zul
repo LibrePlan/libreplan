@@ -60,10 +60,10 @@
                                 disabled="true" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Outputs')}" />
+                            <label value="${i18n:_('Payments')}" />
                             <vbox>
                                 <hbox id="outputOptionHbox">
-                                    <label value="${i18n:_('New output')}: " />
+                                    <label value="${i18n:_('New payment')}: " />
                                     <label value="${i18n:_('Date')}" />
                                     <datebox id="dateDatebox" />
                                     <label value="${i18n:_('Amount')}" />
