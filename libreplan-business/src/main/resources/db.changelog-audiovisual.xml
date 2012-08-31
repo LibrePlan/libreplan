@@ -295,4 +295,11 @@
             referencedTableName="cashflow_plan" referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="add-column-delay_days-to-cashflow_plan" author="mrego">
+        <comment>Add column delay_days to cashflow_plan table</comment>
+        <addColumn tableName="cashflow_plan">
+            <column name="delay_days" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

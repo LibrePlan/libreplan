@@ -30,6 +30,8 @@
             </composite-element>
         </list>
 
+        <property name="delayDays" column="delay_days" />
+
     </class>
 
 </hibernate-mapping>

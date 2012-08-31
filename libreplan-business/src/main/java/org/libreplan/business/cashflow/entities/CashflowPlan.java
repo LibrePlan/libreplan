@@ -41,6 +41,8 @@ public class CashflowPlan extends BaseEntity {
 
     private List<CashflowOutput> outputs = new ArrayList<CashflowOutput>();
 
+    private Integer delayDays = 0;
+
     public static CashflowPlan create() {
         return create(new CashflowPlan());
     }
@@ -58,6 +60,12 @@ public class CashflowPlan extends BaseEntity {
 
     public void setType(CashflowType type) {
         this.type = type;
+        if (!isManual()) {
+            outputs.clear();
+            if (delayDays == null) {
+                delayDays = 0;
+            }
+        }
     }
 
     @Valid
@@ -94,6 +102,26 @@ public class CashflowPlan extends BaseEntity {
             total = total.add(output.getAmount());
         }
         return total;
+    }
+
+    public boolean isManual() {
+        return type.equals(CashflowType.MANUAL);
+    }
+
+    public Integer getDelayDays() {
+        return delayDays;
+    }
+
+    public void setDelayDays(Integer delayDays) {
+        if (isManual()) {
+            throw new IllegalArgumentException(
+                    "You cannot set delay days for chasflow plan with type manual");
+        }
+        if (delayDays == null || delayDays < 0) {
+            throw new IllegalArgumentException(
+                    "Delay days cannot be null or negative");
+        }
+        this.delayDays = delayDays;
     }
 
 }

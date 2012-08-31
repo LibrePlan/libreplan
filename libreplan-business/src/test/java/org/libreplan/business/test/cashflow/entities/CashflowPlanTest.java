@@ -20,6 +20,7 @@
 package org.libreplan.business.test.cashflow.entities;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -31,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.cashflow.entities.CashflowOutput;
 import org.libreplan.business.cashflow.entities.CashflowPlan;
+import org.libreplan.business.cashflow.entities.CashflowType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,6 +98,34 @@ public class CashflowPlanTest {
         assertEquals(outputs.get(0).getAmount(), amount2);
 
         assertEquals(plan.calculateTotal(), amount2);
+    }
+
+    @Test
+    public void checkDelayDaysInDeferredPaymentType() {
+        CashflowPlan plan = CashflowPlan.create();
+        plan.setType(CashflowType.DEFERRED_PAYMENT);
+
+        Integer days = 10;
+        plan.setDelayDays(days);
+        assertEquals(plan.getDelayDays(), days);
+
+        try {
+            plan.setDelayDays(null);
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e);
+        }
+
+        try {
+            plan.setDelayDays(-10);
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void checkDelayDaysInManualType() {
+        CashflowPlan plan = CashflowPlan.create();
+        plan.setDelayDays(10);
     }
 
 }
