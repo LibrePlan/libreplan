@@ -44,11 +44,14 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ComboitemRenderer;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.api.Combobox;
 import org.zkoss.zul.api.Datebox;
 import org.zkoss.zul.api.Decimalbox;
 import org.zkoss.zul.api.Groupbox;
+import org.zkoss.zul.api.Intbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -75,6 +78,14 @@ public class CashflowPlanController extends GenericForwardComposer {
 
     private ComboitemRenderer cashflowTypeRenderer;
 
+    private Hbox deferredPaymentOptionHbox;
+
+    private Hbox outputOptionHbox;
+
+    private Intbox daysIntbox;
+
+    private Combobox typeCombobox;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -83,7 +94,17 @@ public class CashflowPlanController extends GenericForwardComposer {
 
     public void setTask(Task task) {
         cashflowPlanModel.setTask(task);
+        updateOpionsVisibility();
         Util.reloadBindings(window);
+    }
+
+    private void updateOpionsVisibility() {
+        CashflowPlan cashflowPlan = getCashflowPlan();
+        if (cashflowPlan != null) {
+            boolean manual = cashflowPlan.isManual();
+            outputOptionHbox.setVisible(manual);
+            deferredPaymentOptionHbox.setVisible(!manual);
+        }
     }
 
     public String getWindowTitle() {
@@ -107,7 +128,12 @@ public class CashflowPlanController extends GenericForwardComposer {
     }
 
     public void setSelectedCashflowType(CashflowType cashflowType) {
+        if (cashflowType == null) {
+            throw new WrongValueException(typeCombobox, _("cannot be empty"));
+        }
         getCashflowPlan().setType(cashflowType);
+        updateOpionsVisibility();
+        Util.reloadBindings(cashflowGroupbox);
     }
 
     public void showWindow() {
@@ -126,13 +152,8 @@ public class CashflowPlanController extends GenericForwardComposer {
     }
 
     public List<CashflowOutput> getCashflowOutputs() {
-        CashflowPlan cashflowPlan = getCashflowPlan();
-        if (cashflowPlan == null) {
-            return Collections.emptyList();
-        }
-
         List<CashflowOutput> outputs = new ArrayList<CashflowOutput>(
-                cashflowPlan.getOutputs());
+                cashflowPlanModel.getOutputs());
         Collections.sort(outputs, new Comparator<CashflowOutput>() {
             @Override
             public int compare(CashflowOutput o1, CashflowOutput o2) {
@@ -195,11 +216,7 @@ public class CashflowPlanController extends GenericForwardComposer {
     }
 
     public BigDecimal getTotal() {
-        CashflowPlan cashflowPlan = getCashflowPlan();
-        if (cashflowPlan == null) {
-            return BigDecimal.ZERO;
-        }
-        return cashflowPlan.calculateTotal();
+        return cashflowPlanModel.getTotalOutputs();
     }
 
     public String getMoneyFormat() {
@@ -259,6 +276,23 @@ public class CashflowPlanController extends GenericForwardComposer {
             };
         }
         return cashflowTypeRenderer;
+    }
+
+    public Integer getDays() {
+        CashflowPlan cashflowPlan = getCashflowPlan();
+        if (cashflowPlan == null) {
+            return 0;
+        }
+        return cashflowPlan.getDelayDays();
+    }
+
+    public void setDays(Integer days) {
+        if (days == null || days < 0) {
+            throw new WrongValueException(daysIntbox,
+                    _("cannot be empty or negative"));
+        }
+        getCashflowPlan().setDelayDays(days);
+        Util.reloadBindings(cashflowGroupbox);
     }
 
 }

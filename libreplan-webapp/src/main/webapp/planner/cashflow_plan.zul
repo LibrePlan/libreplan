@@ -41,10 +41,17 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Type')}" />
-                            <combobox model="@{cashflowPlanController.cashflowTypes}"
-                                selectedItem="@{cashflowPlanController.selectedCashflowType}"
-                                itemRenderer="@{cashflowPlanController.cashflowTypeRenderer}"
-                                constraint="no empty:${i18n:_('cannot be empty')}" />
+                            <hbox>
+                                <combobox model="@{cashflowPlanController.cashflowTypes}"
+                                    selectedItem="@{cashflowPlanController.selectedCashflowType}"
+                                    itemRenderer="@{cashflowPlanController.cashflowTypeRenderer}"
+                                    id="typeCombobox" />
+                                <hbox id="deferredPaymentOptionHbox">
+                                    <label value="${i18n:_('Days')}" />
+                                    <intbox id="daysIntbox"
+                                        value="@{cashflowPlanController.days}" />
+                                </hbox>
+                            </hbox>
                         </row>
                         <row>
                             <label value="${i18n:_('Total')}" />
@@ -55,7 +62,7 @@
                         <row>
                             <label value="${i18n:_('Outputs')}" />
                             <vbox>
-                                <hbox>
+                                <hbox id="outputOptionHbox">
                                     <label value="${i18n:_('New output')}: " />
                                     <label value="${i18n:_('Date')}" />
                                     <datebox id="dateDatebox" />

@@ -21,8 +21,10 @@ package org.libreplan.web.planner.allocation;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.libreplan.business.cashflow.entities.CashflowOutput;
 import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
@@ -92,6 +94,43 @@ public class CashflowPlanModel implements ICashflowPlanModel {
             return BigDecimal.ZERO;
         }
         return sumExpenses.getTotalDirectExpenses();
+    }
+
+    @Override
+    public List<CashflowOutput> getOutputs() {
+        CashflowPlan cashflowPlan = getCashflowPlan();
+        if (cashflowPlan == null) {
+            return Collections.emptyList();
+        }
+        if (cashflowPlan.isManual()) {
+            return cashflowPlan.getOutputs();
+        } else {
+            List<CashflowOutput> outputs = new ArrayList<CashflowOutput>();
+            int delayDays = cashflowPlan.getDelayDays() == null ? 0
+                    : cashflowPlan.getDelayDays();
+            for (ExpenseSheetLine line : getExpenseSheetLines()) {
+                outputs.add(new CashflowOutput(line.getDate().plusDays(
+                        delayDays), line.getValue()));
+            }
+            return outputs;
+        }
+    }
+
+    @Override
+    public BigDecimal getTotalOutputs() {
+        CashflowPlan cashflowPlan = getCashflowPlan();
+        if (cashflowPlan == null) {
+            return BigDecimal.ZERO;
+        }
+        if (cashflowPlan.isManual()) {
+            return cashflowPlan.calculateTotal();
+        } else {
+            BigDecimal total = BigDecimal.ZERO;
+            for (CashflowOutput output : getOutputs()) {
+                total = total.add(output.getAmount());
+            }
+            return total;
+        }
     }
 
 }

@@ -22,6 +22,7 @@ package org.libreplan.web.planner.allocation;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.libreplan.business.cashflow.entities.CashflowOutput;
 import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.planner.entities.Task;
@@ -42,5 +43,9 @@ public interface ICashflowPlanModel {
     List<ExpenseSheetLine> getExpenseSheetLines();
 
     BigDecimal getTotalExpenses();
+
+    List<CashflowOutput> getOutputs();
+
+    BigDecimal getTotalOutputs();
 
 }
