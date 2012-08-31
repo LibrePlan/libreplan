@@ -34,6 +34,7 @@ import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.cashflow.entities.CashflowType;
 import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.planner.entities.Task;
+import org.libreplan.web.common.ConstraintChecker;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -41,6 +42,8 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.api.Datebox;
@@ -69,6 +72,8 @@ public class CashflowPlanController extends GenericForwardComposer {
     private ICashflowPlanModel cashflowPlanModel;
 
     private RowRenderer expenseSheetLineRenderer;
+
+    private ComboitemRenderer cashflowTypeRenderer;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -116,6 +121,7 @@ public class CashflowPlanController extends GenericForwardComposer {
     }
 
     public void back() {
+        ConstraintChecker.isValid(window);
         window.setVisible(false);
     }
 
@@ -236,6 +242,23 @@ public class CashflowPlanController extends GenericForwardComposer {
             };
         }
         return expenseSheetLineRenderer;
+    }
+
+    public ComboitemRenderer getCashflowTypeRenderer() {
+        if (cashflowTypeRenderer == null) {
+            cashflowTypeRenderer = new ComboitemRenderer() {
+
+                @Override
+                public void render(Comboitem item, Object data) throws Exception {
+                    CashflowType type = (CashflowType) data;
+                    item.setValue(type);
+
+                    item.setLabel(_(type.getName()));
+                    item.setDescription(_(type.getDescription()));
+                }
+            };
+        }
+        return cashflowTypeRenderer;
     }
 
 }

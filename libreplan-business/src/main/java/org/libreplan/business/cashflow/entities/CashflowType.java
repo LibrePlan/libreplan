@@ -19,14 +19,37 @@
 
 package org.libreplan.business.cashflow.entities;
 
+import static org.libreplan.business.i18n.I18nHelper._;
+
 /**
- * Represents the different types of {@link CashflowPlan CashflowPlans}. For the
- * moment it only has one type: {@link CashflowType#MANUAL}.
+ * Represents the different types of {@link CashflowPlan CashflowPlans}.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public enum CashflowType {
 
-    MANUAL
+    MANUAL(
+            _("Manual"),
+            _("Cashflow outputs are defined manually by the user")),
+    DEFERRED_PAYMENT(
+            _("Defferred payment"),
+            _("Cashflow outputs are defined automatically within the configured days taken into account the task expenses"));
+
+    private String name;
+
+    private String description;
+
+    private CashflowType(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
 }

@@ -41,9 +41,10 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Type')}" />
-                            <listbox model="@{cashflowPlanController.cashflowTypes}"
+                            <combobox model="@{cashflowPlanController.cashflowTypes}"
                                 selectedItem="@{cashflowPlanController.selectedCashflowType}"
-                                mold="select" />
+                                itemRenderer="@{cashflowPlanController.cashflowTypeRenderer}"
+                                constraint="no empty:${i18n:_('cannot be empty')}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Total')}" />
