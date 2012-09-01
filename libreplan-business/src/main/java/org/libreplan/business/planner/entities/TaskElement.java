@@ -335,8 +335,8 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setEndDate(Date endDate) {
-        setIntraDayEndDate(endDate != null ? IntraDayDate.create(
-                LocalDate.fromDateFields(endDate), EffortDuration.zero())
+        setIntraDayEndDate(endDate != null ? IntraDayDate.create(LocalDate
+                .fromDateFields(endDate).plusDays(1), EffortDuration.zero())
                 : null);
     }
 
