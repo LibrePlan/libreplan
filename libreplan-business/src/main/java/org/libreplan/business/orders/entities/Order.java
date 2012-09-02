@@ -670,4 +670,12 @@ public class Order extends OrderLineGroup implements Comparable {
         return neededToRecalculateSumExpenses;
     }
 
+    public void calculateAndSetTotalHours() {
+        int result = 0;
+        for (OrderElement orderElement : this.getChildren()) {
+            result = result + orderElement.getWorkHours();
+        }
+        this.setTotalHours(result);
+    }
+
 }

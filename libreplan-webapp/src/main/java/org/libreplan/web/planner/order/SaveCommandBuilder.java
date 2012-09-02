@@ -371,7 +371,7 @@ public class SaveCommandBuilder {
             Order order = state.getOrder();
             generateOrderElementCodes(order);
             createAdvancePercentagesIfRequired(order);
-            calculateAndSetTotalHours(order);
+            order.calculateAndSetTotalHours();
             checkConstraintOrderUniqueCode(order);
             checkConstraintHoursGroupUniqueCode(order);
             state.synchronizeTrees();
@@ -495,14 +495,6 @@ public class SaveCommandBuilder {
         private void generateOrderElementCodes(Order order) {
             order.generateOrderElementCodes(entitySequenceDAO
                     .getNumberOfDigitsCode(EntityNameEnum.ORDER));
-        }
-
-        private void calculateAndSetTotalHours(Order order) {
-            int result = 0;
-            for (OrderElement orderElement : order.getChildren()) {
-                result = result + orderElement.getWorkHours();
-            }
-            order.setTotalHours(result);
         }
 
         private void checkConstraintOrderUniqueCode(OrderElement order) {
