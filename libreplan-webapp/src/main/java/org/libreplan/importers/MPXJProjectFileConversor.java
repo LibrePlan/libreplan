@@ -22,9 +22,11 @@ package org.libreplan.importers;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.mpxj.Duration;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.ProjectHeader;
 import net.sf.mpxj.Task;
+import net.sf.mpxj.TimeUnit;
 
 /**
  * Class that is a conversor from the MPXJ format File to {@link OrderDTO}.
@@ -143,11 +145,31 @@ public class MPXJProjectFileConversor {
     }
 
     /**
+     * Private method
+     *
+     * Converts the Duration into an integer that represent hours
+     *
+     * @param duration
+     *            Duration to convert.
+     * @param header
+     *            ProjectHeader needed to convert
+     * @return int Integer with the rounded duration in hours
+     */
+    private static int durationToIntHours(Duration duration,
+            ProjectHeader header) {
+
+        Duration durationInHours = duration
+                .convertUnits(TimeUnit.HOURS, header);
+
+        return (int) Math.floor(durationInHours.getDuration());
+    }
+
+    /**
      * Converts a List of MPXJ Tasks into a List of {@link OrderElementDTO}.
      *
      * @param tasks
      *            List of MPXJ Tasks to extract data from.
-     * @return List<ImportTask> List of ImportTask with the data that we want to
+     * @return List<OrderElementDTO> List of ImportTask with the data that we want to
      *         import.
      */
     private static List<OrderElementDTO> getImportTasks(List<Task> tasks) {
@@ -173,7 +195,7 @@ public class MPXJProjectFileConversor {
      *
      * @param task
      *            MPXJ Task to extract data from.
-     * @return ImportTask ImportTask with the data that we want to import.
+     * @return OrderElementDTO OrderElementDTO with the data that we want to import.
      */
     private static OrderElementDTO getTaskData(Task task) {
 
@@ -184,6 +206,8 @@ public class MPXJProjectFileConversor {
         importTask.startDate = task.getStart();
 
         importTask.endDate = task.getFinish();
+
+        importTask.totalHours = durationToIntHours(task.getDuration(), header);
 
         return importTask;
 

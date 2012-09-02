@@ -59,4 +59,9 @@ public class OrderElementDTO {
      */
     public List<OrderElementDTO> children;
 
+    /**
+     * Total hours of the task.
+     */
+    public int totalHours;
+
 }

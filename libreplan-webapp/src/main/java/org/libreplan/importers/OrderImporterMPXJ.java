@@ -183,6 +183,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         orderElement.setInitDate(project.startDate);
 
+        ((Order) orderElement).calculateAndSetTotalHours();
+
         project.order = (Order) orderElement;
 
         ((Order) orderElement).generateOrderElementCodes(entitySequenceDAO
