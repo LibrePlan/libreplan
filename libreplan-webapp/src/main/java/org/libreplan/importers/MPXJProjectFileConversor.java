@@ -114,6 +114,10 @@ public class MPXJProjectFileConversor {
 
         importData.startDate = header.getStartDate();
 
+        // MPXJ don't provide a deadline for the project so we take the finish
+        // date
+        importData.deadline = header.getFinishDate();
+
         for (Task task : file.getChildTasks()) {
             // Projects are represented as a level 0 task with all
             // real task as its children. Ignore all other top level tasks.
@@ -208,6 +212,8 @@ public class MPXJProjectFileConversor {
         importTask.endDate = task.getFinish();
 
         importTask.totalHours = durationToIntHours(task.getDuration(), header);
+
+        importTask.deadline = task.getDeadline();
 
         return importTask;
 

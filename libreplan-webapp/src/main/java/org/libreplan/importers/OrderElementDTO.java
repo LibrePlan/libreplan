@@ -50,6 +50,11 @@ public class OrderElementDTO {
     public Date endDate;
 
     /**
+     * end date of the task
+     */
+    public Date deadline;
+
+    /**
      * Order created with this data
      */
     public OrderElement orderElement;

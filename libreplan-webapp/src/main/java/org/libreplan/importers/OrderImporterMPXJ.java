@@ -183,6 +183,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         orderElement.setInitDate(project.startDate);
 
+        orderElement.setDeadline(project.deadline);
+
         ((Order) orderElement).calculateAndSetTotalHours();
 
         project.order = (Order) orderElement;
@@ -241,6 +243,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
         }
 
         orderElement.setName(task.name);
+
+        orderElement.setDeadline(task.deadline);
 
         task.orderElement = orderElement;
 

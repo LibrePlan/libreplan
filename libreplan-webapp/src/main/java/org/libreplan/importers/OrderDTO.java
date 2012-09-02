@@ -44,6 +44,11 @@ public class OrderDTO {
     public Date startDate;
 
     /**
+     * Deadline of the project
+     */
+    public Date deadline;
+
+    /**
      * Order created with this data
      */
     public Order order;
