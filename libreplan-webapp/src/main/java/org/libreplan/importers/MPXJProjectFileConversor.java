@@ -92,6 +92,8 @@ public class MPXJProjectFileConversor {
 
         importData.tasks = getImportTasks(file.getChildTasks());
 
+        importData.milestones = getImportMilestones(file.getChildTasks());
+
         return importData;
 
     }
@@ -140,6 +142,9 @@ public class MPXJProjectFileConversor {
 
                 importData.tasks = getImportTasks(task.getChildTasks());
 
+                importData.milestones = getImportMilestones(task
+                        .getChildTasks());
+
                 break;
             }
 
@@ -147,6 +152,53 @@ public class MPXJProjectFileConversor {
 
         return importData;
     }
+
+    /**
+     * Converts a List of MPXJ Tasks into a List of {@link MilestoneDTO}.
+     *
+     * @param childTasks
+     *            List of MPXJ Tasks to extract data from.
+     * @return List<MilestoneDTO> List of MilestoneDTO with the data that we want to
+     *         import.
+     */
+    private static List<MilestoneDTO> getImportMilestones(List<Task> childTasks) {
+
+        List<MilestoneDTO> milestones = new ArrayList<MilestoneDTO>();
+
+        for (Task task : childTasks) {
+
+            if (task.getMilestone()) {
+
+            MilestoneDTO milestone = getMilestoneData(task);
+
+            milestones.add(milestone);
+
+            }
+
+        }
+
+        return milestones;
+    }
+
+    /**
+     * Converts a MPXJ Task into a {@link MilestoneDTO}.
+     *
+     * @param task
+     *            MPXJ Task to extract data from.
+     * @return MilestoneDTO MilestoneDTO with the data that we want to import.
+     */
+    private static MilestoneDTO getMilestoneData(Task task) {
+
+        MilestoneDTO milestone = new MilestoneDTO();
+
+        milestone.name = task.getName();
+
+        milestone.startDate = task.getStart();
+
+        return milestone;
+
+    }
+
 
     /**
      * Private method
@@ -182,12 +234,18 @@ public class MPXJProjectFileConversor {
 
         for (Task task : tasks) {
 
-            OrderElementDTO importTask = getTaskData(task);
+            if (!task.getMilestone()) {
 
-            importTask.children = getImportTasks(task.getChildTasks());
+                OrderElementDTO importTask = getTaskData(task);
 
-            importTasks.add(importTask);
+                importTask.children = getImportTasks(task.getChildTasks());
 
+                importTask.milestones = getImportMilestones(task
+                        .getChildTasks());
+
+                importTasks.add(importTask);
+
+            }
         }
 
         return importTasks;

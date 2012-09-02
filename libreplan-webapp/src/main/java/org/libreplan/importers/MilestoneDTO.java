@@ -16,62 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.libreplan.importers;
 
 import java.util.Date;
-import java.util.List;
-
-import org.libreplan.business.orders.entities.OrderElement;
 
 /**
- * Class that represents no persistent imported tasks. <br />
- *
- * At these moment it only represent the tasks that can have any subtasks.
+ * Class that represents no persistent milestones. <br />
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
- * @todo It last hours, resources, relationships, etc.
  */
-public class OrderElementDTO {
+public class MilestoneDTO {
 
     /**
-     * Name of the task
+     * Name of the milestone
      */
     public String name;
 
     /**
-     * Start date of the task
+     * Start date of the milestone
      */
     public Date startDate;
-
-    /**
-     * end date of the task
-     */
-    public Date endDate;
-
-    /**
-     * end date of the task
-     */
-    public Date deadline;
-
-    /**
-     * Order created with this data
-     */
-    public OrderElement orderElement;
-
-    /**
-     * List of task that are children of this task
-     */
-    public List<OrderElementDTO> children;
-
-    /**
-     * Total hours of the task.
-     */
-    public int totalHours;
-
-    /**
-     * Milestones of this task.
-     */
-    public List<MilestoneDTO> milestones;
 
 }

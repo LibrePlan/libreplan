@@ -58,4 +58,9 @@ public class OrderDTO {
      */
     public List<OrderElementDTO> tasks;
 
+    /**
+     * List of {@link MilestoneDTO} of the project that is going to be imported.
+     */
+    public List<MilestoneDTO> milestones;
+
 }

@@ -45,6 +45,7 @@ import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
+import org.libreplan.business.planner.entities.TaskMilestone;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
@@ -284,12 +285,38 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         }
 
+        for (MilestoneDTO milestone : project.milestones) {
+
+            taskElements.add(createTaskMilestone(milestone));
+
+        }
+
         for (TaskElement taskElement : taskElements) {
             taskGroup.addTaskElement(taskElement);
         }
 
         return taskGroup;
 
+    }
+
+    /**
+     * Private method.
+     *
+     * It makes a {@link TaskMilestone} from a {@link MilsetoneDTO}
+     *
+     * @param milestone
+     *            MilestoneDTO to extract data from.
+     *
+     * @return TaskElement TaskElement that represent the data.
+     */
+    @Transactional
+    private TaskElement createTaskMilestone(MilestoneDTO milestone) {
+
+        TaskElement taskMilestone = TaskMilestone.create(milestone.startDate);
+
+        taskMilestone.setName(milestone.name);
+
+        return taskMilestone;
     }
 
     /**
@@ -335,6 +362,12 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
             }
 
+            for (MilestoneDTO milestone : task.milestones) {
+
+                taskElements.add(createTaskMilestone(milestone));
+
+            }
+
             for (TaskElement childTaskElement : taskElements) {
                 ((TaskGroup) taskElement).addTaskElement(childTaskElement);
             }
@@ -367,7 +400,13 @@ public class OrderImporterMPXJ implements IOrderImporter {
         taskSources.add(taskGroup.getTaskSource());
 
         for (TaskElement taskElement : taskGroup.getAllChildren()) {
-            taskSources.add(taskElement.getTaskSource());
+
+            if (!taskElement.isMilestone()) {
+
+                taskSources.add(taskElement.getTaskSource());
+
+            }
+
         }
 
         orderDAO.save(order);
