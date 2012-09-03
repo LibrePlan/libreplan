@@ -830,7 +830,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         rowsCached.add(this.buildTotalAllocations(rowsAllocations));
         rowsCached.add(this.buildTotalExpenses(rowsExpenses));
-        rowsCached.add(this.buildTotalCashflowOutpus());
+        rowsCached.add(this.buildTotalCashflowOutpus(rowsExpenses));
         populateVerticalListbox();
         return filterRows(rowsCached);
     }
@@ -985,8 +985,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         return new RowTotalAllocation(rows);
     }
 
-    private Row buildTotalCashflowOutpus() {
-        return new RowTotalCashflowOutputs(planningState);
+    private Row buildTotalCashflowOutpus(List<Row> rows) {
+        return new RowTotalCashflowOutputs(planningState, rows);
     }
 
     private ICellForDetailItemRenderer<ColumnOnRow, Row> getLeftRenderer() {
@@ -1943,6 +1943,8 @@ class RowExpenses extends Row {
 
     private CashflowPlan cashflowPlan;
 
+    private List<CellChangedListener> listeners = new ArrayList<CellChangedListener>();
+
     protected RowExpenses(IMessagesForUser messages, Restriction restriction,
             String name, TaskElement task,
             AggregateOfExpensesLines aggregateExpenses) {
@@ -1998,6 +2000,7 @@ class RowExpenses extends Row {
 
         cashflowPlanController.setTask((Task) getTask());
         cashflowPlanController.showWindow();
+        fireCashflowPlanChanged();
     }
 
     @Override
@@ -2044,6 +2047,16 @@ class RowExpenses extends Row {
 
     @Override
     void add(CellChangedListener listener) {
+        listeners.add(listener);
+    }
+
+    private void fireCashflowPlanChanged() {
+        for (CellChangedListener cellChangedListener : listeners) {
+            cellChangedListener.changeOnGlobal();
+            for (DetailItem item : getComponentsByDetailItem().keySet()) {
+                cellChangedListener.changeOn(item);
+            }
+        }
     }
 
 }
@@ -2236,11 +2249,12 @@ class RowTotalCashflowOutputs extends RowTotals {
 
     private final PlanningState planningState;
 
-    public RowTotalCashflowOutputs(PlanningState planningState) {
+    public RowTotalCashflowOutputs(PlanningState planningState, List<Row> rows) {
         this.planningState = planningState;
         super.typeRow = TypeRow.CashflowOutputs;
         setName(_("Total"));
         setRowName(new Label(_(typeRow.toString())));
+        listenTo(rows);
     }
 
     @Override
@@ -2281,6 +2295,29 @@ class RowTotalCashflowOutputs extends RowTotals {
             }
         }
         return EffortDuration.fromHoursAsBigDecimal(result);
+    }
+
+    @Override
+    void listenTo(Collection<Row> rows) {
+        for (Row row : rows) {
+            listenTo(row);
+        }
+    }
+
+    @Override
+    void listenTo(Row row) {
+        row.add(new CellChangedListener() {
+            @Override
+            public void changeOnGlobal() {
+                reloadAllEffort();
+            }
+
+            @Override
+            public void changeOn(DetailItem item) {
+                reloadEffortOnInterval(getComponentsByDetailItem().get(item),
+                        item);
+            }
+        });
     }
 
 }
