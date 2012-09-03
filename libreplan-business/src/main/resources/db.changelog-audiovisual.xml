@@ -302,4 +302,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-columns-for-cashflow-to-order-table" author="mrego">
+        <comment>Add columns for cashflow to order table</comment>
+        <addColumn tableName="order_table">
+            <column name="cashflow_type" type="INTEGER" />
+            <column name="cashflow_delay_days" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

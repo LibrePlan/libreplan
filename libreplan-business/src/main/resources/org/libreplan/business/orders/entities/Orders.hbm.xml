@@ -170,6 +170,15 @@
                 <many-to-one name="associatedBudgetObject" cascade="all"
                     class="org.libreplan.business.templates.entities.Budget"
                     column="budget_id" unique="true" />
+
+                <property name="cashflowType" column="cashflow_type">
+                    <type name="org.hibernate.type.EnumType">
+                        <param name="enumClass">org.libreplan.business.cashflow.entities.CashflowType</param>
+                    </type>
+                </property>
+
+                <property name="cashflowDelayDays" column="cashflow_delay_days" />
+
             </joined-subclass>
 
         </joined-subclass>

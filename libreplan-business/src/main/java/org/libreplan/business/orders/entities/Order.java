@@ -42,6 +42,7 @@ import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.cashflow.entities.CashflowType;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -125,6 +126,15 @@ public class Order extends OrderLineGroup implements Comparable {
     private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
 
     private Budget associatedBudgetObject;
+
+    /**
+     * If <code>null</code> the project won't manage cashflow. If a
+     * {@link CashflowType} is set, this will be the default type for all the
+     * project tasks.
+     */
+    private CashflowType cashflowType;
+
+    private Integer cashflowDelayDays = 0;
 
     @Valid
     private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
@@ -707,6 +717,22 @@ public class Order extends OrderLineGroup implements Comparable {
     @NotNull(message = "project deadline cannot be empty")
     public Date getDeadline() {
         return super.getDeadline();
+    }
+
+    public CashflowType getCashflowType() {
+        return cashflowType;
+    }
+
+    public void setCashflowType(CashflowType cashflowType) {
+        this.cashflowType = cashflowType;
+    }
+
+    public Integer getCashflowDelayDays() {
+        return cashflowDelayDays == null ? 0 : cashflowDelayDays;
+    }
+
+    public void setCashflowDelayDays(Integer cashflowDelayDays) {
+        this.cashflowDelayDays = cashflowDelayDays;
     }
 
 }
