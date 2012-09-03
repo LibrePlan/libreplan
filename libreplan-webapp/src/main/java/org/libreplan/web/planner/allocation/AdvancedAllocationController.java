@@ -825,6 +825,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         rowsCached.add(this.buildTotalAllocations(rowsAllocations));
         rowsCached.add(this.buildTotalExpenses(rowsExpenses));
+        rowsCached.add(this.buildTotalCashflowOutpus());
         populateVerticalListbox();
         return filterRows(rowsCached);
     }
@@ -979,6 +980,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         return new RowTotalAllocation(rows);
     }
 
+    private Row buildTotalCashflowOutpus() {
+        return new RowTotalCashflowOutputs();
+    }
+
     private ICellForDetailItemRenderer<ColumnOnRow, Row> getLeftRenderer() {
         return new ICellForDetailItemRenderer<ColumnOnRow, Row>() {
 
@@ -995,11 +1000,11 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
             @Override
             public Component cellFor(Row row) {
-                if (!row.isRowExpenses()) {
+                if (!row.isRowExpensesOrCashflowOutputs()) {
                     Cell cell = new Cell();
                     cell.setAlign("center");
                     cell.setValign("center");
-                    cell.setRowspan(2);
+                    cell.setRowspan(row.isTotal() ? 3 : 2);
                     cell.appendChild(row.getNameLabel());
                     return cell;
                 }
@@ -1790,13 +1795,14 @@ class RowAllocation extends Row {
         return this.resourceAllocation;
     }
 
-    boolean isRowExpenses() {
+    boolean isRowExpensesOrCashflowOutputs() {
         return false;
     }
 }
 
 enum TypeRow {
-    Expenses(_("Expenses")), Allocations(_("Allocations"));
+    Expenses(_("Expenses")), Allocations(_("Allocations")), CashflowOutputs(
+            _("Payments"));
 
     private static String _(String string) {
         return string;
@@ -1819,7 +1825,7 @@ abstract class Row {
 
     abstract Component effortOnInterval(DetailItem item);
 
-    abstract boolean isRowExpenses();
+    abstract boolean isRowExpensesOrCashflowOutputs();
 
     abstract void listenTo(Collection<Row> rows);
 
@@ -1922,6 +1928,10 @@ abstract class Row {
         return aggregate;
     }
 
+    boolean isTotal() {
+        return false;
+    }
+
 }
 
 class RowExpenses extends Row {
@@ -1994,7 +2004,7 @@ class RowExpenses extends Row {
     }
 
     @Override
-    boolean isRowExpenses() {
+    boolean isRowExpensesOrCashflowOutputs() {
         return true;
     }
 
@@ -2057,7 +2067,7 @@ abstract class RowTotals extends Row {
         getAllEffortInput().setValue(allEffort);
     }
 
-    private EffortDuration calculateTotal() {
+    protected EffortDuration calculateTotal() {
         EffortDuration total = EffortDuration.zero();
         for (Row row : rows) {
             total = total.plus(row.getAggregate().getTotalEffort());
@@ -2065,7 +2075,8 @@ abstract class RowTotals extends Row {
         return total;
     }
 
-    private EffortDuration calculateTotalBetween(LocalDate start, LocalDate end) {
+    protected EffortDuration calculateTotalBetween(LocalDate start,
+            LocalDate end) {
         EffortDuration total = EffortDuration.zero();
         for(Row row : rows){
             total = total.plus(row.getAggregate().effortBetween(start, end));
@@ -2100,6 +2111,12 @@ abstract class RowTotals extends Row {
     public TypeRow getTypeRow() {
         return typeRow;
     }
+
+    @Override
+    boolean isTotal() {
+        return true;
+    }
+
 }
 
 class RowTotalExpenses extends RowTotals {
@@ -2122,7 +2139,7 @@ class RowTotalExpenses extends RowTotals {
     }
 
     @Override
-    public boolean isRowExpenses() {
+    public boolean isRowExpensesOrCashflowOutputs() {
         return true;
     }
 }
@@ -2198,7 +2215,7 @@ class RowTotalAllocation extends RowTotals {
         return budget;
     }
     @Override
-    public boolean isRowExpenses() {
+    public boolean isRowExpensesOrCashflowOutputs() {
         return false;
     }
 
@@ -2208,4 +2225,43 @@ class RowTotalAllocation extends RowTotals {
             reloadEffortOnInterval(entry.getValue(), entry.getKey());
         }
     }
+}
+
+class RowTotalCashflowOutputs extends RowTotals {
+
+    public RowTotalCashflowOutputs() {
+        super.typeRow = TypeRow.CashflowOutputs;
+        setName(_("Total"));
+        setRowName(new Label(_(typeRow.toString())));
+    }
+
+    @Override
+    Component getAllEffort() {
+        if (getAllEffortInput() == null) {
+            setAllEffortInput(buildSumAllEffort());
+            getAllEffortInput().setWidth("90px");
+            getAllEffortInput().setReadonly(true);
+            reloadAllEffort();
+        }
+        return getAllEffortInput();
+    }
+
+    @Override
+    boolean isRowExpensesOrCashflowOutputs() {
+        return true;
+    }
+
+    @Override
+    protected EffortDuration calculateTotal() {
+        // TODO
+        return EffortDuration.zero();
+    }
+
+    @Override
+    protected EffortDuration calculateTotalBetween(LocalDate start,
+            LocalDate end) {
+        // TODO
+        return EffortDuration.zero();
+    }
+
 }
