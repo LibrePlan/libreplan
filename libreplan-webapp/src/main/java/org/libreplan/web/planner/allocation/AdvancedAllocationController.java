@@ -44,6 +44,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.libreplan.business.cashflow.entities.CashflowOutput;
 import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.planner.entities.AggregateOfExpensesLines;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
@@ -71,6 +72,7 @@ import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.libreplan.web.planner.allocation.streches.StrechesFunctionConfiguration;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.PairOfLists;
@@ -423,9 +425,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private boolean fixedZoomByUser = false;
     private ZoomLevel zoomLevel;
 
+    private PlanningState planningState;
+
     public AdvancedAllocationController(IBack back,
-            List<AllocationInput> allocationInputs) {
+            List<AllocationInput> allocationInputs, PlanningState planningState) {
         setInputData(back, allocationInputs);
+        this.planningState = planningState;
     }
 
     private void setInputData(IBack back, List<AllocationInput> allocationInputs) {
@@ -981,7 +986,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     }
 
     private Row buildTotalCashflowOutpus() {
-        return new RowTotalCashflowOutputs();
+        return new RowTotalCashflowOutputs(planningState);
     }
 
     private ICellForDetailItemRenderer<ColumnOnRow, Row> getLeftRenderer() {
@@ -2229,7 +2234,10 @@ class RowTotalAllocation extends RowTotals {
 
 class RowTotalCashflowOutputs extends RowTotals {
 
-    public RowTotalCashflowOutputs() {
+    private final PlanningState planningState;
+
+    public RowTotalCashflowOutputs(PlanningState planningState) {
+        this.planningState = planningState;
         super.typeRow = TypeRow.CashflowOutputs;
         setName(_("Total"));
         setRowName(new Label(_(typeRow.toString())));
@@ -2253,15 +2261,26 @@ class RowTotalCashflowOutputs extends RowTotals {
 
     @Override
     protected EffortDuration calculateTotal() {
-        // TODO
-        return EffortDuration.zero();
+        BigDecimal total = BigDecimal.ZERO;
+        for (Task task : planningState.getAllTasks()) {
+            total = total.add(task.getCashflowPlan().calculateTotal());
+        }
+        return EffortDuration.fromHoursAsBigDecimal(total);
     }
 
     @Override
     protected EffortDuration calculateTotalBetween(LocalDate start,
             LocalDate end) {
-        // TODO
-        return EffortDuration.zero();
+        BigDecimal result = BigDecimal.ZERO;
+        for (Task task : planningState.getAllTasks()) {
+            for (CashflowOutput output : task.getCashflowPlan().getOutputs()) {
+                if (output.getDate().compareTo(start) >= 0
+                        && output.getDate().compareTo(end) < 0) {
+                    result = result.add(output.getAmount());
+                }
+            }
+        }
+        return EffortDuration.fromHoursAsBigDecimal(result);
     }
 
 }

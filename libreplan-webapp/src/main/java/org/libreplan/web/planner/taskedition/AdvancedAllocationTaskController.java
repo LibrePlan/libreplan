@@ -82,7 +82,8 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
         AggregateOfExpensesLines aggregateExpenses = planningState
                 .createAggregateExpenses(task);
         getSwitcher().goToAdvancedAllocation(allocationResult,
-                createResultReceiver(allocationResult), aggregateExpenses);
+                createResultReceiver(allocationResult), aggregateExpenses,
+                planningState);
     }
 
 

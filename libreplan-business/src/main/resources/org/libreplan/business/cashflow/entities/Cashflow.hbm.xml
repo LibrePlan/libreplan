@@ -32,6 +32,9 @@
 
         <property name="delayDays" column="delay_days" />
 
+        <one-to-one name="task" property-ref="cashflowPlan"
+            class="org.libreplan.business.planner.entities.Task" />
+
     </class>
 
 </hibernate-mapping>

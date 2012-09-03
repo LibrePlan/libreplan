@@ -102,18 +102,7 @@ public class CashflowPlanModel implements ICashflowPlanModel {
         if (cashflowPlan == null) {
             return Collections.emptyList();
         }
-        if (cashflowPlan.isManual()) {
-            return cashflowPlan.getOutputs();
-        } else {
-            List<CashflowOutput> outputs = new ArrayList<CashflowOutput>();
-            int delayDays = cashflowPlan.getDelayDays() == null ? 0
-                    : cashflowPlan.getDelayDays();
-            for (ExpenseSheetLine line : getExpenseSheetLines()) {
-                outputs.add(new CashflowOutput(line.getDate().plusDays(
-                        delayDays), line.getValue()));
-            }
-            return outputs;
-        }
+        return cashflowPlan.getOutputs();
     }
 
     @Override
@@ -122,15 +111,7 @@ public class CashflowPlanModel implements ICashflowPlanModel {
         if (cashflowPlan == null) {
             return BigDecimal.ZERO;
         }
-        if (cashflowPlan.isManual()) {
-            return cashflowPlan.calculateTotal();
-        } else {
-            BigDecimal total = BigDecimal.ZERO;
-            for (CashflowOutput output : getOutputs()) {
-                total = total.add(output.getAmount());
-            }
-            return total;
-        }
+        return cashflowPlan.calculateTotal();
     }
 
 }

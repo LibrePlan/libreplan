@@ -28,6 +28,9 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 
 /**
@@ -43,14 +46,20 @@ public class CashflowPlan extends BaseEntity {
 
     private Integer delayDays = 0;
 
-    public static CashflowPlan create() {
-        return create(new CashflowPlan());
+    private Task task;
+
+    public static CashflowPlan create(Task task) {
+        return create(new CashflowPlan(task));
     }
 
     /**
      * Default constructor for Hibernate. Do not use!
      */
     protected CashflowPlan() {
+    }
+
+    public CashflowPlan(Task task) {
+        this.task = task;
     }
 
     @NotNull(message = "type not specified")
@@ -70,7 +79,26 @@ public class CashflowPlan extends BaseEntity {
 
     @Valid
     public List<CashflowOutput> getOutputs() {
-        return Collections.unmodifiableList(outputs);
+        if (isManual()) {
+            return Collections.unmodifiableList(outputs);
+        } else {
+            List<CashflowOutput> outputs = new ArrayList<CashflowOutput>();
+            int delayDays = getDelayDays() == null ? 0 : getDelayDays();
+            for (ExpenseSheetLine line : getExpenseSheetLines()) {
+                outputs.add(new CashflowOutput(line.getDate().plusDays(
+                        delayDays), line.getValue()));
+            }
+            return outputs;
+        }
+    }
+
+    private List<ExpenseSheetLine> getExpenseSheetLines() {
+        if (task == null) {
+            return new ArrayList<ExpenseSheetLine>();
+        }
+
+        return Registry.getExpenseSheetLineDAO().findByOrderElement(
+                task.getOrderElement());
     }
 
     public void addOutput(LocalDate date, BigDecimal amount) {
@@ -98,7 +126,7 @@ public class CashflowPlan extends BaseEntity {
 
     public BigDecimal calculateTotal() {
         BigDecimal total = BigDecimal.ZERO;
-        for (CashflowOutput output : outputs) {
+        for (CashflowOutput output : getOutputs()) {
             total = total.add(output.getAmount());
         }
         return total;

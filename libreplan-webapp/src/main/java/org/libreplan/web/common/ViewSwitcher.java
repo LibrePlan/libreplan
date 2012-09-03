@@ -31,6 +31,7 @@ import org.libreplan.web.planner.allocation.AdvancedAllocationController.Allocat
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.libreplan.web.planner.allocation.AllocationResult;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -57,23 +58,25 @@ public class ViewSwitcher implements Composer {
 
     public void goToAdvancedAllocation(AllocationResult allocationResult,
             IAdvanceAllocationResultReceiver resultReceiver,
-            AggregateOfExpensesLines aggregateExpenses) {
+            AggregateOfExpensesLines aggregateExpenses,
+            PlanningState planningState) {
         planningOrder = ComponentsReplacer.replaceAllChildren(parent,
                 "advance_allocation.zul",
                 createArgsForAdvancedAllocation(allocationResult,
-                        resultReceiver, aggregateExpenses));
+                        resultReceiver, aggregateExpenses, planningState));
         isInPlanningOrder = false;
     }
 
     private Map<String, Object> createArgsForAdvancedAllocation(
             AllocationResult allocationResult,
             IAdvanceAllocationResultReceiver resultReceiver,
-            AggregateOfExpensesLines aggregateExpenses) {
+            AggregateOfExpensesLines aggregateExpenses,
+            PlanningState planningState) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("advancedAllocationController",
                 new AdvancedAllocationController(createBack(),
                         asAllocationInput(allocationResult, resultReceiver,
-                                aggregateExpenses)));
+                                aggregateExpenses), planningState));
         return result;
     }
 

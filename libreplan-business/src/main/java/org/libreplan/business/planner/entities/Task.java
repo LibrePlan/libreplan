@@ -154,7 +154,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private Direction lastAllocationDirection = Direction.FORWARD;
 
-    private CashflowPlan cashflowPlan = CashflowPlan.create();
+    private CashflowPlan cashflowPlan = CashflowPlan.create(this);
 
     /**
      * Constructor for hibernate. Do not use!

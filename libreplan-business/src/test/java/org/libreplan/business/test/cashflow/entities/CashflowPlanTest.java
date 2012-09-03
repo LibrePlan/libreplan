@@ -50,7 +50,7 @@ public class CashflowPlanTest {
 
     @Test
     public void checkCashflowOutputs() {
-        CashflowPlan plan = CashflowPlan.create();
+        CashflowPlan plan = CashflowPlan.create(null);
 
         LocalDate date1 = new LocalDate();
         BigDecimal amount1 = new BigDecimal(100);
@@ -73,7 +73,7 @@ public class CashflowPlanTest {
 
     @Test
     public void checkRemoveCashflowOutput() {
-        CashflowPlan plan = CashflowPlan.create();
+        CashflowPlan plan = CashflowPlan.create(null);
 
         LocalDate date1 = new LocalDate();
         BigDecimal amount1 = new BigDecimal(100);
@@ -102,7 +102,7 @@ public class CashflowPlanTest {
 
     @Test
     public void checkDelayDaysInDeferredPaymentType() {
-        CashflowPlan plan = CashflowPlan.create();
+        CashflowPlan plan = CashflowPlan.create(null);
         plan.setType(CashflowType.DEFERRED_PAYMENT);
 
         Integer days = 10;
@@ -124,7 +124,7 @@ public class CashflowPlanTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void checkDelayDaysInManualType() {
-        CashflowPlan plan = CashflowPlan.create();
+        CashflowPlan plan = CashflowPlan.create(null);
         plan.setDelayDays(10);
     }
 
