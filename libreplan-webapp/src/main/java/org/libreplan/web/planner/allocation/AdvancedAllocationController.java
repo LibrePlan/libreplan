@@ -2279,7 +2279,8 @@ class RowTotalCashflowOutputs extends RowTotals {
         for (Task task : planningState.getAllTasks()) {
             total = total.add(task.getCashflowPlan().calculateTotal());
         }
-        return EffortDuration.fromHoursAsBigDecimal(total);
+        return EffortDuration.fromHoursAsBigDecimal(total
+                .multiply(new BigDecimal(100)));
     }
 
     @Override
@@ -2294,7 +2295,8 @@ class RowTotalCashflowOutputs extends RowTotals {
                 }
             }
         }
-        return EffortDuration.fromHoursAsBigDecimal(result);
+        return EffortDuration.fromHoursAsBigDecimal(result
+                .multiply(new BigDecimal(100)));
     }
 
     @Override
