@@ -18,6 +18,7 @@
  */
 package org.libreplan.business.resources.entities;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.CalendarData.Days;
 import org.libreplan.business.calendars.entities.Capacity;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
@@ -79,6 +80,9 @@ public class ResourcesBootstrap implements IResourcesBootstrap {
         calendar.setCapacityAt(Days.FRIDAY, twentyFourHours);
         calendar.setCapacityAt(Days.SATURDAY, twentyFourHours);
         calendar.setCapacityAt(Days.SUNDAY, twentyFourHours);
+
+        calendar.setStartDate(calendar.getFistCalendarAvailability(),
+                new LocalDate(2012, 1, 1));
 
         return calendar;
     }
