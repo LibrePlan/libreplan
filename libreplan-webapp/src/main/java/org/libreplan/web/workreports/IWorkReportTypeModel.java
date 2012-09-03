@@ -52,11 +52,11 @@ public interface IWorkReportTypeModel extends IIntegrationEntityModel {
 
     /**
      * Gets the {@link List} of {@link WorkReportType WorkReportTypes} except
-     * the {@link WorkReportType} used for monthly timesheets.
+     * the {@link WorkReportType} used for personal timesheets.
      *
      * @return A {@link List} of {@link WorkReportType}
      */
-    List<WorkReportType> getWorkReportTypesExceptMonthlyTimeSheets();
+    List<WorkReportType> getWorkReportTypesExceptPersonalTimeSheets();
 
     /**
      * Stores the current {@link WorkReportType}.

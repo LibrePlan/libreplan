@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.planner.entities.Task;
@@ -54,7 +55,7 @@ public class MyTasksAreaController extends GenericForwardComposer {
     private IMyTasksAreaModel myTasksAreaModel;
 
     @Resource
-    private IMonthlyTimesheetController monthlyTimesheetController;
+    private IPersonalTimesheetController personalTimesheetController;
 
     private RowRenderer tasksRenderer = new RowRenderer() {
 
@@ -112,17 +113,19 @@ public class MyTasksAreaController extends GenericForwardComposer {
             EventListener trackTimeButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    monthlyTimesheetController
-                            .goToCreateOrEditForm(getMonthlyTimesheetDateForTask(task));
+                    personalTimesheetController
+                            .goToCreateOrEditForm(getPersonalTimesheetDateForTask(task));
                 }
 
-                private LocalDate getMonthlyTimesheetDateForTask(Task task) {
+                private LocalDate getPersonalTimesheetDateForTask(Task task) {
                     LocalDate start = task.getStartAsLocalDate();
                     LocalDate end = task.getEndAsLocalDate();
 
                     LocalDate currentDate = new LocalDate();
-                    LocalDate min = currentDate.dayOfMonth().withMinimumValue();
-                    LocalDate max = currentDate.dayOfMonth().withMaximumValue();
+                    PersonalTimesheetsPeriodicityEnum periodicity = myTasksAreaModel
+                            .getPersonalTimesheetsPeriodicity();
+                    LocalDate min = periodicity.getStart(currentDate);
+                    LocalDate max = periodicity.getEnd(currentDate);
 
                     if (dateBetween(start, min, max)) {
                         return start;

@@ -60,7 +60,7 @@ import org.libreplan.web.common.components.NewDataSortableGrid;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
-import org.libreplan.web.users.dashboard.IMonthlyTimesheetController;
+import org.libreplan.web.users.dashboard.IPersonalTimesheetController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -157,13 +157,13 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private Datebox filterFinishDate;
 
     @javax.annotation.Resource
-    private IMonthlyTimesheetController monthlyTimesheetController;
+    private IPersonalTimesheetController personalTimesheetController;
 
-    private Popup monthlyTimesheetsPopup;
+    private Popup personalTimesheetsPopup;
 
-    private Datebox monthlyTimesheetsDatebox;
+    private Datebox personalTimesheetsDatebox;
 
-    private BandboxSearch monthlyTimesheetsBandboxSearch;
+    private BandboxSearch personalTimesheetsBandboxSearch;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -171,7 +171,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listWorkReportLines = (NewDataSortableGrid) createWindow
                 .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
-        showMessageIfMonthlyTimesheetWasSaved();
+        showMessageIfPersonalTimesheetWasSaved();
 
         comp.setAttribute("controller", this);
         goToList();
@@ -185,12 +185,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         handler.register(this, page);
     }
 
-    private void showMessageIfMonthlyTimesheetWasSaved() {
+    private void showMessageIfPersonalTimesheetWasSaved() {
         String timesheetSave = Executions.getCurrent().getParameter(
                 "timesheet_saved");
         if (!StringUtils.isBlank(timesheetSave)) {
             messagesForUser.showMessage(Level.INFO,
-                    _("Monthly timesheet saved"));
+                    _("Personal timesheet saved"));
         }
     }
 
@@ -598,8 +598,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToCreateForm(WorkReportType workReportType) {
-        if (workReportType.isMonthlyTimesheetsType()) {
-            monthlyTimesheetsPopup.open(listTypeToAssign);
+        if (workReportType.isPersonalTimesheetsType()) {
+            personalTimesheetsPopup.open(listTypeToAssign);
         } else {
             cameBackList = false;
             workReportModel.initCreate(workReportType);
@@ -617,8 +617,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToEditForm(WorkReport workReport) {
-        if (workReportModel.isMonthlyTimesheet(workReport)) {
-            goToEditMonthlyTimeSheet(workReport);
+        if (workReportModel.isPersonalTimesheet(workReport)) {
+            goToEditPersonalTimeSheet(workReport);
         } else {
             workReportModel.initEdit(workReport);
             createWindow.setTitle(_("Edit Timesheet"));
@@ -629,11 +629,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    private void goToEditMonthlyTimeSheet(WorkReport workReport) {
+    private void goToEditPersonalTimeSheet(WorkReport workReport) {
         workReportModel.initEdit(workReport);
         Date date = workReportModel.getFirstWorkReportLine().getDate();
         Resource resource = workReport.getResource();
-        monthlyTimesheetController.goToCreateOrEditFormForResource(
+        personalTimesheetController.goToCreateOrEditFormForResource(
                 LocalDate.fromDateFields(date), resource);
     }
 
@@ -682,12 +682,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listTypeToAssign = (Listbox) window.getFellow("listTypeToAssign");
         filterStartDate = (Datebox) window.getFellow("filterStartDate");
         filterFinishDate = (Datebox) window.getFellow("filterFinishDate");
-        monthlyTimesheetsPopup = (Popup) window
-                .getFellow("monthlyTimesheetsPopup");
-        monthlyTimesheetsDatebox = (Datebox) window
-                .getFellow("monthlyTimesheetsDatebox");
-        monthlyTimesheetsBandboxSearch = (BandboxSearch) window
-                .getFellow("monthlyTimesheetsBandboxSearch");
+        personalTimesheetsPopup = (Popup) window
+                .getFellow("personalTimesheetsPopup");
+        personalTimesheetsDatebox = (Datebox) window
+                .getFellow("personalTimesheetsDatebox");
+        personalTimesheetsBandboxSearch = (BandboxSearch) window
+                .getFellow("personalTimesheetsBandboxSearch");
         clearFilterDates();
     }
 
@@ -1616,20 +1616,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         return workReportModel.getBoundWorkers();
     }
 
-    public void createOrEditMonthlyTimesheet() {
-        Date date = monthlyTimesheetsDatebox.getValue();
+    public void createOrEditPersonalTimesheet() {
+        Date date = personalTimesheetsDatebox.getValue();
         if (date == null) {
-            throw new WrongValueException(monthlyTimesheetsDatebox,
+            throw new WrongValueException(personalTimesheetsDatebox,
                     _("Please set a date"));
         }
-        Resource resource = (Resource) monthlyTimesheetsBandboxSearch
+        Resource resource = (Resource) personalTimesheetsBandboxSearch
                 .getSelectedElement();
         if (resource == null) {
-            throw new WrongValueException(monthlyTimesheetsBandboxSearch,
+            throw new WrongValueException(personalTimesheetsBandboxSearch,
                     _("Please select a worker"));
         }
 
-        monthlyTimesheetController.goToCreateOrEditFormForResource(
+        personalTimesheetController.goToCreateOrEditFormForResource(
                 LocalDate.fromDateFields(date), resource);
     }
 

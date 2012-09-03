@@ -43,10 +43,12 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -81,6 +83,9 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
+
+    @Autowired
+    private IWorkReportDAO workReportDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -132,7 +137,7 @@ public class ConfigurationModel implements IConfigurationModel {
 
     private void forceLoad(Configuration configuration) {
         forceLoad(configuration.getDefaultCalendar());
-        forceLoad(configuration.getMonthlyTimesheetsTypeOfWorkHours());
+        forceLoad(configuration.getPersonalTimesheetsTypeOfWorkHours());
     }
 
     private void forceLoad(BaseCalendar calendar) {
@@ -622,16 +627,34 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
-        return configuration.getMonthlyTimesheetsTypeOfWorkHours();
+    public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
+        return configuration.getPersonalTimesheetsTypeOfWorkHours();
     }
 
     @Override
-    public void setMonthlyTimesheetsTypeOfWorkHours(
+    public void setPersonalTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
         if (configuration != null) {
-            configuration.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+            configuration.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
         }
+    }
+
+    @Override
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return configuration.getPersonalTimesheetsPeriodicity();
+    }
+
+    @Override
+    public void setPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+        configuration
+                .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAnyPersonalTimesheetAlreadySaved() {
+        return !workReportDAO.isAnyPersonalTimesheetAlreadySaved();
     }
 
 }

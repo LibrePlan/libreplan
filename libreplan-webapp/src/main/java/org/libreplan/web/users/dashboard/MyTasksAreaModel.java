@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
+import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.planner.daos.IResourceAllocationDAO;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
@@ -52,6 +54,9 @@ public class MyTasksAreaModel implements IMyTasksAreaModel {
 
     @Autowired
     private IScenarioManager scenarioManager;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -101,6 +106,13 @@ public class MyTasksAreaModel implements IMyTasksAreaModel {
                 advanceMeasurement.getValue();
             }
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return configurationDAO.getConfiguration()
+                .getPersonalTimesheetsPeriodicity();
     }
 
 }

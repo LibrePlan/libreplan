@@ -24,7 +24,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.joda.time.Months;
+import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
@@ -45,20 +46,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Model for for "Monthly timesheets" area in the user dashboard window
+ * Model for for "Personal timesheets" area in the user dashboard window
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
+public class PersonalTimesheetsAreaModel implements IPersonalTimesheetsAreaModel {
 
     @Autowired
     private IWorkReportDAO workReportDAO;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     @Override
     @Transactional(readOnly = true)
-    public List<MonthlyTimesheetDTO> getMonthlyTimesheets() {
+    public List<PersonalTimesheetDTO> getPersonalTimesheets() {
         User user = UserUtil.getUserFromSession();
         if (!user.isBound()) {
             return Collections.emptyList();
@@ -68,22 +72,25 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
 
         LocalDate activationDate = getActivationDate(user.getWorker());
         LocalDate currentDate = new LocalDate();
-        return getMonthlyTimesheets(user.getWorker(), activationDate,
-                currentDate.plusMonths(1));
+        return getPersonalTimesheets(user.getWorker(), activationDate,
+                currentDate.plusMonths(1), getPersonalTimesheetsPeriodicity());
     }
 
-    private List<MonthlyTimesheetDTO> getMonthlyTimesheets(Resource resource,
-            LocalDate start, LocalDate end) {
-        int months = Months.monthsBetween(start, end).getMonths();
+    private List<PersonalTimesheetDTO> getPersonalTimesheets(Resource resource,
+            LocalDate start, LocalDate end,
+            PersonalTimesheetsPeriodicityEnum periodicity) {
+        start = periodicity.getStart(start);
+        end = periodicity.getEnd(end);
+        int items = periodicity.getItemsBetween(start, end);
 
-        List<MonthlyTimesheetDTO> result = new ArrayList<MonthlyTimesheetDTO>();
+        List<PersonalTimesheetDTO> result = new ArrayList<PersonalTimesheetDTO>();
 
         // In decreasing order to provide a list sorted with the more recent
-        // monthly timesheets at the beginning
-        for (int i = months; i >= 0; i--) {
-            LocalDate date = start.plusMonths(i);
+        // personal timesheets at the beginning
+        for (int i = items; i >= 0; i--) {
+            LocalDate date = periodicity.getDateForItemFromDate(i, start);
 
-            WorkReport workReport = getWorkReport(resource, date);
+            WorkReport workReport = getWorkReport(resource, date, periodicity);
 
             EffortDuration hours = EffortDuration.zero();
             int tasksNumber = 0;
@@ -92,24 +99,29 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
                 tasksNumber = getNumberOfOrderElementsWithTrackedTime(workReport);
             }
 
-            result.add(new MonthlyTimesheetDTO(date, workReport,
-                    getResourceCapcity(resource, date), hours, tasksNumber));
+            result.add(new PersonalTimesheetDTO(date, workReport,
+                    getResourceCapcity(resource, date, periodicity), hours,
+                    tasksNumber));
         }
 
         return result;
     }
 
-    private WorkReport getWorkReport(Resource resource, LocalDate date) {
-        WorkReport workReport = workReportDAO.getMonthlyTimesheetWorkReport(
-                resource, date);
+    private WorkReport getWorkReport(Resource resource, LocalDate date,
+            PersonalTimesheetsPeriodicityEnum periodicity) {
+        WorkReport workReport = workReportDAO.getPersonalTimesheetWorkReport(
+                resource, date, periodicity);
         forceLoad(workReport);
         return workReport;
     }
 
-    private EffortDuration getResourceCapcity(Resource resource, LocalDate date) {
+    private EffortDuration getResourceCapcity(Resource resource,
+            LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
+        LocalDate start = periodicity.getStart(date);
+        LocalDate end = periodicity.getEnd(date);
+
         EffortDuration capacity = EffortDuration.zero();
-        for (LocalDate day = date.dayOfMonth().withMinimumValue(); day
-                .compareTo(date.dayOfMonth().withMaximumValue()) <= 0; day = day
+        for (LocalDate day = start; day.compareTo(end) <= 0; day = day
                 .plusDays(1)) {
             capacity = capacity.plus(resource.getCalendar().getCapacityOn(
                     PartialDay.wholeDay(day)));
@@ -147,6 +159,13 @@ public class MonthlyTimesheetsAreaModel implements IMonthlyTimesheetsAreaModel {
             }
         }
         return orderElements.size();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return configurationDAO.getConfiguration()
+                .getPersonalTimesheetsPeriodicity();
     }
 
 }

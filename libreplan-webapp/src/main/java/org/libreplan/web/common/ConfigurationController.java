@@ -40,6 +40,7 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
@@ -869,13 +870,49 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setCurrency(currencyCode);
     }
 
-    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
-        return configurationModel.getMonthlyTimesheetsTypeOfWorkHours();
+    public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
+        return configurationModel.getPersonalTimesheetsTypeOfWorkHours();
     }
 
-    public void setMonthlyTimesheetsTypeOfWorkHours(
+    public void setPersonalTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
-        configurationModel.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+        configurationModel.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
+    }
+
+    public List<PersonalTimesheetsPeriodicityEnum> getPersonalTimesheetsPeriodicities() {
+        return Arrays.asList(PersonalTimesheetsPeriodicityEnum.values());
+    }
+
+    public ListitemRenderer getPersonalTimesheetsPeriodicityRenderer() {
+        return new ListitemRenderer() {
+            @Override
+            public void render(Listitem item, Object data) throws Exception {
+                PersonalTimesheetsPeriodicityEnum periodicity = (PersonalTimesheetsPeriodicityEnum) data;
+                item.setLabel(_(periodicity.getName()));
+                item.setValue(periodicity);
+            }
+        };
+    }
+
+    public PersonalTimesheetsPeriodicityEnum getSelectedPersonalTimesheetsPeriodicity() {
+        return configurationModel.getPersonalTimesheetsPeriodicity();
+    }
+
+    public void setSelectedPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+        configurationModel
+                .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
+    }
+
+    public boolean isPersonalTimesheetsPeriodicityDisabled() {
+        return configurationModel.isAnyPersonalTimesheetAlreadySaved();
+    }
+
+    public String getPersonalTimesheetsPeriodicityTooltip() {
+        if (isPersonalTimesheetsPeriodicityDisabled()) {
+            return _("Periocity cannot be changed because there is already any personal timesheet stored");
+        }
+        return "";
     }
 
 }

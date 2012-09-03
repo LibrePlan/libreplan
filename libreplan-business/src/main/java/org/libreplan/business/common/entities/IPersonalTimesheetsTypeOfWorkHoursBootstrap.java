@@ -22,11 +22,11 @@ package org.libreplan.business.common.entities;
 import org.libreplan.business.IDataBootstrap;
 
 /**
- * Contract for {@link MonthlyTimesheetsTypeOfWorkHoursBootstrap}.
+ * Contract for {@link PersonalTimesheetsTypeOfWorkHoursBootstrap}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IMonthlyTimesheetsTypeOfWorkHoursBootstrap extends
+public interface IPersonalTimesheetsTypeOfWorkHoursBootstrap extends
         IDataBootstrap {
 
     void loadRequiredData();
