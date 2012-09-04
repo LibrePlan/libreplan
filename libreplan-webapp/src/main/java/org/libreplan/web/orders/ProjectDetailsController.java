@@ -159,6 +159,10 @@ public class ProjectDetailsController extends GenericForwardComposer {
             showWrongName();
             return false;
         }
+        if (bdProjectTemplate.getSelectedElement() == null) {
+            showWrongTemplate();
+            return false;
+        }
         return true;
     }
 
@@ -169,6 +173,11 @@ public class ProjectDetailsController extends GenericForwardComposer {
     private void showWrongName() {
         throw new WrongValueException(txtName,
                 _("project name already being used"));
+    }
+
+    private void showWrongTemplate() {
+        throw new WrongValueException(bdProjectTemplate,
+                _("it is neccesary to specify a template"));
     }
 
     private void close() {
@@ -254,6 +263,19 @@ public class ProjectDetailsController extends GenericForwardComposer {
                     getOrder().setInitDate(null);
                     throw new WrongValueException(comp,
                             _("must be lower than end date"));
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintTemplate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                BandboxSearch template = (BandboxSearch) comp;
+                if (template.getSelectedElement() == null) {
+                    throw new WrongValueException(comp, _("cannot be empty"));
                 }
             }
         };

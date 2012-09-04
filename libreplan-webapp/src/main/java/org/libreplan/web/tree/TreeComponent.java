@@ -112,10 +112,8 @@ public abstract class TreeComponent extends HtmlMacroComponent {
         }
     };
 
-    protected final Column schedulingStateColumn = new Column(
-            _("Scheduling state"),
-            "scheduling_state",
-            _("Fully, Partially or Unscheduled. (Drag and drop to move tasks)")) {
+    protected final Column schedulingStateColumn = new Column("Node",
+            "scheduling_state") {
 
         @Override
         public <T extends ITreeNode<T>> void doCell(

@@ -42,10 +42,9 @@
                 <label value="${i18n:_('Template')}" />
                 <bandboxSearch id="bdProjectTemplate" finder="budgetTemplateFinder"
                     selectedElement="@{projectController.template, access='both'}"
-                    constraint="no empty:${i18n:_('cannot be null or empty')}"
                     widthBandbox="400px" widthListbox="500px" />
             </row>
-            <row>
+            <row visible="false">
                 <label value="${i18n:_('Code')}" />
                 <hbox>
                     <textbox id="txtCode" value="@{projectController.order.code}" width="250px"
