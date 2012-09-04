@@ -524,7 +524,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     @Override
-    public OrderLineGroup getOrder() {
+    public Order getOrder() {
         return planningState.getOrder();
     }
 
