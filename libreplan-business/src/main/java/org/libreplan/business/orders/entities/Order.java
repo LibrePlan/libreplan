@@ -735,4 +735,8 @@ public class Order extends OrderLineGroup implements Comparable {
         this.cashflowDelayDays = cashflowDelayDays;
     }
 
+    public boolean isCashflowManagementEnabled() {
+        return cashflowType != null;
+    }
+
 }

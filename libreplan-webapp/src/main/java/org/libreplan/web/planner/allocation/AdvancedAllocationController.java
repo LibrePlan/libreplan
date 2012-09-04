@@ -830,7 +830,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         rowsCached.add(this.buildTotalAllocations(rowsAllocations));
         rowsCached.add(this.buildTotalExpenses(rowsExpenses));
-        rowsCached.add(this.buildTotalCashflowOutpus(rowsExpenses));
+        if (planningState.getOrder().isCashflowManagementEnabled()) {
+            rowsCached.add(this.buildTotalCashflowOutpus(rowsExpenses));
+        }
         populateVerticalListbox();
         return filterRows(rowsCached);
     }
@@ -1009,7 +1011,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                     Cell cell = new Cell();
                     cell.setAlign("center");
                     cell.setValign("center");
-                    cell.setRowspan(row.isTotal() ? 3 : 2);
+                    cell.setRowspan(row.isTotal()
+                            && planningState.getOrder()
+                                    .isCashflowManagementEnabled() ? 3 : 2);
                     cell.appendChild(row.getNameLabel());
                     return cell;
                 }
@@ -1952,7 +1956,9 @@ class RowExpenses extends Row {
         setTask(task);
         setRowName(new Label(TypeRow.Expenses.toString()));
         this.aggregate = aggregateExpenses;
-        if (task.isTask()) {
+        if (task.isTask()
+                && task.getOrderElement().getOrder()
+                        .isCashflowManagementEnabled()) {
             cashflowPlan = ((Task) task).getCashflowPlan();
         }
     }
