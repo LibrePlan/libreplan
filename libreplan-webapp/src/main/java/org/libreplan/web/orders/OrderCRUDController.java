@@ -24,6 +24,7 @@ package org.libreplan.web.orders;
 import static org.libreplan.web.I18nHelper._;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.cashflow.entities.CashflowType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
@@ -190,6 +192,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Grid gridAskedEndDates;
 
     private EndDatesRenderer endDatesRenderer = new EndDatesRenderer();
+
+    private ComboitemRenderer cashflowTypeRenderer;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -1703,6 +1707,104 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public String getCurrencySymbol() {
         return Util.getCurrencySymbol();
+    }
+
+    public List<OrderCashflowType> getCashflowTypes() {
+        return Arrays.asList(OrderCashflowType.values());
+    }
+
+    public OrderCashflowType getSelectedCashflowType() {
+        return OrderCashflowType.getForCashflowType(orderModel.getOrder()
+                .getCashflowType());
+    }
+
+    public void setSelectedCashflowType(OrderCashflowType cashflowType) {
+        orderModel.getOrder().setCashflowType(cashflowType.getCashflowType());
+        Util.reloadBindings(editWindow.getFellow("cashflowGroupbox"));
+    }
+
+    public Integer getCashflowDelayDays() {
+        return orderModel.getOrder().getCashflowDelayDays();
+    }
+
+    public void setCashflowDelayDays(Integer delayDays) {
+        orderModel.getOrder().setCashflowDelayDays(delayDays);
+    }
+
+    public boolean isCashflowTypeDeferredPayment() {
+        Order order = orderModel.getOrder();
+        if (order == null) {
+            return false;
+        }
+
+        CashflowType type = order.getCashflowType();
+        if (type == null) {
+            return false;
+        }
+
+        return type.equals(CashflowType.DEFERRED_PAYMENT);
+    }
+
+    public ComboitemRenderer getCashflowTypeRenderer() {
+        if (cashflowTypeRenderer == null) {
+            cashflowTypeRenderer = new ComboitemRenderer() {
+
+                @Override
+                public void render(Comboitem item, Object data)
+                        throws Exception {
+                    OrderCashflowType type = (OrderCashflowType) data;
+                    item.setValue(type);
+
+                    CashflowType cashflowType = type.getCashflowType();
+
+                    String name;
+                    String description;
+                    if (cashflowType == null) {
+                        name = _("Not managed");
+                        description = _("Cashflow payments will not be managed in this project");
+                    } else {
+                        name = _(cashflowType.getName());
+                        description = _(cashflowType.getDescription());
+                    }
+
+                    item.setLabel(name);
+                    item.setDescription(description);
+                }
+            };
+        }
+        return cashflowTypeRenderer;
+    }
+
+}
+
+enum OrderCashflowType {
+
+    NOT_MANAGED(null),
+    MANUAL(CashflowType.MANUAL),
+    DEFERRED_PAYMENT(CashflowType.DEFERRED_PAYMENT);
+
+    private CashflowType type;
+
+    private OrderCashflowType(CashflowType type) {
+        this.type = type;
+    }
+
+    public CashflowType getCashflowType() {
+        return type;
+    }
+
+    public static OrderCashflowType getForCashflowType(CashflowType cashflowType) {
+        if (cashflowType == null) {
+            return NOT_MANAGED;
+        }
+        switch (cashflowType) {
+            case MANUAL:
+                return MANUAL;
+            case DEFERRED_PAYMENT:
+                return DEFERRED_PAYMENT;
+            default:
+                return NOT_MANAGED;
+        }
     }
 
 }

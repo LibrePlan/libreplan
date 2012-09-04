@@ -281,6 +281,32 @@
                        </grid>
                      </groupbox>
                 </groupbox>
+
+                <separator spacing="20px"/>
+                <groupbox closable="false" id="cashflowGroupbox">
+                    <caption label="${i18n:_('Cashflow')}" />
+                    <separator spacing="10px"/>
+                    <grid fixedLayout="true" hflex="1">
+                        <columns>
+                            <column width="200px" />
+                            <column  />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Cashflow management type')}" />
+                                <combobox model="@{controller.cashflowTypes}"
+                                    selectedItem="@{controller.selectedCashflowType}"
+                                    itemRenderer="@{controller.cashflowTypeRenderer}" />
+                            </row>
+                            <row visible="@{controller.isCashflowTypeDeferredPayment}">
+                                <label value="${i18n:_('Delay days')}" />
+                                <intbox id="daysIntbox" value="@{controller.cashflowDelayDays}" />
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator spacing="10px"/>
+                 </groupbox>
+
             </tabpanel>
             <tabpanel>
                 <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
