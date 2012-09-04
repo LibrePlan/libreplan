@@ -23,6 +23,9 @@ package org.libreplan.web.templates;
 import static org.libreplan.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.ClassValidator;
@@ -40,6 +43,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 
 /**
@@ -374,6 +378,39 @@ public class TemplatesTreeController extends
 
     public void deleteSelectedElement() {
         operationsForOrderTemplate.deleteSelectedElement();
+    }
+
+    public void expandAll() {
+        Set<Treeitem> childrenSet = new HashSet<Treeitem>();
+
+        Treechildren children = tree.getTreechildren();
+        if (children != null) {
+            childrenSet.addAll((Collection<Treeitem>) children.getItems());
+        }
+        for (Treeitem each : childrenSet) {
+            this.expandAll(each);
+        }
+    }
+
+    private void expandAll(Treeitem item) {
+        item.setOpen(true);
+
+        Set<Treeitem> childrenSet = new HashSet<Treeitem>();
+        Treechildren children = item.getTreechildren();
+        if (children != null) {
+            childrenSet.addAll((Collection<Treeitem>) children.getItems());
+        }
+
+        for (Treeitem each : childrenSet) {
+            expandAll(each);
+        }
+    }
+
+    private void collapseAll() {
+        Treechildren children = tree.getTreechildren();
+        for (Treeitem each : (Collection<Treeitem>) children.getItems()) {
+            each.setOpen(false);
+        }
     }
 
 }

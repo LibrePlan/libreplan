@@ -48,6 +48,8 @@
 
         <hbox width="100%" style="float:right" hflex="1" align="right" pack="right"
                 id="selectedRowButtons" visible="false">
+            <button id="btnExpand" label="${i18n:_('Expand tree')}"
+                onClick="treeController.expandAll();"  />
             <label value="${i18n:_('Selected node')}:" />
             <button id="editOrderElementButton" sclass="icono" image="/common/img/ico_editar1.png"
                 tooltiptext="${i18n:_('Edit selected task')}"
