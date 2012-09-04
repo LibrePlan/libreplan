@@ -1055,8 +1055,10 @@ span.perspective, span.perspective-active {
     background-image: url(../img/ico_limiting-resources.png);
 }
 
+/* Concealed perpectives on audiovisual branch */
 .perspective.limiting-resources, .perspective-active.limiting-resources,
-.perspective.order-limiting-resources
+.perspective.order-limiting-resources,
+.perspective .order-dashboard,
 .perspective.hidden {
     display: none;
 }
