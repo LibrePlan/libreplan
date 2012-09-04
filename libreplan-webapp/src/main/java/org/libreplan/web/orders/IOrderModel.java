@@ -73,7 +73,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     List<QualityForm> getQualityForms();
 
-    OrderLineGroup getOrder();
+    Order getOrder();
 
     IOrderElementModel getOrderElementModel(OrderElement orderElement);
 

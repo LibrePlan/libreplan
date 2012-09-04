@@ -481,7 +481,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private IOrderElementModel getOrderElementModel() {
-        final Order order = (Order) orderModel.getOrder();
+        final Order order = orderModel.getOrder();
         return orderModel.getOrderElementModel(order);
     }
 
@@ -635,7 +635,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void initOrderAuthorizations() {
         Component orderElementAuthorizations = editWindow
                 .getFellowIfAny("orderElementAuthorizations");
-        final Order order = (Order) orderModel.getOrder();
+        final Order order = orderModel.getOrder();
         if (order.isNewObject()) {
             orderAuthorizationController.initCreate(orderModel
                     .getPlanningState());
@@ -659,7 +659,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public Order getOrder() {
-        return (Order) orderModel.getOrder();
+        return orderModel.getOrder();
     }
 
     public void saveAndContinue() {
@@ -668,7 +668,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void saveAndContinue(boolean showSaveMessage) {
 
-        Order order = (Order) orderModel.getOrder();
+        Order order = orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
         setCurrentTab();
         Tab previousTab = getCurrentTab();
@@ -1451,7 +1451,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private boolean readOnly = true;
 
     private void updateDisabilitiesOnInterface() {
-        Order order = (Order) orderModel.getOrder();
+        Order order = orderModel.getOrder();
 
         boolean permissionForWriting = orderModel.userCanWrite(order,
                 SecurityUtils.getSessionUserLoginName());
@@ -1680,4 +1680,5 @@ public class OrderCRUDController extends GenericForwardComposer {
     public String getCurrencySymbol() {
         return Util.getCurrencySymbol();
     }
+
 }
