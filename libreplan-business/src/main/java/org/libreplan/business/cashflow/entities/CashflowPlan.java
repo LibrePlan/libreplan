@@ -52,6 +52,16 @@ public class CashflowPlan extends BaseEntity {
         return create(new CashflowPlan(task));
     }
 
+    public static CashflowPlan create(Task task, CashflowType type,
+            Integer delayDays) {
+        CashflowPlan cashflowPlan = new CashflowPlan(task);
+        if (type != null) {
+            cashflowPlan.type = type;
+            cashflowPlan.delayDays = delayDays;
+        }
+        return create(cashflowPlan);
+    }
+
     /**
      * Default constructor for Hibernate. Do not use!
      */

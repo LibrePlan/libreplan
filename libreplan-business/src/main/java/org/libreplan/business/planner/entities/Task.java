@@ -48,6 +48,7 @@ import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.orders.entities.HoursGroup;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -92,9 +93,16 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         Task task = new Task();
         OrderElement orderElement = taskSource.getOrderElement();
         orderElement.applyInitialPositionConstraintTo(task);
+        setupCashflowPlan(task, orderElement);
         Task result = create(task, taskSource);
         result.initializeDates();
         return result;
+    }
+
+    private static void setupCashflowPlan(Task task, OrderElement orderElement) {
+        Order order = orderElement.getOrder();
+        task.setCashflowPlan(CashflowPlan.create(task, order.getCashflowType(),
+                order.getCashflowDelayDays()));
     }
 
     @Override
@@ -154,7 +162,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private Direction lastAllocationDirection = Direction.FORWARD;
 
-    private CashflowPlan cashflowPlan = CashflowPlan.create(this);
+    private CashflowPlan cashflowPlan;
 
     /**
      * Constructor for hibernate. Do not use!
