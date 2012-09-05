@@ -427,10 +427,19 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private PlanningState planningState;
 
+    private Map<Task, CashflowPlan> cashflowPlans = new HashMap<Task, CashflowPlan>();
+
     public AdvancedAllocationController(IBack back,
             List<AllocationInput> allocationInputs, PlanningState planningState) {
         setInputData(back, allocationInputs);
         this.planningState = planningState;
+        setupCashflowPlans();
+    }
+
+    private void setupCashflowPlans() {
+        for (Task task : planningState.getAllTasks()) {
+            cashflowPlans.put(task, task.getCashflowPlan().copy());
+        }
     }
 
     private void setInputData(IBack back, List<AllocationInput> allocationInputs) {
@@ -737,6 +746,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             allocationInput.getResultReceiver().accepted(allocationInput
                     .getAggregate());
         }
+        for (Task task : cashflowPlans.keySet()) {
+            task.setCashflowPlan(cashflowPlans.get(task));
+        }
         back.goBack();
     }
 
@@ -753,6 +765,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         for (AllocationInput allocationInput : allocationInputs) {
             allocationInput.getResultReceiver().accepted(
                     allocationInput.getAggregate());
+        }
+        for (Task task : cashflowPlans.keySet()) {
+            task.setCashflowPlan(cashflowPlans.get(task));
         }
         try {
             Messagebox.show(_("Changes applied"), _("Information"),
@@ -973,9 +988,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private RowExpenses buildRowExpenses(AllocationInput allocationInput) {
         String taskName = allocationInput.getTaskName();
+        CashflowPlan cashflowPlan = null;
+        if (planningState.getOrder().isCashflowManagementEnabled()) {
+            cashflowPlan = cashflowPlans.get(allocationInput.task);
+        }
         RowExpenses rowExpenses = RowExpenses.createRow(messages,
                 Restriction.emptyRestriction(), taskName, allocationInput.task,
-                allocationInput.aggregateExpenses);
+                allocationInput.aggregateExpenses,
+                cashflowPlan);
         return rowExpenses;
     }
 
@@ -1951,23 +1971,21 @@ class RowExpenses extends Row {
 
     protected RowExpenses(IMessagesForUser messages, Restriction restriction,
             String name, TaskElement task,
-            AggregateOfExpensesLines aggregateExpenses) {
+            AggregateOfExpensesLines aggregateExpenses,
+            CashflowPlan cashflowPlan) {
         setName(name);
         setTask(task);
         setRowName(new Label(TypeRow.Expenses.toString()));
         this.aggregate = aggregateExpenses;
-        if (task.isTask()
-                && task.getOrderElement().getOrder()
-                        .isCashflowManagementEnabled()) {
-            cashflowPlan = ((Task) task).getCashflowPlan();
-        }
+        this.cashflowPlan = cashflowPlan;
     }
 
     public static RowExpenses createRow(IMessagesForUser messages,
             Restriction restriction, String taskName, TaskElement task,
-            AggregateOfExpensesLines aggregateExpenses) {
+            AggregateOfExpensesLines aggregateExpenses,
+            CashflowPlan cashflowPlan) {
         return new RowExpenses(messages, restriction, taskName, task,
-                aggregateExpenses);
+                aggregateExpenses, cashflowPlan);
     }
 
     @Override
@@ -2004,7 +2022,7 @@ class RowExpenses extends Row {
                 "/planner/cashflow_plan.zul", parent, args);
         Util.createBindingsFor(window);
 
-        cashflowPlanController.setTask((Task) getTask());
+        cashflowPlanController.setCashflowPlan(cashflowPlan);
         cashflowPlanController.showWindow();
         fireCashflowPlanChanged();
     }

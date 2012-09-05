@@ -92,8 +92,8 @@ public class CashflowPlanController extends GenericForwardComposer {
         window = (Window) comp;
     }
 
-    public void setTask(Task task) {
-        cashflowPlanModel.setTask(task);
+    public void setCashflowPlan(CashflowPlan cashflowPlan) {
+        cashflowPlanModel.setCashflowPlan(cashflowPlan);
         updateOpionsVisibility();
         Util.reloadBindings(window);
     }

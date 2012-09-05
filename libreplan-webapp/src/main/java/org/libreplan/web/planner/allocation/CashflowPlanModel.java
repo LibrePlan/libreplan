@@ -45,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CashflowPlanModel implements ICashflowPlanModel {
 
-    private Task task;
+    private CashflowPlan cashflowPlan;
 
     @Autowired
     private IExpenseSheetLineDAO expenseSheetLineDAO;
@@ -53,43 +53,45 @@ public class CashflowPlanModel implements ICashflowPlanModel {
     private List<ExpenseSheetLine> expenseSheetLines;
 
     @Override
-    public void setTask(Task task) {
-        this.task = task;
+    public void setCashflowPlan(CashflowPlan cashflowPlan) {
+        this.cashflowPlan = cashflowPlan;
     }
 
     @Override
     public Task getTask() {
-        return task;
+        if (cashflowPlan == null) {
+            return null;
+        }
+        return cashflowPlan.getTask();
     }
 
     @Override
     public CashflowPlan getCashflowPlan() {
-        if (task == null) {
-            return null;
-        }
-        return task.getCashflowPlan();
+        return cashflowPlan;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ExpenseSheetLine> getExpenseSheetLines() {
-        if (task == null) {
+        if (cashflowPlan == null) {
             return new ArrayList<ExpenseSheetLine>();
         }
 
         if (expenseSheetLines == null) {
-            expenseSheetLines = expenseSheetLineDAO.findByOrderElement(task
-                    .getOrderElement());
+            expenseSheetLines = expenseSheetLineDAO
+                    .findByOrderElement(cashflowPlan.getTask()
+                            .getOrderElement());
         }
         return expenseSheetLines;
     }
 
     @Override
     public BigDecimal getTotalExpenses() {
-        if (task == null) {
+        if (cashflowPlan == null) {
             return BigDecimal.ZERO;
         }
-        SumExpenses sumExpenses = task.getOrderElement().getSumExpenses();
+        SumExpenses sumExpenses = cashflowPlan.getTask().getOrderElement()
+                .getSumExpenses();
         if (sumExpenses == null) {
             return BigDecimal.ZERO;
         }

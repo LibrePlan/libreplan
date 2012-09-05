@@ -34,7 +34,7 @@ import org.libreplan.business.planner.entities.Task;
  */
 public interface ICashflowPlanModel {
 
-    void setTask(Task task);
+    void setCashflowPlan(CashflowPlan cashflowPlan);
 
     Task getTask();
 

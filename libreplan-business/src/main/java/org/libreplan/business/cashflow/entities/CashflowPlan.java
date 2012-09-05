@@ -162,4 +162,16 @@ public class CashflowPlan extends BaseEntity {
         this.delayDays = delayDays;
     }
 
+    public CashflowPlan copy() {
+        CashflowPlan copy = create(task, type, delayDays);
+        for (CashflowOutput output : outputs) {
+            copy.addOutput(output.getDate(), output.getAmount());
+        }
+        return copy;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
 }
