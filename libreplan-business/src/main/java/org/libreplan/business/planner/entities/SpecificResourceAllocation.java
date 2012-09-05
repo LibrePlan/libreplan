@@ -439,8 +439,8 @@ public class SpecificResourceAllocation extends
     @Override
     public IAllocateEffortOnInterval onIntervalUpdatingTask(LocalDate start,
             LocalDate end) {
-        // TODO Auto-generated method stub
-        return null;
+        return new SpecificAssignmentsAllocator().onIntervalUpdatingTask(start,
+                end);
     }
 
 }
