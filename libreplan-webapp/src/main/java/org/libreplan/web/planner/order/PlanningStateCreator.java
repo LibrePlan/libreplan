@@ -61,7 +61,6 @@ import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.DerivedAllocation;
-import org.libreplan.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.ResourceAllocation;
@@ -82,7 +81,6 @@ import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.libreplan.business.resources.entities.PredefinedResources;
 import org.libreplan.business.resources.entities.Resource;
-import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.daos.IOrderVersionDAO;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
@@ -800,12 +798,12 @@ public class PlanningStateCreator {
                     AllocationRowsHandler allocationRowsHandler = AllocationRowsHandler
                             .create((Task) task,
                                     Collections.<AllocationRow> emptyList(),
-                                    createWorkerFinder());
+                                    null);
                     allocationRowsHandler.createFakeFormBinder();
                     allocationRowsHandler
                             .setCalculatedValue(CalculatedValue.RESOURCES_PER_DAY);
 
-                    Resource resource = PredefinedResources.DEFAULT.getFromDB();
+                    Resource resource = resources.iterator().next();
                     allocationRowsHandler
                             .addSpecificResourceAllocationFor(Collections
                                     .singletonList(resource));
@@ -822,25 +820,8 @@ public class PlanningStateCreator {
                         }
                         throw new RuntimeException(string);
                     }
-                    // detach resource from session, or else the reattach done
-                    // later will fail
-                    // (at PlanningState.reassociateResourcesWithSession())
-                    resourceDAO.detach(resource);
                 }
             }
-        }
-
-        private IWorkerFinder createWorkerFinder() {
-            return new IWorkerFinder() {
-
-                @Override
-                public Collection<Worker> findWorkersMatching(
-                        Collection<? extends Criterion> requiredCriteria) {
-                    return Collections
-                            .singleton((Worker) PredefinedResources.DEFAULT
-                                    .getFromDB());
-                }
-            };
         }
 
         void synchronizeScheduling() {
