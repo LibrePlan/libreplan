@@ -32,6 +32,8 @@ import java.util.TreeMap;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
+import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
+import org.libreplan.business.expensesheet.entities.ExpenseSheetLine;
 import org.libreplan.business.planner.entities.DayAssignment.FilterType;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
@@ -51,6 +53,9 @@ public class HoursCostCalculator implements ICostCalculator {
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Autowired
+    private IExpenseSheetLineDAO expenseSheetLineDAO;
 
     @Override
     public SortedMap<LocalDate, BigDecimal> getAdvanceCost(Task task) {
@@ -140,22 +145,38 @@ public class HoursCostCalculator implements ICostCalculator {
         List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(task.getOrderElement());
 
-        if (workReportLines.isEmpty()) {
-            return result;
+        if (!workReportLines.isEmpty()) {
+            for (WorkReportLine workReportLine : workReportLines) {
+                LocalDate day = new LocalDate(workReportLine.getDate());
+                BigDecimal cost = workReportLine.getEffort()
+                        .toHoursAsDecimalWithScale(2);
+
+                if (!result.containsKey(day)) {
+                    result.put(day, BigDecimal.ZERO);
+                }
+                result.put(day, result.get(day).add(cost));
+            }
         }
 
-        for (WorkReportLine workReportLine : workReportLines) {
-            LocalDate day = new LocalDate(workReportLine.getDate());
-            BigDecimal cost = workReportLine.getEffort()
-                    .toHoursAsDecimalWithScale(2);
+        addExpensesCost(result, task);
+
+        return result;
+    }
+
+    private void addExpensesCost(SortedMap<LocalDate, BigDecimal> result,
+            Task task) {
+        List<ExpenseSheetLine> expenseSheetLines = expenseSheetLineDAO
+                .findByOrderElementAndChildren(task.getOrderElement());
+
+        for (ExpenseSheetLine line : expenseSheetLines) {
+            LocalDate day = line.getDate();
+            BigDecimal cost = line.getValue();
 
             if (!result.containsKey(day)) {
                 result.put(day, BigDecimal.ZERO);
             }
             result.put(day, result.get(day).add(cost));
         }
-
-        return result;
     }
 
 }
