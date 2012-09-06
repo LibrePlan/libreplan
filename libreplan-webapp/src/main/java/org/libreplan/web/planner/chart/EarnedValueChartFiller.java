@@ -140,7 +140,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         setIndicator(EarnedValueType.EAC,
                 earnedValueCalculator.calculateEstimateAtCompletion(
                         getIndicator(EarnedValueType.ACWP),
-                        getIndicator(EarnedValueType.BCWP),
+                        getIndicator(EarnedValueType.BCWS),
                         getIndicator(EarnedValueType.BAC)));
     }
 
@@ -161,7 +161,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     private void calculateCostPerformanceIndex() {
         setIndicator(EarnedValueType.CPI,
                 earnedValueCalculator.calculateCostPerformanceIndex(
-                        getIndicator(EarnedValueType.BCWP),
+                        getIndicator(EarnedValueType.BCWS),
                         getIndicator(EarnedValueType.ACWP)));
     }
 
@@ -288,7 +288,7 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         }
 
         public static List<EarnedValueType> valuesLibrePlanAudiovisual() {
-            return Arrays.asList(BCWS, ACWP, BAC);
+            return Arrays.asList(BCWS, ACWP, BAC, EAC, CPI);
         }
 
     }

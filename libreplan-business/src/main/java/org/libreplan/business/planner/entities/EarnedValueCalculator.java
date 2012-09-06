@@ -71,9 +71,9 @@ public class EarnedValueCalculator implements IEarnedValueCalculator {
     @Override
     public SortedMap<LocalDate, BigDecimal> calculateEstimateAtCompletion(
             SortedMap<LocalDate, BigDecimal> acwp,
-            SortedMap<LocalDate, BigDecimal> bcwp,
+            SortedMap<LocalDate, BigDecimal> bcws,
             SortedMap<LocalDate, BigDecimal> bac) {
-        return multiply(divide(acwp, bcwp,
+        return multiply(divide(acwp, bcws,
                 BigDecimal.ZERO), bac);
     }
 
@@ -93,9 +93,9 @@ public class EarnedValueCalculator implements IEarnedValueCalculator {
 
     @Override
     public SortedMap<LocalDate, BigDecimal> calculateCostPerformanceIndex(
-            SortedMap<LocalDate, BigDecimal> bcwp,
+            SortedMap<LocalDate, BigDecimal> bcws,
             SortedMap<LocalDate, BigDecimal> acwp) {
-        return divide(bcwp, acwp, BigDecimal.ZERO);
+        return divide(bcws, acwp, BigDecimal.ZERO);
     }
 
     @Override

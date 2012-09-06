@@ -45,10 +45,11 @@ public interface IEarnedValueCalculator {
     SortedMap<LocalDate, BigDecimal> calculateBudgetAtCompletion(
             SortedMap<LocalDate, BigDecimal> bcws);
 
-    // EAC = (ACWP/BCWP) * BAC
+    // LibrePlan Audiovisual (formula changed)
+    // EAC = (ACWP/BCWS) * BAC
     SortedMap<LocalDate, BigDecimal> calculateEstimateAtCompletion(
             SortedMap<LocalDate, BigDecimal> acwp,
-            SortedMap<LocalDate, BigDecimal> bcwp,
+            SortedMap<LocalDate, BigDecimal> bcws,
             SortedMap<LocalDate, BigDecimal> bac);
 
     // VAC = BAC - EAC
@@ -66,9 +67,10 @@ public interface IEarnedValueCalculator {
             SortedMap<LocalDate, BigDecimal> bcwp,
             SortedMap<LocalDate, BigDecimal> bcws);
 
-    // CPI = BCWP / ACWP
+    // LibrePlan Audiovisual (formula changed)
+    // CPI = BCWS / ACWP
     SortedMap<LocalDate, BigDecimal> calculateCostPerformanceIndex(
-            SortedMap<LocalDate, BigDecimal> bcwp,
+            SortedMap<LocalDate, BigDecimal> bcws,
             SortedMap<LocalDate, BigDecimal> acwp);
 
 }
