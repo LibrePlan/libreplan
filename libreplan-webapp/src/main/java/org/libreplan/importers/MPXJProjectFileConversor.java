@@ -94,6 +94,10 @@ public class MPXJProjectFileConversor {
 
         importData.milestones = getImportMilestones(file.getChildTasks());
 
+        // MPXJ don't provide a deadline for the project so we take the finish
+        // date
+        importData.deadline = header.getFinishDate();
+
         return importData;
 
     }
