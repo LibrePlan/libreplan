@@ -18,6 +18,7 @@
  */
 package org.libreplan.business.users.bootstrap;
 
+import static org.libreplan.business.users.entities.UserRole.ROLE_BUDGET_REPORT;
 import static org.libreplan.business.users.entities.UserRole.ROLE_CALENDARS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_CALENDAR_EXCEPTION_DAYS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_COMPANIES;
@@ -112,7 +113,8 @@ public enum PredefinedProfiles {
             ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT,
             ROLE_PROJECT_COSTS_REPORT,
             ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT,
-            ROLE_MATERIALS_NEED_AT_DATE_REPORT);
+            ROLE_MATERIALS_NEED_AT_DATE_REPORT,
+            ROLE_BUDGET_REPORT);
 
     private String name;
     private UserRole[] roles;
