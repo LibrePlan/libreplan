@@ -461,7 +461,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         int columnNumber = 0;
 
-        for (EarnedValueType type : EarnedValueType.values()) {
+        for (EarnedValueType type : EarnedValueType
+                .valuesLibrePlanAudiovisual()) {
             Checkbox checkbox = new Checkbox(type.getAcronym());
             checkbox.setTooltiptext(type.getName());
             checkbox.setAttribute("indicator", type);

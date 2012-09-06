@@ -23,6 +23,7 @@ package org.libreplan.web.planner.chart;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -285,6 +286,11 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         public String getColor() {
             return color;
         }
+
+        public static List<EarnedValueType> valuesLibrePlanAudiovisual() {
+            return Arrays.asList(BCWS, ACWP, BAC);
+        }
+
     }
 
 }
