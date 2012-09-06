@@ -117,7 +117,8 @@ public class HoursCostCalculator implements ICostCalculator {
             LocalDate day = dayAssignment.getDay();
             if(((filterStartDate == null) || day.compareTo(filterStartDate) >= 0) &&
                     ((filterEndDate == null) || day.compareTo(filterEndDate) <= 0)) {
-                BigDecimal cost = new BigDecimal(dayAssignment.getHours());
+                BigDecimal cost = dayAssignment.getDuration()
+                        .toEurosAsDecimal();
 
                 if (!result.containsKey(day)) {
                     result.put(day, BigDecimal.ZERO);
