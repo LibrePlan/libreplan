@@ -216,7 +216,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         if (task.children.size() == 0) {
             orderElement = OrderLine.createUnvalidatedWithUnfixedPercentage(
-                    UUID.randomUUID().toString(), 0);
+                    UUID.randomUUID().toString(), task.totalHours);
 
             if (!orderElement.getHoursGroups().isEmpty()) {
                 orderElement.getHoursGroups().get(0)
