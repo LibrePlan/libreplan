@@ -70,6 +70,7 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.calendars.BaseCalendarModel;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.ViewSwitcher;
 import org.libreplan.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.libreplan.web.planner.advances.IAdvanceAssignmentPlanningCommand;
@@ -829,7 +830,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             checkbox.setStyle("color: " + type.getColor());
 
             BigDecimal value = earnedValueChartFiller.getIndicator(type, date);
-            String units = _("h");
+            String units = Util.getCurrencySymbol();
             if (type.equals(EarnedValueType.CPI)
                     || type.equals(EarnedValueType.SPI)) {
                 value = value.multiply(new BigDecimal(100));

@@ -61,6 +61,7 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.chart.Chart;
@@ -469,7 +470,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             BigDecimal value = earnedValueChartFiller.getIndicator(type, date) != null ? earnedValueChartFiller
                     .getIndicator(type, date)
                     : BigDecimal.ZERO;
-            String units = _("h");
+            String units = Util.getCurrencySymbol();
             if (type.equals(EarnedValueType.CPI)
                     || type.equals(EarnedValueType.SPI)) {
                 value = value.multiply(new BigDecimal(100));
