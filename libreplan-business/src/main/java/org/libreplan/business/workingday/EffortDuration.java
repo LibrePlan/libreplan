@@ -22,6 +22,7 @@
 package org.libreplan.business.workingday;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -346,7 +347,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
 
     public BigDecimal toEurosAsDecimal() {
         BigDecimal decimal = new BigDecimal(seconds).setScale(2);
-        return decimal.divide(new BigDecimal(100));
+        return decimal.divide(new BigDecimal(100), RoundingMode.HALF_UP);
     }
 
     /**
@@ -398,7 +399,8 @@ public class EffortDuration implements Comparable<EffortDuration> {
     public String toFormattedString() {
         // LP AUDIOVISUAL HACK: now string is EUROS.HOURS
         BigDecimal decimal = new BigDecimal(seconds).setScale(2);
-        return decimal.divide(new BigDecimal(100)).toString();
+        return decimal.divide(new BigDecimal(100), RoundingMode.HALF_UP)
+                .toString();
     }
 
     public EffortDuration atNearestMinute() {
