@@ -95,12 +95,11 @@ public class AggregateOfExpensesLines implements IAggregate {
     }
 
     public EffortDuration getTotalEffort(){
-        return EffortDuration.fromHoursAsBigDecimal(getTotalByTask().multiply(
-                new BigDecimal(100)));
+        return EffortDuration.fromEurosAsBigDecimal(getTotalByTask());
     }
 
     public EffortDuration effortBetween(LocalDate start, LocalDate end) {
-        return EffortDuration.fromHoursAsBigDecimal(expensesBetween(start, end)
-                .multiply(new BigDecimal(100)));
+        return EffortDuration
+                .fromEurosAsBigDecimal(expensesBetween(start, end));
     }
 }
