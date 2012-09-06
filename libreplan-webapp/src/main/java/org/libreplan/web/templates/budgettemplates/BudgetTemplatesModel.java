@@ -160,7 +160,22 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
         if (template != null) {
             return template;
         } else if (planningState != null) {
-            template = planningState.getOrder().getAssociatedBudgetObject();
+            // Get the template from the database to avoid it to be a proxy
+            template = transaction
+                    .runOnAnotherReadOnlyTransaction(new IOnTransaction<OrderElementTemplate>() {
+                        @Override
+                        public OrderElementTemplate execute() {
+                            try {
+                                OrderElementTemplate template = dao
+                                        .find(planningState.getOrder()
+                                        .getAssociatedBudgetObject().getId());
+                                loadAssociatedData(template);
+                                return template;
+                            } catch (InstanceNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
             return template;
         }
         return null;
@@ -227,7 +242,6 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
                         planningState.reattach();
                     }
                 });
-        loadAssociatedData(getTemplate());
         treeModel = new TemplatesTree(getTemplate());
     }
 
