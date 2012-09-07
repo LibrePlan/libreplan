@@ -29,10 +29,6 @@
 <?component name="combobox_output_format" macroURI="combobox_output_format.zul"
     class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
 
-<?component name="extendedjasperreport"
-    class="org.libreplan.web.common.components.ExtendedJasperreport"
-    extends="jasperreport" ?>
-
 <zk>
 
     <window self="@{define(content)}"
@@ -59,18 +55,21 @@
             </panelchildren>
         </panel>
 
+        <separator spacing="10px" orient="horizontal" />
+
         <hbox style="display: none" id="URItext">
-            <label value="${i18n:_('Click on ')}" />
-            <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
-                    label="${i18n:_('direct link')}" />
-            <label value="${i18n:_(' to go to output directly')}" />
+            <label value="${i18n:_('Click on this')}" />
+            <a id="URIlink" class="z-label" zclass="z-label"
+                label="${i18n:_('direct link')}" />
+            <label
+                value="${i18n:_('if the report is not opened automatically')}" />
         </hbox>
 
         <separator spacing="10px" orient="horizontal" />
 
         <button label="Show" onClick="controller.showReport(report)" />
 
-        <extendedjasperreport style="display: none" id="report" />
+        <jasperreportcomponent id="report" />
 
     </window>
 

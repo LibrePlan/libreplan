@@ -19,9 +19,13 @@
 
 package org.libreplan.web.reports;
 
+import java.util.List;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.libreplan.business.reports.dtos.BudgetElementDTO;
 import org.zkoss.zk.ui.Component;
 
 /**
@@ -29,9 +33,12 @@ import org.zkoss.zk.ui.Component;
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
+@SuppressWarnings("serial")
 public class BudgetReportController extends LibrePlanReportController {
 
     private static final String REPORT_NAME = "budgetReport";
+
+    private IBudgetReportModel budgetReportModel;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -46,7 +53,13 @@ public class BudgetReportController extends LibrePlanReportController {
 
     @Override
     protected JRDataSource getDataSource() {
-        return new JREmptyDataSource();
+        List<BudgetElementDTO> dtos = budgetReportModel.getBudgetElementDTOs();
+
+        if (dtos.isEmpty()) {
+            return new JREmptyDataSource();
+        }
+
+        return new JRBeanCollectionDataSource(dtos);
     }
 
 }
