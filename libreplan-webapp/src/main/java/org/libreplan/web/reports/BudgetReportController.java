@@ -31,6 +31,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.BudgetElementDTO;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -105,8 +106,9 @@ public class BudgetReportController extends LibrePlanReportController {
         Map<String, Object> result = super.getParameters();
 
         Order order = getSelectedOrder();
-        result.put("projectCode", order.getCode());
-        result.put("projectName", order.getName());
+        result.put("project", order.getName() + " (" + order.getCode() + ")");
+        result.put("total", Util.addCurrencySymbol(order
+                .getAssociatedBudgetObject().getBudget()));
         return result;
     }
 

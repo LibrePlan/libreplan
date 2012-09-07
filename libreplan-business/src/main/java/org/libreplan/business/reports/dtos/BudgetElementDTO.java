@@ -20,7 +20,9 @@
 package org.libreplan.business.reports.dtos;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.templates.entities.BudgetLineTemplate;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 
@@ -49,6 +51,10 @@ public class BudgetElementDTO {
 
     private BigDecimal holidaySalary;
 
+    private Date startDate;
+
+    private Date endDate;
+
     public BudgetElementDTO(OrderElementTemplate orderElementTemplate) {
         code = orderElementTemplate.getCode();
         name = orderElementTemplate.getName();
@@ -62,6 +68,15 @@ public class BudgetElementDTO {
             quantity = budgetLineTemplate.getQuantity();
             indemnizationSalary = budgetLineTemplate.getIndemnizationSalary();
             holidaySalary = budgetLineTemplate.getHolidaySalary();
+
+            LocalDate startDate = budgetLineTemplate.getStartDate();
+            if (startDate != null) {
+                this.startDate = startDate.toDateTimeAtStartOfDay().toDate();
+            }
+            LocalDate endDate = budgetLineTemplate.getEndDate();
+            if (endDate != null) {
+                this.endDate = endDate.toDateTimeAtStartOfDay().toDate();
+            }
         }
     }
 
@@ -99,6 +114,14 @@ public class BudgetElementDTO {
 
     public BigDecimal getHolidaySalary() {
         return holidaySalary;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
     }
 
     public void setType(String type) {

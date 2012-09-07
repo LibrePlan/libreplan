@@ -85,7 +85,14 @@ public class BudgetReportModel implements IBudgetReportModel {
                 SecurityUtils.getSessionUserLoginName(),
                 scenarioManager.getCurrent());
         Collections.sort(result);
+        for (Order order : result) {
+            forceLoadBudget(order);
+        }
         return result;
+    }
+
+    private void forceLoadBudget(Order order) {
+        order.getAssociatedBudgetObject().getBudget();
     }
 
 }
