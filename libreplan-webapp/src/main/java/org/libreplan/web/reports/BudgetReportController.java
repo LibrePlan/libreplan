@@ -28,6 +28,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.BudgetElementDTO;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
@@ -68,6 +69,14 @@ public class BudgetReportController extends LibrePlanReportController {
 
         if (dtos.isEmpty()) {
             return new JREmptyDataSource();
+        }
+
+        // Translate BudgetLineTypeEnum values
+        for (BudgetElementDTO dto : dtos) {
+            String type = dto.getType();
+            if (!StringUtils.isBlank(type)) {
+                dto.setType(_(type));
+            }
         }
 
         return new JRBeanCollectionDataSource(dtos);

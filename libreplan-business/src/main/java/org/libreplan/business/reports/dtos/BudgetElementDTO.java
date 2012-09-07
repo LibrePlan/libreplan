@@ -101,4 +101,8 @@ public class BudgetElementDTO {
         return holidaySalary;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
 }
