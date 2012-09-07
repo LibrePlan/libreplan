@@ -20,11 +20,17 @@
 package org.libreplan.web.reports;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.BudgetElementDTO;
+import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -44,11 +50,22 @@ public class BudgetReportModel implements IBudgetReportModel {
     @Autowired
     private IOrderElementTemplateDAO orderElementTemplateDAO;
 
+    @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
     @Override
     @Transactional(readOnly = true)
-    public List<BudgetElementDTO> getBudgetElementDTOs() {
-        OrderElementTemplate orderElementTemplate = orderElementTemplateDAO
-                .getRootTemplates().get(0);
+    public List<BudgetElementDTO> getBudgetElementDTOs(Order order) {
+        OrderElementTemplate orderElementTemplate;
+        try {
+            orderElementTemplate = orderElementTemplateDAO.find(order
+                    .getAssociatedBudgetObject().getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         List<BudgetElementDTO> dtos = new ArrayList<BudgetElementDTO>();
 
@@ -58,6 +75,17 @@ public class BudgetReportModel implements IBudgetReportModel {
         }
 
         return dtos;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Transactional(readOnly = true)
+    public List<Order> getOrders() {
+        List<Order> result = orderDAO.getOrdersByReadAuthorizationByScenario(
+                SecurityUtils.getSessionUserLoginName(),
+                scenarioManager.getCurrent());
+        Collections.sort(result);
+        return result;
     }
 
 }

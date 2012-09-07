@@ -19,14 +19,22 @@
 
 package org.libreplan.web.reports;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.util.List;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.BudgetElementDTO;
+import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
+
+import com.igalia.java.zk.components.JasperreportComponent;
 
 /**
  * Controller for UI operations of Budget report.
@@ -39,6 +47,8 @@ public class BudgetReportController extends LibrePlanReportController {
     private static final String REPORT_NAME = "budgetReport";
 
     private IBudgetReportModel budgetReportModel;
+
+    private BandboxSearch bandboxSelectOrder;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -53,13 +63,42 @@ public class BudgetReportController extends LibrePlanReportController {
 
     @Override
     protected JRDataSource getDataSource() {
-        List<BudgetElementDTO> dtos = budgetReportModel.getBudgetElementDTOs();
+        List<BudgetElementDTO> dtos = budgetReportModel
+                .getBudgetElementDTOs(getSelectedOrder());
 
         if (dtos.isEmpty()) {
             return new JREmptyDataSource();
         }
 
         return new JRBeanCollectionDataSource(dtos);
+    }
+
+    @Override
+    public void showReport(JasperreportComponent jasperreport) {
+        final Order order = getSelectedOrder();
+        if (order == null) {
+            throw new WrongValueException(bandboxSelectOrder,
+                    _("Please, select a project"));
+        }
+        super.showReport(jasperreport);
+    }
+
+    private Order getSelectedOrder() {
+        return (Order) bandboxSelectOrder.getSelectedElement();
+    }
+
+    public List<Order> getOrders() {
+        return budgetReportModel.getOrders();
+    }
+
+    @Override
+    protected Map<String, Object> getParameters() {
+        Map<String, Object> result = super.getParameters();
+
+        Order order = getSelectedOrder();
+        result.put("projectCode", order.getCode());
+        result.put("projectName", order.getName());
+        return result;
     }
 
 }

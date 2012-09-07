@@ -21,6 +21,7 @@ package org.libreplan.web.reports;
 
 import java.util.List;
 
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.BudgetElementDTO;
 
 /**
@@ -30,6 +31,8 @@ import org.libreplan.business.reports.dtos.BudgetElementDTO;
  */
 public interface IBudgetReportModel {
 
-    List<BudgetElementDTO> getBudgetElementDTOs();
+    List<BudgetElementDTO> getBudgetElementDTOs(Order order);
+
+    List<Order> getOrders();
 
 }

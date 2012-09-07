@@ -36,6 +36,32 @@
         title="${i18n:_('Budget Report')}"
         border="normal" >
 
+        <!-- Select project -->
+        <panel title="${i18n:_('Project')}"
+            border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="700px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Project')}" />
+                            <bandboxSearch id="bandboxSelectOrder"
+                                finder="OrderBandboxFinder"
+                                model="@{controller.orders}"
+                                widthListbox="480px"
+                                widthBandbox="450px" />
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal" />
+
         <!-- Select output format -->
         <panel title="${i18n:_('Format')}" border="normal"
             style="overflow:auto">
