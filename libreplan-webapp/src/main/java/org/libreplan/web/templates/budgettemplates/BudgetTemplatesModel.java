@@ -160,22 +160,30 @@ public class BudgetTemplatesModel implements IBudgetTemplatesModel,
         if (template != null) {
             return template;
         } else if (planningState != null) {
-            // Get the template from the database to avoid it to be a proxy
-            template = transaction
-                    .runOnAnotherReadOnlyTransaction(new IOnTransaction<OrderElementTemplate>() {
-                        @Override
-                        public OrderElementTemplate execute() {
-                            try {
-                                OrderElementTemplate template = dao
-                                        .find(planningState.getOrder()
-                                        .getAssociatedBudgetObject().getId());
-                                loadAssociatedData(template);
-                                return template;
-                            } catch (InstanceNotFoundException e) {
-                                throw new RuntimeException(e);
+            if (planningState.getOrder().getState()
+                    .equals(OrderStatusEnum.BUDGET)) {
+                template = planningState.getOrder().getAssociatedBudgetObject();
+                loadAdvanceAssignments(template);
+            } else {
+                // Get the template from the database to avoid it to be a proxy
+                template = transaction
+                        .runOnAnotherReadOnlyTransaction(new IOnTransaction<OrderElementTemplate>() {
+                            @Override
+                            public OrderElementTemplate execute() {
+                                try {
+                                    OrderElementTemplate template = dao
+                                            .find(planningState
+                                                    .getOrder()
+                                                    .getAssociatedBudgetObject()
+                                                    .getId());
+                                    loadAssociatedData(template);
+                                    return template;
+                                } catch (InstanceNotFoundException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
-                        }
-                    });
+                        });
+            }
             return template;
         }
         return null;
