@@ -20,6 +20,7 @@
 package org.libreplan.business.reports.dtos;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import org.joda.time.LocalDate;
@@ -37,9 +38,11 @@ public class BudgetElementDTO {
 
     private String name;
 
-    private BigDecimal budget;
+    private BigDecimal budgetIntegerPart;
+    private BigDecimal budgetFractionalPart;
 
-    private BigDecimal costOrSalary;
+    private BigDecimal costOrSalaryIntegerPart;
+    private BigDecimal costOrSalaryFractionalPart;
 
     private String type;
 
@@ -47,9 +50,11 @@ public class BudgetElementDTO {
 
     private Integer quantity;
 
-    private BigDecimal indemnizationSalary;
+    private BigDecimal indemnizationSalaryIntegerPart;
+    private BigDecimal indemnizationSalaryFractionalPart;
 
-    private BigDecimal holidaySalary;
+    private BigDecimal holidaySalaryIntegerPart;
+    private BigDecimal holidaySalaryFractionalPart;
 
     private Date startDate;
 
@@ -58,16 +63,32 @@ public class BudgetElementDTO {
     public BudgetElementDTO(OrderElementTemplate orderElementTemplate) {
         code = orderElementTemplate.getCode();
         name = orderElementTemplate.getName();
-        budget = orderElementTemplate.getBudget();
+
+        budgetIntegerPart = getIntegerPart(orderElementTemplate.getBudget());
+        budgetFractionalPart = getFractionalPart(orderElementTemplate
+                .getBudget());
 
         if (orderElementTemplate.isLeaf()) {
             BudgetLineTemplate budgetLineTemplate = (BudgetLineTemplate) orderElementTemplate;
-            costOrSalary = budgetLineTemplate.getCostOrSalary();
+
+            costOrSalaryIntegerPart = getIntegerPart(budgetLineTemplate
+                    .getCostOrSalary());
+            costOrSalaryFractionalPart = getFractionalPart(budgetLineTemplate
+                    .getCostOrSalary());
+
             type = budgetLineTemplate.getBudgetLineType().toString();
             duration = budgetLineTemplate.getDuration();
             quantity = budgetLineTemplate.getQuantity();
-            indemnizationSalary = budgetLineTemplate.getIndemnizationSalary();
-            holidaySalary = budgetLineTemplate.getHolidaySalary();
+
+            indemnizationSalaryIntegerPart = getIntegerPart(budgetLineTemplate
+                    .getIndemnizationSalary());
+            indemnizationSalaryFractionalPart = getFractionalPart(budgetLineTemplate
+                    .getIndemnizationSalary());
+
+            holidaySalaryIntegerPart = getIntegerPart(budgetLineTemplate
+                    .getHolidaySalary());
+            holidaySalaryFractionalPart = getFractionalPart(budgetLineTemplate
+                    .getHolidaySalary());
 
             LocalDate startDate = budgetLineTemplate.getStartDate();
             if (startDate != null) {
@@ -80,6 +101,23 @@ public class BudgetElementDTO {
         }
     }
 
+    private BigDecimal getIntegerPart(BigDecimal value) {
+        if (value == null) {
+            return value;
+        }
+        return value.setScale(2, RoundingMode.DOWN);
+    }
+
+    private BigDecimal getFractionalPart(BigDecimal value) {
+        if (value == null) {
+            return value;
+        }
+        BigDecimal fractionalPart = value.subtract(value.setScale(0,
+                RoundingMode.FLOOR));
+        return (fractionalPart.compareTo(BigDecimal.ZERO) != 0) ? fractionalPart
+                : null;
+    }
+
     public String getCode() {
         return code;
     }
@@ -88,12 +126,20 @@ public class BudgetElementDTO {
         return name;
     }
 
-    public BigDecimal getBudget() {
-        return budget;
+    public BigDecimal getBudgetIntegerPart() {
+        return budgetIntegerPart;
     }
 
-    public BigDecimal getCostOrSalary() {
-        return costOrSalary;
+    public BigDecimal getBudgetFractionalPart() {
+        return budgetFractionalPart;
+    }
+
+    public BigDecimal getCostOrSalaryIntegerPart() {
+        return costOrSalaryIntegerPart;
+    }
+
+    public BigDecimal getCostOrSalaryFractionalPart() {
+        return costOrSalaryFractionalPart;
     }
 
     public String getType() {
@@ -108,12 +154,20 @@ public class BudgetElementDTO {
         return quantity;
     }
 
-    public BigDecimal getIndemnizationSalary() {
-        return indemnizationSalary;
+    public BigDecimal getIndemnizationSalaryIntegerPart() {
+        return indemnizationSalaryIntegerPart;
     }
 
-    public BigDecimal getHolidaySalary() {
-        return holidaySalary;
+    public BigDecimal getIndemnizationSalaryFractionalPart() {
+        return indemnizationSalaryFractionalPart;
+    }
+
+    public BigDecimal getHolidaySalaryIntegerPart() {
+        return holidaySalaryIntegerPart;
+    }
+
+    public BigDecimal getHolidaySalaryFractionalPart() {
+        return holidaySalaryFractionalPart;
     }
 
     public Date getStartDate() {

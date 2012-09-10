@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resourcesList" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="812" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" resourceBundle="budget" uuid="17a95f07-ce2e-43c0-8da8-bfe1b9d826c2">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="1382"/>
+	<property name="ireport.x" value="1345"/>
 	<property name="ireport.y" value="0"/>
 	<style name="DejaVu Sans" isDefault="true" fontName="DejaVu Sans"/>
 	<parameter name="logo" class="java.lang.String"/>
@@ -9,13 +9,17 @@
 	<parameter name="total" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
-	<field name="budget" class="java.math.BigDecimal"/>
-	<field name="costOrSalary" class="java.math.BigDecimal"/>
+	<field name="budgetIntegerPart" class="java.math.BigDecimal"/>
+	<field name="budgetFractionalPart" class="java.math.BigDecimal"/>
+	<field name="costOrSalaryIntegerPart" class="java.math.BigDecimal"/>
+	<field name="costOrSalaryFractionalPart" class="java.math.BigDecimal"/>
 	<field name="type" class="java.lang.String"/>
 	<field name="duration" class="java.lang.Integer"/>
 	<field name="quantity" class="java.lang.Integer"/>
-	<field name="indemnizationSalary" class="java.math.BigDecimal"/>
-	<field name="holidaySalary" class="java.math.BigDecimal"/>
+	<field name="indemnizationSalaryIntegerPart" class="java.math.BigDecimal"/>
+	<field name="indemnizationSalaryFractionalPart" class="java.math.BigDecimal"/>
+	<field name="holidaySalaryIntegerPart" class="java.math.BigDecimal"/>
+	<field name="holidaySalaryFractionalPart" class="java.math.BigDecimal"/>
 	<field name="startDate" class="java.util.Date"/>
 	<field name="endDate" class="java.util.Date"/>
 	<background>
@@ -164,19 +168,33 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#.##" isBlankWhenNull="true">
-				<reportElement uuid="1b73bdf1-4277-4b39-a564-681faaeda0bc" x="363" y="0" width="50" height="15"/>
+			<textField pattern="#" isBlankWhenNull="true">
+				<reportElement uuid="1b73bdf1-4277-4b39-a564-681faaeda0bc" x="363" y="0" width="35" height="15"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{budget}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{budgetIntegerPart}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#.##" isBlankWhenNull="true">
-				<reportElement uuid="0557a8a1-39dd-4fe8-8c9a-9c9c130851f9" x="413" y="0" width="50" height="15"/>
+			<textField pattern=".##" isBlankWhenNull="true">
+				<reportElement uuid="1b73bdf1-4277-4b39-a564-681faaeda0bc" x="398" y="0" width="15" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budgetFractionalPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#" isBlankWhenNull="true">
+				<reportElement uuid="0557a8a1-39dd-4fe8-8c9a-9c9c130851f9" x="413" y="0" width="35" height="15"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{costOrSalary}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{costOrSalaryIntegerPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern=".##" isBlankWhenNull="true">
+				<reportElement uuid="0557a8a1-39dd-4fe8-8c9a-9c9c130851f9" x="448" y="0" width="15" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{costOrSalaryFractionalPart}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="f3262ab0-adbe-47b3-9fbb-148be25d1b86" x="463" y="0" width="50" height="15"/>
@@ -199,30 +217,44 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#.##" isBlankWhenNull="true">
-				<reportElement uuid="5309c7ce-609f-446b-8b1f-c5c1e5ffd7f5" x="613" y="0" width="50" height="15"/>
+			<textField pattern="#" isBlankWhenNull="true">
+				<reportElement uuid="5309c7ce-609f-446b-8b1f-c5c1e5ffd7f5" x="613" y="0" width="35" height="15"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{indemnizationSalary}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{indemnizationSalaryIntegerPart}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#.##" isBlankWhenNull="true">
-				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" x="663" y="0" width="50" height="15"/>
+			<textField pattern=".##" isBlankWhenNull="true">
+				<reportElement uuid="5309c7ce-609f-446b-8b1f-c5c1e5ffd7f5" x="648" y="0" width="15" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{indemnizationSalaryFractionalPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" x="663" y="0" width="35" height="15"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{holidaySalary}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{holidaySalaryIntegerPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern=".##" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" x="698" y="0" width="15" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{holidaySalaryFractionalPart}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" x="713" y="0" width="50" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{startDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" x="762" y="0" width="50" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{endDate}]]></textFieldExpression>
