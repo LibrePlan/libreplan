@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resourcesList" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="budget" uuid="17a95f07-ce2e-43c0-8da8-bfe1b9d826c2">
-	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="DejaVu Sans" isDefault="true" fontName="DejaVu Sans"/>
@@ -74,21 +74,21 @@
 	<columnHeader>
 		<band height="15" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="02635b95-c7c7-48aa-bfd8-bfdf35b9332f" x="0" y="0" width="100" height="15"/>
+				<reportElement uuid="02635b95-c7c7-48aa-bfd8-bfdf35b9332f" x="0" y="0" width="42" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{code}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="82352929-5e6a-4feb-9f54-fd2c97eb7cea" x="100" y="0" width="252" height="15"/>
+				<reportElement uuid="82352929-5e6a-4feb-9f54-fd2c97eb7cea" x="42" y="0" width="305" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{name}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="f7db0d0f-5695-4b34-8f4f-c61b8c89f94e" x="352" y="0" width="50" height="15"/>
+				<reportElement uuid="f7db0d0f-5695-4b34-8f4f-c61b8c89f94e" x="347" y="0" width="55" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -155,21 +155,21 @@
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="4c84212b-610d-4906-869b-972ce781dca1" x="0" y="0" width="100" height="15"/>
+				<reportElement uuid="4c84212b-610d-4906-869b-972ce781dca1" x="0" y="0" width="42" height="15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="04220d70-bab8-480f-b0db-8e3efd43965a" x="100" y="0" width="252" height="15"/>
+				<reportElement uuid="04220d70-bab8-480f-b0db-8e3efd43965a" x="42" y="0" width="305" height="15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#" isBlankWhenNull="true">
-				<reportElement uuid="1b73bdf1-4277-4b39-a564-681faaeda0bc" x="352" y="0" width="35" height="15"/>
+				<reportElement uuid="1b73bdf1-4277-4b39-a564-681faaeda0bc" x="347" y="0" width="40" height="15"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" isBold="false"/>
 				</textElement>
