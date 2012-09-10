@@ -109,6 +109,8 @@ public class BudgetReportController extends LibrePlanReportController {
         result.put("project", order.getName() + " (" + order.getCode() + ")");
         result.put("total", Util.addCurrencySymbol(order
                 .getAssociatedBudgetObject().getBudget()));
+        result.put("startDate", order.getInitDate());
+        result.put("deadline", order.getDeadline());
         return result;
     }
 
