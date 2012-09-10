@@ -60,6 +60,8 @@ public class BudgetElementDTO {
 
     private Date endDate;
 
+    private Boolean root = false;
+
     public BudgetElementDTO(OrderElementTemplate orderElementTemplate) {
         code = orderElementTemplate.getCode();
         name = orderElementTemplate.getName();
@@ -98,6 +100,11 @@ public class BudgetElementDTO {
             if (endDate != null) {
                 this.endDate = endDate.toDateTimeAtStartOfDay().toDate();
             }
+        }
+
+        if (orderElementTemplate.getParent() != null
+                && orderElementTemplate.getParent().isRoot()) {
+            root = true;
         }
     }
 
@@ -176,6 +183,10 @@ public class BudgetElementDTO {
 
     public Date getEndDate() {
         return endDate;
+    }
+
+    public Boolean getRoot() {
+        return root;
     }
 
     public void setType(String type) {

@@ -16,6 +16,12 @@
 			</style>
 		</conditionalStyle>
 	</style>
+	<style name="root-node" style="row-grey">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{root}]]></conditionExpression>
+			<style isBold="true"/>
+		</conditionalStyle>
+	</style>
 	<parameter name="logo" class="java.lang.String"/>
 	<parameter name="project" class="java.lang.String"/>
 	<parameter name="total" class="java.lang.String"/>
@@ -36,6 +42,7 @@
 	<field name="holidaySalaryFractionalPart" class="java.math.BigDecimal"/>
 	<field name="startDate" class="java.util.Date"/>
 	<field name="endDate" class="java.util.Date"/>
+	<field name="root" class="java.lang.Boolean"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -116,7 +123,7 @@
 	<columnHeader>
 		<band height="15" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="02635b95-c7c7-48aa-bfd8-bfdf35b9332f" x="0" y="0" width="42" height="15"/>
+				<reportElement uuid="02635b95-c7c7-48aa-bfd8-bfdf35b9332f" x="0" y="0" width="45" height="15"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.25"/>
@@ -127,7 +134,7 @@
 				<textFieldExpression><![CDATA[$R{code}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="82352929-5e6a-4feb-9f54-fd2c97eb7cea" x="42" y="0" width="305" height="15"/>
+				<reportElement uuid="82352929-5e6a-4feb-9f54-fd2c97eb7cea" x="45" y="0" width="302" height="15"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.25"/>
@@ -241,14 +248,14 @@
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="4c84212b-610d-4906-869b-972ce781dca1" style="row-grey" x="0" y="0" width="42" height="15"/>
+				<reportElement uuid="4c84212b-610d-4906-869b-972ce781dca1" style="root-node" x="0" y="0" width="45" height="15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="04220d70-bab8-480f-b0db-8e3efd43965a" style="row-grey" x="42" y="0" width="305" height="15"/>
+				<reportElement uuid="04220d70-bab8-480f-b0db-8e3efd43965a" style="root-node" x="45" y="0" width="302" height="15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
