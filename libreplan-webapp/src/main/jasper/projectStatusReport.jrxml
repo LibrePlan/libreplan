@@ -18,6 +18,9 @@
 	</style>
 	<parameter name="logo" class="java.lang.String"/>
 	<parameter name="project" class="java.lang.String"/>
+	<parameter name="estimatedHours" class="java.lang.String"/>
+	<parameter name="plannedHours" class="java.lang.String"/>
+	<parameter name="imputedHours" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
 	<field name="estimatedHours" class="java.lang.String"/>
@@ -49,9 +52,51 @@
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="60" y="15" width="562" height="12"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{project}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="0" y="28" width="100" height="12"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{project_estimated_hours}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="100" y="28" width="100" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{estimatedHours}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="200" y="28" width="100" height="12"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{project_planned_hours}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="300" y="28" width="100" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{plannedHours}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="400" y="28" width="100" height="12"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{project_imputed_hours}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="500" y="28" width="100" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{imputedHours}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -121,37 +166,27 @@
 		<band height="15" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="4c84212b-610d-4906-869b-972ce781dca1" style="row-grey" x="0" y="0" width="100" height="15"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="04220d70-bab8-480f-b0db-8e3efd43965a" style="row-grey" x="100" y="0" width="552" height="15"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="652" y="0" width="50" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{estimatedHours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="702" y="0" width="50" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{plannedHours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="752" y="0" width="50" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{imputedHours}]]></textFieldExpression>
 			</textField>
 		</band>

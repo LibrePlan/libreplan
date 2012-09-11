@@ -29,7 +29,10 @@ import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.orders.entities.SumChargedEffort;
+import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -96,6 +99,29 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
         Order order = getSelectedOrder();
         result.put("project", order.getName() + " (" + order.getCode() + ")");
+
+        Integer estimatedHours = order.getWorkHours();
+        result.put(
+                "estimatedHours",
+                estimatedHours != null ? ProjectStatusReportDTO
+                        .toString(EffortDuration.hours(estimatedHours)) : null);
+
+        EffortDuration plannedHours = null;
+        TaskSource taskSource = order.getTaskSource();
+        if (taskSource != null) {
+            plannedHours = taskSource.getTask().getSumOfAssignedEffort();
+        }
+        result.put("plannedHours",
+                ProjectStatusReportDTO.toString(plannedHours));
+
+        EffortDuration imputedHours = null;
+        SumChargedEffort sumChargedEffort = order.getSumChargedEffort();
+        if (sumChargedEffort != null) {
+            imputedHours = sumChargedEffort.getTotalChargedEffort();
+        }
+        result.put("imputedHours",
+                ProjectStatusReportDTO.toString(imputedHours));
+
         return result;
     }
 }
