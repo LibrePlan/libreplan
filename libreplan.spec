@@ -32,9 +32,9 @@ Requires:       tomcat6
 Requires:       cutycapt
 %endif
 %if 0%{?suse_version}
-Requires:       freefont
+Requires:       dejavu
 %else
-Requires:       gnu-free-fonts-compat
+Requires:       dejavu-fonts-common
 %endif
 
 %if 0%{?suse_version}

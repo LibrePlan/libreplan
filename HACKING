@@ -39,7 +39,7 @@ Compilation requirements
 
   Used for i18n support in the project
 
-* *GNU FreeFont* - Freefont Serif, Sans and Mono Truetype fonts
+* *DejaVu Fonts* - Vera font family
 
   Font family used in reports
 
@@ -56,7 +56,7 @@ Debian/Ubuntu
 
 * Install requirements::
 
-    # apt-get install git-core maven2 openjdk-6-jdk postgresql postgresql-client python-docutils make gettext ttf-freefont cutycapt
+    # apt-get install git-core maven2 openjdk-6-jdk postgresql postgresql-client python-docutils make gettext ttf-dejavu cutycapt
 
 * Connect to database::
 
@@ -141,7 +141,7 @@ openSUSE
 
 * Install requirements::
 
-    # zypper install git-core java-1_6_0-openjdk-devel postgresql-server postgresql docutils make gettext-tools freefont
+    # zypper install git-core java-1_6_0-openjdk-devel postgresql-server postgresql docutils make gettext-tools dejavu
 
 * Install Maven::
 

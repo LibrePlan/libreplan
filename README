@@ -105,7 +105,7 @@ Requirements
 
   To connect application with *PostgreSQL* database in *Tomcat*
 
-* *GNU FreeFont* - Freefont Serif, Sans and Mono Truetype fonts
+* *DejaVu Fonts* - Vera font family
 
   Font family used in reports
 
