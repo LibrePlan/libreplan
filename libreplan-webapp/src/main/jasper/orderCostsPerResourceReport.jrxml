@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="orderCostsPerResource">
-	<reportFont name="FreeSans" isDefault="true" fontName="FreeSans" size="9"/>
-	<subDataset name="dataset1"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="orderCostsPerResource" uuid="63fd4d21-88a8-4b82-babc-225b60e2f73b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="dejavu-sans" isDefault="true" fontName="DejaVu Sans" fontSize="8"/>
+	<subDataset name="dataset1" uuid="5f24f5f5-8b9f-4cf0-9dc4-0225d9b5b4a4"/>
 	<parameter name="startingDate" class="java.util.Date"/>
 	<parameter name="endingDate" class="java.util.Date"/>
 	<parameter name="logo" class="java.lang.String"/>
@@ -34,87 +37,87 @@
 		<groupHeader>
 			<band height="72">
 				<textField evaluationTime="Group" evaluationGroup="OrderCode" isBlankWhenNull="true">
-					<reportElement x="2" y="6" width="551" height="26"/>
+					<reportElement uuid="65f04d7e-ebc2-4b1e-949f-cde077bd5e95" x="2" y="6" width="551" height="26"/>
 					<textElement verticalAlignment="Middle">
 						<font size="12" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{orderName}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{orderName}]]></textFieldExpression>
 				</textField>
 				<line>
-					<reportElement x="2" y="59" width="553" height="1"/>
+					<reportElement uuid="20b35b3c-d58f-46ef-831b-e8f9ae1697af" x="2" y="59" width="553" height="1"/>
 				</line>
 				<textField evaluationTime="Group" evaluationGroup="OrderCode" isBlankWhenNull="true">
-					<reportElement x="2" y="32" width="551" height="26"/>
+					<reportElement uuid="07784150-7747-4aa7-905f-c45527f81c0a" x="2" y="32" width="551" height="26"/>
 					<textElement verticalAlignment="Middle">
 						<font size="12" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{orderCode}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{orderCode}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="101">
 				<textField>
-					<reportElement x="287" y="25" width="135" height="20"/>
+					<reportElement uuid="b0eb7147-44f0-4bb1-96d7-0d119ef65a90" x="287" y="25" width="135" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.time.money}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{total.time.money}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="423" y="45" width="130" height="20"/>
+					<reportElement uuid="c59f64c7-b5f7-433b-8514-cf84b55e8d8c" x="423" y="45" width="130" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalExpenses}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{sumTotalExpenses}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="###0.00 h">
-					<reportElement x="287" y="5" width="135" height="20"/>
+					<reportElement uuid="90b2ad2d-6eb1-42da-95eb-fb25e3cf8a78" x="287" y="5" width="135" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalHours}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{sumTotalHours}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="423" y="65" width="130" height="20"/>
+					<reportElement uuid="f15aa296-0292-4aab-afe6-a880a6fbd8c4" x="423" y="65" width="130" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalCosts}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{sumTotalCosts}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="287" y="45" width="135" height="20"/>
+					<reportElement uuid="4d5888d8-4404-4e24-a25f-49ba5b038543" x="287" y="45" width="135" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.expense.money}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{total.expense.money}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="287" y="65" width="135" height="20"/>
+					<reportElement uuid="8cbfa8c3-f7f8-4d44-9d35-6e9e6e0b6dbb" x="287" y="65" width="135" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.money}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{total.money}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="146" y="5" width="141" height="20"/>
+					<reportElement uuid="a2cfe898-e0d7-408f-8a6e-55e1d74ddc1f" x="146" y="5" width="141" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{time.spend.subtitle}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{time.spend.subtitle}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="146" y="25" width="141" height="20"/>
+					<reportElement uuid="2ccd00bc-de74-479d-bc88-8d19f9a82619" x="146" y="25" width="141" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{money.spend.subtitle}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{money.spend.subtitle}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="4" y="5" width="138" height="20"/>
+					<reportElement uuid="2de4c8ec-5cc9-4156-becd-dd0b89e12937" x="4" y="5" width="138" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{total}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$R{total}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="423" y="25" width="130" height="20"/>
+					<reportElement uuid="37d5be33-5c2a-462b-840b-48d30ebd5e27" x="423" y="25" width="130" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.String"><![CDATA[$V{sumTotalCostsByHours}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{sumTotalCostsByHours}.setScale(2, RoundingMode.HALF_UP) + " " + $P{currencySymbol}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -124,42 +127,42 @@
 		<groupHeader>
 			<band height="126">
 				<textField evaluationTime="Group" evaluationGroup="Task" isBlankWhenNull="true">
-					<reportElement x="330" y="10" width="175" height="20"/>
+					<reportElement uuid="236c2800-a0a5-4a08-97a4-7a0425725c0b" x="330" y="10" width="175" height="20"/>
 					<textElement>
 						<font size="12"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{orderElementCode}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{orderElementCode}]]></textFieldExpression>
 				</textField>
 				<line>
-					<reportElement x="5" y="30" width="548" height="1"/>
+					<reportElement uuid="3fb1daa7-328d-4b38-b24c-092a454fe18b" x="5" y="30" width="548" height="1"/>
 				</line>
 				<textField isBlankWhenNull="true">
-					<reportElement x="2" y="10" width="314" height="20"/>
+					<reportElement uuid="46eb1070-a60f-43eb-9b3e-3c4b83546e71" x="2" y="10" width="314" height="20"/>
 					<textElement>
 						<font size="12"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$F{orderElementName}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{orderElementName}]]></textFieldExpression>
 				</textField>
 				<subreport>
-					<reportElement key="subreport" positionType="Float" x="2" y="31" width="490" height="47"/>
-                    <subreportParameter name="currencySymbol">
-                        <subreportParameterExpression><![CDATA[$P{currencySymbol}]]></subreportParameterExpression>
-                    </subreportParameter>
+					<reportElement uuid="614ad46d-f88e-4b0c-be98-d50ff964aa04" key="subreport" positionType="Float" x="2" y="31" width="490" height="47"/>
+					<subreportParameter name="currencySymbol">
+						<subreportParameterExpression><![CDATA[$P{currencySymbol}]]></subreportParameterExpression>
+					</subreportParameter>
 					<dataSourceExpression><![CDATA[$F{listWorkReportLineDTO}]]></dataSourceExpression>
 					<returnValue subreportVariable="sumCostsPerTask" toVariable="sumTotalCostsByHours" calculation="Sum"/>
 					<returnValue subreportVariable="sumHoursPerTask" toVariable="sumTotalHours" calculation="Sum"/>
-					<subreportExpression class="java.lang.String"><![CDATA[$P{subReportWRL}]]></subreportExpression>
+					<subreportExpression><![CDATA[$P{subReportWRL}]]></subreportExpression>
 				</subreport>
 				<subreport isUsingCache="true">
-					<reportElement key="subreport" positionType="Float" x="2" y="78" width="490" height="47">
+					<reportElement uuid="94265c31-233b-42f2-b420-64f1994201ae" key="subreport" positionType="Float" x="2" y="78" width="490" height="47">
 						<printWhenExpression><![CDATA[$F{listExpensesDTO} != null]]></printWhenExpression>
 					</reportElement>
-                    <subreportParameter name="currencySymbol">
-                        <subreportParameterExpression><![CDATA[$P{currencySymbol}]]></subreportParameterExpression>
-				    </subreportParameter>
+					<subreportParameter name="currencySymbol">
+						<subreportParameterExpression><![CDATA[$P{currencySymbol}]]></subreportParameterExpression>
+					</subreportParameter>
 					<dataSourceExpression><![CDATA[$F{listExpensesDTO}]]></dataSourceExpression>
 					<returnValue subreportVariable="sumValuePerTask" toVariable="sumTotalExpenses" calculation="Sum"/>
-					<subreportExpression class="java.lang.String"><![CDATA[$P{subReportES}]]></subreportExpression>
+					<subreportExpression><![CDATA[$P{subReportES}]]></subreportExpression>
 				</subreport>
 			</band>
 			<band/>
@@ -174,86 +177,86 @@
 	<title>
 		<band height="126" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="13" width="316" height="33"/>
+				<reportElement uuid="cd817202-5fff-4e52-865d-e6d842b76eba" x="0" y="13" width="316" height="33"/>
 				<textElement verticalAlignment="Middle" markup="none">
 					<font size="23" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{title}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="23" y="46" width="293" height="29"/>
+				<reportElement uuid="b8caa2a2-a89c-4f2b-8a1e-2c0c99fcb869" x="23" y="46" width="293" height="29"/>
 				<textElement markup="none">
 					<font size="15" isItalic="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{subtitle}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{subtitle}]]></textFieldExpression>
 			</textField>
 			<image scaleImage="RetainShape">
-				<reportElement x="316" y="0" width="180" height="53"/>
-				<imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
+				<reportElement uuid="b2ae36d2-4cbc-4283-baf2-e157d9d5f1ff" x="316" y="0" width="180" height="53"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="2" y="75" width="119" height="15">
+				<reportElement uuid="07a30d17-d650-44ad-b4ca-680b29e0f7b0" x="2" y="75" width="119" height="15">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{startingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{date.start}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{date.start}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="121" y="75" width="100" height="15"/>
+				<reportElement uuid="2097feeb-2937-4158-98ba-c34ec6170543" x="121" y="75" width="100" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[$P{startingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{startingDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="221" y="75" width="95" height="15">
+				<reportElement uuid="abd634a8-8e47-4d6d-b538-63ab67dc726e" x="221" y="75" width="95" height="15">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{endingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{date.end}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{date.end}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="316" y="75" width="100" height="15"/>
+				<reportElement uuid="7346cf8f-6c97-433a-a446-0ab5e4ec0fba" x="316" y="75" width="100" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[$P{endingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{endingDate}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement x="2" y="92" width="60" height="15">
+				<reportElement uuid="26a35250-4c3b-4862-b685-b757a28bbb44" x="2" y="92" width="60" height="15">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{criteria} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{criteria}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{criteria}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement x="2" y="107" width="60" height="15">
+				<reportElement uuid="207f0600-06cc-45f5-b0d9-a4c233f071b0" x="2" y="107" width="60" height="15">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{labels} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="none">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{labels}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{labels}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="62" y="92" width="480" height="15"/>
+				<reportElement uuid="9f9a4498-9ca8-46b2-b95b-3c29e0cf1169" x="62" y="92" width="480" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{criteria}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{criteria}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="62" y="107" width="480" height="15"/>
+				<reportElement uuid="b4d56c42-3c36-43df-9a30-7d9d0eeeeaf3" x="62" y="107" width="480" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{labels}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{labels}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -269,7 +272,7 @@
 	<columnFooter>
 		<band height="34" splitType="Stretch">
 			<line>
-				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"/>
+				<reportElement uuid="0ba6cce7-9cec-4dc2-a8df-8fd4b2ef1ab7" positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1"/>
 				<graphicElement>
 					<pen lineWidth="0.5" lineColor="#999999"/>
 				</graphicElement>
@@ -278,36 +281,30 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
-			<textField pattern="EEEEE dd MMMMM yyyy">
-				<reportElement x="0" y="0" width="197" height="20"/>
-				<textElement>
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			<textField pattern="EEEEE, dd MMMMM yyyy">
+				<reportElement uuid="ca4a31d6-e6c9-4faf-9076-d12eaae02d37" x="0" y="0" width="197" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="436" y="0" width="43" height="20"/>
+				<reportElement uuid="abae8193-1bea-4afb-acf8-347902db9233" x="436" y="0" width="43" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{page}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{page}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="499" y="0" width="15" height="20"/>
+				<reportElement uuid="17ce67e2-d247-456b-9b70-1f7576114d99" x="499" y="0" width="15" height="20"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{of}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{of}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="516" y="0" width="38" height="20"/>
-				<textElement>
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				<reportElement uuid="0463aff1-fa47-44ad-843d-098c65631870" x="516" y="0" width="38" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="479" y="0" width="15" height="20"/>
-				<textElement textAlignment="Right">
-					<font size="10" isBold="false"/>
-				</textElement>
-				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				<reportElement uuid="b3cf7671-d2db-4c6a-87c1-4e3aeed49083" x="479" y="0" width="15" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
