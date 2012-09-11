@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('LibrePlan: Budget Report')}" id="reports"?>
+<?page title="${i18n:_('LibrePlan: Project Status Report')}" id="reports"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
@@ -29,16 +29,38 @@
 <?component name="combobox_output_format" macroURI="combobox_output_format.zul"
     class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
 
-<?component name="extendedjasperreport"
-    class="org.libreplan.web.common.components.ExtendedJasperreport"
-    extends="jasperreport" ?>
-
 <zk>
 
     <window self="@{define(content)}"
         apply="org.libreplan.web.reports.ProjectStatusReportController"
         title="${i18n:_('Budget Report')}"
         border="normal" >
+
+        <!-- Select project -->
+        <panel title="${i18n:_('Project')}"
+            border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="700px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Project')}" />
+                            <bandboxSearch id="bandboxSelectOrder"
+                                finder="OrderBandboxFinder"
+                                model="@{controller.orders}"
+                                widthListbox="480px"
+                                widthBandbox="450px" />
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal" />
 
         <!-- Select output format -->
         <panel title="${i18n:_('Format')}" border="normal"
