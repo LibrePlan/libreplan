@@ -32,6 +32,8 @@ import org.libreplan.business.workingday.EffortDuration;
  */
 public class ProjectStatusReportDTO {
 
+    private static final String INDENT_PREFIX = "    ";
+
     private String code;
 
     private String name;
@@ -97,7 +99,7 @@ public class ProjectStatusReportDTO {
             orderElement = orderElement.getParent();
         }
 
-        name = StringUtils.repeat("   ", depth) + name;
+        name = StringUtils.repeat(INDENT_PREFIX, depth) + name;
     }
 
 }
