@@ -118,4 +118,8 @@ public class SumExpenses extends BaseEntity {
     private boolean isZero(BigDecimal value) {
         return ((value == null) || (value.compareTo(BigDecimal.ZERO) == 0));
     }
+
+    public BigDecimal getTotalExpenses() {
+        return totalDirectExpenses.add(totalIndirectExpenses);
+    }
 }

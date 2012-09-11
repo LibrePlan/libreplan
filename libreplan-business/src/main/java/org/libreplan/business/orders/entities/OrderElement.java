@@ -50,6 +50,7 @@ import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalA
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
+import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.materials.entities.MaterialAssignment;
@@ -1540,6 +1541,30 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public boolean isOrder() {
         return false;
+    }
+
+    /**
+     * LibrePlan Audiovisual hide code prefix to avoid repetitions when showing
+     * the code
+     */
+    public String getCodeWithoutOrderPrefix() {
+        String code = getCode();
+        if (code == null) {
+            return null;
+        }
+
+        Order order = getOrder();
+        if (order == null) {
+            return code;
+        }
+
+        String orderCode = order.getCode();
+        if (orderCode == null) {
+            return code;
+        }
+
+        return code.replace(orderCode + EntitySequence.CODE_SEPARATOR_CHILDREN,
+                "");
     }
 
 }

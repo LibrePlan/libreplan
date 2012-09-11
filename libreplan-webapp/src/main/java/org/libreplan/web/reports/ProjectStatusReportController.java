@@ -21,6 +21,7 @@ package org.libreplan.web.reports;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +30,10 @@ import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.orders.entities.SumChargedEffort;
+import org.libreplan.business.orders.entities.SumExpenses;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
-import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -100,27 +101,22 @@ public class ProjectStatusReportController extends LibrePlanReportController {
         Order order = getSelectedOrder();
         result.put("project", order.getName() + " (" + order.getCode() + ")");
 
-        Integer estimatedHours = order.getWorkHours();
-        result.put(
-                "estimatedHours",
-                estimatedHours != null ? ProjectStatusReportDTO
-                        .toString(EffortDuration.hours(estimatedHours)) : null);
+        result.put("budgeted", Util.addCurrencySymbol(order.getBudget()));
 
-        EffortDuration plannedHours = null;
+        BigDecimal planned = null;
         TaskSource taskSource = order.getTaskSource();
         if (taskSource != null) {
-            plannedHours = taskSource.getTask().getSumOfAssignedEffort();
+            planned = taskSource.getTask().getSumOfAssignedEffort()
+                    .toEurosAsDecimal();
         }
-        result.put("plannedHours",
-                ProjectStatusReportDTO.toString(plannedHours));
+        result.put("planned", Util.addCurrencySymbol(planned));
 
-        EffortDuration imputedHours = null;
-        SumChargedEffort sumChargedEffort = order.getSumChargedEffort();
-        if (sumChargedEffort != null) {
-            imputedHours = sumChargedEffort.getTotalChargedEffort();
+        BigDecimal moneySpent = null;
+        SumExpenses sumExpenses = order.getSumExpenses();
+        if (sumExpenses != null) {
+            moneySpent = sumExpenses.getTotalExpenses();
         }
-        result.put("imputedHours",
-                ProjectStatusReportDTO.toString(imputedHours));
+        result.put("spent", Util.addCurrencySymbol(moneySpent));
 
         return result;
     }

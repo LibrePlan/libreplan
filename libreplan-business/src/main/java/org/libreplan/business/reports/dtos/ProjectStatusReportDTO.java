@@ -19,14 +19,15 @@
 
 package org.libreplan.business.reports.dtos;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.orders.entities.SumChargedEffort;
+import org.libreplan.business.orders.entities.SumExpenses;
 import org.libreplan.business.orders.entities.TaskSource;
-import org.libreplan.business.workingday.EffortDuration;
 
 /**
- * DTO to represent each row in the Project Status report.
+ * Utilities methods for report DTOs.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
@@ -38,28 +39,36 @@ public class ProjectStatusReportDTO {
 
     private String name;
 
-    private EffortDuration estimatedHours;
+    private BigDecimal budgetedIntegerPart;
+    private BigDecimal budgetedFractionalPart;
 
-    private EffortDuration plannedHours;
+    private BigDecimal plannedIntegerPart;
+    private BigDecimal plannedFractionalPart;
 
-    private EffortDuration imputedHours;
+    private BigDecimal spentIntegerPart;
+    private BigDecimal spentFractionalPart;
 
     public ProjectStatusReportDTO(OrderElement orderElement) {
-        code = orderElement.getCode();
+        code = orderElement.getCodeWithoutOrderPrefix();
         name = orderElement.getName();
 
-        Integer estimatedHours = orderElement.getWorkHours();
-        this.estimatedHours = estimatedHours != null ? EffortDuration
-                .hours(estimatedHours) : null;
+        BigDecimal budgeted = orderElement.getBudget();
+        budgetedIntegerPart = Util.getIntegerPart(budgeted);
+        budgetedFractionalPart = Util.getFractionalPart(budgeted);
 
         TaskSource taskSource = orderElement.getTaskSource();
         if (taskSource != null) {
-            plannedHours = taskSource.getTask().getSumOfAssignedEffort();
+            BigDecimal planned = taskSource.getTask().getSumOfAssignedEffort()
+                    .toEurosAsDecimal();
+            plannedIntegerPart = Util.getIntegerPart(planned);
+            plannedFractionalPart = Util.getFractionalPart(planned);
         }
 
-        SumChargedEffort sumChargedEffort = orderElement.getSumChargedEffort();
-        if (sumChargedEffort != null) {
-            imputedHours = sumChargedEffort.getTotalChargedEffort();
+        SumExpenses sumExpenses = orderElement.getSumExpenses();
+        if (sumExpenses != null) {
+            BigDecimal spent = sumExpenses.getTotalExpenses();
+            spentIntegerPart = Util.getIntegerPart(spent);
+            spentFractionalPart = Util.getFractionalPart(spent);
         }
 
         appendPrefixSpacesDependingOnDepth(orderElement);
@@ -73,23 +82,28 @@ public class ProjectStatusReportDTO {
         return name;
     }
 
-    public String getEstimatedHours() {
-        return toString(estimatedHours);
+    public BigDecimal getBudgetedIntegerPart() {
+        return budgetedIntegerPart;
     }
 
-    public String getPlannedHours() {
-        return toString(plannedHours);
+    public BigDecimal getBudgetedFractionalPart() {
+        return budgetedFractionalPart;
     }
 
-    public String getImputedHours() {
-        return toString(imputedHours);
+    public BigDecimal getPlannedIntegerPart() {
+        return plannedIntegerPart;
     }
 
-    public static String toString(EffortDuration effortDuration) {
-        if (effortDuration == null) {
-            return null;
-        }
-        return effortDuration.toFormattedString();
+    public BigDecimal getPlannedFractionalPart() {
+        return plannedFractionalPart;
+    }
+
+    public BigDecimal getSpentIntegerPart() {
+        return spentIntegerPart;
+    }
+
+    public BigDecimal getSpentFractionalPart() {
+        return spentFractionalPart;
     }
 
     private void appendPrefixSpacesDependingOnDepth(OrderElement orderElement) {
