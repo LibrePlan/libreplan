@@ -491,6 +491,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             reportsItems.add(subItem(_("Materials Needs At Date"),
                     "/reports/timeLineMaterialReport.zul", "15-informes.html"));
         }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_PROJECT_STATUS_REPORT)) {
+            reportsItems.add(subItem(_("Project Status"),
+                    "/reports/projectStatusReport.zul", "15-informes.html"));
+        }
         if (!reportsItems.isEmpty()) {
             topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul",
                     "", reportsItems);
