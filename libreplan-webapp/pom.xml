@@ -47,6 +47,11 @@
                                 <artifactId>jasperreports</artifactId>
                                 <version>4.7.0</version>
                             </dependency>
+                            <dependency>
+                                <groupId>net.sf.jasperreports</groupId>
+                                <artifactId>jasperreports-fonts</artifactId>
+                                <version>4.0.0</version>
+                            </dependency>
                         </dependencies>
                     </plugin>
                     <plugin>
@@ -274,6 +279,10 @@
         <dependency>
           <groupId>net.sf.jasperreports</groupId>
           <artifactId>jasperreports</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
         </dependency>
         <!-- GPL Jasperreport Component for ZK -->
         <dependency>
