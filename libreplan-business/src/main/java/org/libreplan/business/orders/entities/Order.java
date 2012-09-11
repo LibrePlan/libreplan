@@ -739,4 +739,9 @@ public class Order extends OrderLineGroup implements Comparable {
         return cashflowType != null;
     }
 
+    @Override
+    public boolean isOrder() {
+        return true;
+    }
+
 }

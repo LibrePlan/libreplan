@@ -1538,4 +1538,8 @@ public abstract class OrderElement extends IntegrationEntity implements
         return this.sumExpenses;
     }
 
+    public boolean isOrder() {
+        return false;
+    }
+
 }

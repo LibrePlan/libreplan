@@ -19,6 +19,7 @@
 
 package org.libreplan.business.reports.dtos;
 
+import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -58,6 +59,8 @@ public class ProjectStatusReportDTO {
         if (sumChargedEffort != null) {
             imputedHours = sumChargedEffort.getTotalChargedEffort();
         }
+
+        appendPrefixSpacesDependingOnDepth(orderElement);
     }
 
     public String getCode() {
@@ -85,6 +88,16 @@ public class ProjectStatusReportDTO {
             return null;
         }
         return effortDuration.toFormattedString();
+    }
+
+    private void appendPrefixSpacesDependingOnDepth(OrderElement orderElement) {
+        int depth = 0;
+        while (!orderElement.getParent().isOrder()) {
+            depth++;
+            orderElement = orderElement.getParent();
+        }
+
+        name = StringUtils.repeat("   ", depth) + name;
     }
 
 }
