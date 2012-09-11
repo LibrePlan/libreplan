@@ -43,9 +43,9 @@
                                 validation
                             -->
                             <dependency>
-                                <groupId>jasperreports</groupId>
+                                <groupId>net.sf.jasperreports</groupId>
                                 <artifactId>jasperreports</artifactId>
-                                <version>3.7.0</version>
+                                <version>4.7.0</version>
                             </dependency>
                         </dependencies>
                     </plugin>
@@ -272,7 +272,7 @@
     <dependencies>
         <!-- Jasper Reports -->
         <dependency>
-          <groupId>jasperreports</groupId>
+          <groupId>net.sf.jasperreports</groupId>
           <artifactId>jasperreports</artifactId>
         </dependency>
         <!-- GPL Jasperreport Component for ZK -->
