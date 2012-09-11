@@ -83,7 +83,7 @@ public class ProjectStatusReportDTO {
         return toString(imputedHours);
     }
 
-    private String toString(EffortDuration effortDuration) {
+    public static String toString(EffortDuration effortDuration) {
         if (effortDuration == null) {
             return null;
         }
