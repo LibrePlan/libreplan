@@ -826,6 +826,9 @@
                 <directory>../libreplan-webapp/src/main/jasper/workingProgressPerTask_Bundle/</directory>
             </resource>
             <resource>
+                <directory>../libreplan-webapp/src/main/jasper/projectStatus_Bundle/</directory>
+            </resource>
+            <resource>
                 <directory>../libreplan-webapp/src/main/jasper/budget_Bundle/</directory>
             </resource>
 
