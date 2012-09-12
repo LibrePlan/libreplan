@@ -10,8 +10,7 @@ Homepage: http://www.libreplan.com/
 Package: libreplan
 Architecture: any
 Depends: cutycapt, postgresql, postgresql-client, xvfb, dbconfig-common, ucf,
- tomcat6, openjdk-6-jre-headless | openjdk-6-jre, libpg-java, ttf-dejavu,
- ${misc:Depends}
+ tomcat6, openjdk-6-jre-headless | openjdk-6-jre, libpg-java, ${misc:Depends}
 Description: Web application for project planning, monitoring and control.
  LibrePlan is a collaborative tool to plan, monitor and control projects and has
  a rich web interface which provides a desktop alike user experience. All the

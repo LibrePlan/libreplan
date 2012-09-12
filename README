@@ -105,10 +105,6 @@ Requirements
 
   To connect application with *PostgreSQL* database in *Tomcat*
 
-* *DejaVu Fonts* - Vera font family
-
-  Font family used in reports
-
 * *CutyCapt* - Utility to capture WebKit's rendering of a web page
 
   Required for printing

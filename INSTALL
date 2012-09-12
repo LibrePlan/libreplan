@@ -119,7 +119,7 @@ Debian/Ubuntu
 
 * Install requirements::
 
-    # apt-get install openjdk-6-jre postgresql postgresql-client tomcat6 libpg-java ttf-dejavu cutycapt xvfb
+    # apt-get install openjdk-6-jre postgresql postgresql-client tomcat6 libpg-java cutycapt xvfb
 
 * Connect to database::
 
@@ -213,7 +213,7 @@ openSUSE
 
 * Install requirements::
 
-    # zypper install java-1_6_0-openjdk postgresql-server postgresql tomcat6 dejavu xorg-x11-server
+    # zypper install java-1_6_0-openjdk postgresql-server postgresql tomcat6 xorg-x11-server
 
 * JDBC Driver manual installation::
 
