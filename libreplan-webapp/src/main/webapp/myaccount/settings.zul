@@ -100,7 +100,7 @@
                                         <columns>
                                             <column />
                                             <column />
-                                            <column />
+                                            <column visible="false"/>
                                         </columns>
                                         <rows>
                                             <row>
@@ -110,7 +110,7 @@
                                                 <checkbox id="expandOrderPlanningViewCharts"
                                                     label="${i18n:_('Project view')}"
                                                     checked="@{settingsController.expandOrderPlanningViewCharts}"/>
-                                                <checkbox id="expandResourceLoadViewCharts"
+                                                <checkbox id="expandResourceLoadViewCharts" visible="false"
                                                     label="${i18n:_('Resource load view')}"
                                                     checked="@{settingsController.expandResourceLoadViewCharts}"/>
                                             </row>
