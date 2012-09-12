@@ -25,7 +25,9 @@ import static org.libreplan.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -82,6 +84,10 @@ public class TemplatesTreeController extends
 
         private final ClassValidator<OrderElementTemplate> validator = new ClassValidator<OrderElementTemplate>(
                 OrderElementTemplate.class);
+
+        private Map<OrderElementTemplate, Decimalbox> indemnizationSalaryDecimalboxByElement = new HashMap<OrderElementTemplate, Decimalbox>();
+
+        private Map<OrderElementTemplate, Decimalbox> holidaySalaryDecimalboxByElement = new HashMap<OrderElementTemplate, Decimalbox>();
 
         @Override
         /**
@@ -223,7 +229,7 @@ public class TemplatesTreeController extends
             return currentElement.getSchedulingState();
         }
 
-        private void addDecimalboxFor(OrderElementTemplate element,
+        private Decimalbox addDecimalboxFor(OrderElementTemplate element,
                 Getter<BigDecimal> getter, Setter<BigDecimal> setter,
                 Constraint constraint) {
             Decimalbox result = new DecimalboxDirectValue();
@@ -233,6 +239,7 @@ public class TemplatesTreeController extends
                 result.setDisabled(true);
             }
             addCell(result);
+            return result;
         }
 
         private void addIntboxFor(OrderElementTemplate element,
@@ -348,7 +355,8 @@ public class TemplatesTreeController extends
         protected void addIndemnizationSalaryCell(OrderElementTemplate element) {
             if (element.isLeaf()) {
                 final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
-                addDecimalboxFor(element, new Util.Getter<BigDecimal>() {
+                Decimalbox decimalbox = addDecimalboxFor(element,
+                        new Util.Getter<BigDecimal>() {
 
                     @Override
                     public BigDecimal get() {
@@ -363,6 +371,11 @@ public class TemplatesTreeController extends
                     }
                 },
                 null);
+                if (!readOnly) {
+                    decimalbox.setDisabled(!budgetLine.getBudgetLineType()
+                            .isRelatedToSalary());
+                }
+                indemnizationSalaryDecimalboxByElement.put(element, decimalbox);
             }
             else {
                 addEmptyBox();
@@ -373,7 +386,8 @@ public class TemplatesTreeController extends
         protected void addHolidaySalaryCell(OrderElementTemplate element) {
             if (element.isLeaf()) {
                 final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
-                addDecimalboxFor(element, new Util.Getter<BigDecimal>() {
+                Decimalbox decimalbox = addDecimalboxFor(element,
+                        new Util.Getter<BigDecimal>() {
 
                     @Override
                     public BigDecimal get() {
@@ -388,6 +402,11 @@ public class TemplatesTreeController extends
                     }
                 },
                 null);
+                if (!readOnly) {
+                    decimalbox.setDisabled(!budgetLine.getBudgetLineType()
+                            .isRelatedToSalary());
+                }
+                holidaySalaryDecimalboxByElement.put(element, decimalbox);
             }
             else {
                 addEmptyBox();
@@ -395,7 +414,7 @@ public class TemplatesTreeController extends
         }
 
         @Override
-        public void addBudgetLineTypeCell(OrderElementTemplate element) {
+        public void addBudgetLineTypeCell(final OrderElementTemplate element) {
             if (element.isLeaf()) {
                 final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
                 Combobox box = new Combobox();
@@ -413,8 +432,26 @@ public class TemplatesTreeController extends
                     public void onEvent(Event event) {
                         Combobox box = (Combobox) event.getTarget();
 
-                        budgetLine.setBudgetLineType((BudgetLineTypeEnum)
-                                box.getSelectedItem().getValue());
+                        BudgetLineTypeEnum type = (BudgetLineTypeEnum)
+                                box.getSelectedItem().getValue();
+                        budgetLine.setBudgetLineType(type);
+
+                        Decimalbox indemnizationSalaryDecimalbox = indemnizationSalaryDecimalboxByElement.get(element);
+                        indemnizationSalaryDecimalbox.setDisabled(!type
+                                .isRelatedToSalary());
+                        Decimalbox holidaySalaryDecimalbox = holidaySalaryDecimalboxByElement
+                                .get(element);
+                        holidaySalaryDecimalbox
+                                .setDisabled(!type.isRelatedToSalary());
+
+                        if (!type.isRelatedToSalary()) {
+                            BigDecimal zero = BigDecimal.ZERO.setScale(2);
+                            budgetLine.setHolidaySalary(zero);
+                            indemnizationSalaryDecimalbox.setValue(zero);
+                            budgetLine.setIndemnizationSalary(zero);
+                            holidaySalaryDecimalbox.setValue(zero);
+                            updateTotal(budgetLine);
+                        }
                     }
                 });
                 if (readOnly) {

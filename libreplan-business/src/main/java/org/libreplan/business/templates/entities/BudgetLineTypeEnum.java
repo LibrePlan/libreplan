@@ -31,9 +31,24 @@ public enum BudgetLineTypeEnum {
     PRICE_PER_SESSION(_("price per session")),
     PRICE_PER_DAY(_("price per day")),
     PRICE_PER_UNIT(_("price per unit")),
-    SALARY_PER_SESSION(_("salary per session")),
-    SALARY_PER_DAY(_("salary per day")),
-    TOTAL_SALARY(_("total salary"));
+    SALARY_PER_SESSION(_("salary per session")) {
+        @Override
+        public boolean isRelatedToSalary() {
+            return true;
+        }
+    },
+    SALARY_PER_DAY(_("salary per day")) {
+        @Override
+        public boolean isRelatedToSalary() {
+            return true;
+        }
+    },
+    TOTAL_SALARY(_("total salary")) {
+        @Override
+        public boolean isRelatedToSalary() {
+            return true;
+        }
+    };
 
     private String description;
 
@@ -44,4 +59,9 @@ public enum BudgetLineTypeEnum {
     public String toString() {
         return this.description;
     }
+
+    public boolean isRelatedToSalary() {
+        return false;
+    }
+
 }
