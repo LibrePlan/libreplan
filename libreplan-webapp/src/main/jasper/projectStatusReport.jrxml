@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resourcesList" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="projectStatus" uuid="17a95f07-ce2e-43c0-8da8-bfe1b9d826c2">
 	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="501"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="dejavu-sans" isDefault="true" fontName="DejaVu Sans" fontSize="8"/>
 	<style name="row-grey" style="dejavu-sans">
@@ -62,42 +62,42 @@
 				<textFieldExpression><![CDATA[$P{project}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="0" y="28" width="80" height="12"/>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="0" y="28" width="90" height="12"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{total_budgeted}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="80" y="28" width="120" height="12"/>
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="90" y="28" width="115" height="12"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{budgeted}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="200" y="28" width="80" height="12"/>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="205" y="28" width="90" height="12"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{total_planned}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="280" y="28" width="120" height="12"/>
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="295" y="28" width="115" height="12"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{planned}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="400" y="28" width="80" height="12"/>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="410" y="28" width="90" height="12"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{total_spent}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="480" y="28" width="120" height="12"/>
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="500" y="28" width="115" height="12"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
