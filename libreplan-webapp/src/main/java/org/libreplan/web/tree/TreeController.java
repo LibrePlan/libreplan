@@ -233,8 +233,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         Combobox typeBox = (Combobox) cmp
                 .getFellow("newBudgetLineTemplateType");
         BudgetLineTypeEnum type;
-        if (typeBox.getSelectedItem() == null) {
-            type = null;
+        if (typeBox.getSelectedItem() == null
+                || typeBox.getSelectedItem().getValue() == null) {
+            throw new WrongValueException(typeBox, _("please select a type"));
         } else {
             type = (BudgetLineTypeEnum) typeBox.getSelectedItem().getValue();
         }

@@ -431,6 +431,11 @@ public class TemplatesTreeController extends
                     @Override
                     public void onEvent(Event event) {
                         Combobox box = (Combobox) event.getTarget();
+                        if (box.getSelectedItem() == null
+                                || box.getSelectedItem().getValue() == null) {
+                            throw new WrongValueException(box,
+                                    _("please select a type"));
+                        }
 
                         BudgetLineTypeEnum type = (BudgetLineTypeEnum)
                                 box.getSelectedItem().getValue();
