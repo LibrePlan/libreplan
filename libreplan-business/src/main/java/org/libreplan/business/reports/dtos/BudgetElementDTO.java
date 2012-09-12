@@ -63,7 +63,8 @@ public class BudgetElementDTO {
 
     public BudgetElementDTO(OrderElementTemplate orderElementTemplate) {
         code = orderElementTemplate.getCode();
-        name = orderElementTemplate.getName();
+        name = Util.getPrefixSpacesDependingOnDepth(orderElementTemplate)
+                + orderElementTemplate.getName();
 
         budgetIntegerPart = Util.getIntegerPart(orderElementTemplate
                 .getBudget());

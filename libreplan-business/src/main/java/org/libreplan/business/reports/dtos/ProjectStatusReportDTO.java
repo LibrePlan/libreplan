@@ -22,7 +22,6 @@ package org.libreplan.business.reports.dtos;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumExpenses;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -33,8 +32,6 @@ import org.libreplan.business.orders.entities.TaskSource;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class ProjectStatusReportDTO {
-
-    private static final String INDENT_PREFIX = "    ";
 
     private String code;
 
@@ -55,7 +52,8 @@ public class ProjectStatusReportDTO {
 
     public ProjectStatusReportDTO(OrderElement orderElement) {
         code = orderElement.getCodeWithoutOrderPrefix();
-        name = orderElement.getName();
+        name = Util.getPrefixSpacesDependingOnDepth(orderElement)
+                + orderElement.getName();
 
         BigDecimal budgeted = orderElement.getBudget();
         budgetedIntegerPart = Util.getIntegerPart(budgeted);
@@ -78,8 +76,6 @@ public class ProjectStatusReportDTO {
             spentIntegerPart = Util.getIntegerPart(spent);
             spentFractionalPart = Util.getFractionalPart(spent);
         }
-
-        appendPrefixSpacesDependingOnDepth(orderElement);
     }
 
     public String getCode() {
@@ -120,16 +116,6 @@ public class ProjectStatusReportDTO {
 
     public Date getEndDate() {
         return endDate;
-    }
-
-    private void appendPrefixSpacesDependingOnDepth(OrderElement orderElement) {
-        int depth = 0;
-        while (!orderElement.getParent().isOrder()) {
-            depth++;
-            orderElement = orderElement.getParent();
-        }
-
-        name = StringUtils.repeat(INDENT_PREFIX, depth) + name;
     }
 
 }
