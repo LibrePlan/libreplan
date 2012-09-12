@@ -359,6 +359,7 @@ public class TemplatesTreeController extends
                     @Override
                     public void set(BigDecimal value) {
                         budgetLine.setIndemnizationSalary(value);
+                        updateTotal(budgetLine);
                     }
                 },
                 null);
@@ -383,6 +384,7 @@ public class TemplatesTreeController extends
                     @Override
                     public void set(BigDecimal value) {
                         budgetLine.setHolidaySalary(value);
+                        updateTotal(budgetLine);
                     }
                 },
                 null);
