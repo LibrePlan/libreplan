@@ -20,6 +20,7 @@
 package org.libreplan.business.reports.dtos;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -48,6 +49,10 @@ public class ProjectStatusReportDTO {
     private BigDecimal spentIntegerPart;
     private BigDecimal spentFractionalPart;
 
+    private Date startDate;
+
+    private Date endDate;
+
     public ProjectStatusReportDTO(OrderElement orderElement) {
         code = orderElement.getCodeWithoutOrderPrefix();
         name = orderElement.getName();
@@ -62,6 +67,9 @@ public class ProjectStatusReportDTO {
                     .toEurosAsDecimal();
             plannedIntegerPart = Util.getIntegerPart(planned);
             plannedFractionalPart = Util.getFractionalPart(planned);
+
+            startDate = taskSource.getTask().getStartDate();
+            endDate = taskSource.getTask().getEndDate();
         }
 
         SumExpenses sumExpenses = orderElement.getSumExpenses();
@@ -104,6 +112,14 @@ public class ProjectStatusReportDTO {
 
     public BigDecimal getSpentFractionalPart() {
         return spentFractionalPart;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
     }
 
     private void appendPrefixSpacesDependingOnDepth(OrderElement orderElement) {
