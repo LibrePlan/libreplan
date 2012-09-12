@@ -61,4 +61,8 @@ public class Util {
         return StringUtils.repeat(INDENT_PREFIX, depth);
     }
 
+    public static Boolean isRoot(ITreeNode<?> node) {
+        return node.getParent() != null && node.getParent().getParent() == null;
+    }
+
 }

@@ -50,6 +50,8 @@ public class ProjectStatusReportDTO {
 
     private Date endDate;
 
+    private Boolean root = false;
+
     public ProjectStatusReportDTO(OrderElement orderElement) {
         code = orderElement.getCodeWithoutOrderPrefix();
         name = Util.getPrefixSpacesDependingOnDepth(orderElement)
@@ -76,6 +78,8 @@ public class ProjectStatusReportDTO {
             spentIntegerPart = Util.getIntegerPart(spent);
             spentFractionalPart = Util.getFractionalPart(spent);
         }
+
+        root = Util.isRoot(orderElement);
     }
 
     public String getCode() {
@@ -116,6 +120,10 @@ public class ProjectStatusReportDTO {
 
     public Date getEndDate() {
         return endDate;
+    }
+
+    public Boolean getRoot() {
+        return root;
     }
 
 }

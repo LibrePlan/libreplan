@@ -104,10 +104,7 @@ public class BudgetElementDTO {
             }
         }
 
-        if (orderElementTemplate.getParent() != null
-                && orderElementTemplate.getParent().isRoot()) {
-            root = true;
-        }
+        root = Util.isRoot(orderElementTemplate);
     }
 
     public String getCode() {
