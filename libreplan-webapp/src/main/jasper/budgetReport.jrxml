@@ -3,7 +3,7 @@
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="48"/>
 	<property name="ireport.y" value="0"/>
-	<style name="dejavu-sans" isDefault="true" fontName="DejaVu Sans"/>
+	<style name="dejavu-sans" isDefault="true" fontName="DejaVu Sans" fontSize="8"/>
 	<style name="row-grey" style="dejavu-sans">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[($V{REPORT_COUNT}.intValue() % 2) == 0]]></conditionExpression>
@@ -69,7 +69,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="60" y="15" width="562" height="12"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{project}]]></textFieldExpression>
 			</textField>
@@ -129,7 +129,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{code}]]></textFieldExpression>
 			</textField>
@@ -140,7 +140,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{name}]]></textFieldExpression>
 			</textField>
@@ -151,7 +151,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{budget}]]></textFieldExpression>
 			</textField>
@@ -162,7 +162,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{cost_or_salary}]]></textFieldExpression>
 			</textField>
@@ -173,7 +173,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{type}]]></textFieldExpression>
 			</textField>
@@ -184,7 +184,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{duration}]]></textFieldExpression>
 			</textField>
@@ -195,7 +195,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{quantity}]]></textFieldExpression>
 			</textField>
@@ -206,7 +206,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{indemnization_salary}]]></textFieldExpression>
 			</textField>
@@ -217,7 +217,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{holiday_salary}]]></textFieldExpression>
 			</textField>
@@ -228,7 +228,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{start_date}]]></textFieldExpression>
 			</textField>
@@ -239,7 +239,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8" isBold="true"/>
+					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{end_date}]]></textFieldExpression>
 			</textField>
@@ -249,107 +249,77 @@
 		<band height="15" splitType="Stretch">
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="4c84212b-610d-4906-869b-972ce781dca1" style="root-node" x="0" y="0" width="45" height="15"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="04220d70-bab8-480f-b0db-8e3efd43965a" style="root-node" x="45" y="0" width="302" height="15"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#" isBlankWhenNull="true">
 				<reportElement uuid="1b73bdf1-4277-4b39-a564-681faaeda0bc" style="row-grey" x="347" y="0" width="40" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{budgetIntegerPart}]]></textFieldExpression>
 			</textField>
 			<textField pattern=".##" isBlankWhenNull="true">
 				<reportElement uuid="1b73bdf1-4277-4b39-a564-681faaeda0bc" style="row-grey" x="387" y="0" width="15" height="15"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{budgetFractionalPart}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#" isBlankWhenNull="true">
 				<reportElement uuid="0557a8a1-39dd-4fe8-8c9a-9c9c130851f9" style="row-grey" x="402" y="0" width="35" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{costOrSalaryIntegerPart}]]></textFieldExpression>
 			</textField>
 			<textField pattern=".##" isBlankWhenNull="true">
 				<reportElement uuid="0557a8a1-39dd-4fe8-8c9a-9c9c130851f9" style="row-grey" x="437" y="0" width="15" height="15"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{costOrSalaryFractionalPart}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="f3262ab0-adbe-47b3-9fbb-148be25d1b86" style="row-grey" x="452" y="0" width="50" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="acee182b-5eb4-4082-958d-1c86e20fa01d" style="row-grey" x="502" y="0" width="50" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{duration}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="d4432b23-07c0-4eb4-a310-faf147fe5aac" style="row-grey" x="552" y="0" width="50" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#" isBlankWhenNull="true">
 				<reportElement uuid="5309c7ce-609f-446b-8b1f-c5c1e5ffd7f5" style="row-grey" x="602" y="0" width="35" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{indemnizationSalaryIntegerPart}]]></textFieldExpression>
 			</textField>
 			<textField pattern=".##" isBlankWhenNull="true">
 				<reportElement uuid="5309c7ce-609f-446b-8b1f-c5c1e5ffd7f5" style="row-grey" x="637" y="0" width="15" height="15"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{indemnizationSalaryFractionalPart}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#" isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="652" y="0" width="35" height="15"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{holidaySalaryIntegerPart}]]></textFieldExpression>
 			</textField>
 			<textField pattern=".##" isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="687" y="0" width="15" height="15"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{holidaySalaryFractionalPart}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="702" y="0" width="50" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{startDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="752" y="0" width="50" height="15"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="8"/>
-				</textElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{endDate}]]></textFieldExpression>
 			</textField>
 		</band>
