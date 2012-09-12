@@ -33,7 +33,7 @@
 
     <window self="@{define(content)}"
         apply="org.libreplan.web.reports.ProjectStatusReportController"
-        title="${i18n:_('Budget Report')}"
+        title="${i18n:_('Project Status Report')}"
         border="normal" >
 
         <!-- Select project -->
