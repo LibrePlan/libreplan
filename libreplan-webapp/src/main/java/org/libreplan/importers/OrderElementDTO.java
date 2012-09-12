@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.planner.entities.TaskElement;
 
 /**
  * Class that represents no persistent imported tasks. <br />
@@ -32,7 +33,7 @@ import org.libreplan.business.orders.entities.OrderElement;
  * @author Alba Carro Pérez <alba.carro@gmail.com>
  * @todo It last hours, resources, relationships, etc.
  */
-public class OrderElementDTO {
+public class OrderElementDTO implements IHasTaskAssociated {
 
     /**
      * Name of the task
@@ -83,5 +84,15 @@ public class OrderElementDTO {
      * Contraint date of this task.
      */
     public Date constraintDate;
+
+    /**
+     * TaskElement associated with this data.
+     */
+    public TaskElement taskElement;
+
+    @Override
+    public TaskElement getTaskAssociated() {
+        return taskElement;
+    }
 
 }

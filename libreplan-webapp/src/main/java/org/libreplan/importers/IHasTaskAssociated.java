@@ -16,46 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.libreplan.importers;
 
-import java.util.Date;
+package org.libreplan.importers;
 
 import org.libreplan.business.planner.entities.TaskElement;
 
 /**
- * Class that represents no persistent milestones. <br />
+ * Contract for the {@link OrderElmentDTO} and {@link MilestoneDTO}.
+ *
+ * Has the method needed to successfully get the task associated.
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
  */
-public class MilestoneDTO implements IHasTaskAssociated {
+public interface IHasTaskAssociated {
 
     /**
-     * Name of the milestone
+     * Return the {@link TaskElement} associated with the object.
+     *
+     * @return TaskElement associated.
      */
-    public String name;
-
-    /**
-     * Start date of the milestone
-     */
-    public Date startDate;
-
-    /**
-     * String representing the constraint.
-     */
-    public ConstraintDTO constraint;
-
-    /**
-     * String with the date of the constraint.
-     */
-    public Date constraintDate;
-
-    /**
-     * TaskElement created with this data
-     */
-    public TaskElement taskElement;
-
-    @Override
-    public TaskElement getTaskAssociated() {
-        return taskElement;
-    }
+    public TaskElement getTaskAssociated();
 }

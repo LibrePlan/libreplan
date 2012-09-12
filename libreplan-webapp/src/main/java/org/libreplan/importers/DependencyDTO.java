@@ -18,44 +18,38 @@
  */
 package org.libreplan.importers;
 
-import java.util.Date;
-
-import org.libreplan.business.planner.entities.TaskElement;
-
 /**
- * Class that represents no persistent milestones. <br />
+ * Class that represents the dependencies between {@link OrderElementDTO}
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
  */
-public class MilestoneDTO implements IHasTaskAssociated {
+public class DependencyDTO {
 
     /**
-     * Name of the milestone
+     * Enumerate that represent the different types
+     * of dependencies supported in LP
      */
-    public String name;
+    public enum TypeOfDependencyDTO {
 
-    /**
-     * Start date of the milestone
-     */
-    public Date startDate;
+        END_START, START_START, END_END, START_END;
 
-    /**
-     * String representing the constraint.
-     */
-    public ConstraintDTO constraint;
-
-    /**
-     * String with the date of the constraint.
-     */
-    public Date constraintDate;
-
-    /**
-     * TaskElement created with this data
-     */
-    public TaskElement taskElement;
-
-    @Override
-    public TaskElement getTaskAssociated() {
-        return taskElement;
     }
+
+    /**
+     * Object that is the origin of the dependency.
+     * It can be a {@link OrderElementDTO} or a {@link MilestoneDTO}
+     */
+    public IHasTaskAssociated origin;
+
+    /**
+     * Object that is the destination of the dependency.
+     * It can be a {@link OrderElementDTO} or a {@link MilestoneDTO}
+     */
+    public IHasTaskAssociated destination;
+
+    /**
+     * Type of the dependency.
+     */
+    public TypeOfDependencyDTO type;
+
 }
