@@ -23,7 +23,6 @@ package org.libreplan.web.planner.order;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
@@ -180,16 +179,12 @@ public class SubcontractController extends GenericForwardComposer {
             SubcontractorDeliverDate subcontractorDeliverDate = (SubcontractorDeliverDate) data;
             row.setValue(subcontractorDeliverDate);
 
-            appendLabel(row, SubcontractController.this.toString(
-                    subcontractorDeliverDate.getSaveDate(), "dd/MM/yyyy HH:mm"));
-            appendLabel(
-                    row,
-                    SubcontractController.this.toString(
-                            subcontractorDeliverDate.getSubcontractorDeliverDate(), "dd/MM/yyyy"));
-            appendLabel(
-                    row,
-                    SubcontractController.this.toString(
-                            subcontractorDeliverDate.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
+            appendLabel(row,
+                    Util.formatDateTime(subcontractorDeliverDate.getSaveDate()));
+            appendLabel(row, Util.formatDate(subcontractorDeliverDate
+                    .getSubcontractorDeliverDate()));
+            appendLabel(row, Util.formatDateTime(subcontractorDeliverDate
+                    .getCommunicationDate()));
             appendOperations(row, subcontractorDeliverDate);
         }
 
@@ -252,13 +247,6 @@ public class SubcontractController extends GenericForwardComposer {
         return false;
     }
 
-    public String toString(Date date, String precision) {
-        if (date == null) {
-            return "";
-        }
-        return new SimpleDateFormat(precision).format(date);
-    }
-
     public SortedSet<EndDateCommunication> getAskedEndDates() {
         return subcontractModel.getAskedEndDates();
     }
@@ -274,11 +262,10 @@ public class SubcontractController extends GenericForwardComposer {
             EndDateCommunication endDateFromSubcontractor = (EndDateCommunication) data;
             row.setValue(endDateFromSubcontractor);
 
-            appendLabel(row, SubcontractController.this.toString(
-                    endDateFromSubcontractor.getEndDate(), "dd/MM/yyyy"));
             appendLabel(row,
-                    SubcontractController.this.toString(
-                            endDateFromSubcontractor.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
+                    Util.formatDate(endDateFromSubcontractor.getEndDate()));
+            appendLabel(row, Util.formatDateTime(endDateFromSubcontractor
+                    .getCommunicationDate()));
             appendOperations(row, endDateFromSubcontractor);
         }
 
