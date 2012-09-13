@@ -337,7 +337,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                             "/qualityforms/qualityForms.zul",
                             "12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"));
         }
-        if (!resourcesItems.isEmpty()) {
+
+        // Access to resources menu is concealed on Audiovisual branch
+        if (false && !resourcesItems.isEmpty()) {
             topItem(_("Resources"), "/resources/worker/worker.zul", "",
                     resourcesItems);
         }
@@ -423,7 +425,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             communicationsItems.add(subItem(_("Received From Customers"),
                     "/subcontract/customerCommunications.zul", ""));
         }
-        if (!communicationsItems.isEmpty()) {
+
+        // Access to communications menu is concealed on Audiovisual branch
+        if (false && !communicationsItems.isEmpty()) {
             topItem(_("Communications"),
                     "/externalcompanies/externalcompanies.zul", "",
                     communicationsItems);
