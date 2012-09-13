@@ -93,10 +93,6 @@
                                 <label value="${i18n:_('Type')}" />
                                 <label value="@{controller.type}" />
                             </row>
-                            <row visible="@{controller.expenseSheet.personal}">
-                                <label value="${i18n:_('Resource')}" />
-                                <label value="@{controller.resource}" />
-                            </row>
                         </rows>
                     </grid>
                 </vbox>
@@ -149,15 +145,6 @@
 
                     <separator bar="false" spacing="10px" orient="vertical"/>
 
-                    <div visible="@{controller.expenseSheet.notPersonal}">
-                        <label value="${i18n:_('Resource')}" />
-                        <bandboxSearch id="bandboxResource"
-                            widthBandbox="285px"
-                            widthListbox="400px"
-                            finder="ResourceInExpenseSheetBandboxFinder"
-                            selectedElement="@{controller.newExpenseSheetLine.resource, access='both'}"/>
-                    </div>
-
                     <separator bar="false" spacing="10px" orient="vertical"/>
                     <button onClick="controller.addExpenseSheetLine();" label="${i18n:_('New')}"/>
                 </hbox>
@@ -170,8 +157,6 @@
                         <column label="${i18n:_('Value')}" />
                         <column label="${i18n:_('Concept')}" />
                         <column label="${i18n:_('Date')}" />
-                        <column label="${i18n:_('Resource')}" width="275px"
-                             visible="@{controller.expenseSheet.notPersonal}" />
                         <column label="${i18n:_('Code')}" />
                         <column label="${i18n:_('Operations')}" />
                     </columns>

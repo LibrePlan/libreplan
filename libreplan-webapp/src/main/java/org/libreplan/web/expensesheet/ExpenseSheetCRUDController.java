@@ -75,6 +75,8 @@ import org.zkoss.zul.Textbox;
 public class ExpenseSheetCRUDController extends
         BaseCRUDController<ExpenseSheet> implements IExpenseSheetCRUDController {
 
+    private static final boolean AUDIOVISUAL = true;
+
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(ExpenseSheetCRUDController.class);
 
@@ -142,7 +144,10 @@ public class ExpenseSheetCRUDController extends
         dateboxExpenseDate = (Datebox) editWindow.getFellowIfAny("dateboxExpenseDate");
         dboxValue = (Decimalbox) editWindow.getFellowIfAny("dboxValue");
         gridExpenseLines = (Grid) editWindow.getFellowIfAny("gridExpenseLines");
-        bandboxResource = (BandboxSearch) editWindow.getFellowIfAny("bandboxResource");
+        if (!AUDIOVISUAL) {
+            bandboxResource = (BandboxSearch) editWindow
+                    .getFellowIfAny("bandboxResource");
+        }
         bandboxTasks = (BandboxSearch) editWindow.getFellowIfAny("bandboxTasks");
     }
 
@@ -181,7 +186,9 @@ public class ExpenseSheetCRUDController extends
 
     private void reloadComponentsNewLine() {
         Util.reloadBindings(bandboxTasks);
-        Util.reloadBindings(bandboxResource);
+        if (!AUDIOVISUAL) {
+            Util.reloadBindings(bandboxResource);
+        }
         Util.reloadBindings(tbConcept);
         Util.reloadBindings(dboxValue);
     }
@@ -295,7 +302,9 @@ public class ExpenseSheetCRUDController extends
             appendValueInLines(row);
             appendConceptInLines(row);
             appendDateInLines(row);
-            appendResourceInLines(row);
+            if (!AUDIOVISUAL) {
+                appendResourceInLines(row);
+            }
             appendCode(row);
             appendDeleteButton(row);
         }
