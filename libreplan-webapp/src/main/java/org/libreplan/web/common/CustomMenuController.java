@@ -62,6 +62,8 @@ import org.zkoss.zul.Vbox;
  */
 public class CustomMenuController extends Div implements IMenuItemsRegister {
 
+    private static final boolean AUDIOVISUAL = true;
+
     public static class CustomMenuItem {
 
         private final String name;
@@ -338,23 +340,28 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                             "12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"));
         }
 
-        // Access to resources menu is concealed on Audiovisual branch
-        if (false && !resourcesItems.isEmpty()) {
+        if (!AUDIOVISUAL && !resourcesItems.isEmpty()) {
             topItem(_("Resources"), "/resources/worker/worker.zul", "",
                     resourcesItems);
         }
 
         List<CustomMenuItem> costItems = new ArrayList<CustomMenuItem>();
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
+
+        if (!AUDIOVISUAL
+                && SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
             costItems.add(subItem(_("Timesheets"),
                     "/workreports/workReport.zul", "09-partes.html#id3"));
         }
-        if (SecurityUtils
+
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS_TEMPLATES)) {
             costItems.add(subItem(_("Timesheets Templates"),
                     "/workreports/workReportTypes.zul", "09-partes.html#id2"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEET_LINES_LIST)) {
             costItems.add(subItem(_("Timesheet Lines List"),
                     "/workreports/workReportQuery.zul", "09-partes.html#id4"));
@@ -363,13 +370,16 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             costItems.add(subItem(_("Expenses"),
                     "/expensesheet/expenseSheet.zul", ""));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_COST_CATEGORIES)) {
             costItems.add(subItem(_("Cost Categories"),
                     "/costcategories/costCategory.zul",
                     "14-custos.html#categor-as-de-custo"));
         }
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_HOURS_TYPES)) {
+        if (!AUDIOVISUAL
+                && SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_HOURS_TYPES)) {
             costItems.add(subItem(_("Hours Types"),
                     "/typeofworkhours/typeOfWorkHours.zul",
                     "14-custos.html#administraci-n-de-horas-traballadas"));
@@ -427,39 +437,44 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         // Access to communications menu is concealed on Audiovisual branch
-        if (false && !communicationsItems.isEmpty()) {
+        if (!AUDIOVISUAL && !communicationsItems.isEmpty()) {
             topItem(_("Communications"),
                     "/externalcompanies/externalcompanies.zul", "",
                     communicationsItems);
         }
 
         List<CustomMenuItem> reportsItems = new ArrayList<CustomMenuItem>();
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_HOURS_WORKED_PER_RESOURCE_REPORT)) {
             reportsItems.add(subItem(_("Hours Worked Per Resource"),
                     "/reports/hoursWorkedPerWorkerReport.zul",
                     "15-1-report-hours-worked-by-resource.html"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_TOTAL_WORKED_HOURS_BY_RESOURCE_IN_A_MONTH_REPORT)) {
             reportsItems.add(subItem(
                     _("Total Worked Hours By Resource In A Month"),
                     "/reports/hoursWorkedPerWorkerInAMonthReport.zul",
                     "15-2-total-hours-by-resource-month.html"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_WORK_AND_PROGRESS_PER_PROJECT_REPORT)) {
             reportsItems.add(subItem(_("Work And Progress Per Project"),
                     "/reports/schedulingProgressPerOrderReport.zul",
                     "15-3-work-progress-per-project.html"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_WORK_AND_PROGRESS_PER_TASK_REPORT)) {
             reportsItems.add(subItem(_("Work And Progress Per Task"),
                     "/reports/workingProgressPerTaskReport.zul",
                     "15-informes.html"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT)) {
             reportsItems.add(subItem(_("Estimated/Planned Hours Per Task"),
                     "/reports/completedEstimatedHoursPerTask.zul",
@@ -470,13 +485,15 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             reportsItems.add(subItem(_("Project Costs"),
                     "/reports/orderCostsPerResource.zul", "15-informes.html"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT)) {
             reportsItems.add(subItem(_("Task Scheduling Status In Project"),
                     "/reports/workingArrangementsPerOrderReport.zul",
                     "15-informes.html"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_MATERIALS_NEED_AT_DATE_REPORT)) {
             reportsItems.add(subItem(_("Materials Needs At Date"),
                     "/reports/timeLineMaterialReport.zul", "15-informes.html"));
