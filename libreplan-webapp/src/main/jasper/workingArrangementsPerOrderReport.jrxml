@@ -175,7 +175,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{orderName}]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="d94ebfa8-2b07-40bb-8c08-c73163247de3" x="1" y="56" width="70" height="15"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -187,9 +187,9 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{estimatedStartingDate}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{estimatedStartingDate})]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="656b0c4e-4b62-4b04-abfe-f9dbc3b215b1" x="71" y="56" width="80" height="15"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -201,9 +201,9 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{firstWorkReportDate}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{firstWorkReportDate})]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="dff4b9a4-5050-479e-90bd-1de194a37644" x="151" y="56" width="75" height="15"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -215,9 +215,9 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{estimatedEndingDate}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{estimatedEndingDate})]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="ab9c951d-2e05-4f1c-8111-aeed45c04c3c" x="226" y="56" width="75" height="15"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -229,9 +229,9 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{lastWorkReportDate}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{lastWorkReportDate})]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="346cce6c-34ad-4ff6-8ac2-659ec8a0412f" x="301" y="56" width="74" height="15"/>
 					<box>
 						<pen lineWidth="1.0"/>
@@ -243,7 +243,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{deadline}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{deadline})]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement uuid="c33157ba-504b-4400-9f28-6d0c38a86960" x="375" y="56" width="60" height="15"/>
@@ -566,10 +566,10 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
-			<textField pattern="EEEEE, dd MMMMM yyyy">
+			<textField>
 				<reportElement uuid="e50e451b-3508-4734-ae8f-0be33a7d6708" x="5" y="0" width="197" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.LONG, $P{REPORT_LOCALE}).format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="341621c2-d6ab-490f-8097-13124b60c6ce" x="435" y="0" width="43" height="20"/>

@@ -203,12 +203,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{date.start}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="2097feeb-2937-4158-98ba-c34ec6170543" x="121" y="75" width="100" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{startingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{startingDate})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="abd634a8-8e47-4d6d-b538-63ab67dc726e" x="221" y="75" width="95" height="15">
@@ -219,12 +219,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{date.end}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="7346cf8f-6c97-433a-a446-0ab5e4ec0fba" x="316" y="75" width="100" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{endingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{endingDate})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement uuid="26a35250-4c3b-4862-b685-b757a28bbb44" x="2" y="92" width="60" height="15">
@@ -281,10 +281,10 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
-			<textField pattern="EEEEE, dd MMMMM yyyy">
+			<textField>
 				<reportElement uuid="ca4a31d6-e6c9-4faf-9076-d12eaae02d37" x="0" y="0" width="197" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.LONG, $P{REPORT_LOCALE}).format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="abae8193-1bea-4afb-acf8-347902db9233" x="436" y="0" width="43" height="20"/>

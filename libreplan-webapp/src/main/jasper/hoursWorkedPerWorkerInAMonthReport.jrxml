@@ -160,10 +160,10 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="27" splitType="Stretch">
-			<textField pattern="EEEEE, dd MMMMM yyyy">
+			<textField>
 				<reportElement uuid="df0637bd-63c0-4bc1-9cd9-f5b0b7bf023d" x="0" y="0" width="197" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.LONG, $P{REPORT_LOCALE}).format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="7afb759e-5125-472c-b8cf-9fb93e374bbd" x="435" y="2" width="43" height="20"/>

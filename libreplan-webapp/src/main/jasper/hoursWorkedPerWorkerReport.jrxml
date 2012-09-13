@@ -74,12 +74,12 @@
 		<groupExpression><![CDATA[$F{date}]]></groupExpression>
 		<groupHeader>
 			<band height="44">
-				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="0fc3ba78-e171-43b4-85c0-9e7d284cfd3b" x="2" y="4" width="178" height="20"/>
 					<textElement verticalAlignment="Middle">
 						<font size="11" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{date})]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement uuid="ee28ef5b-d1f4-4701-a895-b83997409f77" mode="Opaque" x="186" y="24" width="66" height="20" backcolor="#E0E4FB"/>
@@ -228,19 +228,19 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{date.end}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="e0bb13eb-ad54-4054-b361-d34671a7f5bc" x="114" y="80" width="100" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{startingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{startingDate})]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="8569ba5a-13ba-43e4-b91c-be211c925331" x="308" y="80" width="100" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{endingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{endingDate})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="8cb9e1bc-1f50-436f-b8c4-fb75be07af9c" x="13" y="144" width="540" height="15">
@@ -387,10 +387,10 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="27" splitType="Stretch">
-			<textField pattern="EEEEE, dd MMMMM yyyy">
+			<textField>
 				<reportElement uuid="c5a8d393-6082-4342-a162-64466dcb1ce8" x="0" y="0" width="197" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.LONG, $P{REPORT_LOCALE}).format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="fce20fac-b51d-46ab-9cb7-d57cbeafe0f0" x="435" y="2" width="43" height="20"/>

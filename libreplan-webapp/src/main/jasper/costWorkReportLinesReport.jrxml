@@ -216,10 +216,10 @@
 					<textElement textAlignment="Right"/>
 					<textFieldExpression><![CDATA[$F{hoursType}]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd-MMM-yy" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="5d4a5d09-35c7-4edc-86c1-4a070b75d339" x="1" y="0" width="95" height="14"/>
 					<textElement textAlignment="Right"/>
-					<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+				    <textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{date})]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>

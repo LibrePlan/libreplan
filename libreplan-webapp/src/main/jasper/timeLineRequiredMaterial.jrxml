@@ -19,7 +19,7 @@
 	<field name="estimatedAvailability" class="java.util.Date"/>
 	<field name="order" class="java.lang.String"/>
 	<field name="task" class="java.lang.String"/>
-	<field name="date" class="java.lang.String"/>
+	<field name="date" class="java.util.Date"/>
 	<variable name="sumTotalPricePerDay" class="java.math.BigDecimal" resetType="Group" resetGroup="Date group" calculation="Sum">
 		<variableExpression><![CDATA[$F{totalPrice}]]></variableExpression>
 		<initialValueExpression><![CDATA[new java.math.BigDecimal(0)]]></initialValueExpression>
@@ -123,11 +123,11 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$R{headers.title}]]></textFieldExpression>
 				</textField>
-				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<textField isBlankWhenNull="true">
 					<reportElement uuid="f230bda0-19cf-47a2-803e-6248cfb4e08f" x="57" y="0" width="149" height="20"/>
 					<box leftPadding="0" rightPadding="0"/>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{date})]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement uuid="b48fdf0a-a61d-4f2d-80cd-361ee5a135e5" key="" mode="Opaque" x="455" y="24" width="65" height="32" forecolor="#666666" backcolor="#E0E4FB"/>
@@ -193,19 +193,19 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{date.end}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="4b84ab4e-ce92-45bb-881a-b7588b1620f1" x="100" y="80" width="134" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{startingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{startingDate})]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="d6be7d53-90b9-4c45-868f-342961e6a93b" x="332" y="80" width="148" height="15"/>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{endingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{endingDate})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="bc3d11a6-d7f2-4af7-a8ca-7b904c503fb1" x="100" y="99" width="134" height="15"/>
@@ -324,7 +324,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="7a8c15a8-a27b-4955-8816-2037c846aa72" x="250" y="0" width="90" height="73"/>
 				<box>
 					<pen lineWidth="1.0"/>
@@ -334,7 +334,7 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{estimatedAvailability}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{estimatedAvailability})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="605bfbbe-c420-40f3-bd78-4b985eb1c835" x="119" y="0" width="131" height="40"/>
@@ -375,10 +375,10 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<textField pattern="EEEEE, dd MMMMM yyyy">
+			<textField>
 				<reportElement uuid="884cb129-cbb3-482e-a653-e10cdd1de3a9" x="0" y="0" width="197" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.LONG, $P{REPORT_LOCALE}).format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="62d229b2-62ce-4335-9e45-df5cbef7f852" x="446" y="0" width="43" height="20"/>

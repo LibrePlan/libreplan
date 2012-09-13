@@ -119,10 +119,10 @@
 	</columnHeader>
 	<detail>
 		<band height="17" splitType="Stretch">
-			<textField pattern="dd-MMM-yy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="64c73662-737e-4ad4-b00b-c8a3e5fbc66f" x="2" y="0" width="91" height="14"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($F{date})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="9b2b887d-8e7c-47b4-8a4f-a0568e550c64" x="93" y="0" width="168" height="14"/>

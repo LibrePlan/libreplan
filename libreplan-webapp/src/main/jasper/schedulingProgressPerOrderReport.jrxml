@@ -72,12 +72,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{date.reference}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="7408bc4d-61c3-449b-897c-8da935cc8c85" x="132" y="116" width="100" height="20"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{referenceDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{referenceDate})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="d581efb5-ca98-45e7-94ca-a0245e780f5f" x="1" y="136" width="131" height="20">
@@ -88,14 +88,14 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{date.start}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="c01f71e6-3aad-4d86-94d9-21942c4cd1d2" x="132" y="136" width="100" height="20">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{startingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{startingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{startingDate})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="ff73d3fe-03d6-4897-a34f-25f3477c966c" x="2" y="156" width="130" height="20">
@@ -106,14 +106,14 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$R{date.end}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement uuid="64cbfdb2-1075-4340-aaa4-7a310df33dfa" x="132" y="156" width="100" height="20">
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{endingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{endingDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.SHORT, $P{REPORT_LOCALE}).format($P{endingDate})]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="44ede877-7515-4869-b341-a52a162d3421" x="1" y="76" width="131" height="20"/>
@@ -570,10 +570,10 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="23" splitType="Stretch">
-			<textField pattern="EEEEE, dd MMMMM yyyy">
+			<textField>
 				<reportElement uuid="df18e9fc-2afe-48a9-b436-42ae2a38f384" x="2" y="0" width="197" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.LONG, $P{REPORT_LOCALE}).format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="8bf22294-daff-47fe-b7d4-12a53ba0d94d" x="439" y="3" width="43" height="20"/>
