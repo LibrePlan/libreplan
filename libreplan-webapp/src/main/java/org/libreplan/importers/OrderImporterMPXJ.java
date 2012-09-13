@@ -29,6 +29,7 @@ import net.sf.mpxj.reader.ProjectReader;
 import net.sf.mpxj.reader.ProjectReaderUtility;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IConfigurationDAO;
@@ -43,12 +44,14 @@ import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskMilestone;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -316,6 +319,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         taskMilestone.setName(milestone.name);
 
+        setPositionConstraint((TaskMilestone) taskMilestone, milestone);
+
         return taskMilestone;
     }
 
@@ -345,6 +350,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
             taskElement = taskSource
                     .createTaskWithoutDatesInitializedAndLinkItToTaskSource();
+
+            setPositionConstraint((Task) taskElement, task);
 
         } else {
 
@@ -378,6 +385,111 @@ public class OrderImporterMPXJ implements IOrderImporter {
         taskElement.setEndDate(task.endDate);
 
         return taskElement;
+    }
+
+    /**
+     * Private method.
+     *
+     * Sets the proper constraint to and a {@link Task}
+     *
+     * @param importTask
+     *            OrderElementDTO to extract data from.
+     * @param task
+     *            Task to set data on.
+     */
+    private void setPositionConstraint(Task task, OrderElementDTO importTask) {
+
+        switch (importTask.constraint) {
+
+        case AS_SOON_AS_POSSIBLE:
+
+            task.getPositionConstraint().asSoonAsPossible();
+
+            return;
+
+        case AS_LATE_AS_POSSIBLE:
+
+            task.getPositionConstraint().asLateAsPossible();
+
+            return;
+
+        case START_IN_FIXED_DATE:
+
+            task.setIntraDayStartDate(IntraDayDate.startOfDay(LocalDate
+                    .fromDateFields(importTask.constraintDate)));
+
+            Task.convertOnStartInFixedDate(task);
+
+            return;
+
+        case START_NOT_EARLIER_THAN:
+
+            task.getPositionConstraint().notEarlierThan(
+                    IntraDayDate.startOfDay(LocalDate
+                            .fromDateFields(importTask.constraintDate)));
+
+            return;
+
+        case FINISH_NOT_LATER_THAN:
+
+            task.getPositionConstraint().finishNotLaterThan(
+                    IntraDayDate.startOfDay(LocalDate
+                            .fromDateFields(importTask.constraintDate)));
+            return;
+        }
+
+    }
+
+    /**
+     * Private method.
+     *
+     * Sets the proper constraint to and a {@link TaskMiletone}
+     *
+     * @param milestone
+     *            MilestoneDTO to extract data from.
+     * @param taskMilestone
+     *            TaskMilestone to set data on.
+     */
+    private void setPositionConstraint(TaskMilestone taskMilestone, MilestoneDTO milestone) {
+
+        switch (milestone.constraint) {
+
+        case AS_SOON_AS_POSSIBLE:
+
+            taskMilestone.getPositionConstraint().asSoonAsPossible();
+
+            return;
+
+        case AS_LATE_AS_POSSIBLE:
+
+            taskMilestone.getPositionConstraint().asLateAsPossible();
+
+            return;
+
+        case START_IN_FIXED_DATE:
+
+            taskMilestone.getPositionConstraint().notEarlierThan(
+                    IntraDayDate.startOfDay(LocalDate
+                            .fromDateFields(milestone.constraintDate)));
+
+            return;
+
+        case START_NOT_EARLIER_THAN:
+
+            taskMilestone.getPositionConstraint().notEarlierThan(
+                    IntraDayDate.startOfDay(LocalDate
+                            .fromDateFields(milestone.constraintDate)));
+
+            return;
+
+        case FINISH_NOT_LATER_THAN:
+
+            taskMilestone.getPositionConstraint().finishNotLaterThan(
+                    IntraDayDate.startOfDay(LocalDate
+                            .fromDateFields(milestone.constraintDate)));
+            return;
+        }
+
     }
 
     /**

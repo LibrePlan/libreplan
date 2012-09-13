@@ -18,32 +18,13 @@
  */
 package org.libreplan.importers;
 
-import java.util.Date;
-
 /**
- * Class that represents no persistent milestones. <br />
+ * Class that represents the different types of constraints avaliables in LP
  *
  * @author Alba Carro Pérez <alba.carro@gmail.com>
  */
-public class MilestoneDTO {
+public enum ConstraintDTO {
 
-    /**
-     * Name of the milestone
-     */
-    public String name;
+    AS_SOON_AS_POSSIBLE, AS_LATE_AS_POSSIBLE, START_IN_FIXED_DATE, START_NOT_EARLIER_THAN, FINISH_NOT_LATER_THAN
 
-    /**
-     * Start date of the milestone
-     */
-    public Date startDate;
-
-    /**
-     * String representing the constraint.
-     */
-    public ConstraintDTO constraint;
-
-    /**
-     * String with the date of the constraint.
-     */
-    public Date constraintDate;
 }

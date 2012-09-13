@@ -74,4 +74,14 @@ public class OrderElementDTO {
      */
     public List<MilestoneDTO> milestones;
 
+    /**
+     * Constraint of this task.
+     */
+    public ConstraintDTO constraint;
+
+    /**
+     * Contraint date of this task.
+     */
+    public Date constraintDate;
+
 }

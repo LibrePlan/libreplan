@@ -20,6 +20,7 @@
 package org.libreplan.importers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.sf.mpxj.Duration;
@@ -149,6 +150,7 @@ public class MPXJProjectFileConversor {
                 importData.milestones = getImportMilestones(task
                         .getChildTasks());
 
+
                 break;
             }
 
@@ -173,9 +175,9 @@ public class MPXJProjectFileConversor {
 
             if (task.getMilestone()) {
 
-            MilestoneDTO milestone = getMilestoneData(task);
+                MilestoneDTO milestone = getMilestoneData(task);
 
-            milestones.add(milestone);
+                milestones.add(milestone);
 
             }
 
@@ -198,6 +200,12 @@ public class MPXJProjectFileConversor {
         milestone.name = task.getName();
 
         milestone.startDate = task.getStart();
+
+        toLibreplanConstraint(task);
+
+        milestone.constraint = constraint;
+
+        milestone.constraintDate = constraintDate;
 
         return milestone;
 
@@ -277,7 +285,136 @@ public class MPXJProjectFileConversor {
 
         importTask.deadline = task.getDeadline();
 
+        toLibreplanConstraint(task);
+
+        importTask.constraint = constraint;
+
+        importTask.constraintDate = constraintDate;
+
         return importTask;
 
+    }
+
+    private static ConstraintDTO constraint;
+
+    private static Date constraintDate;
+
+    /**
+     * Private Method
+     *
+     * Set the attributes constraint y constraintDate with the correct value.
+     *
+     * Because MPXJ has more types of constraints than Libreplan we had
+     * choose to convert some of them.
+     *
+     *
+     * @param task
+     *            MPXJ Task to extract data from.
+     */
+    private static void toLibreplanConstraint(Task task) {
+
+        switch (task.getConstraintType()) {
+
+        case AS_SOON_AS_POSSIBLE:
+
+            constraint = ConstraintDTO.AS_SOON_AS_POSSIBLE;
+
+            constraintDate = task.getConstraintDate();
+
+            return;
+
+        case AS_LATE_AS_POSSIBLE:
+
+            constraint = ConstraintDTO.AS_LATE_AS_POSSIBLE;
+
+            constraintDate = task.getConstraintDate();
+
+            return;
+
+        case MUST_START_ON:
+
+            constraint = ConstraintDTO.START_IN_FIXED_DATE;
+
+            constraintDate = task.getConstraintDate();
+
+            return;
+
+        case MUST_FINISH_ON:
+
+            constraint = ConstraintDTO.START_IN_FIXED_DATE;
+
+            constraintDate = recalculateConstraintDateMin(task);
+
+            return;
+
+        case START_NO_EARLIER_THAN:
+
+            constraint = ConstraintDTO.START_NOT_EARLIER_THAN;
+
+            constraintDate = task.getConstraintDate();
+
+            return;
+
+        case START_NO_LATER_THAN:
+
+            constraint = ConstraintDTO.FINISH_NOT_LATER_THAN;
+
+            constraintDate = recalculateConstraintDateSum(task);
+
+            return;
+
+        case FINISH_NO_EARLIER_THAN:
+
+            constraint = ConstraintDTO.START_NOT_EARLIER_THAN;
+
+            constraintDate = recalculateConstraintDateMin(task);
+
+
+            return;
+
+        case FINISH_NO_LATER_THAN:
+
+            constraint = ConstraintDTO.FINISH_NOT_LATER_THAN;
+
+            constraintDate = task.getConstraintDate();
+
+            return;
+
+        }
+
+    }
+
+    /**
+     * Private Method
+     *
+     * Get the new date based on the task date adding duration.
+     *
+     *
+     * @param task
+     *            MPXJ Task to extract data from.
+     * @return Date new recalculated date
+     */
+    private static Date recalculateConstraintDateSum(Task task) {
+
+        return new Date(
+                    task.getConstraintDate().getTime()
+                            + (durationToIntHours(task.getDuration(), header) * 60 * 60 * 1000));
+    }
+
+    /**
+     * Private Method
+     *
+     * Get the new date based on the task date and substracting duration.
+     *
+     *
+     * @param task
+     *            MPXJ Task to extract data from.
+     * @return Date new recalculated date
+     */
+    private static Date recalculateConstraintDateMin(Task task) {
+
+        return new Date(
+                    task.getConstraintDate().getTime()
+                            - (durationToIntHours(task.getDuration(), header) * 60 * 60 * 1000));
     }
 }
