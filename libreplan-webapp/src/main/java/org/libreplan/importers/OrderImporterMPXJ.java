@@ -42,8 +42,11 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.daos.IDependencyDAO;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.planner.entities.Dependency;
+import org.libreplan.business.planner.entities.Dependency.Type;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -52,6 +55,7 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workingday.IntraDayDate;
+import org.libreplan.importers.DependencyDTO.TypeOfDependencyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -83,6 +87,9 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IDependencyDAO dependencyDAO;
 
     @Autowired
     private ITaskElementDAO taskDAO;
@@ -321,6 +328,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         setPositionConstraint((TaskMilestone) taskMilestone, milestone);
 
+        milestone.taskElement = taskMilestone;
+
         return taskMilestone;
     }
 
@@ -383,6 +392,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         taskElement.setStartDate(task.startDate);
         taskElement.setEndDate(task.endDate);
+
+        task.taskElement = taskElement;
 
         return taskElement;
     }
@@ -505,7 +516,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
      */
     @Override
     @Transactional
-    public void storeOrder(final Order order, final TaskGroup taskGroup) {
+    public void storeOrder(final Order order, final TaskGroup taskGroup,
+            final List<Dependency> dependencies) {
 
         final List<TaskSource> taskSources = new ArrayList<TaskSource>();
 
@@ -532,6 +544,75 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         }
 
+        for(Dependency dependency: dependencies){
+
+            dependencyDAO.save(dependency);
+
+        }
+
+    }
+
+    /**
+     * Creates a list of {@link Dependency} from a {@link ImportData}
+     *
+     * @param importData
+     *            ImportData to extract data from
+     *
+     * @return List<Dependency> with the data extracted.
+     */
+    @Override
+    public List<Dependency> createDependencies(OrderDTO importData) {
+
+        List<Dependency> dependencies =  new ArrayList<Dependency>();
+
+        for(DependencyDTO dependencyDTO: importData.dependencies){
+
+            TaskElement origin = dependencyDTO.origin.getTaskAssociated();
+
+            TaskElement destination = dependencyDTO.destination
+                    .getTaskAssociated();
+
+            dependencies.add(Dependency.create(origin, destination,
+                    toLPType(dependencyDTO.type)));
+        }
+
+        return dependencies;
+    }
+
+    /**
+     * Private method.
+     *
+     * Return the equivalent {@link Type} of a {@link TypeOfDependencyDTO}
+     *
+     * @param type
+     *            TypeOfDependencyDTO to extract data from.
+     * @return Type equivalent type.
+     */
+    private Type toLPType(TypeOfDependencyDTO type) {
+
+        switch (type) {
+
+        case END_START:
+
+            return Type.END_START;
+
+        case START_START:
+
+            return Type.START_START;
+
+        case END_END:
+
+            return Type.END_END;
+
+        case START_END:
+            //TODO LP doesn't support START_END dependency at this moment. Fix this when it does.
+            //Returns a END_START instead.
+            return Type.END_START;
+
+        default:
+            return null;
+
+        }
     }
 
 }

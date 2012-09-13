@@ -21,13 +21,19 @@ package org.libreplan.importers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.mpxj.Duration;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.ProjectHeader;
+import net.sf.mpxj.Relation;
+import net.sf.mpxj.RelationType;
 import net.sf.mpxj.Task;
 import net.sf.mpxj.TimeUnit;
+
+import org.libreplan.importers.DependencyDTO.TypeOfDependencyDTO;
 
 /**
  * Class that is a conversor from the MPXJ format File to {@link OrderDTO}.
@@ -40,6 +46,11 @@ import net.sf.mpxj.TimeUnit;
 public class MPXJProjectFileConversor {
 
     private static ProjectHeader header;
+
+    /**
+     * Map between the MPXJ Task and the OrderElemenDTO or MilestoneDTO that represent it.
+     */
+    private static Map<Task, IHasTaskAssociated> mapTask;
 
     /**
      * Converts a ProjectFile into a {@link OrderDTO}.
@@ -84,6 +95,8 @@ public class MPXJProjectFileConversor {
 
         OrderDTO importData = new OrderDTO();
 
+        mapTask = new HashMap<Task, IHasTaskAssociated>();
+
         importData.name = filename
                 .substring(0, filename.length() - 8/* ".planner" */);
 
@@ -99,9 +112,100 @@ public class MPXJProjectFileConversor {
         // date
         importData.deadline = header.getFinishDate();
 
+        importData.dependencies = createDependencies();
+
         return importData;
 
     }
+
+    /**
+     * Private Method
+     *
+     * Uses the map mapTask to create the list of {@link DependencyDTO}
+     *
+     * @return List<DependencyDTO>
+     *            List with all the dependencies
+     */
+    private static List<DependencyDTO> createDependencies() {
+
+        List<DependencyDTO> dependencies = new ArrayList<DependencyDTO>();
+
+        List<Relation> successors;
+
+        Task task;
+
+        DependencyDTO dependencyDTO;
+
+        for (Map.Entry<Task, IHasTaskAssociated> mapEntry : mapTask.entrySet()) {
+
+            task = mapEntry.getKey();
+
+            successors = task.getSuccessors();
+
+            if (successors != null) {
+
+                for (Relation successor : successors) {
+
+                    dependencyDTO = new DependencyDTO();
+
+                    dependencyDTO.origin = mapEntry.getValue();
+
+                    dependencyDTO.destination = mapTask.get(successor
+                            .getTargetTask());
+
+                    dependencyDTO.type = toDependencyDTOType(successor
+                            .getType());
+
+                    dependencies.add(dependencyDTO);
+
+                }
+
+            }
+
+        }
+
+        return dependencies;
+
+    }
+
+
+    /**
+     * Private Method
+     *
+     * Mapping between LP and MPXJ relationships
+     *
+     * @param type
+     *            MPXJ RelationType to map.
+     * @return TypeOfDependencyDTO
+     *            Type of the dependency for DependencyDTO
+     */
+    private static TypeOfDependencyDTO toDependencyDTOType(RelationType type) {
+
+        switch (type) {
+
+        case FINISH_FINISH:
+
+            return TypeOfDependencyDTO.END_END;
+
+        case FINISH_START:
+
+            return TypeOfDependencyDTO.END_START;
+
+        case START_FINISH:
+
+            return TypeOfDependencyDTO.START_END;
+
+        case START_START:
+
+            return TypeOfDependencyDTO.START_START;
+
+        default:
+
+            return null;
+
+        }
+    }
+
 
     /**
      * Converts a ProjectFile into a {@link OrderDTO}
@@ -116,6 +220,8 @@ public class MPXJProjectFileConversor {
             String filename) {
 
         OrderDTO importData = new OrderDTO();
+
+        mapTask = new HashMap<Task, IHasTaskAssociated>();
 
         header = file.getProjectHeader();
 
@@ -156,6 +262,8 @@ public class MPXJProjectFileConversor {
 
         }
 
+        importData.dependencies = createDependencies();
+
         return importData;
     }
 
@@ -176,6 +284,8 @@ public class MPXJProjectFileConversor {
             if (task.getMilestone()) {
 
                 MilestoneDTO milestone = getMilestoneData(task);
+
+                mapTask.put(task, milestone);
 
                 milestones.add(milestone);
 
@@ -254,6 +364,8 @@ public class MPXJProjectFileConversor {
 
                 importTask.milestones = getImportMilestones(task
                         .getChildTasks());
+
+                mapTask.put(task, importTask);
 
                 importTasks.add(importTask);
 

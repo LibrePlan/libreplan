@@ -20,8 +20,10 @@
 package org.libreplan.importers;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.TaskGroup;
 
 /**
@@ -73,6 +75,9 @@ public interface IOrderImporter {
      * @param TaskGroup
      *            TaskGroup with the data.
      */
-    public void storeOrder(Order order, TaskGroup taskGroup);
+    public void storeOrder(Order order, TaskGroup taskGroup,
+            List<Dependency> dependencies);
+
+    public List<Dependency> createDependencies(OrderDTO importData);
 
 }

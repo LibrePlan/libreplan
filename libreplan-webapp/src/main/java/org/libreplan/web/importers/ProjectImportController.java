@@ -3,8 +3,10 @@ package org.libreplan.web.importers;
 import static org.libreplan.web.I18nHelper._;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.importers.IOrderImporter;
 import org.libreplan.importers.OrderDTO;
@@ -79,7 +81,10 @@ public class ProjectImportController extends GenericForwardComposer {
 
         TaskGroup taskGroup = orderImporterMPXJ.createTask(importData);
 
-        orderImporterMPXJ.storeOrder(order, taskGroup);
+        List<Dependency> dependencies = orderImporterMPXJ
+                .createDependencies(importData);
+
+        orderImporterMPXJ.storeOrder(order, taskGroup, dependencies);
 
     }
 
