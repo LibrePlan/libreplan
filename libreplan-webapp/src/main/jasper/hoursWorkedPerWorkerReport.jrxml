@@ -390,7 +390,7 @@
 			<textField>
 				<reportElement uuid="c5a8d393-6082-4342-a162-64466dcb1ce8" x="0" y="0" width="197" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.LONG, $P{REPORT_LOCALE}).format(new Date())]]></textFieldExpression>
+				<textFieldExpression><![CDATA[DateFormat.getDateInstance(DateFormat.FULL, $P{REPORT_LOCALE}).format(new Date())]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="fce20fac-b51d-46ab-9cb7-d57cbeafe0f0" x="435" y="2" width="43" height="20"/>
