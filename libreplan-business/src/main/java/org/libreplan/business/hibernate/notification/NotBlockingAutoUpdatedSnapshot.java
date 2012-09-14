@@ -115,7 +115,7 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
                         newValue));
                 return newValue;
             }
-            LOG.info(name + " the ongoing calculation has not been completed. "
+            LOG.debug(name + " the ongoing calculation has not been completed. "
                     + "Returning previous value");
             return previousValue.getValue();
         }
@@ -135,7 +135,7 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
             if (ongoingCalculation.isDone() || ongoingCalculation.isCancelled()) {
                 return;
             }
-            LOG.info(name + " cancelling ongoing future");
+            LOG.debug(name + " cancelling ongoing future");
             try {
                 ongoingCalculation.cancel(true);
             } catch (Exception e) {
@@ -283,19 +283,19 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
 
         private void report(long timeWaiting, long timeExecuting, Data data,
                 Exception possibleError) {
-            LOG.info(name + " took " + timeExecuting + " ms executing");
+            LOG.debug(name + " took " + timeExecuting + " ms executing");
             if (possibleError != null) {
                 LOG.error("error loading " + name, possibleError);
             }
-            LOG.info(name + " waited for " + timeWaiting
+            LOG.debug(name + " waited for " + timeWaiting
                     + " ms until executing");
-            LOG.info(name + " mean time waiting for execution: "
+            LOG.debug(name + " mean time waiting for execution: "
                     + data.totalMsWaiting / data.executionTimes + " ms");
-            LOG.info(name + " mean time  executing: "
+            LOG.debug(name + " mean time  executing: "
                     + data.totalMsExecuting / data.executionTimes + " ms");
-            LOG.info(name + " has been executed " + data.executionTimes
+            LOG.debug(name + " has been executed " + data.executionTimes
                     + " times");
-            LOG.info(name + " has produced errors " + data.errors + " times");
+            LOG.debug(name + " has produced errors " + data.errors + " times");
         }
     }
 
