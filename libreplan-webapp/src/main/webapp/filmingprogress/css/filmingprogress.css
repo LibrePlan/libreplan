@@ -1,0 +1,45 @@
+.filming-progress-area .grid-values-per-day tr:nth-child(3n+1) {
+    background-color: rgba(150, 10, 10, 0.2);
+}
+
+.filming-progress-area .grid-values-per-day tr:nth-child(3n+2) {
+    background-color: rgba(0, 150, 10, 0.2);
+}
+
+.filming-progress-area .grid-values-per-day tr:nth-child(3n+3) {
+    background-color: rgba(0, 10, 200, 0.2);
+    border-bottom: 2px solid gray;
+}
+
+.grid-values-per-day tr.z-row td.z-row-inner,.grid-values-per-day tr.z-row .z-cell,
+.grid-values-per-day tr.z-grid-odd td.z-row-inner,.grid-values-per-day tr.z-grid-odd .z-cell,
+.grid-values-per-day tr.z-grid-odd {
+    background: transparent;
+}
+
+.grid-values-per-day .z-textbox, .grid-values-per-day .z-decimalbox, .grid-values-per-day .z-intbox,
+.grid-values-per-day .z-longbox,.grid-values-per-day .z-doublebox {
+    background-image: none;
+    background: transparent;
+}
+
+.filming-progress-area .grid-values-per-day .z-decimalbox-readonly {
+    background-color: #ECEAE4;
+}
+
+.grid-values-per-day td.z-row-inner {
+    padding: 0;
+}
+
+.grid-values-per-day .z-decimalbox {
+    padding: 4px;
+}
+
+.timeplot-valueflag,.timeplot-timeflag {
+    font-size: 12px;
+    font-weight: normal;
+    background-color: #F7F7BF;
+    border: solid 1px #CCC;
+    box-shadow: 1px 1px 3px #999;
+    border-radius: 3px;
+}

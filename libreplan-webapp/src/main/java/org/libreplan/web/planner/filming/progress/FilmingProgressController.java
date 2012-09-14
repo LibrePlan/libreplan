@@ -168,13 +168,28 @@ public class FilmingProgressController extends GenericForwardComposer {
         TimeGeometry tg = new DefaultTimeGeometry();
         tg.setAxisLabelsPlacement("bottom");
 
-
+        int i = 0;
         for(ProgressValue progressValue : this.getProgressValues()){
 
             Plotinfo plotinfo = new Plotinfo();
             plotinfo.setDataModel(createListModel(progressValue));
             plotinfo.setShowValues(true);
-            plotinfo.setFillColor("rgba(50, 100, 54, 0.2)");
+            switch (i) {
+            case 0:
+                plotinfo.setFillColor("rgba(150, 10, 10, 0.2)"); // progress
+                break;
+            case 1:
+                plotinfo.setFillColor("rgba(0, 150, 10, 0.2)"); // progress
+                break;
+            case 2:
+                plotinfo.setFillColor("rgba(0, 10, 200, 0.2)"); // progress
+                break;
+            }
+            if (i == 2) {
+                i = 0;
+            } else {
+                i = i + 1;
+            }
             plotinfo.setValueGeometry(vg);
             plotinfo.setTimeGeometry(tg);
 
@@ -513,6 +528,7 @@ public class FilmingProgressController extends GenericForwardComposer {
          * and children The paging component cannot be removed manually. It is
          * removed automatically when changing the mold
          */
+        gridValuesPerDay.setSclass("grid-values-per-day");
         gridValuesPerDay.setMold(null);
         gridValuesPerDay.getChildren().clear();
 

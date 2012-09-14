@@ -25,6 +25,10 @@
     </zscript>
 
 <div self="@{define(content)}" apply="${fpController}" height="100%" style="overflow:visible" class="filming-progress-layout">
+
+    <style src="/filmingprogress/css/filmingprogress.css" dynamic="true" />
+
+
 	<div id="noDataLayout" height="30px">
         <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
     </div>
