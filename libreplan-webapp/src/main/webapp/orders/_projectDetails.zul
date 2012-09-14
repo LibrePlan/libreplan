@@ -65,7 +65,7 @@
                 <datebox id="deadline" value="@{projectController.order.deadline}"
                     constraint = "@{projectController.checkConstraintFinishDate}"/>
             </row>
-            <row>
+            <row visible="false">
                 <label value="${i18n:_('Customer')}" />
                 <bandboxSearch id="bdExternalCompanies" widthBandbox="485px" widthListbox="500px"
                     finder="ExternalCompanyBandboxFinder"
