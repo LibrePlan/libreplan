@@ -58,7 +58,7 @@
   </appender>
 
   <logger name="profiling" additivity="false">
-    <level value="info" />
+    <level value="INFO" />
     <appender-ref ref="ASYNC-profiling" />
    </logger>
 
@@ -78,7 +78,7 @@
 
   <logger name="org.libreplan.web.users.services.AuthenticationProviderLoggingDecorator"
           additivity="true">
-    <level value="info" />
+    <level value="INFO" />
     <appender-ref ref="ASYNC-logins" />
   </logger>
 
@@ -92,12 +92,12 @@
   </appender>
 
   <logger name="org.hibernate.cache">
-      <level value="ALL"/>
+      <level value="INFO"/>
       <appender-ref ref="second-level-cache-file" />
   </logger>
-  
+
   <root>
-    <priority value="info" />
+    <priority value="INFO" />
     <appender-ref ref="ASYNC" />
   </root>
 </log4j:configuration>
