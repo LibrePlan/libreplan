@@ -200,7 +200,7 @@
                 </groupbox>
                 </vbox>
                 </hbox>
-                <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
+                <groupbox style="margin-top: 5px" sclass="assignedresources" visible="false" closable="false">
                    <caption label="${i18n:_('Customer information')}" />
                    <separator spacing="10px"/>
                    <hbox width="100%">
