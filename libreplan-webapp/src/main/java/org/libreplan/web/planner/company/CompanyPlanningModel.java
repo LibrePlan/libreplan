@@ -272,9 +272,15 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
            final Tabbox chartComponent) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
 
-        appendTab(chartComponent, appendLoadChartAndLegend(new Tabpanel(), chartLoadTimeplot));
+        // Resources load tab is not usable on Audiovisual branch
+        //
+        // appendTab(chartComponent, appendLoadChartAndLegend(new
+        // Tabpanel(),chartLoadTimeplot));
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner);
+
+        // Force manual load as there will never be a load tab displayed first
+        createOnDemandEarnedValueTimePlot(chartComponent, planner);
 
         chartComponent.getTabs().getLastChild().addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
@@ -321,7 +327,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private void appendTabs(Tabbox chartComponent) {
         Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(new Tab(_("Load")));
+        // Resources load tab is not usable on Audiovisual branch
+        //
+        // chartTabs.appendChild(new Tab(_("Load")));
         chartTabs.appendChild(new Tab(_("Earned value")));
 
         chartComponent.appendChild(chartTabs);
