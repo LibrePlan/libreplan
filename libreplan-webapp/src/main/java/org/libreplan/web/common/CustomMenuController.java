@@ -285,49 +285,58 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
 
         List<CustomMenuItem> resourcesItems = new ArrayList<CustomMenuItem>();
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_WORKERS)) {
+        if (!AUDIOVISUAL
+                && SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_WORKERS)) {
             resourcesItems.add(subItem(_("Workers"),
                     "/resources/worker/worker.zul",
                     "05-recursos.html#xesti-n-de-traballadores"));
         }
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_MACHINES)) {
+        if (!AUDIOVISUAL
+                && SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_MACHINES)) {
             resourcesItems.add(subItem(_("Machines"),
                     "/resources/machine/machines.zul",
                     "05-recursos.html#xesti-n-de-m-quinas"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_VIRTUAL_WORKERS)) {
             resourcesItems.add(subItem(_("Virtual Workers"),
                     "/resources/worker/virtualWorkers.zul",
                     "05-recursos.html#xesti-n-de-traballadores"));
         }
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CALENDARS)) {
+        if (!AUDIOVISUAL
+                && SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_CALENDARS)) {
             resourcesItems.add(subItem(_("Calendars"),
                     "/calendars/calendars.zul", "03-calendarios.html"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_CALENDAR_EXCEPTION_DAYS)) {
             resourcesItems.add(subItem(_("Calendar Exception Days"),
                     "/excetiondays/exceptionDays.zul", ""));
         }
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_CRITERIA)) {
+        if (!AUDIOVISUAL
+                && SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_CRITERIA)) {
             resourcesItems.add(subItem(_("Criteria"),
                     "/resources/criterions/criterions.zul",
                     "02-criterios.html#id1"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_PROGRESS_TYPES)) {
             resourcesItems.add(subItem(_("Progress Types"),
                     "/advance/advanceTypes.zul", "04-avances.html#id1"));
         }
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_MATERIALS)) {
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_LABELS)) {
             resourcesItems.add(subItem(_("Labels"), "/labels/labelTypes.zul",
                     "10-etiquetas.html"));
-            resourcesItems.add(subItem(_("Materials"),
-                    "/materials/materials.zul",
-                    "11-materiales.html#administraci-n-de-materiais"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_MATERIAL_UNITS)) {
             resourcesItems.add(subItem(_("Material Units"),
                     "/unittypes/unitTypes.zul",
@@ -340,7 +349,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                             "12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"));
         }
 
-        if (!AUDIOVISUAL && !resourcesItems.isEmpty()) {
+        if (!resourcesItems.isEmpty()) {
             topItem(_("Resources"), "/resources/worker/worker.zul", "",
                     resourcesItems);
         }
