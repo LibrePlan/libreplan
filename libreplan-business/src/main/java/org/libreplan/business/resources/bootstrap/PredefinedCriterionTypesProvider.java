@@ -46,9 +46,13 @@ public class PredefinedCriterionTypesProvider implements ICriterionTypeProvider 
     @Override
     public Map<CriterionType, List<String>> getRequiredCriterions() {
         Map<CriterionType, List<String>> result = new HashMap<CriterionType, List<String>>();
-        for (PredefinedCriterionTypes type : PredefinedCriterionTypes.values()) {
-            result.put(CriterionType.fromPredefined(type), type.getPredefined());
-        }
+
+        // Predefined criteria will not be available on Audiovisual Branch
+        //
+        // for (PredefinedCriterionTypes type :
+        // PredefinedCriterionTypes.values()) {
+        // result.put(CriterionType.fromPredefined(type), type.getPredefined());
+        // }
         return result;
     }
 }
