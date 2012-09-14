@@ -83,11 +83,11 @@
   </logger>
 
   <appender name="second-level-cache-file" class="org.apache.log4j.RollingFileAppender">
-      <param name="file" value="/tmp/libreplan-second-level-cache.log"/>
+      <param name="file" value="${libreplan-log-directory}libreplan-second-level-cache.log" />
       <param name="MaxFileSize" value="5000KB"/>
       <param name="MaxBackupIndex" value="4"/>
       <layout class="org.apache.log4j.PatternLayout">
-          <param name="ConversionPattern" value="%d [%t] %-5p %l - %m%n"/>
+          <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
       </layout>
   </appender>
 
