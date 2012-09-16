@@ -82,13 +82,13 @@ public enum PredefinedBudgetTemplates {
                 new Element("02.06.03","Especialistas"),
                 new Element("02.06.04","Caballistas")
             ),
-            new Container("02.07", "Especialistas",
+            new Container("02.07", "Ballet y orquestas",
                 new Element("02.07.01","Coreógrafo"),
                 new Element("02.07.02","Bailarines"),
                 new Element("02.07.03","Cuerpo de baile"),
                 new Element("02.07.04","Orquestas")
             ),
-            new Container("02.08", "Especialistas",
+            new Container("02.08", "Doblaje",
                 new Element("02.08.01","Director de doblaje. D ..."),
                 new Element("02.08.02","Doblador para ..."),
                 new Element("02.08.03","Doblador para ...")
@@ -395,7 +395,7 @@ public enum PredefinedBudgetTemplates {
              )
          ),
 
-         new Container("10", "LABORATORIO",
+         new Container("10", "SEGUROS",
              new Container("10.01", "Seguros",
                  new Element("10.01.01","Seguro de negativo"),
                  new Element("10.01.02","Seguro de materiales de rodaje"),
