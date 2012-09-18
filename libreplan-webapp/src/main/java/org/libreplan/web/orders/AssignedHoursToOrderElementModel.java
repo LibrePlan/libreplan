@@ -197,9 +197,15 @@ public class AssignedHoursToOrderElementModel implements IAssignedHoursToOrderEl
         if (orderElement.getChildren().isEmpty()) {
             return EffortDuration.zero();
         }
-        EffortDuration assignedDirectChildren = getTotalAssignedEffort().minus(
-                this.assignedDirectEffort);
-        return assignedDirectChildren;
+        EffortDuration totalAssignedEffort = getTotalAssignedEffort();
+        // FIXME Once we're able to reproduce and fix the cause of bugs like
+        // #1529, we could remove this if
+        if (totalAssignedEffort.compareTo(assignedDirectEffort) < 0) {
+            orderElement.getOrder()
+                    .markAsNeededToRecalculateSumChargedEfforts();
+            return EffortDuration.zero();
+        }
+        return totalAssignedEffort.minus(this.assignedDirectEffort);
     }
 
     @Override
