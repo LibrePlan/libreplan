@@ -921,9 +921,10 @@ height: 100%
 .advancedallocationlayout .taskspanelgap td.z-row-inner {
     padding:0 !important;
 }
+/* Row needs to be 1px higher on Audiovisual branch */
 .advancedallocationlayout .taskspanelgap td.z-row-inner input {
-    padding-top: 1px;
-    padding-bottom:1px;
+    padding-top: 2px;
+    padding-bottom:2px;
 }
 
 .advancedallocationlayout .taskspanelgap .z-label {
@@ -1450,8 +1451,9 @@ div.z-grid-header .second_level_ tr {
 	height: 28px;
 }
 
+/* Row needs to be 1px higher on Audiovisual branch */
 .taskspanelgap tr.z-row {
-    height: 24px;
+    height: 25px;
 }
 
 .filmingprogressdetails td {
