@@ -272,8 +272,12 @@ public class TemplatesTreeController extends
             BigDecimal total = currentElement.getCostOrSalary()
                     .multiply(quantity).multiply(duration);
             // Added holidaySalary and indemnizationSalary
-            total = total.add(currentElement.getHolidaySalary()).add(
-                    currentElement.getIndemnizationSalary());
+            if (currentElement.getHolidaySalary() != null) {
+                total = total.add(currentElement.getHolidaySalary());
+            }
+            if (currentElement.getIndemnizationSalary() != null) {
+                total = total.add(currentElement.getIndemnizationSalary());
+            }
             budgetBox.setValue(total);
             //fire change event, to update the total in the parents
             Events.sendEvent(budgetBox, new Event(Events.ON_CHANGE));
