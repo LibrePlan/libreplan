@@ -221,7 +221,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
 
     @Override
     public OrderElementTemplate toLeaf() {
-        OrderLineTemplate result = BudgetLineTemplate.createNew();
+        BudgetLineTemplate result = BudgetLineTemplate.createNew();
         copyTo(result);
         return result;
     }

@@ -392,6 +392,18 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         result.setStartAsDaysFromBeginning(getStartAsDaysFromBeginning());
     }
 
+    protected void copyTo(BudgetLineTemplate result) {
+        result.setCode(getCode());
+        result.setName(getName());
+        result.setDescription(getDescription());
+        result.setDeadlineAsDaysFromBeginning(getDeadlineAsDaysFromBeginning());
+        result.setStartAsDaysFromBeginning(getStartAsDaysFromBeginning());
+        // set a default type for a line that has been just created from a
+        // container, not setting a type leads to errors because this field is
+        // compulsory
+        result.setBudgetLineType(BudgetLineTypeEnum.PRICE_PER_DAY);
+    }
+
     @Valid
     public Set<MaterialAssignmentTemplate> getMaterialAssignments() {
         return Collections.unmodifiableSet(materialAssignments);
