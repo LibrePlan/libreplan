@@ -29,15 +29,18 @@
             <caption label="${i18n:_('Export options')}" />
             <vbox>
                 <checkbox id="print_labels" label="${i18n:_('Show labels')}" checked="true" />
-                <checkbox id="print_resources"
-                    label="${i18n:_('Show resource assignments')}" checked="true"  />
+                <!-- Not appliable on Audiovisual -->
+                <checkbox id="print_resources" visible="false"
+                    label="${i18n:_('Show resource assignments')}" checked="false" />
                 <checkbox id="print_expanded"
                     label="${i18n:_('Expand taskgroups')}" checked="true"  />
                 <checkbox id="print_shrinked"
                     label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" visible="false"/>
-                <checkbox id="print_advances"
-                    label="${i18n:_('Show progress')}" checked="true"/>
-                <checkbox id="print_reported_hours"
+                <!-- Not appliable on Audiovisual -->
+                <checkbox id="print_advances" visible="false"
+                    label="${i18n:_('Show progress')}" checked="false" />
+                <!-- Not appliable on Audiovisual -->
+                <checkbox id="print_reported_hours" visible="false"
                     label="${i18n:_('Show all reported hours')}" checked="true"/>
                 <checkbox id="print_money_cost_bar"
                     label="${i18n:_('Show money cost bar')}" checked="true"/>
