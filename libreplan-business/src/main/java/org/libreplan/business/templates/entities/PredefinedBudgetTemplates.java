@@ -110,7 +110,7 @@ public enum PredefinedBudgetTemplates {
                 new Element("03.02.04","Primer ayudante prod"),
                 new Element("03.02.05","Regidor"),
                 new Element("03.02.06","Auxiliar producción"),
-                new Element("02.08.07","Cajero-pagador"),
+                new Element("03.02.07","Cajero-pagador"),
                 new Element("03.02.08","Secretaria producción")
             ),
             new Container("03.03", "Fotografía",
@@ -205,7 +205,7 @@ public enum PredefinedBudgetTemplates {
                   new Element("04.02.06","Armería"),
                   new Element("04.02.07","Vehículos en escena"),
                   new Element("04.02.08","Comidas en escena"),
-                  new Element("04.02.08","Material efectos especiales")
+                  new Element("04.02.09","Material efectos especiales")
               ),
               new Container("04.03", "Vestuario",
                   new Element("04.03.01","Vestuario alquilado"),
@@ -292,8 +292,8 @@ public enum PredefinedBudgetTemplates {
                   new Element("06.01.19","Helicóptero, aviones, etc. ..."),
                   new Element("06.01.20","Helicóptero, aviones, etc. ..."),
                   new Element("06.01.21","Equipo de sonido principal"),
-                  new Element("06.01.21","Equipo sonido complementario"),
-                  new Element("06.01.21","Fluido eléctrico (enganches)")
+                  new Element("06.01.22","Equipo sonido complementario"),
+                  new Element("06.01.23","Fluido eléctrico (enganches)")
               ),
               new Container("06.02","Transportes",
                   new Element("06.02.01","Coches de producción"),
@@ -350,17 +350,17 @@ public enum PredefinedBudgetTemplates {
                  new Element("08.02.01","Positivo imagen color"),
                  new Element("08.02.02","Positivo imagen B.y N"),
                  new Element("08.02.03","Positivo primera copia estándar"),
-                 new Element("08.02.01","Positivo segunda copia estándar"),
-                 new Element("08.02.02","Interpositivo"),
-                 new Element("08.02.03","Lavender")
+                 new Element("08.02.04","Positivo segunda copia estándar"),
+                 new Element("08.02.05","Interpositivo"),
+                 new Element("08.02.06","Lavender")
              ),
              new Container("08.03", "Magnéticos y varios",
                  new Element("08.03.01","Magnético 35/16 mm (nuevo)"),
                  new Element("08.03.02","Magnético 35/16 mm (usado)"),
                  new Element("08.03.03","Magnético 1/4 pulgada"),
-                 new Element("08.03.03","Magnético 1/4 pulgada ..."),
-                 new Element("08.03.03","Material fotografías escenas"),
-                 new Element("08.03.03","Otros materiales")
+                 new Element("08.03.04","Magnético 1/4 pulgada ..."),
+                 new Element("08.03.05","Material fotografías escenas"),
+                 new Element("08.03.06","Otros materiales")
              )
          ),
 
@@ -390,8 +390,8 @@ public enum PredefinedBudgetTemplates {
                  new Element("09.03.07","Títulos de crédito"),
                  new Element("09.03.08","Laboratorio fotografías"),
                  new Element("09.03.09","Animación"),
-                 new Element("09.03.09","Imágenes de archivo"),
-                 new Element("09.03.09","Animación")
+                 new Element("09.03.10","Imágenes de archivo"),
+                 new Element("09.03.11","Animación")
              )
          ),
 
