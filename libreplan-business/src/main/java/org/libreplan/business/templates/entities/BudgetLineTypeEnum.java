@@ -28,22 +28,35 @@ import static org.libreplan.business.i18n.I18nHelper._;
  */
 public enum BudgetLineTypeEnum {
 
-    PRICE_PER_SESSION(_("price per session")),
-    PRICE_PER_DAY(_("price per day")),
-    PRICE_PER_UNIT(_("price per unit")),
-    SALARY_PER_SESSION(_("salary per session")) {
+    TOTAL_SALARY(_("total")) {
         @Override
         public boolean isRelatedToSalary() {
             return true;
         }
     },
-    SALARY_PER_DAY(_("salary per day")) {
+    TOTAL_TA(_("total T/A")) {
         @Override
         public boolean isRelatedToSalary() {
             return true;
         }
     },
-    TOTAL_SALARY(_("total salary")) {
+    PRICE_PER_UNIT(_("price/unit")),
+    PRICE_PER_SESSION(_("price/session")),
+    PRICE_PER_DAY(_("price/day")),
+    PRICE_PER_MONTH(_("price/month")),
+    SALARY_PER_SESSION(_("salary/session")) {
+        @Override
+        public boolean isRelatedToSalary() {
+            return true;
+        }
+    },
+    SALARY_PER_DAY(_("salary/day")) {
+        @Override
+        public boolean isRelatedToSalary() {
+            return true;
+        }
+    },
+    SALARY_PER_MONTH(_("salary/month")) {
         @Override
         public boolean isRelatedToSalary() {
             return true;
