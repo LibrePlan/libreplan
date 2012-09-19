@@ -149,6 +149,9 @@ public class ExpenseSheetCRUDController extends
                     .getFellowIfAny("bandboxResource");
         }
         bandboxTasks = (BandboxSearch) editWindow.getFellowIfAny("bandboxTasks");
+        bandboxTasks.setWidthListbox("800px");
+        bandboxTasks.setWidthBandbox("900px");
+
     }
 
     /*

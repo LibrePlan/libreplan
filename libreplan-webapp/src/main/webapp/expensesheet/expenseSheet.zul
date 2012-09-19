@@ -125,7 +125,7 @@
                     <label value="${i18n:_('Task')}"/>
                     <bandboxSearch id="bandboxTasks"
                         widthBandbox="285px"
-                        widthListbox="400px"
+                        widthListbox="700px"
                         finder="OrderElementInExpenseSheetBandboxFinder"
                         model="@{controller.tasks}"
                         selectedElement="@{controller.newExpenseSheetLine.orderElement, access='both'}"/>

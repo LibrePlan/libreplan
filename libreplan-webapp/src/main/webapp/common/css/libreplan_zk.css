@@ -619,6 +619,10 @@ padding-top: 3px;
     width: 100px;
 }
 
+.orderTree .budget {
+    width: 50px;
+}
+
 .orderTree .tasknumber {
     display:none;
 }
@@ -1570,9 +1574,12 @@ border-right: solid 1px #F2D8D8 !important;
 }
 
 .advanced-assignment-area td .z-intbox[value="0"],
-.advanced-assignment-area td .z-textbox[value="0"] {
-    background: #ABCDE1;
-    color: #555555;
+.advanced-assignment-area td .z-textbox[value="0"],
+.advanced-assignment-area td .z-intbox[value="0.00"],
+.advanced-assignment-area td .z-textbox[value="0.00"]
+ {
+    background: white;
+    color: transparent;
 }
 
 .advanced-assignment-area td .limiting.z-intbox,
