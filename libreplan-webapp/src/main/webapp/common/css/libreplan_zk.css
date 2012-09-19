@@ -608,19 +608,23 @@ padding-top: 3px;
     width: 50px;
 }
 .orderTree .code {
-    min-width: 100px;
+    width: 60px;
 }
 
 .orderTree .scheduling_state {
-    min-width:140px;
+    width:70px;
 }
 .orderTree .estimated_init,
 .orderTree .estimated_end {
-    width: 100px;
+    width: 90px;
 }
 
 .orderTree .budget {
-    width: 50px;
+    width: 90px;
+}
+
+.orderTree .units {
+    width: 40px;
 }
 
 .orderTree .tasknumber {

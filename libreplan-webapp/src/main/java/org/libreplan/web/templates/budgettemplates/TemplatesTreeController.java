@@ -233,6 +233,8 @@ public class TemplatesTreeController extends
                 Getter<BigDecimal> getter, Setter<BigDecimal> setter,
                 Constraint constraint) {
             Decimalbox result = new DecimalboxDirectValue();
+            result.setHflex("1");
+            result.setSclass("mydecimalbox");
             Util.bind(result, getter, setter);
             result.setConstraint(constraint);
             if (readOnly) {
@@ -246,6 +248,7 @@ public class TemplatesTreeController extends
                 Getter<Integer> getter, Setter<Integer> setter,
                 Constraint constraint) {
             Intbox result = new Intbox();
+            result.setHflex("1");
             Util.bind(result, getter, setter);
             result.setConstraint(constraint);
             if (readOnly) {
@@ -418,6 +421,7 @@ public class TemplatesTreeController extends
             if (element.isLeaf()) {
                 final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
                 Combobox box = new Combobox();
+                box.setHflex("1");
                 for(BudgetLineTypeEnum type: BudgetLineTypeEnum.values()) {
                     Comboitem item = new Comboitem(type.toString());
                     item.setValue(type);
