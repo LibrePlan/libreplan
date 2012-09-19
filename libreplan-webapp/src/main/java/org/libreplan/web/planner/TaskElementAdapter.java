@@ -1051,13 +1051,15 @@ public class TaskElementAdapter {
 
             private String buildTooltipText(BigDecimal progressPercentage) {
                 StringBuilder result = new StringBuilder();
-                result.append(_("Name: {0}", getName()) + "<br/>");
-                result.append(_("Progress") + ": ").append(progressPercentage)
-                        .append("% , ");
+                result.append(getName() + "<br/>");
 
-                result.append(_("Hours invested") + ": ")
-                        .append(getHoursAdvancePercentage().multiply(
-                                new BigDecimal(100))).append("% <br/>");
+//              On Audiovisual there will be no progress measurements
+//
+//                result.append(_("Progress") + ": ").append(progressPercentage)
+//                        .append("% , ");
+//                result.append(_("Hours invested") + ": ")
+//                        .append(getHoursAdvancePercentage().multiply(
+//                                new BigDecimal(100))).append("% <br/>");
 
                 if (taskElement.getOrderElement() instanceof Order) {
                     result.append(_("State") + ": ").append(getOrderState());
@@ -1071,10 +1073,14 @@ public class TaskElementAdapter {
                             _("Budget: {0}, Consumed: {1} ({2}%)", budget, moneyCost,
                                     getMoneyCostBarPercentage().multiply(new BigDecimal(100))))
                             .append("<br/>");
-                    result.append(
-_(
-                            "Hours cost: {0}, Expenses cost: {1}",
-                            costHours, costExpenses));
+
+//              On Audiovisual all the consumed cost comes from expenses
+//              so it is not needed this extra separation
+//
+//                    result.append(
+//                            _(
+//                            "Hours cost: {0}, Expenses cost: {1}",
+//                            costHours, costExpenses));
                 }
 
                 String labels = buildLabelsText();
