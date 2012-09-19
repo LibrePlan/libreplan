@@ -33,7 +33,7 @@
     </zscript>
 
     <borderlayout sclass="orderslayout" width="auto" self="@{define(content)}" apply="${bController}"
-            height="100%" style="overflow:visible">
+            vflex="1">
 
         <north height="30px" border="0" sclass="toolbar-box">
             <hbox align="center" id="toolbar">
