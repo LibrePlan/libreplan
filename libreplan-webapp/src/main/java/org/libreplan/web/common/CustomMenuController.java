@@ -489,7 +489,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     "/reports/completedEstimatedHoursPerTask.zul",
                     "15-informes.html"));
         }
-        if (SecurityUtils
+        if (!AUDIOVISUAL
+                && SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_PROJECT_COSTS_REPORT)) {
             reportsItems.add(subItem(_("Project Costs"),
                     "/reports/orderCostsPerResource.zul", "15-informes.html"));
