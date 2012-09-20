@@ -750,6 +750,7 @@ public class PlanningStateCreator {
                     buildScenarioInfo(order), order);
             this.resources = OrderPlanningModel
                     .loadRequiredDataFor(new HashSet<Resource>(initialResources));
+            forceLoadDayAssignments(resources);
             associateWithScenario(this.resources);
             this.orderAuthorizations = loadOrderAuthorizations();
             this.savedOrderState = order.getState();
