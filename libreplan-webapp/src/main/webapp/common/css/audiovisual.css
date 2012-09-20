@@ -1,7 +1,14 @@
+
 .perspective.filming-progress .z-button-cm,
 .perspective-active.filming-progress .z-button-cm {
     background-image: url(../img/ico_filming-progress.png);
 }
+
+.perspective.budget .z-button-cm,
+.perspective-active.budget .z-button-cm {
+    background-image: url(../img/ico_advanced-allocation.png);
+}
+
 .reported-hours, .show-advances {
     display: none;
 }
@@ -16,7 +23,8 @@
     margin-top: 3px;
 }
 
-.toolbar-box .reported-hours, .toolbar-box .show-advances,
+.toolbar-box .reported-hours,
+.toolbar-box .show-advances,
 .toolbar-box .show-resources {
     display: none;
 }
@@ -30,7 +38,8 @@
     color: white !important;
 }
 
-.orderTree input.z-intbox-disd {
+
+.orderTree input.z-intbox-disd[value="0"] {
     background: #FFF;
     border-left-color: transparent;
     display:none;
