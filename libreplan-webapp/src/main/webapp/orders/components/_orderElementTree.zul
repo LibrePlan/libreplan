@@ -36,14 +36,11 @@
             <label value="${i18n:_('name')}" />
             <textbox value="" id="newOrderElementName" width="150px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
-            <label value="${i18n:_('Type')}" />
-            <combobox id="newBudgetLineTemplateType"
-                onOK="treeController.addElement(self.parent);" disabled="true" />
             <button id="btnNew" label="${treeComponent.addElementLabel}"
                 onClick="treeController.addElement(self.parent);" disabled="true" />
             <button id="btnNewFromTemplate" label="${i18n:_('Add From Template')}"
                 onClick="treeController.createFromTemplate();" disabled="true"
-                visible="${treeComponent.createFromTemplateEnabled}"/>
+                visible="false"/>
         </hbox>
 
         <hbox width="100%" style="float:right" hflex="1" align="right" pack="right"
@@ -58,7 +55,7 @@
                 hoverImage="/common/img/ico_derived.png"
                 tooltiptext="${i18n:_('Create template from selected task')}"
                 onClick="treeController.createTemplateFromSelectedElement();"
-                if="${arg.showCreateTemplateButton}"/>
+                if="${arg.showCreateTemplateButton}" disabled="true"/>
             <button id="downButton" sclass="icono" image="/common/img/ico_bajar1.png"
                 hoverImage="/common/img/ico_bajar.png"
                 tooltiptext="${i18n:_('Move selected task down')}"
