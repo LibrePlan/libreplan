@@ -141,11 +141,13 @@
                                     itemRenderer="@{controller.baseCalendarsComboitemRenderer}"
                                     onSelect="controller.setBaseCalendar(self.selectedItem.value);" />
                             </row>
-                            <row>
+                            <!--  Not appliable on audiovisual branch -->
+                            <row visible="false">
                                 <label value="${i18n:_('Scheduling mode')}" />
                                 <combobox id="schedulingMode" />
                             </row>
-                            <row>
+                            <!--  Not appliable on audiovisual branch -->
+                            <row visible="false">
                                 <label value="${i18n:_('Dependencies have priority')}" />
                                 <checkbox
                                     checked="@{controller.order.dependenciesConstraintsHavePriority}" />
@@ -173,9 +175,10 @@
                                         onChange="controller.reloadTotalBudget(txtTotalBudget)"
                                         format="@{controller.moneyFormat}"/>
                                     <separator bar="false" spacing="15px" orient="vertical"/>
-                                    <label value="${i18n:_('Materials')}" />
+                                    <!-- Not appliable on Audiovisual -->
+                                    <label value="${i18n:_('Materials')}" visible="false"/>
                                     <decimalbox id="boxMaterialsBudget" width="80px" scale="2"
-                                        value="@{controller.order.materialsBudget}"
+                                        value="@{controller.order.materialsBudget}" visible="false"
                                         onChange="controller.reloadTotalBudget(txtTotalBudget)"
                                         format="@{controller.moneyFormat}"/>
                                     <separator bar="false" spacing="15px" orient="vertical"/>
@@ -191,7 +194,8 @@
                                     <label value="@{controller.currencySymbol}"/>
                                 </hbox>
                             </row>
-                            <row>
+                            <!--  Not appliable on audiovisual branch -->
+                            <row visible="false">
                                 <label value="${i18n:_('Total hours')}" />
                                 <label value="@{controller.order.totalHours}"/>
                             </row>
