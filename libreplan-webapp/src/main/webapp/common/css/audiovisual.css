@@ -46,3 +46,23 @@
     opacity: 0.2;
     color: #CCC !important;
 }
+
+ .z-combobox .z-combobox-btn {
+    heigth: 24px;
+ }
+
+body .advancedallocationlayout .taskspanelgap tr.z-grid-odd td.z-row-inner,
+body tr.z-grid-odd,
+body .advancedallocationlayout .taskspanelgap tr.z-row {
+    background: #F0FAFF;
+    border-bottom: solid 1px #444;
+}
+
+tr.z-grid-odd .z-cell,
+.advancedallocationlayout tr.z-row .task-name {
+    border-bottom: solid 1px #444;
+}
+
+.unmodifiable-hours.totals-row {
+    font-weight: bold;
+}

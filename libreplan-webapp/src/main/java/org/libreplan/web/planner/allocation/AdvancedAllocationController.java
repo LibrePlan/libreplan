@@ -1031,6 +1031,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                     Cell cell = new Cell();
                     cell.setAlign("center");
                     cell.setValign("center");
+                    cell.setSclass("task-name");
                     cell.setRowspan(row.isTotal()
                             && planningState.getOrder()
                                     .isCashflowManagementEnabled() ? 3 : 2);
@@ -1770,9 +1771,12 @@ class RowAllocation extends Row {
 
     private void reloadEffortOnInterval(Component component, DetailItem item) {
         if (cannotBeEdited(item)) {
-            Label label = (Label) component;
-            label.setValue(getEffortForDetailItem(item).toFormattedString());
-            label.setClass(getLabelClassFor(item));
+            // It's more legible not filling in the cells when its value is 0.
+            if (!getEffortForDetailItem(item).isZero()) {
+                Label label = (Label) component;
+                label.setValue(getEffortForDetailItem(item).toFormattedString());
+                label.setClass(getLabelClassFor(item));
+            }
         } else {
             EffortDurationBox effortDurationBox = (EffortDurationBox) component;
             effortDurationBox.setValue(getEffortForDetailItem(item));
@@ -2050,7 +2054,9 @@ class RowExpenses extends Row {
 
     private void reloadEffortOnInterval(Component component, DetailItem item) {
         Label label = (Label) component;
-        label.setValue(getEffortForDetailItem(item).toFormattedString());
+        if (!getEffortForDetailItem(item).isZero()) {
+            label.setValue(getEffortForDetailItem(item).toFormattedString());
+        }
         label.setClass("unmodifiable-hours");
         if (getEffortForDetailItem(item).toEurosAsDecimal().longValue() > 0) {
             label.setClass("unmodifiable-hours positive");
@@ -2130,9 +2136,11 @@ abstract class RowTotals extends Row {
     }
 
     protected void reloadEffortOnInterval(Component component, DetailItem item) {
-        Label label = (Label) component;
-        label.setValue(getEffortForDetailItem(item).toFormattedString());
-        label.setClass("unmodifiable-hours");
+        if (!getEffortForDetailItem(item).isZero()) {
+            Label label = (Label) component;
+            label.setValue(getEffortForDetailItem(item).toFormattedString());
+            label.setClass("unmodifiable-hours totals-row");
+        }
     }
 
     private EffortDuration getEffortForDetailItem(DetailItem item) {
@@ -2247,6 +2255,7 @@ class RowTotalAllocation extends RowTotals {
         }
         hbox.appendChild(getAllEffortInput());
         hbox.appendChild(labelBudget);
+        hbox.setSclass("all-effort");
         return hbox;
     }
 
@@ -2290,6 +2299,7 @@ class RowTotalCashflowOutputs extends RowTotals {
             setAllEffortInput(buildSumAllEffort());
             getAllEffortInput().setWidth("90px");
             getAllEffortInput().setReadonly(true);
+            getAllEffortInput().setSclass("all-effort-input");
             reloadAllEffort();
         }
         return getAllEffortInput();

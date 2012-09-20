@@ -956,7 +956,12 @@ height: 100%
     cursor: default;
 }
 .advancedallocationlayout .unmodifiable-hours.z-label {
-    color: #555555;
+    opacity: 0.5;
+}
+.advancedallocationlayout .advanced-assignment-area .unmodifiable-hours.positive {
+    display: inline;
+    color: #555;
+    opacity: 1;
 }
 .advancedallocationlayout .consolidated-hours.z-label {
     color: #75d9b0;
