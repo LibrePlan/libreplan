@@ -608,23 +608,30 @@ padding-top: 3px;
     width: 50px;
 }
 .orderTree .code {
-    width: 60px;
+    width: 65px;
 }
 
 .orderTree .scheduling_state {
-    width:70px;
+    width:76px;
 }
 .orderTree .estimated_init,
 .orderTree .estimated_end {
-    width: 90px;
+    width: 70px;
 }
 
 .orderTree .budget {
-    width: 90px;
+    width: 70px;
 }
 
 .orderTree .units {
     width: 40px;
+}
+
+.orderTree .budgettype {
+    width: 70px;
+}
+.orderTree .total {
+    min-width: 70px;
 }
 
 .orderTree .tasknumber {
@@ -1066,7 +1073,7 @@ span.perspective, span.perspective-active {
 /* Concealed perpectives on audiovisual branch */
 .perspective.limiting-resources, .perspective-active.limiting-resources,
 .perspective.order-limiting-resources,
-.perspective .order-dashboard,
+.perspective.order-dashboard,
 .perspective.hidden {
     display: none;
 }
@@ -1572,18 +1579,17 @@ border-right: solid 1px #F2D8D8 !important;
 .advanced-assignment-area td .z-intbox,
 .advanced-assignment-area td .z-textbox {
     height: 20px;
-    background: #3C90BE;
-    color: white;
     border-right: solid 1px white;
 }
 
 .advanced-assignment-area td .z-intbox[value="0"],
 .advanced-assignment-area td .z-textbox[value="0"],
+.advanced-assignment-area td .z-doublebox[value="0"]
 .advanced-assignment-area td .z-intbox[value="0.00"],
-.advanced-assignment-area td .z-textbox[value="0.00"]
+.advanced-assignment-area td .z-textbox[value="0.00"],
+.advanced-assignment-area td .z-doublebox[value="0.00"]
  {
-    background: white;
-    color: transparent;
+    color: #ddd;
 }
 
 .advanced-assignment-area td .limiting.z-intbox,
@@ -1960,11 +1966,7 @@ select {
     display:inline;
 }
 
-.orderTree input.z-intbox-disd {
-    background: #FFF;
-    border-left-color: transparent;
-    display:none;
-}
+
 .reported-hours, .show-advances {
     display: none;
 }
