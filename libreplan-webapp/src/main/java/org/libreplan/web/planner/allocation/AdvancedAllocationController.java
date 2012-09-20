@@ -2052,6 +2052,9 @@ class RowExpenses extends Row {
         Label label = (Label) component;
         label.setValue(getEffortForDetailItem(item).toFormattedString());
         label.setClass("unmodifiable-hours");
+        if (getEffortForDetailItem(item).toEurosAsDecimal().longValue() > 0) {
+            label.setClass("unmodifiable-hours positive");
+        }
     }
 
     private EffortDuration getEffortForDetailItem(DetailItem item) {
