@@ -59,7 +59,7 @@
                         <tab label="${i18n:_('Quality Forms')}" />
                     </tabs>
                     <tabpanels>
-                        <tabpanel sclass="template-tree-tabpanel">
+                        <tabpanel sclass="template-tree-tabpanel budget-perspective">
                             <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
                         </tabpanel>
                         <tabpanel>

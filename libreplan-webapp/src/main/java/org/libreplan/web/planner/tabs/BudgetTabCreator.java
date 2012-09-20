@@ -90,7 +90,7 @@ public class BudgetTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Budget"), "order-dashboard",
+        return new CreatedOnDemandTab(_("Budget"), "budget",
                 componentCreator) {
 
             @Override
