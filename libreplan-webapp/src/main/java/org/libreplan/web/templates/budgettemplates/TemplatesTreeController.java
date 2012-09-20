@@ -425,7 +425,6 @@ public class TemplatesTreeController extends
             if (element.isLeaf()) {
                 final BudgetLineTemplate budgetLine = (BudgetLineTemplate) element;
                 Combobox box = new Combobox();
-                box.setHflex("1");
                 for(BudgetLineTypeEnum type: BudgetLineTypeEnum.values()) {
                     Comboitem item = new Comboitem(type.toString());
                     item.setValue(type);
@@ -434,6 +433,7 @@ public class TemplatesTreeController extends
                         box.setSelectedItem(item);
                     }
                 }
+                box.setWidth("90px");
                 box.addEventListener(Events.ON_SELECT, new EventListener() {
 
                     @Override
