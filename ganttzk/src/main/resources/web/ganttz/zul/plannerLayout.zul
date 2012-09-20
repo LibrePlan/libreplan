@@ -33,6 +33,7 @@ planner = self;
         <separator/>
         <!--  Commands -->
 
+
         <button onClick="planner.invalidate()"
             image="/common/img/ico_refresh.png"
             tooltiptext="${ganttzk_i18n:_('Refresh')}" visible="false" />
@@ -53,14 +54,16 @@ planner = self;
 
         <!-- Progress type -->
 
-        <button id="showCriticalPath" onClick="planner.showCriticalPath();"
+        <!-- Not appliable on Audiovisual  -->
+        <button visible="false" id="showCriticalPath" onClick="planner.showCriticalPath();"
             image="/common/img/ico_criticalpath.png"
             tooltiptext="${ganttzk_i18n:_('Show/Hide critical path')}" />
         <button id="showAllLabels" onClick="planner.showAllLabels();"
             image="/common/img/ico_labels.png"
             tooltiptext="${ganttzk_i18n:_('Show/Hide labels')}" sclass="planner-command show-labels" />
+        <!-- Not appliable on Audiovisual  -->
         <button id="showAllResources" onClick="planner.showAllResources();"
-            image="/common/img/ico_resources.png"
+            image="/common/img/ico_resources.png" visible="false"
             tooltiptext="${ganttzk_i18n:_('Show/Hide resources')}" sclass="planner-command show-resources" />
         <button id="expandAll" onClick="planner.expandAll();"
             image="/common/img/ico_expand.png"
