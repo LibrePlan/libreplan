@@ -230,17 +230,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             throw new WrongValueException(name, _("cannot be empty"));
         }
 
-        Combobox typeBox = (Combobox) cmp
-                .getFellow("newBudgetLineTemplateType");
-        BudgetLineTypeEnum type;
-        if (typeBox.getSelectedItem() == null
-                || typeBox.getSelectedItem().getValue() == null) {
-            throw new WrongValueException(typeBox, _("please select a type"));
-        } else {
-            type = (BudgetLineTypeEnum) typeBox.getSelectedItem().getValue();
-        }
-
         Textbox nameTextbox = null;
+
+        BudgetLineTypeEnum type = BudgetLineTypeEnum.TOTAL_SALARY;
 
         // Parse hours
         try {
@@ -349,17 +341,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
-        populateTypeCombobox();
-    }
-
-    private void populateTypeCombobox() {
-        Combobox box = ((Combobox) orderElementTreeComponent
-                .getFellowIfAny("newBudgetLineTemplateType"));
-        for (BudgetLineTypeEnum type : BudgetLineTypeEnum.values()) {
-            Comboitem item = new Comboitem(type.toString());
-            item.setValue(type);
-            box.appendChild(item);
-        }
     }
 
     public boolean isItemSelected() {
@@ -1365,9 +1346,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             ((Button)orderElementTreeComponent.getFellowIfAny("btnNewFromTemplate")).setDisabled(readOnly);
             ((Textbox)orderElementTreeComponent.getFellowIfAny("newOrderElementCode")).setDisabled(readOnly);
             ((Textbox)orderElementTreeComponent.getFellowIfAny("newOrderElementName")).setDisabled(readOnly);
-            ((Combobox) orderElementTreeComponent
-                    .getFellowIfAny("newBudgetLineTemplateType"))
-                    .setDisabled(readOnly);
             ((Hbox) orderElementTreeComponent.getFellowIfAny("selectedRowButtons")).setVisible(!readOnly);
             Util.reloadBindings(orderElementTreeComponent);
         }
