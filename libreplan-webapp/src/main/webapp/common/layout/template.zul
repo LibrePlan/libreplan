@@ -116,7 +116,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     <west class="perspectives-column" width="90px" >
         <vbox vflex="1" height="100%">
             <hbox id="perspectiveButtonsInsertionPoint" sclass="toolbar-box global-commands" height="30px" width="100%">
-                <button id="createOrderButton" image="/common/img/ico_add.png" sclass="planner-icon"
+                <button id="createOrderButton" label="${i18n:_('New')}" image="/common/img/ico_add.png" sclass="planner-icon"
                      tooltiptext="${i18n:_('Create New Project')}" />
             </hbox>
             <vbox id="registeredItemsInsertionPoint" width="90px" style="overflow-y:auto;overflow-x:hidden;display:block" vflex="1" />
