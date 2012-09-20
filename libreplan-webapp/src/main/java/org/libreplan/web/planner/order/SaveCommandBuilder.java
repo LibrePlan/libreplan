@@ -56,6 +56,7 @@ import org.libreplan.business.orders.entities.ISumExpensesRecalculator;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.daos.IConsolidationDAO;
 import org.libreplan.business.planner.daos.IDependencyDAO;
@@ -401,6 +402,7 @@ public class SaveCommandBuilder {
 
         private void doTheSaving() {
             Order order = state.getOrder();
+            updateTotalBudget(order);
             generateOrderElementCodes(order);
             createAdvancePercentagesIfRequired(order);
             calculateAndSetTotalHours(order);
@@ -521,6 +523,22 @@ public class SaveCommandBuilder {
                 // Do nothing.
                 // This means that some parent has already defined an advance
                 // percentage so we don't need to create it at this point
+            }
+        }
+
+        private void updateTotalBudget(Order order) {
+            // LIBREPLAN AUDIOVISUAL
+            // every time we save the order we update the field totalBudget in
+            // the order, so it can be correctly shown in the orders list.
+            // We could have used getBudget() in the orders list, but it will
+            // check the children, and they are not yet available at that
+            // moment. This way is easier.
+            if (order.getState().equals(OrderStatusEnum.BUDGET)) {
+                // get data from budget hierarchy
+                order.setWorkBudget(order.getAssociatedBudgetObject()
+                        .getBudget());
+            } else {
+                order.setWorkBudget(order.getBudget());
             }
         }
 
