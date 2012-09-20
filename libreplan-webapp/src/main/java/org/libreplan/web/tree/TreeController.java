@@ -1319,15 +1319,16 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     protected Set<Treecell> cellsMarkedAsModified = new HashSet<Treecell>();
 
     public void markModifiedTreeitem(Treerow item) {
-        Treecell tc = (Treecell) item.getFirstChild();
-        // Check if marked label has been previously added
-        if (!(tc.getLastChild() instanceof org.zkoss.zul.Label)) {
-            org.zkoss.zul.Label modifiedMark = new org.zkoss.zul.Label("*");
-            modifiedMark.setTooltiptext(_("Modified"));
-            modifiedMark.setSclass("modified-mark");
-            tc.appendChild(modifiedMark);
-            cellsMarkedAsModified.add(tc);
-        }
+        // Doesn't make sense mark row modifications on Audiovisual
+        // Treecell tc = (Treecell) item.getFirstChild();
+        // // Check if marked label has been previously added
+        // if (!(tc.getLastChild() instanceof org.zkoss.zul.Label)) {
+        // org.zkoss.zul.Label modifiedMark = new org.zkoss.zul.Label("*");
+        // modifiedMark.setTooltiptext(_("Modified"));
+        // modifiedMark.setSclass("modified-mark");
+        // tc.appendChild(modifiedMark);
+        // cellsMarkedAsModified.add(tc);
+        // }
     }
 
     public void resetCellsMarkedAsModified() {
