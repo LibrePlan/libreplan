@@ -1300,6 +1300,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void appendButtonDerived(final Hbox hbox, final Order order) {
         Button buttonDerived = new Button();
+        // Not appliable on Audiovisual as it creates a template and not a budget template
+        buttonDerived.setVisible(false);
         buttonDerived.setSclass("icono");
         buttonDerived.setImage("/common/img/ico_derived1.png");
         buttonDerived.setHoverImage("/common/img/ico_derived.png");
