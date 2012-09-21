@@ -23,9 +23,6 @@ package org.libreplan.web.planner.taskedition;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.planner.entities.ITaskPositionConstrained;
 import org.libreplan.business.planner.entities.Task;
@@ -43,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskComponent;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -322,23 +318,7 @@ public class EditTaskController extends GenericForwardComposer {
                         .getRelativeTo();
                 taskComponent.updateProperties();
                 taskComponent.invalidate();
-
-                recalculatePositionOfSiblings(taskComponent);
-            }
-        }
-    }
-
-    private void recalculatePositionOfSiblings(TaskComponent taskComponent) {
-        org.zkoss.ganttz.data.Task task = taskComponent.getTask();
-
-        List<TaskContainer> parents = new ArrayList<TaskContainer>(context
-                .getMapper().getParents(task));
-        for (TaskContainer parent : parents) {
-            if (parent.contains(task)) {
-                for (org.zkoss.ganttz.data.Task child : parent.getTasks()) {
-                    context.recalculatePosition(context.getMapper()
-                            .findAssociatedDomainObject(child));
-                }
+                taskComponent.recalculatePositionOfSiblings();
             }
         }
     }
