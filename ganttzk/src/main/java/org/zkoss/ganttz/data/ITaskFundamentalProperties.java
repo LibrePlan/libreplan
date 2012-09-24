@@ -79,6 +79,8 @@ public interface ITaskFundamentalProperties {
 
     public GanttDate getMoneyCostBarEndDate();
 
+    BigDecimal getMoneyCostBarPercentage();
+
     public GanttDate getAdvanceEndDate();
 
     public BigDecimal getHoursAdvancePercentage();

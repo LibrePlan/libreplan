@@ -545,8 +545,10 @@ public class TaskComponent extends Div implements AfterCompose {
     public void updateCompletionMoneyCostBar() {
         if (task.isShowingMoneyCostBar()) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
-            String widthMoneyCostBar = pixelsFromStartUntil(startPixels,
-                    this.task.getMoneyCostBarEndDate()) + "px";
+            int endPixels = this.task.getEndDate().toPixels(getMapper());
+            int widthPixels = (int) ((endPixels - startPixels) * this.task
+                    .getMoneyCostBarPercentage().doubleValue());
+            String widthMoneyCostBar = widthPixels + "px";
             response(null, new AuInvoke(this, "resizeCompletionMoneyCostBar",
                     widthMoneyCostBar));
         } else {

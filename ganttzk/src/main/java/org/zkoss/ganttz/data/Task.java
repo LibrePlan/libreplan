@@ -404,6 +404,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
+    public BigDecimal getMoneyCostBarPercentage() {
+        return fundamentalProperties.getMoneyCostBarPercentage();
+    }
+
+    @Override
     public GanttDate getAdvanceEndDate() {
         return fundamentalProperties.getAdvanceEndDate();
     }
