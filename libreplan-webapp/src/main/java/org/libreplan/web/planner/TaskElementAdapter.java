@@ -634,7 +634,8 @@ public class TaskElementAdapter {
                         EffortDuration.hours(8));
             }
 
-            private BigDecimal getMoneyCostBarPercentage() {
+            @Override
+            public BigDecimal getMoneyCostBarPercentage() {
                 return MoneyCostCalculator.getMoneyCostProportion(
                         getMoneyCost(), getBudget());
             }
