@@ -33,7 +33,6 @@ import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.i18n.I18nHelper;
 
 /**
  * Sequence for {@link IntegrationEntity} codes.
@@ -41,7 +40,7 @@ import org.libreplan.business.i18n.I18nHelper;
  */
 public class EntitySequence extends BaseEntity {
 
-    public static final Integer MIN_NUMBER_OF_DIGITS = 5;
+    public static final Integer MIN_NUMBER_OF_DIGITS = 2;
     public static final Integer MAX_NUMBER_OF_DIGITS = 9;
 
     public static final String CODE_SEPARATOR_CHILDREN = "-";
@@ -79,7 +78,7 @@ public class EntitySequence extends BaseEntity {
 
     private Integer lastValue = 0;
 
-    private Integer numberOfDigits = MIN_NUMBER_OF_DIGITS;
+    private Integer numberOfDigits = 4;
 
     private Boolean active = false;
 
