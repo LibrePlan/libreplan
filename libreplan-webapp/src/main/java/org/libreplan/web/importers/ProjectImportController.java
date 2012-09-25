@@ -5,9 +5,13 @@ import static org.libreplan.web.I18nHelper._;
 import java.io.InputStream;
 import java.util.List;
 
+import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.TaskGroup;
+import org.libreplan.importers.CalendarDTO;
+import org.libreplan.importers.ICalendarImporter;
 import org.libreplan.importers.IOrderImporter;
 import org.libreplan.importers.OrderDTO;
 import org.libreplan.web.common.IMessagesForUser;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Radio;
 
 /**
  * Controller for import projects
@@ -30,9 +35,20 @@ public class ProjectImportController extends GenericForwardComposer {
      */
     private IOrderImporter orderImporterMPXJ;
 
+    /**
+     * CalendarImporter service.
+     */
+    private ICalendarImporter calendarImporterMPXJ;
+
     private IMessagesForUser messages;
 
     private Component messagesContainer;
+
+    private Radio importCalendars;
+
+    private Radio importTasks;
+
+    private Radio importAll;
 
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -52,14 +68,50 @@ public class ProjectImportController extends GenericForwardComposer {
 
         if (checkFileFormat(file)) {
 
-            importProject(media.getStreamData(), file);
+            if (importCalendars.isChecked()) {
 
-            messages.showMessage(Level.INFO, _(file + ": Import successfully!"));
+                try {
+                    importCalendar(media.getStreamData(), file);
+                    messages.showMessage(Level.INFO, _(file
+                            + ": Calendar import successfully!"));
+                } catch (InstanceNotFoundException e) {
+                    messages.showMessage(Level.ERROR, _("Instance not found."));
+                }
+
+            } else if (importTasks.isChecked()) {
+
+                importProject(media.getStreamData(), file);
+
+                messages.showMessage(Level.INFO, _(file
+                        + ": Task import successfully!"));
+
+            } else if (importAll.isChecked()) {
+
+                messages.showMessage(Level.WARNING, _("This funcionality is not implemented yet"));
+
+            } else {
+                messages.showMessage(Level.WARNING,
+                        _("Select one of the options."));
+            }
 
         } else {
             messages.showMessage(Level.ERROR,
                     _("The only current suported formats are mpp and planner."));
         }
+
+    }
+
+    @Transactional
+    private void importCalendar(InputStream streamData, String file)
+            throws InstanceNotFoundException {
+
+        List<CalendarDTO> calendarDTOs = calendarImporterMPXJ.getCalendarDTOs(
+                streamData, file);
+
+        List<BaseCalendar> baseCalendars = calendarImporterMPXJ
+                .getBaseCalendars(calendarDTOs);
+
+        calendarImporterMPXJ.storeBaseCalendars(baseCalendars);
 
     }
 

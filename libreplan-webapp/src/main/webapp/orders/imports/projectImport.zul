@@ -36,6 +36,15 @@
         <vbox id="messagesContainer" />
 
         <hbox>
+            <radiogroup>
+                <label value="${i18n:_('Select elements to import')}:"/>
+                <radio id="importCalendars" label="${i18n:_('Calendars')}" />
+                <radio id="importTasks" label="${i18n:_('Tasks')}" />
+                <radio id="importAll" label="${i18n:_('Both')}" />
+            </radiogroup>
+        </hbox>
+
+        <hbox>
             <button id="btnImportProject" label="${i18n:_('Upload Project')}" upload="true,maxsize=500" onUpload="projectImportController.importProject(event.getMedia())"/>
         </hbox>
     </window>
