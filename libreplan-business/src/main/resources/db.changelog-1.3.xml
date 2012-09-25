@@ -10,4 +10,17 @@
         <modifyDataType tableName="task_element" columnName="notes" newDataType="TEXT" />
     </changeSet>
 
+    <changeSet id="add-updatable-boolean-column-to-calendar-exception-type" author="acarro">
+        <comment>Add new updatable boolean column to calendar exception type with default value TRUE</comment>
+        <addColumn tableName="calendar_exception_type">
+            <column  name="updatable" type="BOOLEAN"/>
+        </addColumn>
+        <addDefaultValue tableName="calendar_exception_type" columnName="updatable"
+           defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="calendar_exception_type"
+           columnName="updatable"
+            defaultNullValue="TRUE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>

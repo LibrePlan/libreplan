@@ -51,6 +51,9 @@ public class CalendarExceptionType extends IntegrationEntity implements
 
     private String name;
 
+    @NotNull
+    private boolean updatable = true;
+
     private CalendarExceptionTypeColor color = CalendarExceptionTypeColor.DEFAULT;
 
     private Capacity capacity = Capacity.zero();
@@ -68,6 +71,16 @@ public class CalendarExceptionType extends IntegrationEntity implements
     public static CalendarExceptionType create(String code, String name,
             CalendarExceptionTypeColor color, Boolean notAssignable) {
         return create(new CalendarExceptionType(name, color, notAssignable),
+                code);
+    }
+
+    public static CalendarExceptionType create(String code, String name,
+            CalendarExceptionTypeColor color, Boolean notAssignable,
+            Boolean updatable) {
+        CalendarExceptionType calendarExceptionType = new CalendarExceptionType(
+                name, color, notAssignable);
+        calendarExceptionType.updatable = updatable;
+        return create(calendarExceptionType,
                 code);
     }
 
@@ -94,6 +107,10 @@ public class CalendarExceptionType extends IntegrationEntity implements
         this.capacity = Capacity.zero();
         this.capacity = this.capacity.overAssignableWithoutLimit(!BooleanUtils
                 .isTrue(notOverAssignable));
+    }
+
+    public boolean isUpdatable() {
+        return this.updatable;
     }
 
     @NotEmpty(message = "name not specified")

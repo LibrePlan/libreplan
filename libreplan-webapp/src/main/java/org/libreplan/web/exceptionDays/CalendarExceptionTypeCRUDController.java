@@ -45,6 +45,7 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
@@ -93,12 +94,14 @@ public class CalendarExceptionTypeCRUDController extends
             final CalendarExceptionType calendarExceptionType = (CalendarExceptionType) data;
             row.setValue(calendarExceptionType);
 
-            row.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    goToEditForm(calendarExceptionType);
-                }
-            });
+            if (calendarExceptionType.isUpdatable()) {
+                row.addEventListener(Events.ON_CLICK, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditForm(calendarExceptionType);
+                    }
+                });
+            }
 
             row.appendChild(new Label(calendarExceptionType.getName()));
             row.appendChild(new Label(_(calendarExceptionType.getColor().getName())));
@@ -108,18 +111,26 @@ public class CalendarExceptionTypeCRUDController extends
             row.appendChild(new Label(calendarExceptionType.getCapacity().getExtraEffortString()));
 
             Hbox hbox = new Hbox();
-            hbox.appendChild(Util.createEditButton(new EventListener() {
+            Button editButton = Util.createEditButton(new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     goToEditForm(calendarExceptionType);
                 }
-            }));
-            hbox.appendChild(Util.createRemoveButton(new EventListener() {
+            });
+
+            editButton.setDisabled(!calendarExceptionType.isUpdatable());
+            hbox.appendChild(editButton);
+
+            Button removeButton = Util.createRemoveButton(new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     confirmDelete(calendarExceptionType);
                 }
-            }));
+            });
+
+            removeButton.setDisabled(!calendarExceptionType.isUpdatable());
+            hbox.appendChild(removeButton);
+
             row.appendChild(hbox);
         }
     };

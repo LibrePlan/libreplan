@@ -93,6 +93,8 @@
 
         <property name="name" unique="true" />
 
+        <property name="updatable" access="field"/>
+
         <property name="color">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.libreplan.business.calendars.entities.CalendarExceptionTypeColor</param>

@@ -31,24 +31,28 @@ import org.libreplan.business.workingday.EffortDuration;
 public enum PredefinedCalendarExceptionTypes {
 
     RESOURCE_HOLIDAY("RESOURCE_HOLIDAY", CalendarExceptionTypeColor.YELLOW, true,
-            EffortDuration.zero()),
+            EffortDuration.zero(),true),
     LEAVE("LEAVE", CalendarExceptionTypeColor.MAGENTA, true,
-            EffortDuration.zero()),
+            EffortDuration.zero(),true),
     STRIKE("STRIKE", CalendarExceptionTypeColor.PURPLE, true,
-            EffortDuration.zero()),
+            EffortDuration.zero(),true),
     BANK_HOLIDAY("BANK_HOLIDAY", CalendarExceptionTypeColor.DEFAULT, true,
-            EffortDuration.zero()),
+            EffortDuration.zero(),true),
     HALF_DAY_HOLIDAY("HALF_DAY_HOLIDAY", CalendarExceptionTypeColor.ORANGE, false,
-            EffortDuration.hours(4));
+            EffortDuration.hours(4),true),
+    WORKING_DAY("WORKING_DAY", CalendarExceptionTypeColor.BLUE,
+            false, EffortDuration.hours(8), false),
+    NOT_WORKING_DAY("NOT_WORKING_DAY", CalendarExceptionTypeColor.GREEN, true,
+            EffortDuration.zero(),false);
 
     private CalendarExceptionType calendarExceptionType;
 
     private PredefinedCalendarExceptionTypes(String name,
             CalendarExceptionTypeColor color, Boolean notAssignable,
-            EffortDuration duration) {
+            EffortDuration duration, Boolean updatable) {
         // Using the name as code in order to be more human friendly
         calendarExceptionType = CalendarExceptionType.create(name, name, color,
-                notAssignable);
+                notAssignable, updatable);
         calendarExceptionType.setDuration(duration);
     }
 
