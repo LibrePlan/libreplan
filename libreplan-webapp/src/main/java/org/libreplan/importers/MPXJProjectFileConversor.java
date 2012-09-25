@@ -20,12 +20,21 @@
 package org.libreplan.importers;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import net.sf.mpxj.DateRange;
+import net.sf.mpxj.DayType;
 import net.sf.mpxj.Duration;
+import net.sf.mpxj.ProjectCalendar;
+import net.sf.mpxj.ProjectCalendarDateRanges;
+import net.sf.mpxj.ProjectCalendarException;
+import net.sf.mpxj.ProjectCalendarWeek;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.ProjectHeader;
 import net.sf.mpxj.Relation;
@@ -33,6 +42,11 @@ import net.sf.mpxj.RelationType;
 import net.sf.mpxj.Task;
 import net.sf.mpxj.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.libreplan.importers.CalendarDayHoursDTO.CalendarDayDTO;
+import org.libreplan.importers.CalendarDayHoursDTO.CalendarTypeDayDTO;
 import org.libreplan.importers.DependencyDTO.TypeOfDependencyDTO;
 
 /**
@@ -79,6 +93,470 @@ public class MPXJProjectFileConversor {
         }
 
         return importData;
+    }
+
+    /**
+     * Get a list of {@link CalendarDTO} from a ProjectFile
+     *
+     * @param file
+     *            ProjectFile to extract data from.
+     * @return List<CalendarDTO> List with the calendars that we want to import.
+     */
+    public static List<CalendarDTO> convertCalendars(ProjectFile file) {
+
+        List<CalendarDTO> calendarDTOs = new ArrayList<CalendarDTO>();
+
+        for (ProjectCalendar projectCalendar : file.getBaseCalendars()) {
+            if (StringUtils.isBlank(projectCalendar.getName())) {
+                String name = "calendar-" + UUID.randomUUID();
+                projectCalendar.setName(name);
+            }
+            calendarDTOs.add(toCalendarDTO(projectCalendar));
+            calendarDTOs.addAll(getDerivedCalendars(projectCalendar
+                    .getDerivedCalendars()));
+        }
+
+        return calendarDTOs;
+    }
+
+    /**
+     * Get a list of {@link CalendarDTO} from a ProjectFile
+     *
+     * @param file
+     *            ProjectFile to extract data from.
+     * @return List<CalendarDTO> List with the calendars that we want to import.
+     */
+    public static List<CalendarDTO> getDerivedCalendars(
+            List<ProjectCalendar> derivedProjectCalendars) {
+
+        List<CalendarDTO> calendarDTOs = new ArrayList<CalendarDTO>();
+
+        for (ProjectCalendar projectCalendar : derivedProjectCalendars) {
+
+            if (projectCalendar.getResource() == null) {
+
+                if (projectCalendar.getName() != null
+                        && projectCalendar.getName().length() != 0) {
+                calendarDTOs.add(toCalendarDTO(projectCalendar));
+                calendarDTOs.addAll(getDerivedCalendars(projectCalendar
+                        .getDerivedCalendars()));
+                }
+            }
+        }
+
+        return calendarDTOs;
+    }
+
+    /**
+     * Private Method
+     *
+     * Get {@link CalendarDTO} from a ProjectCalendar
+     *
+     * @param projectCalendar
+     *            ProjectCalendat to extract data from.
+     * @return List<CalendarDTO> List with the calendars that we want to import.
+     */
+    private static CalendarDTO toCalendarDTO(ProjectCalendar projectCalendar) {
+
+        CalendarDTO calendarDTO = new CalendarDTO();
+
+        calendarDTO.name = projectCalendar.getName();
+
+        if (projectCalendar.getParent() != null) {
+            calendarDTO.parent = projectCalendar.getParent().getName();
+        }
+
+        calendarDTO.calendarExceptions = getCalendarExceptionDTOs(projectCalendar
+                .getCalendarExceptions());
+
+        List<ProjectCalendarWeek> workWeeks = projectCalendar.getWorkWeeks();
+
+        Collections.sort(workWeeks, new CompareMPXJProjectCalendarWeeks());
+
+        calendarDTO.calendarWeeks = getCalendarWeekDTOs(projectCalendar,
+                workWeeks);
+
+        return calendarDTO;
+    }
+
+    /**
+     * Private Method
+     *
+     * Get a list of {@link CalendarExceptionDTO} from a list of CalendarExceptions
+     *
+     * @param calendarExceptions
+     *            List of CalendarException to extract data from.
+     * @return List<CalendarExceptionDTO> List with the CalendarExcepitions that we want to import.
+     */
+    private static List<CalendarExceptionDTO> getCalendarExceptionDTOs(
+            List<ProjectCalendarException> calendarExceptions) {
+
+        List<CalendarExceptionDTO> calendarExceptionDTOs = new ArrayList<CalendarExceptionDTO>();
+
+        for (ProjectCalendarException projectCalendarException : calendarExceptions) {
+
+            calendarExceptionDTOs
+                    .addAll(toCalendarExceptionDTOs(projectCalendarException));
+        }
+
+        return calendarExceptionDTOs;
+    }
+
+    /**
+     * Private Method
+     *
+     * Get {@link CalendarExceptionDTO} from a ProjectCalendarException
+     *
+     * @param projectCalendar
+     *            ProjectCalendarException to extract data from.
+     * @return List<CalendarExceptionDTO>  with the calendar exceptions that we want to import.
+     */
+    private static List<CalendarExceptionDTO> toCalendarExceptionDTOs(
+            ProjectCalendarException projectCalendarException) {
+
+        List<CalendarExceptionDTO> calendarExceptionDTOs = new ArrayList<CalendarExceptionDTO>();
+
+        Date fromDate = projectCalendarException.getFromDate();
+
+        Date toDate  = projectCalendarException.getToDate();
+
+        Period period = new Period(new DateTime(fromDate), new DateTime(toDate));
+
+        boolean working = projectCalendarException.getWorking();
+
+        int day =  period.getDays();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fromDate);
+
+        List<Integer> duration = toHours(projectCalendarException);
+
+        int hours;
+
+        int minutes;
+
+        if (duration != null) {
+            hours = duration.get(0);
+
+            minutes = duration.get(1);
+        } else {
+
+            if (working) {
+
+                hours = 8;
+
+            } else {
+
+                hours = 0;
+
+            }
+
+            minutes = 0;
+        }
+
+        while (day > -1){
+            if (day==0){
+
+                calendarExceptionDTOs.add(toCalendarExceptionDTO(cal.getTime(),
+                        hours, minutes, working));
+
+            } else {
+
+                calendarExceptionDTOs.add(toCalendarExceptionDTO(cal.getTime(),
+                        hours, minutes, working));
+
+                cal.add(Calendar.DAY_OF_MONTH, +1);
+
+            }
+
+            day--;
+
+        }
+
+        return calendarExceptionDTOs;
+    }
+
+    /**
+     * Private Method
+     *
+     * Get {@link CalendarExceptionDTO} from a ProjectCalendarException
+     *
+     * @param fromDate
+     *            Date with the day of the exception.
+     * @param hours
+     *            int with the hours.
+     * @param minutes
+     *            int with the minutes.
+     * @param working
+     *            boolean to express it is a working exception or not
+     * @return CalendarExceptionDTO  with the calendar exceptions that we want to import.
+     */
+    private static CalendarExceptionDTO toCalendarExceptionDTO(Date fromDate,
+            int hours,
+            int minutes, boolean working) {
+
+        CalendarExceptionDTO calendarExceptionDTO = new CalendarExceptionDTO();
+
+        calendarExceptionDTO.date = fromDate;
+
+        calendarExceptionDTO.hours = hours;
+
+        calendarExceptionDTO.minutes = minutes;
+
+        calendarExceptionDTO.working = working;
+
+        return calendarExceptionDTO;
+
+    }
+
+    /**
+     * Private Method
+     *
+     * Get a list of {@link CalendarWeekDTO} from a list of ProjectCalendarWeek.
+     *
+     * @param projectCalendar
+     *            ProjectCalendarWeek with the default data
+     * @param workWeeks
+     *            List of ProjectCalendarWeek to extract data from.Assume that is ordered
+     *            for its DataRange start date.
+     * @return List<CalendarDataDTO> List with the CalendarDatas that we want to import.
+     */
+    private static List<CalendarWeekDTO> getCalendarWeekDTOs(
+            ProjectCalendar projectCalendar, List<ProjectCalendarWeek> workWeeks) {
+
+        List<CalendarWeekDTO> calendarDataDTOs = new ArrayList<CalendarWeekDTO>();
+
+        Date startCalendarDate;
+        Date endCalendarDate;
+
+        if (projectCalendar.getDateRange() == null) {
+            startCalendarDate = projectCalendar.getParentFile()
+                    .getProjectHeader().getStartDate();
+            endCalendarDate = projectCalendar.getParentFile()
+                    .getProjectHeader().getFinishDate();
+
+        } else {
+            startCalendarDate = projectCalendar.getDateRange().getStart();
+            endCalendarDate = projectCalendar.getDateRange().getEnd();
+
+        }
+
+        if (workWeeks.size() == 0) {
+            calendarDataDTOs.add(toCalendarWeekDTO(startCalendarDate,
+                    endCalendarDate, projectCalendar));
+        } else {
+
+            // TODO This utility is not currently implemented in MPXJ
+            // This one is going to represent all the work weeks. Including the
+            // ones
+            // with the default value that are in the middle of two.
+
+            Date firsWorkWeekCalendarDate = workWeeks.get(0).getDateRange()
+                    .getStart();
+            Calendar calendar1 = Calendar.getInstance();
+            Calendar calendar2 = Calendar.getInstance();
+
+            // If the star of the first work week is after the start of the
+            // default
+            // we have to fill the hole
+            if (startCalendarDate.compareTo(firsWorkWeekCalendarDate) < 0) {
+                calendar1.setTime(firsWorkWeekCalendarDate);
+                calendar1.set(Calendar.DAY_OF_MONTH, -1);
+                calendarDataDTOs.add(toCalendarWeekDTO(startCalendarDate,
+                        calendar1.getTime(), projectCalendar));
+            }
+
+            Date startDate;
+            Date endDate;
+            Date nextStartDate;
+
+            int j;
+            for (int i = 0; i < workWeeks.size(); i++) {
+                startDate = workWeeks.get(i).getDateRange().getStart();
+                endDate = workWeeks.get(i).getDateRange().getEnd();
+                calendarDataDTOs.add(toCalendarWeekDTO(startDate, endDate,
+                        workWeeks.get(i)));
+
+                j = i + 1;
+                // If is not the last one
+                if (j < workWeeks.size()) {
+                    nextStartDate = workWeeks.get(i + 1).getDateRange()
+                            .getStart();
+                    calendar1.setTime(endDate);
+                    calendar1.set(Calendar.DAY_OF_MONTH, +1);
+                    // If the end of the current work week is more than one day
+                    // before
+                    // the beginning of the next
+                    if (calendar1.getTime().compareTo(nextStartDate) < 0) {
+                        calendar2.setTime(nextStartDate);
+                        calendar1.set(Calendar.DAY_OF_MONTH, -1);
+                        // Adds a new default calendar week in the hole
+                        calendarDataDTOs.add(toCalendarWeekDTO(
+                                calendar1.getTime(), calendar2.getTime(),
+                                projectCalendar));
+                    }
+                }
+            }
+
+            Date endWorkWeekCalendarDate = workWeeks.get(workWeeks.size())
+                    .getDateRange().getEnd();
+
+            // If the end of the last work week is earlier than the end of the
+            // default we have to fill the hole
+            if (endCalendarDate.compareTo(endWorkWeekCalendarDate) > 0) {
+                calendar1.setTime(endWorkWeekCalendarDate);
+                calendar1.set(Calendar.DAY_OF_MONTH, +1);
+                calendarDataDTOs.add(toCalendarWeekDTO(calendar1.getTime(),
+                        endCalendarDate, projectCalendar));
+            }
+
+        }
+
+        return calendarDataDTOs;
+    }
+
+    /**
+     * Private Method
+     *
+     * Get {@link CalendarWeekDTO} from a ProjectCalendarWeek
+     * @param parentEndDate
+     *            End date.
+     * @param parentStartDate
+     *            Start date.
+     * @param projectCalendarWeek
+     *            ProjectCalendarWeek to extract data from.
+     * @return CalendarDataDTO  with the calendar data that we want to import.
+     */
+    private static CalendarWeekDTO toCalendarWeekDTO(
+Date parentStartDate,
+            Date parentEndDate, ProjectCalendarWeek projectCalendarWeek) {
+
+        CalendarWeekDTO calendarDataDTO = new CalendarWeekDTO();
+
+        if (projectCalendarWeek.getDateRange() != null) {
+
+            calendarDataDTO.startDate = projectCalendarWeek.getDateRange()
+                    .getStart();
+
+            calendarDataDTO.endDate = projectCalendarWeek.getDateRange()
+                    .getEnd();
+
+        } else {
+
+            calendarDataDTO.startDate = null;
+
+            calendarDataDTO.endDate = null;
+
+        }
+        List<CalendarDayHoursDTO> calendarDaysHourDTOs = new ArrayList<CalendarDayHoursDTO>();
+
+        CalendarDayHoursDTO calendarDayHoursDTO;
+
+        for (int i = 0; i < 7; i++) {
+
+            calendarDayHoursDTO = new CalendarDayHoursDTO();
+
+            calendarDayHoursDTO.type = toCalendarTypeDayDTO(projectCalendarWeek
+                    .getDays()[i]);
+            calendarDayHoursDTO.day = CalendarDayDTO.values()[i];
+
+            List<Integer> duration = toHours(projectCalendarWeek.getHours()[i]);
+
+            if (duration != null) {
+                calendarDayHoursDTO.hours = duration.get(0);
+
+                calendarDayHoursDTO.minutes = duration.get(1);
+            } else {
+                if (calendarDayHoursDTO.type == CalendarTypeDayDTO.WORKING) {
+                    calendarDayHoursDTO.hours = 8;
+                } else if (calendarDayHoursDTO.type == CalendarTypeDayDTO.NOT_WORKING) {
+                    calendarDayHoursDTO.hours = 0;
+                } else if (calendarDayHoursDTO.type == CalendarTypeDayDTO.DEFAULT) {
+                    // TODO Grab the ones form default
+                    calendarDayHoursDTO.hours = 0;
+                }
+                calendarDayHoursDTO.minutes = 0;
+
+            }
+            calendarDaysHourDTOs.add(calendarDayHoursDTO);
+        }
+
+        calendarDataDTO.hoursPerDays = calendarDaysHourDTOs;
+
+        return calendarDataDTO;
+    }
+
+    private static CalendarTypeDayDTO toCalendarTypeDayDTO(DayType dayType) {
+
+        switch (dayType) {
+        case DEFAULT:
+
+            return CalendarTypeDayDTO.DEFAULT;
+
+        case NON_WORKING:
+
+            return CalendarTypeDayDTO.NOT_WORKING;
+
+        case WORKING:
+
+            return CalendarTypeDayDTO.WORKING;
+
+        default:
+
+            return null;
+
+        }
+
+    }
+
+    /**
+     * Private Method
+     *
+     * Get the number of hours of a ProjectCalendarHours
+     *
+     * @param projectCalendarDateRanges
+     *            ProjectCalendarDateRanges to extract data from.
+     * @return Integer  with the total number of hours or null if the projectCalendarHours is null.
+     */
+    private static List<Integer> toHours(
+            ProjectCalendarDateRanges projectCalendarDateRanges) {
+
+        if (projectCalendarDateRanges != null) {
+
+            List<Integer> duration = new ArrayList<Integer>();
+
+            int hours = 0;
+
+            int minutes = 0;
+
+            for (DateRange dateRange : projectCalendarDateRanges) {
+
+                DateTime start = new DateTime(dateRange.getStart());
+
+                DateTime end = new DateTime(dateRange.getEnd());
+
+                Period period = new Period(start, end);
+
+                int days = period.getDays();
+                if (period.getDays() != 0) {
+
+                    hours += 24 * days;
+
+                }
+                hours += period.getHours();
+
+                minutes += period.getMinutes();
+            }
+
+            duration.add(hours);
+
+            duration.add(minutes);
+
+            return duration;
+
+        } else {
+            return null;
+        }
     }
 
     /**
