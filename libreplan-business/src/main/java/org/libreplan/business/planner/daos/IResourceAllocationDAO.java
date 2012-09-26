@@ -63,10 +63,9 @@ public interface IResourceAllocationDAO extends
             Scenario onScenario,
             Date intervalFilterStartDate, Date intervalFilterEndDate);
 
-    Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
-            Scenario onScenario,
-            List<Criterion> criterions, Date intervalFilterStartDate,
-            Date intervalFilterEndDate);
+    List<GenericResourceAllocation> findGenericAllocationsRelatedToCriterion(
+            Scenario onScenario, Criterion criterion,
+            Date intervalFilterStartDate, Date intervalFilterEndDate);
 
     /**
      * <p>
