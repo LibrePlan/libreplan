@@ -113,6 +113,18 @@ public class Configuration extends BaseEntity {
 
     private PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity = PersonalTimesheetsPeriodicityEnum.MONTHLY;
 
+    /**
+     * Maximum users configurable directly in database for SaaS products. If
+     * zero it means that there isn't any limitation.
+     */
+    private Integer maxUsers = 0;
+
+    /**
+     * Maximum resources configurable directly in database for SaaS products. If
+     * zero it means that there isn't any limitation.
+     */
+    private Integer maxResources = 0;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -468,6 +480,14 @@ public class Configuration extends BaseEntity {
     public void setPersonalTimesheetsPeriodicity(
             PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
         this.personalTimesheetsPeriodicity = personalTimesheetsPeriodicity;
+    }
+
+    public Integer getMaxUsers() {
+        return maxUsers;
+    }
+
+    public Integer getMaxResources() {
+        return maxResources;
     }
 
 }

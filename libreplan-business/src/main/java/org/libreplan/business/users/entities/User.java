@@ -24,6 +24,7 @@ package org.libreplan.business.users.entities;
 import static org.libreplan.business.i18n.I18nHelper._;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.AssertTrue;
@@ -343,4 +344,18 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return isLibrePlanUser().equals(Boolean.TRUE) ? _("Database")
                 : _("LDAP");
     }
+
+    @AssertTrue(message = "You have exceeded the maximum limit of users")
+    public boolean checkMaxUsers() {
+        Integer maxUsers = Registry.getConfigurationDAO().getConfiguration()
+                .getMaxUsers();
+        if (maxUsers != null && maxUsers > 0) {
+            List<User> users = Registry.getUserDAO().findAll();
+            if (users.size() > maxUsers) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

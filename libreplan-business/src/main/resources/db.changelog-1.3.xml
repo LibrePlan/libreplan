@@ -56,4 +56,21 @@
             referencedTableName="type_of_work_hours" referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="add-max_users-and-max_resources-columns-to-configuration"
+        author="mrego">
+        <comment>Add max_users and max_resources columns to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="max_users" type="INTEGER" />
+        </addColumn>
+        <addColumn tableName="configuration">
+            <column name="max_resources" type="INTEGER" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="max_users" value="0" />
+        </update>
+        <update tableName="configuration">
+            <column name="max_resources" value="0" />
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

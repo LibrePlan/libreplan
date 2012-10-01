@@ -88,6 +88,9 @@
             </type>
         </property>
 
+        <property name="maxUsers" column="max_users" />
+        <property name="maxResources" column="max_resources" />
+
         <component name="ldapConfiguration" class="org.libreplan.business.common.entities.LDAPConfiguration">
             <property name="ldapHost" column="ldap_host"/>
             <property name="ldapPort" column="ldap_port"/>
