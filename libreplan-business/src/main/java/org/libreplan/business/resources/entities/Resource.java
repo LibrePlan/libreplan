@@ -1186,7 +1186,7 @@ public abstract class Resource extends IntegrationEntity implements
                 resource.getShortDescription());
     }
 
-    @AssertTrue(message = "You have exceeded the maximum limit of users")
+    @AssertTrue(message = "You have exceeded the maximum limit of resources")
     public boolean checkMaxUsers() {
         Integer maxResources = Registry.getConfigurationDAO()
                 .getConfiguration().getMaxResources();
