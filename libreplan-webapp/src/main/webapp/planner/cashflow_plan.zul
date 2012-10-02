@@ -28,7 +28,7 @@
     <window title="@{cashflowPlanController.windowTitle}"
         apply="${cashflowPlanController}">
 
-        <hbox>
+        <vbox>
 
             <groupbox closable="false" id="cashflowGroupbox">
                 <caption label="${i18n:_('Cashflow')}" />
@@ -36,7 +36,7 @@
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
-                        <column />
+                        <column width="600px" />
                     </columns>
                     <rows>
                         <row>
@@ -65,7 +65,7 @@
                                 <hbox id="outputOptionHbox">
                                     <label value="${i18n:_('New payment')}: " />
                                     <label value="${i18n:_('Date')}" />
-                                    <datebox id="dateDatebox" />
+                                    <datebox id="dateDatebox"/>
                                     <label value="${i18n:_('Amount')}" />
                                     <decimalbox id="amountDecimalbox" />
                                     <button label="${i18n:_('Add')}"
@@ -94,7 +94,7 @@
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
-                        <column />
+                        <column width="600px" />
                     </columns>
                     <rows>
                         <row>
@@ -123,7 +123,7 @@
 
             </groupbox>
 
-        </hbox>
+        </vbox>
 
         <button label="${i18n:_('Back')}"
             onClick="cashflowPlanController.back()"
