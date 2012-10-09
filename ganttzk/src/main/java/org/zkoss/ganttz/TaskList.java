@@ -409,8 +409,4 @@ public class TaskList extends XulElement implements AfterCompose {
         reload(false);
     }
 
-    public FunctionalityExposedForExtensions<?> getFunctionalityExposedForExtensionsContext() {
-        return context;
-    }
-
 }

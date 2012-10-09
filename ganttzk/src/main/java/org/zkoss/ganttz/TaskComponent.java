@@ -24,8 +24,6 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -375,24 +373,6 @@ public class TaskComponent extends Div implements AfterCompose {
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
             updateProperties();
-        } else {
-            recalculatePositionOfSiblings();
-        }
-    }
-
-    public void recalculatePositionOfSiblings() {
-        Task task = getTask();
-
-        FunctionalityExposedForExtensions<?> context = getTaskList()
-                .getFunctionalityExposedForExtensionsContext();
-        List<TaskContainer> parents = new ArrayList<TaskContainer>(context
-                .getMapper().getParents(task));
-        for (TaskContainer parent : parents) {
-            if (parent.contains(task)) {
-                for (Task child : parent.getTasks()) {
-                    context.getDiagramGraph().enforceRestrictions(child);
-                }
-            }
         }
     }
 
