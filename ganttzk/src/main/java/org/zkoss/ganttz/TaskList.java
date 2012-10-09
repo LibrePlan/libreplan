@@ -137,8 +137,11 @@ public class TaskList extends XulElement implements AfterCompose {
     private synchronized void addTaskComponent(TaskRow beforeThis,
             final TaskComponent taskComponent, boolean relocate) {
         insertBefore(taskComponent.getRow(), beforeThis);
-        addContextMenu(taskComponent);
-        addListenerForTaskComponentEditForm(taskComponent);
+        // Hack to hide context menu and double click on Audiovisual gantt
+        if (!disabilityConfiguration.isAddingDependenciesEnabled()) {
+            addContextMenu(taskComponent);
+            addListenerForTaskComponentEditForm(taskComponent);
+        }
         taskComponent.afterCompose();
         if (relocate) {
             getGanttPanel().adjustZoomColumnsHeight();
