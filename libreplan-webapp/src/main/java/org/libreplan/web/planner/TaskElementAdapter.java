@@ -120,7 +120,6 @@ public class TaskElementAdapter {
 
     public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement, LocalDate orderInitDate) {
-        List<Constraint<GanttDate>> constraints = new ArrayList<Constraint<GanttDate>>();
         if (taskElement instanceof ITaskPositionConstrained) {
             ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint startConstraint = task
@@ -130,31 +129,25 @@ public class TaskElementAdapter {
             switch (constraintType) {
             case AS_SOON_AS_POSSIBLE:
                 if (orderInitDate != null) {
-                    constraints.add(biggerOrEqualThan(toGantt(orderInitDate)));
+                    return Collections
+                            .singletonList(biggerOrEqualThan(toGantt(orderInitDate)));
                 }
-                break;
+                return Collections.emptyList();
             case START_IN_FIXED_DATE:
-                constraints.add(equalTo(toGantt(startConstraint
-                        .getConstraintDate())));
-                break;
+                return Collections
+                        .singletonList(equalTo(toGantt(startConstraint
+                                .getConstraintDate())));
             case START_NOT_EARLIER_THAN:
-                constraints.add(biggerOrEqualThan(toGantt(startConstraint
-                        .getConstraintDate())));
-                break;
+                return Collections
+                        .singletonList(biggerOrEqualThan(toGantt(startConstraint
+                                .getConstraintDate())));
             }
         }
-        if (!taskElement.isRoot() && taskElement instanceof TaskGroup) {
-            for (TaskElement child : ((TaskGroup) taskElement).getChildren()) {
-                constraints
-                        .addAll(getStartConstraintsFor(child, orderInitDate));
-            }
-        }
-        return constraints;
+        return Collections.emptyList();
     }
 
     public static List<Constraint<GanttDate>> getEndConstraintsFor(
             TaskElement taskElement, LocalDate deadline) {
-        List<Constraint<GanttDate>> constraints = new ArrayList<Constraint<GanttDate>>();
         if (taskElement instanceof ITaskPositionConstrained) {
             ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint endConstraint = task.getPositionConstraint();
@@ -162,21 +155,15 @@ public class TaskElementAdapter {
             switch (type) {
             case AS_LATE_AS_POSSIBLE:
                 if (deadline != null) {
-                    constraints.add(lessOrEqualThan(toGantt(deadline)));
+                    return Collections
+                            .singletonList(lessOrEqualThan(toGantt(deadline)));
                 }
-                break;
             case FINISH_NOT_LATER_THAN:
                 GanttDate date = toGantt(endConstraint.getConstraintDate());
-                constraints.add(lessOrEqualThan(date));
-                break;
+                return Collections.singletonList(lessOrEqualThan(date));
             }
         }
-        if (!taskElement.isRoot() && taskElement instanceof TaskGroup) {
-            for (TaskElement child : ((TaskGroup) taskElement).getChildren()) {
-                constraints.addAll(getEndConstraintsFor(child, deadline));
-            }
-        }
-        return constraints;
+        return Collections.emptyList();
     }
 
     public static GanttDate toGantt(IntraDayDate date) {
