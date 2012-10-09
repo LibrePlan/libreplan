@@ -104,6 +104,8 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.api.Auxhead;
+import org.zkoss.zul.api.Auxheader;
 import org.zkoss.zul.api.Column;
 import org.zkoss.zul.api.Window;
 
@@ -662,8 +664,30 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         table.setSclass("timeTrackedTableWithLeftPane");
         leftPane = timeTrackedTableWithLeftPane.getLeftPane();
         leftPane.setFixedLayout(true);
+
+        appendAuxHeaders(leftPane);
+
         Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
         populateHorizontalListbox();
+    }
+
+    private void appendAuxHeaders(Grid leftPane) {
+
+        Auxhead taskhead = new org.zkoss.zul.Auxhead();
+        Auxheader nameheader = new org.zkoss.zul.Auxheader(_("Task"));
+        nameheader.setRowspan(2);
+        Auxheader plannedheader = new org.zkoss.zul.Auxheader(
+                _("Planned / budget"));
+        plannedheader.setTooltiptext(_("Planned cost / Initial budgeted cost"));
+        taskhead.appendChild(nameheader);
+        taskhead.appendChild(plannedheader);
+
+        Auxhead spenthead = new org.zkoss.zul.Auxhead();
+        Auxheader spentheader = new org.zkoss.zul.Auxheader(_("Spent"));
+        spenthead.appendChild(spentheader);
+
+        leftPane.appendChild(taskhead);
+        leftPane.appendChild(spenthead);
     }
 
     public void paginationDown() {
@@ -1048,16 +1072,16 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 return cell;
             }
         });
-        result.add(new ColumnOnRow(_("Type"), "120px") {
-            @Override
-            public Component cellFor(Row row) {
-                Cell cell = new Cell();
-                cell.setAlign("center");
-                cell.setValign("center");
-                cell.appendChild(row.getRowName());
-                return cell;
-            }
-        });
+        // result.add(new ColumnOnRow(_("Type"), "120px") {
+        // @Override
+        // public Component cellFor(Row row) {
+        // Cell cell = new Cell();
+        // cell.setAlign("center");
+        // cell.setValign("center");
+        // cell.appendChild(row.getRowName());
+        // return cell;
+        // }
+        // });
         return result;
     }
 
@@ -1262,10 +1286,11 @@ class RowAllocation extends Row {
             if (getTask() != null && getTask().getBudget() != null) {
                 budget = getTask().getBudget();
             }
-            labelBudget = new Label(" ( " + budget + " ) ");
+            labelBudget = new Label(" / " + budget);
         }
         hbox.appendChild(getAllEffortInput());
         hbox.appendChild(labelBudget);
+        hbox.setAlign("pack");
         return hbox;
     }
 
@@ -1318,6 +1343,14 @@ class RowAllocation extends Row {
         if (restriction.isInvalidTotalEffort(allEffort)) {
             restriction.showInvalidEffort(messages, allEffort);
         }
+        // Highlight planned tasks over initial budget
+        if (getAllEffortInput().getEffortDurationValue().toEurosAsDecimal()
+                .compareTo(getTask().getBudget()) > 0) {
+            getAllEffortInput().setSclass("planned-deviation");
+        } else {
+            getAllEffortInput().setSclass("planned-standard");
+        }
+
     }
 
     private Hbox hboxAssigmentFunctionsCombo = null;
@@ -1902,7 +1935,7 @@ abstract class Row {
 
     protected EffortDurationBox buildSumAllEffort() {
         EffortDurationBox box = new EffortDurationBox();
-        box.setWidth("40px");
+        box.setWidth("50px");
         return box;
     }
 
@@ -1940,6 +1973,10 @@ abstract class Row {
 
     public EffortDurationBox getAllEffortInput() {
         return allEffortInput;
+    }
+
+    public Label getAllEffortLabel() {
+        return new Label(allEffortInput.getValue());
     }
 
     public void setNameLabel(Label nameLabel) {
@@ -1998,7 +2035,14 @@ class RowExpenses extends Row {
             reloadAllEffort();
         }
         final Hbox hbox = new Hbox();
-        hbox.appendChild(getAllEffortInput());
+        hbox.appendChild(getAllEffortLabel());
+
+        if (getAllEffortInput().getEffortDurationValue().toEurosAsDecimal()
+                .compareTo(getTask().getBudget()) > 0) {
+            getAllEffortInput().setSclass("planned-deviation");
+        } else {
+            getAllEffortInput().setSclass("planned-standard");
+        }
 
         if (cashflowPlan != null) {
             Button cashflowButton = Util.createEditButton(new EventListener() {

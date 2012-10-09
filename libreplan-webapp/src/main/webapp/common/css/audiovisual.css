@@ -55,14 +55,69 @@ body .advancedallocationlayout .taskspanelgap tr.z-grid-odd td.z-row-inner,
 body tr.z-grid-odd,
 body .advancedallocationlayout .taskspanelgap tr.z-row {
     background: #F0FAFF;
-    border-bottom: solid 1px #444;
+    border-bottom: solid 1px #71b1c5;
 }
 
 tr.z-grid-odd .z-cell,
 .advancedallocationlayout tr.z-row .task-name {
-    border-bottom: solid 1px #444;
+    border-bottom: solid 1px #71b1c5;
 }
 
 .unmodifiable-hours.totals-row {
     font-weight: bold;
+}
+
+.advancedallocationlayout .taskspanelgap td.z-row-inner input {
+    padding-top: 3px;
+}
+
+.advancedassignmentdetails .z-columns {
+    display: none;
+}
+
+.advancedassignmentdetails div.z-grid-header th.z-auxheader {
+    padding-top: 0;
+    padding-bottom: 0;
+    /* border-bottom: 0; */
+    border-top:0;
+}
+
+.advancedallocationlayout .advancedassignmentdetails .leftpanelgap .z-grid-header {
+    border-top: 0;
+/*    border-bottom: solid 1px #9ECAD8; */
+    border-bottom: 0;
+}
+
+.advancedallocationlayout .advancedassignmentdetails {
+    border-top: 0;
+}
+
+.planned-deviation {
+    color: #A00;
+}
+
+.advancedallocationlayout .advanced-assignment-area .unmodifiable-hours.positive,
+.advancedallocationlayout .z-grid-odd .unmodifiable-hours.z-label {
+    color: #080;
+}
+
+.advancedallocationlayout .advanced-assignment-area td .z-textbox {
+    background: #3C90BE;
+    color: #fff;
+}
+
+.advancedallocationlayout .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+        background: #fff;
+}
+
+.advancedallocationlayout .advanced-assignment-area td .z-textbox[value="0.00"]  {
+    background: #FFF;
+    color: #aaa;
+}
+.advancedallocationlayout .unmodifiable-hours.z-label {
+    opacity:1;
+}
+
+.z-auxheader .z-auxheader-cnt {
+    text-align: center;
 }
