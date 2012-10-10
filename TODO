@@ -1,60 +1,42 @@
 TODO
 ====
 
-Version 1.3 - 2012w14
+Version 1.4 - 2013w01
 ---------------------
 
 Dates
 ~~~~~
 
-* *IRC coordination meeting*: 2012w2
-* *Feature freeze*: 2012w11
-* *Release date*: 2012w14
+* *IRC coordination meeting*: 2012w41
+* *Feature freeze*: 2012w50
+* *Release date*: 2013w01
 
 Features
 ~~~~~~~~
 
 * **Top priority**
 
-  * *Disable scenarios*: Scenarios feature is not tested properly and it's in an experimental state right now. We should directly remove the option from the UI to enable it and don't give the users the chance to enable scenarios as they can cause wrong behaviors in the tool.
+  * Add a *filter by project status* in the projects screens.
 
-  * *WBS setting up behavior*: The current behavior of setting up the WBS is very strange related to containers. This feature is the one mentioned that was going to be implemented in the `user forum <https://sourceforge.net/projects/libreplan/forums/forum/1085570/topic/4538244>`_.
+  * Add a *quicksearch to find projects* easier in the projects screens.
 
-  * *Include the management and support of a currency to apply to the project*: Now all the reports are in euros. Internationalization must include to allow to configure the currency used and the symbols to use.
+  * *Right mouse menu register in the left menu of the project planning perspective*: It would be very useful and we have received the feedback of some users that it would be great to have this feature. Also the double-click over the project or task name.
 
-  * *Warning about new versions*: Add a warning in the bottom to administrators when a new version of LibrePlan is released.
+  * *Protect the upper menu from abandoning the planning of a project without saving*: This feature was not completed in release 1.2 but had been decided to do so in `analysis mail <https://sourceforge.net/mailarchive/message.php?msg_id=27691109>`_.
 
-    This features consists of implementing a mechanism to display warnings to the users about the possibility to upgrade to a new version.
+    It's also important review the behavior of advanced allocation window, we should prevent people change perspective without clicking "Apply" or even ask if they want to "Apply" if the click directly on "Save".
 
-    This system could be used to gather statistics about number of users  with LibrePlan deployed in their machine (after notification and  acceptance by the user of allowing to gather his data).
-
-  * *Permissions enhancement*: It was part of release 1.2 but was not done yet. Improve the permissions system adding new roles to report hours and other stuff. Pending to analyze deeply to define the implementation.
-
-  * *Bind users to resources*: This was part of the release 1.2 roadmap but was not started. New feature for simple users. Users would be related to application resources, and would be able to specify hours, progresses, ... on their  assigned tasks.
-
-  * *Improve help and documentation*: Also part of 1.2 and not done yet. LibrePlan is quite big and it needs a better documentation to let users learn how to use it.
+  * Improve *documentation*
 
 * **Medium priority**
 
-  * *Allow to introduce minutes in WBS screen*: This is the last planning information which is not possible to insert in minutes. So, this task consists of allowing it.
+  * *Import projects* from Microsfot Project and Planner.
 
-    Very close to this feature and maybe included in it would be to allow to specify quantities in a text format like: 8d7h
+  * Review possible *performance* issues in order to look for some improvements.
 
-  * *Vertical line to show with the start of the project*: Show a line at the start of the project, something similar to what we do with the deadline.
+  * Add a *new project status* called ``pre-sales``.
 
-  * *Improve allocation strategy calculate number of hours and calculate resources per day*: Currently is a bit complex to use this allocation strategies on using the workable days. This happens because you do not have control over the end date but over the workable days. This task will consists of translating from start/end date to workable days taking into account the task calendar.
-
-  * *KPIs per project*: There are being developed several KPI (Key Performance Indicators) per project. More info at wiki in story `AnA14S01PerProjectDashboard <http://wiki.libreplan.org/twiki/bin/view/LibrePlan/AnA14S01PerProjectDashboard>`_.
-
-  * *User experience improvements*: Improve user experience and aspect of some pages like the report ones (capturing input data ones). The idea is making the interaction with LibrePlan smoother, putting the focus on the newly created cells, easing the work just with the keyboard (the "name: input : Add button" system, that allows creating several elements without needing to point-n-click on things is an example).
-
-  * *Icons*: Improve icons and ask for them (possible integration with icons of the web).
-
-  * *Subcontracting module*: They are being implemented a set of tasks to implement improvements in subcontracting module. More info at wiki in story `AnA15SubcontractorModule <http://wiki.libreplan.org/twiki/bin/view/LibrePlan/AnA15SubcontractorModule>`_.
-
-  * *Upper menu revamp*: We have received the feedback that the upper menu is not understood many times correctly because it has the style of tabs.
-
-  * *Refactor entity model for templates*: This was part of release 1.2 but was not started yet. There are some internal issues in the implementation of templates.
+  * *JIRA* integration
 
   * *Show the load of the resources to be assigned in allocation pop-up*: This feature was in the roadmap for release 1.2 but there was not enough time to to it, so it is pending.
 
@@ -66,7 +48,21 @@ Features
 
      * *After being done*: In the allocation table a link to open a pop-up with a chart which shows the load of the resource would be included.
 
-  * *Right mouse menu register in the left menu of the project planning perspective*: It would be very useful and we have received the feedback of some users that it would be great to have this feature. Also the double-click over the project or task name.
+
+Future & wish list
+------------------
+
+* **Scheduling module**
+
+  * Save KPIs in database in order to wrap up the project status.
+
+  * Add a pipeline page to show projects grouped by status.
+
+  * *Allow to introduce minutes in WBS screen*: This is the last planning information which is not possible to insert in minutes. So, this task consists of allowing it.
+
+    Very close to this feature and maybe included in it would be to allow to specify quantities in a text format like: 8d7h
+
+  * *Improve allocation strategy calculate number of hours and calculate resources per day*: Currently is a bit complex to use this allocation strategies on using the workable days. This happens because you do not have control over the end date but over the workable days. This task will consists of translating from start/end date to workable days taking into account the task calendar.
 
   * *Flaw when changing start/end date of project, or when changing the START_NOT_SOONER_THAN constraint from WBS*: If  you change the start date of a project already planned this start date  affects the start date of the tasks planned with constraint  AS_SOON_AS_POSSIBLE. The same happens with the end date of a project and  the constraint AS_LATER_AS_POSSIBLE.
 
@@ -77,20 +73,6 @@ Features
     There  is another weird behavior with START_NOT_SOONER_THAN constraint of a  task if it is introduced in the WBS. If the task is still not planned  then the associated task in the Gantt is configured with a  START_NOT_SOONER_THAN constraint. If it has allocations then the  constraint is not added. Reflect about this.
 
     There  is another problem when you manipulate the WBS and there are already  tasks planned with dependencies or allocations. Currently when certain  movements are done you lose the dependencies and the allocations but the  user is not even informed or asked. It should be provided a way to avoid this undesirable situation.
-
-  * *Android application*: Develop an Android application to allow work report adding as a first approach to make LibrePlan work from smartphones.
-
-    It would use the LibrePlan webservices to add the work reports. Of course this should be improved and it would make many more things in the future, but as a first approach seems to be ok.
-
-  * *Protect the upper menu from abandoning the planning of a project without saving*: This feature was not completed in release 1.2 but had been decided to do so in `analysis mail <https://sourceforge.net/mailarchive/message.php?msg_id=27691109>`_.
-
-    It's also important review the behavior of advanced allocation window, we should prevent people change perspective without clicking "Apply" or even ask if they want to "Apply" if the click directly on "Save".
-
-
-Future & wish list
-------------------
-
-* **Scheduling module**
 
   * *Establishing dependencies from pop-up (form based interface)*: Now the only way to set up dependencies between activities is by dragging the arrow from the origin task and by releasing it in the destination task.
 
@@ -165,6 +147,14 @@ Future & wish list
 
 * **Usability  module**
 
+  * Make WBS screen more user-friendly with more keyboard shortcuts and some other thins like columns for dependencies and so on.
+
+  * *User experience improvements*: Improve user experience and aspect of some pages like the report ones (capturing input data ones). The idea is making the interaction with LibrePlan smoother, putting the focus on the newly created cells, easing the work just with the keyboard (the "name: input : Add button" system, that allows creating several elements without needing to point-n-click on things is an example).
+
+  * *Icons*: Improve icons and ask for them (possible integration with icons of the web).
+
+  * *Upper menu revamp*: We have received the feedback that the upper menu is not understood many times correctly because it has the style of tabs.
+
   * *Menu breadcrumbs*: Proposed to  be removed or at least being made consistent.
 
   * *Improve error detection at perspective changes*: Improve the detection of errors and prevent to do a perspective change on planning a project.
@@ -183,7 +173,22 @@ Future & wish list
 
   * *Allow workers to ask for holidays*: Allow workers -if the profile is created- to ask for holidays. Each worker has a calendar assigned, and he/she could ask for the vacation days. Then, a reviewer -project manager- could confirm or deny that vacation days.
 
+  * Include the groups feature:
+
+    * A group or department will be composed by a list of resources.
+    * Add filters to show only projects/resources belonging to a group.
+
+  * *Refactor entity model for templates*: This was part of release 1.2 but was not started yet. There are some internal issues in the implementation of templates.
+
 * **Other**
+
+  * Add CSV import/export for projects.
+
+  * Print Gantt chart in PDF format.
+
+  * *Android application*: Develop an Android application to allow work report adding as a first approach to make LibrePlan work from smartphones.
+
+    It would use the LibrePlan webservices to add the work reports. Of course this should be improved and it would make many more things in the future, but as a first approach seems to be ok.
 
   * Add export/import operations for different format files from other projects like OpenProj, MicrosoftProject, ...
 

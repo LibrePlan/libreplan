@@ -27,11 +27,13 @@ import org.libreplan.business.orders.entities.SumExpenses;
 import org.libreplan.business.orders.entities.TaskSource;
 
 /**
- * Utilities methods for report DTOs.
+ * DTO to represent each row in the Project Status report.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class ProjectStatusReportDTO {
+
+    private static final String INDENT_PREFIX = "    ";
 
     private String code;
 

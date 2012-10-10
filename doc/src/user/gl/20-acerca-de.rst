@@ -66,6 +66,7 @@ Anteriores membros do equipo
 Traductores
 -----------
 
+* [ca] Daniel Díaz Sañudo <gurnan@gmail.com>
 * [cs] Zbyněk Schwarz <zbynek.schwarz@gmail.com>
 * [de] Joern Knechtel <j.knechtel@gmx.de>,
   Michael Taxis <mxtaxis@gmx.de>

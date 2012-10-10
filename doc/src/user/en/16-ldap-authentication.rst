@@ -36,6 +36,13 @@ configuration.
    If your LDAP is configured to work with anonymous authentication you can
    leave empty *UserDN* and *Password* attributes.
 
+.. TIP::
+
+   About *Active Directory (AD)* configuration, the *Base* field must be the
+   exact location where the bound user lives in the AD.
+
+   Example: ``ou=organizational_unit,dc=example,dc=org``
+
 Authentication
 ==============
 

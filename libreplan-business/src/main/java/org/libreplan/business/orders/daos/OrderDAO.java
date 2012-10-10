@@ -445,9 +445,6 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
                 + "LEFT OUTER JOIN expense.orderElement exp_ord "
                 + "WHERE orderElement.id = exp_ord.id ";
 
-        if (!orders.isEmpty()) {
-            strQuery += "AND orderElement.parent IN (:orders) ";
-        }
         if (startingDate != null && endingDate != null) {
             strQuery += "AND expense.date BETWEEN :startingDate AND :endingDate ";
         }
@@ -464,9 +461,6 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         Query query = getSession().createQuery(strQuery);
 
         // Set parameters
-        if (!orders.isEmpty()) {
-            query.setParameterList("orders", orders);
-        }
         if (startingDate != null) {
             query.setParameter("startingDate", new LocalDate(startingDate));
         }
@@ -480,7 +474,8 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         for (CostExpenseSheetDTO each : list) {
             Order order = loadOrderAvoidingProxyFor(each.getOrderElement());
             // Apply filtering
-            if (matchFilterCriterion(each.getOrderElement(), criterions)) {
+            if (matchFilterCriterion(each.getOrderElement(), criterions)
+                    && isOrderContained(order, orders)) {
                 each.setOrder(order);
                 filteredList.add(each);
             }

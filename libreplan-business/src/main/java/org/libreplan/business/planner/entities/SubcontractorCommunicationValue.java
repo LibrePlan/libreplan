@@ -20,7 +20,6 @@
 package org.libreplan.business.planner.entities;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.hibernate.validator.AssertTrue;
@@ -98,9 +97,8 @@ public class SubcontractorCommunicationValue implements INewObject {
 
     @Override
     public String toString() {
-        String datetime = (date == null) ? "" : new SimpleDateFormat(
-                "dd/MM/yyyy").format(date);
-        String progress_reported = progress != null ? progress.toString() + "% - " : "";
-        return progress_reported + datetime;
+        String progress_reported = progress != null ? progress.toString()
+                + "% - " : "";
+        return progress_reported + date;
     }
 }

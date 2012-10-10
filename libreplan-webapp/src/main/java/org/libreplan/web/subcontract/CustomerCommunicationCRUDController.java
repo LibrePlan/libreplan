@@ -21,8 +21,6 @@ package org.libreplan.web.subcontract;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -34,8 +32,8 @@ import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
-import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -141,23 +139,14 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
             appendLabel(row, toString(type));
             appendLabel(row, customerCommunication.getOrder().getName());
             appendLabel(row,
-                    toString(customerCommunication.getDeadline(), "dd/MM/yyyy"));
+                    Util.formatDate(customerCommunication.getDeadline()));
             appendLabel(row, customerCommunication.getOrder().getCode());
             appendLabel(row, customerCommunication.getOrder()
                     .getCustomerReference());
-            appendLabel(row,
-                    toString(customerCommunication.getCommunicationDate(),
-                            "dd/MM/yyyy HH:mm"));
+            appendLabel(row, Util.formatDateTime(customerCommunication
+                    .getCommunicationDate()));
             appendCheckbox(row, customerCommunication);
             appendOperations(row, customerCommunication);
-        }
-
-        private String toString(Date date, String precision) {
-            if (date == null) {
-                return "";
-            }
-            return new SimpleDateFormat(precision, Locales.getCurrent())
-                    .format(date);
         }
 
         private String toString(Object object) {

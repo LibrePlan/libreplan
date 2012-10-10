@@ -90,7 +90,9 @@ import org.libreplan.business.templates.entities.Budget;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.ProfileOrderAuthorization;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserOrderAuthorization;
+import org.libreplan.web.UserUtil;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.allocation.AllocationResult;
@@ -934,7 +936,16 @@ public class PlanningStateCreator {
         }
 
         public void reassociateResourcesWithSession() {
+            User user = UserUtil.getUserFromSession();
+            boolean isBoundUser = (user != null) && user.isBound();
+
             for (Resource resource : resources) {
+                if (isBoundUser
+                        && user.getWorker().getId().equals(resource.getId())) {
+                    // Resource bound to current user is already associated with
+                    // session
+                    continue;
+                }
                 resourceDAO.reattach(resource);
             }
             // ensuring no repeated instances of criterions

@@ -5,7 +5,7 @@ Web Services
 
 :Author: Manuel Rego Casasnovas
 :Contact: rego@igalia.com
-:Date: 28/06/2011
+:Date: 27/08/2012
 :Copyright:
   Some rights reserved. This document is distributed under the Creative
   Commons Attribution-ShareAlike 3.0 licence, available in
@@ -93,6 +93,8 @@ permissions for web services of LibrePlan. Default credentials are:
 
   LibrePlan web services use `HTTP Basic Authentication`_
 
+.. _`HTTP Basic Authentication`: http://www.w3.org/Protocols/HTTP/1.0/spec.html#BasicAA
+
 
 Common parameters
 -----------------
@@ -147,10 +149,10 @@ read credentials for web services: ``/ws/rest/<service-path>/?_wadl&_type=xml``
 Export scripts
 --------------
 
-There several scripts to just get information from LibrePlan system. They always
-start with ``export-`` prefix. These scripts usually don't need any parameter
-(apart from the one to select the environment). They will return a XML output
-with the data requested.
+There are several scripts to just get information from LibrePlan system. They
+alway start with ``export-`` prefix. These scripts usually don't need any
+parameter (apart from the one to select the environment). They will return a XML
+output with the data requested.
 
 Example::
 
@@ -175,9 +177,6 @@ errors trying to insert the data in the system.
 Example::
 
   $ ./import-resources.sh resources-sample.xml
-
-
-.. _`HTTP Basic Authentication`: http://www.w3.org/Protocols/HTTP/1.0/spec.html#BasicAA
 
 
 Available web services
@@ -205,6 +204,15 @@ For each entity there are the following methods:
   * HTTP method: ``POST``
   * No parameters
   * URL: ``/ws/rest/<service-path>/``
+
+* Remove entity (only available for work reports):
+
+  * HTTP method: ``DELETE``
+  * Parameter: ``entity-code``
+  * URL: ``/ws/rest/workreports/<entity-code>/``
+
+  * Special URL for work report lines:
+    ``/ws/rest/workreports/line/<entity-code>/``
 
 Supported entities:
 

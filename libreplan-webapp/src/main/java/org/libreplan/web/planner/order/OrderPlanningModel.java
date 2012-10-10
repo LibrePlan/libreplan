@@ -309,7 +309,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         planningState = createPlanningStateFor(order);
         PlannerConfiguration<TaskElement> configuration = planningState
                 .getConfiguration();
-        PROFILING_LOG.info("load data and create configuration took: "
+        PROFILING_LOG.debug("load data and create configuration took: "
                 + (System.currentTimeMillis() - time) + " ms");
         User user;
         try {
@@ -369,7 +369,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         configureModificators(planningState.getOrder(), configuration);
         long setConfigurationTime = System.currentTimeMillis();
         planner.setConfiguration(configuration);
-        PROFILING_LOG.info("setConfiguration on planner took: "
+        PROFILING_LOG.debug("setConfiguration on planner took: "
                 + (System.currentTimeMillis() - setConfigurationTime) + " ms");
         long preparingChartsAndMisc = System.currentTimeMillis();
         // Prepare tabpanels
@@ -393,14 +393,14 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 planner, changeHooker);
         setupAdvanceAssignmentPlanningController(planner, advanceAssignmentPlanningController);
         PROFILING_LOG
-                .info("preparing charts and miscellaneous took: "
+                .debug("preparing charts and miscellaneous took: "
                         + (System.currentTimeMillis() - preparingChartsAndMisc)
                         + " ms");
 
         // Calculate critical path progress, needed for 'Project global progress' chart in Dashboard view
         planner.addGraphChangeListenersFromConfiguration(configuration);
         long overalProgressContentTime = System.currentTimeMillis();
-        PROFILING_LOG.info("overalProgressContent took: "
+        PROFILING_LOG.debug("overalProgressContent took: "
                 + (System.currentTimeMillis() - overalProgressContentTime));
     }
 

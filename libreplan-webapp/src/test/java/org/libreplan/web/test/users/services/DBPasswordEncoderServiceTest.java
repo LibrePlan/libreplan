@@ -30,7 +30,9 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.common.entities.IConfigurationBootstrap;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.users.bootstrap.IProfileBootstrap;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.users.bootstrap.IUsersBootstrapInDB;
@@ -61,11 +63,19 @@ public class DBPasswordEncoderServiceTest {
     private IUsersBootstrapInDB usersBootstrap;
 
     @Autowired
+    private IProfileBootstrap profileBootstrap;
+
+    @Autowired
+    private IConfigurationBootstrap configurationBootstrap;
+
+    @Autowired
     private IUserDAO userDAO;
 
     @Test
     public void testEncodePassword() throws InstanceNotFoundException {
 
+        configurationBootstrap.loadRequiredData();
+        profileBootstrap.loadRequiredData();
         usersBootstrap.loadRequiredData();
 
         for (PredefinedUsers u : PredefinedUsers.values()) {

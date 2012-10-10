@@ -22,8 +22,7 @@
 package org.libreplan.web.common.typeconverters;
 
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zkplus.databind.TypeConverter;
 
@@ -42,7 +41,6 @@ public class TimeConverter implements TypeConverter {
 
     @Override
     public Object coerceToUi(Object object, Component component) {
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("h:mm a");
-        return object != null ? fmt.print((LocalTime) object) : new String("");
+        return Util.formatTime((LocalTime) object);
     }
 }

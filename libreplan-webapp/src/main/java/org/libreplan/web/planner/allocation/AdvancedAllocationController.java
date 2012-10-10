@@ -42,8 +42,6 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.libreplan.business.cashflow.entities.CashflowOutput;
 import org.libreplan.business.cashflow.entities.CashflowPlan;
 import org.libreplan.business.planner.entities.AggregateOfExpensesLines;
@@ -514,7 +512,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         public void populateHorizontalListbox() {
             advancedAllocationHorizontalPagination.getItems().clear();
-            DateTimeFormatter df = DateTimeFormat.forPattern("dd/MMM/yyyy");
             if (intervalStart != null) {
                 DateTime itemStart = intervalStart;
                 DateTime itemEnd = intervalStart.plus(intervalIncrease());
@@ -524,8 +521,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                                     .plus(intervalIncrease()))) {
                         itemEnd = intervalEnd;
                     }
-                    Listitem item = new Listitem(df.print(itemStart) + " - "
-                            + df.print(itemEnd.minusDays(1)));
+                    Listitem item = new Listitem(Util.formatDate(itemStart)
+                            + " - " + Util.formatDate(itemEnd.minusDays(1)));
                     advancedAllocationHorizontalPagination.appendChild(item);
                     itemStart = itemEnd;
                     itemEnd = itemEnd.plus(intervalIncrease());

@@ -21,7 +21,7 @@
 
 package org.libreplan.web.planner;
 
-import static org.libreplan.business.workingday.EffortDuration.hours;
+import static org.libreplan.business.workingday.EffortDuration.fromHoursAsBigDecimal;
 import static org.libreplan.business.workingday.EffortDuration.min;
 import static org.libreplan.business.workingday.EffortDuration.seconds;
 import static org.libreplan.business.workingday.EffortDuration.zero;
@@ -564,7 +564,7 @@ public class TaskElementAdapter {
                 GanttDate result = null;
                 if (!(taskElement instanceof TaskGroup)) {
                     result = calculateLimitDateByHours(assignedEffort
-                            .toHoursAsDecimalWithScale(2).intValue());
+                            .toHoursAsDecimalWithScale(2));
                 }
 
                 if (result == null) {
@@ -747,8 +747,8 @@ public class TaskElementAdapter {
                 }
 
                 // Calculate date according to advanceHours or advancePercentage
-                final Integer advanceHours = advancePercentage.multiply(
-                        hours).intValue();
+                final BigDecimal advanceHours = advancePercentage
+                        .multiply(hours);
                 GanttDate result = calculateLimitDateByHours(advanceHours);
                 if (result == null) {
                     result = calculateLimitDateByPercentage(advancePercentage);
@@ -827,11 +827,11 @@ public class TaskElementAdapter {
                 return toGantt(end);
             }
 
-            private GanttDate calculateLimitDateByHours(Integer hours) {
-                if (hours == null || hours == 0) {
+            private GanttDate calculateLimitDateByHours(BigDecimal hours) {
+                if (hours == null || hours.compareTo(BigDecimal.ZERO) == 0) {
                     return null;
                 }
-                EffortDuration hoursLeft = hours(hours);
+                EffortDuration hoursLeft = fromHoursAsBigDecimal(hours);
                 IntraDayDate result = null;
                 EffortDuration effortLastDayNotZero = zero();
 

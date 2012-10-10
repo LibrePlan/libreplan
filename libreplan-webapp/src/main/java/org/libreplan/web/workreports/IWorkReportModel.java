@@ -239,9 +239,9 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
     List<Worker> getBoundWorkers();
 
     /**
-     * Checks if a {@link WorkReport} is or not a monthly timesheet.
+     * Checks if a {@link WorkReport} is or not a personal timesheet.
      */
-    boolean isMonthlyTimesheet(WorkReport workReport);
+    boolean isPersonalTimesheet(WorkReport workReport);
 
     WorkReportLine getFirstWorkReportLine();
 

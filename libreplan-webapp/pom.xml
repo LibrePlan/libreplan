@@ -140,6 +140,9 @@
                             <copy todir="src/main/webapp/help/de" failonerror="false">
                                 <fileset dir="../doc/src/user/en/html"/>
                             </copy>
+                            <copy todir="src/main/webapp/help/ca" failonerror="false">
+                                <fileset dir="../doc/src/user/es/html"/>
+                            </copy>
                           </tasks>
                          </configuration>
                         </execution>

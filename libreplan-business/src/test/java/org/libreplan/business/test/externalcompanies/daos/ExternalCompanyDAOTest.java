@@ -33,8 +33,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -70,6 +74,14 @@ public class ExternalCompanyDAOTest {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Before
+    public void loadRequiredaData() {
+        configurationBootstrap.loadRequiredData();
+    }
 
     @Test
     public void testInSpringContainer() {

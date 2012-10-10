@@ -1186,4 +1186,17 @@ public abstract class Resource extends IntegrationEntity implements
                 resource.getShortDescription());
     }
 
+    @AssertTrue(message = "You have exceeded the maximum limit of resources")
+    public boolean checkMaxResources() {
+        Integer maxResources = Registry.getConfigurationDAO()
+                .getConfiguration().getMaxResources();
+        if (maxResources != null && maxResources > 0) {
+            List<Resource> resources = Registry.getResourceDAO().findAll();
+            if (resources.size() > maxResources) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

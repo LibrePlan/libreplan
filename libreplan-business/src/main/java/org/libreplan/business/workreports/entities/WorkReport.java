@@ -34,10 +34,10 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDate.Property;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
@@ -470,9 +470,9 @@ public class WorkReport extends IntegrationEntity implements
         return result;
     }
 
-    @AssertTrue(message = "only one timesheet line per day and task is allowed in monthly timesheets")
-    public boolean checkConstraintOnlyOneWorkReportLinePerDayAndOrderElementInMonthlyTimesheet() {
-        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+    @AssertTrue(message = "only one timesheet line per day and task is allowed in personal timesheets")
+    public boolean checkConstraintOnlyOneWorkReportLinePerDayAndOrderElementInPersonalTimesheet() {
+        if (!getWorkReportType().isPersonalTimesheetsType()) {
             return true;
         }
 
@@ -492,9 +492,9 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
-    @AssertTrue(message = "In monthly timesheets, all timesheet lines should be in the same month")
-    public boolean checkConstraintAllWorkReportLinesInTheSameMonthInMonthlyTimesheet() {
-        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+    @AssertTrue(message = "In personal timesheets, all timesheet lines should be in the same period")
+    public boolean checkConstraintAllWorkReportLinesInTheSamePeriodInPersonalTimesheet() {
+        if (!getWorkReportType().isPersonalTimesheetsType()) {
             return true;
         }
 
@@ -502,10 +502,14 @@ public class WorkReport extends IntegrationEntity implements
             return true;
         }
 
-        Property dayOfMonth = LocalDate.fromDateFields(
-                workReportLines.iterator().next().getDate()).dayOfMonth();
-        LocalDate min = dayOfMonth.withMinimumValue();
-        LocalDate max = dayOfMonth.withMaximumValue();
+        LocalDate workReportDate = LocalDate.fromDateFields(workReportLines
+                .iterator().next().getDate());
+        PersonalTimesheetsPeriodicityEnum periodicity = Registry
+                .getConfigurationDAO()
+                .getConfigurationWithReadOnlyTransaction()
+                .getPersonalTimesheetsPeriodicity();
+        LocalDate min = periodicity.getStart(workReportDate);
+        LocalDate max = periodicity.getEnd(workReportDate);
 
         for (WorkReportLine line : workReportLines) {
             LocalDate date = LocalDate.fromDateFields(line.getDate());
@@ -516,9 +520,9 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
-    @AssertTrue(message = "resource has to be bound to a user in monthly timesheets")
-    public boolean checkConstraintResourceIsBoundInMonthlyTimesheet() {
-        if (!getWorkReportType().isMonthlyTimesheetsType()) {
+    @AssertTrue(message = "resource has to be bound to a user in personal timesheets")
+    public boolean checkConstraintResourceIsBoundInPersonalTimesheet() {
+        if (!getWorkReportType().isPersonalTimesheetsType()) {
             return true;
         }
 

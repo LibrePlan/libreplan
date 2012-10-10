@@ -31,11 +31,6 @@ Requires:       tomcat6
 %else
 Requires:       cutycapt
 %endif
-%if 0%{?suse_version}
-Requires:       freefont
-%else
-Requires:       gnu-free-fonts-compat
-%endif
 
 %if 0%{?suse_version}
 %define distro openSUSE

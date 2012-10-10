@@ -18,11 +18,11 @@
   <http://www.gnu.org/licenses/>.
  -->
 
-<groupbox apply="org.libreplan.web.users.dashboard.MonthlyTimesheetsAreaController">
-    <caption label="${i18n:_('Monthly timesheets')}" />
+<groupbox apply="org.libreplan.web.users.dashboard.PersonalTimesheetsAreaController">
+    <caption label="${i18n:_('Personal timesheets')}" />
 
-    <grid model="@{controller.monthlyTimesheets}" mold="paging"
-        pageSize="10" rowRenderer="@{controller.monthlyTimesheetsRenderer}"
+    <grid model="@{controller.personalTimesheets}" mold="paging"
+        pageSize="10" rowRenderer="@{controller.personalTimesheetsRenderer}"
          sclass="clickable-rows">
         <columns sizable="true">
             <column label="${i18n:_('Date')}"
