@@ -93,7 +93,7 @@
 
         <separator spacing="10px" orient="horizontal" />
 
-        <button label="Show" onClick="controller.showReport(report)" />
+        <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
 
         <jasperreportcomponent id="report" />
 
