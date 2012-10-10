@@ -8,17 +8,17 @@
 # Daniel Díaz Sañudo <gurnan@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: LibrePlan\n"
+"Project-Id-Version: libreplan-1.3.1\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
-"POT-Creation-Date: 2012-07-05 08:07+0200\n"
-"PO-Revision-Date: 2012-08-08 07:38+0000\n"
+"POT-Creation-Date: 2012-10-02 12:44+0200\n"
+"PO-Revision-Date: 2012-09-20 07:32+0000\n"
 "Last-Translator: Daniel Díaz Sañudo <gurnan@gmail.com>\n"
 "Language-Team: Català\n"
-"Language: ca\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ca\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:216
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:235
@@ -72,7 +72,7 @@ msgstr "Tasca"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
 msgid "available effort: {0}, assigned effort: {1}"
-msgstr "esforç disponible available effort: {0}, esforç assignat: {1}"
+msgstr "esforç disponible: {0}, esforç assignat: {1}"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:64
 msgid "Criterion"
@@ -120,7 +120,7 @@ msgstr "Agrupar per"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
 msgid "Generic allocation criteria"
-msgstr "Criteris generics d'assignació"
+msgstr "Criteris genèrics d'assignació"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
 msgid "Quarter"
@@ -218,7 +218,7 @@ msgstr "Gràfics"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:251
 msgid "Set Start-Start"
-msgstr "Ajus d'inici a inici"
+msgstr "Ajust d'inici a inici"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:152
 msgid "See resource allocation"
