@@ -35,8 +35,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.LogFactory;
+import org.aspectj.ajde.ui.StructureViewProperties.Granularity;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.filmingprogress.entities.FilmingProgress;
 import org.libreplan.business.filmingprogress.entities.FilmingProgressTypeEnum;
 import org.libreplan.business.orders.entities.Order;
@@ -158,8 +160,11 @@ public class FilmingProgressController extends GenericForwardComposer {
         resetMapCharts();
 
         Timeplot timeplotScenes = createTimeplot();
+        timeplotScenes.setVisible(false);
         Timeplot timeplotPages = createTimeplot();
+        timeplotPages.setVisible(false);
         Timeplot timeplotMinutes = createTimeplot();
+        timeplotMinutes.setVisible(false);
 
         ValueGeometry vg = new DefaultValueGeometry();
         vg.setGridColor("#000000");
@@ -190,6 +195,7 @@ public class FilmingProgressController extends GenericForwardComposer {
             } else {
                 i = i + 1;
             }
+
             plotinfo.setValueGeometry(vg);
             plotinfo.setTimeGeometry(tg);
 
@@ -198,18 +204,45 @@ public class FilmingProgressController extends GenericForwardComposer {
             switch(progressValue.getProgressType()){
             case SCENES :
                 timeplotScenes.appendChild(plotinfo);
+                timeplotScenes.setVisible(true);
                 break;
             case MINUTES:
                 timeplotMinutes.appendChild(plotinfo);
+                timeplotMinutes.setVisible(true);
                 break;
             case PAGES :
                 timeplotPages.appendChild(plotinfo);
+                timeplotPages.setVisible(true);
             }
         }
 
-        filmingProgressChartScenes.appendChild(timeplotScenes);
-        filmingProgressChartMinutes.appendChild(timeplotMinutes);
-        filmingProgressChartPages.appendChild(timeplotPages);
+        if (timeplotScenes.isVisible()) {
+            filmingProgressChartScenes.setVisible(true);
+            filmingProgressChartScenes.appendChild(timeplotScenes);
+            filmingProgressChartScenes.appendChild(new Label(
+                            (_("Productivity chart") + ": " + FilmingProgressTypeEnum.SCENES
+                                    .toString())));
+        }
+
+        if (timeplotMinutes.isVisible()) {
+            filmingProgressChartMinutes.setVisible(true);
+            filmingProgressChartMinutes.appendChild(timeplotMinutes);
+            filmingProgressChartMinutes
+                    .appendChild(new Label(
+                            (_("Productivity chart") + ": " + FilmingProgressTypeEnum.MINUTES
+                                    .toString())));
+
+        }
+
+        if (timeplotPages.isVisible()) {
+            filmingProgressChartPages.setVisible(true);
+            filmingProgressChartPages.appendChild(timeplotPages);
+            filmingProgressChartPages.appendChild(new Label(
+                            (_("Productivity chart") + ": " + FilmingProgressTypeEnum.PAGES
+                                    .toString())));
+
+        }
+
     }
 
     private Timeplot createTimeplot() {

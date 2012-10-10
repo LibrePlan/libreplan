@@ -57,10 +57,10 @@
                 </hbox>
 	    </div>
 	    <div class="advanced-allocation-layout">
-		<borderlayout width="100%" hflex="1" vflex="1" class="filmingprogresslayoutlayout">
-                    <north border="0" height="200px">
+		<borderlayout width="100%">
+                    <north border="0" height="310px" splittable="true">
                         <borderlayout>
-                            <west size="250px" flex="true" collapsible="true" splittable="true" sclass="filmingprogressdetails">
+                            <west size="250px" flex="true" collapsible="false" splittable="true" sclass="filmingprogressdetails">
                                 <div sclass="leftpanelgap" id="insertionPointLeftPanel">
                                     <grid id="gridTotals"
                                         model="@{fpController.rowTotals}"
@@ -76,7 +76,7 @@
 
                            <center sclass="taskspanel">
                                <borderlayout>
-                                   <center style="overflow-y:auto;overflow-x:auto;" border="0"
+                                   <center border="0"
                                        sclass="filming-progress-area rightpanellayout taskspanelgap"
                                        id="insertionPointRightPanel">
                                        <grid id="gridValuesPerDay" fixedLayout="true"
@@ -88,11 +88,11 @@
                            </center>
                        </borderlayout>
                     </north>
-                    <center>
-                        <hbox style="padding:5px" height="600px">
-                            <div id="filmingProgressChartScenes" style="height:200px; width:500px;"/>
-                            <div id="filmingProgressChartMinutes" style="height:150px; width:500px;" />
-                            <div id="filmingProgressChartPages" style="height:150px; width:500px;" />
+                    <center sclass="filming-progress-charts">
+                        <hbox style="padding:5px" >
+                            <div visible="false" id="filmingProgressChartScenes" style="height:200px; width:400px;"/>
+                            <div visible="false" id="filmingProgressChartMinutes" style="height:200px; width:400px;" />
+                            <div visible="false" id="filmingProgressChartPages" style="height:200px; width:400px;" />
                         </hbox>
                     </center>
                 </borderlayout>

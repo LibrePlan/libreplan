@@ -8,7 +8,7 @@
 
 .filming-progress-area .grid-values-per-day tr:nth-child(3n+3) {
     background-color: rgba(0, 10, 200, 0.2);
-    border-bottom: 2px solid gray;
+    border-bottom: 2px solid #eee;
 }
 
 .grid-values-per-day tr.z-row td.z-row-inner,.grid-values-per-day tr.z-row .z-cell,
@@ -42,4 +42,14 @@
     border: solid 1px #CCC;
     box-shadow: 1px 1px 3px #999;
     border-radius: 3px;
+}
+
+.filming-progress-charts .z-center-body {
+    overflow-x:auto;
+}
+
+.filming-progress-charts .z-label {
+    margin-left: 30px;
+    font-weight: bold;
+    color: #4444
 }
