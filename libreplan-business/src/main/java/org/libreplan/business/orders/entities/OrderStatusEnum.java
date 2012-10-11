@@ -48,4 +48,12 @@ public enum OrderStatusEnum {
     public static OrderStatusEnum getDefault() {
         return OFFERED;
     }
+
+    public static OrderStatusEnum[] getAllStatusExceptBudget() {
+        OrderStatusEnum[] allExceptBudget = {
+            OFFERED, ACCEPTED, STARTED, FINISHED,
+            CANCELLED, SUBCONTRACTED_PENDING_ORDER, STORED
+        };
+        return allExceptBudget;
+    }
 }

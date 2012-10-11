@@ -1173,7 +1173,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public OrderStatusEnum[] getOrderStatus() {
-        return OrderStatusEnum.values();
+        return OrderStatusEnum.getAllStatusExceptBudget();
     }
 
     public List<ExternalCompany> getExternalCompaniesAreClient() {
