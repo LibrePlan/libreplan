@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libreplan-1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-11 10:03+0200\n"
-"PO-Revision-Date: 2012-10-11 10:12+0200\n"
+"POT-Creation-Date: 2012-10-11 14:27+0200\n"
+"PO-Revision-Date: 2012-10-11 14:33+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <rego@igalia.com>\n"
 "Language-Team: Galego\n"
 "Language: gl\n"
@@ -387,7 +387,7 @@ msgid "The project has no scheduled elements"
 msgstr "O proxecto no ten elementos planificados"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrdersTreeComponent.java:80
-#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:118
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:120
 #: libreplan-webapp/src/main/webapp/limitingresources/manualAllocation.zul:120
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelTaskProperties.zul:36
 #: libreplan-webapp/src/main/webapp/planner/main.zul:53
@@ -1543,6 +1543,11 @@ msgstr "o código de empresa non pode conter espazos en branco"
 msgid "Total capability"
 msgstr "Capacidade total"
 
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/TemplatesTreeComponent.java:137
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:100
+msgid "Sev. pay"
+msgstr "Indemn."
+
 #: libreplan-webapp/src/main/java/org/libreplan/web/subcontract/ReportAdvancesModel.java:224
 msgid "Problems connecting with client web service"
 msgstr "Problemas conectando co servizo web cliente"
@@ -1570,7 +1575,7 @@ msgid "both {0} of category {1} and {2} of category {3} have the same code"
 msgstr "{0} da categoría {1} e {2} da categoría {3} teñen o mesmo código"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderElementTreeController.java:640
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:735
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:738
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/TemplatesTreeController.java:600
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/TemplatesTreeController.java:260
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:1089
@@ -3566,8 +3571,8 @@ msgstr "o parte de traballo ten algún campo de descrición baleiro"
 msgid "Create new Workweek"
 msgstr "Crear nova semana de traballo"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/TemplatesTreeComponent.java:146
-#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:109
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/TemplatesTreeComponent.java:148
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:111
 msgid "Holiday salary"
 msgstr "Vacacións"
 
@@ -4724,7 +4729,7 @@ msgid "Found resources"
 msgstr "Recursos atopados"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrdersTreeComponent.java:91
-#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:127
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:129
 #: libreplan-webapp/src/main/webapp/limitingresources/manualAllocation.zul:121
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelTaskProperties.zul:41
 #: libreplan-webapp/src/main/webapp/planner/main.zul:57
@@ -4955,8 +4960,8 @@ msgstr "debe ser posterior á data anterior"
 msgid "Do you want to split the material assignment {0}?"
 msgstr "¿Quere dividir a asignación de material {0}?"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/TemplatesTreeComponent.java:137
-#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:100
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/TemplatesTreeComponent.java:138
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:101
 msgid "Severance pay"
 msgstr "Indemnización por despido"
 
@@ -5152,6 +5157,11 @@ msgstr "Custo de traballo presupostado planificado"
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:794
 msgid "Changes applied"
 msgstr "Cambios aplicados"
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/TemplatesTreeComponent.java:147
+#: libreplan-webapp/src/main/java/org/libreplan/web/templates/budgettemplates/BudgetTreeComponent.java:110
+msgid "Hol. salary"
+msgstr "Salario vac."
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/CriterionType.java:471
 msgid "criterion type does not allow hierarchy"
@@ -5884,7 +5894,7 @@ msgstr "Novo elemento: Código"
 msgid "Timesheet templates"
 msgstr "Modelos de partes de traballo"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:724
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:727
 #: libreplan-webapp/src/main/webapp/dashboard/_costStatus.zul:42
 msgid "Hours invested"
 msgstr "Horas invertidas"
@@ -6877,7 +6887,7 @@ msgid "Add task"
 msgstr "Engadir tarefa"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderElementTreeController.java:660
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:723
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:726
 #: libreplan-webapp/src/main/webapp/myaccount/_myTasksArea.zul:38
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:46
 #: libreplan-webapp/src/main/webapp/orders/_editOrderElement.zul:48
@@ -7597,7 +7607,7 @@ msgstr "Carga"
 msgid "New criterion"
 msgstr "Criterio novo"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:728
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:731
 #: libreplan-webapp/src/main/webapp/myaccount/_expensesArea.zul:29
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:98
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:59
