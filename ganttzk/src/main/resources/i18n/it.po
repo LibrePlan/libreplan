@@ -8,17 +8,17 @@
 #   Giuseppe Zizza <gzizza@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: libreplan-1.2.3\n"
+"Project-Id-Version: libreplan-1.3.1\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
-"POT-Creation-Date: 2012-04-11 08:32+0200\n"
-"PO-Revision-Date: 2012-04-11 08:05+0000\n"
+"POT-Creation-Date: 2012-10-02 12:44+0200\n"
+"PO-Revision-Date: 2012-10-02 10:16+0000\n"
 "Last-Translator: Giuseppe Zizza <gzizza@gmail.com>\n"
 "Language-Team: Italiano\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: it\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:216
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:235
@@ -45,10 +45,6 @@ msgstr "Inizio"
 msgid "Show reported hours"
 msgstr "Mostra le ore riportate"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
-msgid "by criteria"
-msgstr "per criterio"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:85
 msgid "Show/Hide reported hours"
 msgstr "Mostra/Nascondi le ore riportate"
@@ -57,10 +53,6 @@ msgstr "Mostra/Nascondi le ore riportate"
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
 msgid "Zoom"
 msgstr "Visualizza"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/TabsRegistry.java:121
-msgid "Limiting resources"
-msgstr "Risorse limitanti"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:67
 msgid "The specified dependency is not allowed"
@@ -77,10 +69,6 @@ msgstr "Mostra/Nascondi progresso"
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "Task"
 msgstr "Compito"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
-msgid "by resources"
-msgstr "per risorsa"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:199
 msgid "available effort: {0}, assigned effort: {1}"
@@ -110,13 +98,13 @@ msgstr "filtra per nome"
 msgid "See scheduling"
 msgstr "Mostra pianificazione"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
-msgid "Show"
-msgstr "Mostra"
-
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
 msgid "End"
 msgstr "Fine"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:89
+msgid "Resources"
+msgstr "Risorse"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:243
 msgid "changing zoom"
@@ -126,9 +114,21 @@ msgstr "Cambio vista"
 msgid "Show/Hide money cost bar"
 msgstr "Mostra/Nascondi la barra dei costi"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
+msgid "Group by"
+msgstr "Raggruppa per"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
+msgid "Generic allocation criteria"
+msgstr "Criterio generico d'allocazione"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:45
 msgid "Quarter"
 msgstr "Quarto"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
+msgid "Page"
+msgstr "Pagina"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "None"
@@ -147,10 +147,6 @@ msgstr "Progetto"
 msgid "Name"
 msgstr "Nome"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:50
-msgid "Name filter"
-msgstr "Nome filtro"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:641
 msgid "Show progress"
 msgstr "Mostra progresso"
@@ -163,13 +159,13 @@ msgstr "Espandi/Riduci tutti"
 msgid "Show/Hide critical path"
 msgstr "Mostra/Nascondi percorso critico"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
-msgid "showing criteria"
-msgstr "Mostro i criteri"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:32
 msgid "Year"
 msgstr "Anno"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:150
+msgid "showing criteria"
+msgstr "Mostro i criteri"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:58
 msgid "Month"
