@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libreplan-1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-27 12:56+0200\n"
+"POT-Creation-Date: 2012-10-11 10:03+0200\n"
 "PO-Revision-Date: 2012-07-05 06:49+0000\n"
 "Last-Translator: Manuel Rego <rego@igalia.com>\n"
 "Language-Team: Español\n"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "Erase"
 msgstr "Borrar"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:299
+#: ganttzk/src/main/java/org/zkoss/ganttz/TaskList.java:302
 msgid "Add Dependency"
 msgstr "Añadir dependencia"
 
