@@ -134,7 +134,8 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
-        result.add(new TemplatesTreeColumn(_("Severance pay"), "budget") {
+        result.add(new TemplatesTreeColumn(_("Sev. pay"), "budget",
+                _("Severance pay")) {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
@@ -143,7 +144,8 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
-        result.add(new TemplatesTreeColumn(_("Holiday salary"), "budget") {
+        result.add(new TemplatesTreeColumn(_("Hol. salary"), "budget",
+                _("Holiday salary")) {
 
             @Override
             protected void doCell(TemplatesTreeRenderer renderer,
