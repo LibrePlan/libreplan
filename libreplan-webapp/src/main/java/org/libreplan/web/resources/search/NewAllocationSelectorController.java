@@ -291,7 +291,8 @@ public class NewAllocationSelectorController extends
         @SuppressWarnings("unchecked")
         Collection<Listitem> items = listBoxResources.getItems();
         for (Listitem item : items) {
-            Resource itemResource = (Resource) item.getValue();
+            Resource itemResource = ((ResourceWithItsLoadRatios) item
+                    .getValue()).getResource();
             if (itemResource != null
                     && itemResource.getId().equals(resource.getId())) {
                 return item;
@@ -398,7 +399,8 @@ public class NewAllocationSelectorController extends
         List<Resource> result = new ArrayList<Resource>();
         List<Listitem> selectedItems = listBoxResources.getItems();
         for (Listitem item : selectedItems) {
-            result.add((Resource) item.getValue());
+            result.add(((ResourceWithItsLoadRatios) item.getValue())
+                    .getResource());
         }
         return result;
     }
@@ -408,7 +410,9 @@ public class NewAllocationSelectorController extends
         List<Resource> result = new ArrayList<Resource>();
         Set<Listitem> selectedItems = listBoxResources.getSelectedItems();
         for (Listitem item : selectedItems) {
-            result.add((Resource) item.getValue());
+
+            result.add(((ResourceWithItsLoadRatios) item.getValue())
+                    .getResource());
         }
         return result;
     }
