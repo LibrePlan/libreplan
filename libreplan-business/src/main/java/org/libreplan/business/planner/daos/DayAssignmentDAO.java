@@ -46,6 +46,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -63,30 +64,46 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
     @Override
     public List<DayAssignment> getAllFor(Scenario scenario) {
         List<DayAssignment> result = new ArrayList<DayAssignment>();
-        result.addAll(getSpecific(scenario, null, null));
-        result.addAll(getGeneric(scenario, null, null));
-        result.addAll(getDerived(scenario, null, null));
+        result.addAll(getSpecific(scenario, null, null, null));
+        result.addAll(getGeneric(scenario, null, null, null));
+        result.addAll(getDerived(scenario, null, null, null));
         return result;
     }
 
+    @Override
     public List<DayAssignment> getAllFor(Scenario scenario, LocalDate init,
             LocalDate end) {
         List<DayAssignment> result = new ArrayList<DayAssignment>();
-        result.addAll(getSpecific(scenario, init, end));
-        result.addAll(getGeneric(scenario, init, end));
-        result.addAll(getDerived(scenario, init, end));
+        result.addAll(getSpecific(scenario, init, end, null));
+        result.addAll(getGeneric(scenario, init, end, null));
+        result.addAll(getDerived(scenario, init, end, null));
+        return result;
+    }
+
+    @Override
+    public List<DayAssignment> getAllFor(Scenario scenario,
+            LocalDate startDateInclusive, LocalDate endDateInclusive,
+            Resource resource) {
+        List<DayAssignment> result = new ArrayList<DayAssignment>();
+        result.addAll(getSpecific(scenario, startDateInclusive,
+                endDateInclusive, resource));
+        result.addAll(getGeneric(scenario, startDateInclusive,
+                endDateInclusive, resource));
+        result.addAll(getDerived(scenario, startDateInclusive,
+                endDateInclusive, resource));
         return result;
     }
 
     private List<DerivedDayAssignment> getDerived(Scenario scenario,
-            LocalDate initInclusive, LocalDate endInclusive) {
+            LocalDate initInclusive, LocalDate endInclusive, Resource resource) {
         String queryString = "select d from DerivedDayAssignmentsContainer c "
                 + "JOIN c.dayAssignments d where c.scenario = :scenario"
                 + addQueryConditionForInitAndEndDate(initInclusive,
-                        endInclusive);
+                        endInclusive) + addQueryConditionsForResource(resource);
         Query query = getSession().createQuery(queryString);
         query = query.setParameter("scenario", scenario);
         addInitAndEndParameters(query, initInclusive, endInclusive);
+        addResourceParameter(query, resource);
         return query.list();
     }
 
@@ -96,6 +113,10 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
                 : "";
         String endCondition = endInclusive != null ? " and d.day <= :end" : "";
         return initCondition + endCondition;
+    }
+
+    private String addQueryConditionsForResource(Resource resource) {
+        return resource != null ? " and d.resource = :resource " : "";
     }
 
     private Query addInitAndEndParameters(Query query, LocalDate initInclusive,
@@ -109,30 +130,38 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         return query;
     }
 
+    private Query addResourceParameter(Query query, Resource resource) {
+        return resource != null ? query.setParameter("resource", resource)
+                : query;
+    }
+
     private List<GenericDayAssignment> getGeneric(Scenario scenario,
-            LocalDate initInclusive, LocalDate endInclusive) {
+            LocalDate initInclusive, LocalDate endInclusive, Resource resource) {
         String queryString = "select d from GenericDayAssignmentsContainer c "
                 + "JOIN c.dayAssignments d where c.scenario = :scenario"
                 + addQueryConditionForInitAndEndDate(initInclusive,
-                        endInclusive);
+                        endInclusive) + addQueryConditionsForResource(resource);
         Query query = getSession().createQuery(queryString).setParameter(
                 "scenario", scenario);
-        query = addInitAndEndParameters(query, initInclusive, endInclusive);
+        addInitAndEndParameters(query, initInclusive, endInclusive);
+        addResourceParameter(query, resource);
         return query.list();
     }
 
     private List<SpecificDayAssignment> getSpecific(Scenario scenario,
-            LocalDate initInclusive, LocalDate endInclusive) {
+            LocalDate initInclusive, LocalDate endInclusive, Resource resource) {
         String queryString = "select d from SpecificDayAssignmentsContainer c "
                 + "JOIN c.dayAssignments d where c.scenario = :scenario"
                 + addQueryConditionForInitAndEndDate(initInclusive,
-                        endInclusive);
+                        endInclusive) + addQueryConditionsForResource(resource);
         Query query = getSession().createQuery(queryString).setParameter(
                 "scenario", scenario);
-        query = addInitAndEndParameters(query, initInclusive, endInclusive);
+        addInitAndEndParameters(query, initInclusive, endInclusive);
+        addResourceParameter(query, resource);
         return query.list();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end) {
         Criteria criteria  = getSession().createCriteria(DayAssignment.class);
@@ -164,7 +193,7 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long>
         }
         Criteria criteria = getSession().createCriteria(DayAssignment.class)
                 .add(Restrictions.in("resource", resources));
-        return (List<DayAssignment>) criteria.list();
+        return criteria.list();
     }
 
 }
