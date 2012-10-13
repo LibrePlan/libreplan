@@ -691,5 +691,4 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 || formBinder.isTaskUpdatedFromTimesheets();
     }
 
-
 }

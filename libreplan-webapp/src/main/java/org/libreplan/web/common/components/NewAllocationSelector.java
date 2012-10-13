@@ -168,11 +168,11 @@ public class NewAllocationSelector extends AllocationSelector {
     }
 
     public void setEndFilteringDate(Date d) {
-        selectorController.setEndFilteringDate(d);
+        getController().setEndFilteringDate(d);
     }
 
     public void setStartFilteringDate(Date d) {
-        selectorController.setStartFilteringDate(d);
+        getController().setStartFilteringDate(d);
     }
 
 }

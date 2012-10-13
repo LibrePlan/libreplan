@@ -21,6 +21,8 @@
 
 package org.libreplan.web.resources.search;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,10 +50,12 @@ import org.libreplan.web.common.components.ResourceAllocationBehaviour;
 import org.libreplan.web.planner.allocation.INewAllocationsAdder;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -98,7 +102,6 @@ public class NewAllocationSelectorController extends
 
     private ResourceAllocationBehaviour behaviour;
 
-
     public NewAllocationSelectorController(ResourceAllocationBehaviour behaviour) {
         this.behaviour = behaviour;
     }
@@ -114,6 +117,23 @@ public class NewAllocationSelectorController extends
         initializeCriteriaTree();
         initializeListboxResources();
         initializeAllocationTypeSelector();
+        initializeFilteringDates();
+    }
+
+    private void initializeFilteringDates() {
+        // Start and end filtering dates are initialized here because
+        // they cannot be empty and must have always a value. The
+        // task start date and task end date are not available at the first
+        // rendering. Thus, the current date and current date + 1 day are used
+        // as the value to initialize the components although will
+        // never be visible by the user.
+        Date initDate = new Date();
+        setStartFilteringDate(initDate);
+        setEndFilteringDate(LocalDate.fromDateFields(initDate).plusDays(1)
+                .toDateTimeAtStartOfDay().toDate());
+        startDateLoadRatiosDatebox
+                .setConstraint(checkConstraintFilteringDate());
+        endDateLoadRatiosDatebox.setConstraint(checkConstraintFilteringDate());
     }
 
     private void initializeCriteriaTree() {
@@ -238,8 +258,7 @@ public class NewAllocationSelectorController extends
                             .fromDateFields(startDateLoadRatiosDatebox
                                     .getValue()),
                             LocalDate.fromDateFields(endDateLoadRatiosDatebox
-                                    .getValue()),
-                            scenarioManager.getCurrent());
+                                    .getValue()), scenarioManager.getCurrent());
             result.add(new ResourceWithItsLoadRatios(each, t));
         }
 
@@ -648,4 +667,47 @@ public class NewAllocationSelectorController extends
     public void setStartFilteringDate(Date d) {
         startDateLoadRatiosDatebox.setValue(d);
     }
+
+    public void updateLoadRatios() {
+        searchResources("", getSelectedCriterions());
+    }
+
+    public Constraint  checkConstraintFilteringDate() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value) throws WrongValueException {
+                if (value == null) {
+                    if (comp.getId().equals("startDateLoadRatiosDatebox")) {
+                        throw new WrongValueException(comp,
+                                _("Start filtering date cannot be empty"));
+                    } else if (comp.getId().equals("endDateLoadRatiosDatebox")) {
+                        throw new WrongValueException(comp,
+                                _("End filtering date cannot be empty"));
+                    }
+                }
+
+                Date startDate = null;
+                if (comp.getId().equals("startDateLoadRatiosDatebox")) {
+                    startDate = (Date) value;
+                } else {
+                    startDate = (Date) startDateLoadRatiosDatebox.getRawValue();
+                }
+
+                Date endDate = null;
+                if (comp.getId().equals("endDateLoadRatiosDatebox")) {
+                    endDate = (Date) value;
+                } else {
+                    endDate = (Date) endDateLoadRatiosDatebox.getRawValue();
+                }
+
+                if ((startDate != null) && (endDate != null)) {
+                    if ((startDate.after(endDate))
+                            || (startDate.equals(endDate))) {
+                        throw new WrongValueException(comp,_("Start filtering date must be before than end filtering date"));
+                    }
+                }
+            }
+        };
+    }
+
 }

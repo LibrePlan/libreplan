@@ -54,11 +54,13 @@
                        <rows>
                          <row>
                            <label value="${i18n:_('Start date')}:"/>
-                           <datebox id="startDateLoadRatiosDatebox"/>
+                           <datebox id="startDateLoadRatiosDatebox"
+                                    onChange="selectorController.updateLoadRatios()"/>
                          </row>
                          <row>
                            <label value="${i18n:_('End date')}:"/>
-                           <datebox id="endDateLoadRatiosDatebox"/>
+                           <datebox id="endDateLoadRatiosDatebox"
+                                    onChange="selectorController.updateLoadRatios()"/>
                          </row>
                        </rows>
                      </grid>
