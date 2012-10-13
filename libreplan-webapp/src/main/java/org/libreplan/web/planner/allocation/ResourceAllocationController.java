@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.DerivedAllocation;
@@ -322,10 +323,18 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void goToAdvancedSearch() {
-        newAllocationSelector.setStartFilteringDate(resourceAllocationModel
-                .getTaskStart());
-        newAllocationSelector.setEndFilteringDate(resourceAllocationModel
-                .getTaskEnd());
+        newAllocationSelector
+                .setStartFilteringDate(LocalDate
+                        .fromDateFields(resourceAllocationModel.getTaskStart())
+                        .minusDays(
+                                NewAllocationSelector.DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION)
+                        .toDateTimeAtStartOfDay().toDate());
+        newAllocationSelector
+                .setEndFilteringDate(LocalDate
+                        .fromDateFields(resourceAllocationModel.getTaskEnd())
+                        .plusDays(
+                                NewAllocationSelector.DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION)
+                        .toDateTimeAtStartOfDay().toDate());
         applyButton.setVisible(false);
         workerSearchTab.setSelected(true);
         // The initial search and ratio load calculations is raised

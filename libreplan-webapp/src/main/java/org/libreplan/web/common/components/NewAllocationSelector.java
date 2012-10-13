@@ -45,6 +45,8 @@ import org.zkoss.zul.Radiogroup;
 @SuppressWarnings("serial")
 public class NewAllocationSelector extends AllocationSelector {
 
+    public static final int DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION = 30;
+
     private NewAllocationSelectorController selectorController;
 
     private ResourceAllocationBehaviour behaviour;
