@@ -82,8 +82,10 @@ import org.zkoss.zul.Window;
 
 /**
  * Controller for {@link ResourceAllocation} view.
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @org.springframework.stereotype.Component("resourceAllocationController")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -162,6 +164,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         assignedEffortComponent.setWidth("80px");
     }
 
+    @Override
     public ResourceAllocationController getController() {
         return this;
     }
@@ -228,12 +231,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return allocationConfiguration.getTaskWorkableDays();
     }
 
-    private Label getTaskStart() {
-        return allocationConfiguration.getTaskStart();
+    public Label getTaskStart() {
+        return (allocationConfiguration != null) ? allocationConfiguration
+                .getTaskStart() : null;
     }
 
-    private Label getTaskEnd() {
-        return allocationConfiguration.getTaskEnd();
+    public Label getTaskEnd() {
+        return (allocationConfiguration != null) ? allocationConfiguration
+                .getTaskEnd() : null;
     }
 
     private Radiogroup getCalculationTypeSelector() {
@@ -317,8 +322,15 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void goToAdvancedSearch() {
+        newAllocationSelector.setStartFilteringDate(resourceAllocationModel
+                .getTaskStart());
+        newAllocationSelector.setEndFilteringDate(resourceAllocationModel
+                .getTaskEnd());
         applyButton.setVisible(false);
         workerSearchTab.setSelected(true);
+        // The initial search and ratio load calculations is raised
+        // on going to advanced search
+        newAllocationSelector.clearAll();
     }
 
     /**
@@ -678,5 +690,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return formBinder.isAnyManual()
                 || formBinder.isTaskUpdatedFromTimesheets();
     }
+
 
 }

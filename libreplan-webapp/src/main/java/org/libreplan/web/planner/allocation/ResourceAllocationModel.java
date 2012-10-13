@@ -54,13 +54,14 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
  * Model for UI operations related to {@link Task}
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -323,6 +324,19 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             return null;
         }
         return task.getEndDate();
+    }
+
+    @Override
+    public Date getTaskStart() {
+        Date result;
+
+        if (task == null) {
+            result = null;
+        } else {
+            result = task.getStartDate();
+        }
+
+        return result;
     }
 
 }

@@ -38,6 +38,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public interface IResourceAllocationModel extends INewAllocationsAdder {
 
@@ -83,5 +84,7 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     ProportionalDistributor addDefaultAllocations();
 
     Date getTaskEnd();
+
+    Date getTaskStart();
 
 }

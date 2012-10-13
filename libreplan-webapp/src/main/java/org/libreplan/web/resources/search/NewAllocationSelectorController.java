@@ -22,8 +22,6 @@
 package org.libreplan.web.resources.search;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -72,7 +70,6 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 
-
 /**
  * Controller for searching for {@link Resource}.
  *
@@ -101,6 +98,7 @@ public class NewAllocationSelectorController extends
 
     private ResourceAllocationBehaviour behaviour;
 
+
     public NewAllocationSelectorController(ResourceAllocationBehaviour behaviour) {
         this.behaviour = behaviour;
     }
@@ -113,21 +111,9 @@ public class NewAllocationSelectorController extends
     }
 
     private void initializeComponents() {
-        initializeResourceLoadRatiosFilterDates();
         initializeCriteriaTree();
         initializeListboxResources();
         initializeAllocationTypeSelector();
-    }
-
-    private void initializeResourceLoadRatiosFilterDates() {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            startDateLoadRatiosDatebox.setValue(sdf.parse("01/09/2012"));
-            endDateLoadRatiosDatebox.setValue(sdf.parse("01/10/2012"));
-        } catch (ParseException e) {
-            System.out.println("Parse exception");
-            throw new RuntimeException();
-        }
     }
 
     private void initializeCriteriaTree() {
@@ -152,14 +138,14 @@ public class NewAllocationSelectorController extends
         listBoxResources.addEventListener(Events.ON_SELECT,
                 new EventListener() {
 
-            @Override
-            public void onEvent(Event event) {
-                if (isGenericType()) {
-                    returnToSpecificDueToResourceSelection();
-                }
-                showSelectedAllocations();
-            }
-        });
+                    @Override
+                    public void onEvent(Event event) {
+                        if (isGenericType()) {
+                            returnToSpecificDueToResourceSelection();
+                        }
+                        showSelectedAllocations();
+                    }
+                });
         listBoxResources.setMultiple(behaviour.allowMultipleSelection());
         listBoxResources.setItemRenderer(getListitemRenderer());
     }
@@ -183,7 +169,7 @@ public class NewAllocationSelectorController extends
                     }
                 });
         // Feed with values
-        for (AllocationType each: behaviour.allocationTypes()) {
+        for (AllocationType each : behaviour.allocationTypes()) {
             allocationTypeSelector.appendChild(radio(each));
         }
         doInitialSelection();
@@ -224,18 +210,21 @@ public class NewAllocationSelectorController extends
 
     private List<ResourceWithItsLoadRatios> getAllResources() {
 
-        List<? extends Resource> listResources = query().byResourceType(
-                getType()).execute();
+        List<ResourceWithItsLoadRatios> result = new ArrayList<ResourceWithItsLoadRatios>();
 
-        return addLoadRatiosCalculations(listResources);
-    }
+        // The search is only done in case that the endFilteringDate and
+        // startFilteringDate are initialized. This happens when the
+        // user does the advanced search visible by clicking on the
+        // AdvancedSearch button
+        if ((startDateLoadRatiosDatebox.getValue() != null)
+                && (endDateLoadRatiosDatebox.getValue() != null)) {
 
-    public Date getStartDateForLoadRatiosCalc() {
-        return new Date();
-    }
+            List<? extends Resource> listResources = query().byResourceType(
+                    getType()).execute();
 
-    public Date getEndDateForLoadRatiosCalc() {
-        return new Date();
+            result = addLoadRatiosCalculations(listResources);
+        }
+        return result;
     }
 
     private List<ResourceWithItsLoadRatios> addLoadRatiosCalculations(
@@ -245,9 +234,12 @@ public class NewAllocationSelectorController extends
 
         for (Resource each : listResources) {
             ILoadRatiosDataType t = resourceLoadRatiosCalculator
-                    .calculateLoadRatios(each, new LocalDate(
-                    2012, 8, 1), new LocalDate(2012, 9, 30), scenarioManager
-                    .getCurrent());
+                    .calculateLoadRatios(each, LocalDate
+                            .fromDateFields(startDateLoadRatiosDatebox
+                                    .getValue()),
+                            LocalDate.fromDateFields(endDateLoadRatiosDatebox
+                                    .getValue()),
+                            scenarioManager.getCurrent());
             result.add(new ResourceWithItsLoadRatios(each, t));
         }
 
@@ -317,8 +309,8 @@ public class NewAllocationSelectorController extends
 
     @SuppressWarnings("unchecked")
     private void clearSelection(Listbox listBox) {
-        Set<Listitem> selectedItems = new HashSet<Listitem>(listBox
-                .getSelectedItems());
+        Set<Listitem> selectedItems = new HashSet<Listitem>(
+                listBox.getSelectedItems());
         for (Listitem each : selectedItems) {
             listBox.removeItemFromSelection(each);
         }
@@ -326,7 +318,8 @@ public class NewAllocationSelectorController extends
 
     @SuppressWarnings("unchecked")
     private void clearSelection(Tree tree) {
-        Set<Treeitem> selectedItems = new HashSet<Treeitem>(tree.getSelectedItems());
+        Set<Treeitem> selectedItems = new HashSet<Treeitem>(
+                tree.getSelectedItems());
         for (Treeitem each : selectedItems) {
             tree.removeItemFromSelection(each);
         }
@@ -349,9 +342,7 @@ public class NewAllocationSelectorController extends
      */
     private void searchResources(String name, List<Criterion> criterions) {
         final List<? extends Resource> resources = query().byName(name)
-                .byCriteria(criterions)
-                .byResourceType(getType())
-                .execute();
+                .byCriteria(criterions).byResourceType(getType()).execute();
         refreshListBoxResources(addLoadRatiosCalculations(resources));
     }
 
@@ -585,7 +576,7 @@ public class NewAllocationSelectorController extends
             BigDecimal overtime = dataToRender.getRatios().getOvertimeRatio();
             cellOvertime.appendChild(new Label(overtime.toString()));
             item.appendChild(cellOvertime);
-       }
+        }
     }
 
     public CriterionRenderer getCriterionRenderer() {
@@ -646,4 +637,11 @@ public class NewAllocationSelectorController extends
         return listBoxResources.isMultiple();
     }
 
+    public void setEndFilteringDate(Date d) {
+        endDateLoadRatiosDatebox.setValue(d);
+    }
+
+    public void setStartFilteringDate(Date d) {
+        startDateLoadRatiosDatebox.setValue(d);
+    }
 }
