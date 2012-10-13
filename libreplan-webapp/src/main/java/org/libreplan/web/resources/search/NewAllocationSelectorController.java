@@ -21,10 +21,14 @@
 
 package org.libreplan.web.resources.search;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +36,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
+import org.libreplan.business.resources.daos.IResourceLoadRatiosCalculator.ILoadRatiosDataType;
 import org.libreplan.business.resources.daos.IResourcesSearcher.IResourcesQuery;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
@@ -47,6 +54,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -64,10 +72,13 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 
+
 /**
- * @author Diego Pino Garcia <dpino@igalia.com>
+ * Controller for searching for {@link Resource}.
  *
- *         Controller for searching for {@link Resource}
+ * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
+ *
  */
 public class NewAllocationSelectorController extends
         AllocationSelectorController {
@@ -81,6 +92,8 @@ public class NewAllocationSelectorController extends
     private Listbox listBoxResources;
 
     private Label allocationSelectedItems;
+
+    private Datebox startDateLoadRatiosDatebox, endDateLoadRatiosDatebox;
 
     private CriterionRenderer criterionRenderer = new CriterionRenderer();
 
@@ -100,9 +113,21 @@ public class NewAllocationSelectorController extends
     }
 
     private void initializeComponents() {
+        initializeResourceLoadRatiosFilterDates();
         initializeCriteriaTree();
         initializeListboxResources();
         initializeAllocationTypeSelector();
+    }
+
+    private void initializeResourceLoadRatiosFilterDates() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            startDateLoadRatiosDatebox.setValue(sdf.parse("01/09/2012"));
+            endDateLoadRatiosDatebox.setValue(sdf.parse("01/10/2012"));
+        } catch (ParseException e) {
+            System.out.println("Parse exception");
+            throw new RuntimeException();
+        }
     }
 
     private void initializeCriteriaTree() {
@@ -197,8 +222,36 @@ public class NewAllocationSelectorController extends
         }
     }
 
-    private List<? extends Resource> getAllResources() {
-        return query().byResourceType(getType()).execute();
+    private List<ResourceWithItsLoadRatios> getAllResources() {
+
+        List<? extends Resource> listResources = query().byResourceType(
+                getType()).execute();
+
+        return addLoadRatiosCalculations(listResources);
+    }
+
+    public Date getStartDateForLoadRatiosCalc() {
+        return new Date();
+    }
+
+    public Date getEndDateForLoadRatiosCalc() {
+        return new Date();
+    }
+
+    private List<ResourceWithItsLoadRatios> addLoadRatiosCalculations(
+            List<? extends Resource> listResources) {
+
+        List<ResourceWithItsLoadRatios> result = new ArrayList<ResourceWithItsLoadRatios>();
+
+        for (Resource each : listResources) {
+            ILoadRatiosDataType t = resourceLoadRatiosCalculator
+                    .calculateLoadRatios(each, new LocalDate(
+                    2012, 8, 1), new LocalDate(2012, 9, 30), scenarioManager
+                    .getCurrent());
+            result.add(new ResourceWithItsLoadRatios(each, t));
+        }
+
+        return result;
     }
 
     private ResourceType getType() {
@@ -213,7 +266,8 @@ public class NewAllocationSelectorController extends
         refreshListBoxResources(getAllResources());
     }
 
-    private void refreshListBoxResources(List<? extends Resource> resources) {
+    private void refreshListBoxResources(
+            List<ResourceWithItsLoadRatios> resources) {
         listBoxResources.setModel(new SimpleListModel(resources));
     }
 
@@ -221,8 +275,9 @@ public class NewAllocationSelectorController extends
         currentAllocationType = AllocationType.SPECIFIC;
         List<Criterion> criteria = getSelectedCriterions();
         List<Resource> selectedWorkers = getSelectedWorkers();
-        refreshListBoxResources(query().byCriteria(criteria)
-                .byResourceType(getType()).execute());
+        refreshListBoxResources(addLoadRatiosCalculations(query()
+                .byCriteria(criteria).byResourceType(getType()).execute()));
+
         listBoxResources.renderAll(); // force render so list items has the
                                       // value property so the resources can be
                                       // selected
@@ -297,7 +352,7 @@ public class NewAllocationSelectorController extends
                 .byCriteria(criterions)
                 .byResourceType(getType())
                 .execute();
-        refreshListBoxResources(resources);
+        refreshListBoxResources(addLoadRatiosCalculations(resources));
     }
 
     /**
@@ -306,6 +361,7 @@ public class NewAllocationSelectorController extends
      *
      * @return
      */
+    @Override
     public List<Criterion> getSelectedCriterions() {
         List<Criterion> result = new ArrayList<Criterion>();
 
@@ -324,10 +380,12 @@ public class NewAllocationSelectorController extends
         return resourceListRenderer;
     }
 
+    @Override
     public void onClose() {
         clearAll();
     }
 
+    @Override
     public void clearAll() {
         refreshListBoxResources();
         criterionsTree.setModel(getCriterions());
@@ -466,6 +524,34 @@ public class NewAllocationSelectorController extends
                 toNodeList(criterion.getChildren()));
     }
 
+    private static class ResourceWithItsLoadRatios implements
+            Comparable<ResourceWithItsLoadRatios> {
+
+        private Resource resource;
+        private ILoadRatiosDataType ratios;
+
+        public ResourceWithItsLoadRatios(Resource resource,
+                ILoadRatiosDataType ratios) {
+            Validate.notNull(resource);
+            Validate.notNull(ratios);
+            this.resource = resource;
+            this.ratios = ratios;
+        }
+
+        public Resource getResource() {
+            return this.resource;
+        }
+
+        public ILoadRatiosDataType getRatios() {
+            return this.ratios;
+        }
+
+        @Override
+        public int compareTo(ResourceWithItsLoadRatios o) {
+            return this.resource.compareTo(o.getResource());
+        }
+    }
+
     /**
      * @author Diego Pino García <dpino@igalia.com>
      *
@@ -475,18 +561,31 @@ public class NewAllocationSelectorController extends
 
         @Override
         public void render(Listitem item, Object data) {
-            item.setValue((Resource) data);
+            item.setValue(data);
 
             appendLabelResource(item);
         }
 
         private void appendLabelResource(Listitem item) {
-            Resource resource = (Resource) item.getValue();
+            ResourceWithItsLoadRatios dataToRender = (ResourceWithItsLoadRatios) item
+                    .getValue();
 
-            Listcell cell = new Listcell();
-            cell.appendChild(new Label(resource.getShortDescription()));
-            item.appendChild(cell);
-        }
+            Listcell cellName = new Listcell();
+            Resource resource = dataToRender.getResource();
+            cellName.appendChild(new Label(resource.getShortDescription()));
+            item.appendChild(cellName);
+
+            Listcell cellAvailability = new Listcell();
+            BigDecimal availability = dataToRender.getRatios()
+                    .getAvailiabilityRatio();
+            cellAvailability.appendChild(new Label(availability.toString()));
+            item.appendChild(cellAvailability);
+
+            Listcell cellOvertime = new Listcell();
+            BigDecimal overtime = dataToRender.getRatios().getOvertimeRatio();
+            cellOvertime.appendChild(new Label(overtime.toString()));
+            item.appendChild(cellOvertime);
+       }
     }
 
     public CriterionRenderer getCriterionRenderer() {
@@ -534,6 +633,7 @@ public class NewAllocationSelectorController extends
 
     }
 
+    @Override
     public void addTo(INewAllocationsAdder allocationsAdder) {
         currentAllocationType.addTo(this, allocationsAdder);
     }
