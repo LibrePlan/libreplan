@@ -78,7 +78,7 @@
                         <listhead>
                             <listheader label="${i18n:_('Found resources')}"
                                     tooltiptext="${i18n:_('Resources matching selected criteria')}"
-                                    sort="auto"/>
+                                    sort="auto" sortDirection="ascending"/>
                             <listheader label="${i18n:_('Availability')}" hflex="min"/>
                             <listheader label="${i18n:_('Overtime')}" hflex="min"/>
                        </listhead>

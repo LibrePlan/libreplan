@@ -75,6 +75,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.api.Listheader;
 
 /**
  * Controller for searching for {@link Resource}.
@@ -287,6 +288,16 @@ public class NewAllocationSelectorController extends
     private void refreshListBoxResources(
             List<ResourceWithItsLoadRatios> resources) {
         listBoxResources.setModel(new SimpleListModel(resources));
+        triggerSortListBoxResources();
+    }
+
+    private void triggerSortListBoxResources() {
+        for (Object child : listBoxResources.getListhead().getChildren()) {
+            final Listheader hd = (Listheader) child;
+            if (!"natural".equals(hd.getSortDirection())) {
+                hd.sort("ascending".equals(hd.getSortDirection()), true);
+            }
+        }
     }
 
     private void returnToSpecificDueToResourceSelection() {
