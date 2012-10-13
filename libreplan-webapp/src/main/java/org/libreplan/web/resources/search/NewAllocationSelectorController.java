@@ -57,6 +57,8 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -83,6 +85,11 @@ import org.zkoss.zul.Treerow;
  */
 public class NewAllocationSelectorController extends
         AllocationSelectorController {
+
+    private static final BigDecimal AVALIABILITY_GOOD_VALUE = new BigDecimal(
+            0.50);
+    private static final BigDecimal AVALIABILITY_INTERMEDIUM_VALUE = new BigDecimal(
+            0.25);
 
     private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
 
@@ -592,13 +599,45 @@ public class NewAllocationSelectorController extends
             Listcell cellAvailability = new Listcell();
             BigDecimal availability = dataToRender.getRatios()
                     .getAvailiabilityRatio();
-            cellAvailability.appendChild(new Label(availability.toString()));
+            Div totalDiv = new Div();
+            totalDiv.setStyle("width:50px;height:12px;border: solid 1px black");
+            Div containedDiv = new Div();
+            String styleValue = "width:" + availability.movePointRight(2)
+                    + "%;height:12px;background-color:"
+                    + calculateRgba(availability) + ";float:left;left:0";
+            containedDiv.setStyle(styleValue);
+            Label l = new Label(availability.movePointRight(2).toString() + "%");
+            l.setStyle("width:50px;margin-left: 12px");
+            containedDiv.appendChild(l);
+            totalDiv.appendChild(containedDiv);
+            cellAvailability.appendChild(totalDiv);
             item.appendChild(cellAvailability);
 
             Listcell cellOvertime = new Listcell();
             BigDecimal overtime = dataToRender.getRatios().getOvertimeRatio();
-            cellOvertime.appendChild(new Label(overtime.toString()));
+            Label overtimeLabel = new Label(overtime.toString());
+            cellOvertime.appendChild(overtimeLabel);
+            if (!overtime.equals(BigDecimal.ZERO.setScale(2))) {
+                overtimeLabel.setStyle("position: relative; top: -12px");
+                Image img = new Image(
+                        "/dashboard/img/value-meaning-negative.png");
+                img.setStyle("width: 25px; position: relative; top: -5px");
+                cellOvertime.appendChild(img);
+            }
             item.appendChild(cellOvertime);
+        }
+
+        private String calculateRgba(BigDecimal avaliability) {
+            String result;
+            if (avaliability.compareTo(AVALIABILITY_INTERMEDIUM_VALUE) < 0) {
+                result = "rgba(150,0,0,0.3)";
+            } else if (avaliability.compareTo(AVALIABILITY_GOOD_VALUE) < 0) {
+                result = "rgba(255,255,0,0.5)";
+            } else {
+                result = "rgba(102,204,0,0.3)";
+            }
+
+            return result;
         }
     }
 

@@ -64,6 +64,14 @@
                          </row>
                        </rows>
                      </grid>
+                     <style>
+                        .z-listcell-cnt {
+                            height: 20px;
+                        }
+                        div.z-listcell-cnt {
+                            padding: 5px 0 1px 0;
+                        }
+                     </style>
                      <listbox id="listBoxResources" width="420px" height="340px"
                             vflex="true" multiple="@{selectorController.allowSelectMultipleResources}" style="margin:5px;"
                             itemRenderer="@{selectorController.listitemRenderer}" >
