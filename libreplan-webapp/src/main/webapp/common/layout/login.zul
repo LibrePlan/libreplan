@@ -100,6 +100,7 @@
                 <n:select id="userLang" onchange="setUserLogin()" style="font-size:11px">
                     <n:option title="admin">Browser language</n:option>
                     <n:option title="admin_en">English</n:option>
+                    <n:option title="admin_ca">Català</n:option>
                     <n:option title="admin_cs">Čeština</n:option>
                     <n:option title="admin_de">Deutsch</n:option>
                     <n:option title="admin_es">Español</n:option>
