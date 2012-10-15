@@ -23,7 +23,8 @@
     <newdatasortablegrid id="listing" model="@{controller.profiles}" mold="paging"
         pageSize="10" sclass="clickable-rows">
         <columns sizable="true">
-            <newdatasortablecolumn label="${i18n:_('Profile name')}" sort="auto(profileName)" />
+            <newdatasortablecolumn label="${i18n:_('Profile name')}"
+            sort="auto(lower(profileName))" sortDirection="ascending"/>
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>

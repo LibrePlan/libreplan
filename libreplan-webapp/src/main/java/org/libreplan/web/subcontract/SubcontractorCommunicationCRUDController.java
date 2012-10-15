@@ -21,8 +21,6 @@ package org.libreplan.web.subcontract;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -38,6 +36,7 @@ import org.libreplan.business.planner.entities.SubcontractorCommunicationValue;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.tabs.IGlobalViewEntryPoints;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -158,18 +157,11 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
             appendLabel(row,  getOrderName(subcontractorCommunication.getSubcontractedTaskData()));
             appendLabel(row,  getOrderCode(subcontractorCommunication.getSubcontractedTaskData()));
             appendLabel(row, subcontractorCommunication.getSubcontractedTaskData().getExternalCompany().getName());
-            appendLabel(row, toString(subcontractorCommunication.getCommunicationDate()));
+            appendLabel(row, Util.formatDateTime(subcontractorCommunication
+                    .getCommunicationDate()));
             appendLabelWithTooltip(row, subcontractorCommunication);
             appendCheckbox(row, subcontractorCommunication);
             appendOperations(row, subcontractorCommunication);
-        }
-
-        private String toString(Date date) {
-            if (date == null) {
-                return "";
-            }
-
-            return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(date);
         }
 
         private String getOrderCode(SubcontractedTaskData subcontractedTaskData) {

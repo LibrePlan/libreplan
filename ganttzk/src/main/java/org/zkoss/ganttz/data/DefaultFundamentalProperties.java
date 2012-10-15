@@ -184,6 +184,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
+    public BigDecimal getMoneyCostBarPercentage() {
+        return moneyCostBarPercentage;
+    }
+
+    @Override
     public GanttDate getAdvanceEndDate() {
         return advanceEndDate != null ? GanttDate.createFrom(new Date(
                 advanceEndDate.getTime()))

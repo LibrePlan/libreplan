@@ -346,7 +346,7 @@ public class Planner extends HtmlMacroComponent  {
         resettingPreviousComponentsToNull();
         long timeAddingData = System.currentTimeMillis();
         newContext.add(configuration.getData());
-        PROFILING_LOG.info("It took to add data: "
+        PROFILING_LOG.debug("It took to add data: "
                 + (System.currentTimeMillis() - timeAddingData) + " ms");
         long timeSetupingAndAddingComponents = System.currentTimeMillis();
         setupComponents();
@@ -394,7 +394,7 @@ public class Planner extends HtmlMacroComponent  {
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
 
         PROFILING_LOG
-                .info("it took doing the setup of components and adding them: "
+                .debug("it took doing the setup of components and adding them: "
                         + (System.currentTimeMillis() - timeSetupingAndAddingComponents)
                         + " ms");
 

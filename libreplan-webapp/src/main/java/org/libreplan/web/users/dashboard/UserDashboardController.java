@@ -23,6 +23,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.Registry;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -34,7 +35,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
  * Controller for user dashboard window.<br />
  *
  * At this moment it's only used to show a message to user after saving a
- * monthly timesheet.
+ * personal timesheet.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
@@ -54,10 +55,13 @@ public class UserDashboardController extends GenericForwardComposer {
         String timesheetSave = Executions.getCurrent().getParameter(
                 "timesheet_saved");
         if (!StringUtils.isBlank(timesheetSave)) {
-            String monthlyTimesheet = new LocalDate(timesheetSave)
-                    .toString("MMMM y");
+            String personalTimesheet = PersonalTimesheetDTO.toString(Registry
+                    .getConfigurationDAO()
+                    .getConfigurationWithReadOnlyTransaction()
+                    .getPersonalTimesheetsPeriodicity(), new LocalDate(
+                    timesheetSave));
             messagesForUser.showMessage(Level.INFO,
-                    _("Monthly timesheet \"{0}\" saved", monthlyTimesheet));
+                    _("Personal timesheet \"{0}\" saved", personalTimesheet));
         }
 
         String expenseSheetSaved = Executions.getCurrent().getParameter(

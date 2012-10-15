@@ -100,4 +100,6 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
      */
     void remove(User user) throws InstanceNotFoundException;
 
+    List<User> findAll();
+
 }

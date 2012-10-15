@@ -19,10 +19,8 @@
 
 package org.libreplan.web.common.typeconverters;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.joda.time.LocalDate;
+import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zkplus.databind.TypeConverter;
 
@@ -41,9 +39,6 @@ public class LocalDateConverter implements TypeConverter {
 
     @Override
     public Object coerceToUi(Object object, Component component) {
-        LocalDate localDate = (LocalDate) object;
-        Date date = localDate != null ? localDate.toDateTimeAtStartOfDay().toDate() : null;
-        return date != null ? (new SimpleDateFormat("dd/MM/yyyy")).format(date)
-                : new String("");
+        return Util.formatDate((LocalDate) object);
     }
 }

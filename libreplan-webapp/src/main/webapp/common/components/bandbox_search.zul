@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<zk id="bandboxsearch" xmlns:n="http://www.zkoss.org/2005/zk/native" xmlns:c="http://www.zkoss.org/2005/zk/client">
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native" xmlns:c="http://www.zkoss.org/2005/zk/client">
 
     <zscript>
         <![CDATA[

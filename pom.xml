@@ -5,7 +5,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <name>LibrePlan</name>
 
     <!--
@@ -183,9 +183,14 @@
         <dependencies>
             <!-- Jasper Reports -->
             <dependency>
-              <groupId>jasperreports</groupId>
+              <groupId>net.sf.jasperreports</groupId>
               <artifactId>jasperreports</artifactId>
-              <version>3.7.0</version>
+              <version>4.7.0</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.jasperreports</groupId>
+                <artifactId>jasperreports-fonts</artifactId>
+                <version>4.0.0</version>
             </dependency>
             <!-- GPL Jasperreport Component for ZK -->
             <dependency>
@@ -819,6 +824,9 @@
             </resource>
             <resource>
                 <directory>../libreplan-webapp/src/main/jasper/workingProgressPerTask_Bundle/</directory>
+            </resource>
+            <resource>
+                <directory>../libreplan-webapp/src/main/jasper/projectStatus_Bundle/</directory>
             </resource>
 
         </resources>

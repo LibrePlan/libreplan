@@ -34,7 +34,7 @@ The planning view combines three different views:
    * Orange area: Indicating a resource load over 100% as a result of the current project.
    * Yellow area: Indicating a resource load over 100% as a result of other projects.
 
-* Graph view and value gained indicators. These can be viewed from the "Value gained" tab. The generated graph is based on the value gained technique and the indicators that are calculated for each of the workdays of the project. The calculated indicators are:
+* Graph view and earned value indicators. These can be viewed from the "Earned value" tab. The generated graph is based on the earned value technique and the indicators that are calculated for each of the workdays of the project. The calculated indicators are:
 
    * BCWS: accumulative time function for the number of hours planned up to a certain date. It will be 0 at the planned start of the task and the total number of planned hours at the end. As with all accumulative graphs, it will always increase. The function for a task will be the sum of the daily assignments until the calculation day. This function has values for all times, provided that resources have been assigned.
    * ACWP: accumulative time function for the hours attributed in the work reports up to a certain date.  This function will only have a value of 0 before the date of the task's first work report and its value will continue to increase as time passes and work report hours are added. It will have no value after the date of the last work report.

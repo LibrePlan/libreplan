@@ -25,6 +25,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,11 +36,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.zkoss.ganttz.util.ComponentsFinder;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -771,6 +776,75 @@ public class Util {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Format specific <code>date</code> using the {@link DateFormat#DEFAULT}
+     * format and showing only date without time.
+     */
+    public static String formatDate(Date date) {
+        if (date == null) {
+            return "";
+        }
+        return DateFormat.getDateInstance(DateFormat.DEFAULT,
+                Locales.getCurrent()).format(date);
+    }
+
+    /**
+     * Format specific <code>date</code> using the {@link DateFormat#DEFAULT}
+     * format and showing both date and time.
+     */
+    public static String formatDateTime(Date dateTime) {
+        if (dateTime == null) {
+            return "";
+        }
+        return DateFormat.getDateTimeInstance(DateFormat.DEFAULT,
+                DateFormat.DEFAULT, Locales.getCurrent()).format(dateTime);
+    }
+
+    /**
+     * Format specific <code>date</code> using the {@link DateFormat#DEFAULT}
+     * format and showing only date without time.
+     */
+    public static String formatDate(DateTime dateTime) {
+        if (dateTime == null) {
+            return "";
+        }
+        return formatDate(dateTime.toDate());
+    }
+
+    /**
+     * Format specific <code>date</code> using the {@link DateFormat#DEFAULT}
+     * format and showing only date without time.
+     */
+    public static String formatDate(LocalDate date) {
+        if (date == null) {
+            return "";
+        }
+        return formatDate(date.toDateTimeAtStartOfDay());
+    }
+
+    /**
+     * Format specific <code>time</code> using the {@link DateFormat#SHORT}
+     * format and showing only the time.
+     */
+    public static String formatTime(Date time) {
+        if (time == null) {
+            return "";
+        }
+        return DateFormat.getTimeInstance(DateFormat.SHORT,
+                Locales.getCurrent()).format(time);
+    }
+
+    /**
+     * Format specific <code>time</code> using the {@link DateFormat#SHORT}
+     * format and showing only the time.
+     */
+    public static String formatTime(LocalTime time) {
+        if (time == null) {
+            return "";
+        }
+        return formatTime(time.toDateTimeToday().toDate());
     }
 
 }

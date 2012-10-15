@@ -23,7 +23,6 @@ package org.libreplan.web.orders;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.text.SimpleDateFormat;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -73,7 +72,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.util.LongOperationFeedback;
-import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -136,8 +134,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         showOrderElementFilter();
         showCreateButtons(false);
         orderModel.prepareCreationFrom(template, getDesktop());
-        prepareEditWindow();
-        showEditWindow(_("Create project from Template"));
+        prepareEditWindow(_("Create project from Template"));
     }
 
     @Resource
@@ -482,7 +479,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private IOrderElementModel getOrderElementModel() {
-        final Order order = (Order) orderModel.getOrder();
+        final Order order = orderModel.getOrder();
         return orderModel.getOrderElementModel(order);
     }
 
@@ -636,7 +633,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void initOrderAuthorizations() {
         Component orderElementAuthorizations = editWindow
                 .getFellowIfAny("orderElementAuthorizations");
-        final Order order = (Order) orderModel.getOrder();
+        final Order order = orderModel.getOrder();
         if (order.isNewObject()) {
             orderAuthorizationController.initCreate(orderModel
                     .getPlanningState());
@@ -660,7 +657,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public Order getOrder() {
-        return (Order) orderModel.getOrder();
+        return orderModel.getOrder();
     }
 
     public void saveAndContinue() {
@@ -669,7 +666,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void saveAndContinue(boolean showSaveMessage) {
 
-        Order order = (Order) orderModel.getOrder();
+        Order order = orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
         setCurrentTab();
         Tab previousTab = getCurrentTab();
@@ -939,15 +936,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         orderModel.initEdit(order, getDesktop());
-        if (editWindow != null) {
-            resetTabControllers();
-            setupOrderElementTreeController();
-            selectDefaultTab();
-            return;
-        }
-
-        prepareEditWindow();
-        showEditWindow(_("Edit project"));
+        prepareEditWindow(_("Edit project"));
     }
 
     private Desktop getDesktop() {
@@ -965,11 +954,16 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderAuthorizationController = null;
     }
 
-    private void prepareEditWindow() {
+    private void prepareEditWindow(String title) {
+        resetTabControllers();
         addEditWindowIfNecessary();
         updateDisabilitiesOnInterface();
         setupOrderElementTreeController();
         selectDefaultTab();
+
+        if (editWindow == null) {
+            showEditWindow(title);
+        }
     }
 
     private void showEditWindow(String title) {
@@ -1069,8 +1063,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void editNewCreatedOrder(Window detailsWindow) {
         showOrderElementFilter();
         hideCreateButtons();
-        prepareEditWindow();
-        showEditWindow(_("Create project"));
+        prepareEditWindow(_("Create project"));
         detailsWindow.setVisible(false);
         setupOrderAuthorizationController();
         detailsWindow.getAttributes();
@@ -1214,7 +1207,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void appendDate(final Row row, Date date) {
         String labelDate = new String("");
         if (date != null) {
-            labelDate = new SimpleDateFormat("dd/MM/yyyy").format(date);
+            labelDate = Util.formatDate(date);
         }
         appendLabel(row, labelDate);
     }
@@ -1456,7 +1449,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private boolean readOnly = true;
 
     private void updateDisabilitiesOnInterface() {
-        Order order = (Order) orderModel.getOrder();
+        Order order = orderModel.getOrder();
 
         boolean permissionForWriting = orderModel.userCanWrite(order,
                 SecurityUtils.getSessionUserLoginName());
@@ -1622,17 +1615,11 @@ public class OrderCRUDController extends GenericForwardComposer {
             EndDateCommunication endDate = (EndDateCommunication) data;
             row.setValue(endDate);
 
-            appendLabel(row, toString(endDate.getSaveDate(), "dd/MM/yyyy HH:mm"));
-            appendLabel(row, toString(endDate.getEndDate(), "dd/MM/yyyy"));
-            appendLabel(row, toString(endDate.getCommunicationDate(), "dd/MM/yyyy HH:mm"));
+            appendLabel(row, Util.formatDateTime(endDate.getSaveDate()));
+            appendLabel(row, Util.formatDate(endDate.getEndDate()));
+            appendLabel(row,
+                    Util.formatDateTime(endDate.getCommunicationDate()));
             appendOperations(row, endDate);
-        }
-
-        private String toString(Date date, String precision) {
-            if (date == null) {
-                return "";
-            }
-            return new SimpleDateFormat(precision, Locales.getCurrent()).format(date);
         }
 
         private void appendLabel(Row row, String label) {
@@ -1685,4 +1672,5 @@ public class OrderCRUDController extends GenericForwardComposer {
     public String getCurrencySymbol() {
         return Util.getCurrencySymbol();
     }
+
 }

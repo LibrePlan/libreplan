@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="change-column-notes-in-task_element-to-text"
+        author="jaragunde" dbms="postgresql">
+        <comment>Change column notes in task_element to TEXT</comment>
+        <modifyDataType tableName="task_element" columnName="notes" newDataType="TEXT" />
+    </changeSet>
+
+    <changeSet id="change-column-notes-in-task_element-to-text-in-mysql"
+        author="jaragunde" dbms="mysql">
+        <comment>Change column notes in task_element to TEXT in MySQL.</comment>
+        <sql>ALTER TABLE task_element MODIFY notes TEXT</sql>
+    </changeSet>
+
+    <changeSet id="update-work_report_type-name-to-personal-timehseets"
+        author="mrego">
+        <comment>
+            Update work_report_type name from "Monthly timesheets" to "Personal
+            timehsheets"
+        </comment>
+        <update tableName="work_report_type">
+            <column name="name" value="Personal timesheets"/>
+            <where>name='Monthly timesheets'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="add-personal_timesheets_periodicity-column-to-configuration"
+        author="mrego">
+        <comment>Add personal_timesheets_periodicity column to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="personal_timesheets_periodicity" type="INTEGER" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="personal_timesheets_periodicity" value="0" />
+        </update>
+    </changeSet>
+
+    <changeSet id="rename-column-from-monthly-to-personal-in-configuration"
+        author="mrego">
+        <comment>
+            Rename column monthly_timesheets_type_of_work_hours to
+            personal_timesheets_type_of_work_hours in configuration table
+        </comment>
+        <dropForeignKeyConstraint baseTableName="configuration"
+            constraintName="configuration_type_of_work_hours_fkey"/>
+        <renameColumn tableName="configuration"
+            oldColumnName="monthly_timesheets_type_of_work_hours"
+            newColumnName="personal_timesheets_type_of_work_hours"
+            columnDataType="BIGINT" />
+        <addForeignKeyConstraint constraintName="configuration_type_of_work_hours_fkey"
+            baseTableName="configuration" baseColumnNames="personal_timesheets_type_of_work_hours"
+            referencedTableName="type_of_work_hours" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="add-max_users-and-max_resources-columns-to-configuration"
+        author="mrego">
+        <comment>Add max_users and max_resources columns to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="max_users" type="INTEGER" />
+        </addColumn>
+        <addColumn tableName="configuration">
+            <column name="max_resources" type="INTEGER" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="max_users" value="0" />
+        </update>
+        <update tableName="configuration">
+            <column name="max_resources" value="0" />
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

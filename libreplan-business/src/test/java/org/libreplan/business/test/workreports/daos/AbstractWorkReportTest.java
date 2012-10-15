@@ -78,6 +78,8 @@ public abstract class AbstractWorkReportTest {
     }
 
     public WorkReportLine createValidWorkReportLine() {
+        Resource resource = createValidWorker();
+
         WorkReport workReport = createValidWorkReport();
         workReportDAO.save(workReport);
 
@@ -85,7 +87,7 @@ public abstract class AbstractWorkReportTest {
         workReport.addWorkReportLine(workReportLine);
         workReportLine.setDate(new Date());
         workReportLine.setEffort(EffortDuration.hours(100));
-        workReportLine.setResource(createValidWorker());
+        workReportLine.setResource(resource);
         workReportLine.setOrderElement(createValidOrderElement());
         workReportLine.setTypeOfWorkHours(createValidTypeOfWorkHours());
         return workReportLine;

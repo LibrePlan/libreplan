@@ -34,6 +34,7 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -67,14 +68,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Model for creation/edition of a monthly timesheet
+ * Model for creation/edition of a personal timesheet
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/myaccount/userDashboard.zul")
-public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
+public class PersonalTimesheetModel implements IPersonalTimesheetModel {
 
     private User user;
 
@@ -101,6 +102,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     private Map<Long, EffortDuration> otherEffortPerOrderElement;
 
     private Map<LocalDate, EffortDuration> otherEffortPerDay;
+
+    private PersonalTimesheetsPeriodicityEnum periodicity;
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
@@ -147,6 +150,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     private void initFields(LocalDate date) {
         this.date = date;
 
+        periodicity = getPersonalTimesheetsPeriodicity();
+
         initDates();
 
         initCapacityMap();
@@ -173,8 +178,8 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     private void initDates() {
-        firstDay = date.dayOfMonth().withMinimumValue();
-        lastDay = date.dayOfMonth().withMaximumValue();
+        firstDay = periodicity.getStart(date);
+        lastDay = periodicity.getEnd(date);
     }
 
     private void initCapacityMap() {
@@ -195,13 +200,13 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     private void initWorkReport() {
-        // Get work report representing this monthly timesheet
-        workReport = workReportDAO.getMonthlyTimesheetWorkReport(
-                user.getWorker(), date);
+        // Get work report representing this personal timesheet
+        workReport = workReportDAO.getPersonalTimesheetWorkReport(
+                user.getWorker(), date, periodicity);
         if (workReport == null) {
             // If it doesn't exist yet create a new one
             workReport = WorkReport
-                    .create(getMonthlyTimesheetsWorkReportType());
+                    .create(getPersonalTimesheetsWorkReportType());
             workReport
                     .setCode(entitySequenceDAO
                             .getNextEntityCodeWithoutTransaction(EntityNameEnum.WORK_REPORT));
@@ -211,10 +216,10 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
         forceLoad(workReport.getWorkReportType());
     }
 
-    private WorkReportType getMonthlyTimesheetsWorkReportType() {
+    private WorkReportType getPersonalTimesheetsWorkReportType() {
         try {
             WorkReportType workReportType = workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                    .findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS
                             .getName());
             return workReportType;
         } catch (NonUniqueResultException e) {
@@ -413,7 +418,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
 
     private TypeOfWorkHours getTypeOfWorkHours() {
         return configurationDAO.getConfiguration()
-                .getMonthlyTimesheetsTypeOfWorkHours();
+                .getPersonalTimesheetsTypeOfWorkHours();
     }
 
     @Override
@@ -424,7 +429,7 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             // Do nothing.
             // A new work report if it doesn't have work report lines is not
             // saved as it will not be possible to find it later with
-            // WorkReportDAO.getMonthlyTimesheetWorkReport() method.
+            // WorkReportDAO.getPersonalTimesheetWorkReport() method.
         } else {
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithWorkReportLineSet(workReport
@@ -502,16 +507,18 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
     }
 
     @Override
-    public boolean isFirstMonth() {
+    @Transactional(readOnly = true)
+    public boolean isFirstPeriod() {
         LocalDate activationDate = getWorker().getCalendar()
                 .getFistCalendarAvailability().getStartDate();
-        return firstDay.equals(activationDate.dayOfMonth().withMinimumValue());
+        return firstDay.equals(periodicity.getStart(activationDate));
     }
 
     @Override
-    public boolean isLastMonth() {
-        return firstDay.equals(new LocalDate().plusMonths(1).dayOfMonth()
-                .withMinimumValue());
+    @Transactional(readOnly = true)
+    public boolean isLastPeriod() {
+        return firstDay.equals(periodicity.getStart(new LocalDate()
+                .plusMonths(1)));
     }
 
     @Override
@@ -550,6 +557,28 @@ public class MonthlyTimesheetModel implements IMonthlyTimesheetModel {
             result = result.plus(effort);
         }
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return configurationDAO.getConfiguration()
+                .getPersonalTimesheetsPeriodicity();
+    }
+
+    @Override
+    public String getTimesheetString() {
+        return PersonalTimesheetDTO.toString(periodicity, date);
+    }
+
+    @Override
+    public LocalDate getPrevious() {
+        return periodicity.previous(date);
+    }
+
+    @Override
+    public LocalDate getNext() {
+        return periodicity.next(date);
     }
 
 }

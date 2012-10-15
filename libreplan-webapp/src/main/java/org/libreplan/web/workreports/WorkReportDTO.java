@@ -42,7 +42,7 @@ public class WorkReportDTO {
 
         WorkReportType workReportType = workReport.getWorkReportType();
         this.type = workReportType.getName();
-        if (workReportType.isMonthlyTimesheetsType()) {
+        if (workReportType.isPersonalTimesheetsType()) {
             this.type += " - " + workReport.getResource().getShortDescription();
         }
 

@@ -316,7 +316,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         } else if (isSuperElementPartialOrCompletelyScheduled()) {
             removeUnscheduled(result);
             if (wasASchedulingPoint()) {
-                result.add(taskSourceRemoval());
+                removeTaskSource(result);
             } else {
                 if (hadATaskSource() && currentTaskSourceIsNotTheSame()) {
                     //all the children of this element were unscheduled and then scheduled again,
@@ -350,6 +350,14 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     private boolean wasASchedulingPoint() {
+        TaskSource currentTaskSource = getTaskSource();
+        // check if the existing TaskSource is inconsistent with the current
+        // scheduling state
+        if (currentTaskSource != null && currentTaskSource.getTask().isLeaf()
+                && getSchedulingStateType() != Type.SCHEDULING_POINT) {
+            return true;
+        }
+        // check if the scheduling state has changed WRT the DB
         SchedulingDataForVersion currentVersionOnDB = getCurrentVersionOnDB();
         return SchedulingState.Type.SCHEDULING_POINT == currentVersionOnDB
                 .getSchedulingStateType();
@@ -524,6 +532,9 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public void setName(String name) {
+        if (name != null && name.length() > 255) {
+            name = name.substring(0, 255);
+        }
         this.getInfoComponent().setName(name);
     }
 
@@ -1536,6 +1547,10 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public SumExpenses getSumExpenses() {
         return this.sumExpenses;
+    }
+
+    public boolean isOrder() {
+        return false;
     }
 
 }

@@ -217,7 +217,7 @@ public class OrderPlanningController implements Composer {
                     advanceAssignmentPlanningController,
                     advanceConsolidationController,
                     calendarAllocationController, additional);
-            PROFILING_LOG.info("setConfigurationToPlanner took: "
+            PROFILING_LOG.debug("setConfigurationToPlanner took: "
                     + (System.currentTimeMillis() - time) + " ms");
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();

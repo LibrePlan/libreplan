@@ -39,6 +39,7 @@ import static org.libreplan.business.users.entities.UserRole.ROLE_PLANNING;
 import static org.libreplan.business.users.entities.UserRole.ROLE_PROFILES;
 import static org.libreplan.business.users.entities.UserRole.ROLE_PROGRESS_TYPES;
 import static org.libreplan.business.users.entities.UserRole.ROLE_PROJECT_COSTS_REPORT;
+import static org.libreplan.business.users.entities.UserRole.ROLE_PROJECT_STATUS_REPORT;
 import static org.libreplan.business.users.entities.UserRole.ROLE_QUALITY_FORMS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_READ_ALL_PROJECTS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_RECEIVED_FROM_CUSTOMERS;
@@ -112,7 +113,8 @@ public enum PredefinedProfiles {
             ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT,
             ROLE_PROJECT_COSTS_REPORT,
             ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT,
-            ROLE_MATERIALS_NEED_AT_DATE_REPORT);
+            ROLE_MATERIALS_NEED_AT_DATE_REPORT,
+            ROLE_PROJECT_STATUS_REPORT);
 
     private String name;
     private UserRole[] roles;

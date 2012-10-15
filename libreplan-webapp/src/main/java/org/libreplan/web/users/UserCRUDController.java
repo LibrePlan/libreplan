@@ -65,6 +65,7 @@ import org.zkoss.zul.api.Groupbox;
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @SuppressWarnings("serial")
 public class UserCRUDController extends BaseCRUDController<User> implements
@@ -99,7 +100,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             Util.appendLabel(row, user.getLoginName());
             Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
             Util.appendLabel(row, user.isSuperuser() ? _("Yes") : _("No"));
-            Util.appendLabel(row, getAuthenticationType(user));
+            Util.appendLabel(row, _(user.getUserType()));
             Util.appendLabel(row, user.isBound() ? user.getWorker()
                     .getShortDescription() : "");
 
@@ -185,6 +186,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return userModel.getUsers();
     }
 
+    @Override
     protected void save() throws ValidationException {
         userModel.confirmSave();
         PasswordUtil.showOrHideDefaultPasswordWarnings();
@@ -359,21 +361,6 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         };
     }
 
-    public String getAuthenticationType() {
-        User user = getUser();
-        if (user != null) {
-            return getAuthenticationType(user);
-        }
-        return "";
-    }
-
-    private String getAuthenticationType(User user) {
-        if (user.isLibrePlanUser()) {
-            return _("Database");
-        }
-        return _("LDAP");
-    }
-
     public RowRenderer getUsersRenderer() {
         return usersRenderer;
     }
@@ -451,11 +438,20 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     public boolean areRolesAndProfilesDisabled() {
-        return isLdapUserLdapConfiguration() || isUserDefaultAdmin();
+        return (isLdapUser() && userModel.isLDAPBeingUsed() && userModel
+                .isLDAPRolesBeingUsed()) || isUserDefaultAdmin();
     }
 
     public boolean isLdapUserOrDefaultAdmin() {
         return isLdapUser() || isUserDefaultAdmin();
+    }
+
+    public String getAuthenticationType() {
+        User user = getUser();
+        if (user != null) {
+            return _(user.getUserType());
+        }
+        return "";
     }
 
 }

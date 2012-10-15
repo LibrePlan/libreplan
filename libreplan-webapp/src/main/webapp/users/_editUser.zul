@@ -32,11 +32,11 @@
                 <vbox>
 
                     <!-- User details  -->
-                    <vbox>
-                        <label value="${i18n:_('Password cannot be managed for LDAP users because LDAP authentication is being used')}" visible="@{controller.ldapUserLdapConfiguration}" />
-                    </vbox>
                     <groupbox closable="false">
                     <caption label="${i18n:_('General user data')}" />
+                    <vbox>
+                        <label value="${i18n:_('Password cannot be managed for LDAP users because LDAP authentication is enabled.')}" visible="@{controller.ldapUserLdapConfiguration}" />
+                    </vbox>
                     <grid fixedLayout="false" span="true">
                         <columns>
                             <column width="200px" />
@@ -125,7 +125,7 @@
                     <groupbox closable="false">
                     <caption label="${i18n:_('Association with roles')}" />
                     <vbox>
-                        <label value="${i18n:_('Roles of LDAP users cannot be managed because LDAP roles are being used.')}" visible="@{controller.ldapUserRolesLdapConfiguration}" />
+                        <label value="${i18n:_('Roles of LDAP users cannot be managed because LDAP is enabled and LDAP roles are being used.')}" visible="@{controller.areRolesAndProfilesDisabled}" />
                     </vbox>
                     <hbox align="center">
                         <combobox id="userRolesCombo" autodrop="true" />
@@ -146,7 +146,7 @@
                     <groupbox closable="false">
                     <caption label="${i18n:_('Association with profiles')}" />
                     <vbox>
-                        <label value="${i18n:_('Profiles of LDAP users cannot be managed because LDAP roles are being used.')}" visible="@{controller.ldapUserRolesLdapConfiguration}" />
+                        <label value="${i18n:_('Profiles of LDAP users cannot be managed because LDAP is enabled and LDAP roles are being used.')}" visible="@{controller.areRolesAndProfilesDisabled}" />
                     </vbox>
                     <hbox align="center">
                         <combobox id="profilesCombo" autodrop="true" />

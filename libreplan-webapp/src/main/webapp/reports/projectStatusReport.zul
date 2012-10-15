@@ -1,0 +1,102 @@
+<!--
+    This file is part of LibrePlan
+
+    Copyright (C) 2012 Igalia, S.L.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('LibrePlan: Project Status Report')}" id="reports"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<?component name="combobox_output_format" macroURI="combobox_output_format.zul"
+    class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
+
+<zk>
+
+    <window self="@{define(content)}"
+        apply="org.libreplan.web.reports.ProjectStatusReportController"
+        title="${i18n:_('Project Status Report')}"
+        border="normal" >
+
+        <!-- Select project -->
+        <panel title="${i18n:_('Project')}"
+            border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="700px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Project')}" />
+                            <bandboxSearch id="bandboxSelectOrder"
+                                finder="OrderBandboxFinder"
+                                model="@{controller.orders}"
+                                widthListbox="480px"
+                                widthBandbox="450px" />
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal" />
+
+        <!-- Select output format -->
+        <panel title="${i18n:_('Format')}" border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="700px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Output format:')}" />
+                            <combobox_output_format id="outputFormat" />
+                        </row>
+                    </rows>
+                </grid>
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal" />
+
+        <hbox style="display: none" id="URItext">
+            <label value="${i18n:_('Click on this')}" />
+            <a id="URIlink" class="z-label" zclass="z-label"
+                label="${i18n:_('direct link')}" />
+            <label
+                value="${i18n:_('if the report is not opened automatically')}" />
+        </hbox>
+
+        <separator spacing="10px" orient="horizontal" />
+
+        <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
+
+        <jasperreportcomponent id="report" />
+
+    </window>
+
+</zk>

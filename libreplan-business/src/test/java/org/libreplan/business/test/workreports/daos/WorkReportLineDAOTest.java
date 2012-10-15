@@ -29,8 +29,12 @@ import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CO
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
@@ -50,6 +54,14 @@ public class WorkReportLineDAOTest extends AbstractWorkReportTest {
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
+
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Before
+    public void loadRequiredaData() {
+        configurationBootstrap.loadRequiredData();
+    }
 
     @Test
     public void testSaveWorkReportLine() {

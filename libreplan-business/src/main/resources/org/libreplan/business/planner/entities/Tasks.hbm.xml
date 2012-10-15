@@ -10,7 +10,7 @@
         </id>
         <version name="version" access="property" type="long" />
         <property name="name" />
-        <property name="notes"/>
+        <property name="notes" type="text" />
         <component name="startDate"
             class="org.libreplan.business.workingday.IntraDayDate">
             <property  name="date" column="start_date" not-null="true"

@@ -124,7 +124,11 @@ public final class SecurityUtils {
                     @Override
                     public Boolean execute() {
                         try {
-                            String username = getLoggedUser().getUsername();
+                            CustomUser customUser = getLoggedUser();
+                            if (customUser == null) {
+                                return false;
+                            }
+                            String username = customUser.getUsername();
                             return Registry
                                     .getOrderAuthorizationDAO()
                                     .userOrItsProfilesHaveAnyAuthorization(

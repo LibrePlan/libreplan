@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Fills the attribute {@link Configuration#monthlyTimesheetsTypeOfWorkHours}
+ * Fills the attribute {@link Configuration#personalTimesheetsTypeOfWorkHours}
  * with a default value.<br />
  *
  * If possible it uses the "Default" {@link TypeOfWorkHours}, but if it doesn't
@@ -47,8 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Scope("singleton")
 @BootstrapOrder(1)
-public class MonthlyTimesheetsTypeOfWorkHoursBootstrap implements
-        IMonthlyTimesheetsTypeOfWorkHoursBootstrap {
+public class PersonalTimesheetsTypeOfWorkHoursBootstrap implements
+        IPersonalTimesheetsTypeOfWorkHoursBootstrap {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -73,7 +73,7 @@ public class MonthlyTimesheetsTypeOfWorkHoursBootstrap implements
             typeOfWorkHours = typeOfWorkHoursDAO.findActive().get(0);
         }
 
-        configuration.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+        configuration.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
         configurationDAO.save(configuration);
     }
 

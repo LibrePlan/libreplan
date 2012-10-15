@@ -47,7 +47,7 @@ import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.security.SecurityUtils;
-import org.libreplan.web.users.dashboard.IMonthlyTimesheetController;
+import org.libreplan.web.users.dashboard.IPersonalTimesheetController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -109,7 +109,7 @@ public class WorkReportQueryController extends GenericForwardComposer {
     private IWorkReportCRUDControllerEntryPoints workReportCRUD;
 
     @javax.annotation.Resource
-    private IMonthlyTimesheetController monthlyTimesheetController;
+    private IPersonalTimesheetController personalTimesheetController;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -329,9 +329,9 @@ public class WorkReportQueryController extends GenericForwardComposer {
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TIMESHEETS)) {
             workReportCRUD.goToEditForm(workReport);
         } else if (SecurityUtils.isUserInRole(UserRole.ROLE_BOUND_USER)
-                && workReportModel.isMonthlyTimesheet(workReport)
+                && workReportModel.isPersonalTimesheet(workReport)
                 && belongsToCurrentUser(line)) {
-            monthlyTimesheetController
+            personalTimesheetController
                     .goToCreateOrEditForm(line.getLocalDate());
         } else {
             messagesForUser.showMessage(Level.WARNING,

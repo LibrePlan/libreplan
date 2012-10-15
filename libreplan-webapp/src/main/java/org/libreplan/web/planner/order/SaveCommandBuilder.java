@@ -26,7 +26,6 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -631,11 +630,13 @@ public class SaveCommandBuilder {
         }
 
         private void updateRootTaskPosition(TaskGroup rootTask) {
-            final IntraDayDate min = minDate(rootTask.getChildren());
+            final IntraDayDate min = TaskElement
+                    .minDate(rootTask.getChildren());
             if (min != null) {
                 rootTask.setIntraDayStartDate(min);
             }
-            final IntraDayDate max = maxDate(rootTask.getChildren());
+            final IntraDayDate max = TaskElement
+                    .maxDate(rootTask.getChildren());
             if (max != null) {
                 rootTask.setIntraDayEndDate(max);
             }
@@ -865,44 +866,6 @@ public class SaveCommandBuilder {
                 TaskElement taskElement) {
             taskElement.getDependenciesWithThisOrigin().size();
             taskElement.getDependenciesWithThisDestination().size();
-        }
-
-        private IntraDayDate maxDate(Collection<? extends TaskElement> tasksToSave) {
-            List<IntraDayDate> endDates = toEndDates(tasksToSave);
-            return endDates.isEmpty() ? null : Collections.max(endDates);
-        }
-
-        private List<IntraDayDate> toEndDates(
-                Collection<? extends TaskElement> tasksToSave) {
-            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
-            for (TaskElement taskElement : tasksToSave) {
-                IntraDayDate endDate = taskElement.getIntraDayEndDate();
-                if (endDate != null) {
-                    result.add(endDate);
-                } else {
-                    LOG.warn("the task" + taskElement + " has null end date");
-                }
-            }
-            return result;
-        }
-
-        private IntraDayDate minDate(Collection<? extends TaskElement> tasksToSave) {
-            List<IntraDayDate> startDates = toStartDates(tasksToSave);
-            return startDates.isEmpty() ? null : Collections.min(startDates);
-        }
-
-        private List<IntraDayDate> toStartDates(
-                Collection<? extends TaskElement> tasksToSave) {
-            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
-            for (TaskElement taskElement : tasksToSave) {
-                IntraDayDate startDate = taskElement.getIntraDayStartDate();
-                if (startDate != null) {
-                    result.add(startDate);
-                } else {
-                    LOG.warn("the task" + taskElement + " has null start date");
-                }
-            }
-            return result;
         }
 
         @Override

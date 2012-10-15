@@ -78,7 +78,8 @@ public enum UserRole {
     ROLE_ESTIMATED_PLANNED_HOURS_PER_TASK_REPORT(_("Estimated/Planned Hours Per Task Report")),
     ROLE_PROJECT_COSTS_REPORT(_("Project Costs Report")),
     ROLE_TASK_SCHEDULING_STATUS_IN_PROJECT_REPORT(_("Task Scheduling Status In Project Report")),
-    ROLE_MATERIALS_NEED_AT_DATE_REPORT(_("Materials Needs At Date Report"));
+    ROLE_MATERIALS_NEED_AT_DATE_REPORT(_("Materials Needs At Date Report")),
+    ROLE_PROJECT_STATUS_REPORT(_("Project Status Report"));
 
     private final String displayName;
 

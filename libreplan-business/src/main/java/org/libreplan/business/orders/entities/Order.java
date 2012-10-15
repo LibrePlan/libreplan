@@ -670,4 +670,9 @@ public class Order extends OrderLineGroup implements Comparable {
         return neededToRecalculateSumExpenses;
     }
 
+    @Override
+    public boolean isOrder() {
+        return true;
+    }
+
 }

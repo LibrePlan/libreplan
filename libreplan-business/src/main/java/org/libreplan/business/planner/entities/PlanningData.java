@@ -67,28 +67,32 @@ public class PlanningData extends BaseEntity {
 
     }
 
+    private BigDecimal zeroIfNull(BigDecimal value) {
+        return value == null ? BigDecimal.ZERO : value;
+    }
+
     public BigDecimal getProgressAllByNumHours() {
-        return progressAllByNumHours;
+        return zeroIfNull(progressAllByNumHours);
     }
 
     public BigDecimal getProgressByDuration() {
-        return progressByDuration;
+        return zeroIfNull(progressByDuration);
     }
 
     public BigDecimal getProgressByNumHours() {
-        return progressByNumHours;
+        return zeroIfNull(progressByNumHours);
     }
 
     public BigDecimal getTheoreticalProgressByNumHoursForAllTasks() {
-        return theoreticalProgressByNumHoursForAllTasks;
+        return zeroIfNull(theoreticalProgressByNumHoursForAllTasks);
     }
 
     public BigDecimal getTheoreticalProgressByDurationForCriticalPath() {
-        return theoreticalProgressByDurationForCriticalPath;
+        return zeroIfNull(theoreticalProgressByDurationForCriticalPath);
     }
 
     public BigDecimal getTheoreticalProgressByNumHoursForCriticalPath() {
-        return theoreticalProgressByNumHoursForCriticalPath;
+        return zeroIfNull(theoreticalProgressByNumHoursForCriticalPath);
     }
 
     private PlanningData(TaskGroup rootTask) {

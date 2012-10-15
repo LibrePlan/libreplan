@@ -21,6 +21,8 @@ package org.libreplan.web.users.dashboard;
 
 import java.util.List;
 
+import org.libreplan.business.common.entities.Configuration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -39,5 +41,11 @@ public interface IMyTasksAreaModel {
      * {@link SpecificResourceAllocation}.
      */
     List<Task> getTasks();
+
+    /**
+     * Returns the {@link PersonalTimesheetsPeriodicityEnum} from
+     * {@link Configuration}.
+     */
+    PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity();
 
 }

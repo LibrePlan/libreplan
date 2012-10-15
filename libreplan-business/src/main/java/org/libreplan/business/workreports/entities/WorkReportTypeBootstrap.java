@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  * If there is no work report types, it creates a default work report type.<br />
  *
  * Even if there are already some work report types defined, it creates a work
- * report type for monthly timesheets if it is not present in the database yet.
+ * report type for personal timesheets if it is not present in the database yet.
  *
  * @author Ignacio Díaz Teijido <ignacio.diaz@cafedered.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
@@ -59,7 +59,7 @@ public class WorkReportTypeBootstrap implements IWorkReportTypeBootstrap {
                 createAndSaveWorkReportType(predefinedWorkReportType);
             }
         } else {
-            createMonthlyTimesheetsWorkReportTypeIfNeeded();
+            createPersonalTimesheetsWorkReportTypeIfNeeded();
         }
     }
 
@@ -74,15 +74,15 @@ public class WorkReportTypeBootstrap implements IWorkReportTypeBootstrap {
         workReportTypeDAO.save(workReportType);
     }
 
-    private void createMonthlyTimesheetsWorkReportTypeIfNeeded() {
+    private void createPersonalTimesheetsWorkReportTypeIfNeeded() {
         try {
             workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS
+                    .findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS
                             .getName());
         } catch (NonUniqueResultException e) {
             throw new RuntimeException(e);
         } catch (InstanceNotFoundException e) {
-            createAndSaveWorkReportType(PredefinedWorkReportTypes.MONTHLY_TIMESHEETS);
+            createAndSaveWorkReportType(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS);
         }
     }
 

@@ -332,9 +332,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             resourcesItems.add(subItem(_("Progress Types"),
                     "/advance/advanceTypes.zul", "04-avances.html#id1"));
         }
-        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_MATERIALS)) {
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_LABELS)) {
             resourcesItems.add(subItem(_("Labels"), "/labels/labelTypes.zul",
                     "10-etiquetas.html"));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_MATERIALS)) {
             resourcesItems.add(subItem(_("Materials"),
                     "/materials/materials.zul",
                     "11-materiales.html#administraci-n-de-materiais"));
@@ -490,6 +492,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 .isSuperuserOrUserInRoles(UserRole.ROLE_MATERIALS_NEED_AT_DATE_REPORT)) {
             reportsItems.add(subItem(_("Materials Needs At Date"),
                     "/reports/timeLineMaterialReport.zul", "15-informes.html"));
+        }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_PROJECT_STATUS_REPORT)) {
+            reportsItems.add(subItem(_("Project Status"),
+                    "/reports/projectStatusReport.zul", "15-informes.html"));
         }
         if (!reportsItems.isEmpty()) {
             topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul",

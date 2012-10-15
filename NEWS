@@ -1,6 +1,176 @@
 NEWS
 ====
 
+Version 1.3.1 (15 Oct 2012)
+---------------------------
+
+Summary
+~~~~~~~
+
+New minor version of LibrePlan including all the bugfixes done since 1.3.0 and
+also some new small features included in this version.
+
+We would like to highlight the following changes:
+
+* Allow to administrate the roles and profiles for the users imported from the
+  LDAP.
+
+* New language supported, this time Catalan thanks to Daniel Díaz Sañudo.
+  Making the full list of languages fully supported to grow up to 6, apart from
+  English: Catalan, Dutch, French, Galician, Italian and Spanish. Moreover,
+  German and Polish are gradually approaching. Thanks to all our translators for
+  their hard work.
+
+* New option in work reports web service. Included the possibility to remove a
+  work report or work report line from the web service.
+
+* Added option to configure personal timesheets periodicity, the possible values
+  are: weekly, twice-monthly and monthly.
+
+* Improvements in reports:
+
+  * Fixed font styles in generated PDF.
+  * Created a new report called "Project Status" with the list of tasks from the
+    WBS and using a new layout.
+
+* Fixed date formats in the whole application (reports included). Now they
+  follow the user locale conventions.
+
+Notes
+~~~~~
+
+If you are upgrading from 1.3.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.3.1.sql``.
+
+If you are upgrading from a previous version without using the Debian package,
+review the *Notes* section for version 1.3.0.
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jacobo Aragunde Pérez
+* Javier Moran Rua
+* Manuel Rego Casasnovas
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [ca] Daniel Díaz Sañudo
+* [cs] Zbyněk Schwarz
+* [de] Michael Taxis
+* [es] Manuel Rego Casasnovas
+* [fr] Philippe Poumaroux
+* [gl] Manuel Rego Casasnovas
+* [it] Giuseppe Zizza
+* [nl] Jeroen Baten
+
+Changes
+~~~~~~~
+
+* Update RPM package for LibrePlan 1.3.1
+* Update Debian package for LibrePlan 1.3.1
+* Update database scripts for LibrePlan 1.3.1
+* Bug #1542: Fix problem with deadline indicator when project finish right at the deadline
+* Bug #1542: Fix bug getting project end date from children tasks
+* Prevent NPE in SecurityUtils::isSuperuserOrRolePlanningOrHasAnyAuthorization
+* i18n: Mark label show in project status report to be translated
+* i18n: Update Czech translation
+* i18n: Update German translation
+* i18n: Update Spanish translation
+* i18n: Update Italian translation
+* i18n: Update Galician translation
+* i18n: Update French translation
+* i18n: Update Dutch translation
+* i18n: Update Catalan translation
+* doc: Update TODO file with the results of the roadmap meeting
+* Revert "Bug #1320: Fix issue changing methods to get constraints for a task"
+* Revert "Bug #1320: Recalculate position of siblings closing task properties pop-up"
+* Revert "Bug #1320: Recalculate position of siblings when moving a task"
+* doc: Update documentation about Active Directory configuration
+* Bug #1539: Do not reassociate with session resource bound to current user
+* Trying to fix broken test in Jenkins
+* Fix tests broken in commit b940c7882697833b696e54de5330a634e62ca701
+* i18n: Update keys.pot files
+* Fix typo in previous commit in message about maximum limit exceeded
+* Add restrictions by number of users and resources
+* Bug #1538: Detect inconsistent states on unsaved scheduling points.
+* Bug #1537: Fix issue getting allocations from memory and not from database
+* Simplify the way to calculate the length of money cost bars on the tasks in the Gantt diagram.
+* Allow codes of 2 digits for LibrePlan entities
+* Bug #1536: Do not regenerate project code when creating from template
+* Bug #1320: Recalculate position of siblings when moving a task
+* Bug #1320: Recalculate position of siblings closing task properties pop-up
+* Bug #1320: Fix issue changing methods to get constraints for a task
+* Bug #1534: Fix query to get info about expenses associated to an order
+* Bug #1529: Avoid exception in Cost tab in project details
+* Bug #1533: Change date format in reports footer to FULL instead of LONG
+* Fix error in labels page in menu
+* Configure properly file for Hibernate cache log
+* Using debug method for logging some messages that are meant for debugging
+* Fix unused id in bandbox_search.zul
+* Set level INFO for Hibernate cache logging
+* Bug #1533: Fix date formats in reports
+* Bug #1533: Avoid hard-coding date formats
+* Remove dependency to DejaVu fonts as are already included in jasperreport-fonts
+* Update name of zul for project status report
+* Increase size of prefix in tasks indentation
+* Add information about total estimated, planned and imputed hours
+* Indent tasks in project status report
+* Implement first version of project status report
+* Add basic report structure
+* Add basic controller and zul for budget report
+* Add option in menu and new role for new project status report
+* doc: Update guide to create a report with the changes in the last commits
+* Update documentation files and packages to add the dependency with DejaVu fonts
+* Using DejaVu Sans font in reports to avoid problems with PDFs
+* Add dependency to JasperReports fonts package
+* Bump JasperReports version to 4.7.0
+* Change method getOrder in IOrderModel to return an Order
+* Merge branch 'personal-timesheets-periodicity'
+* Use INTEGER instead of INT in Liquibase changelog
+* Fix the remaining bits where periodicity was not taken into account
+* Refactor source code to use personal timesheet instead of monthly timesheet
+* Improve representation of personal timesheets including month and year information
+* Improve documentation of new methods in PersonalTimesheetsPeriodicityEnum
+* Implement navigation between personal timesheets depending on periodicity
+* Update representation of personal timesheets in the UI depending on periodicity
+* Change the basic methods related to personal timesheets to take into account the periodicity
+* Refactoring code moving to methods in PersonalTimesheetsPeriodicityEnum
+* Modify the list of personal timehseets depending on the periodicity
+* doc: Fix typo "value gained" is "earned value"
+* Disable personal timesheets periodicity in configuration window if any personal timesheet was already saved
+* Add option to set personal timesheets periodicity in configuration window
+* Add new field in Configuration class to store the timesheets periodicity
+* Update name of personal timesheets work report type
+* Rename monthly timesheets to personal timesheets in the UI
+* Update web services documentation with information about the new delete services
+* Add method to remove a work report line from the web service
+* Add new method to delete a work report from the web service
+* Simplify code of WorkReportServiceREST using beforeSaving method
+* Prevent losing precision in TaskElementAdapter.calculateLimitDateByHours()
+* Use EffortDuration.zero() properly instead of more complex alternatives.
+* Bug #1528: Fix field TaskElement.notes in MySQL.
+* Add method getAuthenticationType() to avoid problems in edit window
+* doc: Update AUTHORS file info about new Catalan translator
+* i18n: Add Catalan language to enum and modify pom.xml to use Spanish userguide
+* i18n: Add Catalan translation
+* Does the users list sortable by user type (LDAP or Database).
+* Bug: Fixes sorting in both users and profiles list.
+* Bug: Configures right ascending sorting in companies list.
+* Bug #1527: Several interface disabling configurations modified.
+* Bug #1528: Check if name is null before truncating it.
+* Bug #1528: Change datatype for field TaskElement.notes to TEXT, which has no lenght limit.
+* Bug #1528: Trucate too long task names so they don't cause problems on save.
+* Small code refactor.
+* Bug #1523: Fix NPE in company view returning zero if progress is null
+* Fix parsing errors in NEWS file
+
+
 Version 1.3.0 (26 Jul 2012)
 ---------------------------
 
@@ -1275,9 +1445,9 @@ Changes
 * [doc] Add warning about printing issues in Debian Squeeze
 * [doc] Add instructions to install Cutycapt from testing
 * [Bug #1296] Rename Spanish and Galician .properties files as country was not needed
-* [Bug #1296] Remove duplicated *_en_US.properties files after updating *.properties when required
+* [Bug #1296] Remove duplicated \*_en_US.properties files after updating \*.properties when required
 * [Bug #1296] Rename Spanish and Galician .properties files as country was not needed
-* [Bug #1296] Remove duplicated *_en_US.properties files after updating *.properties when required
+* [Bug #1296] Remove duplicated \*_en_US.properties files after updating \*.properties when required
 * [Bug #1292] Replace Toolbarbutton object for the link to the PDF with an A object.
 * [Bug #1292] Replace Toolbarbutton object for the link to the PDF with an A object.
 * Remove an unnecessary check.
