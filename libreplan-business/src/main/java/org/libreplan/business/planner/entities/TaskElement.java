@@ -793,4 +793,44 @@ public abstract class TaskElement extends BaseEntity {
         }
     }
 
+    public static IntraDayDate maxDate(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<IntraDayDate> endDates = toEndDates(tasksToSave);
+        return endDates.isEmpty() ? null : Collections.max(endDates);
+    }
+
+    private static List<IntraDayDate> toEndDates(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+        for (TaskElement taskElement : tasksToSave) {
+            IntraDayDate endDate = taskElement.getIntraDayEndDate();
+            if (endDate != null) {
+                result.add(endDate);
+            } else {
+                LOG.warn("the task" + taskElement + " has null end date");
+            }
+        }
+        return result;
+    }
+
+    public static IntraDayDate minDate(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<IntraDayDate> startDates = toStartDates(tasksToSave);
+        return startDates.isEmpty() ? null : Collections.min(startDates);
+    }
+
+    private static List<IntraDayDate> toStartDates(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+        for (TaskElement taskElement : tasksToSave) {
+            IntraDayDate startDate = taskElement.getIntraDayStartDate();
+            if (startDate != null) {
+                result.add(startDate);
+            } else {
+                LOG.warn("the task" + taskElement + " has null start date");
+            }
+        }
+        return result;
+    }
+
 }
