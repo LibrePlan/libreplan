@@ -48,7 +48,6 @@ import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksEs
 import org.libreplan.business.planner.entities.visitors.CalculateFinishedTasksLagInCompletionVisitor;
 import org.libreplan.business.planner.entities.visitors.ResetTasksStatusVisitor;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -223,15 +222,15 @@ public class DashboardModel implements IDashboardModel {
             return;
         }
         TaskGroup rootTask = getRootTask();
-        IntraDayDate endDate = TaskElement.maxDate(rootTask.getChildren());
+        LocalDate endDate = TaskElement.maxDate(rootTask.getChildren())
+                .asExclusiveEnd();
         Days orderDuration = Days.daysBetween(
-                TaskElement.minDate(rootTask.getChildren()).getDate(),
-                endDate.asExclusiveEnd());
+                TaskElement.minDate(rootTask.getChildren()).getDate(), endDate);
 
         LocalDate deadLineAsLocalDate = LocalDate.fromDateFields(currentOrder
                 .getDeadline());
-        Days deadlineOffset = Days.daysBetween(endDate.getDate(),
-                deadLineAsLocalDate);
+        Days deadlineOffset = Days.daysBetween(endDate,
+                deadLineAsLocalDate.plusDays(1));
 
         BigDecimal outcome = new BigDecimal(deadlineOffset.getDays(),
                 MathContext.DECIMAL32);
@@ -257,8 +256,8 @@ public class DashboardModel implements IDashboardModel {
             return;
         }
         absoluteMarginWithDeadLine = daysBetween(
-                TaskElement.maxDate(rootTask.getChildren()).getDate(),
-                LocalDate.fromDateFields(deadline));
+                TaskElement.maxDate(rootTask.getChildren()).asExclusiveEnd(),
+                LocalDate.fromDateFields(deadline).plusDays(1));
     }
 
     private int daysBetween(LocalDate start, LocalDate end) {
