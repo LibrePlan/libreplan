@@ -2669,3 +2669,221 @@ INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXEC
 
 -- Release Database Lock
 -- Release Database Lock
+
+
+-- *********************************************************************
+-- Update Database Script - Customizations for LibrePlan Audiovisual
+-- *********************************************************************
+-- Change Log: src/main/resources/db.changelog.xml
+-- Ran at: 16/10/12 9:45
+-- Against: libreplan@jdbc:postgresql://localhost/libreplanaudiovisualdev
+-- Liquibase version: 2.0.5
+-- *********************************************************************
+
+-- Lock Database
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-table-budget_line_template::jaragunde::(Checksum: 3:a8709c2ce057475287f0656790d1c620)
+-- A subclass of OrderLineTemplate called BudgetLineTemplate has been added, it
+--             contains new fields. These fields are saved to a new table called budget_line_template.
+CREATE TABLE budget_line_template (budget_line_template_id BIGINT NOT NULL, cost_or_salary DECIMAL(19,2), duration INT, quantity INT, indemnization_salary DECIMAL(19,2), holiday_salary DECIMAL(19,2), budget_line_type INT, CONSTRAINT budget_line_template_pkey PRIMARY KEY (budget_line_template_id));
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'A subclass of OrderLineTemplate called BudgetLineTemplate has been added, it
+            contains new fields. These fields are saved to a new table called budget_line_template.', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-table-budget_line_template', '2.0.5', '3:a8709c2ce057475287f0656790d1c620', 430);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-table-budget_template::jaragunde::(Checksum: 3:2e0f0cb94156bb932760608f3c4ec8cf)
+-- A subclass of OrderTemplate called BudgetTemplate has been added. It doesn't contain
+--             new fields but the entity will be used to list the Templates differentiating them from
+--             Budgets, which are also children of OrderTemplate.
+CREATE TABLE budget_template (budget_template_id BIGINT NOT NULL, CONSTRAINT budget_template_pkey PRIMARY KEY (budget_template_id));
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'A subclass of OrderTemplate called BudgetTemplate has been added. It doesn''t contain
+            new fields but the entity will be used to list the Templates differentiating them from
+            Budgets, which are also children of OrderTemplate.', NOW(), 'Create Table', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-table-budget_template', '2.0.5', '3:2e0f0cb94156bb932760608f3c4ec8cf', 431);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-foreign-key-constraints-budget_template::jaragunde::(Checksum: 3:e3c8e0919417c818bfc007d9143e4491)
+-- Add foreign key constraints between the base class OrderElementTemplate and its children
+--             classes BudgetLineTemplate and BudgetTemplate.
+ALTER TABLE budget_line_template ADD CONSTRAINT fk_budget_line_template_order_element_template FOREIGN KEY (budget_line_template_id) REFERENCES order_element_template (id);
+
+ALTER TABLE budget_template ADD CONSTRAINT fk_budget_template_order_element_template FOREIGN KEY (budget_template_id) REFERENCES order_element_template (id);
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'Add foreign key constraints between the base class OrderElementTemplate and its children
+            classes BudgetLineTemplate and BudgetTemplate.', NOW(), 'Add Foreign Key Constraint (x2)', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-foreign-key-constraints-budget_template', '2.0.5', '3:e3c8e0919417c818bfc007d9143e4491', 432);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-code-order_element_template::jaragunde::(Checksum: 3:e775f0cd4ebcb27ae12bbae567d91406)
+-- The code attribute was removed from order_element_template table in master,
+--             but in audiovisual branch it is needed.
+ALTER TABLE order_element_template ADD code VARCHAR(255) NOT NULL;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'The code attribute was removed from order_element_template table in master,
+            but in audiovisual branch it is needed.', NOW(), 'Add Column', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-code-order_element_template', '2.0.5', '3:e775f0cd4ebcb27ae12bbae567d91406', 433);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::initial-creation-table-filming-progress::smontes::(Checksum: 3:cbe68ab62c4238061f31799d9c8a40a9)
+CREATE TABLE filming_progress (id BIGINT NOT NULL, "version" BIGINT NOT NULL, start_date DATE, end_date DATE, progress_granularity INT, CONSTRAINT filming_progress_pkey PRIMARY KEY (id));
+
+ALTER TABLE filming_progress ADD CONSTRAINT fk_filming_progress_per_order FOREIGN KEY (id) REFERENCES order_table (order_element_id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', '', NOW(), 'Create Table, Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'initial-creation-table-filming-progress', '2.0.5', '3:cbe68ab62c4238061f31799d9c8a40a9', 434);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::initial-database-creation-initial-progress-forecast::smontes::(Checksum: 3:4190af858ed2dbe4bebf50c0d162b883)
+CREATE TABLE initial_progress_forecast (filming_progress_id BIGINT NOT NULL, day DATE, scenes INT NOT NULL);
+
+ALTER TABLE initial_progress_forecast ADD CONSTRAINT scenes_per_day_pkey PRIMARY KEY (filming_progress_id, day);
+
+ALTER TABLE initial_progress_forecast ADD CONSTRAINT fk_initial_progress_forecast_per_filming FOREIGN KEY (filming_progress_id) REFERENCES filming_progress (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', '', NOW(), 'Create Table, Add Primary Key, Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'initial-database-creation-initial-progress-forecast', '2.0.5', '3:4190af858ed2dbe4bebf50c0d162b883', 435);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::initial-database-creation-progress-forecast::smontes::(Checksum: 3:0bffb5f72a420dbcf70ee6ac90c8bf39)
+CREATE TABLE progress_forecast (filming_progress_id BIGINT NOT NULL, day DATE, scenes INT NOT NULL);
+
+ALTER TABLE progress_forecast ADD CONSTRAINT scenes_per_day_forecast_pkey PRIMARY KEY (filming_progress_id, day);
+
+ALTER TABLE progress_forecast ADD CONSTRAINT fk_progress_forecast_per_filming FOREIGN KEY (filming_progress_id) REFERENCES filming_progress (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', '', NOW(), 'Create Table, Add Primary Key, Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'initial-database-creation-progress-forecast', '2.0.5', '3:0bffb5f72a420dbcf70ee6ac90c8bf39', 436);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::initial-database-creation-real-progress::smontes::(Checksum: 3:8cfd665cc1ddad3bdbc8b4328e6ce8b3)
+CREATE TABLE real_progress (filming_progress_id BIGINT NOT NULL, day DATE, scenes INT NOT NULL);
+
+ALTER TABLE real_progress ADD CONSTRAINT real_scenes_per_day_pkey PRIMARY KEY (filming_progress_id, day);
+
+ALTER TABLE real_progress ADD CONSTRAINT fk_real_progress_per_filming FOREIGN KEY (filming_progress_id) REFERENCES filming_progress (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', '', NOW(), 'Create Table, Add Primary Key, Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'initial-database-creation-real-progress', '2.0.5', '3:8cfd665cc1ddad3bdbc8b4328e6ce8b3', 437);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-table-budget-and-relation-with-order::jaragunde::(Checksum: 3:25c6051ab0323c2ee883d9fd8f3a6147)
+-- A subclass of OrderTemplate called Budget has been added. It doesn't contain
+--             new fields but the entity will be used to differentiate from
+--             BudgetTemplates, which are also children of OrderTemplate.
+--             A one-to-one relation between Budget and Order has to be set.
+CREATE TABLE budget (budget_id BIGINT NOT NULL, order_element_id BIGINT, CONSTRAINT budget_pkey PRIMARY KEY (budget_id));
+
+ALTER TABLE budget ADD CONSTRAINT fk_budget_order_element_template FOREIGN KEY (budget_id) REFERENCES order_element_template (id);
+
+ALTER TABLE budget ADD CONSTRAINT fk_budget_order FOREIGN KEY (order_element_id) REFERENCES order_table (order_element_id);
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'A subclass of OrderTemplate called Budget has been added. It doesn''t contain
+            new fields but the entity will be used to differentiate from
+            BudgetTemplates, which are also children of OrderTemplate.
+            A one-to-one relati...', NOW(), 'Create Table, Add Foreign Key Constraint (x2)', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-table-budget-and-relation-with-order', '2.0.5', '3:25c6051ab0323c2ee883d9fd8f3a6147', 438);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::change-direction-of-relation-between-budget-and-order::jaragunde::(Checksum: 3:d17e17824c71ce74f1fa57fe9af27ae8)
+-- Change the direction of the relation between Budget and Order entities,
+--             placing the foreign key attribute in Order table.
+ALTER TABLE order_table ADD budget_id BIGINT NOT NULL;
+
+ALTER TABLE budget DROP CONSTRAINT fk_budget_order;
+
+ALTER TABLE order_table ADD CONSTRAINT fk_order_budget FOREIGN KEY (budget_id) REFERENCES budget (budget_id);
+
+ALTER TABLE budget DROP COLUMN order_element_id;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'Change the direction of the relation between Budget and Order entities,
+            placing the foreign key attribute in Order table.', NOW(), 'Add Column, Drop Foreign Key Constraint, Add Foreign Key Constraint, Drop Column', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'change-direction-of-relation-between-budget-and-order', '2.0.5', '3:d17e17824c71ce74f1fa57fe9af27ae8', 439);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::remove-calendar-foreign-key-from-order_template::jaragunde::(Checksum: 3:a237b65f8af55bcb1145fe63ff0c24a4)
+-- Remove foreign key from column base_calendar_id in order_template table.
+--             This step must be done before remove-calendar-from-order_template in
+--             MySQL >= 5.5.
+ALTER TABLE order_template DROP CONSTRAINT fk6476ce4ba44abee3;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'Remove foreign key from column base_calendar_id in order_template table.
+            This step must be done before remove-calendar-from-order_template in
+            MySQL >= 5.5.', NOW(), 'Drop Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'remove-calendar-foreign-key-from-order_template', '2.0.5', '3:a237b65f8af55bcb1145fe63ff0c24a4', 440);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::remove-calendar-from-order_template::jaragunde::(Checksum: 3:193dd00b6ac3153f1a646f248ba5c77f)
+-- Remove column base_calendar_id in order_template table
+ALTER TABLE order_template DROP COLUMN base_calendar_id;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'Remove column base_calendar_id in order_template table', NOW(), 'Drop Column', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'remove-calendar-from-order_template', '2.0.5', '3:193dd00b6ac3153f1a646f248ba5c77f', 441);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-column-type-in-filming-progress-table::smontes::(Checksum: 3:9e3f03668f0028fc0fefaf831d2c6ac2)
+-- add column type in filming_progress table
+ALTER TABLE filming_progress ADD type INT;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', 'add column type in filming_progress table', NOW(), 'Add Column', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-column-type-in-filming-progress-table', '2.0.5', '3:9e3f03668f0028fc0fefaf831d2c6ac2', 442);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::remove-progress-granularity-from-filming-progress::smontes::(Checksum: 3:0afe2d2b710c9d59cff855fc5e02b3a1)
+-- Remove column progress_granularity in filming_progress table
+ALTER TABLE filming_progress DROP COLUMN progress_granularity;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', 'Remove column progress_granularity in filming_progress table', NOW(), 'Drop Column', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'remove-progress-granularity-from-filming-progress', '2.0.5', '3:0afe2d2b710c9d59cff855fc5e02b3a1', 443);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::modify-columns-type-in-filming-progress-maps::smontes::(Checksum: 3:88bebad0cc73899db8829adbac849d34)
+-- modify columns type in filming progress maps
+ALTER TABLE initial_progress_forecast ALTER COLUMN scenes TYPE DECIMAL(19,2);
+
+ALTER TABLE progress_forecast ALTER COLUMN scenes TYPE DECIMAL(19,2);
+
+ALTER TABLE real_progress ALTER COLUMN scenes TYPE DECIMAL(19,2);
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', 'modify columns type in filming progress maps', NOW(), 'Modify data type (x3)', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'modify-columns-type-in-filming-progress-maps', '2.0.5', '3:88bebad0cc73899db8829adbac849d34', 444);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::rename-column-scenes-on-filming-progress-maps::smontes::(Checksum: 3:4922a498a274d22cbed4e3aec7d6714a)
+-- Rename column scenes on filming progress maps
+ALTER TABLE initial_progress_forecast RENAME COLUMN scenes TO value;
+
+ALTER TABLE progress_forecast RENAME COLUMN scenes TO value;
+
+ALTER TABLE real_progress RENAME COLUMN scenes TO value;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', 'Rename column scenes on filming progress maps', NOW(), 'Rename Column (x3)', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'rename-column-scenes-on-filming-progress-maps', '2.0.5', '3:4922a498a274d22cbed4e3aec7d6714a', 445);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-column-order_id-in-filming-progress-table::smontes::(Checksum: 3:2fd2e4ae70260180387873d8615796e6)
+-- add column order_id in filming_progress table
+ALTER TABLE filming_progress ADD order_id BIGINT;
+
+ALTER TABLE filming_progress DROP CONSTRAINT fk_filming_progress_per_order;
+
+ALTER TABLE filming_progress ADD CONSTRAINT fk_filming_progress_order FOREIGN KEY (order_id) REFERENCES order_table (order_element_id);
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('smontes', 'add column order_id in filming_progress table', NOW(), 'Add Column, Drop Foreign Key Constraint, Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-column-order_id-in-filming-progress-table', '2.0.5', '3:2fd2e4ae70260180387873d8615796e6', 446);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-start-and-end-date-to-budget_line_template::jaragunde::(Checksum: 3:3ad484e1d6af78bd35870cf8b18b31e0)
+-- Add two date fields for start and end date to budget_line_template table
+ALTER TABLE budget_line_template ADD start_date DATE;
+
+ALTER TABLE budget_line_template ADD end_date DATE;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('jaragunde', 'Add two date fields for start and end date to budget_line_template table', NOW(), 'Add Column (x2)', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-start-and-end-date-to-budget_line_template', '2.0.5', '3:3ad484e1d6af78bd35870cf8b18b31e0', 447);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::create-tables-related-to-cashflow-entities::mrego::(Checksum: 3:e15c83c1b86a5d2bd53119f6fda2046f)
+-- Create new new tables and indexes related to cashflow enitities
+CREATE TABLE cashflow_plan (id BIGINT NOT NULL, "version" BIGINT NOT NULL, type INT NOT NULL, CONSTRAINT cashflow_plan_pkey PRIMARY KEY (id));
+
+CREATE TABLE cashflow_output (cashflow_plan_id BIGINT NOT NULL, "date" DATE NOT NULL, amount DECIMAL(19,2) NOT NULL, cashflow_output_position INT NOT NULL);
+
+ALTER TABLE cashflow_output ADD CONSTRAINT cashflow_output_pkey PRIMARY KEY (cashflow_plan_id, cashflow_output_position);
+
+ALTER TABLE cashflow_output ADD CONSTRAINT cashflow_output_cashflow_plan_id_fkey FOREIGN KEY (cashflow_plan_id) REFERENCES cashflow_plan (id) ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('mrego', 'Create new new tables and indexes related to cashflow enitities', NOW(), 'Create Table (x2), Add Primary Key, Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'create-tables-related-to-cashflow-entities', '2.0.5', '3:e15c83c1b86a5d2bd53119f6fda2046f', 448);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-relationship-between-task-and-cashflow_plan::mrego::(Checksum: 3:02877768c3f18cc2140d9a2efe17af45)
+-- Add column and constraints needed for relationship between
+--             Task and CashflowPlan
+ALTER TABLE task ADD cashflow_plan_id BIGINT;
+
+ALTER TABLE task ADD CONSTRAINT task_cashflow_plan_id_key UNIQUE (cashflow_plan_id);
+
+ALTER TABLE task ADD CONSTRAINT task_cashflow_plan_fkey FOREIGN KEY (cashflow_plan_id) REFERENCES cashflow_plan (id);
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('mrego', 'Add column and constraints needed for relationship between
+            Task and CashflowPlan', NOW(), 'Add Column, Add Unique Constraint, Add Foreign Key Constraint', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-relationship-between-task-and-cashflow_plan', '2.0.5', '3:02877768c3f18cc2140d9a2efe17af45', 449);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-column-delay_days-to-cashflow_plan::mrego::(Checksum: 3:2297df150dd8fca556e6a105d064dd49)
+-- Add column delay_days to cashflow_plan table
+ALTER TABLE cashflow_plan ADD delay_days INT;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('mrego', 'Add column delay_days to cashflow_plan table', NOW(), 'Add Column', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-column-delay_days-to-cashflow_plan', '2.0.5', '3:2297df150dd8fca556e6a105d064dd49', 450);
+
+-- Changeset src/main/resources/db.changelog-audiovisual.xml::add-columns-for-cashflow-to-order-table::mrego::(Checksum: 3:15c6f96baab160ed399a6b4a6ae7c977)
+-- Add columns for cashflow to order table
+ALTER TABLE order_table ADD cashflow_type INT;
+
+ALTER TABLE order_table ADD cashflow_delay_days INT;
+
+INSERT INTO databasechangelog (AUTHOR, COMMENTS, DATEEXECUTED, DESCRIPTION, EXECTYPE, FILENAME, ID, LIQUIBASE, MD5SUM, ORDEREXECUTED) VALUES ('mrego', 'Add columns for cashflow to order table', NOW(), 'Add Column', 'EXECUTED', 'src/main/resources/db.changelog-audiovisual.xml', 'add-columns-for-cashflow-to-order-table', '2.0.5', '3:15c6f96baab160ed399a6b4a6ae7c977', 451);
+
+-- Release Database Lock
+-- Release Database Lock
