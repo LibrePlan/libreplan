@@ -1,0 +1,121 @@
+#! /bin/bash
+set -e
+
+# If the database exists already *before* running dbconfig, it means that
+# an upgrade is being done. In case PostgreSQL 8.x is being used, make
+# sure that support for plpgsql is enabled. This is needed starting with
+# Libreplan 1.3
+#
+if [[ $1 = configure && -r /etc/dbconfig-common/libreplan.conf ]]
+then
+	PGSQL_MAJOR=$(createlang --version |
+		sed -e '1s/^[^0-9]*\([0-9]\+\)\..*$/\1/p' -e d)
+	if [[ ${PGSQL_MAJOR} -eq 8 ]]
+	then
+		. /etc/dbconfig-common/libreplan.conf
+
+		conn_args=""
+		if [[ ${dbc_dbserver} != localhost ]] ; then
+			conn_args="${conn_args} --host='${dbc_dbserver}'"
+		fi
+		if [[ -n ${dbc_dbport} ]] ; then
+			conn_args="${conn_args} --port=${dbc_dbport}"
+		fi
+
+		su postgres -c "createlang -d ${dbc_dbname} ${conn_args} plpgsql" || true
+	fi
+fi
+
+
+. /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/postinst.pgsql
+
+dbc_go libreplan $@
+
+
+if [[ $1 = configure && -r /etc/dbconfig-common/libreplan.conf ]]
+then
+	. /etc/dbconfig-common/libreplan.conf
+
+	if [ -z "${dbc_dbserver}" ] ; then
+		database_host='localhost'
+	else
+		database_host=${dbc_dbserver}
+	fi
+
+	echo "Adding libreplan Tomcat configuration bits"
+
+	# Remove first (just in case!)
+	sed -i -e '/begin:libreplan/,/end:libreplan/d' /etc/tomcat6/policy.d/03catalina.policy
+	sed -i -e '/begin:libreplan/,/end:libreplan/d' /etc/tomcat6/context.xml
+
+	# Modify /etc/tomcat6/context.xml
+	#
+	saved_ifs=${IFS}
+	IFS=$'\n'
+	{ cat /etc/tomcat6/context.xml; echo; } |
+	while read -r line ; do
+		if [[ ${line} = *\</Context\>* ]] ; then
+			cat <<-EOF
+				<!-- begin:libreplan -->
+				<Resource name="jdbc/libreplan-ds" auth="Container"
+					type="javax.sql.DataSource"
+					maxActive="100" maxIdle="30" maxWait="10000"
+					username="${dbc_dbuser}" password="${dbc_dbpass}"
+					driverClassName="org.postgresql.Driver"
+					url="jdbc:postgresql://${database_host}/${dbc_dbname}"/>
+				<!-- end:libreplan -->
+			EOF
+		fi
+		echo "${line}"
+	done > /etc/tomcat6/context.xml.new
+	IFS=${saved_ifs}
+
+	mv /etc/tomcat6/context.xml.new \
+	   /etc/tomcat6/context.xml
+
+	# Modify /etc/tomcat6/policy.d/03catalina.policy
+	#
+	saved_ifs=${IFS}
+	IFS=$'\n'
+	while read -r line ; do
+		echo "${line}"
+		if [[ ${line} = *tomcat-juli.jar* ]] ; then
+			echo '  // begin:libreplan'
+			echo '  permission java.io.FilePermission "${catalina.base}${file.separator}webapps${file.separator}libreplan-webapp${file.separator}WEB-INF${file.separator}classes${file.separator}logging.properties", "read";'
+			echo '  // end:libreplan'
+		fi
+	done < /etc/tomcat6/policy.d/03catalina.policy \
+	     > /etc/tomcat6/policy.d/03catalina.policy.new
+	IFS=${saved_ifs}
+
+	mv /etc/tomcat6/policy.d/03catalina.policy.new \
+	   /etc/tomcat6/policy.d/03catalina.policy
+
+fi
+
+if [ ! -L /usr/share/tomcat6/lib/postgresql-jdbc3.jar ] ; then
+	ln -sf /usr/share/java/postgresql-jdbc3.jar /usr/share/tomcat6/lib/
+fi
+
+if [ -x /etc/init.d/tomcat6 ] ; then
+	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+		invoke-rc.d tomcat6 stop
+	else
+		/etc/init.d/tomcat6 stop
+	fi
+fi
+
+if [ -d /var/lib/tomcat6/webapps/libreplan/ ] ;  then
+    rm -rf /var/lib/tomcat6/webapps/libreplan/
+fi
+
+if [ -x /etc/init.d/tomcat6 ] ; then
+	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+		invoke-rc.d tomcat6 start
+	else
+		/etc/init.d/tomcat6 start
+	fi
+fi
+
+#DEBHELPER#

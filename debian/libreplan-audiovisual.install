@@ -1,0 +1,11 @@
+debian/tmp/var/lib/tomcat6/webapps/libreplan.war
+debian/tmp/etc/tomcat6/policy.d/51libreplan.policy
+debian/tmp/usr/share/dbconfig-common/data/libreplan/install/pgsql
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.0.0
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.1.0
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.0
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.1
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.2
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.2.3
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.3.0
+debian/tmp/usr/share/dbconfig-common/data/libreplan/upgrade/pgsql/1.3.1

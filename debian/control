@@ -1,4 +1,4 @@
-Source: libreplan
+Source: libreplan-audiovisual
 Section: web
 Priority: optional
 Maintainer: Adrian Perez <aperez@igalia.com>
@@ -33,3 +33,19 @@ Description: Web application for project management (transitional package)
  external integration, etc.
  .
  This package can be safely deleted after Libreplan is successfully installed.
+
+Package: libreplan-audiovisual
+Architecture: any
+Depends: cutycapt, postgresql, postgresql-client, xvfb, dbconfig-common, ucf,
+ tomcat6, default-jre-headless | default-jre, libpg-java, ${misc:Depends}
+Conflicts: libreplan
+Description: Web application for cost management in audiovisual productions.
+ LibrePlan Audiovisual is a sectorial adaptation of LibrePlan oriented to the
+ management of the costs forecast and execution during the development of
+ audiovisual productions.
+ .
+ Its main goal is to cover all the stages related with budget definition,
+ planning and monitoring, from the tracking of the costs point of view. It
+ allows to track the execution of the budgeted items compared with the real
+ expenses and providing an overview of the real costs compared with the
+ forecasts together with the productivity measures obtained.

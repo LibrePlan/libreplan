@@ -1,0 +1,26 @@
+#! /bin/bash
+set -e
+
+. /usr/share/debconf/confmodule
+
+if [ -r /usr/share/dbconfig-common/dpkg/postinst.pgsql ] ; then
+	. /usr/share/dbconfig-common/dpkg/postinst.pgsql
+	dbc_go libreplan $@
+fi
+
+if [[ $1 = purge ]] ; then
+	echo "Removing libreplan Tomcat configuration bits..."
+	sed -i -e '/begin:libreplan/,/end:libreplan/d' /etc/tomcat6/policy.d/03catalina.policy
+	sed -i -e '/begin:libreplan/,/end:libreplan/d' /etc/tomcat6/context.xml
+fi
+
+#if [ -x /etc/init.d/tomcat5.5 ] ; then
+#	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+#		invoke-rc.d tomcat5.5 restart
+#	else
+#		/etc/init.d/tomcat5.5 restart
+#	fi
+#fi
+
+#DEBHELPER#
+

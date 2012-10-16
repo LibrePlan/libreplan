@@ -1,3 +1,9 @@
+libreplan-audiovisual (1.3.1-1) squeeze; urgency=low
+
+  * Released LibrePlan Audiovisual 1.3.1
+
+ -- Jacobo Aragunde Pérez <jaragunde@igalia.com>  Tue, 16 Oct 2012 11:30:00 +0200
+
 libreplan (1.3.1-1) squeeze; urgency=low
 
   * Released LibrePlan 1.3.1
