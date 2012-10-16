@@ -19,6 +19,7 @@
 
 package org.libreplan.web.reports;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.libreplan.business.orders.entities.Order;
@@ -34,5 +35,11 @@ public interface IProjectStatusReportModel {
     List<Order> getOrders();
 
     List<ProjectStatusReportDTO> getProjectStatusReportDTOs(Order order);
+
+    BigDecimal getHoursCost(Order order);
+
+    BigDecimal getExpensesCost(Order order);
+
+    BigDecimal getTotalCost(Order order);
 
 }

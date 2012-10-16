@@ -19,7 +19,8 @@
 
 package org.libreplan.business.reports.dtos;
 
-import org.apache.commons.lang.StringUtils;
+import java.math.BigDecimal;
+
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -44,9 +45,18 @@ public class ProjectStatusReportDTO {
 
     private EffortDuration imputedHours;
 
+    private BigDecimal budget;
+
+    private BigDecimal hoursCost;
+
+    private BigDecimal expensesCost;
+
+    private BigDecimal totalCost;
+
     public ProjectStatusReportDTO(OrderElement orderElement) {
         code = orderElement.getCode();
-        name = orderElement.getName();
+        name = Util.getPrefixSpacesDependingOnDepth(orderElement)
+                + orderElement.getName();
 
         Integer estimatedHours = orderElement.getWorkHours();
         this.estimatedHours = estimatedHours != null ? EffortDuration
@@ -62,7 +72,7 @@ public class ProjectStatusReportDTO {
             imputedHours = sumChargedEffort.getTotalChargedEffort();
         }
 
-        appendPrefixSpacesDependingOnDepth(orderElement);
+        setBudget(orderElement.getBudget());
     }
 
     public String getCode() {
@@ -92,14 +102,68 @@ public class ProjectStatusReportDTO {
         return effortDuration.toFormattedString();
     }
 
-    private void appendPrefixSpacesDependingOnDepth(OrderElement orderElement) {
-        int depth = 0;
-        while (!orderElement.getParent().isOrder()) {
-            depth++;
-            orderElement = orderElement.getParent();
-        }
+    public BigDecimal getBudget() {
+        return budget;
+    }
 
-        name = StringUtils.repeat(INDENT_PREFIX, depth) + name;
+    public void setBudget(BigDecimal budget) {
+        this.budget = budget;
+    }
+
+    public BigDecimal getHoursCost() {
+        return hoursCost;
+    }
+
+    public void setHoursCost(BigDecimal hoursCost) {
+        this.hoursCost = hoursCost;
+    }
+
+    public BigDecimal getExpensesCost() {
+        return expensesCost;
+    }
+
+    public void setExpensesCost(BigDecimal expensesCost) {
+        this.expensesCost = expensesCost;
+    }
+
+    public BigDecimal getTotalCost() {
+        return totalCost;
+    }
+
+    public void setTotalCost(BigDecimal totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public BigDecimal getBudgetIntegerPart() {
+        return Util.getIntegerPart(budget);
+    }
+
+    public BigDecimal getBudgetFractionalPart() {
+        return Util.getFractionalPart(budget);
+    }
+
+    public BigDecimal getHoursCostIntegerPart() {
+        return Util.getIntegerPart(hoursCost);
+    }
+
+    public BigDecimal getHoursCostFractionalPart() {
+        return Util.getFractionalPart(hoursCost);
+    }
+
+    public BigDecimal getExpensesCostIntegerPart() {
+        return Util.getIntegerPart(expensesCost);
+    }
+
+    public BigDecimal getExpensesCostFractionalPart() {
+        return Util.getFractionalPart(expensesCost);
+    }
+
+    public BigDecimal getTotalCostIntegerPart() {
+        return Util.getIntegerPart(totalCost);
+    }
+
+    public BigDecimal getTotalCostFractionalPart() {
+        return Util.getFractionalPart(totalCost);
     }
 
 }

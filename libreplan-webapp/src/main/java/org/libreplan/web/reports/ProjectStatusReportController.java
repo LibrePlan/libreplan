@@ -33,6 +33,7 @@ import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -121,6 +122,15 @@ public class ProjectStatusReportController extends LibrePlanReportController {
         }
         result.put("imputedHours",
                 ProjectStatusReportDTO.toString(imputedHours));
+
+        result.put("budget", Util.addCurrencySymbol(order.getBudget()));
+        result.put("hoursCost", Util.addCurrencySymbol(projectStatusReportModel
+                .getHoursCost(order)));
+        result.put("expensesCost", Util
+                .addCurrencySymbol(projectStatusReportModel
+                        .getExpensesCost(order)));
+        result.put("totalCost", Util.addCurrencySymbol(projectStatusReportModel
+                .getTotalCost(order)));
 
         return result;
     }

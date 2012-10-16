@@ -19,6 +19,7 @@
 
 package org.libreplan.web.reports;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.web.security.SecurityUtils;
@@ -51,6 +53,9 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     @Autowired
     private IScenarioManager scenarioManager;
 
+    @Autowired
+    private IMoneyCostCalculator moneyCostCalculator;
+
     @SuppressWarnings("unchecked")
     @Override
     @Transactional(readOnly = true)
@@ -72,10 +77,33 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         List<ProjectStatusReportDTO> dtos = new ArrayList<ProjectStatusReportDTO>();
 
         for (OrderElement child : order.getAllChildren()) {
-            dtos.add(new ProjectStatusReportDTO(child));
+            ProjectStatusReportDTO dto = new ProjectStatusReportDTO(child);
+            dto.setHoursCost(moneyCostCalculator.getHoursMoneyCost(child));
+            dto.setExpensesCost(moneyCostCalculator.getExpensesMoneyCost(child));
+            dto.setTotalCost(moneyCostCalculator.getTotalMoneyCost(child));
+
+            dtos.add(dto);
         }
 
         return dtos;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getHoursCost(Order order) {
+        return moneyCostCalculator.getHoursMoneyCost(order);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getExpensesCost(Order order) {
+        return moneyCostCalculator.getExpensesMoneyCost(order);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getTotalCost(Order order) {
+        return moneyCostCalculator.getTotalMoneyCost(order);
     }
 
 }
