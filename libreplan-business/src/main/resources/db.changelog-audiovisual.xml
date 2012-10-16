@@ -172,6 +172,15 @@
         <dropColumn tableName="budget" columnName="order_element_id" />
     </changeSet>
 
+    <changeSet id="remove-calendar-foreign-key-from-order_template" author="jaragunde">
+        <comment>
+            Remove foreign key from column base_calendar_id in order_template table.
+            This step must be done before remove-calendar-from-order_template in
+            MySQL >= 5.5.
+        </comment>
+        <dropForeignKeyConstraint constraintName="fk6476ce4ba44abee3" baseTableName="order_template"/>
+    </changeSet>
+
     <changeSet id="remove-calendar-from-order_template" author="jaragunde">
         <comment>Remove column base_calendar_id in order_template table</comment>
         <dropColumn tableName="order_template" columnName="base_calendar_id" />
