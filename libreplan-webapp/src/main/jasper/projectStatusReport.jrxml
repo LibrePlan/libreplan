@@ -21,16 +21,28 @@
 	<parameter name="estimatedHours" class="java.lang.String"/>
 	<parameter name="plannedHours" class="java.lang.String"/>
 	<parameter name="imputedHours" class="java.lang.String"/>
+	<parameter name="budget" class="java.lang.String"/>
+	<parameter name="hoursCost" class="java.lang.String"/>
+	<parameter name="expensesCost" class="java.lang.String"/>
+	<parameter name="totalCost" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
 	<field name="estimatedHours" class="java.lang.String"/>
 	<field name="plannedHours" class="java.lang.String"/>
 	<field name="imputedHours" class="java.lang.String"/>
+	<field name="budgetIntegerPart" class="java.math.BigDecimal"/>
+	<field name="budgetFractionalPart" class="java.math.BigDecimal"/>
+	<field name="hoursCostIntegerPart" class="java.math.BigDecimal"/>
+	<field name="hoursCostFractionalPart" class="java.math.BigDecimal"/>
+	<field name="expensesCostIntegerPart" class="java.math.BigDecimal"/>
+	<field name="expensesCostFractionalPart" class="java.math.BigDecimal"/>
+	<field name="totalCostIntegerPart" class="java.math.BigDecimal"/>
+	<field name="totalCostFractionalPart" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="45" splitType="Stretch">
+		<band height="57" splitType="Stretch">
 			<textField>
 				<reportElement uuid="283b2e5a-b1fc-4fff-bdef-6d342b537b72" x="0" y="0" width="622" height="14"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
@@ -98,6 +110,62 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{imputedHours}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="0" y="41" width="100" height="12"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{project_budget}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="100" y="41" width="100" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{budget}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="200" y="41" width="100" height="12"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{project_hours_cost}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="300" y="41" width="100" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{hoursCost}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="400" y="41" width="100" height="12"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{project_expenses_cost}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="500" y="41" width="100" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{expensesCost}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="600" y="41" width="100" height="12"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{project_total_cost}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="700" y="41" width="100" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{totalCost}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -117,7 +185,7 @@
 				<textFieldExpression><![CDATA[$R{code}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="82352929-5e6a-4feb-9f54-fd2c97eb7cea" x="100" y="0" width="552" height="15"/>
+				<reportElement uuid="82352929-5e6a-4feb-9f54-fd2c97eb7cea" x="100" y="0" width="332" height="15"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.25"/>
@@ -128,7 +196,7 @@
 				<textFieldExpression><![CDATA[$R{name}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="652" y="0" width="50" height="15"/>
+				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="432" y="0" width="50" height="15"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.25"/>
@@ -139,7 +207,7 @@
 				<textFieldExpression><![CDATA[$R{estimated_hours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="702" y="0" width="50" height="15"/>
+				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="482" y="0" width="50" height="15"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.25"/>
@@ -150,7 +218,7 @@
 				<textFieldExpression><![CDATA[$R{planned_hours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="752" y="0" width="50" height="15"/>
+				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="532" y="0" width="50" height="15"/>
 				<box>
 					<pen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.25"/>
@@ -159,6 +227,50 @@
 					<font isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{imputed_hours}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="582" y="0" width="55" height="15"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{budget}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="637" y="0" width="55" height="15"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{hours_cost}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="692" y="0" width="55" height="15"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{expenses_cost}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="faae6657-606f-49ed-b11f-1085bc10a38a" x="747" y="0" width="55" height="15"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$R{total_cost}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -170,24 +282,64 @@
 				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="04220d70-bab8-480f-b0db-8e3efd43965a" style="row-grey" x="100" y="0" width="552" height="15"/>
+				<reportElement uuid="04220d70-bab8-480f-b0db-8e3efd43965a" style="row-grey" x="100" y="0" width="332" height="15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="652" y="0" width="50" height="15"/>
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="432" y="0" width="50" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{estimatedHours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="702" y="0" width="50" height="15"/>
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="482" y="0" width="50" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{plannedHours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="752" y="0" width="50" height="15"/>
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="532" y="0" width="50" height="15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{imputedHours}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="582" y="0" width="40" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{budgetIntegerPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern=".##" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="622" y="0" width="15" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{budgetFractionalPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="637" y="0" width="40" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{hoursCostIntegerPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern=".##" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="677" y="0" width="15" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{hoursCostFractionalPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="692" y="0" width="40" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{expensesCostIntegerPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern=".##" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="732" y="0" width="15" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{expensesCostFractionalPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="747" y="0" width="40" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{totalCostIntegerPart}]]></textFieldExpression>
+			</textField>
+			<textField pattern=".##" isBlankWhenNull="true">
+				<reportElement uuid="1fe3ef4c-0cfe-45d2-96b1-c7f58d835509" style="row-grey" x="787" y="0" width="15" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{totalCostFractionalPart}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
