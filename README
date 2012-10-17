@@ -1,88 +1,59 @@
-LibrePlan
-=========
+LibrePlan Audiovisual
+=====================
 
 
 Description
 -----------
 
-*LibrePlan* is a free software web application for project management,
-monitoring and control.
+LibrePlan Audiovisual is a sectorial adaptation of LibrePlan oriented to the
+management of the costs forecast and execution during the development of
+audiovisual productions.
 
-*LibrePlan* is a collaborative tool to plan, monitor and control projects and
-has a rich web interface which provides a desktop alike user experience. All the
-team members can take part in the planning and this makes possible to have a
-real-time planning.
-
-It was designed thinking on a scenario where multiple projects and resources
-interact to carry out the work inside a company. Besides, it makes possible
-the communication with other company tools providing a wide set of web
-services to import and export data.
+Its main goal is to cover all the stages related with budget definition,
+planning and monitoring, from the tracking of the costs point of view. It allows
+to track the execution of the budgeted items compared with the real expenses and
+providing an overview of the real costs compared with the forecasts together
+with the productivity measures obtained.
 
 
-Features
-~~~~~~~~
+Specific features
+~~~~~~~~~~~~~~~~~
 
-* Resource management:
+* Budget templates system
 
-  * Two type of resources: machines and workers.
-  * Flexible calendars easily reusable.
-  * Resource configuration based on skills and roles.
+  Create new projects from configurable template trees with the budget structure
+  and predefined data.
 
-* Planning:
+  Start with complete budget template based on the ICAA model which comes with
+  the application
 
-  * Simple way to configure and estimate the work to plan. It is carried out
-    through Work Breakdown Structures (WBS) [1]_.
-  * Different detail levels during the planning.
-  * Two ways to allocate resources:
+* Budget execution forecast
 
-    * Specific allocation: Concrete individuals.
-    * Assisted generic allocation: Based on skills and roles fulfilled by the
-      resources.
+  Visualize and modify the distribution along time of the cost of the budget
+  items, and compare the real costs to do the neccesary adjustments.
 
-  * Templates to reuse work. Projects can be created based on templates for
-    repeatable tasks being able to save time.
+* Advanced assignment of forecasts and cost details
 
-  * Automatic resource reallocation in order to minimize overload (overtime).
+  Distribute in a fine grained detail level the expenses forecast.
 
-  * Advanced allocation. Manual configuration of daily work hours on a task
-    when automatic allocation does not suit your needs.
+  Use the cost sheets to track the produced expenses during the project.
 
-  * Monte Carlo method. Statistical simulation to calculate the possibility to
-    complete a project in a range of dates.
+  Integrate the costs system with other tools to import expenses through Web
+  Services
 
-* Projects control and monitoring:
+* Filming productivities perspective
 
-  * Company global analysis.
+  Measure the productivities on the ellaboration of the multimedia product being
+  developed, according to different unit types (scenes, minutes or script
+  pages).
 
-  * Earned Value Management [2]_. Project management method to objectively
-    measure progress and performance of a project.
+  Define an initial filming plan, specifying the estimated productivities,
+  compare them with the real measurements and adapt the forecasts.
 
-  * Planning quality management. It is possible to control quality of the tasks
-    to be performed through forms.
+* Planning and expenses Reports
 
-  * Projects cost analysis.
-
-  * Reported hours: worked hours are assigned to each task to track costs during
-    the planning
-
-  * Progress measurement through different unit types.
-
-* Outsourcing
-
-  LibrePlan provides support for companies that do outsourcing:
-
-  * Project tasks can be outsourced and sent to the LibrePlan installation of
-    the supplier.
-
-  * You can receive progress notifications of the subcontractors to know how
-    outsourced tasks are evolving .
-
-* Other features:
-
-  * Materials. You can manage the materials that planned tasks need to be
-    carried out.
-
-  * Complete users system with permissions, LDAP authentication, etc.
+  Generate printable reports either on PDF or HTML showing information on the
+  project execution.
 
 
 Requirements
@@ -122,7 +93,8 @@ Availability
 ------------
 
 The cutting-edge version of this project is always available from the Git
-repository at http://libreplan.git.sourceforge.net/.
+repository at http://libreplan.git.sourceforge.net/. Check out the branch
+*audiovisual* for this specific flavor of LibrePlan.
 
 Released versions are available at
 http://sourceforge.net/projects/libreplan/files/.
@@ -131,8 +103,8 @@ http://sourceforge.net/projects/libreplan/files/.
 Webpage
 -------
 
-You can find more information about *LibrePlan* at
-http://www.libreplan.com/.
+You can find more information about *LibrePlan Audiovisual* at
+http://www.libreplan.com/audiovisual.
 
 For information related with *LibrePlan* development you can visit the wiki at
 http://wiki.libreplan.org/.
@@ -148,7 +120,7 @@ License
 -------
 
 *LibrePlan* is released under the terms of the GNU Affero General Public
-License version 3 [3]_.
+License version 3 [1]_.
 
 Please read the ``COPYING`` file for details.
 
@@ -156,14 +128,13 @@ Please read the ``COPYING`` file for details.
 Authors
 -------
 
-This project was initially sponsored by *Fundación para o Fomento da Calidade
-Industrial e o Desenvolvemento Tecnolóxico de Galicia* [4]_.
+This project was initially sponsored by *Secretaría Xeral de Modernización e
+Innovación Tecnolóxica* [2]_, *Xunta de Galicia* [3]_.
 
 Please see ``AUTHORS`` file for more information about the authors.
 
 
 
-.. [1] http://en.wikipedia.org/wiki/Work_Breakdown_Structure
-.. [2] http://en.wikipedia.org/wiki/Earned_Value_Management
-.. [3] http://www.fsf.org/licensing/licenses/agpl.html
-.. [4] http://www.fundacioncalidade.org/
+.. [1] http://www.fsf.org/licensing/licenses/agpl.html
+.. [2] http://imit.xunta.es/
+.. [3] http://www.xunta.es/
