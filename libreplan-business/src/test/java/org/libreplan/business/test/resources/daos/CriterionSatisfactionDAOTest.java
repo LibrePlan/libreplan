@@ -29,8 +29,10 @@ import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.daos.ICriterionSatisfactionDAO;
@@ -67,6 +69,14 @@ public class CriterionSatisfactionDAOTest {
 
     @Autowired
     private IWorkerDAO workerDAO;
+
+    @javax.annotation.Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Before
+    public void loadRequiredData() {
+        configurationBootstrap.loadRequiredData();
+    }
 
     @Test
     public void testSaveCriterions() {
