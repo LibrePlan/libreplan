@@ -202,6 +202,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @SuppressWarnings("unchecked")
     @Override
+    @Transactional(readOnly = true)
     public OrderElement findByCode(String code)
             throws InstanceNotFoundException {
 
