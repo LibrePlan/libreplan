@@ -1439,7 +1439,8 @@ public class OrderCRUDController extends GenericForwardComposer {
      * the create buttons accordingly.
      */
     private void checkCreationPermissions() {
-        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
+        if (!SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             if (createOrderButton != null) {
                 createOrderButton.setDisabled(true);
             }

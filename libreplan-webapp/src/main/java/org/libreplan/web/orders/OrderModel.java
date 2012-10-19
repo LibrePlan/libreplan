@@ -771,7 +771,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             return true;
         }
         if (order.isNewObject()
-                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
+                & SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             return true;
         }
         try {
@@ -801,7 +802,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             return true;
         }
         if (order.isNewObject()
-                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
+                & SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             return true;
         }
         try {

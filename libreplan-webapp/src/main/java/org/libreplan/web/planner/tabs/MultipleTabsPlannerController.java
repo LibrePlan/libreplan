@@ -407,7 +407,8 @@ public class MultipleTabsPlannerController implements Composer,
         }
         handler.registerBookmarkListener(this, comp.getPage());
 
-        if (SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             org.zkoss.zk.ui.Component createOrderButton = comp.getPage()
                     .getFellowIfAny(
                 "createOrderButton");
