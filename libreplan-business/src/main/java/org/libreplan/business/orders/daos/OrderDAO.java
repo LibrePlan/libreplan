@@ -244,6 +244,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @SuppressWarnings("unchecked")
     @Override
+    @Transactional(readOnly = true)
     public Order findByCode(String code) throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(code)) {
