@@ -66,6 +66,16 @@ public class ProjectStatusReportDTO {
         this.totalCost = totalCost;
     }
 
+    public ProjectStatusReportDTO(String code, String name,
+            EffortDuration estimatedHours, EffortDuration plannedHours,
+            EffortDuration imputedHours, BigDecimal budget,
+            BigDecimal hoursCost, BigDecimal expensesCost, BigDecimal totalCost) {
+        this(estimatedHours, plannedHours, imputedHours, budget, hoursCost,
+                expensesCost, totalCost);
+        this.code = code;
+        this.name = name;
+    }
+
     public ProjectStatusReportDTO(OrderElement orderElement) {
         code = orderElement.getCode();
         name = Util.getPrefixSpacesDependingOnDepth(orderElement)

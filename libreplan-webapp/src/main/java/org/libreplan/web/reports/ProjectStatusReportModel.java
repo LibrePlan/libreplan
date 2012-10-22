@@ -33,6 +33,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
+import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.IScenarioManager;
@@ -114,7 +115,78 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         dto.setExpensesCost(moneyCostCalculator
                 .getExpensesMoneyCost(orderElement));
         dto.setTotalCost(moneyCostCalculator.getTotalMoneyCost(orderElement));
+
+        if (!isNotFilteringByCriteria()) {
+            dto = discountChildrenWithInvalidatedCriteria(orderElement, dto);
+        }
+
         return dto;
+    }
+
+    private ProjectStatusReportDTO discountChildrenWithInvalidatedCriteria(
+            OrderElement orderElement, ProjectStatusReportDTO dto) {
+        List<ProjectStatusReportDTO> dtosToDiscount = new ArrayList<ProjectStatusReportDTO>();
+
+        for (OrderElement child : orderElement.getChildren()) {
+            for (IndirectCriterionRequirement criterionRequirement : child
+                    .getIndirectCriterionRequirement()) {
+                if (isCriterionSelected(criterionRequirement.getCriterion()
+                        .getCode())) {
+                    if (!criterionRequirement.isValid()) {
+                        dtosToDiscount.add(calculateDTO(child));
+                    }
+                }
+            }
+        }
+
+        return discount(dto, dtosToDiscount);
+    }
+
+    private ProjectStatusReportDTO discount(ProjectStatusReportDTO originalDto,
+            List<ProjectStatusReportDTO> toDiscount) {
+        if (toDiscount.isEmpty()) {
+            return originalDto;
+        }
+
+        EffortDuration estimatedHours = originalDto.getEstimatedHoursAsEffortDuration();
+        EffortDuration plannedHours = originalDto.getPlannedHoursAsEffortDuration();
+        EffortDuration imputedHours = originalDto.getImputedHoursAsEffortDuration();
+
+        BigDecimal budget = originalDto.getBudget();
+        BigDecimal hoursCost = originalDto.getHoursCost();
+        BigDecimal expensesCost = originalDto.getExpensesCost();
+        BigDecimal totalCost = originalDto.getTotalCost();
+
+        for (ProjectStatusReportDTO each : toDiscount) {
+            estimatedHours = subtractIfNotNull(estimatedHours,
+                    each.getEstimatedHoursAsEffortDuration());
+            plannedHours = subtractIfNotNull(plannedHours,
+                    each.getPlannedHoursAsEffortDuration());
+            imputedHours = subtractIfNotNull(imputedHours,
+                    each.getImputedHoursAsEffortDuration());
+
+            budget = subtractIfNotNull(budget, each.getBudget());
+            hoursCost = subtractIfNotNull(hoursCost, each.getHoursCost());
+            expensesCost = subtractIfNotNull(expensesCost,
+                    each.getExpensesCost());
+            totalCost = subtractIfNotNull(totalCost, each.getTotalCost());
+        }
+
+        ProjectStatusReportDTO projectStatusReportDTO = new ProjectStatusReportDTO(
+                originalDto.getCode(), originalDto.getName(), estimatedHours,
+                plannedHours, imputedHours, budget, hoursCost, expensesCost,
+                totalCost);
+        return projectStatusReportDTO;
+    }
+
+    public boolean isCriterionSelected(String code) {
+        for (Criterion criterion : selectedCriteria) {
+            if (criterion.getCode().equals(code)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void calculateTotalDTO(Order order,
@@ -151,12 +223,20 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     }
 
     private boolean isNotFiltering() {
-        return selectedLabels.isEmpty() && selectedCriteria.isEmpty();
+        return isNotFilteringByLabels() && isNotFilteringByCriteria();
+    }
+
+    private boolean isNotFilteringByLabels() {
+        return selectedLabels.isEmpty();
+    }
+
+    private boolean isNotFilteringByCriteria() {
+        return selectedCriteria.isEmpty();
     }
 
     private List<OrderElement> filterBySelectedLabels(
             List<OrderElement> orderElements) {
-        if (selectedLabels.isEmpty()) {
+        if (isNotFilteringByLabels()) {
             return orderElements;
         }
 
@@ -171,7 +251,7 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
 
     private List<OrderElement> filterBySelectedCriteria(
             List<OrderElement> orderElements) {
-        if (selectedCriteria.isEmpty()) {
+        if (isNotFilteringByCriteria()) {
             return orderElements;
         }
 
@@ -192,11 +272,26 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         return total.plus(other);
     }
 
+    private EffortDuration subtractIfNotNull(EffortDuration total,
+            EffortDuration other) {
+        if (other == null) {
+            return total;
+        }
+        return total.minus(other);
+    }
+
     private BigDecimal addIfNotNull(BigDecimal total, BigDecimal other) {
         if (other == null) {
             return total;
         }
         return total.add(other);
+    }
+
+    private BigDecimal subtractIfNotNull(BigDecimal total, BigDecimal other) {
+        if (other == null) {
+            return total;
+        }
+        return total.subtract(other);
     }
 
     @Override

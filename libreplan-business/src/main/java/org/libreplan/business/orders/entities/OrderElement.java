@@ -945,7 +945,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                 newRequirement);
     }
 
-    protected Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
+    public Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
         return criterionRequirementHandler.getIndirectCriterionRequirement(criterionRequirements);
     }
 
