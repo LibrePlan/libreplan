@@ -33,6 +33,8 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
+import org.libreplan.business.resources.daos.ICriterionDAO;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.security.SecurityUtils;
@@ -59,12 +61,17 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     private ILabelDAO labelDAO;
 
     @Autowired
+    private ICriterionDAO criterionDAO;
+
+    @Autowired
     private IScenarioManager scenarioManager;
 
     @Autowired
     private IMoneyCostCalculator moneyCostCalculator;
 
     private Set<Label> selectedLabels = new HashSet<Label>();
+
+    private Set<Criterion> selectedCriteria = new HashSet<Criterion>();
 
     private ProjectStatusReportDTO totalDTO;
 
@@ -222,6 +229,35 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     @Override
     public ProjectStatusReportDTO getTotalDTO() {
         return totalDTO;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Criterion> getAllCriteria() {
+        List<Criterion> criteria = criterionDAO.findAll();
+        for (Criterion criterion : criteria) {
+            forceLoadCriterionType(criterion);
+        }
+        return criteria;
+    }
+
+    private void forceLoadCriterionType(Criterion criterion) {
+        criterion.getType().getName();
+    }
+
+    @Override
+    public void addSelectedCriterion(Criterion criterion) {
+        selectedCriteria.add(criterion);
+    }
+
+    @Override
+    public void removeSelectedCriterion(Criterion criterion) {
+        selectedCriteria.remove(criterion);
+    }
+
+    @Override
+    public Set<Criterion> getSelectedCriteria() {
+        return Collections.unmodifiableSet(selectedCriteria);
     }
 
 }

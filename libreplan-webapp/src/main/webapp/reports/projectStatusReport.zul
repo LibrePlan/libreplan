@@ -100,6 +100,46 @@
             </panelchildren>
         </panel>
 
+        <panel title="${i18n:_('Filter by criteria')}" border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <vbox>
+                    <separator spacing="5px"/>
+                    <hbox>
+                        <bandboxSearch id="bandboxCriteria" finder="CriterionBandboxFinder"
+                            model="@{controller.allCriteria}"
+                            widthListbox="380px"
+                            widthBandbox="350px" />
+                        <button label="${i18n:_('Add')}"
+                            onClick="controller.addCriterion()"
+                            style="margin-top: -4px" />
+                    </hbox>
+                </vbox>
+                <separator spacing="10px"/>
+                <listbox id="listboxCriteria"
+                        width="700px"
+                        multiple="true"
+                        model="@{controller.selectedCriteria}">
+                    <listhead>
+                        <listheader label="${i18n:_('Type')}" align="center" />
+                        <listheader label="${i18n:_('Name')}" align="center" />
+                        <listheader label="${i18n:_('Operations')}" align="center" width="100px"/>
+                    </listhead>
+                    <listitem self="@{each='criterion'}" value="@{criterion}">
+                        <listcell label="@{criterion.type.name}" />
+                        <listcell label="@{criterion.name}" />
+                        <listcell>
+                            <button sclass="icono" image="/common/img/ico_borrar1.png"
+                                hoverImage="/common/img/ico_borrar.png"
+                                tooltiptext="${i18n:_('Delete')}"
+                                onClick="controller.removeCriterion(self.parent.parent.value);">
+                            </button>
+                        </listcell>
+                    </listitem>
+                </listbox>
+            </panelchildren>
+        </panel>
+
         <separator spacing="10px" orient="horizontal" />
 
         <!-- Select output format -->

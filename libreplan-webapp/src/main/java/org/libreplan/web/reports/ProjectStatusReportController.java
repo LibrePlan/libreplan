@@ -32,6 +32,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
@@ -57,6 +58,10 @@ public class ProjectStatusReportController extends LibrePlanReportController {
     private BandboxSearch bandboxLabels;
 
     private Listbox listboxLabels;
+
+    private BandboxSearch bandboxCriteria;
+
+    private Listbox listboxCriteria;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -143,6 +148,30 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
     public Set<Label> getSelectedLabels() {
         return projectStatusReportModel.getSelectedLabels();
+    }
+
+    public List<Criterion> getAllCriteria() {
+        return projectStatusReportModel.getAllCriteria();
+    }
+
+    public void addCriterion() {
+        Criterion criterion = (Criterion) bandboxCriteria.getSelectedElement();
+        if (criterion == null) {
+            throw new WrongValueException(bandboxCriteria,
+                    _("please, select a criterion"));
+        }
+        projectStatusReportModel.addSelectedCriterion(criterion);
+        Util.reloadBindings(listboxCriteria);
+        bandboxCriteria.clear();
+    }
+
+    public void removeCriterion(Criterion criterion) {
+        projectStatusReportModel.removeSelectedCriterion(criterion);
+        Util.reloadBindings(listboxCriteria);
+    }
+
+    public Set<Criterion> getSelectedCriteria() {
+        return projectStatusReportModel.getSelectedCriteria();
     }
 
 }
