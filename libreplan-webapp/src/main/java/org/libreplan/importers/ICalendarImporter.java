@@ -66,4 +66,15 @@ List<CalendarDTO> calendarDTOs)
      *            TaskGroup with the data.
      */
     public void storeBaseCalendars(List<BaseCalendar> baseCalendars);
+
+    /**
+     * Makes a {@link OrderDTO} from a InputStream.
+     *
+     * Uses the ProjectReader of the class. It must be created before.
+     *
+     * @param filename
+     *            String with the name of the original file of the InputStream.
+     * @return OrderDTO with the data that we want to import.
+     */
+    OrderDTO getOrderDTO(String filename);
 }

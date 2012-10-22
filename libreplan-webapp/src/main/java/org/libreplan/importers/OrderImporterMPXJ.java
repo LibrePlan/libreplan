@@ -19,6 +19,8 @@
 
 package org.libreplan.importers;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -30,11 +32,13 @@ import net.sf.mpxj.reader.ProjectReaderUtility;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -74,6 +78,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderImporterMPXJ implements IOrderImporter {
 
     @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
+
+    @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
 
     @Autowired
@@ -100,6 +107,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
     @Autowired
     private IScenarioManager scenarioManager;
 
+
     /**
      * Makes a {@link OrderDTO} from a InputStream.
      *
@@ -119,8 +127,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
             ProjectReader reader = ProjectReaderUtility
                     .getProjectReader(filename);
 
-            return MPXJProjectFileConversor
-                    .convert(reader.read(file), filename);
+                return MPXJProjectFileConversor
+                        .convert(reader.read(file), filename);
 
         } catch (Exception e) {
 
@@ -152,7 +160,8 @@ public class OrderImporterMPXJ implements IOrderImporter {
      */
     @Override
     @Transactional(readOnly = true)
-    public Order convertImportDataToOrder(OrderDTO project) {
+    public Order convertImportDataToOrder(OrderDTO project,
+            boolean importCalendar) {
 
         String code = getCode(EntityNameEnum.ORDER);
 
@@ -175,7 +184,12 @@ public class OrderImporterMPXJ implements IOrderImporter {
         BaseCalendar calendar = configurationDAO.getConfiguration()
                 .getDefaultCalendar();
 
-        ((Order) orderElement).setCalendar(calendar);
+        if (importCalendar & project.calendarName != null) {
+            ((Order) orderElement).setCalendar(findBaseCalendar(
+project.calendarName));
+        } else {
+            ((Order) orderElement).setCalendar(calendar);
+        }
 
         orderElement.useSchedulingDataFor(orderVersion);
 
@@ -272,7 +286,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
      */
     @Override
     @Transactional
-    public TaskGroup createTask(OrderDTO project) {
+    public TaskGroup createTask(OrderDTO project, boolean importCalendar) {
 
         Order order = project.order;
 
@@ -291,7 +305,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
         for (OrderElementDTO importTask : project.tasks) {
 
-            taskElements.add(createTask(importTask));
+            taskElements.add(createTask(importTask, importCalendar));
 
         }
 
@@ -343,7 +357,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
      *
      * @return TaskElement TaskElement that represent the data.
      */
-    private TaskElement createTask(OrderElementDTO task) {
+    private TaskElement createTask(OrderElementDTO task, boolean importCalendar) {
 
         OrderElement orderElement = task.orderElement;
 
@@ -360,6 +374,10 @@ public class OrderImporterMPXJ implements IOrderImporter {
             taskElement = taskSource
                     .createTaskWithoutDatesInitializedAndLinkItToTaskSource();
 
+            if (importCalendar && task.calendarName != null) {
+                taskElement.setCalendar(findBaseCalendar(task.calendarName));
+            }
+
             setPositionConstraint((Task) taskElement, task);
 
         } else {
@@ -374,7 +392,7 @@ public class OrderImporterMPXJ implements IOrderImporter {
 
             for (OrderElementDTO importTask : task.children) {
 
-                taskElements.add(createTask(importTask));
+                taskElements.add(createTask(importTask, importCalendar));
 
             }
 
@@ -615,4 +633,30 @@ public class OrderImporterMPXJ implements IOrderImporter {
         }
     }
 
+    /**
+     * Private method.
+     *
+     * Return the {@link BaseCalendar} with the same name as the string given.
+     *
+     * @param name
+     *            String with the name that we want to find.
+     * @return BaseCalendar Calendar.
+     */
+    private BaseCalendar findBaseCalendar(String name) {
+
+        List<BaseCalendar> baseCalendars = baseCalendarDAO.findByName(name);
+
+        BaseCalendar calendar = null;
+
+        for (BaseCalendar baseCalendar : baseCalendars) {
+            if (baseCalendar.getName().equals(name)) {
+
+                calendar = baseCalendar;
+                return calendar;
+
+            }
+        }
+
+        throw new ValidationException(_("Linked calendar not found"));
+    }
 }

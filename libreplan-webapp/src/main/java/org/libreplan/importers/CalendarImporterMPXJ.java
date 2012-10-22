@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.reader.ProjectReader;
 import net.sf.mpxj.reader.ProjectReaderUtility;
 
@@ -66,6 +67,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CalendarImporterMPXJ implements ICalendarImporter {
 
+    private static ProjectFile projectFile = null;
+
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
 
@@ -90,7 +93,33 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
             ProjectReader reader = ProjectReaderUtility
                     .getProjectReader(filename);
 
-            return MPXJProjectFileConversor.convertCalendars(reader.read(file));
+            // In case that orders are imported too
+            projectFile = reader.read(file);
+
+            return MPXJProjectFileConversor.convertCalendars(projectFile);
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(e);
+
+        }
+
+    }
+
+    /**
+     * Makes a {@link OrderDTO} from a InputStream.
+     *
+     * Uses the ProjectReader of the class. It must be created before.
+     *
+     * @param filename
+     *            String with the name of the original file of the InputStream.
+     * @return OrderDTO with the data that we want to import.
+     */
+    @Override
+    public OrderDTO getOrderDTO(String filename) {
+        try {
+
+            return MPXJProjectFileConversor.convert(projectFile, filename);
 
         } catch (Exception e) {
 

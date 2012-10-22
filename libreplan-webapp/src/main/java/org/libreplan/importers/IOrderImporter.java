@@ -54,7 +54,7 @@ public interface IOrderImporter {
      *            ImportData to extract data from.
      * @return Order with all the data that we want.
      */
-    public Order convertImportDataToOrder(OrderDTO project);
+    public Order convertImportDataToOrder(OrderDTO project, boolean calendar);
 
     /**
      * Makes a {@link TaskGroup} from a {@link ImportData}.
@@ -63,7 +63,7 @@ public interface IOrderImporter {
      *            ImportData to extract data from.
      * @return TaskGroup with the data that we want.
      */
-    public TaskGroup createTask(OrderDTO project);
+    public TaskGroup createTask(OrderDTO project, boolean calendar);
 
     /**
      * Saves a {@link Order} and a {@link TaskGroup} which has all the data that
