@@ -592,6 +592,8 @@ Date parentStartDate,
 
         importData.dependencies = createDependencies();
 
+        importData.calendarName = file.getCalendar().getName();
+
         return importData;
 
     }
@@ -734,6 +736,7 @@ Date parentStartDate,
                 importData.milestones = getImportMilestones(task
                         .getChildTasks());
 
+                importData.calendarName = file.getCalendar().getName();
 
                 break;
             }
@@ -842,6 +845,16 @@ Date parentStartDate,
 
                 importTask.milestones = getImportMilestones(task
                         .getChildTasks());
+                // This is because in MPXJ only MPP9 files have this atribute.
+                if (task.getCalendar() != null) {
+
+                    importTask.calendarName = task.getCalendar().getName();
+
+                } else {
+
+                    importTask.calendarName = null;
+
+                }
 
                 mapTask.put(task, importTask);
 
