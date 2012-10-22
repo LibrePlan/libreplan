@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.Dependency;
 import org.libreplan.business.planner.entities.TaskGroup;
@@ -76,6 +77,8 @@ public class ProjectImportController extends GenericForwardComposer {
                             + ": Calendar import successfully!"));
                 } catch (InstanceNotFoundException e) {
                     messages.showMessage(Level.ERROR, _("Instance not found."));
+                } catch (ValidationException e) {
+                    messages.showMessage(Level.ERROR, e.getMessage());
                 }
 
             } else if (importTasks.isChecked()) {
@@ -103,7 +106,7 @@ public class ProjectImportController extends GenericForwardComposer {
 
     @Transactional
     private void importCalendar(InputStream streamData, String file)
-            throws InstanceNotFoundException {
+            throws InstanceNotFoundException, ValidationException {
 
         List<CalendarDTO> calendarDTOs = calendarImporterMPXJ.getCalendarDTOs(
                 streamData, file);

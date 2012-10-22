@@ -19,6 +19,9 @@
 
 package org.libreplan.importers;
 
+
+import static org.libreplan.web.I18nHelper._;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -103,11 +106,11 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
      * @param calendarDTOs
      *            List of CalendarDTO to extract data from.
      * @return List<BaseCalendar> with all the calendars that we want.
-     * @throws InstanceNotFoundException
+     * @throws InstanceNotFoundException, ValidationException
      */
     @Override
     public List<BaseCalendar> getBaseCalendars(List<CalendarDTO> calendarDTOs)
-            throws InstanceNotFoundException {
+            throws InstanceNotFoundException, ValidationException {
         List<BaseCalendar> baseCalendars = new ArrayList<BaseCalendar>();
 
         for (CalendarDTO calendarDTO : calendarDTOs) {
@@ -171,10 +174,11 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
      * @param calendarDTO
      *            CalendarDTO to extract data from.
      * @return BaseCalendar with the calendar that we want.
-     * @throws InstanceNotFoundException
+     * @throws InstanceNotFoundException, ValidationException
      */
     private BaseCalendar toBaseCalendar(CalendarDTO calendarDTO,
-            BaseCalendar parent) throws InstanceNotFoundException {
+            BaseCalendar parent) throws InstanceNotFoundException,
+            ValidationException {
 
         String code = getCode(EntityNameEnum.CALENDAR);
 
@@ -319,16 +323,17 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
      * @param name
      *            String with the name to validate.
      * @return String with the valid name.
+     * @throws ValidationException
      */
     @Transactional
-    private String validateName(String name) {
+    private String validateName(String name) throws ValidationException {
 
         List<BaseCalendar> calendars = baseCalendarDAO.findByName(name);
 
         if (calendars.size() == 0) {
             return name;
         } else {
-            throw new RuntimeException("Calendar name  already in use");
+            throw new ValidationException(_("Calendar name already in use"));
         }
 
     }
@@ -389,9 +394,11 @@ public class CalendarImporterMPXJ implements ICalendarImporter {
      * @param parent
      *            BaseCalendar parent of the CalendarDayHoursDTO.
      * @return Map<Integer, Capacity>  with the data that we want.
+     * @throws ValidationException
      */
     private Map<Integer, Capacity> getCapacitiesPerDays(
-            List<CalendarDayHoursDTO> hoursPerDays, BaseCalendar parent) {
+            List<CalendarDayHoursDTO> hoursPerDays, BaseCalendar parent)
+            throws ValidationException {
 
         Map<Integer, Capacity> result = new HashMap<Integer, Capacity>();
 
