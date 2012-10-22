@@ -1258,6 +1258,16 @@ public abstract class OrderElement extends IntegrationEntity implements
         return false;
     }
 
+    public boolean containsLabels(Set<Label> labels) {
+        Integer matches = 0;
+        for (Label label : labels) {
+            if (containsLabel(label.getCode())) {
+                matches++;
+            }
+        }
+        return matches == labels.size();
+    }
+
     public boolean containsMaterialAssignment(String materialCode) {
         for (MaterialAssignment materialAssignment : getMaterialAssignments()) {
             if (materialAssignment.getMaterial().getCode().equals(materialCode)) {

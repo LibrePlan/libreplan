@@ -22,14 +22,19 @@ package org.libreplan.web.reports;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.libreplan.business.labels.daos.ILabelDAO;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -51,10 +56,17 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     private IOrderDAO orderDAO;
 
     @Autowired
+    private ILabelDAO labelDAO;
+
+    @Autowired
     private IScenarioManager scenarioManager;
 
     @Autowired
     private IMoneyCostCalculator moneyCostCalculator;
+
+    private Set<Label> selectedLabels = new HashSet<Label>();
+
+    private ProjectStatusReportDTO totalDTO;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -76,16 +88,88 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
 
         List<ProjectStatusReportDTO> dtos = new ArrayList<ProjectStatusReportDTO>();
 
-        for (OrderElement child : order.getAllChildren()) {
-            ProjectStatusReportDTO dto = new ProjectStatusReportDTO(child);
-            dto.setHoursCost(moneyCostCalculator.getHoursMoneyCost(child));
-            dto.setExpensesCost(moneyCostCalculator.getExpensesMoneyCost(child));
-            dto.setTotalCost(moneyCostCalculator.getTotalMoneyCost(child));
+        List<OrderElement> orderElements = order.getAllChildren();
+        orderElements = filterBySelectedLabels(orderElements);
 
-            dtos.add(dto);
+        for (OrderElement child : orderElements) {
+            dtos.add(calculateDTO(child));
         }
 
+        calculateTotalDTO(order, dtos);
+
         return dtos;
+    }
+
+    private ProjectStatusReportDTO calculateDTO(OrderElement orderElement) {
+        ProjectStatusReportDTO dto = new ProjectStatusReportDTO(orderElement);
+        dto.setHoursCost(moneyCostCalculator.getHoursMoneyCost(orderElement));
+        dto.setExpensesCost(moneyCostCalculator
+                .getExpensesMoneyCost(orderElement));
+        dto.setTotalCost(moneyCostCalculator.getTotalMoneyCost(orderElement));
+        return dto;
+    }
+
+    private void calculateTotalDTO(Order order,
+            List<ProjectStatusReportDTO> dtos) {
+        if (getSelectedLabels().isEmpty()) {
+            totalDTO = calculateDTO(order);
+        } else {
+            EffortDuration estimatedHours = EffortDuration.zero();
+            EffortDuration plannedHours = EffortDuration.zero();
+            EffortDuration imputedHours = EffortDuration.zero();
+
+            BigDecimal budget = BigDecimal.ZERO.setScale(2);
+            BigDecimal hoursCost = BigDecimal.ZERO.setScale(2);
+            BigDecimal expensesCost = BigDecimal.ZERO.setScale(2);
+            BigDecimal totalCost = BigDecimal.ZERO.setScale(2);
+
+            for (ProjectStatusReportDTO dto : dtos) {
+                estimatedHours = addIfNotNull(estimatedHours,
+                        dto.getEstimatedHoursAsEffortDuration());
+                plannedHours = addIfNotNull(plannedHours,
+                        dto.getPlannedHoursAsEffortDuration());
+                imputedHours = addIfNotNull(imputedHours,
+                        dto.getImputedHoursAsEffortDuration());
+
+                budget = addIfNotNull(budget, dto.getBudget());
+                hoursCost = addIfNotNull(hoursCost, dto.getHoursCost());
+                expensesCost = addIfNotNull(expensesCost, dto.getExpensesCost());
+                totalCost = addIfNotNull(totalCost, dto.getTotalCost());
+            }
+
+            totalDTO = new ProjectStatusReportDTO(estimatedHours, plannedHours,
+                    imputedHours, budget, hoursCost, expensesCost, totalCost);
+        }
+    }
+
+    private List<OrderElement> filterBySelectedLabels(
+            List<OrderElement> orderElements) {
+        if (selectedLabels.isEmpty()) {
+            return orderElements;
+        }
+
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        for (OrderElement orderElement : orderElements) {
+            if (orderElement.containsLabels(selectedLabels)) {
+                result.add(orderElement);
+            }
+        }
+        return result;
+    }
+
+    private EffortDuration addIfNotNull(EffortDuration total,
+            EffortDuration other) {
+        if (other == null) {
+            return total;
+        }
+        return total.plus(other);
+    }
+
+    private BigDecimal addIfNotNull(BigDecimal total, BigDecimal other) {
+        if (other == null) {
+            return total;
+        }
+        return total.add(other);
     }
 
     @Override
@@ -104,6 +188,40 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     @Transactional(readOnly = true)
     public BigDecimal getTotalCost(Order order) {
         return moneyCostCalculator.getTotalMoneyCost(order);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Label> getAllLabels() {
+        List<Label> labels = labelDAO.findAll();
+        for (Label label : labels) {
+            forceLoadLabelType(label);
+        }
+        return labels;
+    }
+
+    private void forceLoadLabelType(Label label) {
+        label.getType().getName();
+    }
+
+    @Override
+    public void addSelectedLabel(Label label) {
+        selectedLabels.add(label);
+    }
+
+    @Override
+    public void removeSelectedLabel(Label label) {
+        selectedLabels.remove(label);
+    }
+
+    @Override
+    public Set<Label> getSelectedLabels() {
+        return Collections.unmodifiableSet(selectedLabels);
+    }
+
+    @Override
+    public ProjectStatusReportDTO getTotalDTO() {
+        return totalDTO;
     }
 
 }

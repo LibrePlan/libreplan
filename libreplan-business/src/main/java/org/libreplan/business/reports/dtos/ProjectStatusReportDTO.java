@@ -53,6 +53,19 @@ public class ProjectStatusReportDTO {
 
     private BigDecimal totalCost;
 
+    public ProjectStatusReportDTO(EffortDuration estimatedHours,
+            EffortDuration plannedHours, EffortDuration imputedHours,
+            BigDecimal budget, BigDecimal hoursCost, BigDecimal expensesCost,
+            BigDecimal totalCost) {
+        this.estimatedHours = estimatedHours;
+        this.plannedHours = plannedHours;
+        this.imputedHours = imputedHours;
+        this.budget = budget;
+        this.hoursCost = hoursCost;
+        this.expensesCost = expensesCost;
+        this.totalCost = totalCost;
+    }
+
     public ProjectStatusReportDTO(OrderElement orderElement) {
         code = orderElement.getCode();
         name = Util.getPrefixSpacesDependingOnDepth(orderElement)
@@ -87,12 +100,24 @@ public class ProjectStatusReportDTO {
         return toString(estimatedHours);
     }
 
+    public EffortDuration getEstimatedHoursAsEffortDuration() {
+        return estimatedHours;
+    }
+
     public String getPlannedHours() {
         return toString(plannedHours);
     }
 
+    public EffortDuration getPlannedHoursAsEffortDuration() {
+        return plannedHours;
+    }
+
     public String getImputedHours() {
         return toString(imputedHours);
+    }
+
+    public EffortDuration getImputedHoursAsEffortDuration() {
+        return imputedHours;
     }
 
     public static String toString(EffortDuration effortDuration) {

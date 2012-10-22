@@ -21,7 +21,9 @@ package org.libreplan.web.reports;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
 
@@ -41,5 +43,15 @@ public interface IProjectStatusReportModel {
     BigDecimal getExpensesCost(Order order);
 
     BigDecimal getTotalCost(Order order);
+
+    List<Label> getAllLabels();
+
+    void addSelectedLabel(Label label);
+
+    void removeSelectedLabel(Label label);
+
+    Set<Label> getSelectedLabels();
+
+    ProjectStatusReportDTO getTotalDTO();
 
 }
