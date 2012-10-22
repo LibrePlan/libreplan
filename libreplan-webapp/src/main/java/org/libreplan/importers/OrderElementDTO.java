@@ -95,4 +95,9 @@ public class OrderElementDTO implements IHasTaskAssociated {
         return taskElement;
     }
 
+    /**
+     * Name of the calendar that this OrderElementDTO is linked to.
+     */
+    public String calendarName = null;
+
 }

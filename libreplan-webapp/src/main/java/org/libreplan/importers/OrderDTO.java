@@ -68,4 +68,8 @@ public class OrderDTO {
      */
     public List<DependencyDTO> dependencies;
 
+    /**
+     * Name of the calendar that this OrderDTO is linked to.
+     */
+    public String calendarName = null;
 }
