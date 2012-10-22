@@ -64,6 +64,7 @@ import org.libreplan.business.qualityforms.entities.TaskQualityForm;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
@@ -1266,6 +1267,26 @@ public abstract class OrderElement extends IntegrationEntity implements
             }
         }
         return matches == labels.size();
+    }
+
+    public boolean containsCriterion(String code) {
+        for (CriterionRequirement criterionRequirement : getDirectCriterionRequirement()) {
+            if (criterionRequirement.getCriterion().getCode().equals(code)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean containsCriteria(Set<Criterion> criteria) {
+        Integer matches = 0;
+        for (Criterion criterion : criteria) {
+            if (containsCriterion(criterion.getCode())) {
+                matches++;
+            }
+        }
+        return matches == criteria.size();
     }
 
     public boolean containsMaterialAssignment(String materialCode) {

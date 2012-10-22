@@ -97,6 +97,7 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
 
         List<OrderElement> orderElements = order.getAllChildren();
         orderElements = filterBySelectedLabels(orderElements);
+        orderElements = filterBySelectedCriteria(orderElements);
 
         for (OrderElement child : orderElements) {
             dtos.add(calculateDTO(child));
@@ -118,7 +119,7 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
 
     private void calculateTotalDTO(Order order,
             List<ProjectStatusReportDTO> dtos) {
-        if (getSelectedLabels().isEmpty()) {
+        if (isNotFiltering()) {
             totalDTO = calculateDTO(order);
         } else {
             EffortDuration estimatedHours = EffortDuration.zero();
@@ -149,6 +150,10 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         }
     }
 
+    private boolean isNotFiltering() {
+        return selectedLabels.isEmpty() && selectedCriteria.isEmpty();
+    }
+
     private List<OrderElement> filterBySelectedLabels(
             List<OrderElement> orderElements) {
         if (selectedLabels.isEmpty()) {
@@ -158,6 +163,21 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         List<OrderElement> result = new ArrayList<OrderElement>();
         for (OrderElement orderElement : orderElements) {
             if (orderElement.containsLabels(selectedLabels)) {
+                result.add(orderElement);
+            }
+        }
+        return result;
+    }
+
+    private List<OrderElement> filterBySelectedCriteria(
+            List<OrderElement> orderElements) {
+        if (selectedCriteria.isEmpty()) {
+            return orderElements;
+        }
+
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        for (OrderElement orderElement : orderElements) {
+            if (orderElement.containsCriteria(selectedCriteria)) {
                 result.add(orderElement);
             }
         }
