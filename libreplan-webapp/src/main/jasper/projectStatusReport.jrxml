@@ -55,14 +55,18 @@
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="0" y="15" width="60" height="12"/>
+				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="0" y="15" width="60" height="12">
+					<printWhenExpression><![CDATA[$P{project} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement>
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{project}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="60" y="15" width="562" height="12"/>
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="60" y="15" width="562" height="12">
+					<printWhenExpression><![CDATA[$P{project} != null]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
