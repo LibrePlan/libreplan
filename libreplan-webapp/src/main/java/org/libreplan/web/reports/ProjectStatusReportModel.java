@@ -131,6 +131,8 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
             dto = discountChildrenWithInvalidatedCriteria(orderElement, dto);
         }
 
+        dto.calculateMarks();
+
         return dto;
     }
 

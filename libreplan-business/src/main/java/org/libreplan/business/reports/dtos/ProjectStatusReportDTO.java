@@ -33,7 +33,7 @@ import org.libreplan.business.workingday.EffortDuration;
  */
 public class ProjectStatusReportDTO {
 
-    private static final String INDENT_PREFIX = "    ";
+    private static final String EXCLAMATION_MARK = "!";
 
     private String code;
 
@@ -45,6 +45,8 @@ public class ProjectStatusReportDTO {
 
     private EffortDuration imputedHours;
 
+    private String hoursMark;
+
     private BigDecimal budget;
 
     private BigDecimal hoursCost;
@@ -52,6 +54,8 @@ public class ProjectStatusReportDTO {
     private BigDecimal expensesCost;
 
     private BigDecimal totalCost;
+
+    private String costMark;
 
     public ProjectStatusReportDTO(EffortDuration estimatedHours,
             EffortDuration plannedHours, EffortDuration imputedHours,
@@ -206,6 +210,60 @@ public class ProjectStatusReportDTO {
 
     public BigDecimal getTotalCostFractionalPart() {
         return Util.getFractionalPart(totalCost);
+    }
+
+    public void calculateMarks() {
+        calculateHoursMark();
+        calculateCostMark();
+    }
+
+    /**
+     * {@link ProjectStatusReportDTO#hoursMark} will be <code>!</code> if
+     * {@link ProjectStatusReportDTO#imputedHours} is bigger than
+     * {@link ProjectStatusReportDTO#plannedHours}. If the task is not planned,
+     * then the comparison will be done against
+     * {@link ProjectStatusReportDTO#estimatedHours}, if it is zero then the
+     * mark will be empty.
+     */
+    private void calculateHoursMark() {
+        if (imputedHours != null) {
+            if (plannedHours == null || plannedHours.isZero()) {
+                if (estimatedHours != null && !estimatedHours.isZero()) {
+                    if (imputedHours.compareTo(estimatedHours) > 0) {
+                        hoursMark = EXCLAMATION_MARK;
+                    }
+                }
+            } else {
+                if (imputedHours.compareTo(plannedHours) > 0) {
+                    hoursMark = EXCLAMATION_MARK;
+                }
+            }
+        }
+    }
+
+    /**
+     * {@link ProjectStatusReportDTO#costMark} will be <code>!</code> if
+     * {@link ProjectStatusReportDTO#totalCost} is bigger than
+     * {@link ProjectStatusReportDTO#budget}. If
+     * {@link ProjectStatusReportDTO#budget} is zero then the mark will be
+     * empty.
+     */
+    private void calculateCostMark() {
+        if (totalCost != null) {
+            if (budget != null && (budget.compareTo(BigDecimal.ZERO) > 0)) {
+                if (totalCost.compareTo(budget) > 0) {
+                    costMark = EXCLAMATION_MARK;
+                }
+            }
+        }
+    }
+
+    public String getHoursMark() {
+        return hoursMark;
+    }
+
+    public String getCostMark() {
+        return costMark;
     }
 
 }
