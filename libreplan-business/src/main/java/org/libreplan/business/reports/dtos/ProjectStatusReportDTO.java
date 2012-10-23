@@ -76,10 +76,17 @@ public class ProjectStatusReportDTO {
         this.name = name;
     }
 
-    public ProjectStatusReportDTO(OrderElement orderElement) {
+    public ProjectStatusReportDTO(OrderElement orderElement,
+            boolean appendProjectInName) {
         code = orderElement.getCode();
-        name = Util.getPrefixSpacesDependingOnDepth(orderElement)
-                + orderElement.getName();
+
+        if (appendProjectInName) {
+            name = orderElement.getName() + " ("
+                    + orderElement.getOrder().getName() + ")";
+        } else {
+            name = Util.getPrefixSpacesDependingOnDepth(orderElement)
+                    + orderElement.getName();
+        }
 
         Integer estimatedHours = orderElement.getWorkHours();
         this.estimatedHours = estimatedHours != null ? EffortDuration

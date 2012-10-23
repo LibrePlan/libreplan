@@ -112,7 +112,7 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
 
         List<ProjectStatusReportDTO> dtos = new ArrayList<ProjectStatusReportDTO>();
         for (OrderElement child : orderElements) {
-            dtos.add(calculateDTO(child));
+            dtos.add(calculateDTO(child, order == null));
         }
 
         calculateTotalDTO(order, dtos);
@@ -120,8 +120,8 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         return dtos;
     }
 
-    private ProjectStatusReportDTO calculateDTO(OrderElement orderElement) {
-        ProjectStatusReportDTO dto = new ProjectStatusReportDTO(orderElement);
+    private ProjectStatusReportDTO calculateDTO(OrderElement orderElement, boolean appendProjectInName) {
+        ProjectStatusReportDTO dto = new ProjectStatusReportDTO(orderElement, appendProjectInName);
         dto.setHoursCost(moneyCostCalculator.getHoursMoneyCost(orderElement));
         dto.setExpensesCost(moneyCostCalculator
                 .getExpensesMoneyCost(orderElement));
@@ -144,7 +144,7 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
                 if (isCriterionSelected(criterionRequirement.getCriterion()
                         .getCode())) {
                     if (!criterionRequirement.isValid()) {
-                        dtosToDiscount.add(calculateDTO(child));
+                        dtosToDiscount.add(calculateDTO(child, false));
                     }
                 }
             }
@@ -203,7 +203,7 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     private void calculateTotalDTO(Order order,
             List<ProjectStatusReportDTO> dtos) {
         if (isNotFiltering()) {
-            totalDTO = calculateDTO(order);
+            totalDTO = calculateDTO(order, false);
         } else {
             EffortDuration estimatedHours = EffortDuration.zero();
             EffortDuration plannedHours = EffortDuration.zero();
