@@ -21,6 +21,7 @@ package org.libreplan.web.reports;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +30,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
@@ -124,6 +126,8 @@ public class ProjectStatusReportController extends LibrePlanReportController {
         if (order != null) {
             result.put("project", order.getName() + " (" + order.getCode()
                     + ")");
+        } else {
+            result.put("filter", getFilterSummary());
         }
 
         ProjectStatusReportDTO totalDTO = projectStatusReportModel
@@ -140,6 +144,35 @@ public class ProjectStatusReportController extends LibrePlanReportController {
         result.put("totalCost", Util.addCurrencySymbol(totalDTO.getTotalCost()));
 
         return result;
+    }
+
+    private String getFilterSummary() {
+        String filter = "";
+
+        Set<Label> labels = projectStatusReportModel.getSelectedLabels();
+        if (!labels.isEmpty()) {
+            List<String> labelNames = new ArrayList<String>();
+            for (Label label : labels) {
+                labelNames.add(label.getName());
+            }
+            filter += _("Labels") + ": "
+                    + StringUtils.join(labelNames.toArray(), ", ");
+        }
+
+        Set<Criterion> criteria = projectStatusReportModel.getSelectedCriteria();
+        if (!criteria.isEmpty()){
+            List<String> criterionNames = new ArrayList<String>();
+            for (Criterion criterion : criteria) {
+                criterionNames.add(criterion.getName());
+            }
+            if (!filter.isEmpty()) {
+                filter += ". ";
+            }
+            filter += _("Criteria") + ": "
+                    + StringUtils.join(criterionNames.toArray(), ", ");
+        }
+
+        return filter;
     }
 
     public List<Label> getAllLabels() {
