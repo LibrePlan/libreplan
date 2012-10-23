@@ -33,6 +33,9 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.reports.dtos.ProjectStatusReportDTO;
 import org.libreplan.business.resources.entities.Criterion;
+import org.libreplan.web.common.IMessagesForUser;
+import org.libreplan.web.common.Level;
+import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
@@ -63,10 +66,16 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
     private Listbox listboxCriteria;
 
+    private IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
+
+        messagesForUser = new MessagesForUser(messagesContainer);
     }
 
     @Override
@@ -85,14 +94,18 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
         return new JRBeanCollectionDataSource(dtos);
     }
+
     @Override
     public void showReport(JasperreportComponent jasperreport) {
         final Order order = getSelectedOrder();
-        if (order == null) {
-            throw new WrongValueException(bandboxSelectOrder,
-                    _("Please, select a project"));
+        if (order == null && projectStatusReportModel.isNotFiltering()) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("You should filter the report by project, labels or criteria"));
+        } else {
+            super.showReport(jasperreport);
         }
-        super.showReport(jasperreport);
     }
 
     private Order getSelectedOrder() {
@@ -108,7 +121,10 @@ public class ProjectStatusReportController extends LibrePlanReportController {
         Map<String, Object> result = super.getParameters();
 
         Order order = getSelectedOrder();
-        result.put("project", order.getName() + " (" + order.getCode() + ")");
+        if (order != null) {
+            result.put("project", order.getName() + " (" + order.getCode()
+                    + ")");
+        }
 
         ProjectStatusReportDTO totalDTO = projectStatusReportModel
                 .getTotalDTO();

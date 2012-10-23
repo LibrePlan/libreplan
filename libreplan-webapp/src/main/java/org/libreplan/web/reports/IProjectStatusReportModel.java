@@ -63,4 +63,6 @@ public interface IProjectStatusReportModel {
 
     Set<Criterion> getSelectedCriteria();
 
+    boolean isNotFiltering();
+
 }

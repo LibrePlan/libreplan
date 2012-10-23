@@ -29,6 +29,7 @@ import java.util.Set;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
@@ -65,6 +66,9 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     private ICriterionDAO criterionDAO;
 
     @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
     private IScenarioManager scenarioManager;
 
     @Autowired
@@ -90,16 +94,23 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     @Override
     @Transactional(readOnly = true)
     public List<ProjectStatusReportDTO> getProjectStatusReportDTOs(Order order) {
-        orderDAO.reattach(order);
+        List<OrderElement> orderElements;
+        if (order != null) {
+            orderDAO.reattach(order);
+            order.useSchedulingDataFor(scenarioManager.getCurrent());
+            orderElements = order.getAllChildren();
+        } else {
+            orderElements = new ArrayList<OrderElement>();
+            for (Order each : orderDAO.findAll()) {
+                each.useSchedulingDataFor(scenarioManager.getCurrent());
+                orderElements.addAll(each.getAllChildren());
+            }
+        }
 
-        order.useSchedulingDataFor(scenarioManager.getCurrent());
-
-        List<ProjectStatusReportDTO> dtos = new ArrayList<ProjectStatusReportDTO>();
-
-        List<OrderElement> orderElements = order.getAllChildren();
         orderElements = filterBySelectedLabels(orderElements);
         orderElements = filterBySelectedCriteria(orderElements);
 
+        List<ProjectStatusReportDTO> dtos = new ArrayList<ProjectStatusReportDTO>();
         for (OrderElement child : orderElements) {
             dtos.add(calculateDTO(child));
         }
@@ -222,7 +233,8 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         }
     }
 
-    private boolean isNotFiltering() {
+    @Override
+    public boolean isNotFiltering() {
         return isNotFilteringByLabels() && isNotFilteringByCriteria();
     }
 

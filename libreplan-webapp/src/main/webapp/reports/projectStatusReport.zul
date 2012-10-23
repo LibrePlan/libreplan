@@ -36,6 +36,8 @@
         title="${i18n:_('Project Status Report')}"
         border="normal" >
 
+        <vbox id="messagesContainer" />
+
         <!-- Select project -->
         <panel title="${i18n:_('Project')}"
             border="normal"
