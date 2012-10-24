@@ -56,6 +56,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.databind.DataBinder;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -293,6 +294,16 @@ public class Util {
             }
         });
         return textBox;
+    }
+
+    public static A bind(A hyperlink, Getter<String> url, Getter<String> code) {
+        // code = JIRA-ORDERXXXXX-<CODE>
+        hyperlink.setHref(url.get() + "/browse/"
+                + code.get().substring(16)); //JIRA-ORDERXXXXX-(16 chars)
+        hyperlink.setTarget(code.get());
+        hyperlink.setLabel(code.get());
+
+        return hyperlink;
     }
 
     /**
