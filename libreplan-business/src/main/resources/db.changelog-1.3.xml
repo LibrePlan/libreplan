@@ -208,4 +208,65 @@
             columnDataType="INTEGER" />
     </changeSet>
 
+    <!-- Jira configuration-->
+    <changeSet id="add-new-column-jira_activated" author="miciele">
+        <comment>
+            Add new column jira_activated with default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_activated" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="jira_activated"
+           defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="jira_activated"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-jira_url" author="miciele">
+        <comment>
+            Add new column jira_url in table configuration
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_url" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-jira_label_url" author="miciele">
+        <comment>
+            Add new column jira_label_url in table configuration
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_label_url" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-jira_user_id" author="miciele">
+        <comment>
+            Add new column jira_user_id in table configuration
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_user_id" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-jira_password" author="miciele">
+        <comment>
+            Add new column jira_user_id in table configuration
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_password" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-imported-label" author="miciele">
+        <comment>
+            Add new column imported_label in table order_table
+        </comment>
+        <addColumn tableName="order_table">
+            <column name="imported_label" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
