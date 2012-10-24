@@ -99,16 +99,18 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
             orderDAO.reattach(order);
             order.useSchedulingDataFor(scenarioManager.getCurrent());
             orderElements = order.getAllChildren();
+
+            orderElements = filterBySelectedLabels(orderElements);
+            orderElements = filterBySelectedCriteria(orderElements);
         } else {
-            orderElements = new ArrayList<OrderElement>();
-            for (Order each : orderDAO.findAll()) {
-                each.useSchedulingDataFor(scenarioManager.getCurrent());
-                orderElements.addAll(each.getAllChildren());
+            orderElements = orderElementDAO.findByLabelsAndCriteria(
+                    selectedLabels, selectedCriteria);
+            for (OrderElement each : orderElements) {
+                each.useSchedulingDataFor(orderDAO.loadOrderAvoidingProxyFor(
+                        each).getOrderVersionFor(
+                        scenarioManager.getCurrent()));
             }
         }
-
-        orderElements = filterBySelectedLabels(orderElements);
-        orderElements = filterBySelectedCriteria(orderElements);
 
         List<ProjectStatusReportDTO> dtos = new ArrayList<ProjectStatusReportDTO>();
         for (OrderElement child : orderElements) {
@@ -121,7 +123,9 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     }
 
     private ProjectStatusReportDTO calculateDTO(OrderElement orderElement, boolean appendProjectInName) {
-        ProjectStatusReportDTO dto = new ProjectStatusReportDTO(orderElement, appendProjectInName);
+        ProjectStatusReportDTO dto = new ProjectStatusReportDTO(orderElement,
+                appendProjectInName ? orderDAO
+                        .loadOrderAvoidingProxyFor(orderElement) : null);
         dto.setHoursCost(moneyCostCalculator.getHoursMoneyCost(orderElement));
         dto.setExpensesCost(moneyCostCalculator
                 .getExpensesMoneyCost(orderElement));

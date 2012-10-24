@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,10 +42,12 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
@@ -519,4 +522,63 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         OrderElement orderElement = find(id);
         return (!expenseSheetLineDAO.findByOrderElementAndChildren(orderElement).isEmpty());
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<OrderElement> findByLabelsAndCriteria(Set<Label> labels,
+            Set<Criterion> criteria) {
+
+        String strQuery = "SELECT oe.id ";
+        strQuery += "FROM OrderElement oe ";
+
+        String where = "";
+        if (labels != null && !labels.isEmpty()) {
+            for (int i = 0; i < labels.size(); i++) {
+                if (where.isEmpty()) {
+                    where += "WHERE ";
+                } else {
+                    where += "AND ";
+                }
+                where += ":label" + i + " IN elements(oe.labels) ";
+            }
+        }
+
+        if (criteria != null && !criteria.isEmpty()) {
+            strQuery += "JOIN oe.criterionRequirements cr ";
+            if (where.isEmpty()) {
+                where += "WHERE ";
+            } else {
+                where += "AND ";
+            }
+            where += "cr.criterion IN (:criteria) ";
+            where += "AND cr.class = DirectCriterionRequirement ";
+            where += "GROUP BY oe.id ";
+            where += "HAVING count(oe.id) = :criteriaSize ";
+        }
+
+        strQuery += where;
+
+        Query query = getSession().createQuery(strQuery);
+        if (labels != null && !labels.isEmpty()) {
+            int i = 0;
+            for (Label label : labels) {
+                query.setParameter("label" + i, label);
+                i++;
+            }
+        }
+        if (criteria != null && !criteria.isEmpty()) {
+            query.setParameterList("criteria", criteria);
+            query.setParameter("criteriaSize", (long) criteria.size());
+        }
+
+        List<Long> orderElementsIds = query.list();
+        if (orderElementsIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return getSession()
+                .createQuery("FROM OrderElement oe WHERE oe.id IN (:ids)")
+                .setParameterList("ids", orderElementsIds).list();
+    }
+
 }

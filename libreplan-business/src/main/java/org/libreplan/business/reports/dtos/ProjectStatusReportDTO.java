@@ -21,6 +21,7 @@ package org.libreplan.business.reports.dtos;
 
 import java.math.BigDecimal;
 
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -81,12 +82,12 @@ public class ProjectStatusReportDTO {
     }
 
     public ProjectStatusReportDTO(OrderElement orderElement,
-            boolean appendProjectInName) {
+            Order orderToAppendName) {
         code = orderElement.getCode();
 
-        if (appendProjectInName) {
-            name = orderElement.getName() + " ("
-                    + orderElement.getOrder().getName() + ")";
+        if (orderToAppendName != null) {
+            name = orderElement.getName() + " (" + orderToAppendName.getName()
+                    + ")";
         } else {
             name = Util.getPrefixSpacesDependingOnDepth(orderElement)
                     + orderElement.getName();
