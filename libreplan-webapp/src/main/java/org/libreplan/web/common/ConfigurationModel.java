@@ -42,6 +42,7 @@ import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
@@ -107,6 +108,7 @@ public class ConfigurationModel implements IConfigurationModel {
         this.configuration = getCurrentConfiguration();
         initEntitySequences();
         initLdapConfiguration();
+        initJiraConfiguration();
     }
 
     private void initEntitySequences() {
@@ -123,6 +125,12 @@ public class ConfigurationModel implements IConfigurationModel {
     private void initLdapConfiguration() {
         if (null == configuration.getLdapConfiguration()) {
             configuration.setLdapConfiguration(LDAPConfiguration.create());
+        }
+    }
+
+    private void initJiraConfiguration() {
+        if (null == configuration.getJiraConfiguration()) {
+            configuration.setJiraConfiguration(JiraConfiguration.create());
         }
     }
 
@@ -665,6 +673,16 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
         configuration.setSecondsPlanningWarning(secondsPlanningWarning);
+    }
+
+    @Override
+    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
+        configuration.setJiraConfiguration(jiraConfiguration);
+    }
+
+    @Override
+    public JiraConfiguration getJiraConfiguration() {
+        return configuration.getJiraConfiguration();
     }
 
 }
