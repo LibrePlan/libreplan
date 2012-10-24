@@ -126,6 +126,9 @@
                     </type>
                 </property>
 
+                <!-- extra column to hold imported label -->
+                <property name="importedLabel" column="imported_label"/>
+
                 <!-- Not indexed -->
                 <many-to-one name="customer" access="field" class="org.libreplan.business.externalcompanies.entities.ExternalCompany"/>
 
