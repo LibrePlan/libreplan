@@ -1,0 +1,50 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2012 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="winJiraSyncInfo" title="${i18n:_('LibrePlan: Jira synchronization info')}"
+    width="500px" border="normal" mode="modal">
+    <div>
+           <hbox>
+               <label value="${i18n:_('Synchronizition of order elements with jira issues was successful.')}" sclass="remarked" />
+           </hbox>
+
+           <hbox>
+               <label value="${i18n:_('except synchronization of progress assignment is not completed for the following reasons.')}" if="${not args.showSyncProgressSuccess}"/>
+           </hbox>
+           <hbox>
+               <listbox model="${arg.jiraSyncProgressFailedReasons}"/>
+           </hbox>
+
+           <separator spacing="20px"/>
+
+           <hbox>
+               <label value="${i18n:_('Synchronizition of timesheets with jira issues was successful.')}" sclass="remarked" if="${args.showSyncTimesheetSuccess}"/>
+           </hbox>
+
+           <hbox>
+               <label value="${i18n:_('Synchronizition of timesheets is not completed for the follwing reasons.')}" if="${not args.showSyncTimesheetSuccess}"/>
+           </hbox>
+           <hbox>
+               <listbox model="${arg.jiraSyncTimesheetFailedReasons}"/>
+           </hbox>
+
+    </div>
+    <button id="closeBtn" label="${i18n:_('Close')}" onClick="winJiraSyncInfo.detach()"
+        sclass="cancel-button global-action"/>
+</window>
