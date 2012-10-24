@@ -722,6 +722,17 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <!-- jackson provider -->
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-jaxrs</artifactId>
+                <version>1.9.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-xc</artifactId>
+                <version>1.9.9</version>
+            </dependency>
             <!-- ZK Timeplot -->
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
