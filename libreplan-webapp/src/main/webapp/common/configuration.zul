@@ -42,6 +42,7 @@
                 <tab label="${i18n:_('Main preferences')}" />
                 <tab label="${i18n:_('Entity sequences')}" />
                 <tab label="${i18n:_('LDAP configuration')}" />
+                <tab label="${i18n:_('Jira connector')}" />
             </tabs>
             <tabpanels>
                 <tabpanel id="panelConfiguration">
@@ -412,6 +413,42 @@
                             </grid>
                         </vbox>
                     </groupbox>
+                </tabpanel>
+
+                <tabpanel id="panelJiraConfiguration">
+                     <grid>
+                        <columns>
+                           <column width="200px" />
+                           <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Activated')}" />
+                                <checkbox id="jiraActivated" checked="@{configurationController.jiraConfiguration.jiraActivated}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Jira URL')}" />
+                                <textbox id="jiraURL" value="@{configurationController.jiraConfiguration.jiraUrl}"  width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Jira label URL')}" />
+                                <textbox id="jiraLabelURL" value="@{configurationController.jiraConfiguration.jiraLabelUrl}"  width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Jira sync account')}" />
+                                <textbox id="jiraSyncAccount" value="@{configurationController.jiraConfiguration.jiraUserId}"  width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Jira sync password')}" />
+                                <textbox id="jiraSyncPassword" value="@{configurationController.jiraConfiguration.jiraPassword}"  type="password" width="300px"/>
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator />
+                        <button label="${i18n:_('Test connection')}"
+                            onClick="configurationController.testJiraConnection()" />
+                    <separator />
+
                 </tabpanel>
             </tabpanels>
         </tabbox>
