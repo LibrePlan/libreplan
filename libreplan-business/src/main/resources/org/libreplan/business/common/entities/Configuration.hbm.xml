@@ -121,6 +121,14 @@
 
         </component>
 
+        <!--  Jira configuration-->
+        <component name="jiraConfiguration" class="org.libreplan.business.common.entities.JiraConfiguration">
+            <property name="jiraActivated" column="jira_activated" not-null="true"/>
+            <property name="jiraUrl" column="jira_url"/>
+            <property name="jiraLabelUrl" column="jira_label_url"/>
+            <property name="jiraUserId" column="jira_user_id"/>
+            <property name="jiraPassword" column="jira_password"/>
+        </component>
     </class>
 
 </hibernate-mapping>
