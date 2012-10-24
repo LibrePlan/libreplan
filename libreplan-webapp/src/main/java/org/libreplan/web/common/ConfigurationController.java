@@ -32,13 +32,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
@@ -257,6 +262,34 @@ public class ConfigurationController extends GenericForwardComposer {
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to LDAP server"));
         }
+    }
+
+    /**
+     * tests jira connection
+     */
+    public void testJiraConnection() {
+
+        JiraConfiguration jiraConfiguration = configurationModel
+                .getJiraConfiguration();
+
+        WebClient client = WebClient.create(jiraConfiguration.getJiraUrl());
+        client.path("rest/auth/latest/session").accept(
+                MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
+
+        org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
+                jiraConfiguration.getJiraUserId(),
+                jiraConfiguration.getJiraPassword());
+
+        Response response = client.get();
+
+        if (response.getStatus() == 200) {
+            messages.showMessage(Level.INFO,
+                    _("Jira connection was successful"));
+        } else {
+            messages.showMessage(Level.ERROR,
+                    _("Cannot connect to Jira server"));
+        }
+
     }
 
     private boolean checkValidEntitySequenceRows() {
@@ -772,6 +805,14 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void setLdapConfiguration(LDAPConfiguration ldapConfiguration) {
         configurationModel.setLdapConfiguration(ldapConfiguration);
+    }
+
+    public JiraConfiguration getJiraConfiguration() {
+        return configurationModel.getJiraConfiguration();
+    }
+
+    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
+        configurationModel.setJiraConfiguration(jiraConfiguration);
     }
 
     public RowRenderer getAllUserRolesRenderer() {
