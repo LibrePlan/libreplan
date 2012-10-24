@@ -281,6 +281,31 @@
                        </grid>
                      </groupbox>
                 </groupbox>
+                <groupbox style="margin-top: 5px" sclass="jiraLabel" closable="false">
+                   <caption label="${i18n:_('Jira import information')}" />
+                   <separator spacing="10px"/>
+                   <hbox width="100%">
+                       <separator spacing="10px" width="100%"/>
+
+                       <grid fixedLayout="true" hflex="1">
+                           <columns>
+                               <column width="200px" />
+                               <column  />
+                           </columns>
+                           <rows>
+                                 <row>
+                                    <label value="${i18n:_('Jira label')}" width="50px"/>
+                                    <hbox>
+                                       <textbox id="txtImportedLabel" value="@{controller.order.importedLabel}"
+                                           width="350px" disabled="true"/>
+                                        <button label="${i18n:_('Sync with Jira')}" id="syncWithJiraButton" disabled="@{controller.jiraDeactivated}"
+                                           onClick="controller.syncWithJira(event)" />
+                                    </hbox>
+                               </row>
+                           </rows>
+                       </grid>
+                   </hbox>
+                </groupbox>
             </tabpanel>
             <tabpanel>
                 <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
@@ -306,4 +331,15 @@
             </tabpanel>
         </tabpanels>
     </tabbox>
+     <popup id="jirasyncPopup" sclass="finder-popup">
+        <groupbox mold="3d" closable="false" width="420px">
+            <caption id="jiraSyncCaption" label="Select a label" />
+            <combobox id="comboJiraLabel" autodrop="true" mold="rounded" buttonVisible="false" width="400px"/>
+            <separator/>
+            <hbox>
+                <button id="startJiraSyncButton" />
+                <button id="cancelJiraSyncButton" />
+            </hbox>
+        </groupbox>
+     </popup>
 </window>
