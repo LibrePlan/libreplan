@@ -104,6 +104,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForExpenseSheets = true;
 
+    private JiraConfiguration jiraConfiguration;
+
     /**
      * Currency code according to ISO-4217 (3 letters)
      */
@@ -501,6 +503,14 @@ public class Configuration extends BaseEntity {
 
     public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
         this.secondsPlanningWarning = secondsPlanningWarning;
+    }
+
+    public JiraConfiguration getJiraConfiguration() {
+        return jiraConfiguration;
+    }
+
+    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
+        this.jiraConfiguration = jiraConfiguration;
     }
 
 }
