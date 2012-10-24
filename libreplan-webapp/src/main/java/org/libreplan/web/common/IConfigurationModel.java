@@ -27,6 +27,7 @@ import java.util.Set;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
@@ -184,5 +185,9 @@ public interface IConfigurationModel {
 
     void setSecondsPlanningWarning(
             Integer planningWarningExitWithoutSavingSeconds);
+
+    void setJiraConfiguration(JiraConfiguration jiraConfiguration);
+
+    JiraConfiguration getJiraConfiguration();
 
 }
