@@ -236,6 +236,7 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
 
             totalDTO = new ProjectStatusReportDTO(estimatedHours, plannedHours,
                     imputedHours, budget, hoursCost, expensesCost, totalCost);
+            totalDTO.calculateMarks();
         }
     }
 

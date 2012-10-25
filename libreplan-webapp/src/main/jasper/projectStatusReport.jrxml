@@ -16,16 +16,28 @@
 			</style>
 		</conditionalStyle>
 	</style>
+	<style name="project-hours-red" style="dejavu-sans">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[!$P{hoursMark}.isEmpty()]]></conditionExpression>
+			<style forecolor="#FF0000"/>
+		</conditionalStyle>
+	</style>
+	<style name="project-cost-red" style="dejavu-sans">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[!$P{costMark}.isEmpty()]]></conditionExpression>
+			<style forecolor="#FF0000"/>
+		</conditionalStyle>
+	</style>
 	<style name="hours-red" style="row-grey">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[!$F{hoursMark}.isEmpty()]]></conditionExpression>
-			<style forecolor="#FF0000" isBold="true" />
+			<style forecolor="#FF0000" isBold="true"/>
 		</conditionalStyle>
 	</style>
 	<style name="cost-red" style="row-grey">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[!$F{costMark}.isEmpty()]]></conditionExpression>
-			<style forecolor="#FF0000" isBold="true" />
+			<style forecolor="#FF0000" isBold="true"/>
 		</conditionalStyle>
 	</style>
 	<parameter name="logo" class="java.lang.String"/>
@@ -34,10 +46,12 @@
 	<parameter name="estimatedHours" class="java.lang.String"/>
 	<parameter name="plannedHours" class="java.lang.String"/>
 	<parameter name="imputedHours" class="java.lang.String"/>
+	<parameter name="hoursMark" class="java.lang.String"/>
 	<parameter name="budget" class="java.lang.String"/>
 	<parameter name="hoursCost" class="java.lang.String"/>
 	<parameter name="expensesCost" class="java.lang.String"/>
 	<parameter name="totalCost" class="java.lang.String"/>
+	<parameter name="costMark" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
 	<field name="estimatedHours" class="java.lang.String"/>
@@ -141,11 +155,18 @@
 				<textFieldExpression><![CDATA[$R{project_imputed_hours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="500" y="28" width="100" height="12"/>
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" style="project-hours-red" x="500" y="28" width="100" height="12"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{imputedHours}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="16348737-c53b-4739-8f53-2d68cc499821" style="project-hours-red" x="600" y="28" width="5" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{hoursMark}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="9048c4a2-964c-4863-a30e-36b520a9d54b" x="0" y="41" width="100" height="12"/>
@@ -197,11 +218,18 @@
 				<textFieldExpression><![CDATA[$R{project_total_cost}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" x="700" y="41" width="100" height="12"/>
+				<reportElement uuid="a0596a94-5c29-4eb0-940a-3b561ce5893d" style="project-cost-red" x="700" y="41" width="97" height="12"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{totalCost}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="16348737-c53b-4739-8f53-2d68cc499821" style="project-cost-red" x="797" y="41" width="5" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{costMark}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

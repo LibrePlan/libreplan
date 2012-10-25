@@ -136,12 +136,14 @@ public class ProjectStatusReportController extends LibrePlanReportController {
         result.put("estimatedHours", totalDTO.getEstimatedHours());
         result.put("plannedHours", totalDTO.getPlannedHours());
         result.put("imputedHours", totalDTO.getImputedHours());
+        result.put("hoursMark", totalDTO.getHoursMark());
 
         result.put("budget", Util.addCurrencySymbol(totalDTO.getBudget()));
         result.put("hoursCost", Util.addCurrencySymbol(totalDTO.getHoursCost()));
         result.put("expensesCost",
                 Util.addCurrencySymbol(totalDTO.getExpensesCost()));
         result.put("totalCost", Util.addCurrencySymbol(totalDTO.getTotalCost()));
+        result.put("costMark", totalDTO.getCostMark());
 
         return result;
     }
