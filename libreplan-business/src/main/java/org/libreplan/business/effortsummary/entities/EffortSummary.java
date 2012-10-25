@@ -51,6 +51,34 @@ public class EffortSummary extends BaseEntity {
         return create(newObject);
     }
 
+    public static EffortSummary createFromNewResource(Resource resource) {
+        final int defaultNumberOfElements = 1000;
+
+        // get start and end dates
+        ResourceCalendar resourceCalendar = resource.getCalendar();
+        LocalDate startDate = resourceCalendar.getFistCalendarAvailability()
+                .getStartDate();
+        LocalDate endDate = resourceCalendar.getLastCalendarAvailability()
+                .getEndDate();
+        if (endDate == null) {
+            endDate = startDate.plusDays(defaultNumberOfElements - 1);
+        }
+        int numberOfElements = Days.daysBetween(startDate, endDate).getDays() + 1;
+
+        // fill availability data
+        int[] availableEffort = new int[numberOfElements];
+        int[] assignedEffort = new int[numberOfElements];
+        for (int i = 0; i < numberOfElements; i++) {
+            PartialDay day = PartialDay.wholeDay(startDate.plusDays(i));
+            availableEffort[i] = resourceCalendar.getCapacityOn(day)
+                    .getSeconds();
+            assignedEffort[i] = 0; // because the object is new
+        }
+        return EffortSummary.create(startDate, endDate,
+                    availableEffort, assignedEffort, resource);
+
+    }
+
     public LocalDate getStartDate() {
         return startDate;
     }
