@@ -90,6 +90,9 @@
                 <value>
                     org/libreplan/business/expensesheets/entities/ExpenseSheets.hbm.xml
                 </value>
+                <value>
+                    org/libreplan/business/effortsummary/entities/EffortSummary.hbm.xml
+                </value>
                 </list>
         </property>
             <property name="eventListeners">
