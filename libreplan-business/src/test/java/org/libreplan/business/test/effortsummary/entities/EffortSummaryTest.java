@@ -151,4 +151,25 @@ public class EffortSummaryTest {
                 summary.getAvailableEffortForDate(CHRISTMAS_DAY_LOCAL_DATE));
     }
 
+    @Test
+    public void testUpdateAvailability() {
+        Worker worker = generateValidWorker();
+        worker.setCalendar(createBasicCalendar().newDerivedResourceCalendar());
+        EffortSummary summary = EffortSummary.createFromNewResource(worker);
+
+        assertEquals(
+                summary.getAvailableEffortForDate(CHRISTMAS_DAY_LOCAL_DATE),
+                worker.getCalendar().getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE)));
+        assertEquals(EffortDuration.hours(8),
+                summary.getAvailableEffortForDate(CHRISTMAS_DAY_LOCAL_DATE));
+
+        // change worker calendar to add exception on Christmas
+        worker.setCalendar(createChristmasCalendar()
+                .newDerivedResourceCalendar());
+        summary.updateAvailabilityFromResource();
+
+        assertEquals(EffortDuration.zero(),
+                summary.getAvailableEffortForDate(CHRISTMAS_DAY_LOCAL_DATE));
+    }
+
 }
