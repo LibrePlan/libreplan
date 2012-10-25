@@ -94,6 +94,8 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
     @Override
     @Transactional(readOnly = true)
     public List<ProjectStatusReportDTO> getProjectStatusReportDTOs(Order order) {
+        moneyCostCalculator.resetMoneyCostMap();
+
         List<OrderElement> orderElements;
         if (order != null) {
             orderDAO.reattach(order);
