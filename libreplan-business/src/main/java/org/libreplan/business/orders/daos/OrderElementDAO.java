@@ -577,7 +577,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         }
 
         return getSession()
-                .createQuery("FROM OrderElement oe WHERE oe.id IN (:ids)")
+                .createQuery(
+                        "FROM OrderElement oe WHERE oe.id IN (:ids) ORDER BY oe.infoComponent.code")
                 .setParameterList("ids", orderElementsIds).list();
     }
 
