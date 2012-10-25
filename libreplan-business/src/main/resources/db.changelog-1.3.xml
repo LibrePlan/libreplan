@@ -73,4 +73,26 @@
         </update>
     </changeSet>
 
+    <changeSet id="add-table-effort_summary" author="jaragunde">
+        <comment>
+            This table contains duplicated effort and availability data for easy access.
+        </comment>
+        <createTable tableName="effort_summary">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="effort_summary_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="DATE"/>
+            <column name="end_date" type="DATE"/>
+            <column name="available_effort" type="BLOB"/>
+            <column name="assigned_effort" type="BLOB"/>
+            <column name="resource_id" type="BIGINT"/>
+        </createTable>
+        <addForeignKeyConstraint constraintName="effort_summary_resource_fkey"
+            baseTableName="effort_summary" baseColumnNames="resource_id"
+            referencedTableName="resource" referencedColumnNames="id" />
+    </changeSet>
+
 </databaseChangeLog>
