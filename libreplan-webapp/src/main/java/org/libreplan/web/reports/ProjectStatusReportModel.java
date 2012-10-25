@@ -38,6 +38,7 @@ import org.libreplan.business.requirements.entities.IndirectCriterionRequirement
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,9 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     @Autowired
     private IScenarioManager scenarioManager;
@@ -112,11 +116,13 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
                         each).getOrderVersionFor(
                         scenarioManager.getCurrent()));
             }
+
+            orderElements = filterByOrderAuthorizations(orderElements);
         }
 
         List<ProjectStatusReportDTO> dtos = new ArrayList<ProjectStatusReportDTO>();
-        for (OrderElement child : orderElements) {
-            dtos.add(calculateDTO(child, order == null));
+        for (OrderElement element : orderElements) {
+            dtos.add(calculateDTO(element, order == null));
         }
 
         calculateTotalDTO(order, dtos);
@@ -280,6 +286,19 @@ public class ProjectStatusReportModel implements IProjectStatusReportModel {
         for (OrderElement orderElement : orderElements) {
             if (orderElement.containsCriteria(selectedCriteria)) {
                 result.add(orderElement);
+            }
+        }
+        return result;
+    }
+
+    private List<OrderElement> filterByOrderAuthorizations(
+            List<OrderElement> orderElements) {
+        List<Order> orders = getOrders();
+
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        for (OrderElement each : orderElements) {
+            if (orders.contains(orderDAO.loadOrderAvoidingProxyFor(each))) {
+                result.add(each);
             }
         }
         return result;
