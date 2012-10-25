@@ -19,9 +19,13 @@
 
 package org.libreplan.business.effortsummary.entities;
 
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 
 public class EffortSummary extends BaseEntity {
 
@@ -85,6 +89,22 @@ public class EffortSummary extends BaseEntity {
 
     public void setAssignedEffort(int[] assignedEffort) {
         this.assignedEffort = assignedEffort;
+    }
+
+    public EffortDuration getAvailableEffortForDate(LocalDate date) {
+        int positionInArray = Days.daysBetween(startDate, date).getDays();
+        if (availableEffort.length < positionInArray) {
+            return EffortDuration.zero();
+        }
+        return EffortDuration.seconds(availableEffort[positionInArray]);
+    }
+
+    public EffortDuration getAssignedEffortForDate(LocalDate date) {
+        int positionInArray = Days.daysBetween(startDate, date).getDays();
+        if (assignedEffort.length < positionInArray) {
+            return EffortDuration.zero();
+        }
+        return EffortDuration.seconds(assignedEffort[positionInArray]);
     }
 
 }
