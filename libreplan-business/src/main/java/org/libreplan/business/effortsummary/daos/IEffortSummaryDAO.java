@@ -32,4 +32,14 @@ public interface IEffortSummaryDAO extends IGenericDAO<EffortSummary, Long> {
 
     EffortSummary listForResourceBetweenDates(Resource resource,
             LocalDate startDate, LocalDate endDate);
+
+    /**
+     * Find the EffortSummary row corresponding to a specific resource.
+     *
+     * @param resource
+     *            The resource to search by.
+     * @return The EffortSummary object corresponding to the resource or null if
+     *         it doesn't exist yet.
+     */
+    EffortSummary findForResource(Resource resource);
 }

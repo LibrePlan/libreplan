@@ -63,4 +63,10 @@ public class EffortSummaryDAO extends GenericDAOHibernate<EffortSummary, Long>
                 newAssignedEffort, effort.getResource());
     }
 
+    @Override
+    public EffortSummary findForResource(Resource resource) {
+        return (EffortSummary) getSession().createCriteria(EffortSummary.class)
+                .add(Restrictions.eq("resource", resource)).uniqueResult();
+    }
+
 }

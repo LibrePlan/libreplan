@@ -20,6 +20,7 @@
 package org.libreplan.business.test.effortsummary.daos;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -115,5 +116,23 @@ public class EffortSummaryDAOTest {
         EffortSummary effort = effortSummaryDAO
                 .listForResourceBetweenDates(worker, startDate, endDate);
         assertEquals(numberOfItems - 1, effort.getAssignedEffort().length);
+    }
+
+    @Test
+    public void testFindByResource() {
+        final int numberOfItems = 1000;
+        Worker worker = generateValidWorker();
+        LocalDate date = new LocalDate();
+        createConsecutiveEffortSummaryItems(numberOfItems, worker, date);
+        EffortSummary effort = effortSummaryDAO.findForResource(worker);
+        assertEquals(effort.getResource().getId(), worker.getId());
+    }
+
+    @Test
+    public void testFindByResourceNotFound() {
+        Worker worker = generateValidWorker();
+        resourceDAO.save(worker);
+        EffortSummary effort = effortSummaryDAO.findForResource(worker);
+        assertNull(effort);
     }
 }
