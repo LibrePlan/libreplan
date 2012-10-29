@@ -73,4 +73,18 @@
         </update>
     </changeSet>
 
+    <changeSet id="add-columns-first-and-last-timesheet_date-to-sum_charged_effort"
+        author="mrego">
+        <comment>
+            Add columns first_timesheet_date and last_timesheet_date to
+            sum_charged_effort table
+        </comment>
+        <addColumn tableName="sum_charged_effort">
+            <column name="first_timesheet_date" type="DATETIME" />
+        </addColumn>
+        <addColumn tableName="sum_charged_effort">
+            <column name="last_timesheet_date" type="DATETIME" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

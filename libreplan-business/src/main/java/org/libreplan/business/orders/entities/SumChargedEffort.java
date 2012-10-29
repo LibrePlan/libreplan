@@ -21,6 +21,8 @@
 
 package org.libreplan.business.orders.entities;
 
+import java.util.Date;
+
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.workingday.EffortDuration;
 
@@ -38,6 +40,10 @@ public class SumChargedEffort extends BaseEntity {
     private EffortDuration directChargedEffort = EffortDuration.zero();
 
     private EffortDuration indirectChargedEffort = EffortDuration.zero();
+
+    private Date firstTimesheetDate;
+
+    private Date lastTimesheetDate;
 
     protected SumChargedEffort() {}
 
@@ -93,6 +99,24 @@ public class SumChargedEffort extends BaseEntity {
     public void reset() {
         directChargedEffort = EffortDuration.zero();
         indirectChargedEffort = EffortDuration.zero();
+        firstTimesheetDate = null;
+        lastTimesheetDate = null;
+    }
+
+    public Date getFirstTimesheetDate() {
+        return firstTimesheetDate;
+    }
+
+    public void setFirstTimesheetDate(Date firstTimesheetDate) {
+        this.firstTimesheetDate = firstTimesheetDate;
+    }
+
+    public Date getLastTimesheetDate() {
+        return lastTimesheetDate;
+    }
+
+    public void setLastTimesheetDate(Date lastTimesheetDate) {
+        this.lastTimesheetDate = lastTimesheetDate;
     }
 
 }
