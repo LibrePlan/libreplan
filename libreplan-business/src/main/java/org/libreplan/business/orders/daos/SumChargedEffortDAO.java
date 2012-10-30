@@ -70,6 +70,9 @@ public class SumChargedEffortDAO extends
     @Autowired
     private IOrderDAO orderDAO;
 
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
     private Map<OrderElement, SumChargedEffort> mapSumChargedEfforts;
 
     @Override
@@ -118,6 +121,7 @@ public class SumChargedEffortDAO extends
                                 forceLoadParents(parent);
                             }
                         }
+
                     });
 
             previousEffort = previous.getFirst();
@@ -252,7 +256,7 @@ public class SumChargedEffortDAO extends
             resetMapSumChargedEfforts();
             resetSumChargedEffort(order);
             calculateDirectChargedEffort(order);
-            calculateFirstAndLastTimesheetDates(order);
+            calculateTimesheetDates(order);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -280,7 +284,7 @@ public class SumChargedEffortDAO extends
         addDirectChargedEffort(orderElement, effort);
     }
 
-    private Pair<Date, Date> calculateFirstAndLastTimesheetDates(
+    private Pair<Date, Date> calculateTimesheetDates(
             OrderElement orderElement) {
         Pair<Date, Date> minMax = workReportLineDAO
                 .findMinAndMaxDatesByOrderElement(orderElement);
@@ -292,24 +296,124 @@ public class SumChargedEffortDAO extends
         addIfNotNull(maxDates, minMax.getSecond());
 
         for (OrderElement child : orderElement.getChildren()) {
-            Pair<Date, Date> minMaxChild = calculateFirstAndLastTimesheetDates(child);
+            Pair<Date, Date> minMaxChild = calculateTimesheetDates(child);
             addIfNotNull(minDates, minMaxChild.getFirst());
             addIfNotNull(maxDates, minMaxChild.getSecond());
         }
 
-        SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
-        sumChargedEffort.setTimesheetDates(minMax.getFirst(),
-                minMax.getSecond());
-
-        return Pair.create(
+        Pair<Date, Date> result = Pair.create(
                 minDates.isEmpty() ? null : Collections.min(minDates),
                 maxDates.isEmpty() ? null : Collections.max(maxDates));
+
+        SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
+        sumChargedEffort.setTimesheetDates(result.getFirst(),
+                result.getSecond());
+        save(sumChargedEffort);
+
+        return result;
     }
 
     private void addIfNotNull(Collection<Date> list, Date date) {
         if (date != null) {
             list.add(date);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<OrderElement> getOrderElementsToRecalculateTimsheetDates(
+            Set<WorkReportLine> workReportLines,
+            Set<WorkReportLine> deletedWorkReportLines) {
+        Set<OrderElement> orderElements = new HashSet<OrderElement>();
+
+        if (workReportLines != null) {
+            for (final WorkReportLine workReportLine : workReportLines) {
+                if (!workReportLine.isNewObject()) {
+                    OrderElement previousOrderElement = transactionService
+                            .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
+                                @Override
+                                public OrderElement execute() {
+                                    try {
+                                        WorkReportLine line = workReportLineDAO
+                                                .find(workReportLine.getId());
+
+                                        return line.getOrderElement();
+                                    } catch (InstanceNotFoundException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            });
+                    orderElements.add(previousOrderElement);
+                }
+                orderElements.add(workReportLine.getOrderElement());
+            }
+        }
+
+        if (deletedWorkReportLines != null) {
+            for (WorkReportLine workReportLine : deletedWorkReportLines) {
+                if (workReportLine.isNewObject()) {
+                    // If the line hasn't been saved, we don't take it into
+                    // account
+                    continue;
+                }
+
+                // Refresh data from database, because of changes not saved are
+                // not
+                // useful for the following operations
+                sessionFactory.getCurrentSession().refresh(workReportLine);
+
+                orderElements.add(workReportLine.getOrderElement());
+            }
+        }
+
+        return orderElements;
+    }
+
+    @Override
+    @Transactional
+    public void recalculateTimesheetDates(Set<OrderElement> orderElements) {
+        try {
+            for (OrderElement orderElement : orderElements) {
+                saveTimesheetDatesRecursively(orderElementDAO.find(orderElement
+                        .getId()));
+            }
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void saveTimesheetDatesRecursively(OrderElement orderElement) {
+        if (orderElement != null) {
+            saveTimesheetDates(orderElement);
+            saveTimesheetDatesRecursively(orderElement.getParent());
+        }
+    }
+
+    private void saveTimesheetDates(OrderElement orderElement) {
+        Pair<Date, Date> minMax = workReportLineDAO
+                .findMinAndMaxDatesByOrderElement(orderElement);
+
+        Set<Date> minDates = new HashSet<Date>();
+        Set<Date> maxDates = new HashSet<Date>();
+
+        addIfNotNull(minDates, minMax.getFirst());
+        addIfNotNull(maxDates, minMax.getSecond());
+
+        for (OrderElement child : orderElement.getChildren()) {
+            SumChargedEffort childSumChargedEffort = getByOrderElement(child);
+            addIfNotNull(minDates,
+                    childSumChargedEffort.getFirstTimesheetDate());
+            addIfNotNull(maxDates, childSumChargedEffort.getLastTimesheetDate());
+        }
+
+        Pair<Date, Date> result = Pair.create(minDates.isEmpty() ? null
+                : Collections.min(minDates), maxDates.isEmpty() ? null
+                : Collections.max(maxDates));
+
+        SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
+        sumChargedEffort.setTimesheetDates(result.getFirst(),
+                result.getSecond());
+        save(sumChargedEffort);
     }
 
 }

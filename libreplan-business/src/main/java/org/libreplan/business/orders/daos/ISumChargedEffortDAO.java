@@ -74,4 +74,26 @@ public interface ISumChargedEffortDAO extends
      */
     void recalculateSumChargedEfforts(Long orderId);
 
+    /**
+     * Returns a {@link Set} of {@link OrderElement OrderElements} affected by
+     * any change taking into account the lines in the report and the ones to be
+     * removed.
+     *
+     * Usually you call this method to get the set before saving the work
+     * report. After saving the work report you call
+     * {@link ISumChargedEffortDAO#recalculateTimesheetDates(Set)} with the
+     * result of this method.
+     *
+     * You can pass <code>null</code> as param if you only have one of the sets.
+     */
+    Set<OrderElement> getOrderElementsToRecalculateTimsheetDates(
+            Set<WorkReportLine> workReportLines,
+            Set<WorkReportLine> deletedWorkReportLinesSet);
+
+    /**
+     * Recalulates the first and last timesheets dates for each
+     * {@link OrderElement} in the {@link Set}.
+     */
+    void recalculateTimesheetDates(Set<OrderElement> orderElements);
+
 }

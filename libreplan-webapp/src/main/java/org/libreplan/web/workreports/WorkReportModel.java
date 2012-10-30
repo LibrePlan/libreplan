@@ -274,12 +274,17 @@ public class WorkReportModel extends IntegrationEntityModel implements
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        Set<OrderElement> orderElements = sumChargedEffortDAO
+                .getOrderElementsToRecalculateTimsheetDates(
+                        workReport.getWorkReportLines(),
+                        deletedWorkReportLinesSet);
         sumChargedEffortDAO.updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(deletedWorkReportLinesSet);
         sumChargedEffortDAO
                 .updateRelatedSumChargedEffortWithWorkReportLineSet(workReport
                         .getWorkReportLines());
 
         workReportDAO.save(workReport);
+        sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
     }
 
     @Override
@@ -412,10 +417,14 @@ public class WorkReportModel extends IntegrationEntityModel implements
         //before deleting the report, update OrderElement.SumChargedHours
         try {
             workReportDAO.reattach(workReport);
+            Set<OrderElement> orderElements = sumChargedEffortDAO
+                    .getOrderElementsToRecalculateTimsheetDates(null,
+                            workReport.getWorkReportLines());
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
                             .getWorkReportLines());
             workReportDAO.remove(workReport.getId());
+            sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

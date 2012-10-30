@@ -431,12 +431,16 @@ public class PersonalTimesheetModel implements IPersonalTimesheetModel {
             // saved as it will not be possible to find it later with
             // WorkReportDAO.getPersonalTimesheetWorkReport() method.
         } else {
+            Set<OrderElement> orderElements = sumChargedEffortDAO
+                    .getOrderElementsToRecalculateTimsheetDates(
+                            workReport.getWorkReportLines(), null);
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithWorkReportLineSet(workReport
                             .getWorkReportLines());
             workReport.generateWorkReportLineCodes(entitySequenceDAO
                     .getNumberOfDigitsCode(EntityNameEnum.WORK_REPORT));
             workReportDAO.save(workReport);
+            sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
         }
 
         resetModifiedFields();
