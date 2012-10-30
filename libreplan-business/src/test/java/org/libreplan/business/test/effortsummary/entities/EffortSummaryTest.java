@@ -172,4 +172,26 @@ public class EffortSummaryTest {
                 summary.getAvailableEffortForDate(CHRISTMAS_DAY_LOCAL_DATE));
     }
 
+    @Test
+    public void testSerializers() {
+        Worker worker = generateValidWorker();
+        worker.setCalendar(createChristmasCalendar()
+                .newDerivedResourceCalendar());
+        EffortSummary summary = EffortSummary.createFromNewResource(worker);
+
+        String serializedArray = summary.getAvailableEffortString();
+        summary.setAssignedEffortString(serializedArray);
+
+        assertEquals(
+                summary.getAssignedEffortForDate(WEDNESDAY_LOCAL_DATE),
+                worker.getCalendar().getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE)));
+
+        assertEquals(summary.getAssignedEffortForDate(SUNDAY_LOCAL_DATE),
+                worker.getCalendar().getCapacityOn(wholeDay(SUNDAY_LOCAL_DATE)));
+
+        assertEquals(
+                summary.getAssignedEffortForDate(CHRISTMAS_DAY_LOCAL_DATE),
+                worker.getCalendar().getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE)));
+    }
+
 }

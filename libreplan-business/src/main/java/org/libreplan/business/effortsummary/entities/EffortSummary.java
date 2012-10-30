@@ -37,6 +37,10 @@ public class EffortSummary extends BaseEntity {
 
     private int[] assignedEffort;
 
+    private String availableEffortString;
+
+    private String assignedEffortString;
+
     private Resource resource;
 
     public static EffortSummary create(LocalDate startDate, LocalDate endDate,
@@ -109,6 +113,7 @@ public class EffortSummary extends BaseEntity {
 
     public void setAvailableEffort(int[] availableEffort) {
         this.availableEffort = availableEffort;
+        this.availableEffortString = serializeIntArray(availableEffort);
     }
 
     public int[] getAssignedEffort() {
@@ -117,6 +122,7 @@ public class EffortSummary extends BaseEntity {
 
     public void setAssignedEffort(int[] assignedEffort) {
         this.assignedEffort = assignedEffort;
+        this.assignedEffortString = serializeIntArray(assignedEffort);
     }
 
     public EffortDuration getAvailableEffortForDate(LocalDate date) {
@@ -162,6 +168,65 @@ public class EffortSummary extends BaseEntity {
         }
         setAvailableEffort(availableEffort);
 
+    }
+
+    /**
+     * String getter only supposed to be used by Hibernate.
+     *
+     * @return availableEffort int array serialized as a String
+     */
+    public String getAvailableEffortString() {
+        return this.availableEffortString;
+    }
+
+    /**
+     * String setter only supposed to be used by Hibernate.
+     *
+     * @param availableEffort int array serialized as a String
+     */
+    public void setAvailableEffortString(String availableEffort) {
+        this.availableEffortString = availableEffort;
+        this.availableEffort = parseSerializedArray(availableEffort);
+    }
+
+    /**
+     * String getter only supposed to be used by Hibernate.
+     *
+     * @return assignedEffort int array serialized as a String
+     */
+    public String getAssignedEffortString() {
+        return this.assignedEffortString;
+    }
+
+    /**
+     * String setter only supposed to be used by Hibernate.
+     *
+     * @param assignedEffort int array serialized as a String
+     */
+    public void setAssignedEffortString(String assignedEffort) {
+        this.assignedEffortString = assignedEffort;
+        this.assignedEffort = parseSerializedArray(assignedEffort);
+    }
+
+    private int[] parseSerializedArray(String serializedArray) {
+        String[] split = serializedArray.split(",");
+        int[] result = new int[split.length];
+
+        for (int i = 0; i < split.length; i++) {
+            result[i] = Integer.parseInt(split[i]);
+        }
+
+        return result;
+    }
+
+    private String serializeIntArray(int[] array) {
+        String result = "";
+
+        for (int i = 0; i < array.length; i++) {
+            result += Integer.toString(array[i]) + ",";
+        }
+
+        return result;
     }
 
 }

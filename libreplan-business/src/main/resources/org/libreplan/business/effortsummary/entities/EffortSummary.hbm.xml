@@ -18,9 +18,9 @@
         <property name="endDate" column="end_date" not-null="true"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
 
-        <property name="availableEffort" column="available_effort" not-null="true"/>
+        <property name="availableEffortString" column="available_effort" type="text" />
 
-        <property name="assignedEffort" column="assigned_effort"  not-null="true"/>
+        <property name="assignedEffortString" column="assigned_effort" type="text" />
 
         <many-to-one name="resource" column="resource_id" not-null="true"
                 class="org.libreplan.business.resources.entities.Resource" />

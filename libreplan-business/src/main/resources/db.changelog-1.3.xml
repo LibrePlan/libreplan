@@ -95,4 +95,20 @@
             referencedTableName="resource" referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="use-string-columns-for-serialization-in-table-effort_summary"
+        author="jaragunde">
+        <comment>
+            Replace binary columns for available and assigned effort with string columns.
+            We will handle the serialization manually in the EffortSummary object.
+        </comment>
+        <dropColumn tableName="effort_summary" columnName="available_effort"/>
+        <dropColumn tableName="effort_summary" columnName="assigned_effort"/>
+        <addColumn tableName="effort_summary">
+            <column name="available_effort" type="TEXT" />
+        </addColumn>
+        <addColumn tableName="effort_summary">
+            <column name="assigned_effort" type="TEXT" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
