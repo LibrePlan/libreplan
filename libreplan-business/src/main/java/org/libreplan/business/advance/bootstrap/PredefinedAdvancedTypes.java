@@ -36,16 +36,26 @@ public enum PredefinedAdvancedTypes {
     UNITS("units", new BigDecimal(Integer.MAX_VALUE),
             new BigDecimal(1), false, false),
     SUBCONTRACTOR("subcontractor",
-            new BigDecimal(100), new BigDecimal(0.01), true, false);
+            new BigDecimal(100), new BigDecimal(0.01), true, false),
+    TIMESHEETS("timesheets",
+            new BigDecimal(100), new BigDecimal(0.01), true, false, true);
+
 
     private PredefinedAdvancedTypes(String name, BigDecimal defaultMaxValue,
             BigDecimal precision, boolean percentage, boolean qualityForm) {
+        this(name, defaultMaxValue, precision, percentage, qualityForm, false);
+    }
+
+    private PredefinedAdvancedTypes(String name, BigDecimal defaultMaxValue,
+            BigDecimal precision, boolean percentage, boolean qualityForm,
+            boolean readOnly) {
         this.name = name;
         this.defaultMaxValue = defaultMaxValue.setScale(4,
                 BigDecimal.ROUND_HALF_UP);
         this.unitPrecision = precision.setScale(4, BigDecimal.ROUND_HALF_UP);
         this.percentage = percentage;
         this.qualityForm = qualityForm;
+        this.readOnly = readOnly;
     }
 
     private final String name;
@@ -58,9 +68,13 @@ public enum PredefinedAdvancedTypes {
 
     private final boolean qualityForm;
 
+    private final boolean readOnly;
+
     public AdvanceType createType() {
-        return AdvanceType.create(name, defaultMaxValue, false, unitPrecision,
-                true, percentage, qualityForm);
+        AdvanceType advanceType = AdvanceType.create(name, defaultMaxValue,
+                false, unitPrecision, true, percentage, qualityForm);
+        advanceType.setReadOnly(readOnly);
+        return advanceType;
     }
 
     public String getTypeName() {

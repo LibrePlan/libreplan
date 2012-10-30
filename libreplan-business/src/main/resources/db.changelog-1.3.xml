@@ -87,4 +87,20 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-new-column-read_only-to-advance_type" author="mrego">
+        <comment>
+            Add new column read_only with default value FALSE to advance_type
+            table.
+        </comment>
+        <addColumn tableName="advance_type">
+            <column name="read_only" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="advance_type" columnName="read_only"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="advance_type"
+            columnName="read_only"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>
