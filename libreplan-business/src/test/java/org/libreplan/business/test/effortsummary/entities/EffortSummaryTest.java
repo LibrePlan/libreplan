@@ -36,6 +36,7 @@ import org.libreplan.business.calendars.entities.CalendarException;
 import org.libreplan.business.calendars.entities.CalendarExceptionType;
 import org.libreplan.business.calendars.entities.CalendarExceptionTypeColor;
 import org.libreplan.business.calendars.entities.Capacity;
+import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.effortsummary.entities.EffortSummary;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
@@ -170,6 +171,45 @@ public class EffortSummaryTest {
 
         assertEquals(EffortDuration.zero(),
                 summary.getAvailableEffortForDate(CHRISTMAS_DAY_LOCAL_DATE));
+    }
+
+    @Test
+    public void testUpdateAvailabilityCalendar() {
+        Worker worker = generateValidWorker();
+        worker.setCalendar(createBasicCalendar().newDerivedResourceCalendar());
+        EffortSummary summary = EffortSummary.createFromNewResource(worker);
+
+        assertEquals(
+                summary.getAvailableEffortForDate(CHRISTMAS_DAY_LOCAL_DATE),
+                worker.getCalendar().getCapacityOn(
+                        wholeDay(CHRISTMAS_DAY_LOCAL_DATE)));
+        assertEquals(EffortDuration.hours(8),
+                summary.getAvailableEffortForDate(CHRISTMAS_DAY_LOCAL_DATE));
+
+        // change worker calendar to move the availability period
+        ResourceCalendar calendar = createBasicCalendar()
+                .newDerivedResourceCalendar();
+        LocalDate initialStartDate = calendar.getFistCalendarAvailability()
+                .getStartDate();
+        calendar.getFistCalendarAvailability().setStartDate(
+                initialStartDate.plusDays(3));
+        worker.setCalendar(calendar);
+        summary.updateAvailabilityFromResource();
+
+        assertEquals(EffortDuration.zero(),
+                summary.getAvailableEffortForDate(initialStartDate));
+        assertEquals(EffortDuration.zero(),
+                summary.getAssignedEffortForDate(initialStartDate));
+
+        calendar.getFistCalendarAvailability().setStartDate(
+                initialStartDate.minusDays(3));
+        worker.setCalendar(calendar);
+        summary.updateAvailabilityFromResource();
+        assertEquals(
+                worker.getCalendar().getCapacityOn(wholeDay(initialStartDate.minusDays(3))),
+                summary.getAvailableEffortForDate(initialStartDate.minusDays(3)));
+        assertEquals(EffortDuration.zero(),
+                summary.getAssignedEffortForDate(initialStartDate.minusDays(3)));
     }
 
     @Test

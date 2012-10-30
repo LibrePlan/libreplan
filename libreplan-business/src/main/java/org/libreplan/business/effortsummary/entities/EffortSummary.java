@@ -146,16 +146,34 @@ public class EffortSummary extends BaseEntity {
      * from the attached resource.
      */
     public void updateAvailabilityFromResource() {
-        final int defaultNumberOfElements = 1000;
-
-        // get start and end dates
+        // calculate correct start date
         ResourceCalendar resourceCalendar = resource.getCalendar();
         LocalDate startDate = resourceCalendar.getFistCalendarAvailability()
                 .getStartDate();
+        if (getStartDate().isAfter(startDate)) {
+            // the start date has been moved
+            // fill the gap in assignedEffort array with 0s
+            int numberOfElements = Days.daysBetween(startDate, getStartDate())
+                    .getDays();
+            int[] filler = new int[numberOfElements];
+            for (int i = 0; i < numberOfElements; i++) {
+                filler[i] = 0;
+            }
+            int[] assignedEffort = new int[numberOfElements
+                    + getAssignedEffort().length];
+            System.arraycopy(filler, 0, assignedEffort, 0, numberOfElements);
+            System.arraycopy(getAssignedEffort(), 0, assignedEffort,
+                    numberOfElements, getAssignedEffort().length);
+            setAssignedEffort(assignedEffort);
+        } else {
+            startDate = getStartDate();
+        }
+
+        // calculate correct end date
         LocalDate endDate = resourceCalendar.getFistCalendarAvailability()
                 .getEndDate();
-        if (endDate == null) {
-            endDate = startDate.plusDays(defaultNumberOfElements - 1);
+        if (endDate == null || endDate.isBefore(getEndDate())) {
+            endDate = getEndDate();
         }
         int numberOfElements = Days.daysBetween(startDate, endDate).getDays() + 1;
 
@@ -166,6 +184,10 @@ public class EffortSummary extends BaseEntity {
             availableEffort[i] = resourceCalendar.getCapacityOn(day)
                     .getSeconds();
         }
+
+        // update fields
+        setStartDate(startDate);
+        setEndDate(endDate);
         setAvailableEffort(availableEffort);
 
     }
