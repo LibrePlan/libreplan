@@ -119,4 +119,10 @@ public class SumChargedEffort extends BaseEntity {
         this.lastTimesheetDate = lastTimesheetDate;
     }
 
+    public void setTimesheetDates(Date firstTimesheetDate,
+            Date lastTimesheetDate) {
+        setFirstTimesheetDate(firstTimesheetDate);
+        setLastTimesheetDate(lastTimesheetDate);
+    }
+
 }

@@ -34,6 +34,7 @@ import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.util.Pair;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -144,6 +145,27 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         }
 
         return criteria.list();
+    }
+
+    @Override
+    public Pair<Date, Date> findMinAndMaxDatesByOrderElement(
+            OrderElement orderElement) {
+
+        String strQuery = "SELECT MIN(date) AS min, MAX(date) AS max "
+                + "FROM WorkReportLine " + "WHERE orderElement = :orderElement";
+
+        Query query = getSession().createQuery(strQuery);
+        query.setParameter("orderElement", orderElement);
+
+        Object[] result = (Object[]) query.uniqueResult();
+
+        Date min = null;
+        Date max = null;
+        if (result != null) {
+            min = (Date) result[0];
+            max = (Date) result[1];
+        }
+        return Pair.create(min, max);
     }
 
 }
