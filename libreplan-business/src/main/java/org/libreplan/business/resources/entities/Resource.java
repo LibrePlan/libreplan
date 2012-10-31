@@ -56,6 +56,7 @@ import org.libreplan.business.common.exceptions.MultipleInstancesException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.costcategories.entities.ResourcesCostCategoryAssignment;
+import org.libreplan.business.effortsummary.entities.EffortSummary;
 import org.libreplan.business.planner.entities.AvailabilityCalculator;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.ResourceAllocation;
@@ -140,6 +141,8 @@ public abstract class Resource extends IntegrationEntity implements
     private ResourceType resourceType = ResourceType.NON_LIMITING_RESOURCE;
 
     private LimitingResourceQueue limitingResourceQueue;
+
+    private Set<EffortSummary> effortSummary;
 
     private void clearCachedData() {
         assignmentsByDayCached = null;
@@ -1178,6 +1181,27 @@ public abstract class Resource extends IntegrationEntity implements
     public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
         limitingResourceQueue.setResource(this);
         this.limitingResourceQueue = limitingResourceQueue;
+    }
+
+    /**
+     * This getter is only for Hibernate use, not supposed to be used in the
+     * program.
+     *
+     * @return effortSummary property
+     */
+    private Set<EffortSummary> getEffortSummary() {
+        return effortSummary;
+    }
+
+    /**
+     * This setter is only for Hibernate use, not supposed to be used in the
+     * program.
+     *
+     * @param effortSummary
+     *            property
+     */
+    private void setEffortSummary(Set<EffortSummary> effortSummary) {
+        this.effortSummary = effortSummary;
     }
 
     @Override

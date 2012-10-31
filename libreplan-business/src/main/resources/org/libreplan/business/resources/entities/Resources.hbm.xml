@@ -53,6 +53,11 @@
 
     <one-to-one name="limitingResourceQueue" property-ref="resource" cascade="all" />
 
+    <set access="field" lazy="extra" cascade="all-delete-orphan" inverse="true" name="effortSummary">
+      <key column="resource_id" not-null="true"/>
+      <one-to-many class="org.libreplan.business.effortsummary.entities.EffortSummary"/>
+    </set>
+
     <joined-subclass name="org.libreplan.business.resources.entities.Worker" table="worker">
       <key column="worker_id"/>
       <property name="firstName" column="first_name" />
