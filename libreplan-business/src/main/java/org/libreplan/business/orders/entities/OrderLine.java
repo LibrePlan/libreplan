@@ -152,7 +152,9 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLineGroup toContainer() {
         OrderLineGroup result = OrderLineGroup.create();
+        result.setCode(getCode());
         result.setName(getName());
+        setCode("");
         setName("");
         return result;
     }
