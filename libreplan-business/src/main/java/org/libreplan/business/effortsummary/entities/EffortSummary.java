@@ -108,6 +108,9 @@ public class EffortSummary extends BaseEntity {
     }
 
     public int[] getAvailableEffort() {
+        if (availableEffort == null) {
+            availableEffort = parseSerializedArray(availableEffortString);
+        }
         return availableEffort;
     }
 
@@ -117,6 +120,9 @@ public class EffortSummary extends BaseEntity {
     }
 
     public int[] getAssignedEffort() {
+        if (assignedEffort == null) {
+            assignedEffort = parseSerializedArray(assignedEffortString);
+        }
         return assignedEffort;
     }
 
