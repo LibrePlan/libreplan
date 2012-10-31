@@ -43,6 +43,8 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.effortsummary.daos.IEffortSummaryDAO;
+import org.libreplan.business.effortsummary.entities.EffortSummary;
 import org.libreplan.business.planner.daos.IDayAssignmentDAO;
 import org.libreplan.business.planner.daos.IResourceAllocationDAO;
 import org.libreplan.business.resources.daos.ICriterionDAO;
@@ -113,6 +115,8 @@ public class MachineModel extends IntegrationEntityModel implements
     private IWorkReportLineDAO workReportLineDAO;
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
+    @Autowired
+    private IEffortSummaryDAO effortSummaryDAO;
 
     @Autowired
     private IScenarioManager scenarioManager;
@@ -270,6 +274,18 @@ public class MachineModel extends IntegrationEntityModel implements
     public void confirmSave() throws ValidationException {
         removeCalendarIfNeeded();
         resourceDAO.save(machine);
+        updateAvailabilityCache(machine);
+    }
+
+    private void updateAvailabilityCache(Resource resource) {
+        EffortSummary summary;
+        if (resource.isNewObject()) {
+            summary = EffortSummary.createFromNewResource(resource);
+        } else {
+            summary = effortSummaryDAO.findForResource(resource);
+            summary.updateAvailabilityFromResource();
+        }
+        effortSummaryDAO.save(summary);
     }
 
     private void removeCalendarIfNeeded() {
