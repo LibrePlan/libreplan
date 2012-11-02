@@ -81,7 +81,7 @@ public interface ISumChargedEffortDAO extends
      *
      * Usually you call this method to get the set before saving the work
      * report. After saving the work report you call
-     * {@link ISumChargedEffortDAO#recalculateTimesheetDates(Set)} with the
+     * {@link ISumChargedEffortDAO#recalculateTimesheetData(Set)} with the
      * result of this method.
      *
      * You can pass <code>null</code> as param if you only have one of the sets.
@@ -94,6 +94,6 @@ public interface ISumChargedEffortDAO extends
      * Recalulates the first and last timesheets dates for each
      * {@link OrderElement} in the {@link Set}.
      */
-    void recalculateTimesheetDates(Set<OrderElement> orderElements);
+    void recalculateTimesheetData(Set<OrderElement> orderElements);
 
 }

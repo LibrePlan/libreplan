@@ -131,7 +131,7 @@ public class WorkReportServiceREST extends
 
     @Override
     protected void afterSaving(WorkReport entity) {
-        sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
+        sumChargedEffortDAO.recalculateTimesheetData(orderElements);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class WorkReportServiceREST extends
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
                             .getWorkReportLines());
             workReportDAO.remove(workReport.getId());
-            sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
             return Response.ok().build();
         } catch (InstanceNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
@@ -177,7 +177,7 @@ public class WorkReportServiceREST extends
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(new HashSet<WorkReportLine>(
                             Arrays.asList(workReportLine)));
             workReportLineDAO.remove(workReportLine.getId());
-            sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
             return Response.ok().build();
         } catch (InstanceNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();

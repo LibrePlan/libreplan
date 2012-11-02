@@ -256,7 +256,7 @@ public class SumChargedEffortDAO extends
             resetMapSumChargedEfforts();
             resetSumChargedEffort(order);
             calculateDirectChargedEffort(order);
-            calculateTimesheetDates(order);
+            calculateTimesheetData(order);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -284,7 +284,12 @@ public class SumChargedEffortDAO extends
         addDirectChargedEffort(orderElement, effort);
     }
 
-    private Pair<Date, Date> calculateTimesheetDates(
+    private void calculateTimesheetData(OrderElement orderElement) {
+        calculateTimesheetDatesAndChildren(orderElement);
+        calculateFinishedTimesheetsAndChildren(orderElement);
+    }
+
+    private Pair<Date, Date> calculateTimesheetDatesAndChildren(
             OrderElement orderElement) {
         Pair<Date, Date> minMax = workReportLineDAO
                 .findMinAndMaxDatesByOrderElement(orderElement);
@@ -296,7 +301,7 @@ public class SumChargedEffortDAO extends
         addIfNotNull(maxDates, minMax.getSecond());
 
         for (OrderElement child : orderElement.getChildren()) {
-            Pair<Date, Date> minMaxChild = calculateTimesheetDates(child);
+            Pair<Date, Date> minMaxChild = calculateTimesheetDatesAndChildren(child);
             addIfNotNull(minDates, minMaxChild.getFirst());
             addIfNotNull(maxDates, minMaxChild.getSecond());
         }
@@ -317,6 +322,22 @@ public class SumChargedEffortDAO extends
         if (date != null) {
             list.add(date);
         }
+    }
+
+    private void calculateFinishedTimesheetsAndChildren(
+            OrderElement orderElement) {
+        calculateFinishedTimesheets(orderElement);
+
+        for (OrderElement child : orderElement.getChildren()) {
+            calculateFinishedTimesheetsAndChildren(child);
+        }
+    }
+
+    private void calculateFinishedTimesheets(OrderElement orderElement) {
+        SumChargedEffort sumChargedEffort = getByOrderElement(orderElement);
+        sumChargedEffort.setFinishedTimesheets(workReportLineDAO
+                .isFinished(orderElement));
+        save(sumChargedEffort);
     }
 
     @Override
@@ -371,10 +392,12 @@ public class SumChargedEffortDAO extends
 
     @Override
     @Transactional
-    public void recalculateTimesheetDates(Set<OrderElement> orderElements) {
+    public void recalculateTimesheetData(Set<OrderElement> orderElements) {
         try {
             for (OrderElement orderElement : orderElements) {
                 saveTimesheetDatesRecursively(orderElementDAO.find(orderElement
+                        .getId()));
+                calculateFinishedTimesheets(orderElementDAO.find(orderElement
                         .getId()));
             }
         } catch (InstanceNotFoundException e) {

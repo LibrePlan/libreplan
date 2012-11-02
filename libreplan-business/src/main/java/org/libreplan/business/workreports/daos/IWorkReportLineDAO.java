@@ -72,4 +72,6 @@ public interface IWorkReportLineDAO extends
     List<WorkReportLine> findByOrderElementNotInWorkReportAnotherTransaction(
             OrderElement orderElement, WorkReport workReport);
 
+    Boolean isFinished(OrderElement orderElement);
+
 }

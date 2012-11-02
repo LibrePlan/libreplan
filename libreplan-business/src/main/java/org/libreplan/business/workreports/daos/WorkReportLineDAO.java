@@ -189,4 +189,14 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         return (List<WorkReportLine>) criteria.list();
     }
 
+    @Override
+    public Boolean isFinished(OrderElement orderElement) {
+        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+
+        criteria.add(Restrictions.eq("orderElement", orderElement));
+        criteria.add(Restrictions.eq("finished", true));
+
+        return criteria.uniqueResult() != null;
+    }
+
 }

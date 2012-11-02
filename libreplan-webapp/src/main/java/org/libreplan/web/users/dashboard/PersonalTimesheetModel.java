@@ -440,7 +440,7 @@ public class PersonalTimesheetModel implements IPersonalTimesheetModel {
             workReport.generateWorkReportLineCodes(entitySequenceDAO
                     .getNumberOfDigitsCode(EntityNameEnum.WORK_REPORT));
             workReportDAO.save(workReport);
-            sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
         }
 
         resetModifiedFields();

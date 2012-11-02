@@ -289,7 +289,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
                         .getWorkReportLines());
 
         workReportDAO.save(workReport);
-        sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
+        sumChargedEffortDAO.recalculateTimesheetData(orderElements);
     }
 
     @Override
@@ -429,7 +429,7 @@ public class WorkReportModel extends IntegrationEntityModel implements
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
                             .getWorkReportLines());
             workReportDAO.remove(workReport.getId());
-            sumChargedEffortDAO.recalculateTimesheetDates(orderElements);
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
