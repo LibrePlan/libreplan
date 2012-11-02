@@ -57,7 +57,10 @@ Requirements
 ------------
 
 These scripts are written in bash so you need to be running a bash terminal to
-use them.
+use them. And they use cURL to do the HTTP requests, you can install it with the
+following command in Debian based distributions::
+
+  # apt-get install curl
 
 Moreover, it is recommended to have Tidy available in your system. You can
 install it with the following command in Debian based distributions::
