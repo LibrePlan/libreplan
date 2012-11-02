@@ -1249,6 +1249,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             }
         });
 
+        if (!line.isFinished()
+                && workReportModel.isFinished(line.getOrderElement())) {
+            finished.setDisabled(true);
+        }
+
         row.appendChild(finished);
     }
 

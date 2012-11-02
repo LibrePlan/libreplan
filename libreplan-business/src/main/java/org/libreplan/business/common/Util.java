@@ -27,6 +27,16 @@ import java.util.Collection;
  */
 public class Util {
 
+    public static boolean equals(BaseEntity entity1, BaseEntity entity2) {
+        if (entity1 == null || entity2 == null) {
+            return false;
+        }
+        if (entity1.getId() == null || entity2.getId() == null) {
+            return false;
+        }
+        return entity1.getId().equals(entity2.getId());
+    }
+
     public static boolean contains(Collection<? extends BaseEntity> collection,
             BaseEntity entity) {
         for (BaseEntity each : collection) {

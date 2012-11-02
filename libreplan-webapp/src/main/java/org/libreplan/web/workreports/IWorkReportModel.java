@@ -245,4 +245,10 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
 
     WorkReportLine getFirstWorkReportLine();
 
+    /**
+     * Checks if an {@link OrderElement} is finished or not in any
+     * {@link WorkReportLine} of this report or other report.
+     */
+    boolean isFinished(OrderElement orderElement);
+
 }
