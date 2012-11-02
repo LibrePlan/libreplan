@@ -19,10 +19,15 @@
 
 package org.libreplan.business.effortsummary.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.planner.entities.ResourceAllocation;
+import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
@@ -95,6 +100,41 @@ public class EffortSummary extends BaseEntity {
         return EffortSummary.create(startDate, endDate,
                     availableEffort, assignedEffort, resource);
 
+    }
+
+    public static Set<EffortSummary> createFromResourceAllocations(
+            Set<ResourceAllocation<?>> allocations) {
+        Set<EffortSummary> efforts = new HashSet<EffortSummary>();
+
+        for (ResourceAllocation<?> allocation : allocations) {
+            // TODO: we assume the allocation is specific to simplify the
+            // implementation
+            SpecificResourceAllocation specificAllocation =
+                    (SpecificResourceAllocation) allocation;
+
+            Resource resource = specificAllocation.getResource();
+            ResourceCalendar resourceCalendar = resource.getCalendar();
+            Task task = allocation.getTask();
+
+            LocalDate startDate = allocation.getStartDate();
+            LocalDate endDate = allocation.getEndDate();
+            int numberOfElements = Days.daysBetween(startDate, endDate)
+                    .getDays() + 1;
+
+            int[] availableEffort = new int[numberOfElements];
+            int[] assignedEffort = new int[numberOfElements];
+            for (int i = 0; i < numberOfElements; i++) {
+                PartialDay day = PartialDay.wholeDay(startDate.plusDays(i));
+                availableEffort[i] = resourceCalendar.getCapacityOn(day)
+                        .getSeconds();
+                assignedEffort[i] = allocation.getAssignedDurationAt(resource,
+                        startDate.plusDays(i)).getSeconds();
+            }
+            efforts.add(EffortSummary.create(startDate, endDate,
+                    availableEffort, assignedEffort, resource, task));
+        }
+
+        return efforts;
     }
 
     public LocalDate getStartDate() {

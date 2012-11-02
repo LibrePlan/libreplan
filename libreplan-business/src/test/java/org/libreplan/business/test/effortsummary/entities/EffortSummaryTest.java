@@ -19,12 +19,17 @@
 
 package org.libreplan.business.test.effortsummary.entities;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.createNiceMock;
+import static org.easymock.classextension.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 import static org.libreplan.business.workingday.EffortDuration.hours;
 import static org.libreplan.business.workingday.IntraDayDate.PartialDay.wholeDay;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
@@ -38,8 +43,13 @@ import org.libreplan.business.calendars.entities.CalendarExceptionTypeColor;
 import org.libreplan.business.calendars.entities.Capacity;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.effortsummary.entities.EffortSummary;
+import org.libreplan.business.planner.entities.ResourceAllocation;
+import org.libreplan.business.planner.entities.SpecificResourceAllocation;
+import org.libreplan.business.planner.entities.Task;
+import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,6 +135,33 @@ public class EffortSummaryTest {
         worker.setSurname("Surname");
         worker.setNif("NIF" + UUID.randomUUID().toString());
         return worker;
+    }
+
+    private Task generateTaskMock(IntraDayDate start, IntraDayDate end) {
+        Task task = createNiceMock(Task.class);
+        expect(task.getCalendar()).andReturn(createBasicCalendar()).anyTimes();
+        expect(task.getStartDate()).andReturn(
+                start.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        expect(task.getIntraDayStartDate()).andReturn(start).anyTimes();
+        expect(task.getEndDate()).andReturn(
+                end.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        expect(task.getIntraDayEndDate()).andReturn(end).anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(start).anyTimes();
+        replay(task);
+
+        return task;
+    }
+
+    private SpecificResourceAllocation generateSpecificResourceAllocation(
+            LocalDate start, LocalDate end) {
+        IntraDayDate intraDayDateStart = IntraDayDate.startOfDay(start);
+        IntraDayDate intraDayDateEnd = IntraDayDate.startOfDay(end);
+        Resource worker = generateValidWorker();
+        Task task = generateTaskMock(intraDayDateStart, intraDayDateEnd);
+        SpecificResourceAllocation specificResourceAllocation = SpecificResourceAllocation
+                .create(task);
+        specificResourceAllocation.setResource(worker);
+        return specificResourceAllocation;
     }
 
     @Test
@@ -232,6 +269,29 @@ public class EffortSummaryTest {
         assertEquals(
                 summary.getAssignedEffortForDate(CHRISTMAS_DAY_LOCAL_DATE),
                 worker.getCalendar().getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE)));
+    }
+
+    @Test
+    public void testCreateFromResourceAllocations() {
+        LocalDate startDate = new LocalDate(2012, 10, 1);
+        LocalDate endDate = new LocalDate(2012, 10, 7);
+
+        SpecificResourceAllocation allocation = generateSpecificResourceAllocation(
+                startDate, endDate);
+        allocation.getResource().setCalendar(
+                createBasicCalendar().newDerivedResourceCalendar());
+        Set<ResourceAllocation<?>> set = new HashSet<ResourceAllocation<?>>();
+        set.add(allocation);
+
+        Set<EffortSummary> efforts = EffortSummary
+                .createFromResourceAllocations(set);
+        assertEquals(1, efforts.size());
+        EffortSummary effort = efforts.iterator().next();
+
+        assertEquals(allocation.getAssignedDurationAt(allocation.getResource(),
+                startDate), effort.getAssignedEffortForDate(startDate));
+        assertEquals(allocation.getAssignedDurationAt(allocation.getResource(),
+                endDate), effort.getAssignedEffortForDate(endDate));
     }
 
 }
