@@ -98,6 +98,12 @@
 
             <property name="priority" />
 
+            <!-- Not indexed, extra-lazy -->
+            <set access="field" lazy="extra" cascade="all-delete-orphan" inverse="true" name="effortSummary">
+                <key column="task_element_id" not-null="false"/>
+                <one-to-many class="org.libreplan.business.effortsummary.entities.EffortSummary"/>
+            </set>
+
         </joined-subclass>
 
         <joined-subclass name="TaskGroup" table="task_group">

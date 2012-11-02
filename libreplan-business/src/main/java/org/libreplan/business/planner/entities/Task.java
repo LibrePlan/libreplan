@@ -44,6 +44,7 @@ import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.AvailabilityTimeLine;
 import org.libreplan.business.calendars.entities.ICalendar;
 import org.libreplan.business.calendars.entities.SameWorkHoursEveryDay;
+import org.libreplan.business.effortsummary.entities.EffortSummary;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -134,6 +135,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private TaskStatusEnum currentStatus = null;
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
+
+    private Set<EffortSummary> effortSummary;
 
     @Valid
     private Set<ResourceAllocation<?>> getResourceAlloations() {
@@ -1248,6 +1251,27 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     @Override
     public boolean isAnyTaskWithConstraint(PositionConstraintType type) {
         return getPositionConstraint().getConstraintType().equals(type);
+    }
+
+    /**
+     * This getter is only for Hibernate use, not supposed to be used in the
+     * program.
+     *
+     * @return effortSummary property
+     */
+    private Set<EffortSummary> getEffortSummary() {
+        return effortSummary;
+    }
+
+    /**
+     * This setter is only for Hibernate use, not supposed to be used in the
+     * program.
+     *
+     * @param effortSummary
+     *            property
+     */
+    private void setEffortSummary(Set<EffortSummary> effortSummary) {
+        this.effortSummary = effortSummary;
     }
 
 }

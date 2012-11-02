@@ -23,6 +23,7 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
@@ -43,15 +44,28 @@ public class EffortSummary extends BaseEntity {
 
     private Resource resource;
 
+    /**
+     * This property might be null. In that case, it means that this
+     * EffortSummary object contains the global assigned hours of this resource.
+     */
+    private Task task;
+
+    public static EffortSummary create(LocalDate startDate, LocalDate endDate,
+            int[] availableEffort, int[] assignedEffort, Resource resource) {
+        return create(startDate, endDate, availableEffort, assignedEffort,
+                resource, null);
+    }
+
     public static EffortSummary create(LocalDate startDate, LocalDate endDate,
             int[] availableEffort, int[] assignedEffort,
-            Resource resource) {
+            Resource resource, Task task) {
         EffortSummary newObject = new EffortSummary();
         newObject.setStartDate(startDate);
         newObject.setEndDate(endDate);
         newObject.setAvailableEffort(availableEffort);
         newObject.setAssignedEffort(assignedEffort);
         newObject.setResource(resource);
+        newObject.setTask(task);
         return create(newObject);
     }
 
@@ -105,6 +119,14 @@ public class EffortSummary extends BaseEntity {
 
     public void setResource(Resource resource) {
         this.resource = resource;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     public int[] getAvailableEffort() {

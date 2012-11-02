@@ -111,4 +111,17 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-column-task_element_id-in-table-effort_summary" author="jaragunde">
+        <comment>
+            Add column task_element_id in effort_summary table to store a relation with
+            TaskElement objects.
+        </comment>
+        <addColumn tableName="effort_summary">
+            <column name="task_element_id" type="BIGINT" />
+        </addColumn>
+        <addForeignKeyConstraint constraintName="effort_summary_task_fkey"
+            baseTableName="effort_summary" baseColumnNames="task_element_id"
+            referencedTableName="task" referencedColumnNames="task_element_id" />
+    </changeSet>
+
 </databaseChangeLog>
