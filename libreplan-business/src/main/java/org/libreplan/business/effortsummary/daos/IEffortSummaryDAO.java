@@ -30,19 +30,21 @@ import org.libreplan.business.resources.entities.Resource;
 public interface IEffortSummaryDAO extends IGenericDAO<EffortSummary, Long> {
 
     List<EffortSummary> list();
-    
+
     void save(Set<EffortSummary> efforts);
 
     EffortSummary listForResourceBetweenDates(Resource resource,
             LocalDate startDate, LocalDate endDate);
 
     /**
-     * Find the EffortSummary row corresponding to a specific resource.
+     * Find the EffortSummary row containing the global information about a
+     * specific resource. Take into account that there is also one row per
+     * allocation of that resource to a task.
      *
      * @param resource
      *            The resource to search by.
      * @return The EffortSummary object corresponding to the resource or null if
      *         it doesn't exist yet.
      */
-    EffortSummary findForResource(Resource resource);
+    EffortSummary findGlobalInformationForResource(Resource resource);
 }

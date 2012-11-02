@@ -124,7 +124,7 @@ public class EffortSummaryDAOTest {
         Worker worker = generateValidWorker();
         LocalDate date = new LocalDate();
         createConsecutiveEffortSummaryItems(numberOfItems, worker, date);
-        EffortSummary effort = effortSummaryDAO.findForResource(worker);
+        EffortSummary effort = effortSummaryDAO.findGlobalInformationForResource(worker);
         assertEquals(effort.getResource().getId(), worker.getId());
     }
 
@@ -132,7 +132,7 @@ public class EffortSummaryDAOTest {
     public void testFindByResourceNotFound() {
         Worker worker = generateValidWorker();
         resourceDAO.save(worker);
-        EffortSummary effort = effortSummaryDAO.findForResource(worker);
+        EffortSummary effort = effortSummaryDAO.findGlobalInformationForResource(worker);
         assertNull(effort);
     }
 }

@@ -282,7 +282,7 @@ public class MachineModel extends IntegrationEntityModel implements
         if (resource.isNewObject()) {
             summary = EffortSummary.createFromNewResource(resource);
         } else {
-            summary = effortSummaryDAO.findForResource(resource);
+            summary = effortSummaryDAO.findGlobalInformationForResource(resource);
             summary.updateAvailabilityFromResource();
         }
         effortSummaryDAO.save(summary);
