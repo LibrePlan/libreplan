@@ -40,6 +40,7 @@ import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -166,6 +167,26 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
             max = (Date) result[1];
         }
         return Pair.create(min, max);
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public List<WorkReportLine> findByOrderElementNotInWorkReportAnotherTransaction(
+            OrderElement orderElement, WorkReport workReport) {
+        return findByOrderElementNotInWorkReport(orderElement, workReport);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<WorkReportLine> findByOrderElementNotInWorkReport(
+            OrderElement orderElement, WorkReport workReport) {
+        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+
+        criteria.add(Restrictions.eq("orderElement", orderElement));
+        if (!workReport.isNewObject()) {
+            criteria.add(Restrictions.ne("workReport", workReport));
+        }
+
+        return (List<WorkReportLine>) criteria.list();
     }
 
 }

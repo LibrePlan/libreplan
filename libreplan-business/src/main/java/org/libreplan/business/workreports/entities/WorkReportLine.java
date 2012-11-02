@@ -23,6 +23,7 @@ package org.libreplan.business.workreports.entities;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -561,6 +562,24 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
 
     public void setFinished(Boolean finished) {
         this.finished = finished;
+    }
+
+    @AssertTrue(message = "there is a timesheet line in another work report marking as finished the same task")
+    public boolean checkConstraintOrderElementFinishedInAnotherWorkReport() {
+        if (!finished) {
+            return true;
+        }
+
+        List<WorkReportLine> lines = Registry.getWorkReportLineDAO()
+                .findByOrderElementNotInWorkReportAnotherTransaction(
+                        orderElement, workReport);
+        for (WorkReportLine line : lines) {
+            if (line.isFinished()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

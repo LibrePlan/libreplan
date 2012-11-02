@@ -277,7 +277,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         for (InvalidValue invalidValue : e.getInvalidValues()) {
             Object value = invalidValue.getBean();
             if (value instanceof WorkReport) {
-                validateWorkReport();
+                if (validateWorkReport()) {
+                    messagesForUser.showInvalidValues(e);
+                }
             }
             if (value instanceof WorkReportLine) {
                 WorkReportLine workReportLine = (WorkReportLine) invalidValue.getBean();
@@ -332,6 +334,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     _("cannot be empty"));
             return false;
         }
+
         return true;
     }
 
@@ -456,6 +459,16 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             }
             return false;
         }
+
+        if (!workReportLine.checkConstraintOrderElementFinishedInAnotherWorkReport()) {
+            Checkbox checkboxFinished = getFinished(row);
+            if (checkboxFinished != null) {
+                String message = _("task is already marked as finished in another timesheet");
+                showInvalidMessage(checkboxFinished, message);
+            }
+            return false;
+        }
+
         return true;
     }
 
@@ -470,7 +483,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private Timebox getTimeboxFinish(Row row) {
         try {
-            int position = row.getChildren().size() - 5;
+            int position = row.getChildren().size() - 6;
             return (Timebox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
@@ -484,7 +497,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private Timebox getTimeboxStart(Row row) {
         try {
-            int position = row.getChildren().size() - 6;
+            int position = row.getChildren().size() - 7;
             return (Timebox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
@@ -498,8 +511,23 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private Listbox getTypeOfHours(Row row) {
         try {
-            int position = row.getChildren().size() - 3;
+            int position = row.getChildren().size() - 4;
             return (Listbox) row.getChildren().get(position);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    /**
+     * Locates {@link Checkbox} finished in {@link Row}
+     * @param row
+     * @return
+     */
+    private Checkbox getFinished(Row row) {
+        try {
+            int position = row.getChildren().size() - 3;
+            return (Checkbox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
         }
@@ -527,7 +555,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private Textbox getEffort(Row row) {
         try {
-            int position = row.getChildren().size() - 4;
+            int position = row.getChildren().size() - 5;
             return (Textbox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
