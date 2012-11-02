@@ -26,6 +26,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -48,6 +49,8 @@ import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.effortsummary.daos.IEffortSummaryDAO;
+import org.libreplan.business.effortsummary.entities.EffortSummary;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -206,6 +209,9 @@ public class SaveCommandBuilder {
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
+    private IEffortSummaryDAO effortSummaryDAO;
 
     @Autowired
     private IDependencyDAO dependencyDAO;
@@ -393,6 +399,7 @@ public class SaveCommandBuilder {
 
             updateTasksRelatedData();
             removeTasksToRemove();
+            updateAvailabilityCache();
             loadDataAccessedWithNotPosedAsTransientInOrder(state.getOrder());
             loadDataAccessedWithNotPosedAsTransient(state.getOrder());
             if (state.getRootTask() != null) {
@@ -405,6 +412,23 @@ public class SaveCommandBuilder {
             removeTaskElementsWithTaskSourceNull();
 
             state.updateSavedOrderState();
+        }
+
+        private void updateAvailabilityCache() {
+            // TODO: take into account updates, not only creations
+            Set<EffortSummary> efforts = new HashSet<EffortSummary>();
+            TaskGroup rootTask = state.getRootTask();
+            if (rootTask == null) {
+                return;
+            }
+            for(TaskElement taskElement : rootTask.getAllChildren()) {
+                if(taskElement.isLeaf() && !taskElement.isMilestone()) {
+                    efforts.addAll(EffortSummary
+                            .createFromResourceAllocations(taskElement
+                                    .getSatisfiedResourceAllocations()));
+                }
+            }
+            effortSummaryDAO.save(efforts);
         }
 
         private void removeTaskElementsWithTaskSourceNull() {

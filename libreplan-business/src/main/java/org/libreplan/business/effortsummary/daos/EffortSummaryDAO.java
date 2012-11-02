@@ -20,6 +20,7 @@
 package org.libreplan.business.effortsummary.daos;
 
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.Days;
@@ -40,6 +41,13 @@ public class EffortSummaryDAO extends GenericDAOHibernate<EffortSummary, Long>
     public List<EffortSummary> list() {
 
         return list(EffortSummary.class);
+    }
+
+    @Override
+    public void save(Set<EffortSummary> efforts) {
+        for (EffortSummary effort : efforts) {
+            save(effort);
+        }
     }
 
     @Override

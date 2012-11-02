@@ -20,6 +20,7 @@
 package org.libreplan.business.effortsummary.daos;
 
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.IGenericDAO;
@@ -29,6 +30,8 @@ import org.libreplan.business.resources.entities.Resource;
 public interface IEffortSummaryDAO extends IGenericDAO<EffortSummary, Long> {
 
     List<EffortSummary> list();
+    
+    void save(Set<EffortSummary> efforts);
 
     EffortSummary listForResourceBetweenDates(Resource resource,
             LocalDate startDate, LocalDate endDate);
