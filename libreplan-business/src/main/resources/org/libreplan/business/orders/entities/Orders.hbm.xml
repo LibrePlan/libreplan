@@ -276,6 +276,8 @@
             column="first_timesheet_date" />
         <property name="lastTimesheetDate" access="field"
             column="last_timesheet_date" />
+        <property name="finishedTimesheets"
+            column="finished_timesheets" />
 
     </class>
 

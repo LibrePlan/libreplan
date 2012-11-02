@@ -119,4 +119,23 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+
+    <changeSet id="add-new-column-finished_timesheets-to-sum_charged_effort"
+        author="mrego">
+        <comment>
+            Add new column finished_timesheets with default value FALSE to
+            sum_charged_effort table.
+        </comment>
+        <addColumn tableName="sum_charged_effort">
+            <column name="finished_timesheets" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="sum_charged_effort"
+            columnName="finished_timesheets"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="sum_charged_effort"
+            columnName="finished_timesheets"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>

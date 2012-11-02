@@ -23,8 +23,10 @@ package org.libreplan.business.orders.entities;
 
 import java.util.Date;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 
 /**
  * It represents the efforts charged to an {@link OrderElement}, avoiding the
@@ -44,6 +46,13 @@ public class SumChargedEffort extends BaseEntity {
     private Date firstTimesheetDate;
 
     private Date lastTimesheetDate;
+
+    /**
+     * Finished according to timesheets. If <code>true</code> it means that
+     * there's a {@link WorkReportLine} marking as finished this
+     * {@link OrderElement}.
+     */
+    private Boolean finishedTimesheets = false;
 
     protected SumChargedEffort() {}
 
@@ -123,6 +132,14 @@ public class SumChargedEffort extends BaseEntity {
             Date lastTimesheetDate) {
         setFirstTimesheetDate(firstTimesheetDate);
         setLastTimesheetDate(lastTimesheetDate);
+    }
+
+    public Boolean isFinishedTimesheets() {
+        return finishedTimesheets;
+    }
+
+    public void setFinishedTimesheets(Boolean finishedTimesheets) {
+        this.finishedTimesheets = BooleanUtils.isTrue(finishedTimesheets);
     }
 
 }
