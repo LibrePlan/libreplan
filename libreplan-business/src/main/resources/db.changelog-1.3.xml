@@ -103,4 +103,20 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="add-new-column-finished-to-work_report_line" author="mrego">
+        <comment>
+            Add new column finished with default value FALSE to
+            work_report_line table.
+        </comment>
+        <addColumn tableName="work_report_line">
+            <column name="finished" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="work_report_line" columnName="finished"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="work_report_line"
+            columnName="finished"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>
