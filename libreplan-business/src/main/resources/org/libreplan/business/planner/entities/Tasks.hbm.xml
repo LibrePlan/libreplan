@@ -52,6 +52,9 @@
         <many-to-one name="calendar" column="base_calendar_id" cascade="none"
             class="org.libreplan.business.calendars.entities.BaseCalendar"/>
 
+        <property name="updatedFromTimesheets"
+            column="updated_from_timesheets" />
+
         <joined-subclass name="Task" table="task">
             <key column="task_element_id"></key>
             <property name="calculatedValue" column="calculated_value">

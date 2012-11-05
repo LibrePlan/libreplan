@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -181,6 +182,8 @@ public abstract class TaskElement extends BaseEntity {
     private BigDecimal advancePercentage = BigDecimal.ZERO;
 
     private Boolean simplifiedAssignedStatusCalculationEnabled = false;
+
+    private Boolean updatedFromTimesheets = false;
 
     public void initializeDatesIfNeeded() {
         if (getIntraDayEndDate() == null || getIntraDayStartDate() == null) {
@@ -831,6 +834,14 @@ public abstract class TaskElement extends BaseEntity {
             }
         }
         return result;
+    }
+
+    public Boolean isUpdatedFromTimesheets() {
+        return updatedFromTimesheets;
+    }
+
+    public void setUpdatedFromTimesheets(Boolean updatedFromTimesheets) {
+        this.updatedFromTimesheets = BooleanUtils.isTrue(updatedFromTimesheets);
     }
 
 }
