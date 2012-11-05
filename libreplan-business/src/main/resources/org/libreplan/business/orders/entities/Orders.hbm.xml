@@ -55,7 +55,8 @@
             access="field"
             cascade="all"
             class="org.libreplan.business.orders.entities.OrderLineGroup"
-            index="idx_order_element_on_parent"/>
+            index="idx_order_element_on_parent"
+            lazy="false" />
 
         <many-to-one name="template"
             access="field"

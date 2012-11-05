@@ -217,7 +217,10 @@ public class PlanningStateCreator {
 
     public PlanningState retrieveOrCreate(Desktop desktop, Order order,
             IActionsOnRetrieval onRetrieval) {
-        Object existent = desktop.getAttribute(ATTRIBUTE_NAME);
+        Object existent = null;
+        if (desktop != null) {
+            existent = desktop.getAttribute(ATTRIBUTE_NAME);
+        }
         if (existent instanceof PlanningState) {
             PlanningState result = (PlanningState) existent;
             if (ObjectUtils.equals(order.getId(), result.getOrder().getId())) {
@@ -230,7 +233,9 @@ public class PlanningStateCreator {
         }
         PlanningState result = createPlanning(reload(order));
         result.onRetrieval();
-        desktop.setAttribute(ATTRIBUTE_NAME, result);
+        if (desktop != null) {
+            desktop.setAttribute(ATTRIBUTE_NAME, result);
+        }
         return result;
     }
 

@@ -1584,4 +1584,8 @@ public abstract class OrderElement extends IntegrationEntity implements
         return false;
     }
 
+    public void detachFromParent() {
+        parent = null;
+    }
+
 }
