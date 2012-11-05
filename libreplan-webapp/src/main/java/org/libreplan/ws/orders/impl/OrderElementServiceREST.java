@@ -22,17 +22,24 @@
 package org.libreplan.ws.orders.impl;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.libreplan.ws.common.api.OrderDTO;
 import org.libreplan.ws.common.impl.ConfigurationOrderElementConverter;
@@ -59,6 +66,12 @@ public class OrderElementServiceREST extends
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     @Override
     @GET
@@ -106,6 +119,46 @@ public class OrderElementServiceREST extends
     @Transactional(readOnly = true)
     public Response getOrderElement(@PathParam("code") String code) {
         return getDTOByCode(code);
+    }
+
+    @Override
+    @DELETE
+    @Path("/{code}/")
+    @Transactional
+    public Response removeOrderElement(@PathParam("code") String code) {
+        try {
+            OrderElement orderElement = orderElementDAO.findByCode(code);
+            if (orderElement.isOrder()) {
+                orderDAO.remove(orderElement.getId());
+            } else {
+                Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
+                order.useSchedulingDataFor(scenarioManager.getCurrent());
+
+                orderElement = findOrderElement(order, orderElement.getId());
+
+                OrderLineGroup parent = orderElement.getParent();
+                parent.remove(orderElement);
+
+                orderDAO.save(order);
+            }
+
+            return Response.ok().build();
+        } catch (InstanceNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
+
+    private OrderElement findOrderElement(OrderElement orderElement, Long id) {
+        if (orderElement.getId().equals(id)) {
+            return orderElement;
+        }
+        for (OrderElement child : orderElement.getChildren()) {
+            OrderElement found = findOrderElement(child, id);
+            if (found != null) {
+                return found;
+            }
+        }
+        return null;
     }
 
 }
