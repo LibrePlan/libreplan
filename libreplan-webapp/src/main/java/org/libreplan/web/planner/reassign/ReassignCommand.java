@@ -375,4 +375,9 @@ public class ReassignCommand implements IReassignCommand {
         return false;
     }
 
+    @Override
+    public boolean isPlannerCommand() {
+        return true;
+    }
+
 }

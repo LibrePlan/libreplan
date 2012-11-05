@@ -1038,6 +1038,11 @@ public class SaveCommandBuilder {
             return disabled;
         }
 
+        @Override
+        public boolean isPlannerCommand() {
+            return false;
+        }
+
     }
 
     private static final class LabelCreatorForInvalidValues implements

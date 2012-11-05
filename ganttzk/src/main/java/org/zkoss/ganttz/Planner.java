@@ -509,9 +509,11 @@ public class Planner extends HtmlMacroComponent  {
         }
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
             // Comparison through icon as name is internationalized
-            if (c.getCommand().getImage()
-                    .equals("/common/img/ico_reassign.png")) {
-                if (plannerToolbar.getChildren().isEmpty()) {
+            if (c.getCommand().isPlannerCommand()) {
+                // FIXME Avoid hard-coding the number of planner commands
+                // At this moment we have 2 planner commands: reassign and adapt
+                // planning
+                if (plannerToolbar.getChildren().size() < 2) {
                     plannerToolbar.appendChild(c.toButton());
                 }
             } else {
