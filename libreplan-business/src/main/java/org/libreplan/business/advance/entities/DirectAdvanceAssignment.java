@@ -263,4 +263,9 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return !nonCalculatedConsolidations.isEmpty();
     }
 
+    public void resetAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
+        advanceMeasurements.clear();
+        addAdvanceMeasurements(advanceMeasurement);
+    }
+
 }

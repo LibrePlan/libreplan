@@ -944,4 +944,18 @@ public class Planner extends HtmlMacroComponent  {
         }
     }
 
+    public TaskComponent getTaskComponentRelatedTo(
+            org.zkoss.ganttz.data.Task task) {
+        TaskList taskList = getTaskList();
+        if (taskList != null) {
+            for (TaskComponent each : taskList.getTaskComponents()) {
+                if (each.getTask().equals(task)) {
+                    return each;
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

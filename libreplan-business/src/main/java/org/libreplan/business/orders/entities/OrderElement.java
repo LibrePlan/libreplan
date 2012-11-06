@@ -1584,4 +1584,18 @@ public abstract class OrderElement extends IntegrationEntity implements
         return false;
     }
 
+    public boolean hasTimesheetsReportingHours() {
+        if (sumChargedEffort == null) {
+            return false;
+        }
+        return sumChargedEffort.getFirstTimesheetDate() != null;
+    }
+
+    public boolean isFinishedTimesheets() {
+        if (sumChargedEffort == null) {
+            return false;
+        }
+        return sumChargedEffort.isFinishedTimesheets();
+    }
+
 }
