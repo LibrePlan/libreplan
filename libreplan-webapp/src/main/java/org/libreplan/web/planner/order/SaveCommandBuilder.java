@@ -428,7 +428,7 @@ public class SaveCommandBuilder {
                                     .getSatisfiedResourceAllocations()));
                 }
             }
-            effortSummaryDAO.save(efforts);
+            effortSummaryDAO.saveOrUpdate(efforts);
         }
 
         private void removeTaskElementsWithTaskSourceNull() {

@@ -51,6 +51,21 @@ public class EffortSummaryDAO extends GenericDAOHibernate<EffortSummary, Long>
     }
 
     @Override
+    public void saveOrUpdate(Set<EffortSummary> efforts) {
+        for (EffortSummary effort : efforts) {
+            if (!effort.isGlobal()) {
+                EffortSummary globalEffort =
+                        findGlobalInformationForResource(effort.getResource());
+                globalEffort.addAssignedEffort(effort);
+                save(globalEffort);
+            }
+            // TODO: check if EffortSummary for the same task exists, and
+            // overwrite
+            save(effort);
+        }
+    }
+
+    @Override
     public EffortSummary listForResourceBetweenDates(Resource resource,
             LocalDate startDate, LocalDate endDate) {
         EffortSummary effort = (EffortSummary) getSession()

@@ -433,4 +433,14 @@ public class EffortSummary extends BaseEntity {
 
     }
 
+    /**
+     * Checks if this EffortSummary object contains the global assigned hours
+     * for a resource, or if it only contains the hours for one task.
+     *
+     * @return True if it's global, false otherwise.
+     */
+    public boolean isGlobal() {
+        return (task == null);
+    }
+
 }

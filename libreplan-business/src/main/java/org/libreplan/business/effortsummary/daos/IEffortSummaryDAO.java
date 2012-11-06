@@ -47,4 +47,14 @@ public interface IEffortSummaryDAO extends IGenericDAO<EffortSummary, Long> {
      *         it doesn't exist yet.
      */
     EffortSummary findGlobalInformationForResource(Resource resource);
+
+    /**
+     * Saves a list of EffortSummary objects taking into account the ones that
+     * are already saved. That implies:
+     * - If an EffortSummary for the same Task exists, overwrite it.
+     * - Update the EffortSummary containing the global information.
+     *
+     * @param efforts Set of EffortSummary objects to be saved or updated.
+     */
+    void saveOrUpdate(Set<EffortSummary> efforts);
 }
