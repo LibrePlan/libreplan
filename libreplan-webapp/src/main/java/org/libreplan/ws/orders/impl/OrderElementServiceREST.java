@@ -42,6 +42,7 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.web.orders.IOrderModel;
+import org.libreplan.ws.common.api.ErrorDTO;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.libreplan.ws.common.api.OrderDTO;
 import org.libreplan.ws.common.impl.ConfigurationOrderElementConverter;
@@ -130,6 +131,12 @@ public class OrderElementServiceREST extends
     public Response removeOrderElement(@PathParam("code") String code) {
         try {
             OrderElement orderElement = orderElementDAO.findByCode(code);
+            String errorMessage = checkRemovalValidation(orderElement);
+            if (errorMessage != null) {
+                return Response.status(Status.FORBIDDEN)
+                        .entity(new ErrorDTO(errorMessage)).build();
+            }
+
             if (orderElement.isOrder()) {
                 orderModel.remove((Order) orderElement);
             } else {
@@ -159,6 +166,25 @@ public class OrderElementServiceREST extends
         } catch (InstanceNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         }
+    }
+
+    private String checkRemovalValidation(OrderElement orderElement) {
+        if (orderElementDAO.isAlreadyInUseThisOrAnyOfItsChildren(orderElement)) {
+            return "You cannot remove the order element '"
+                    + orderElement.getName()
+                    + "' because it or any of its children have tracked time in some work report";
+        }
+        try {
+            if (orderElementDAO.hasImputedExpenseSheet(orderElement.getId())) {
+                return "You cannot remove the order element '"
+                        + orderElement.getName()
+                        + "' because it or any of its children have tracked expenses in some expense sheet";
+            }
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
     }
 
     private OrderElement findOrderElement(OrderElement orderElement, Long id) {
