@@ -169,22 +169,37 @@ public class OrderElementServiceREST extends
     }
 
     private String checkRemovalValidation(OrderElement orderElement) {
-        if (orderElementDAO.isAlreadyInUseThisOrAnyOfItsChildren(orderElement)) {
-            return "You cannot remove the order element '"
-                    + orderElement.getName()
-                    + "' because it or any of its children have tracked time in some work report";
-        }
         try {
-            if (orderElementDAO.hasImputedExpenseSheet(orderElement.getId())) {
+            if (orderElementDAO
+                    .isAlreadyInUseThisOrAnyOfItsChildren(orderElement)) {
                 return "You cannot remove the order element '"
                         + orderElement.getName()
-                        + "' because it or any of its children have tracked expenses in some expense sheet";
+                        + "' because it or any of its children have tracked time in some work report";
             }
+            if (orderElementDAO.hasImputedExpenseSheetThisOrAnyOfItsChildren(orderElement.getId())) {
+                return "You cannot remove the order element '"
+                        + orderElement.getName()
+                        + "' because it or any of its children have tracked expenses in some expenses sheet";
+            }
+
+            OrderLineGroup parent = orderElement.getParent();
+            if (!parent.isOrder() && parent.getChildren().size() == 1) {
+                if (orderElementDAO.isAlreadyInUse(parent)) {
+                    return "You cannot remove the order element '"
+                            + orderElement.getName()
+                            + "' because it is the only child of its parent and its parent has tracked time in some work report";
+                }
+                if (orderElementDAO.hasImputedExpenseSheet(parent.getId())) {
+                    return "You cannot remove the order element '"
+                            + orderElement.getName()
+                            + "' because it is the only child of its parent and its parent has tracked expenses in some expenses sheet";
+                }
+            }
+
+            return null;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-        return null;
     }
 
     private OrderElement findOrderElement(OrderElement orderElement, Long id) {

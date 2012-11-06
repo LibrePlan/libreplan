@@ -133,7 +133,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     PlanningState getPlanningState();
 
-    boolean hasImputedExpenseSheets(OrderElement order);
+    boolean hasImputedExpenseSheetsThisOrAnyOfItsChildren(OrderElement order);
 
     void removeAskedEndDate(EndDateCommunication endDate);
 
@@ -144,5 +144,8 @@ public interface IOrderModel extends IIntegrationEntityModel {
     boolean alreadyExistsRepeatedEndDate(Date value);
 
     boolean isAnyTaskWithConstraint(PositionConstraintType type);
+
+    boolean isOnlyChildAndParentAlreadyInUseByHoursOrExpenses(
+            OrderElement orderElement);
 
 }

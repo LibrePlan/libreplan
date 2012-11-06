@@ -843,7 +843,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void remove(Order order) {
-        boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheets(order);
+        boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheetsThisOrAnyOfItsChildren(order);
         if (hasImputedExpenseSheets) {
             messagesForUser
                     .showMessage(
