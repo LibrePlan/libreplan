@@ -294,4 +294,36 @@ public class EffortSummaryTest {
                 endDate), effort.getAssignedEffortForDate(endDate));
     }
 
+    @Test
+    public void testAddition() {
+        Worker worker = generateValidWorker();
+
+        int[] availableEffort = {8,8,8,8,8};
+        int[] assignedEffort1 = {0,0,8,8,8};
+        int[] assignedEffort2 = {8,8};
+
+        EffortSummary effort1 = EffortSummary.create(MONDAY_LOCAL_DATE,
+                FRIDAY_LOCAL_DATE, availableEffort, assignedEffort1, worker);
+        EffortSummary effort2 = EffortSummary.create(TUESDAY_LOCAL_DATE,
+                WEDNESDAY_LOCAL_DATE, availableEffort, assignedEffort2, worker);
+
+        assertEquals(EffortDuration.zero(),
+                effort1.getAssignedEffortForDate(TUESDAY_LOCAL_DATE));
+        assertEquals(EffortDuration.seconds(8),
+                effort1.getAssignedEffortForDate(WEDNESDAY_LOCAL_DATE));
+        assertEquals(EffortDuration.seconds(8),
+                effort1.getAvailableEffortForDate(WEDNESDAY_LOCAL_DATE));
+
+        effort1.addAssignedEffort(effort2);
+
+        assertEquals(EffortDuration.zero(),
+                effort1.getAssignedEffortForDate(MONDAY_LOCAL_DATE));
+        assertEquals(EffortDuration.seconds(8),
+                effort1.getAssignedEffortForDate(TUESDAY_LOCAL_DATE));
+        assertEquals(EffortDuration.seconds(16),
+                effort1.getAssignedEffortForDate(WEDNESDAY_LOCAL_DATE));
+        assertEquals(EffortDuration.seconds(8),
+                effort1.getAvailableEffortForDate(WEDNESDAY_LOCAL_DATE));
+    }
+
 }

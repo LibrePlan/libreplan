@@ -319,4 +319,92 @@ public class EffortSummary extends BaseEntity {
         return result;
     }
 
+    public void addAssignedEffort(EffortSummary operand) {
+        int[] assignedEffort = getAssignedEffort();
+        int[] availableEffort = getAvailableEffort();
+
+        // calculate correct start date
+        LocalDate startDate = operand.getStartDate();
+        if (getStartDate().isAfter(startDate)) {
+            int numberOfElements = Days.daysBetween(startDate, getStartDate())
+                    .getDays();
+
+            // the start date has to be moved into the past:
+
+            // fill the gap in assignedEffort array with 0s
+            int[] blankFiller = new int[numberOfElements];
+            for (int i = 0; i < numberOfElements; i++) {
+                blankFiller[i] = 0;
+            }
+            int[] newAssignedEffort = new int[numberOfElements
+                    + assignedEffort.length];
+            System.arraycopy(blankFiller, 0, newAssignedEffort, 0,
+                    numberOfElements);
+            System.arraycopy(assignedEffort, 0, newAssignedEffort,
+                    numberOfElements, assignedEffort.length);
+
+            // fill the gap in availableEffort array with the data from the
+            // operand
+            int[] newAvailableEffort = new int[numberOfElements
+                    + availableEffort.length];
+            System.arraycopy(operand.getAvailableEffort(), 0,
+                    newAvailableEffort, 0, numberOfElements);
+            System.arraycopy(availableEffort, 0, newAvailableEffort,
+                    numberOfElements, availableEffort.length);
+
+            setAssignedEffort(newAssignedEffort);
+            setAvailableEffort(newAvailableEffort);
+        } else {
+            startDate = getStartDate();
+        }
+
+        // calculate correct end date
+        LocalDate endDate = operand.getEndDate();
+        if (getEndDate().isBefore(endDate)) {
+            int numberOfElements = Days.daysBetween(endDate, getEndDate())
+                    .getDays();
+
+            // the start date has to be moved into the past:
+
+            // fill the gap in assignedEffort array with 0s
+            int[] blankFiller = new int[numberOfElements];
+            for (int i = 0; i < numberOfElements; i++) {
+                blankFiller[i] = 0;
+            }
+            int[] newAssignedEffort = new int[numberOfElements
+                    + assignedEffort.length];
+            System.arraycopy(assignedEffort, 0, newAssignedEffort, 0,
+                    assignedEffort.length);
+            System.arraycopy(blankFiller, 0, newAssignedEffort,
+                    assignedEffort.length, numberOfElements);
+
+            // fill the gap in availableEffort array with the data from the
+            // operand
+            int[] newAvailableEffort = new int[numberOfElements
+                    + availableEffort.length];
+            System.arraycopy(availableEffort, 0, newAvailableEffort, 0,
+                    availableEffort.length);
+            System.arraycopy(operand.getAvailableEffort(), 0,
+                    newAvailableEffort, availableEffort.length,
+                    numberOfElements);
+        } else {
+            endDate = getEndDate();
+        }
+        int numberOfElements = Days.daysBetween(startDate, endDate).getDays() + 1;
+
+        // add assignments data
+        for (int i = 0; i < numberOfElements; i++) {
+            LocalDate day = startDate.plusDays(i);
+            assignedEffort[i] += operand.getAssignedEffortForDate(day)
+                    .getSeconds();
+        }
+
+        // update fields
+        setStartDate(startDate);
+        setEndDate(endDate);
+        setAssignedEffort(assignedEffort);
+        setAvailableEffort(availableEffort);
+
+    }
+
 }
