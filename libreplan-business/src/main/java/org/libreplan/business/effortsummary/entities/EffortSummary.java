@@ -195,7 +195,7 @@ public class EffortSummary extends BaseEntity {
 
     public EffortDuration getAvailableEffortForDate(LocalDate date) {
         int positionInArray = Days.daysBetween(startDate, date).getDays();
-        if (availableEffort.length < positionInArray) {
+        if (positionInArray < 0 || positionInArray >= assignedEffort.length) {
             return EffortDuration.zero();
         }
         return EffortDuration.seconds(availableEffort[positionInArray]);
@@ -203,7 +203,7 @@ public class EffortSummary extends BaseEntity {
 
     public EffortDuration getAssignedEffortForDate(LocalDate date) {
         int positionInArray = Days.daysBetween(startDate, date).getDays();
-        if (assignedEffort.length < positionInArray) {
+        if (positionInArray < 0 || positionInArray >= assignedEffort.length) {
             return EffortDuration.zero();
         }
         return EffortDuration.seconds(assignedEffort[positionInArray]);
