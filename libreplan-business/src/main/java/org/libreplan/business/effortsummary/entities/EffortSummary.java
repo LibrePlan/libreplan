@@ -320,6 +320,19 @@ public class EffortSummary extends BaseEntity {
     }
 
     public void addAssignedEffort(EffortSummary operand) {
+        operateWithAssignedEffort(operand, Operation.ADD);
+    }
+
+    public void substractAssignedEffort(EffortSummary operand) {
+        operateWithAssignedEffort(operand, Operation.SUBSTRACT);
+    }
+
+    private enum Operation {
+        ADD, SUBSTRACT
+    };
+
+    private void operateWithAssignedEffort(EffortSummary operand,
+            Operation operation) {
         int[] assignedEffort = getAssignedEffort();
         int[] availableEffort = getAvailableEffort();
 
@@ -392,11 +405,24 @@ public class EffortSummary extends BaseEntity {
         }
         int numberOfElements = Days.daysBetween(startDate, endDate).getDays() + 1;
 
-        // add assignments data
-        for (int i = 0; i < numberOfElements; i++) {
-            LocalDate day = startDate.plusDays(i);
-            assignedEffort[i] += operand.getAssignedEffortForDate(day)
-                    .getSeconds();
+        // operate with assignments data
+        switch (operation) {
+
+            case ADD:
+                for (int i = 0; i < numberOfElements; i++) {
+                    LocalDate day = startDate.plusDays(i);
+                    assignedEffort[i] += operand.getAssignedEffortForDate(day)
+                            .getSeconds();
+                }
+                break;
+
+            case SUBSTRACT:
+                for (int i = 0; i < numberOfElements; i++) {
+                    LocalDate day = startDate.plusDays(i);
+                    assignedEffort[i] -= operand.getAssignedEffortForDate(day)
+                            .getSeconds();
+                }
+                break;
         }
 
         // update fields
