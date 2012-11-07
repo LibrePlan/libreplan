@@ -576,9 +576,9 @@ public class OrderElementServiceTest {
 
     @Test
     public void removeOrderElement() {
-        String code = UUID.randomUUID().toString();
+        final String code = UUID.randomUUID().toString();
 
-        OrderDTO orderDTO = createOrderDTOWithChildren(code);
+        final OrderDTO orderDTO = createOrderDTOWithChildren(code);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
@@ -588,23 +588,31 @@ public class OrderElementServiceTest {
 
         checkIfExistsByCodeInAnotherTransaction(code);
 
-        String codeToRemove = orderDTO.children.get(0).code;
-        Response response = orderElementService
-                .removeOrderElement(codeToRemove);
-        assertThat(response.getStatus(), equalTo(Status.OK.getStatusCode()));
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
 
-        try {
-            orderElementDAO.findByCode(codeToRemove);
-        } catch (InstanceNotFoundException e) {
-            assertTrue(true);
-        }
+            @Override
+            public Void execute() {
+                String codeToRemove = orderDTO.children.get(0).code;
+                Response response = orderElementService
+                        .removeOrderElement(codeToRemove);
+                assertThat(response.getStatus(),
+                        equalTo(Status.OK.getStatusCode()));
 
-        try {
-            OrderElement order = orderElementDAO.findByCode(code);
-            assertTrue(order.getChildren().isEmpty());
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+                try {
+                    orderElementDAO.findByCode(codeToRemove);
+                } catch (InstanceNotFoundException e) {
+                    assertTrue(true);
+                }
+
+                try {
+                    OrderElement order = orderElementDAO.findByCode(code);
+                    assertTrue(order.getChildren().isEmpty());
+                } catch (InstanceNotFoundException e) {
+                    fail();
+                }
+                return null;
+            }
+        });
     }
 
     @Test
