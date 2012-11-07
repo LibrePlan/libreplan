@@ -48,8 +48,12 @@ public class ConcurrentModificationController extends GenericForwardComposer {
                 .info(
                         "an OptimistLockingFailureException caused a disruption to an user",
                         exception);
-        Executions.sendRedirect("/common/concurrent_modification.zul?back="
-                + backURL);
+        if (Executions.getCurrent() != null) {
+            Executions.sendRedirect("/common/concurrent_modification.zul?back="
+                    + backURL);
+        } else {
+            LOG.warn("Impossible to do redirect due to OptimisticLockingFailureException because of Executions.getCurrent() is null");
+        }
     }
 
     private static String getBackURL() {
