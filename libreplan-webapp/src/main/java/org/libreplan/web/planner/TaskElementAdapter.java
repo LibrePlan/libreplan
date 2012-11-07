@@ -1203,7 +1203,8 @@ _(
             @Override
             public boolean isFixed() {
                 return taskElement.isLimitingAndHasDayAssignments()
-                        || taskElement.hasConsolidations();
+                        || taskElement.hasConsolidations()
+                        || taskElement.isUpdatedFromTimesheets();
             }
 
             @Override
