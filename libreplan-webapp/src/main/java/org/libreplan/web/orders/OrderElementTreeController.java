@@ -41,6 +41,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.SchedulingState;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.users.entities.UserRole;
@@ -516,6 +517,15 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         @Override
         public void removeCodeTextbox(OrderElement key) {
             super.removeCodeTextbox(key);
+        }
+
+        @Override
+        protected boolean isUpdatedFromTimesheets(OrderElement currentElement) {
+            TaskElement taskElement = currentElement.getTaskElement();
+            if (taskElement != null) {
+                return taskElement.isUpdatedFromTimesheets();
+            }
+            return false;
         }
 
     }

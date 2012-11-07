@@ -762,7 +762,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             final SchedulingState schedulingState = getSchedulingStateFrom(currentElement);
             SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(
                     schedulingState);
-            schedulingStateToggler.setReadOnly(readOnly);
+            schedulingStateToggler.setReadOnly(readOnly
+                    || isUpdatedFromTimesheets(currentElement));
             final Treecell cell = addCell(
                     getDecorationFromState(getSchedulingStateFrom(currentElement)),
                     schedulingStateToggler);
@@ -1227,6 +1228,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void doTry() {
 
         }
+
+        protected abstract boolean isUpdatedFromTimesheets(T currentElement);
+
     }
 
     public void setColumns(List<Column> columns) {

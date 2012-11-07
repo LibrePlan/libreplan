@@ -1012,6 +1012,14 @@ public abstract class OrderElement extends IntegrationEntity implements
         return getCurrentSchedulingData().getTaskSource();
     }
 
+    public TaskElement getTaskElement() {
+        TaskSource taskSource = getTaskSource();
+        if (taskSource == null) {
+            return null;
+        }
+        return taskSource.getTask();
+    }
+
     public Set<TaskElement> getTaskElements() {
         if (getTaskSource() == null) {
             return Collections.emptySet();
