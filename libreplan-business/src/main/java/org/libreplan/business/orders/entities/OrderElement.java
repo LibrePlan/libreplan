@@ -42,6 +42,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
+import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.entities.IndirectAdvanceAssignment;
@@ -70,6 +71,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.business.util.deepcopy.DeepCopy;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
@@ -1586,6 +1588,21 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public void detachFromParent() {
         parent = null;
+    }
+
+    public AdvanceMeasurement getLastAdvanceMeasurement() {
+        DirectAdvanceAssignment advanceAssignment = getReportGlobalAdvanceAssignment();
+        if (advanceAssignment == null) {
+            return null;
+        }
+        return advanceAssignment.getLastAdvanceMeasurement();
+    }
+
+    public String getEffortAsString() {
+        SumChargedEffort sumChargedEffort = getSumChargedEffort();
+        EffortDuration effort = sumChargedEffort != null ? sumChargedEffort
+                .getTotalChargedEffort() : EffortDuration.zero();
+        return effort.toFormattedString();
     }
 
 }

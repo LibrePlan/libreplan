@@ -73,6 +73,7 @@
             <ref bean="materialServiceREST"/>
             <ref bean="unitTypeServiceREST"/>
             <ref bean="expenseSheetServiceREST"/>
+            <ref bean="boundUserServiceREST"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean="runtimeExceptionMapper" />
