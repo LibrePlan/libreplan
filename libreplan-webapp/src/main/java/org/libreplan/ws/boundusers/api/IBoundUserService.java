@@ -34,4 +34,6 @@ public interface IBoundUserService {
 
     Response getTimesheetEntriesByTask(String taskCode);
 
+    Response importTimesheetEntries(PersonalTimesheetEntryListDTO dto);
+
 }

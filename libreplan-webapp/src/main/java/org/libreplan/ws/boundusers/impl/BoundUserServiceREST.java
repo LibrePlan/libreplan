@@ -22,24 +22,30 @@ package org.libreplan.ws.boundusers.impl;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.web.users.dashboard.IMyTasksAreaModel;
+import org.libreplan.web.users.dashboard.IPersonalTimesheetModel;
 import org.libreplan.web.users.dashboard.UserDashboardUtil;
 import org.libreplan.ws.boundusers.api.IBoundUserService;
+import org.libreplan.ws.boundusers.api.PersonalTimesheetEntryDTO;
 import org.libreplan.ws.boundusers.api.PersonalTimesheetEntryListDTO;
 import org.libreplan.ws.boundusers.api.TaskListDTO;
+import org.libreplan.ws.common.impl.DateConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,6 +72,9 @@ public class BoundUserServiceREST implements IBoundUserService {
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
 
+    @Autowired
+    private IPersonalTimesheetModel personalTimesheetModel;
+
     @Override
     @GET
     @Transactional(readOnly = true)
@@ -91,6 +100,31 @@ public class BoundUserServiceREST implements IBoundUserService {
             PersonalTimesheetEntryListDTO dto = PersonalTimesheetEntryConverter
                     .toDTO(workReportLines);
             return Response.ok(dto).build();
+        } catch (InstanceNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
+
+    @Override
+    @POST
+    @Transactional
+    @Path("/timesheets/")
+    public Response importTimesheetEntries(PersonalTimesheetEntryListDTO dto) {
+        try {
+            for (PersonalTimesheetEntryDTO each : dto.entries) {
+                LocalDate date = DateConverter.toLocalDate(each.date);
+                OrderElement orderElement = orderElementDAO
+                        .findByCode(each.task);
+                EffortDuration effortDuration = EffortDuration
+                        .parseFromFormattedString(each.effort);
+
+                personalTimesheetModel.initCreateOrEdit(date);
+                personalTimesheetModel.setEffortDuration(orderElement, date,
+                        effortDuration);
+                personalTimesheetModel.save();
+            }
+
+            return Response.ok().build();
         } catch (InstanceNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         }
