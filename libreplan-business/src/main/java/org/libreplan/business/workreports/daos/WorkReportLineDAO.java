@@ -146,4 +146,16 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         return criteria.list();
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<WorkReportLine> findByOrderElementAndWorkReports(
+            OrderElement orderElement, List<WorkReport> workReports) {
+        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+
+        criteria.add(Restrictions.eq("orderElement", orderElement));
+        criteria.add(Restrictions.in("workReport", workReports));
+
+        return (List<WorkReportLine>) criteria.list();
+    }
+
 }

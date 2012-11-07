@@ -65,4 +65,7 @@ public interface IWorkReportLineDAO extends
     List<WorkReportLine> findByResourceFilteredByDateNotInWorkReport(
             Resource resource, Date start, Date end, WorkReport workReport);
 
+    List<WorkReportLine> findByOrderElementAndWorkReports(
+            OrderElement orderElement, List<WorkReport> workReports);
+
 }

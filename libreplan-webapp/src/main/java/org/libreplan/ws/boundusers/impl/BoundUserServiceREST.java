@@ -19,15 +19,30 @@
 
 package org.libreplan.ws.boundusers.impl;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
+import org.libreplan.business.workreports.entities.WorkReport;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.web.users.dashboard.IMyTasksAreaModel;
+import org.libreplan.web.users.dashboard.UserDashboardUtil;
 import org.libreplan.ws.boundusers.api.IBoundUserService;
+import org.libreplan.ws.boundusers.api.PersonalTimesheetEntryListDTO;
 import org.libreplan.ws.boundusers.api.TaskListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * REST-based implementation of {@link IBoundUserService};
@@ -42,11 +57,43 @@ public class BoundUserServiceREST implements IBoundUserService {
     @Autowired
     private IMyTasksAreaModel myTasksAreaModel;
 
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
+
     @Override
     @GET
+    @Transactional(readOnly = true)
     @Path("/mytasks/")
     public TaskListDTO getTasks() {
         return TaskConverter.toDTO(myTasksAreaModel.getTasks());
+    }
+
+    @Override
+    @GET
+    @Transactional(readOnly = true)
+    @Path("/timesheets/{task-code}/")
+    public Response getTimesheetEntriesByTask(
+            @PathParam("task-code") String taskCode) {
+        try {
+            OrderElement orderElement = orderElementDAO.findByCode(taskCode);
+            List<WorkReport> workReports = workReportDAO
+                    .findPersonalTimesheetsByResourceAndOrderElement(UserDashboardUtil
+                            .getBoundResourceFromSession());
+            List<WorkReportLine> workReportLines = workReportLineDAO
+                    .findByOrderElementAndWorkReports(orderElement, workReports);
+
+            PersonalTimesheetEntryListDTO dto = PersonalTimesheetEntryConverter
+                    .toDTO(workReportLines);
+            return Response.ok(dto).build();
+        } catch (InstanceNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
     }
 
 }

@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,17 +19,34 @@
 
 package org.libreplan.ws.boundusers.api;
 
-import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
- * Service for managing operations related with bound users.
+ * DTO for an entry in a personal timesheet.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public interface IBoundUserService {
+@XmlRootElement(name = "personal-timesheet-entry")
+public class PersonalTimesheetEntryDTO {
 
-    TaskListDTO getTasks();
+    @XmlAttribute
+    public String task;
 
-    Response getTimesheetEntriesByTask(String taskCode);
+    @XmlAttribute(name = "date")
+    public XMLGregorianCalendar date;
+
+    @XmlAttribute
+    public String effort;
+
+    public PersonalTimesheetEntryDTO() {}
+
+    public PersonalTimesheetEntryDTO(String task, XMLGregorianCalendar date,
+            String effort) {
+        this.task = task;
+        this.date = date;
+        this.effort = effort;
+    }
 
 }

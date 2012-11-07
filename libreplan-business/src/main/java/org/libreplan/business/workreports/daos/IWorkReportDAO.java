@@ -59,4 +59,7 @@ public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
 
     boolean isAnyPersonalTimesheetAlreadySaved();
 
+    List<WorkReport> findPersonalTimesheetsByResourceAndOrderElement(
+            Resource resource);
+
 }
