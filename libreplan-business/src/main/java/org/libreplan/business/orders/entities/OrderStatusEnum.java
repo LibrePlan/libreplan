@@ -51,6 +51,6 @@ public enum OrderStatusEnum {
     }
 
     public static OrderStatusEnum getDefault() {
-        return OFFERED;
+        return PRE_SALES;
     }
 }
