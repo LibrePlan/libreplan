@@ -160,7 +160,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = EnumSet
             .of(OrderStatusEnum.ACCEPTED, OrderStatusEnum.OFFERED,
                     OrderStatusEnum.STARTED,
-                    OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER);
+                    OrderStatusEnum.OUTSOURCED);
 
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {

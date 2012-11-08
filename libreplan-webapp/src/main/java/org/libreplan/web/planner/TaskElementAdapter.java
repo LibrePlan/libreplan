@@ -1098,7 +1098,7 @@ _(
 
                 if (Arrays.asList(OrderStatusEnum.ACCEPTED,
                         OrderStatusEnum.OFFERED, OrderStatusEnum.STARTED,
-                        OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER).contains(
+                        OrderStatusEnum.OUTSOURCED).contains(
                         state)) {
                     if (taskElement.getAssignedStatus() == "assigned") {
                         cssClass = "order-open-assigned";
