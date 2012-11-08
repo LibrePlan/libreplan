@@ -73,4 +73,36 @@
         </update>
     </changeSet>
 
+    <changeSet id="update-status-values-in-order_table" author="mrego">
+        <comment>Updating status values in order_table</comment>
+        <update tableName="order_table">
+            <column name="state" value="8" />
+            <where>state='6'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="7" />
+            <where>state='4'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="6" />
+            <where>state='3'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="4" />
+            <where>state='2'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="3" />
+            <where>state='1'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="2" />
+            <where>state='5'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="1" />
+            <where>state='0'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
