@@ -503,4 +503,14 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return UserAuthenticationType.EMPTY;
     }
 
+    public void setAuthenticationType(Comboitem item) {
+        UserAuthenticationType authenticationType = (UserAuthenticationType) item
+                .getValue();
+        User user = getUser();
+        if (user != null) {
+            user.setLibrePlanUser(authenticationType
+                    .equals(UserAuthenticationType.DATABASE));
+        }
+    }
+
 }
