@@ -191,6 +191,11 @@ public class SpecificResourceAllocation extends
         return new SpecificAssignmentsAllocator().fromEndUntil(start);
     }
 
+    @Override
+    public IAllocateEffortOnInterval fromEndUntil(IntraDayDate start) {
+        return new SpecificAssignmentsAllocator().fromEndUntil(start);
+    }
+
     private final class SpecificAssignmentsAllocator extends
             AssignmentsAllocator {
 
@@ -211,6 +216,7 @@ public class SpecificResourceAllocation extends
             return day.limitCapacity(getAllocationCalendar()
                     .getCapacityWithOvertime(day.getDate()));
         }
+
     }
 
     public IEffortDistributor<SpecificDayAssignment> createEffortDistributor() {

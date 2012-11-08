@@ -50,6 +50,7 @@ import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
+import org.libreplan.business.workingday.IntraDayDate;
 
 public class AllocationRowsHandler {
 
@@ -342,10 +343,10 @@ public class AllocationRowsHandler {
                         requestedToRemove);
         if (isForwardsAllocation()) {
             ResourceAllocation.allocatingHours(hours).allocateUntil(
-                    formBinder.getAllocationEnd());
+                    IntraDayDate.startOfDay(formBinder.getAllocationEnd()));
         } else {
             ResourceAllocation.allocatingHours(hours).allocateFromEndUntil(
-                    formBinder.getAllocationStart());
+                    IntraDayDate.startOfDay(formBinder.getAllocationStart()));
         }
         return hours;
     }
