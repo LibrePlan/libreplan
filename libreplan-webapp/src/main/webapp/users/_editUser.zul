@@ -87,7 +87,8 @@
                             </row>
                             <row id="authenticationTypeComboRow">
                                 <label value="${i18n:_('Authentication type')}" />
-                                <combobox id="authenticationTypeCombo" autodrop="true" />
+                                <combobox id="authenticationTypeCombo" autodrop="true"
+                                onChange="controller.setAuthenticationType(self.selectedItem)" />
                             </row>
                             <row id="authenticationTypeLabelRow">
                                 <label value="${i18n:_('Authentication type')}" />
