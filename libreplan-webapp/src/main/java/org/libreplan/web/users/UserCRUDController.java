@@ -283,6 +283,16 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         //because they are not directly associated to an attribute
         passwordBox.setRawValue("");
         passwordConfirmationBox.setRawValue("");
+        hideAuthenticationTypesCombo();
+    }
+
+    private void hideAuthenticationTypesCombo() {
+        Row comboRow = (Row) editWindow
+                .getFellowIfAny("authenticationTypeComboRow");
+        Row labelRow = (Row) editWindow
+                .getFellowIfAny("authenticationTypeLabelRow");
+        comboRow.setVisible(false);
+        labelRow.setVisible(true);
     }
 
     @Override
@@ -294,6 +304,28 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         //cleans the box and forces the check of the new Constraint (null)
         passwordBox.setValue("");
         passwordConfirmationBox.setValue("");
+        //setup authentication type combo box
+        prepareAuthenticationTypesCombo();
+    }
+
+    private void prepareAuthenticationTypesCombo() {
+        Combobox combo = (Combobox) editWindow
+                .getFellowIfAny("authenticationTypeCombo");
+        combo.getChildren().clear();
+        for (UserAuthenticationType type : UserAuthenticationType.values()) {
+            Comboitem item = combo.appendItem(type.toString());
+            item.setValue(type);
+            if (type.equals(getAuthenticationType())) {
+                combo.setSelectedItem(item);
+            }
+        }
+
+        Row comboRow = (Row) editWindow
+                .getFellowIfAny("authenticationTypeComboRow");
+        Row labelRow = (Row) editWindow
+                .getFellowIfAny("authenticationTypeLabelRow");
+        comboRow.setVisible(true);
+        labelRow.setVisible(false);
     }
 
     @Override
