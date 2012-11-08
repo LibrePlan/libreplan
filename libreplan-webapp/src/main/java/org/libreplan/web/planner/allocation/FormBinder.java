@@ -51,6 +51,7 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.ResourcesPerDay;
 import org.libreplan.web.common.EffortDurationBox;
 import org.libreplan.web.common.IMessagesForUser;
@@ -307,34 +308,36 @@ public class FormBinder {
                             Task task = getTask();
                             Integer workableDays = taskWorkableDays.getValue();
                             if (allocationRowsHandler.isForwardsAllocation()) {
-                                LocalDate newEnd = ensureItIsAfterConsolidation(
-                                        task.calculateEndGivenWorkableDays(workableDays));
+                                IntraDayDate newEnd = ensureItIsAfterConsolidation(task
+                                        .calculateEndGivenWorkableDays(workableDays));
                                 updateWorkableDaysIfNecessary(workableDays,
-                                        getTask().getStartAsLocalDate(), newEnd);
+                                        getTask().getIntraDayStartDate(),
+                                        newEnd);
                                 taskPropertiesController
-                                        .updateTaskEndDate(newEnd);
-                                showValueOfDateOn(labelTaskEnd, newEnd);
+                                        .updateTaskEndDate(newEnd.getDate());
+                                showValueOfDateOn(labelTaskEnd,
+                                        newEnd.getDate());
                             } else {
-                                LocalDate newStart = ensureItIsAfterConsolidation(task
+                                IntraDayDate newStart = ensureItIsAfterConsolidation(task
                                         .calculateStartGivenWorkableDays(workableDays));
                                 updateWorkableDaysIfNecessary(workableDays,
-                                        newStart, task.getIntraDayEndDate()
-                                                .asExclusiveEnd());
+                                        newStart, task.getIntraDayEndDate());
                                 taskPropertiesController
-                                        .updateTaskStartDate(newStart);
-                                showValueOfDateOn(labelTaskStart, newStart);
+                                        .updateTaskStartDate(newStart.getDate());
+                                showValueOfDateOn(labelTaskStart,
+                                        newStart.getDate());
                             }
                         }
 
                         private void updateWorkableDaysIfNecessary(
                                 int specifiedWorkableDays,
-                                LocalDate allocationStart,
-                                LocalDate allocationEnd) {
+                                IntraDayDate allocationStart,
+                                IntraDayDate allocationEnd) {
                             Integer effectiveWorkableDays = getTask()
-                                    .getWorkableDaysFrom(allocationStart,
-                                            allocationEnd);
-                            if (!effectiveWorkableDays
-                                    .equals(specifiedWorkableDays)) {
+                                    .getWorkableDaysFrom(
+                                            allocationStart.getDate(),
+                                            allocationEnd.asExclusiveEnd());
+                            if (effectiveWorkableDays < specifiedWorkableDays) {
                                 Clients.response(new AuWrongValue(
                                         taskWorkableDays,
                                         _("The original workable days value {0} cannot be modified as it has consolidations",
@@ -345,10 +348,10 @@ public class FormBinder {
                         }
 
                         @SuppressWarnings("unchecked")
-                        private LocalDate ensureItIsAfterConsolidation(
-                                LocalDate newDate) {
+                        private IntraDayDate ensureItIsAfterConsolidation(
+                                IntraDayDate newDate) {
                             return Collections.max(Arrays.asList(newDate,
-                                    firstPossibleDay));
+                                    IntraDayDate.startOfDay(firstPossibleDay)));
                         }
 
                     }, onChangeEnableApply);
@@ -403,7 +406,8 @@ public class FormBinder {
                 taskWorkableDays.setValue(lastSpecifiedWorkableDays);
                 showValueOfDateOn(
                         labelTaskEnd,
-                        task.calculateEndGivenWorkableDays(lastSpecifiedWorkableDays));
+                        task.calculateEndGivenWorkableDays(
+                                lastSpecifiedWorkableDays).getDate());
                 lastSpecifiedWorkableDays = null;
             }
         }
@@ -436,12 +440,12 @@ public class FormBinder {
                 | SimpleConstraint.NO_NEGATIVE);
     }
 
-    public LocalDate getAllocationEnd() {
+    public IntraDayDate getAllocationEnd() {
         return getTask().calculateEndGivenWorkableDays(
                 workableDaysAndDatesBinder.getValue());
     }
 
-    public LocalDate getAllocationStart() {
+    public IntraDayDate getAllocationStart() {
         return getTask().calculateStartGivenWorkableDays(
                 workableDaysAndDatesBinder.getValue());
     }

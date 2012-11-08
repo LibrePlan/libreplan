@@ -581,6 +581,18 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return durationBetweenDates.fromStartToEnd(newStartDate);
     }
 
+    public IntraDayDate calculateEndGivenWorkableDays(int days) {
+        Validate.isTrue(days >= 0);
+        DurationBetweenDates duration = fromFixedDuration(days);
+        return duration.fromStartToEnd(getIntraDayStartDate());
+    }
+
+    public IntraDayDate calculateStartGivenWorkableDays(int days) {
+        Validate.isTrue(days >= 0);
+        DurationBetweenDates duration = fromFixedDuration(days);
+        return duration.fromEndToStart(getIntraDayEndDate());
+    }
+
     private IntraDayDate calculateStartKeepingLength(IntraDayDate newEnd) {
         DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
         return durationBetweenDates.fromEndToStart(newEnd);
@@ -645,10 +657,21 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         public IntraDayDate fromStartToEnd(IntraDayDate newStartDate) {
-            LocalDate resultDay = calculateEndGivenWorkableDays(
+            LocalDate resultDay = afterSomeWorkableDays(
                     newStartDate.getDate(), numberOfWorkableDays);
             return plusDuration(IntraDayDate.startOfDay(resultDay),
                     remainderDuration.plus(newStartDate.getEffortDuration()));
+        }
+
+        private LocalDate afterSomeWorkableDays(LocalDate start,
+                int workableDays) {
+            LocalDate result = start;
+            for (int i = 0; i < workableDays; result = result.plusDays(1)) {
+                if (isWorkable(result)) {
+                    i++;
+                }
+            }
+            return result;
         }
 
         private IntraDayDate plusDuration(IntraDayDate start,
@@ -699,11 +722,21 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         public IntraDayDate fromEndToStart(IntraDayDate newEnd) {
-            LocalDate resultDay = calculateStartGivenWorkableDays(
+            LocalDate resultDay = someWorkableDaysBefore(
                     newEnd.getDate(), numberOfWorkableDays);
             return minusDuration(plusDuration(
                     IntraDayDate.startOfDay(resultDay),
                             newEnd.getEffortDuration()), remainderDuration);
+        }
+
+        private LocalDate someWorkableDaysBefore(LocalDate end, int workableDays) {
+            LocalDate result = end;
+            for (int i = 0; i < workableDays; result = result.minusDays(1)) {
+                if (isWorkable(result.minusDays(1))) {
+                    i++;
+                }
+            }
+            return result;
         }
 
         private IntraDayDate minusDuration(IntraDayDate date,
@@ -1055,38 +1088,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 .plusDays(1)) {
             if (isWorkable(current)) {
                 result++;
-            }
-        }
-        return result;
-    }
-
-    public LocalDate calculateEndGivenWorkableDays(int workableDays) {
-        return calculateEndGivenWorkableDays(getIntraDayStartDate().getDate(),
-                workableDays);
-    }
-
-    public LocalDate calculateStartGivenWorkableDays(int workableDays) {
-        return calculateStartGivenWorkableDays(getEndAsLocalDate(),
-                workableDays);
-    }
-
-    private LocalDate calculateEndGivenWorkableDays(LocalDate start,
-            int workableDays) {
-        LocalDate result = start;
-        for (int i = 0; i < workableDays; result = result.plusDays(1)) {
-            if (isWorkable(result)) {
-                i++;
-            }
-        }
-        return result;
-    }
-
-    private LocalDate calculateStartGivenWorkableDays(LocalDate end,
-            int workableDays) {
-        LocalDate result = end;
-        for (int i = 0; i < workableDays; result = result.minusDays(1)) {
-            if (isWorkable(result.minusDays(1))) {
-                i++;
             }
         }
         return result;
