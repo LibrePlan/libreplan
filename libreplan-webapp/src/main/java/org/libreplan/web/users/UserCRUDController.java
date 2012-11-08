@@ -447,12 +447,28 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return isLdapUser() || isUserDefaultAdmin();
     }
 
-    public String getAuthenticationType() {
+    public enum UserAuthenticationType {
+
+        EMPTY(""), DATABASE(_("Database")), LDAP(_("LDAP"));
+
+        private String name;
+
+        private UserAuthenticationType(String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
+
+    public UserAuthenticationType getAuthenticationType() {
         User user = getUser();
         if (user != null) {
-            return _(user.getUserType());
+            return user.isLibrePlanUser() ? UserAuthenticationType.DATABASE
+                    : UserAuthenticationType.LDAP;
         }
-        return "";
+        return UserAuthenticationType.EMPTY;
     }
 
 }
