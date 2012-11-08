@@ -85,7 +85,11 @@
                                 <textbox id="email"
                                     value="@{controller.user.email}" width="300px"/>
                             </row>
-                            <row>
+                            <row id="authenticationTypeComboRow">
+                                <label value="${i18n:_('Authentication type')}" />
+                                <combobox id="authenticationTypeCombo" autodrop="true" />
+                            </row>
+                            <row id="authenticationTypeLabelRow">
                                 <label value="${i18n:_('Authentication type')}" />
                                 <label value="@{controller.authenticationType}" />
                             </row>
