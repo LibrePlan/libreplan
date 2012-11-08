@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,13 +26,19 @@ import static org.libreplan.business.i18n.I18nHelper._;
 
 /**
  * @author Susana Montes Pedreiera <smotnes@wirelessgalicia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-
 public enum OrderStatusEnum {
 
-    OFFERED(_("OFFERED")), ACCEPTED(_("ACCEPTED")), STARTED(_("STARTED")), FINISHED(
-            _("FINISHED")), CANCELLED(_("CANCELLED")), SUBCONTRACTED_PENDING_ORDER(
-            _("SUBCONTRACTED PENDING PROJECT")), STORED(_("STORED"));
+    PRE_SALES(_("PRE-SALES")),
+    OFFERED(_("OFFERED")),
+    SUBCONTRACTED_PENDING_ORDER(_("SUBCONTRACTED PENDING ORDER")),
+    ACCEPTED(_("ACCEPTED")),
+    STARTED(_("STARTED")),
+    ON_HOLD(_("ON HOLD")),
+    FINISHED(_("FINISHED")),
+    CANCELLED(_("CANCELLED")),
+    STORED(_("STORED"));
 
     private String description;
 
