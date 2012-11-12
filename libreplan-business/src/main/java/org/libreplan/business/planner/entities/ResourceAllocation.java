@@ -896,13 +896,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateEffortOnInterval fromStartUntil(final LocalDate end) {
-            final AllocationInterval interval = new AllocationInterval(
-                    getStartSpecifiedByTask(), IntraDayDate.startOfDay(end));
-            return getIAllocateEffortOnInterval(interval);
-        }
-
-        @Override
         public IAllocateEffortOnInterval fromStartUntil(final IntraDayDate end) {
             final AllocationInterval interval = new AllocationInterval(
                     getStartSpecifiedByTask(), end);
@@ -934,12 +927,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 }
 
             };
-        }
-
-        @Override
-        public IAllocateEffortOnInterval fromEndUntil(final LocalDate start) {
-            return fromEndUntil(IntraDayDate.startOfDay(start));
-
         }
 
         @Override
