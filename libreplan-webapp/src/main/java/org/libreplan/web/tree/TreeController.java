@@ -188,8 +188,15 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
 
-        Treerow from = (Treerow) dragged;
-        T fromNode = type.cast(((Treeitem) from.getParent()).getValue());
+        T fromNode = null;
+        if (dragged instanceof Treerow) {
+            Treerow from = (Treerow) dragged;
+            fromNode = type.cast(((Treeitem) from.getParent()).getValue());
+        }
+        if (dragged instanceof Treeitem) {
+            Treeitem from = (Treeitem) dragged;
+            fromNode = type.cast(from.getValue());
+        }
         if (dropedIn instanceof Tree) {
             getModel().moveToRoot(fromNode);
         }
@@ -708,8 +715,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void render(final Treeitem item, Object data) {
             item.setValue(data);
             applySnapshot(item);
-            currentTreeRow = getTreeRowWithoutChildrenFor(item);
             final T currentElement = type.cast(data);
+            currentTreeRow = getTreeRowWithoutChildrenFor(item, currentElement);
             createCells(item, currentElement);
             onDropMoveFromDraggedToTarget();
         }
@@ -738,10 +745,17 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             }
         }
 
-        private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
+        private Treerow getTreeRowWithoutChildrenFor(final Treeitem item,
+                T element) {
             Treerow result = createOrRetrieveFor(item);
             // Attach treecells to treerow
-            result.setDroppable("true");
+            if (element.isUpdatedFromTimesheets()) {
+                result.setDraggable("false");
+                result.setDroppable("false");
+            } else {
+                result.setDraggable("true");
+                result.setDroppable("true");
+            }
             result.getChildren().clear();
             return result;
         }
@@ -813,7 +827,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                         }
                     });
             schedulingStateToggler.afterCompose();
-            cell.setDraggable("true");
+
         }
 
         protected abstract SchedulingState getSchedulingStateFrom(
