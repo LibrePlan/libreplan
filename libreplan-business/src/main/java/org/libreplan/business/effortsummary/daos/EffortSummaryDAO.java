@@ -26,7 +26,9 @@ import org.hibernate.criterion.Restrictions;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.effortsummary.entities.EffortSummary;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -53,14 +55,38 @@ public class EffortSummaryDAO extends GenericDAOHibernate<EffortSummary, Long>
     @Override
     public void saveOrUpdate(Set<EffortSummary> efforts) {
         for (EffortSummary effort : efforts) {
+            EffortSummary repeatedEffort = findByResourceAndTask(
+                    effort.getResource(), effort.getTask());
+            if (repeatedEffort != null) {
+                // remove the existing EffortSummary
+                try {
+                    remove(repeatedEffort.getId());
+                } catch (InstanceNotFoundException e) {
+                    // should never happen, we have just retrieved the instance
+                    // from the DAO
+                }
+            }
             if (!effort.isGlobal()) {
                 EffortSummary globalEffort =
                         findGlobalInformationForResource(effort.getResource());
+                if (globalEffort == null) {
+                    // this shouldn't happen, the global row should have been
+                    // created before
+                    // TODO: throw proper exception
+                }
+                if (repeatedEffort != null) {
+                    // substract the deleted EffortSummary
+                    globalEffort.substractAssignedEffort(repeatedEffort);
+                    // FIXME: when we try to update the same object,
+                    // repeatedEffort == effort so this substraction is not
+                    // performed properly
+                }
+                // add the new EffortSummary
                 globalEffort.addAssignedEffort(effort);
                 save(globalEffort);
             }
-            // TODO: check if EffortSummary for the same task exists, and
-            // overwrite
+            // if isGlobal, save operation will overwrite it; we don't need to
+            // handle that case explicitly
             save(effort);
         }
     }
@@ -91,6 +117,13 @@ public class EffortSummaryDAO extends GenericDAOHibernate<EffortSummary, Long>
         return (EffortSummary) getSession().createCriteria(EffortSummary.class)
                 .add(Restrictions.eq("resource", resource))
                 .add(Restrictions.isNull("task")).uniqueResult();
+    }
+
+    @Override
+    public EffortSummary findByResourceAndTask(Resource resource, Task task) {
+        return (EffortSummary) getSession().createCriteria(EffortSummary.class)
+                .add(Restrictions.eq("resource", resource))
+                .add(Restrictions.eq("task", task)).uniqueResult();
     }
 
 }

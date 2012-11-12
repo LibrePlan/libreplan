@@ -25,6 +25,7 @@ import java.util.Set;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.IGenericDAO;
 import org.libreplan.business.effortsummary.entities.EffortSummary;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.resources.entities.Resource;
 
 public interface IEffortSummaryDAO extends IGenericDAO<EffortSummary, Long> {
@@ -57,4 +58,18 @@ public interface IEffortSummaryDAO extends IGenericDAO<EffortSummary, Long> {
      * @param efforts Set of EffortSummary objects to be saved or updated.
      */
     void saveOrUpdate(Set<EffortSummary> efforts);
+
+    /**
+     * Find the EffortSummary row containing the information about a specific
+     * task. Take into account that there is only one row per allocation of one
+     * resource to a task.
+     *
+     * @param resource
+     *            The resource to search by.
+     * @param task
+     *            The task to search by.
+     * @return The EffortSummary object corresponding to the resource and task
+     *         or null if it doesn't exist yet.
+     */
+    EffortSummary findByResourceAndTask(Resource resource, Task task);
 }
