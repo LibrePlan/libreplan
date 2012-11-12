@@ -158,6 +158,11 @@ public class OrderLineGroup extends OrderElement implements
             return false;
         }
 
+        @Override
+        public boolean isUpdatedFromTimesheets() {
+            return getThis().isUpdatedFromTimesheets();
+        }
+
     }
 
     public static OrderLineGroup create() {

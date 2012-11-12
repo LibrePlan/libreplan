@@ -82,7 +82,7 @@
     <vbox width="100%">
         <tree id="tree" hflex="1" multiple="false" droppable="true"
             onDrop="treeController.move(self, event.dragged)"
-            onSelect="treeController.updateControlButtons(event)"
+            onSelect="treeController.updateControlButtons()"
             mold="paging" pageSize="25"
             sclass="orderTree"
             zclass="z-dottree">

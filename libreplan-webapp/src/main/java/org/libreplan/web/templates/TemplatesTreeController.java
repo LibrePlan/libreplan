@@ -169,12 +169,6 @@ public class TemplatesTreeController extends
             return currentElement.getSchedulingState();
         }
 
-        @Override
-        protected boolean isUpdatedFromTimesheets(
-                OrderElementTemplate currentElement) {
-            return false;
-        }
-
     }
 
     public TemplatesTreeController(IOrderTemplatesModel model,

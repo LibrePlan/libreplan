@@ -1606,4 +1606,14 @@ public abstract class OrderElement extends IntegrationEntity implements
         return sumChargedEffort.isFinishedTimesheets();
     }
 
+    @Override
+    public boolean isUpdatedFromTimesheets() {
+        TaskElement taskElement = getTaskElement();
+        if (taskElement == null) {
+            return false;
+        }
+
+        return taskElement.isUpdatedFromTimesheets();
+    }
+
 }

@@ -60,4 +60,6 @@ public interface ITreeNode<T extends ITreeNode<T>> {
      */
     boolean isEmptyLeaf();
 
+    boolean isUpdatedFromTimesheets();
+
 }

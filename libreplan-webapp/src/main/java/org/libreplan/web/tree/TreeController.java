@@ -116,6 +116,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().indent(element);
         filterByPredicateIfAny();
+        updateControlButtons();
     }
 
     public TreeModel getTreeModel() {
@@ -140,6 +141,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().unindent(element);
         filterByPredicateIfAny();
+        updateControlButtons();
     }
 
     public void up() {
@@ -153,6 +155,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().up(element);
         filterByPredicateIfAny();
+        updateControlButtons();
     }
 
     public void down() {
@@ -165,6 +168,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().down(element);
         filterByPredicateIfAny();
+        updateControlButtons();
     }
 
     public T getSelectedNode() {
@@ -350,6 +354,15 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     private List<Column> columns;
 
+    private Button btnNewFromTemplate;
+
+    private Button downButton;
+
+    private Button upButton;
+
+    private Button leftButton;
+
+    private Button rightButton;
 
     protected TreeViewStateSnapshot getSnapshotOfOpenedNodes() {
         return viewStateSnapshot;
@@ -357,6 +370,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     private void resetControlButtons() {
         btnNew.setDisabled(isNewButtonDisabled());
+        btnNewFromTemplate.setDisabled(isNewButtonDisabled());
+
+        boolean disabled = readOnly || isPredicateApplied();
+        downButton.setDisabled(disabled);
+        upButton.setDisabled(disabled);
+        leftButton.setDisabled(disabled);
+        rightButton.setDisabled(disabled);
     }
 
     protected abstract boolean isNewButtonDisabled();
@@ -763,7 +783,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(
                     schedulingState);
             schedulingStateToggler.setReadOnly(readOnly
-                    || isUpdatedFromTimesheets(currentElement));
+                    || currentElement.isUpdatedFromTimesheets());
             final Treecell cell = addCell(
                     getDecorationFromState(getSchedulingStateFrom(currentElement)),
                     schedulingStateToggler);
@@ -1143,8 +1163,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         }
 
-        protected abstract boolean isUpdatedFromTimesheets(T currentElement);
-
     }
 
     public void setColumns(List<Column> columns) {
@@ -1192,17 +1210,40 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     /**
      * Disable control buttons (new, up, down, indent, unindent, delete)
      */
-    public void updateControlButtons(Event event) {
-        updateControlButtons((Tree) event.getTarget());
-    }
-
-    public void updateControlButtons(Tree tree) {
-        final Treeitem item = tree.getSelectedItem();
-        if (item == null) {
+    public void updateControlButtons() {
+        T element = getSelectedNode();
+        if (element == null) {
             resetControlButtons();
             return;
         }
-        btnNew.setDisabled(false);
+        Treeitem item = tree.getSelectedItem();
+
+        btnNew.setDisabled(isNewButtonDisabled()
+                || element.isUpdatedFromTimesheets());
+        btnNewFromTemplate.setDisabled(isNewButtonDisabled()
+                || element.isUpdatedFromTimesheets());
+
+        boolean disabled = readOnly || isPredicateApplied();
+        downButton.setDisabled(disabled || isLastItem(element));
+        upButton.setDisabled(disabled || isFirstItem(element));
+
+        disabled |= element.isUpdatedFromTimesheets();
+        leftButton.setDisabled(disabled
+                || isFirstLevelElement(item)
+                || element.getParent().isUpdatedFromTimesheets());
+
+        boolean previousSiblingIsUpdatedFromTimesheets = false;
+        try {
+            Treeitem previousItem = (Treeitem) item.getParent()
+                    .getChildren().get(item.getIndex() - 1);
+            T previousSibling = type.cast(previousItem.getValue());
+            previousSiblingIsUpdatedFromTimesheets = previousSibling
+                    .isUpdatedFromTimesheets();
+        } catch (IndexOutOfBoundsException e) {
+            // Do nothing
+        }
+        rightButton.setDisabled(disabled || isFirstItem(element)
+                || previousSiblingIsUpdatedFromTimesheets);
     }
 
     protected abstract boolean isPredicateApplied();

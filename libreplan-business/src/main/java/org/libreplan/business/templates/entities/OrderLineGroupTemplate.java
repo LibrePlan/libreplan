@@ -100,6 +100,11 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
             return false;
         }
 
+        @Override
+        public boolean isUpdatedFromTimesheets() {
+            return false;
+        }
+
     }
 
     public static OrderLineGroupTemplate createNew() {

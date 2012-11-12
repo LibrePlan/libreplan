@@ -590,4 +590,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     public abstract boolean isOrderTemplate();
 
+    @Override
+    public boolean isUpdatedFromTimesheets() {
+        return false;
+    }
+
 }
