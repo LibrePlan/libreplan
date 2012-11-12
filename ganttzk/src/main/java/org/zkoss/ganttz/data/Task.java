@@ -548,4 +548,9 @@ public abstract class Task implements ITaskFundamentalProperties {
                 getBeginDate());
     }
 
+    @Override
+    public boolean isUpdatedFromTimesheets() {
+        return fundamentalProperties.isUpdatedFromTimesheets();
+    }
+
 }

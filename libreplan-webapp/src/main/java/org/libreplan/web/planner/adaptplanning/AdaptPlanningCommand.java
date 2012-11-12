@@ -63,10 +63,11 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
                 .getAllChildren();
         for (TaskElement taskElement : taskElements) {
             OrderElement orderElement = taskElement.getOrderElement();
-            taskElement.setUpdatedFromTimesheets(orderElement
-                    .hasTimesheetsReportingHours());
+            // Reset status to allow move the task if needed while adapting the
+            // planning
+            taskElement.setUpdatedFromTimesheets(false);
 
-            if (taskElement.isUpdatedFromTimesheets()) {
+            if (orderElement.hasTimesheetsReportingHours()) {
                 setStartDateAndConstraint(taskElement, orderElement
                         .getSumChargedEffort().getFirstTimesheetDate());
                 Date lastTimesheetDate = orderElement.getSumChargedEffort()
@@ -80,6 +81,7 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
                     removeTimesheetsProgressIfAny(orderElement);
                 }
 
+                taskElement.setUpdatedFromTimesheets(true);
                 updateTask(context, taskElement);
             }
         }

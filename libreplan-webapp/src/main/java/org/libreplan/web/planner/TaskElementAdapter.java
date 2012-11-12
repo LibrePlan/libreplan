@@ -1223,6 +1223,11 @@ _(
                 return taskElement.isRoot();
             }
 
+            @Override
+            public boolean isUpdatedFromTimesheets() {
+                return taskElement.isUpdatedFromTimesheets();
+            }
+
         }
 
         @Override
