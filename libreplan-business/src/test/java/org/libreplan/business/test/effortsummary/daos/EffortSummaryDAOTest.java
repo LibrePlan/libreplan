@@ -71,7 +71,7 @@ public class EffortSummaryDAOTest {
         return worker;
     }
 
-    public void createConsecutiveEffortSummaryItems(int numberOfItems,
+    public EffortSummary generateValidEffortSummary(int numberOfItems,
             Resource resource, LocalDate startDate) {
         LocalDate startDate2 = new LocalDate(startDate);
         LocalDate endDate = startDate.plusDays(numberOfItems - 1);
@@ -79,23 +79,24 @@ public class EffortSummaryDAOTest {
         int[] assignedEffort = new int[numberOfItems];
         Random generator = new Random();
 
-        resourceDAO.save(resource);
-
         for (int i = 0; i < numberOfItems; i++) {
             availableEffort[i] = generator.nextInt(86400);
             assignedEffort[i] = generator.nextInt(86400);
         }
         EffortSummary summary = EffortSummary.create(startDate2, endDate,
                 availableEffort, assignedEffort, resource);
-        effortSummaryDAO.save(summary);
+        return summary;
     }
 
     @Test
     public void testList() {
         final int numberOfItems = 1000;
         Worker worker = generateValidWorker();
+        resourceDAO.save(worker);
         LocalDate date = new LocalDate();
-        createConsecutiveEffortSummaryItems(numberOfItems, worker, date);
+        EffortSummary summary = generateValidEffortSummary(
+                numberOfItems, worker, date);
+        effortSummaryDAO.save(summary);
 
         List<EffortSummary> list = effortSummaryDAO.list();
         assertEquals(1, list.size());
@@ -108,10 +109,12 @@ public class EffortSummaryDAOTest {
     public void testListBetweenDates() {
         final int numberOfItems = 1000;
         Worker worker = generateValidWorker();
+        resourceDAO.save(worker);
         LocalDate startDate = new LocalDate();
         LocalDate endDate = startDate.plusDays(numberOfItems - 2);
-        createConsecutiveEffortSummaryItems(numberOfItems, worker,
-                startDate);
+        EffortSummary summary = generateValidEffortSummary(
+                numberOfItems, worker, startDate);
+        effortSummaryDAO.save(summary);
 
         EffortSummary effort = effortSummaryDAO
                 .listForResourceBetweenDates(worker, startDate, endDate);
@@ -122,8 +125,11 @@ public class EffortSummaryDAOTest {
     public void testFindByResource() {
         final int numberOfItems = 1000;
         Worker worker = generateValidWorker();
+        resourceDAO.save(worker);
         LocalDate date = new LocalDate();
-        createConsecutiveEffortSummaryItems(numberOfItems, worker, date);
+        EffortSummary summary = generateValidEffortSummary(
+                numberOfItems, worker, date);
+        effortSummaryDAO.save(summary);
         EffortSummary effort = effortSummaryDAO.findGlobalInformationForResource(worker);
         assertEquals(effort.getResource().getId(), worker.getId());
     }
