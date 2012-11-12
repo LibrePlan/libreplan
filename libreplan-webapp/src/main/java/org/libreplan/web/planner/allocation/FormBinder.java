@@ -216,7 +216,7 @@ public class FormBinder {
         boolean disabled = rows.isEmpty()
                 || (CalculatedValue.NUMBER_OF_HOURS == c)
                 || (c == CalculatedValue.RESOURCES_PER_DAY && !recommendedAllocation)
-                || isAnyManual();
+                || isAnyManual() || isTaskUpdatedFromTimesheets();
         this.effortInput.setDisabled(disabled);
     }
 
@@ -244,13 +244,14 @@ public class FormBinder {
         allResourcesPerDayVisibilityRule();
         applyDisabledRulesOnRows();
         this.btnRecommendedAllocation.setDisabled(recommendedAllocation
-                || isAnyManual());
+                || isAnyManual() || isTaskUpdatedFromTimesheets());
     }
 
     private void applyDisabledRulesOnRows() {
         for (AllocationRow each : rows) {
             each.applyDisabledRules(getCalculatedValue(),
-                    recommendedAllocation, isAnyManual());
+                    recommendedAllocation, isAnyManual()
+                            || isTaskUpdatedFromTimesheets());
         }
     }
 
@@ -358,7 +359,7 @@ public class FormBinder {
         void applyDisabledRules() {
             this.taskWorkableDays.setDisabled(allocationRowsHandler
                     .getCalculatedValue() == CalculatedValue.END_DATE
-                    || isAnyManual());
+                    || isAnyManual() || isTaskUpdatedFromTimesheets());
         }
 
         private void initializeDateAndDurationFieldsFromTaskOriginalValues() {
@@ -461,7 +462,8 @@ public class FormBinder {
         CalculatedValue c = allocationRowsHandler.getCalculatedValue();
         this.allResourcesPerDay.setDisabled(rows.isEmpty()
                 || c == CalculatedValue.RESOURCES_PER_DAY
-                || !recommendedAllocation || isAnyManual());
+                || !recommendedAllocation || isAnyManual()
+                || isTaskUpdatedFromTimesheets());
         this.allResourcesPerDay
                 .setConstraint(constraintForAllResourcesPerDay());
     }
@@ -518,6 +520,10 @@ public class FormBinder {
      *         exit the edition form
      */
     public boolean accept() {
+        if (isTaskUpdatedFromTimesheets()) {
+            return true;
+        }
+
         Flagged<AllocationResult, Warnings> result = resourceAllocationModel
                 .accept();
 
@@ -703,7 +709,8 @@ public class FormBinder {
 
     public void setRecommendedAllocation(Button recommendedAllocation) {
         this.btnRecommendedAllocation = recommendedAllocation;
-        this.btnRecommendedAllocation.setDisabled(isAnyManual());
+        this.btnRecommendedAllocation.setDisabled(isAnyManual()
+                || isTaskUpdatedFromTimesheets());
         Util.ensureUniqueListener(recommendedAllocation, Events.ON_CLICK,
                 new EventListener() {
                     @Override
@@ -933,6 +940,10 @@ public class FormBinder {
             }
         }
         return false;
+    }
+
+    public boolean isTaskUpdatedFromTimesheets() {
+        return allocationRowsHandler.isTaskUpdatedFromTimesheets();
     }
 
 }

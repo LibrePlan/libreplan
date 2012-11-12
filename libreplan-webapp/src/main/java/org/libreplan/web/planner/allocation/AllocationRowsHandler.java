@@ -423,4 +423,9 @@ public class AllocationRowsHandler {
     private ArrayList<AllocationRow> copyOfCurrentRowsToAvoidConcurrentModification() {
         return new ArrayList<AllocationRow>(currentRows);
     }
+
+    public boolean isTaskUpdatedFromTimesheets() {
+        return task.isUpdatedFromTimesheets();
+    }
+
 }

@@ -602,7 +602,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             // On click delete button
             Button deleteButton = appendDeleteButton(row);
-            deleteButton.setDisabled(isAnyManual());
+            deleteButton.setDisabled(isAnyManualOrTaskUpdatedFromTimesheets());
             formBinder.setDeleteButtonFor(data, deleteButton);
             deleteButton.addEventListener("onClick", new EventListener() {
 
@@ -671,8 +671,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return formBinder != null && formBinder.isAnyNotFlat();
     }
 
-    public boolean isAnyManual() {
-        return formBinder != null && formBinder.isAnyManual();
+    public boolean isAnyManualOrTaskUpdatedFromTimesheets() {
+        if (formBinder == null) {
+            return false;
+        }
+        return formBinder.isAnyManual()
+                || formBinder.isTaskUpdatedFromTimesheets();
     }
 
 }
