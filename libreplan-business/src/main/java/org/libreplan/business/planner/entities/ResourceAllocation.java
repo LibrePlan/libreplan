@@ -774,20 +774,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateResourcesPerDay resourcesPerDayUntil(final LocalDate endExclusive) {
-            return resourcesPerDayUntil(IntraDayDate.startOfDay(endExclusive));
-        }
-
-        @Override
         public IAllocateResourcesPerDay resourcesPerDayUntil(IntraDayDate end) {
             IntraDayDate startInclusive = getStartSpecifiedByTask();
             return new AllocateResourcesPerDayOnInterval(startInclusive, end);
-        }
-
-        @Override
-        public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
-                LocalDate start) {
-            return resourcesPerDayFromEndUntil(IntraDayDate.startOfDay(start));
         }
 
         @Override

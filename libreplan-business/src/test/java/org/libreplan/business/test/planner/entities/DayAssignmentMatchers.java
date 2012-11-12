@@ -35,6 +35,7 @@ import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.GenericDayAssignment;
 import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.SpecificDayAssignment;
+import org.libreplan.business.workingday.IntraDayDate;
 
 /**
  * Some {@link Matcher} that work against dayAssignments
@@ -141,6 +142,10 @@ public class DayAssignmentMatchers {
                         + " days consecutive ");
             }
         };
+    }
+
+    public static final FromMatcher from(final IntraDayDate start) {
+        return new FromMatcher(start.getDate());
     }
 
     public static final FromMatcher from(final LocalDate start) {

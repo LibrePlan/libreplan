@@ -77,6 +77,14 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 
 public class GenericResourceAllocationTest {
 
+    public static IntraDayDate plusDays(LocalDate date, int days) {
+        return IntraDayDate.startOfDay(date.plusDays(days));
+    }
+
+    public static IntraDayDate minusDays(LocalDate date, int days) {
+        return IntraDayDate.startOfDay(date.minusDays(days));
+    }
+
     private GenericResourceAllocation genericResourceAllocation;
     private Set<Criterion> criterions;
 
@@ -421,8 +429,8 @@ public class GenericResourceAllocationTest {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                                 .resourcesPerDayUntil(start.plusDays(2))
-                                 .allocate(resourcesPerDay);
+                .resourcesPerDayUntil(plusDays(start, 2))
+                .allocate(resourcesPerDay);
 
         List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker1);
@@ -445,7 +453,7 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .allocate(resourcesPerDay);
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                .resourcesPerDayUntil(start.plusDays(2))
+                .resourcesPerDayUntil(plusDays(start, 2))
                 .allocate(resourcesPerDay);
 
         List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
@@ -464,7 +472,7 @@ public class GenericResourceAllocationTest {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                .resourcesPerDayUntil(start.minusDays(1))
+                .resourcesPerDayUntil(minusDays(start, 1))
                 .allocate(resourcesPerDay);
 
         assertTrue(genericResourceAllocation.getOrderedAssignmentsFor(worker1)
@@ -493,7 +501,8 @@ public class GenericResourceAllocationTest {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                .resourcesPerDayUntil(start).allocate(resourcesPerDay);
+                .resourcesPerDayUntil(IntraDayDate.startOfDay(start))
+                .allocate(resourcesPerDay);
         assertThat(genericResourceAllocation.getResourcesPerDay(),
                 equalTo(ResourcesPerDay.amount(0)));
         assertTrue(genericResourceAllocation.getOrderedAssignmentsFor(worker1)

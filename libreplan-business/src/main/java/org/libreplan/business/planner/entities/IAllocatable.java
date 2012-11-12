@@ -30,10 +30,6 @@ import org.libreplan.business.workingday.IntraDayDate;
  */
 public interface IAllocatable extends IAllocateResourcesPerDay {
 
-    public IAllocateResourcesPerDay resourcesPerDayUntil(LocalDate endExclusive);
-
-    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start);
-
     public IAllocateResourcesPerDay resourcesPerDayUntil(IntraDayDate endExclusive);
 
     public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(IntraDayDate start);
