@@ -177,6 +177,20 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
+    public IAllocateResourcesPerDay resourcesPerDayUntil(
+            IntraDayDate endExclusive) {
+        return new SpecificAssignmentsAllocator()
+                .resourcesPerDayUntil(endExclusive);
+    }
+
+    @Override
+    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
+            IntraDayDate start) {
+        SpecificAssignmentsAllocator allocator = new SpecificAssignmentsAllocator();
+        return allocator.resourcesPerDayFromEndUntil(start);
+    }
+
+    @Override
     public IAllocateEffortOnInterval fromStartUntil(LocalDate endExclusive) {
         return new SpecificAssignmentsAllocator().fromStartUntil(endExclusive);
     }

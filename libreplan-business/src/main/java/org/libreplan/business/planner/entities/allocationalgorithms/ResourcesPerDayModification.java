@@ -72,13 +72,13 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public void applyAllocationUntil(LocalDate endExclusive) {
+        public void applyAllocationUntil(IntraDayDate endExclusive) {
             genericAllocation.forResources(getResources())
                     .resourcesPerDayUntil(endExclusive).allocate(getGoal());
         }
 
         @Override
-        public void applyAllocationFromEndUntil(LocalDate start) {
+        public void applyAllocationFromEndUntil(IntraDayDate start) {
             genericAllocation.forResources(getResources())
                     .resourcesPerDayFromEndUntil(start).allocate(getGoal());
         }
@@ -153,13 +153,13 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public void applyAllocationUntil(LocalDate endExclusive) {
+        public void applyAllocationUntil(IntraDayDate endExclusive) {
             resourceAllocation.resourcesPerDayUntil(endExclusive).allocate(
                     getGoal());
         }
 
         @Override
-        public void applyAllocationFromEndUntil(LocalDate start) {
+        public void applyAllocationFromEndUntil(IntraDayDate start) {
             resourceAllocation.resourcesPerDayFromEndUntil(start).allocate(
                     getGoal());
         }
@@ -272,9 +272,9 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract void applyAllocationOnAllTaskLength();
 
-    public abstract void applyAllocationUntil(LocalDate endExclusive);
+    public abstract void applyAllocationUntil(IntraDayDate endExclusive);
 
-    public abstract void applyAllocationFromEndUntil(LocalDate start);
+    public abstract void applyAllocationFromEndUntil(IntraDayDate start);
 
     public IAssignmentsCreator createAssignmentsCreator() {
 

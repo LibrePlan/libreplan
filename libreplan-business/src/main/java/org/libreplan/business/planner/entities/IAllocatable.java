@@ -34,6 +34,10 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
 
     public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start);
 
+    public IAllocateResourcesPerDay resourcesPerDayUntil(IntraDayDate endExclusive);
+
+    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(IntraDayDate start);
+
     /**
      * @see IAllocatable#onIntervalWithinTask(IntraDayDate, IntraDayDate)
      */

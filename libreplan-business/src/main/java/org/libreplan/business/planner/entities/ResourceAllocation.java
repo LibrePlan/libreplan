@@ -436,13 +436,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             allocator.allocateOnTaskLength();
         }
 
-        public void allocateUntil(LocalDate endExclusive) {
+        public void allocateUntil(IntraDayDate endExclusive) {
             AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
                     allocations);
             allocator.allocateUntil(endExclusive);
         }
 
-        public void allocateFromEndUntil(LocalDate start) {
+        public void allocateFromEndUntil(IntraDayDate start) {
             AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
                     allocations);
             allocator.allocateFromEndUntil(start);
@@ -775,16 +775,26 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         public IAllocateResourcesPerDay resourcesPerDayUntil(final LocalDate endExclusive) {
+            return resourcesPerDayUntil(IntraDayDate.startOfDay(endExclusive));
+        }
+
+        @Override
+        public IAllocateResourcesPerDay resourcesPerDayUntil(IntraDayDate end) {
             IntraDayDate startInclusive = getStartSpecifiedByTask();
-            IntraDayDate end = IntraDayDate.startOfDay(endExclusive);
             return new AllocateResourcesPerDayOnInterval(startInclusive, end);
         }
 
         @Override
         public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
                 LocalDate start) {
-            IntraDayDate startInclusive = IntraDayDate.max(
-                    IntraDayDate.startOfDay(start), getStartSpecifiedByTask());
+            return resourcesPerDayFromEndUntil(IntraDayDate.startOfDay(start));
+        }
+
+        @Override
+        public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
+                IntraDayDate start) {
+            IntraDayDate startInclusive = IntraDayDate.max(start,
+                    getStartSpecifiedByTask());
             IntraDayDate endDate = task.getIntraDayEndDate();
             return new AllocateResourcesPerDayOnInterval(startInclusive,
                     endDate);

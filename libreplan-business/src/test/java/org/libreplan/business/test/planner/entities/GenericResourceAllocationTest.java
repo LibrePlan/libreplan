@@ -480,7 +480,8 @@ public class GenericResourceAllocationTest {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                .resourcesPerDayUntil(null).allocate(resourcesPerDay);
+                .resourcesPerDayUntil((IntraDayDate) null)
+                .allocate(resourcesPerDay);
     }
 
     @Test

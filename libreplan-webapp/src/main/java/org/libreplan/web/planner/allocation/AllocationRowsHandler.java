@@ -298,10 +298,10 @@ public class AllocationRowsHandler {
                 .createAndAssociate(task, currentRows, requestedToRemove);
         if (isForwardsAllocation()) {
             ResourceAllocation.allocating(allocations).allocateUntil(
-                    formBinder.getAllocationEnd().asExclusiveEnd());
+                    formBinder.getAllocationEnd());
         } else {
             ResourceAllocation.allocating(allocations).allocateFromEndUntil(
-                    formBinder.getAllocationStart().getDate());
+                    formBinder.getAllocationStart());
         }
         return allocations;
     }
