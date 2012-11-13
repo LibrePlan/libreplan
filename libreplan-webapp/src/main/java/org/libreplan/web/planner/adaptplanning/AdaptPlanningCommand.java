@@ -22,6 +22,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -32,6 +33,7 @@ import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOr
 import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.PositionConstraintType;
+import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.workingday.IntraDayDate;
@@ -77,6 +79,7 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
                 if (orderElement.isFinishedTimesheets()) {
                     setEndDate(taskElement, lastTimesheetDate);
                     addTimesheetsProgress(orderElement, lastTimesheetDate);
+                    removeResourceAllocationsBeyondEndDate(taskElement);
                 } else {
                     removeTimesheetsProgressIfAny(orderElement);
                 }
@@ -86,6 +89,15 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
             }
         }
         context.reloadCharts();
+    }
+
+    private void removeResourceAllocationsBeyondEndDate(TaskElement taskElement) {
+        LocalDate endDate = taskElement.getEndAsLocalDate();
+
+        for (ResourceAllocation<?> resourceAllocation : taskElement
+                .getAllResourceAllocations()) {
+            resourceAllocation.removeDayAssignmentsBeyondDate(endDate);
+        }
     }
 
     private void setStartDateAndConstraint(TaskElement taskElement,
