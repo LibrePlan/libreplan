@@ -63,6 +63,11 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
         List<TaskElement> taskElements = planningState.getRootTask()
                 .getAllChildren();
         for (TaskElement taskElement : taskElements) {
+            // Only adapt task leafs
+            if (!taskElement.isLeaf()) {
+                continue;
+            }
+
             OrderElement orderElement = taskElement.getOrderElement();
             // Reset status to allow move the task if needed while adapting the
             // planning
