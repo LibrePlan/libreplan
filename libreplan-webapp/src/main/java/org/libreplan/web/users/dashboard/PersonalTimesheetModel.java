@@ -431,9 +431,14 @@ public class PersonalTimesheetModel implements IPersonalTimesheetModel {
             // saved as it will not be possible to find it later with
             // WorkReportDAO.getPersonalTimesheetWorkReport() method.
         } else {
+            Set<WorkReportLine> deletedWorkReportLinesSet = removeWorkReportLinesWithEffortZero();
+
             Set<OrderElement> orderElements = sumChargedEffortDAO
                     .getOrderElementsToRecalculateTimsheetDates(
-                            workReport.getWorkReportLines(), null);
+                            workReport.getWorkReportLines(),
+                            deletedWorkReportLinesSet);
+            sumChargedEffortDAO
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(deletedWorkReportLinesSet);
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithWorkReportLineSet(workReport
                             .getWorkReportLines());
@@ -444,6 +449,19 @@ public class PersonalTimesheetModel implements IPersonalTimesheetModel {
         }
 
         resetModifiedFields();
+    }
+
+    private Set<WorkReportLine> removeWorkReportLinesWithEffortZero() {
+        Set<WorkReportLine> toRemove = new HashSet<WorkReportLine>();
+        for (WorkReportLine line : workReport.getWorkReportLines()) {
+            if (line.getEffort().isZero()) {
+                toRemove.add(line);
+            }
+        }
+        for (WorkReportLine line : toRemove) {
+            workReport.removeWorkReportLine(line);
+        }
+        return toRemove;
     }
 
     private void resetModifiedFields() {
