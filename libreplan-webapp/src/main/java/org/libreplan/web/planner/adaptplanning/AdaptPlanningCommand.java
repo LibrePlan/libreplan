@@ -22,7 +22,6 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -85,9 +84,14 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
                 }
 
                 taskElement.setUpdatedFromTimesheets(true);
+            }
+        }
+        for (TaskElement taskElement : taskElements) {
+            if (taskElement.isUpdatedFromTimesheets()) {
                 updateTask(context, taskElement);
             }
         }
+
         context.reloadCharts();
     }
 
