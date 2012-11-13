@@ -92,6 +92,7 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
             }
         }
 
+        ((Planner) context.getRelativeTo()).invalidate();
         context.reloadCharts();
     }
 
