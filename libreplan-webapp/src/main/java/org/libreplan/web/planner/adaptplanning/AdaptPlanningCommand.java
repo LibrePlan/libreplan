@@ -43,6 +43,8 @@ import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 
 /**
  * @author Manuel Rego Casasnovas <rego@igalia.com>
@@ -59,7 +61,23 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
     }
 
     @Override
-    public void doAction(IContext<TaskElement> context) {
+    public void doAction(final IContext<TaskElement> context) {
+        LongOperationFeedback.execute(context.getRelativeTo(),
+                new ILongOperation() {
+
+                    @Override
+                    public String getName() {
+                        return _("Adapting planning according to timesheets");
+                    }
+
+                    @Override
+                    public void doAction() throws Exception {
+                        adaptPlanning(context);
+                    }
+                });
+    }
+
+    private void adaptPlanning(IContext<TaskElement> context) {
         List<TaskElement> taskElements = planningState.getRootTask()
                 .getAllChildren();
         for (TaskElement taskElement : taskElements) {
