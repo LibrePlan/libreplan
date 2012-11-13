@@ -127,4 +127,8 @@ public interface ITaskFundamentalProperties {
 
     boolean isUpdatedFromTimesheets();
 
+    Date getFirstTimesheetDate();
+
+    Date getLastTimesheetDate();
+
 }

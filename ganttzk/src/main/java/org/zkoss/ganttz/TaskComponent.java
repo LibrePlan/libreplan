@@ -24,11 +24,14 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
@@ -517,8 +520,34 @@ public class TaskComponent extends Div implements AfterCompose {
                 this.task.getHoursAdvanceEndDate()) + "px";
             response(null, new AuInvoke(this, "resizeCompletionAdvance",
                 widthHoursAdvancePercentage));
+
+            Date firstTimesheetDate = task.getFirstTimesheetDate();
+            Date lastTimesheetDate = task.getLastTimesheetDate();
+            if (firstTimesheetDate != null && lastTimesheetDate != null) {
+                Duration firstDuration = Days.daysBetween(
+                        task.getBeginDateAsLocalDate(),
+                        LocalDate.fromDateFields(firstTimesheetDate))
+                        .toStandardDuration();
+                int pixelsFirst = getMapper().toPixels(firstDuration);
+                String positionFirst = pixelsFirst + "px";
+
+                Duration lastDuration = Days
+                        .daysBetween(
+                                task.getBeginDateAsLocalDate(),
+                                LocalDate.fromDateFields(lastTimesheetDate)
+                                        .plusDays(1)).toStandardDuration();
+                int pixelsLast = getMapper().toPixels(lastDuration);
+                String positionLast = pixelsLast + "px";
+
+                response(null, new AuInvoke(this, "showTimsheetDateMarks",
+                        positionFirst, positionLast));
+            } else {
+                response(null, new AuInvoke(this, "hideTimsheetDateMarks"));
+            }
+
         } else {
             response(null, new AuInvoke(this, "resizeCompletionAdvance", "0px"));
+            response(null, new AuInvoke(this, "hideTimsheetDateMarks"));
         }
     }
 

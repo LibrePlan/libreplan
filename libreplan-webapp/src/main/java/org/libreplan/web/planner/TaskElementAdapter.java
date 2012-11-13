@@ -1228,6 +1228,24 @@ _(
                 return taskElement.isUpdatedFromTimesheets();
             }
 
+            @Override
+            public Date getFirstTimesheetDate() {
+                OrderElement orderElement = taskElement.getOrderElement();
+                if (orderElement != null) {
+                    return orderElement.getFirstTimesheetDate();
+                }
+                return null;
+            }
+
+            @Override
+            public Date getLastTimesheetDate() {
+                OrderElement orderElement = taskElement.getOrderElement();
+                if (orderElement != null) {
+                    return orderElement.getLastTimesheetDate();
+                }
+                return null;
+            }
+
         }
 
         @Override

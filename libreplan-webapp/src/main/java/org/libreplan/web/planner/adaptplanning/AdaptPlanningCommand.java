@@ -92,10 +92,9 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
             taskElement.setUpdatedFromTimesheets(false);
 
             if (orderElement.hasTimesheetsReportingHours()) {
-                setStartDateAndConstraint(taskElement, orderElement
-                        .getSumChargedEffort().getFirstTimesheetDate());
-                Date lastTimesheetDate = orderElement.getSumChargedEffort()
-                        .getLastTimesheetDate();
+                setStartDateAndConstraint(taskElement,
+                        orderElement.getFirstTimesheetDate());
+                Date lastTimesheetDate = orderElement.getLastTimesheetDate();
                 setEndDateIfNeeded(taskElement, lastTimesheetDate);
 
                 if (orderElement.isFinishedTimesheets()) {

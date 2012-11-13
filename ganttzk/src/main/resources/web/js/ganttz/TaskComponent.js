@@ -221,6 +221,18 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     resizeCompletionAdvance : function(width){
         jq('#' + this.uuid + ' .completion:first').css('width', width);
     },
+    showTimsheetDateMarks : function(positionFirst, postionLast) {
+        var firstTimesheetDateMark = jq('#' + this.uuid + ' .first-timesheet-date');
+        var lastTimesheetDateMark = jq('#' + this.uuid + ' .last-timesheet-date');
+        firstTimesheetDateMark.css('left', positionFirst);
+        lastTimesheetDateMark.css('left', postionLast);
+        firstTimesheetDateMark.show();
+        lastTimesheetDateMark.show();
+    },
+    hideTimsheetDateMarks : function() {
+        jq('#' + this.uuid + ' .first-timesheet-date').hide();
+        jq('#' + this.uuid + ' .last-timesheet-date').hide();
+    },
     resizeCompletion2Advance : function(width){
         jq('#' + this.uuid + ' .completion2:first').css('width', width);
     },

@@ -1616,4 +1616,18 @@ public abstract class OrderElement extends IntegrationEntity implements
         return taskElement.isUpdatedFromTimesheets();
     }
 
+    public Date getFirstTimesheetDate() {
+        if (sumChargedEffort == null) {
+            return null;
+        }
+        return sumChargedEffort.getFirstTimesheetDate();
+    }
+
+    public Date getLastTimesheetDate() {
+        if (sumChargedEffort == null) {
+            return null;
+        }
+        return sumChargedEffort.getLastTimesheetDate();
+    }
+
 }

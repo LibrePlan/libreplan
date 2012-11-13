@@ -313,4 +313,14 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return false;
     }
 
+    @Override
+    public Date getFirstTimesheetDate() {
+        return null;
+    }
+
+    @Override
+    public Date getLastTimesheetDate() {
+        return null;
+    }
+
 }

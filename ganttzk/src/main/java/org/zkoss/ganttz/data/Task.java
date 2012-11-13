@@ -553,4 +553,14 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.isUpdatedFromTimesheets();
     }
 
+    @Override
+    public Date getFirstTimesheetDate() {
+        return fundamentalProperties.getFirstTimesheetDate();
+    }
+
+    @Override
+    public Date getLastTimesheetDate() {
+        return fundamentalProperties.getLastTimesheetDate();
+    }
+
 }
