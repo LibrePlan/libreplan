@@ -41,6 +41,9 @@ public class TaskDTO {
     @XmlAttribute
     public String code;
 
+    @XmlAttribute(name = "project-code")
+    public String projectCode;
+
     @XmlAttribute(name = "project-name")
     public String projectName;
 
@@ -61,12 +64,13 @@ public class TaskDTO {
 
     public TaskDTO() {}
 
-    public TaskDTO(String name, String code, String projectName,
-            XMLGregorianCalendar startDate, XMLGregorianCalendar endDate,
-            BigDecimal progressValue, XMLGregorianCalendar progressDate,
-            String effort) {
+    public TaskDTO(String name, String code, String projectCode,
+            String projectName, XMLGregorianCalendar startDate,
+            XMLGregorianCalendar endDate, BigDecimal progressValue,
+            XMLGregorianCalendar progressDate, String effort) {
         this.name = name;
         this.code = code;
+        this.projectCode = projectCode;
         this.projectName = projectName;
         this.startDate = startDate;
         this.endDate = endDate;
