@@ -55,7 +55,7 @@ public final class TaskConverter {
         }
 
         return new TaskDTO(task.getName(), orderElement.getCode(), orderElement
-                .getOrder().getName(),
+                .getOrder().getCode(), orderElement.getOrder().getName(),
                 DateConverter.toXMLGregorianCalendar(task.getStartDate()),
                 DateConverter.toXMLGregorianCalendar(task.getEndDate()),
                 progressValue,
