@@ -505,7 +505,7 @@
                     </exclusion>
                 </exclusions>
              </dependency>
-            <!--  AspectJ -->
+
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
@@ -518,17 +518,18 @@
                 </exclusions>
             </dependency>
 
+            <!--  AspectJ -->
             <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjtools</artifactId>
-                <version>1.5.4</version>
+                <version>1.7.1</version>
             </dependency>
 
             <!--  AspectJ (required by Spring Security) -->
             <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjrt</artifactId>
-                <version>1.5.4</version>
+                <version>1.7.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.json-lib</groupId>
