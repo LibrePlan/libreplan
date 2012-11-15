@@ -17,34 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.users.dashboard;
+package org.libreplan.ws.common.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.libreplan.business.resources.entities.Resource;
-import org.libreplan.business.users.entities.User;
-import org.libreplan.web.UserUtil;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Utilities class for user dashboard window
+ * DTO for representing any concurrent modification exception in the web
+ * services.
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public class UserDashboardUtil {
+@XmlRootElement(name = "concurrent-modification-error")
+public class ConcurrentModificationErrorDTO {
 
-    public static List<Resource> getBoundResourceAsList(User user) {
-        List<Resource> resource = new ArrayList<Resource>();
-        resource.add(user.getWorker());
-        return resource;
+    @XmlAttribute(name = "message")
+    public String message;
+
+    @XmlElement(name = "stack-trace")
+    public String stackTrace;
+
+    public ConcurrentModificationErrorDTO() {
     }
 
-    public static Resource getBoundResourceFromSession() {
-        User user = UserUtil.getUserFromSession();
-        if (user.isBound()) {
-            return user.getWorker();
-        }
-        return null;
+    public ConcurrentModificationErrorDTO(String message, String stackTrace) {
+        this.message = message;
+        this.stackTrace = stackTrace;
     }
 
 }

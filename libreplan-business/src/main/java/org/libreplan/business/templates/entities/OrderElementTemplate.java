@@ -107,18 +107,18 @@ public abstract class OrderElementTemplate extends BaseEntity implements
                 .getInitDate());
         Days fromBeginningToEnd = daysBetween(order.getInitDate(), origin
                 .getDeadline());
-        beingBuilt.materialAssignments = copyMaterialAssignmentsFrom(beingBuilt, origin
-                .getMaterialAssignments());
-        beingBuilt.criterionRequirements = copyDirectCriterionRequirements(
-                beingBuilt, origin.getDirectCriterionRequirement());
-        beingBuilt.labels = new HashSet<Label>(origin.getLabels());
-        beingBuilt.qualityForms = origin.getQualityForms();
-        beingBuilt.advanceAssignmentTemplates = copyDirectAdvanceAssignments(
-                beingBuilt, origin.getDirectAdvanceAssignments());
-        beingBuilt.infoComponent = infoComponentCopied;
-        beingBuilt.schedulingStateType = origin.getSchedulingStateType();
+        beingBuilt.setMaterialAssignments(copyMaterialAssignmentsFrom(beingBuilt, origin
+                .getMaterialAssignments()));
+        beingBuilt.setCriterionRequirements(copyDirectCriterionRequirements(
+                beingBuilt, origin.getDirectCriterionRequirement()));
+        beingBuilt.addLabels(origin.getLabels());
+        beingBuilt.setQualityForms(origin.getQualityForms());
+        beingBuilt.setAdvanceAssignmentTemplates(copyDirectAdvanceAssignments(
+                beingBuilt, origin.getDirectAdvanceAssignments()));
+        beingBuilt.setInfoComponent(infoComponentCopied);
+        beingBuilt.setSchedulingStateType(origin.getSchedulingStateType());
         assignDates(beingBuilt, fromBeginningToStart, fromBeginningToEnd);
-        beingBuilt.origin = origin;
+        beingBuilt.setOrigin(origin);
         return create(beingBuilt);
     }
 
@@ -155,7 +155,7 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     }
 
     public static <T extends OrderElementTemplate> T createNew(T beingBuilt) {
-        beingBuilt.infoComponent = new InfoComponent();
+        beingBuilt.setInfoComponent(new InfoComponent());
         assignDates(beingBuilt, null, null);
         return create(beingBuilt);
     }
@@ -314,6 +314,10 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return schedulingStateType;
     }
 
+    protected void setSchedulingStateType(SchedulingState.Type schedulingStateType) {
+        this.schedulingStateType = schedulingStateType;
+    }
+
     public OrderLineGroupTemplate getParent() {
         return parent;
     }
@@ -322,11 +326,15 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         this.parent = parent;
     }
 
-    private InfoComponent getInfoComponent() {
+    protected InfoComponent getInfoComponent() {
         if (infoComponent == null) {
             infoComponent = new InfoComponent();
         }
         return infoComponent;
+    }
+
+    protected void setInfoComponent(InfoComponent infoComponent) {
+        this.infoComponent = infoComponent;
     }
 
     /**
@@ -388,6 +396,10 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return Collections.unmodifiableSet(materialAssignments);
     }
 
+    protected void setMaterialAssignments(Set<MaterialAssignmentTemplate> materialAssigments) {
+        this.materialAssignments = materialAssignments;
+    }
+
     public void addMaterialAssignment(
             MaterialAssignmentTemplate materialAssignment) {
         Validate.notNull(materialAssignment);
@@ -429,12 +441,21 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         this.labels.add(label);
     }
 
+    public void addLabels(Collection<Label> labels){
+        Validate.notNull(labels);
+        this.labels.addAll(labels);
+    }
+
     public void removeLabel(Label label) {
         this.labels.remove(label);
     }
 
     public Set<QualityForm> getQualityForms() {
         return Collections.unmodifiableSet(qualityForms);
+    }
+
+    protected void setQualityForms(Set<QualityForm> qualityForms) {
+        this.qualityForms = qualityForms;
     }
 
     public void addQualityForm(QualityForm qualityForm) {
@@ -448,6 +469,11 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     @Valid
     public Set<AdvanceAssignmentTemplate> getAdvanceAssignmentTemplates() {
         return Collections.unmodifiableSet(advanceAssignmentTemplates);
+    }
+
+    protected void setAdvanceAssignmentTemplates(
+            Set<AdvanceAssignmentTemplate> advanceAssignmentTemplates) {
+        this.advanceAssignmentTemplates = advanceAssignmentTemplates;
     }
 
     public boolean isRoot() {
@@ -495,6 +521,10 @@ public abstract class OrderElementTemplate extends BaseEntity implements
     @Override
     public Set<CriterionRequirement> getCriterionRequirements() {
         return Collections.unmodifiableSet(criterionRequirements);
+    }
+
+    protected void setCriterionRequirements(Set<CriterionRequirement> criterionRequirements) {
+        this.criterionRequirements = criterionRequirements;
     }
 
     public abstract List<HoursGroup> getHoursGroups();

@@ -563,4 +563,11 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getLastTimesheetDate();
     }
 
+    public void firePropertyChangeForTaskDates() {
+        fundamentalPropertiesListeners.firePropertyChange("beginDate", null,
+                getBeginDate());
+        fundamentalPropertiesListeners.firePropertyChange("endDate", null,
+                getEndDate());
+    }
+
 }

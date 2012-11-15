@@ -316,6 +316,10 @@ public class EditTaskController extends GenericForwardComposer {
             if (context.getRelativeTo() instanceof TaskComponent) {
                 ((TaskComponent) context.getRelativeTo()).updateProperties();
                 ((TaskComponent) context.getRelativeTo()).invalidate();
+
+                org.zkoss.ganttz.data.Task task = context.getMapper()
+                        .findAssociatedBean(taskElement);
+                task.firePropertyChangeForTaskDates();
             }
         }
     }

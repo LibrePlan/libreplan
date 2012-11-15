@@ -19,26 +19,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.ws.orders.api;
+package org.libreplan.ws.boundusers.api;
 
 import javax.ws.rs.core.Response;
 
-import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
-
 /**
- * Service for managing {@link OrderElement} entities.
+ * Service for managing operations related with bound users.
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public interface IOrderElementService {
+public interface IBoundUserService {
 
-    InstanceConstraintViolationsListDTO addOrders(OrderListDTO orderListDTO);
+    TaskListDTO getTasks();
 
-    OrderListDTO getOrders();
+    Response getTimesheetEntriesByTask(String taskCode);
 
-    Response getOrderElement(String code);
-
-    Response removeOrderElement(String code);
+    Response importTimesheetEntries(PersonalTimesheetEntryListDTO dto);
 
 }

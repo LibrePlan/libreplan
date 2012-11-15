@@ -111,7 +111,7 @@ public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
     List<Worker> findByFirstNameSecondNameAndNifAnotherTransaction(
             String firstname, String surname, String nif);
 
-    List<Object[]> getWorkingHoursGroupedPerWorker(List<String> workerNifs,
+    List<Object[]> getWorkingHoursGroupedPerWorker(List<String> workerCodes,
             Date startingDate, Date endingDate);
 
     Worker findByNifAnotherTransaction(String nif)

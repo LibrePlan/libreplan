@@ -137,7 +137,7 @@ public abstract class TaskElement extends BaseEntity {
 
     protected static <T extends TaskElement> T create(T taskElement,
             TaskSource taskSource) {
-        taskElement.taskSource = taskSource;
+        taskElement.setTaskSource(taskSource);
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
         taskElement.updateAdvancePercentageFromOrderElement();
@@ -219,6 +219,10 @@ public abstract class TaskElement extends BaseEntity {
 
     public TaskSource getTaskSource() {
         return taskSource;
+    }
+
+    protected void setTaskSource(TaskSource taskSource) {
+        this.taskSource = taskSource;
     }
 
     protected void copyDependenciesTo(TaskElement result) {

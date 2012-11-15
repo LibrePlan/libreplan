@@ -143,19 +143,9 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     @SuppressWarnings("unchecked")
     public WorkReport getPersonalTimesheetWorkReport(Resource resource,
             LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
-        WorkReportType workReportType;
-        try {
-            workReportType = workReportTypeDAO
-                    .findUniqueByName(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS
-                            .getName());
-        } catch (NonUniqueResultException e) {
-            throw new RuntimeException(e);
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
         Criteria criteria = getSession().createCriteria(WorkReport.class);
-        criteria.add(Restrictions.eq("workReportType", workReportType));
+        criteria.add(Restrictions.eq("workReportType",
+                getPersonalTimesheetsWorkReportType()));
         List<WorkReport> personalTimesheets = criteria.add(
                 Restrictions.eq("resource", resource)).list();
 
@@ -179,8 +169,7 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
         return null;
     }
 
-    @Override
-    public boolean isAnyPersonalTimesheetAlreadySaved() {
+    private WorkReportType getPersonalTimesheetsWorkReportType() {
         WorkReportType workReportType;
         try {
             workReportType = workReportTypeDAO
@@ -191,10 +180,29 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+        return workReportType;
+    }
+
+    @Override
+    public boolean isAnyPersonalTimesheetAlreadySaved() {
+        WorkReportType workReportType = getPersonalTimesheetsWorkReportType();
 
         Criteria criteria = getSession().createCriteria(WorkReport.class);
         criteria.add(Restrictions.eq("workReportType", workReportType));
         return criteria.list().isEmpty();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<WorkReport> findPersonalTimesheetsByResourceAndOrderElement(
+            Resource resource) {
+        Criteria criteria = getSession().createCriteria(WorkReport.class);
+
+        criteria.add(Restrictions.eq("workReportType",
+                getPersonalTimesheetsWorkReportType()));
+        criteria.add(Restrictions.eq("resource", resource));
+
+        return  criteria.list();
     }
 
 }

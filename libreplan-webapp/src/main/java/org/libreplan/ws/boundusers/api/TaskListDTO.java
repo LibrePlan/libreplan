@@ -17,34 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.web.users.dashboard;
+package org.libreplan.ws.boundusers.api;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.libreplan.business.resources.entities.Resource;
-import org.libreplan.business.users.entities.User;
-import org.libreplan.web.UserUtil;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.libreplan.business.planner.entities.Task;
 
 /**
- * Utilities class for user dashboard window
+ * DTO for a list of {@link Task} entities.
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public class UserDashboardUtil {
+@XmlRootElement(name = "task-list")
+public class TaskListDTO {
 
-    public static List<Resource> getBoundResourceAsList(User user) {
-        List<Resource> resource = new ArrayList<Resource>();
-        resource.add(user.getWorker());
-        return resource;
-    }
+    @XmlElement(name = "task")
+    public List<TaskDTO> tasks = new ArrayList<TaskDTO>();
 
-    public static Resource getBoundResourceFromSession() {
-        User user = UserUtil.getUserFromSession();
-        if (user.isBound()) {
-            return user.getWorker();
-        }
-        return null;
+    public TaskListDTO() {}
+
+    public TaskListDTO(List<TaskDTO> tasks) {
+        this.tasks = tasks;
     }
 
 }

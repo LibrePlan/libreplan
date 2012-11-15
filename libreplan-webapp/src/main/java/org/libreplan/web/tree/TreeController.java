@@ -253,6 +253,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 if (node.isLeaf() && !node.isEmptyLeaf()) {
                     // Then a new container will be created
                     nameTextbox = getRenderer().getNameTextbox(node);
+                } else {
+                    // select the parent row to add new children ASAP
+                    tree.setSelectedItem(getRenderer().getTreeitemForNode(
+                            newNode.getParent().getThis()));
                 }
             } else {
                 getModel().addElement(name.getValue(), hours.getValue());
@@ -1105,6 +1109,14 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     intbox.setValue(currentHours);
                 }
             }
+        }
+
+        public Treeitem getTreeitemForNode(T node) {
+            Component cmp = hoursIntBoxByElement.get(node);
+            while (!(cmp instanceof Treeitem)) {
+                cmp = cmp.getParent();
+            }
+            return (Treeitem) cmp;
         }
 
         private Constraint getHoursConstraintFor(final T line) {

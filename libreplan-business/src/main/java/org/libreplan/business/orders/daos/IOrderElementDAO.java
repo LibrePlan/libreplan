@@ -109,6 +109,8 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
 
     EffortDuration calculateMinWorkedHours(final List<OrderElement> list);
 
+    boolean isAlreadyInUse(OrderElement orderElement);
+
     boolean isAlreadyInUseThisOrAnyOfItsChildren(OrderElement orderElement);
 
     /**
@@ -129,6 +131,8 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     OrderElement findRepeatedOrderCodeInDB(OrderElement order);
 
     boolean hasImputedExpenseSheet(Long id) throws InstanceNotFoundException;
+
+    boolean hasImputedExpenseSheetThisOrAnyOfItsChildren(Long id) throws InstanceNotFoundException;
 
     OrderElement findByExternalCode(String code) throws InstanceNotFoundException;
 

@@ -421,7 +421,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return min;
     }
 
-    private boolean isAlreadyInUse(OrderElement orderElement) {
+    @Override
+    public boolean isAlreadyInUse(OrderElement orderElement) {
         if (orderElement.isNewObject()) {
             return false;
         }
@@ -518,7 +519,14 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     }
 
     @Override
-    public boolean hasImputedExpenseSheet(Long id) throws InstanceNotFoundException {
+    public boolean hasImputedExpenseSheet(Long id)
+            throws InstanceNotFoundException {
+        OrderElement orderElement = find(id);
+        return (!expenseSheetLineDAO.findByOrderElement(orderElement).isEmpty());
+    }
+
+    @Override
+    public boolean hasImputedExpenseSheetThisOrAnyOfItsChildren(Long id) throws InstanceNotFoundException {
         OrderElement orderElement = find(id);
         return (!expenseSheetLineDAO.findByOrderElementAndChildren(orderElement).isEmpty());
     }

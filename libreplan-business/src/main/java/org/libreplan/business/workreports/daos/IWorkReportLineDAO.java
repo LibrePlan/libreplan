@@ -74,4 +74,7 @@ public interface IWorkReportLineDAO extends
 
     Boolean isFinished(OrderElement orderElement);
 
+    List<WorkReportLine> findByOrderElementAndWorkReports(
+            OrderElement orderElement, List<WorkReport> workReports);
+
 }

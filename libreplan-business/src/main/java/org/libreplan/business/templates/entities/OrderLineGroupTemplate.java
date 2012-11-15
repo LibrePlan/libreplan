@@ -120,7 +120,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         OrderElementTemplate.create(beingBuilt, group);
         List<OrderElementTemplate> result = buildChildrenTemplates(beingBuilt,
                 group.getChildren());
-        beingBuilt.children = result;
+        beingBuilt.setChildren(result);
         beingBuilt.propagateIndirectCriterionRequirements();
         return beingBuilt;
     }
@@ -134,7 +134,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
      * and it's needed to propagate its criteria while preserving the original
      * value of 'valid' field in {@link IndirectCriterionRequirement}
      */
-    private void propagateIndirectCriterionRequirements() {
+    protected void propagateIndirectCriterionRequirements() {
         propagateIndirectCriterionRequirementsForOrderLineGroup(this);
         propagateIndirectCriterionRequirementsForOrderLines(this);
     }
@@ -215,6 +215,10 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
     @Valid
     public List<OrderElementTemplate> getChildren() {
         return Collections.unmodifiableList(children);
+    }
+
+    protected void setChildren(List<OrderElementTemplate> children) {
+        this.children = children;
     }
 
     @Override
