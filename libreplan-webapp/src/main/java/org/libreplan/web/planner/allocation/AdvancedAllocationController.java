@@ -1129,14 +1129,14 @@ class Row {
     }
 
     private EffortDurationBox buildSumAllEffort() {
-        EffortDurationBox box = (isGroupingRow() || isLimiting) ? EffortDurationBox
+        EffortDurationBox box = isEffortDurationBoxDisabled() ? EffortDurationBox
                 .notEditable() : new EffortDurationBox();
         box.setWidth("40px");
         return box;
     }
 
     private void addListenerIfNeeded(Component allEffortComponent) {
-        if (isGroupingRow() || isLimiting) {
+        if (isEffortDurationBoxDisabled()) {
             return;
         }
         final EffortDurationBox effortDurationBox = (EffortDurationBox) allEffortComponent;
@@ -1167,6 +1167,10 @@ class Row {
                 });
     }
 
+    private boolean isEffortDurationBoxDisabled() {
+        return isGroupingRow() || isLimiting || task.isUpdatedFromTimesheets();
+    }
+
     private void reloadEffortsSameRowForDetailItems() {
         for (Entry<DetailItem, Component> entry : componentsByDetailItem
                 .entrySet()) {
@@ -1181,7 +1185,7 @@ class Row {
         EffortDuration allEffort = aggregate.getTotalEffort();
         allEffortInput.setValue(allEffort);
         Clients.closeErrorBox(allEffortInput);
-        if (isLimiting) {
+        if (isEffortDurationBoxDisabled()) {
             allEffortInput.setDisabled(true);
         }
         if (restriction.isInvalidTotalEffort(allEffort)) {
@@ -1215,6 +1219,11 @@ class Row {
         hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsCombo);
         assignmentFunctionsConfigureButton = getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo);
         hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsConfigureButton);
+
+        // Disable if task is updated from timesheets
+        assignmentFunctionsCombo.setDisabled(task.isUpdatedFromTimesheets());
+        assignmentFunctionsConfigureButton.setDisabled(task
+                .isUpdatedFromTimesheets());
     }
 
     /**
@@ -1621,7 +1630,8 @@ class Row {
 
     private boolean cannotBeEdited(DetailItem item) {
         return isGroupingRow() || doesNotIntersectWithTask(item)
-                || isBeforeLatestConsolidation(item);
+                || isBeforeLatestConsolidation(item)
+                || task.isUpdatedFromTimesheets();
     }
 
     private EffortDurationBox disableIfNeeded(DetailItem item,

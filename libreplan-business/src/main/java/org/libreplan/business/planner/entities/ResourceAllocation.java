@@ -2253,4 +2253,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         intendedResourcesPerDay = getNonConsolidatedResourcePerDay();
     }
 
+    public void removeDayAssignmentsBeyondDate(LocalDate date) {
+        List<T> toRemove = new ArrayList<T>();
+
+        for (T t : getAssignments()) {
+            if (t.getDay().compareTo(date) >= 0) {
+                toRemove.add(t);
+            }
+        }
+
+        setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+        getDayAssignmentsState().removingAssignments(toRemove);
+    }
+
 }

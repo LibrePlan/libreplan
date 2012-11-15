@@ -548,6 +548,21 @@ public abstract class Task implements ITaskFundamentalProperties {
                 getBeginDate());
     }
 
+    @Override
+    public boolean isUpdatedFromTimesheets() {
+        return fundamentalProperties.isUpdatedFromTimesheets();
+    }
+
+    @Override
+    public Date getFirstTimesheetDate() {
+        return fundamentalProperties.getFirstTimesheetDate();
+    }
+
+    @Override
+    public Date getLastTimesheetDate() {
+        return fundamentalProperties.getLastTimesheetDate();
+    }
+
     public void firePropertyChangeForTaskDates() {
         fundamentalPropertiesListeners.firePropertyChange("beginDate", null,
                 getBeginDate());

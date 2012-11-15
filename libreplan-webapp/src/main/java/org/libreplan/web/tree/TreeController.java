@@ -116,6 +116,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().indent(element);
         filterByPredicateIfAny();
+        updateControlButtons();
     }
 
     public TreeModel getTreeModel() {
@@ -140,6 +141,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().unindent(element);
         filterByPredicateIfAny();
+        updateControlButtons();
     }
 
     public void up() {
@@ -153,6 +155,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().up(element);
         filterByPredicateIfAny();
+        updateControlButtons();
     }
 
     public void down() {
@@ -165,6 +168,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().down(element);
         filterByPredicateIfAny();
+        updateControlButtons();
     }
 
     public T getSelectedNode() {
@@ -184,8 +188,15 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
 
-        Treerow from = (Treerow) dragged;
-        T fromNode = type.cast(((Treeitem) from.getParent()).getValue());
+        T fromNode = null;
+        if (dragged instanceof Treerow) {
+            Treerow from = (Treerow) dragged;
+            fromNode = type.cast(((Treeitem) from.getParent()).getValue());
+        }
+        if (dragged instanceof Treeitem) {
+            Treeitem from = (Treeitem) dragged;
+            fromNode = type.cast(from.getValue());
+        }
         if (dropedIn instanceof Tree) {
             getModel().moveToRoot(fromNode);
         }
@@ -354,6 +365,15 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     private List<Column> columns;
 
+    private Button btnNewFromTemplate;
+
+    private Button downButton;
+
+    private Button upButton;
+
+    private Button leftButton;
+
+    private Button rightButton;
 
     protected TreeViewStateSnapshot getSnapshotOfOpenedNodes() {
         return viewStateSnapshot;
@@ -361,6 +381,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     private void resetControlButtons() {
         btnNew.setDisabled(isNewButtonDisabled());
+        btnNewFromTemplate.setDisabled(isNewButtonDisabled());
+
+        boolean disabled = readOnly || isPredicateApplied();
+        downButton.setDisabled(disabled);
+        upButton.setDisabled(disabled);
+        leftButton.setDisabled(disabled);
+        rightButton.setDisabled(disabled);
     }
 
     protected abstract boolean isNewButtonDisabled();
@@ -692,8 +719,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void render(final Treeitem item, Object data) {
             item.setValue(data);
             applySnapshot(item);
-            currentTreeRow = getTreeRowWithoutChildrenFor(item);
             final T currentElement = type.cast(data);
+            currentTreeRow = getTreeRowWithoutChildrenFor(item, currentElement);
             createCells(item, currentElement);
             onDropMoveFromDraggedToTarget();
         }
@@ -722,10 +749,17 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             }
         }
 
-        private Treerow getTreeRowWithoutChildrenFor(final Treeitem item) {
+        private Treerow getTreeRowWithoutChildrenFor(final Treeitem item,
+                T element) {
             Treerow result = createOrRetrieveFor(item);
             // Attach treecells to treerow
-            result.setDroppable("true");
+            if (element.isUpdatedFromTimesheets()) {
+                result.setDraggable("false");
+                result.setDroppable("false");
+            } else {
+                result.setDraggable("true");
+                result.setDroppable("true");
+            }
             result.getChildren().clear();
             return result;
         }
@@ -766,7 +800,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             final SchedulingState schedulingState = getSchedulingStateFrom(currentElement);
             SchedulingStateToggler schedulingStateToggler = new SchedulingStateToggler(
                     schedulingState);
-            schedulingStateToggler.setReadOnly(readOnly);
+            schedulingStateToggler.setReadOnly(readOnly
+                    || currentElement.isUpdatedFromTimesheets());
             final Treecell cell = addCell(
                     getDecorationFromState(getSchedulingStateFrom(currentElement)),
                     schedulingStateToggler);
@@ -796,7 +831,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                         }
                     });
             schedulingStateToggler.afterCompose();
-            cell.setDraggable("true");
+
         }
 
         protected abstract SchedulingState getSchedulingStateFrom(
@@ -1105,92 +1140,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         protected abstract void onDoubleClickForSchedulingStateCell(
                 T currentElement);
 
-        protected Button createDownButton(final Treeitem item,
-                final T currentElement) {
-            EventListener downButtonListener = new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    down(currentElement);
-                }
-            };
-            Button result;
-            if (isPredicateApplied() || isLastItem(currentElement) || readOnly) {
-                result = createButton("/common/img/ico_bajar_out.png", "",
-                        "/common/img/ico_bajar_out.png", "icono",
-                        downButtonListener);
-                result.setDisabled(true);
-            } else {
-                result = createButton("/common/img/ico_bajar1.png",
-                        _("Move down"), "/common/img/ico_bajar.png", "icono",
-                        downButtonListener);
-            }
-            return result;
-        }
-
-        protected Button createUpButton(final Treeitem item, final T element) {
-            EventListener upButtonListener = new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    up(element);
-                }
-            };
-            Button result;
-            if (isPredicateApplied() || isFirstItem(element) || readOnly) {
-                result = createButton("/common/img/ico_subir_out.png", "",
-                        "/common/img/ico_subir_out.png", "icono",
-                        upButtonListener);
-                result.setDisabled(true);
-            } else {
-                result = createButton("/common/img/ico_subir1.png",
-                        _("Move up"), "/common/img/ico_subir.png", "icono",
-                        upButtonListener);
-            }
-            return result;
-        }
-
-        protected Button createUnindentButton(final Treeitem item,
-                final T element) {
-            EventListener unindentListener = new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    unindent(element);
-                }
-            };
-            final Button result;
-            if (isPredicateApplied() || isFirstLevelElement(item) || readOnly) {
-                result = createButton("/common/img/ico_izq_out.png", "",
-                        "/common/img/ico_izq_out.png", "icono",
-                        unindentListener);
-                result.setDisabled(true);
-            } else {
-                result = createButton("/common/img/ico_izq1.png",
-                        _("Unindent"), "/common/img/ico_izq.png", "icono",
-                        unindentListener);
-            }
-            return result;
-        }
-
-        protected Button createIndentButton(final Treeitem item, final T element) {
-            EventListener indentListener = new EventListener() {
-                @Override
-                public void onEvent(Event event) {
-                    indent(element);
-                }
-            };
-            final Button result;
-            if (isPredicateApplied() || isFirstItem(element) || readOnly) {
-                result = createButton("/common/img/ico_derecha_out.png", "",
-                        "/common/img/ico_derecha_out.png", "icono",
-                        indentListener);
-                result.setDisabled(true);
-            } else {
-                result = createButton("/common/img/ico_derecha1.png",
-                        _("Indent"), "/common/img/ico_derecha.png", "icono",
-                        indentListener);
-            }
-            return result;
-        }
-
         protected Button createRemoveButton(final T currentElement) {
             EventListener removeListener = new EventListener() {
                 @Override
@@ -1239,6 +1188,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void doTry() {
 
         }
+
     }
 
     public void setColumns(List<Column> columns) {
@@ -1286,17 +1236,40 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     /**
      * Disable control buttons (new, up, down, indent, unindent, delete)
      */
-    public void updateControlButtons(Event event) {
-        updateControlButtons((Tree) event.getTarget());
-    }
-
-    public void updateControlButtons(Tree tree) {
-        final Treeitem item = tree.getSelectedItem();
-        if (item == null) {
+    public void updateControlButtons() {
+        T element = getSelectedNode();
+        if (element == null) {
             resetControlButtons();
             return;
         }
-        btnNew.setDisabled(false);
+        Treeitem item = tree.getSelectedItem();
+
+        btnNew.setDisabled(isNewButtonDisabled()
+                || element.isUpdatedFromTimesheets());
+        btnNewFromTemplate.setDisabled(isNewButtonDisabled()
+                || element.isUpdatedFromTimesheets());
+
+        boolean disabled = readOnly || isPredicateApplied();
+        downButton.setDisabled(disabled || isLastItem(element));
+        upButton.setDisabled(disabled || isFirstItem(element));
+
+        disabled |= element.isUpdatedFromTimesheets();
+        leftButton.setDisabled(disabled
+                || isFirstLevelElement(item)
+                || element.getParent().isUpdatedFromTimesheets());
+
+        boolean previousSiblingIsUpdatedFromTimesheets = false;
+        try {
+            Treeitem previousItem = (Treeitem) item.getParent()
+                    .getChildren().get(item.getIndex() - 1);
+            T previousSibling = type.cast(previousItem.getValue());
+            previousSiblingIsUpdatedFromTimesheets = previousSibling
+                    .isUpdatedFromTimesheets();
+        } catch (IndexOutOfBoundsException e) {
+            // Do nothing
+        }
+        rightButton.setDisabled(disabled || isFirstItem(element)
+                || previousSiblingIsUpdatedFromTimesheets);
     }
 
     protected abstract boolean isPredicateApplied();

@@ -161,7 +161,8 @@ public class ManageOrderElementAdvancesModel implements
         for (AdvanceAssignment advance : listAdvanceAssignmentsCopy) {
             if ((!listAdvanceAssignments.contains(advance))
                     && (advance instanceof DirectAdvanceAssignment)
-                    && (!advance.getAdvanceType().isQualityForm())) {
+                    && (!advance.getAdvanceType().isQualityForm())
+                    && (!advance.getAdvanceType().isReadOnly())) {
                 listAdvanceAssignments.add(advance);
             }
         }
@@ -337,7 +338,8 @@ public class ManageOrderElementAdvancesModel implements
         for (AdvanceType advanceType : this.listAdvanceTypes) {
             if ((advanceType.getUnitName()
                     .equals(PredefinedAdvancedTypes.CHILDREN.getTypeName()))
-                    || (advanceType.isQualityForm())) {
+                    || (advanceType.isQualityForm())
+                    || advanceType.isReadOnly()) {
                 continue;
             }
             if (existsAdvanceTypeAlreadyInThisOrderElement(advanceType)) {
@@ -410,6 +412,9 @@ public class ManageOrderElementAdvancesModel implements
         AdvanceType advanceType = this.advanceAssignment.getAdvanceType();
         if (advanceType != null) {
             if (advanceType.isQualityForm()) {
+                return true;
+            }
+            if (advanceType.isReadOnly()) {
                 return true;
             }
         }
@@ -762,6 +767,14 @@ public class ManageOrderElementAdvancesModel implements
         AdvanceType advanceType = advance.getAdvanceType();
         advanceTypeDAO.reattach(advanceType);
         return advanceType.isQualityForm();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isReadOnly(AdvanceAssignment advance) {
+        AdvanceType advanceType = advance.getAdvanceType();
+        advanceTypeDAO.reattach(advanceType);
+        return advanceType.isReadOnly();
     }
 
     @Override

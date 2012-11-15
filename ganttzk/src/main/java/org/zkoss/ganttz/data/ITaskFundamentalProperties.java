@@ -125,4 +125,10 @@ public interface ITaskFundamentalProperties {
 
     public boolean isRoot();
 
+    boolean isUpdatedFromTimesheets();
+
+    Date getFirstTimesheetDate();
+
+    Date getLastTimesheetDate();
+
 }

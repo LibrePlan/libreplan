@@ -1,9 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2012 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,31 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.libreplan.web.planner.adaptplanning;
 
-package org.zkoss.ganttz.extensions;
-
+import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
+import org.zkoss.ganttz.extensions.ICommand;
 
 /**
- * An action that can be applied to the planner and it's wanted to be available
- * to the user <br />
+ * Command to adapt planning of a project taking into account information from
+ * the timesheets.
  *
- * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public interface ICommand<T> {
+public interface IAdaptPlanningCommand extends ICommand<TaskElement> {
 
-    public String getName();
-
-    public void doAction(IContext<T> context);
-
-    public String getImage();
-
-    boolean isDisabled();
-
-    /**
-     * Describes if a command is for the planner toolbar. Otherwise it'll be
-     * inserted in the common toolbar.
-     */
-    boolean isPlannerCommand();
+    public void setState(PlanningState planningState);
 
 }

@@ -22,7 +22,9 @@
 package org.libreplan.ws.workreports.impl;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,8 +39,8 @@ import javax.ws.rs.core.Response.Status;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.daos.ISumChargedEffortDAO;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -64,14 +66,13 @@ public class WorkReportServiceREST extends
         GenericRESTService<WorkReport, WorkReportDTO> implements
         IWorkReportService {
 
+    private Set<OrderElement> orderElements;
+
     @Autowired
     private IWorkReportDAO workReportDAO;
 
     @Autowired
     private IWorkReportLineDAO workReportLineDAO;
-
-    @Autowired
-    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private ISumChargedEffortDAO sumChargedEffortDAO;
@@ -120,9 +121,17 @@ public class WorkReportServiceREST extends
 
     @Override
     protected void beforeSaving(WorkReport entity) {
+        orderElements = sumChargedEffortDAO
+                .getOrderElementsToRecalculateTimsheetDates(
+                        entity.getWorkReportLines(), null);
         sumChargedEffortDAO
                 .updateRelatedSumChargedEffortWithWorkReportLineSet(entity
                         .getWorkReportLines());
+    }
+
+    @Override
+    protected void afterSaving(WorkReport entity) {
+        sumChargedEffortDAO.recalculateTimesheetData(orderElements);
     }
 
     @Override
@@ -140,10 +149,14 @@ public class WorkReportServiceREST extends
     public Response removeWorkReport(@PathParam("code") String code) {
         try {
             WorkReport workReport = workReportDAO.findByCode(code);
+            Set<OrderElement> orderElements = sumChargedEffortDAO
+                    .getOrderElementsToRecalculateTimsheetDates(null,
+                            workReport.getWorkReportLines());
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
                             .getWorkReportLines());
             workReportDAO.remove(workReport.getId());
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
             return Response.ok().build();
         } catch (InstanceNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
@@ -157,10 +170,14 @@ public class WorkReportServiceREST extends
     public Response removeWorkReportLine(@PathParam("code") String code) {
         try {
             WorkReportLine workReportLine = workReportLineDAO.findByCode(code);
+            Set<OrderElement> orderElements = sumChargedEffortDAO
+                    .getOrderElementsToRecalculateTimsheetDates(null,
+                            Collections.singleton(workReportLine));
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(new HashSet<WorkReportLine>(
                             Arrays.asList(workReportLine)));
             workReportLineDAO.remove(workReportLine.getId());
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
             return Response.ok().build();
         } catch (InstanceNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();

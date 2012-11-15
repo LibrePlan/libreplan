@@ -272,6 +272,14 @@
         <property name="indirectChargedEffort" access="field"
             column="indirect_charged_effort"
             type="org.libreplan.business.workingday.hibernate.EffortDurationType" />
+
+        <property name="firstTimesheetDate" access="field"
+            column="first_timesheet_date" />
+        <property name="lastTimesheetDate" access="field"
+            column="last_timesheet_date" />
+        <property name="finishedTimesheets"
+            column="finished_timesheets" />
+
     </class>
 
     <class name="SumExpenses" table="sum_expenses">

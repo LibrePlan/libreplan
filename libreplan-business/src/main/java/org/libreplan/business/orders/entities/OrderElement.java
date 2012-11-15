@@ -1014,6 +1014,14 @@ public abstract class OrderElement extends IntegrationEntity implements
         return getCurrentSchedulingData().getTaskSource();
     }
 
+    public TaskElement getTaskElement() {
+        TaskSource taskSource = getTaskSource();
+        if (taskSource == null) {
+            return null;
+        }
+        return taskSource.getTask();
+    }
+
     public Set<TaskElement> getTaskElements() {
         if (getTaskSource() == null) {
             return Collections.emptySet();
@@ -1584,6 +1592,44 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public boolean isOrder() {
         return false;
+    }
+
+    public boolean hasTimesheetsReportingHours() {
+        if (sumChargedEffort == null) {
+            return false;
+        }
+        return sumChargedEffort.getFirstTimesheetDate() != null;
+    }
+
+    public boolean isFinishedTimesheets() {
+        if (sumChargedEffort == null) {
+            return false;
+        }
+        return sumChargedEffort.isFinishedTimesheets();
+    }
+
+    @Override
+    public boolean isUpdatedFromTimesheets() {
+        TaskElement taskElement = getTaskElement();
+        if (taskElement == null) {
+            return false;
+        }
+
+        return taskElement.isUpdatedFromTimesheets();
+    }
+
+    public Date getFirstTimesheetDate() {
+        if (sumChargedEffort == null) {
+            return null;
+        }
+        return sumChargedEffort.getFirstTimesheetDate();
+    }
+
+    public Date getLastTimesheetDate() {
+        if (sumChargedEffort == null) {
+            return null;
+        }
+        return sumChargedEffort.getLastTimesheetDate();
     }
 
     public void detachFromParent() {

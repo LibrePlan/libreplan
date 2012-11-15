@@ -366,7 +366,10 @@ public class ManageOrderElementAdvancesController extends
             if (advance.getAdvanceType() != null) {
                 isQualityForm = manageOrderElementAdvancesModel
                         .isQualityForm(advance);
-                if (manageOrderElementAdvancesModel
+                readOnlyAdvance = manageOrderElementAdvancesModel
+                        .isReadOnly(advance);
+                if (!readOnlyAdvance
+                        && manageOrderElementAdvancesModel
                         .isSubcontratedAdvanceTypeAndSubcontratedTask(advance)) {
                     readOnlyAdvance = true;
                 }
@@ -375,12 +378,12 @@ public class ManageOrderElementAdvancesController extends
             if ((advance instanceof DirectAdvanceAssignment)
                     && ((DirectAdvanceAssignment) advance)
                             .getAdvanceMeasurements().isEmpty()
-                    && !isQualityForm) {
+                    && !isQualityForm && !readOnlyAdvance) {
                 appendComboboxAdvanceType(listItem);
             } else {
                 appendLabelAdvanceType(listItem);
             }
-            appendDecimalBoxMaxValue(listItem, isQualityForm);
+            appendDecimalBoxMaxValue(listItem, isQualityForm || readOnlyAdvance);
             appendDecimalBoxValue(listItem);
             appendLabelPercentage(listItem);
             appendDateBoxDate(listItem);
@@ -401,7 +404,8 @@ public class ManageOrderElementAdvancesController extends
         for(AdvanceType advanceType : listAdvanceType){
             if (!advanceType.getUnitName().equals(
                     PredefinedAdvancedTypes.CHILDREN.getTypeName())
-                    && !advanceType.isQualityForm()) {
+                    && !advanceType.isQualityForm()
+                    && !advanceType.isReadOnly()) {
                 Comboitem comboItem = new Comboitem();
                 comboItem.setValue(advanceType);
                 comboItem.setLabel(advanceType.getUnitName());
@@ -461,7 +465,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void appendDecimalBoxMaxValue(final Listitem listItem,
-            boolean isQualityForm) {
+            boolean isQualityFormOrReadOnly) {
         final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
         final Decimalbox maxValue = new Decimalbox();
@@ -469,7 +473,7 @@ public class ManageOrderElementAdvancesController extends
 
         final DirectAdvanceAssignment directAdvanceAssignment;
         if ((advanceAssignment instanceof IndirectAdvanceAssignment)
-                || isQualityForm
+                || isQualityFormOrReadOnly
                 || (advanceAssignment.getAdvanceType() != null && advanceAssignment
                         .getAdvanceType().getPercentage())
                 || manageOrderElementAdvancesModel
@@ -708,6 +712,11 @@ public class ManageOrderElementAdvancesController extends
             addMeasurementButton.setDisabled(true);
             addMeasurementButton
                     .setTooltiptext(_("Progress that are reported by quality forms can not be modified"));
+        } else if ((advance.getAdvanceType() != null)
+                && (advance.getAdvanceType().isReadOnly())) {
+            addMeasurementButton.setDisabled(true);
+            addMeasurementButton
+                    .setTooltiptext(_("This progress type cannot be modified"));
         } else if (advance instanceof IndirectAdvanceAssignment) {
             addMeasurementButton.setDisabled(true);
             addMeasurementButton
@@ -739,6 +748,11 @@ public class ManageOrderElementAdvancesController extends
             removeButton.setDisabled(true);
             removeButton
                     .setTooltiptext(_("Progress that are reported by quality forms cannot be modified"));
+        } else if ((advance.getAdvanceType() != null)
+                && (advance.getAdvanceType().isReadOnly())) {
+            removeButton.setDisabled(true);
+            removeButton
+                    .setTooltiptext(_("This progress type cannot be modified"));
         } else if (advance instanceof IndirectAdvanceAssignment) {
             removeButton.setDisabled(true);
             removeButton
@@ -1219,6 +1233,11 @@ public class ManageOrderElementAdvancesController extends
                 removeButton.setDisabled(true);
                 removeButton
                         .setTooltiptext(_("Progress measurements that are reported by quality forms cannot be removed"));
+            } else if ((advance.getAdvanceType() != null)
+                    && (advance.getAdvanceType().isReadOnly())) {
+                removeButton.setDisabled(true);
+                removeButton
+                        .setTooltiptext(_("This progress type cannot cannot be removed"));
             } else if (advance.isFake()) {
                 removeButton.setDisabled(true);
                 removeButton

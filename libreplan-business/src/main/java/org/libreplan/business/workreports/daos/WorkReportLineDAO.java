@@ -34,11 +34,13 @@ import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.util.Pair;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -144,6 +146,57 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         }
 
         return criteria.list();
+    }
+
+    @Override
+    public Pair<Date, Date> findMinAndMaxDatesByOrderElement(
+            OrderElement orderElement) {
+
+        String strQuery = "SELECT MIN(date) AS min, MAX(date) AS max "
+                + "FROM WorkReportLine " + "WHERE orderElement = :orderElement";
+
+        Query query = getSession().createQuery(strQuery);
+        query.setParameter("orderElement", orderElement);
+
+        Object[] result = (Object[]) query.uniqueResult();
+
+        Date min = null;
+        Date max = null;
+        if (result != null) {
+            min = (Date) result[0];
+            max = (Date) result[1];
+        }
+        return Pair.create(min, max);
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public List<WorkReportLine> findByOrderElementNotInWorkReportAnotherTransaction(
+            OrderElement orderElement, WorkReport workReport) {
+        return findByOrderElementNotInWorkReport(orderElement, workReport);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<WorkReportLine> findByOrderElementNotInWorkReport(
+            OrderElement orderElement, WorkReport workReport) {
+        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+
+        criteria.add(Restrictions.eq("orderElement", orderElement));
+        if (!workReport.isNewObject()) {
+            criteria.add(Restrictions.ne("workReport", workReport));
+        }
+
+        return (List<WorkReportLine>) criteria.list();
+    }
+
+    @Override
+    public Boolean isFinished(OrderElement orderElement) {
+        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+
+        criteria.add(Restrictions.eq("orderElement", orderElement));
+        criteria.add(Restrictions.eq("finished", true));
+
+        return criteria.uniqueResult() != null;
     }
 
     @SuppressWarnings("unchecked")
