@@ -155,6 +155,12 @@
     z-index : 99 !important;
 }
 
+/* Fixed box */
+.fixed {
+    box-shadow: 3px 3px 3px #999;
+    border: #999;
+}
+
 /* Task lane properties */
 .row {
     height: 12px;
