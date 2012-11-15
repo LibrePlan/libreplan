@@ -72,4 +72,14 @@ public interface IEffortSummaryDAO extends IGenericDAO<EffortSummary, Long> {
      *         or null if it doesn't exist yet.
      */
     EffortSummary findByResourceAndTask(Resource resource, Task task);
+
+    /**
+     * Retrieve all the EffortSummary rows related with a specific resource.
+     *
+     * @param resource
+     *            The resource to search by.
+     * @return A list of EffortSummary objects corresponding to the specified
+     *         resource. It's ordered by start date by default.
+     */
+    List<EffortSummary> findByResource(Resource resource);
 }

@@ -22,6 +22,7 @@ package org.libreplan.business.effortsummary.daos;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -124,6 +125,14 @@ public class EffortSummaryDAO extends GenericDAOHibernate<EffortSummary, Long>
         return (EffortSummary) getSession().createCriteria(EffortSummary.class)
                 .add(Restrictions.eq("resource", resource))
                 .add(Restrictions.eq("task", task)).uniqueResult();
+    }
+
+    @Override
+    public List<EffortSummary> findByResource(Resource resource) {
+        return (List<EffortSummary>) getSession()
+                .createCriteria(EffortSummary.class)
+                .add(Restrictions.eq("resource", resource))
+                .addOrder(Order.asc("startDate")).list();
     }
 
 }
