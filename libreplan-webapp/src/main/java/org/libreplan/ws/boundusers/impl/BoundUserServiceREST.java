@@ -19,6 +19,7 @@
 
 package org.libreplan.ws.boundusers.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -87,6 +88,7 @@ public class BoundUserServiceREST implements IBoundUserService {
     @GET
     @Transactional(readOnly = true)
     @Path("/timesheets/{task-code}/")
+    @SuppressWarnings("unchecked")
     public Response getTimesheetEntriesByTask(
             @PathParam("task-code") String taskCode) {
         try {
@@ -96,7 +98,8 @@ public class BoundUserServiceREST implements IBoundUserService {
                             .getBoundResourceFromSession());
             List<WorkReportLine> workReportLines = workReportLineDAO
                     .findByOrderElementAndWorkReports(orderElement, workReports);
-
+            Collections.sort(workReportLines);
+            Collections.reverse(workReportLines);
             PersonalTimesheetEntryListDTO dto = PersonalTimesheetEntryConverter
                     .toDTO(workReportLines);
             return Response.ok(dto).build();
