@@ -391,6 +391,10 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         editAsignedCriterions();
         updateUserBindingComponents();
         showEditWindow(_("Edit Worker: {0}", worker.getHumanId()));
+
+        Textbox workerFirstname = (Textbox) editWindow
+                .getFellow("workerFirstname");
+        workerFirstname.focus();
     }
 
     private void updateUserBindingComponents() {
@@ -443,6 +447,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         updateUserBindingComponents();
         showEditWindow(_("Create Worker"));
         resourceCalendarModel.cancel();
+        Textbox workerFirstname = (Textbox) editWindow
+                .getFellow("workerFirstname");
+        workerFirstname.focus();
     }
 
     private void showEditWindow(String title) {
