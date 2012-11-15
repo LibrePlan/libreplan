@@ -342,7 +342,11 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     public void remove(T element) {
         List<T> parentNodes = getModel().getParents(element);
-        getModel().removeNode(element);
+        try {
+            getModel().removeNode(element);
+        } catch (NullPointerException e) {
+            LOG.error("Trying to delete an already removed node", e);
+        }
         getRenderer().refreshHoursValueForNodes(parentNodes);
         getRenderer().refreshBudgetValueForNodes(parentNodes);
     }
