@@ -218,6 +218,9 @@ public class TaskComponent extends Div implements AfterCompose {
                     : "";
         } else {
             cssClass += task.isInCriticalPath() ? " critical" : "";
+            if (!task.canBeExplicitlyMoved()) {
+                cssClass += " fixed";
+            }
         }
         cssClass += " " + task.getAssignedStatus();
         if (task.isLimiting()) {
