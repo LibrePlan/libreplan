@@ -208,8 +208,10 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
         taskElement.updateAdvancePercentageFromOrderElement();
 
         Planner planner = (Planner) context.getRelativeTo();
-        TaskComponent taskComponent = planner.getTaskComponentRelatedTo(context
-                .getMapper().findAssociatedBean(taskElement));
+        org.zkoss.ganttz.data.Task task = context
+                .getMapper().findAssociatedBean(taskElement);
+        task.firePropertyChangeForTaskDates();
+        TaskComponent taskComponent = planner.getTaskComponentRelatedTo(task);
         if (taskComponent != null) {
             taskComponent.updateTooltipText();
             taskComponent.updateProperties();
