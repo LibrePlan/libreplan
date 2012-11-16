@@ -284,16 +284,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         //because they are not directly associated to an attribute
         passwordBox.setRawValue("");
         passwordConfirmationBox.setRawValue("");
-        hideAuthenticationTypesCombo();
-    }
-
-    private void hideAuthenticationTypesCombo() {
-        Row comboRow = (Row) editWindow
-                .getFellowIfAny("authenticationTypeComboRow");
-        Row labelRow = (Row) editWindow
-                .getFellowIfAny("authenticationTypeLabelRow");
-        comboRow.setVisible(false);
-        labelRow.setVisible(true);
+        prepareAuthenticationTypesCombo();
     }
 
     @Override
@@ -323,10 +314,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
 
         Row comboRow = (Row) editWindow
                 .getFellowIfAny("authenticationTypeComboRow");
-        Row labelRow = (Row) editWindow
-                .getFellowIfAny("authenticationTypeLabelRow");
         comboRow.setVisible(true);
-        labelRow.setVisible(false);
     }
 
     @Override
@@ -489,6 +477,11 @@ public class UserCRUDController extends BaseCRUDController<User> implements
     }
 
     public void setAuthenticationType(Comboitem item) {
+        if (item == null) {
+            throw new WrongValueException(
+                    editWindow.getFellowIfAny("authenticationTypeCombo"),
+                    _("cannot be empty"));
+        }
         UserAuthenticationType authenticationType = (UserAuthenticationType) item
                 .getValue();
         User user = getUser();
