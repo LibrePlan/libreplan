@@ -211,6 +211,22 @@ public class EffortSummary extends BaseEntity {
         return EffortDuration.seconds(getAssignedEffort()[positionInArray]);
     }
 
+    public EffortDuration getAccumulatedAvailableEffort() {
+        int accumulated = 0;
+        for (int effort : getAvailableEffort()) {
+            accumulated += effort;
+        }
+        return EffortDuration.seconds(accumulated);
+    }
+
+    public EffortDuration getAccumulatedAssignedEffort() {
+        int accumulated = 0;
+        for (int effort : getAssignedEffort()) {
+            accumulated += effort;
+        }
+        return EffortDuration.seconds(accumulated);
+    }
+
     /**
      * Update the availability data in the EffortSummary object reading it again
      * from the attached resource.
