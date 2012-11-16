@@ -19,6 +19,8 @@
 
 package org.libreplan.business.effortsummary.entities;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -225,6 +227,15 @@ public class EffortSummary extends BaseEntity {
             accumulated += effort;
         }
         return EffortDuration.seconds(accumulated);
+    }
+
+    public int getLoadPercentage() {
+        BigDecimal assigned = new BigDecimal(getAccumulatedAssignedEffort()
+                .getSeconds());
+        BigDecimal available = new BigDecimal(getAccumulatedAvailableEffort()
+                .getSeconds());
+        return assigned.divide(available, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100)).intValue();
     }
 
     /**
