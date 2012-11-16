@@ -57,7 +57,7 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
 
     @Override
     public String getName() {
-        return _("Adapt planning acording to timesheets");
+        return _("Adapt planning according to timesheets");
     }
 
     @Override
