@@ -308,6 +308,26 @@ folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
 Inside this new directory there will be two files (``libreplan.log`` and
 ``libreplan-error.log``) that will be rotated every day.
 
+Configure log directory
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Anyway if you want to set manually LibrePlan log path you will have to
+configure ``JAVA_OPTS`` variable in your server. This variable is configured in
+different files depending on the distribution:
+
+* Debian or Ubuntu: ``/etc/default/tomcat6``
+* Fedora or openSUSE: ``/etc/tomcat6/tomcat6.conf``
+
+Where you will need to add the next line::
+
+  # Configure LibrePlan log directory
+  JAVA_OPTS="${JAVA_OPTS} -Dlibreplan-log-directory=/my/path/to/libreplan/log/"
+
+.. WARNING::
+
+  You have to be sure that the user running Tomcat (usually ``tomcat6``) has
+  permissions to write in the specified directory.
+
 
 Fix printing in Debian Squeeze
 ------------------------------
