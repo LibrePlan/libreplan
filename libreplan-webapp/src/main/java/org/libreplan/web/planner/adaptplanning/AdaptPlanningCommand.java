@@ -106,6 +106,8 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
                 }
 
                 taskElement.setUpdatedFromTimesheets(true);
+            } else {
+                removeTimesheetsProgressIfAny(orderElement);
             }
         }
         for (TaskElement taskElement : taskElements) {
