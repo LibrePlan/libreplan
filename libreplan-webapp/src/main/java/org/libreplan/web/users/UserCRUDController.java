@@ -37,6 +37,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.business.users.entities.User.UserAuthenticationType;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Util;
@@ -100,7 +101,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
             Util.appendLabel(row, user.getLoginName());
             Util.appendLabel(row, user.isDisabled() ? _("Yes") : _("No"));
             Util.appendLabel(row, user.isSuperuser() ? _("Yes") : _("No"));
-            Util.appendLabel(row, _(user.getUserType()));
+            Util.appendLabel(row, _(user.getUserType().toString()));
             Util.appendLabel(row, user.isBound() ? user.getWorker()
                     .getShortDescription() : "");
 
@@ -313,7 +314,7 @@ public class UserCRUDController extends BaseCRUDController<User> implements
                 .getFellowIfAny("authenticationTypeCombo");
         combo.getChildren().clear();
         for (UserAuthenticationType type : UserAuthenticationType.values()) {
-            Comboitem item = combo.appendItem(type.toString());
+            Comboitem item = combo.appendItem(_(type.toString()));
             item.setValue(type);
             if (type.equals(getAuthenticationType())) {
                 combo.setSelectedItem(item);
@@ -479,28 +480,12 @@ public class UserCRUDController extends BaseCRUDController<User> implements
         return isLdapUser() || isUserDefaultAdmin();
     }
 
-    public enum UserAuthenticationType {
-
-        EMPTY(""), DATABASE(_("Database")), LDAP(_("LDAP"));
-
-        private String name;
-
-        private UserAuthenticationType(String name) {
-            this.name = name;
-        }
-
-        public String toString() {
-            return name;
-        }
-    }
-
     public UserAuthenticationType getAuthenticationType() {
         User user = getUser();
         if (user != null) {
-            return user.isLibrePlanUser() ? UserAuthenticationType.DATABASE
-                    : UserAuthenticationType.LDAP;
+            return user.getUserType();
         }
-        return UserAuthenticationType.EMPTY;
+        return null;
     }
 
     public void setAuthenticationType(Comboitem item) {
