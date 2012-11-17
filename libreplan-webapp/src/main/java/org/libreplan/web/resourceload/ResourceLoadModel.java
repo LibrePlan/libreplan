@@ -47,6 +47,8 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.effortsummary.daos.IEffortSummaryDAO;
+import org.libreplan.business.effortsummary.entities.EffortSummary;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -86,6 +88,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.resourceload.LoadLevel;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.TimeLineRole;
@@ -114,6 +117,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
+    private IEffortSummaryDAO effortSummaryDAO;
 
     @Autowired
     private IScenarioManager scenarioManager;
@@ -270,7 +276,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private class ByResourceFinder extends ResourceAllocationsFinder<Resource> {
 
         private final Map<Resource, List<ResourceAllocation<?>>> allocationsByResource;
-        private Paginator<Resource> resources;
+        protected Paginator<Resource> resources;
 
         public ByResourceFinder(ResourceLoadParameters parameters) {
             super(parameters);
@@ -300,7 +306,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     .buildGroupsByResource(getFoundAllocations());
         }
 
-        private Paginator<Resource> resourcesToShow() {
+        protected Paginator<Resource> resourcesToShow() {
             return parameters.getEntities(Resource.class,
                     new Callable<List<Resource>>() {
 
@@ -352,6 +358,120 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
         private IAllocationCriteria relatedToResource(Resource resource) {
             return new RelatedWithResource(resource);
+        }
+
+    }
+
+    private class ByResourceFinderUsingEffortSummary extends ByResourceFinder {
+
+        private final Map<Resource, List<EffortSummary>> summariesByResource;
+
+        public ByResourceFinderUsingEffortSummary(
+                ResourceLoadParameters parameters) {
+            super(parameters);
+            this.summariesByResource = eachWithAllocations(this.resources
+                    .getForCurrentPage());
+        }
+
+        @Override
+        Map<Resource, List<ResourceAllocation<?>>> getFoundAllocations() {
+            // FIXME check when this is called and why, replace with some
+            // alternative
+            return new HashMap<Resource, List<ResourceAllocation<?>>>();
+        }
+
+        LoadPeriod buildLoadPeriodFor(EffortSummary summary) {
+            LoadPeriod cosa = new LoadPeriod(
+                    GanttDate.createFrom(summary.getStartDate()),
+                    GanttDate.createFrom(summary.getEndDate()),
+                    summary.getAccumulatedAvailableEffort().toString(),
+                    summary.getAccumulatedAssignedEffort().toString(),
+                    new LoadLevel(summary.getLoadPercentage()));
+            return cosa;
+        }
+
+        @Override
+        List<LoadTimeLine> buildTimeLines() {
+            // TODO: do the magic here
+            List<LoadTimeLine> loadTimeLines = new ArrayList<LoadTimeLine>();
+            for (Entry<Resource, List<EffortSummary>> entry : summariesByResource
+                    .entrySet()) {
+                List<LoadPeriod> parentLoadPeriods = new ArrayList<LoadPeriod>();
+                List<LoadTimeLine> loadTimeLineChildren = new ArrayList<LoadTimeLine>();
+                LocalDate date = null;
+                EffortSummary previousSummary = null;
+                for (EffortSummary summary : entry.getValue()) {
+                    if (!summary.isGlobal()) {
+                        LoadPeriod loadPeriod = buildLoadPeriodFor(summary);
+                        TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(
+                                summary.getTask());
+                        loadTimeLineChildren.add(new LoadTimeLine(
+                                summary.getTask().getName(),
+                                Collections.singletonList(loadPeriod), role));
+
+                        // construction of the parent LoadTimeLine
+                        if (date != null) {
+                            if (summary.getStartDate().isAfter(date)) {
+                                // periods don't overlap
+                                parentLoadPeriods
+                                        .add(buildLoadPeriodFor(previousSummary));
+                            } else {
+                                // periods overlap
+                                EffortSummary first = previousSummary
+                                        .getSubEffortSummary(
+                                                previousSummary.getStartDate(),
+                                                summary.getStartDate());
+
+                                EffortSummary middle = previousSummary
+                                        .getSubEffortSummary(
+                                                summary.getStartDate(),
+                                                previousSummary.getEndDate());
+                                middle.addAssignedEffort(summary
+                                        .getSubEffortSummary(
+                                                summary.getStartDate(),
+                                                previousSummary.getEndDate()));
+                                // FIXME: take into account the situation where
+                                // summary.endDate < previousSummary.endDate
+
+                                EffortSummary last = summary
+                                        .getSubEffortSummary(
+                                                previousSummary.getEndDate(),
+                                                summary.getEndDate());
+                                // FIXME: take into account the case when three
+                                // consecutive EffortSummaries overlap
+
+                                parentLoadPeriods
+                                        .add(buildLoadPeriodFor(first));
+                                parentLoadPeriods
+                                        .add(buildLoadPeriodFor(middle));
+                                parentLoadPeriods.add(buildLoadPeriodFor(last));
+                            }
+                        }
+                        date = summary.getEndDate();
+                        previousSummary = summary;
+                    }
+                }
+                TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(entry
+                        .getKey());
+                LoadTimeLine main = new LoadTimeLine(entry.getKey().getName(),
+                        parentLoadPeriods, role);
+                loadTimeLines.add(new LoadTimeLine(main, loadTimeLineChildren));
+            }
+            return loadTimeLines;
+        }
+
+        private Map<Resource, List<EffortSummary>> eachWithAllocations(
+                List<Resource> allResources) {
+            Map<Resource, List<EffortSummary>> result =
+                    new LinkedHashMap<Resource, List<EffortSummary>>();
+            for (Resource resource : allResources) {
+                result.put(resource, effortSummaryDAO.findByResource(resource));
+            }
+            return result;
+        }
+
+        TimeLineRole<BaseEntity> getCurrentTimeLineRole(BaseEntity entity) {
+            return new TimeLineRole<BaseEntity>(entity);
         }
 
     }
