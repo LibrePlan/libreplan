@@ -24,6 +24,7 @@ import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
@@ -236,6 +237,27 @@ public class EffortSummary extends BaseEntity {
                 .getSeconds());
         return assigned.divide(available, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100)).intValue();
+    }
+
+    public EffortSummary getSubEffortSummary(LocalDate startDate,
+            LocalDate endDate) {
+        Validate.isTrue(!startDate.isBefore(this.getStartDate()));
+        Validate.isTrue(!endDate.isAfter(this.getEndDate()));
+
+        int startDifference = Days.daysBetween(
+                this.getStartDate().toDateMidnight(),
+                startDate.toDateMidnight()).getDays();
+        int length = Days.daysBetween(startDate.toDateMidnight(),
+                endDate.plusDays(1).toDateMidnight()).getDays();
+        int[] newAssignedEffort = new int[length];
+        System.arraycopy(this.getAssignedEffort(), startDifference,
+                newAssignedEffort, 0, length);
+        int[] newAvailableEffort = new int[length];
+        System.arraycopy(this.getAvailableEffort(), startDifference,
+                newAvailableEffort, 0, length);
+
+        return EffortSummary.create(startDate, endDate, newAvailableEffort,
+                newAssignedEffort, this.getResource(), this.getTask());
     }
 
     /**

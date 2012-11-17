@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -98,19 +97,8 @@ public class EffortSummaryDAO extends GenericDAOHibernate<EffortSummary, Long>
         EffortSummary effort = (EffortSummary) getSession()
                 .createCriteria(EffortSummary.class)
                 .add(Restrictions.eq("resource", resource)).uniqueResult();
-        int startDifference = Days.daysBetween(startDate.toDateMidnight(),
-                effort.getStartDate().toDateMidnight()).getDays();
-        int length = Days.daysBetween(startDate.toDateMidnight(),
-                endDate.plusDays(1).toDateMidnight()).getDays();
-        int[] newAssignedEffort = new int[length];
-        System.arraycopy(effort.getAssignedEffort(),
-                startDifference, newAssignedEffort, 0, length);
-        int[] newAvailableEffort = new int[length];
-        System.arraycopy(effort.getAvailableEffort(),
-                startDifference, newAvailableEffort, 0, length);
 
-        return EffortSummary.create(startDate, endDate, newAvailableEffort,
-                newAssignedEffort, effort.getResource());
+        return effort.getSubEffortSummary(startDate, endDate);
     }
 
     @Override
