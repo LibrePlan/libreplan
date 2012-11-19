@@ -203,6 +203,10 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
     @Override
     public List<WorkReportLine> findByOrderElementAndWorkReports(
             OrderElement orderElement, List<WorkReport> workReports) {
+        if (workReports.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         Criteria criteria = getSession().createCriteria(WorkReportLine.class);
 
         criteria.add(Restrictions.eq("orderElement", orderElement));
