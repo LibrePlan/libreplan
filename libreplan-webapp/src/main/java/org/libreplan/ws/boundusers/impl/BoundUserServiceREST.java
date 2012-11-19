@@ -31,6 +31,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.joda.time.LocalDate;
+import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -76,6 +78,9 @@ public class BoundUserServiceREST implements IBoundUserService {
     @Autowired
     private IPersonalTimesheetModel personalTimesheetModel;
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     @Override
     @GET
     @Transactional(readOnly = true)
@@ -110,27 +115,34 @@ public class BoundUserServiceREST implements IBoundUserService {
 
     @Override
     @POST
-    @Transactional
     @Path("/timesheets/")
     public Response importTimesheetEntries(PersonalTimesheetEntryListDTO dto) {
-        try {
-            for (PersonalTimesheetEntryDTO each : dto.entries) {
-                LocalDate date = DateConverter.toLocalDate(each.date);
-                OrderElement orderElement = orderElementDAO
-                        .findByCode(each.task);
-                EffortDuration effortDuration = EffortDuration
-                        .parseFromFormattedString(each.effort);
-
-                personalTimesheetModel.initCreateOrEdit(date);
-                personalTimesheetModel.setEffortDuration(orderElement, date,
-                        effortDuration);
-                personalTimesheetModel.save();
+        for (final PersonalTimesheetEntryDTO each : dto.entries) {
+            LocalDate date = DateConverter.toLocalDate(each.date);
+            OrderElement orderElement = transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<OrderElement>() {
+                        @Override
+                        public OrderElement execute() {
+                            try {
+                                return orderElementDAO.findByCode(each.task);
+                            } catch (InstanceNotFoundException e) {
+                                return null;
+                            }
+                        }
+                    });
+            if (orderElement == null) {
+                return Response.status(Status.NOT_FOUND).build();
             }
+            EffortDuration effortDuration = EffortDuration
+                    .parseFromFormattedString(each.effort);
 
-            return Response.ok().build();
-        } catch (InstanceNotFoundException e) {
-            return Response.status(Status.NOT_FOUND).build();
+            personalTimesheetModel.initCreateOrEdit(date);
+            personalTimesheetModel.setEffortDuration(orderElement, date,
+                    effortDuration);
+            personalTimesheetModel.save();
         }
+
+        return Response.ok().build();
     }
 
 }
