@@ -520,7 +520,7 @@ public class TaskComponent extends Div implements AfterCompose {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
             String widthHoursAdvancePercentage = pixelsFromStartUntil(
                     startPixels,
-                this.task.getHoursAdvanceEndDate()) + "px";
+                this.task.getHoursAdvanceBarEndDate()) + "px";
             response(null, new AuInvoke(this, "resizeCompletionAdvance",
                 widthHoursAdvancePercentage));
 
@@ -573,7 +573,7 @@ public class TaskComponent extends Div implements AfterCompose {
         if (task.isShowingAdvances()) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
             String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
-                this.task.getAdvanceEndDate()) + "px";
+                this.task.getAdvanceBarEndDate()) + "px";
             response(null, new AuInvoke(this, "resizeCompletion2Advance",
                     widthAdvancePercentage));
         } else {
@@ -587,7 +587,7 @@ public class TaskComponent extends Div implements AfterCompose {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
 
             String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
-                    this.task.getAdvanceEndDate(progressType)) + "px";
+                    this.task.getAdvanceBarEndDate(progressType)) + "px";
             response(null, new AuInvoke(this, "resizeCompletion2Advance",
                     widthAdvancePercentage));
         } else {

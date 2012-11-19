@@ -384,8 +384,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public BigDecimal getHoursAdvancePercentage() {
-        return fundamentalProperties.getHoursAdvancePercentage();
+    public BigDecimal getHoursAdvanceBarPercentage() {
+        return fundamentalProperties.getHoursAdvanceBarPercentage();
     }
 
     @Override
@@ -394,8 +394,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public GanttDate getHoursAdvanceEndDate() {
-        return fundamentalProperties.getHoursAdvanceEndDate();
+    public GanttDate getHoursAdvanceBarEndDate() {
+        return fundamentalProperties.getHoursAdvanceBarEndDate();
     }
 
     @Override
@@ -409,12 +409,12 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public GanttDate getAdvanceEndDate() {
-        return fundamentalProperties.getAdvanceEndDate();
+    public GanttDate getAdvanceBarEndDate() {
+        return fundamentalProperties.getAdvanceBarEndDate();
     }
 
-    public GanttDate getAdvanceEndDate(String progressType) {
-        return fundamentalProperties.getAdvanceEndDate(progressType);
+    public GanttDate getAdvanceBarEndDate(String progressType) {
+        return fundamentalProperties.getAdvanceBarEndDate(progressType);
     }
 
     public String getTooltipText() {
