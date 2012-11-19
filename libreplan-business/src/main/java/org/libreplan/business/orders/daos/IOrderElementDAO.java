@@ -87,10 +87,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     OrderElement findUniqueByCodeAnotherTransaction(String code)
             throws InstanceNotFoundException;
 
-    boolean existsOtherOrderElementByCode(OrderElement orderElement);
-
-    boolean existsByCodeAnotherTransaction(OrderElement orderElement);
-
     List<OrderElement> getAll();
 
     public List<OrderElement> findOrderElementsWithExternalCode();
@@ -138,5 +134,8 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
 
     public List<OrderElement> findByLabelsAndCriteria(Set<Label> labels,
             Set<Criterion> criteria);
+
+    boolean existsByCodeInAnotherOrderAnotherTransaction(
+            OrderElement orderElement);
 
 }
