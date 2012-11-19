@@ -187,4 +187,10 @@
         </update>
     </changeSet>
 
+    <changeSet id="drop-unique-constraint-code-in-order_element" author="mrego">
+        <comment>Drop unique constraint for code in order_element table</comment>
+        <dropUniqueConstraint tableName="order_element"
+            constraintName="order_element_code_key" />
+    </changeSet>
+
 </databaseChangeLog>

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
@@ -1165,6 +1166,16 @@ public abstract class OrderElement extends IntegrationEntity implements
         // the automatic checking of this constraint is avoided because it uses
         // the wrong code property
         return true;
+    }
+
+    @AssertTrue(message = "code is already used in another project")
+    public boolean checkConstraintCodeRepeatedInAnotherOrder() {
+        if (StringUtils.isBlank(getCode())) {
+            return true;
+        }
+
+        return !Registry.getOrderElementDAO()
+                .existsByCodeInAnotherOrderAnotherTransaction(this);
     }
 
     @AssertTrue(message = "a label can not be assigned twice in the same branch")

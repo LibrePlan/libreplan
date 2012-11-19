@@ -43,6 +43,7 @@ import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
@@ -255,22 +256,6 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     public OrderElement findUniqueByCodeAnotherTransaction(String code)
             throws InstanceNotFoundException {
         return findUniqueByCode(code);
-    }
-
-    @Override
-    public boolean existsOtherOrderElementByCode(OrderElement orderElement) {
-        try {
-            OrderElement t = findUniqueByCode(orderElement.getCode());
-            return t != null && t != orderElement;
-        } catch (InstanceNotFoundException e) {
-            return false;
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public boolean existsByCodeAnotherTransaction(OrderElement orderElement) {
-        return existsOtherOrderElementByCode(orderElement);
     }
 
     @Override
@@ -493,9 +478,11 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             OrderElement orderElementInDB = orderElementsInDB.get(code);
 
             // There's an element in the DB with the same code and it's a
-            // different element
+            // different element in a different order
             if (orderElementInDB != null
-                    && !orderElementInDB.getId().equals(orderElement.getId())) {
+                    && !orderElementInDB.getId().equals(orderElement.getId())
+                    && !orderElementInDB.getOrder().getId()
+                            .equals(orderElement.getOrder().getId())) {
                 return orderElement;
             }
         }
@@ -588,6 +575,32 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
                 .createQuery(
                         "FROM OrderElement oe WHERE oe.id IN (:ids) ORDER BY oe.infoComponent.code")
                 .setParameterList("ids", orderElementsIds).list();
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByCodeInAnotherOrderAnotherTransaction(
+            OrderElement orderElement) {
+        return existsByCodeInAnotherOrder(orderElement);
+    }
+
+    private boolean existsByCodeInAnotherOrder(OrderElement orderElement) {
+        try {
+            OrderElement found = findUniqueByCode(orderElement.getCode());
+            return !areInTheSameOrder(orderElement, found);
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    private boolean areInTheSameOrder(OrderElement orderElement1,
+            OrderElement orderElement2) {
+        Order order1 = orderElement1.getOrder();
+        Order order2 = orderElement2.getOrder();
+        if (order1.getId() == null || order2.getId() == null) {
+            return false;
+        }
+        return order1.getId().equals(order2.getId());
     }
 
 }
