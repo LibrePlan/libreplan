@@ -21,10 +21,6 @@
 
 package org.libreplan.web.planner;
 
-import static org.libreplan.business.workingday.EffortDuration.fromHoursAsBigDecimal;
-import static org.libreplan.business.workingday.EffortDuration.min;
-import static org.libreplan.business.workingday.EffortDuration.seconds;
-import static org.libreplan.business.workingday.EffortDuration.zero;
 import static org.libreplan.web.I18nHelper._;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.equalTo;
@@ -39,8 +35,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -86,7 +80,6 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.business.workingday.EffortDuration.IEffortFrom;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 import org.libreplan.web.common.Util;
@@ -552,43 +545,12 @@ public class TaskElementAdapter {
             }
 
             @Override
-            public GanttDate getHoursAdvanceEndDate() {
-                OrderElement orderElement = taskElement.getOrderElement();
-
-                EffortDuration assignedEffort = EffortDuration.zero();
-                if (orderElement.getSumChargedEffort() != null) {
-                    assignedEffort = orderElement.getSumChargedEffort()
-                            .getTotalChargedEffort();
-                }
-
-                GanttDate result = null;
-                if (!(taskElement instanceof TaskGroup)) {
-                    result = calculateLimitDateByHours(assignedEffort
-                            .toHoursAsDecimalWithScale(2));
-                }
-
-                if (result == null) {
-                    EffortDuration effort = taskElement.getSumOfAssignedEffort();
-
-                    if (effort.isZero()) {
-                        effort = EffortDuration.hours(orderElement.getWorkHours());
-                        if (effort.isZero()) {
-                            return getBeginDate();
-                        }
-                    }
-                    BigDecimal percentage = new BigDecimal(assignedEffort
-                            .divivedBy(effort).doubleValue()).setScale(2,
-                            RoundingMode.HALF_UP);
-
-                    result = calculateLimitDateByPercentage(percentage);
-
-                }
-
-                return result;
+            public GanttDate getHoursAdvanceBarEndDate() {
+                return calculateLimitDateProportionalToTaskElementSize(getHoursAdvanceBarPercentage());
             }
 
             @Override
-            public BigDecimal getHoursAdvancePercentage() {
+            public BigDecimal getHoursAdvanceBarPercentage() {
                 OrderElement orderElement = taskElement.getOrderElement();
                 if (orderElement == null) {
                     return BigDecimal.ZERO;
@@ -694,22 +656,22 @@ public class TaskElementAdapter {
             }
 
             @Override
-            public GanttDate getAdvanceEndDate(String progressType) {
-                return getAdvanceEndDate(ProgressType.asEnum(progressType));
+            public GanttDate getAdvanceBarEndDate(String progressType) {
+                return getAdvanceBarEndDate(ProgressType.asEnum(progressType));
             }
 
-            private GanttDate getAdvanceEndDate(ProgressType progressType) {
+            private GanttDate getAdvanceBarEndDate(ProgressType progressType) {
                 BigDecimal advancePercentage = BigDecimal.ZERO;
                 if (taskElement.getOrderElement() != null) {
                     advancePercentage = taskElement
                             .getAdvancePercentage(progressType);
                 }
-                return getAdvanceEndDate(advancePercentage);
+                return getAdvanceBarEndDate(advancePercentage);
             }
 
             @Override
-            public GanttDate getAdvanceEndDate() {
-                return getAdvanceEndDate(getAdvancePercentage());
+            public GanttDate getAdvanceBarEndDate() {
+                return getAdvanceBarEndDate(getAdvancePercentage());
             }
 
             private boolean isTaskRoot(TaskElement taskElement) {
@@ -728,148 +690,8 @@ public class TaskElementAdapter {
                         });
             }
 
-            private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
-                if (advancePercentage.compareTo(BigDecimal.ONE) == 0) {
-                    return getEndDate();
-                }
-
-                BigDecimal hours = BigDecimal.ZERO;
-
-                if (taskElement instanceof TaskGroup) {
-                    //progess calculation for TaskGroups is done with
-                    //this method, which is much lighter
-                    return calculateLimitDateByPercentage(advancePercentage);
-                }
-
-                if (taskElement.getOrderElement() != null) {
-                    hours = taskElement.getSumOfAssignedEffort()
-                            .toHoursAsDecimalWithScale(2);
-                }
-
-                // Calculate date according to advanceHours or advancePercentage
-                final BigDecimal advanceHours = advancePercentage
-                        .multiply(hours);
-                GanttDate result = calculateLimitDateByHours(advanceHours);
-                if (result == null) {
-                    result = calculateLimitDateByPercentage(advancePercentage);
-
-                } else {
-                    GanttDate endDate = toGantt(taskElement.getIntraDayEndDate());
-                    if (result.compareTo(endDate) > 0) {
-                        //don't allow progress bars wider than the task itself
-                        result = endDate;
-                    }
-                }
-                return result;
-            }
-
-            private GanttDate calculateLimitDateByPercentage(BigDecimal advancePercentage) {
-                BaseCalendar calendar = taskElement.getCalendar();
-                if (advancePercentage.compareTo(BigDecimal.ZERO) == 0
-                        || calendar == null) {
-                    return getBeginDate();
-                }
-                IntraDayDate start = taskElement.getIntraDayStartDate();
-                IntraDayDate end = taskElement.getIntraDayEndDate();
-                int daysBetween = start.numberOfDaysUntil(end);
-                if (daysBetween == 0) {
-                    return calculateLimitDateWhenDaysBetweenAreZero(advancePercentage);
-                }
-                BigDecimal daysAdvance = advancePercentage
-                        .multiply(new BigDecimal(daysBetween));
-                int days = daysAdvance.intValue();
-
-                LocalDate advanceDate = taskElement.getStartAsLocalDate()
-                        .plusDays(days);
-                EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                        .wholeDay(advanceDate));
-
-                int seconds = daysAdvance.subtract(new BigDecimal(days))
-                        .multiply(new BigDecimal(capacity.getSeconds()))
-                        .intValue();
-
-                return toGantt(IntraDayDate.create(advanceDate,
-                        EffortDuration.seconds(seconds)));
-            }
-
-            private GanttDate calculateLimitDateWhenDaysBetweenAreZero(
-                    BigDecimal advancePercentage) {
-                IntraDayDate start = taskElement.getIntraDayStartDate();
-                IntraDayDate end = taskElement.getIntraDayEndDate();
-                final BaseCalendar calendar = taskElement.getCalendar();
-                Iterable<PartialDay> daysUntil = start.daysUntil(end);
-
-                EffortDuration total = EffortDuration.sum(daysUntil,
-                        new IEffortFrom<PartialDay>() {
-                            @Override
-                            public EffortDuration from(PartialDay each) {
-                                return calendar.getCapacityOn(each);
-                            }
-                        });
-
-                BigDecimal totalAsSeconds = new BigDecimal(total.getSeconds());
-                EffortDuration advanceLeft = seconds(advancePercentage
-                        .multiply(totalAsSeconds).intValue());
-                for (PartialDay each : daysUntil) {
-                    if (advanceLeft.compareTo(calendar.getCapacityOn(each)) <= 0) {
-                        LocalDate dayDate = each.getStart().getDate();
-                        if (dayDate.equals(start.getDate())) {
-                            return toGantt(IntraDayDate
-                                    .create(dayDate, advanceLeft.plus(start
-                                            .getEffortDuration())));
-                        }
-                        return toGantt(IntraDayDate
-                                .create(dayDate, advanceLeft));
-                    }
-                    advanceLeft = advanceLeft.minus(calendar
-                            .getCapacityOn(each));
-                }
-                return toGantt(end);
-            }
-
-            private GanttDate calculateLimitDateByHours(BigDecimal hours) {
-                if (hours == null || hours.compareTo(BigDecimal.ZERO) == 0) {
-                    return null;
-                }
-                EffortDuration hoursLeft = fromHoursAsBigDecimal(hours);
-                IntraDayDate result = null;
-                EffortDuration effortLastDayNotZero = zero();
-
-                Map<LocalDate, EffortDuration> daysMap = taskElement
-                        .getDurationsAssignedByDay();
-                if (daysMap.isEmpty()) {
-                    return null;
-                }
-                for (Entry<LocalDate, EffortDuration> entry : daysMap
-                        .entrySet()) {
-                    if (!entry.getValue().isZero()) {
-                        effortLastDayNotZero = entry.getValue();
-                    }
-                    EffortDuration decrement = min(entry.getValue(), hoursLeft);
-                    hoursLeft = hoursLeft.minus(decrement);
-                    if (hoursLeft.isZero()) {
-                        result = IntraDayDate.create(entry.getKey(),
-                                decrement);
-                        break;
-                    } else {
-                        result = IntraDayDate.startOfDay(entry.getKey()
-                                .plusDays(1));
-                    }
-                }
-                if (!hoursLeft.isZero() && effortLastDayNotZero.isZero()) {
-                    LOG.warn("limit not reached and no day with effort not zero");
-                }
-                if (!hoursLeft.isZero() && !effortLastDayNotZero.isZero()) {
-                    while (!hoursLeft.isZero()) {
-                        hoursLeft = hoursLeft.minus(min(effortLastDayNotZero,
-                                hoursLeft));
-                        result = result.nextDayAtStart();
-                    }
-                }
-                if (result == null) {
-                    return null;
-                }
-                return toGantt(result);
+            private GanttDate getAdvanceBarEndDate(BigDecimal advancePercentage) {
+                return calculateLimitDateProportionalToTaskElementSize(advancePercentage);
             }
 
             @Override
@@ -1057,7 +879,7 @@ public class TaskElementAdapter {
                         .append("% , ");
 
                 result.append(_("Hours invested") + ": ")
-                        .append(getHoursAdvancePercentage().multiply(
+                        .append(getHoursAdvanceBarPercentage().multiply(
                                 new BigDecimal(100))).append("% <br/>");
 
                 if (taskElement.getOrderElement() instanceof Order) {
