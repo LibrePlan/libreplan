@@ -351,8 +351,11 @@ public class FormBinder {
                         @SuppressWarnings("unchecked")
                         private IntraDayDate ensureItIsAfterConsolidation(
                                 IntraDayDate newDate) {
-                            return Collections.max(Arrays.asList(newDate,
-                                    IntraDayDate.startOfDay(firstPossibleDay)));
+                            if (getTask().hasConsolidations()) {
+                                return Collections.max(Arrays.asList(newDate,
+                                        IntraDayDate.startOfDay(firstPossibleDay)));
+                            }
+                            return newDate;
                         }
 
                     }, onChangeEnableApply);
