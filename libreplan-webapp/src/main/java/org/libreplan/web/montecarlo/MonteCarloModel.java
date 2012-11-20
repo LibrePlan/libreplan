@@ -84,6 +84,9 @@ public class MonteCarloModel implements IMonteCarloModel {
             return;
         }
         this.tasksInCriticalPath = onlyTasks(tasksInCriticalPath);
+        if (this.tasksInCriticalPath.isEmpty()) {
+            return;
+        }
         Collections.sort(this.tasksInCriticalPath, Task.getByStartDateComparator());
         initializeTasksInOrder(getOrderFor(this.tasksInCriticalPath));
         initializeOrderNameFor(this.tasksInCriticalPath);
