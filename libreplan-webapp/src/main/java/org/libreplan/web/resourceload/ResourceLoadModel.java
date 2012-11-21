@@ -392,16 +392,18 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
         @Override
         List<LoadTimeLine> buildTimeLines() {
-            // TODO: do the magic here
             List<LoadTimeLine> loadTimeLines = new ArrayList<LoadTimeLine>();
+
             for (Entry<Resource, List<EffortSummary>> entry : summariesByResource
                     .entrySet()) {
-                List<LoadPeriod> parentLoadPeriods = new ArrayList<LoadPeriod>();
+
                 List<LoadTimeLine> loadTimeLineChildren = new ArrayList<LoadTimeLine>();
-                LocalDate date = null;
-                EffortSummary previousSummary = null;
+                List<LocalDate> parentTimeSegments = new ArrayList<LocalDate>();
+                EffortSummary global = null;
+
                 for (EffortSummary summary : entry.getValue()) {
                     if (!summary.isGlobal()) {
+                        // build LoadTimeLine for task
                         LoadPeriod loadPeriod = buildLoadPeriodFor(summary);
                         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(
                                 summary.getTask());
@@ -409,48 +411,27 @@ public class ResourceLoadModel implements IResourceLoadModel {
                                 summary.getTask().getName(),
                                 Collections.singletonList(loadPeriod), role));
 
-                        // construction of the parent LoadTimeLine
-                        if (date != null) {
-                            if (summary.getStartDate().isAfter(date)) {
-                                // periods don't overlap
-                                parentLoadPeriods
-                                        .add(buildLoadPeriodFor(previousSummary));
-                            } else {
-                                // periods overlap
-                                EffortSummary first = previousSummary
-                                        .getSubEffortSummary(
-                                                previousSummary.getStartDate(),
-                                                summary.getStartDate());
-
-                                EffortSummary middle = previousSummary
-                                        .getSubEffortSummary(
-                                                summary.getStartDate(),
-                                                previousSummary.getEndDate());
-                                middle.addAssignedEffort(summary
-                                        .getSubEffortSummary(
-                                                summary.getStartDate(),
-                                                previousSummary.getEndDate()));
-                                // FIXME: take into account the situation where
-                                // summary.endDate < previousSummary.endDate
-
-                                EffortSummary last = summary
-                                        .getSubEffortSummary(
-                                                previousSummary.getEndDate(),
-                                                summary.getEndDate());
-                                // FIXME: take into account the case when three
-                                // consecutive EffortSummaries overlap
-
-                                parentLoadPeriods
-                                        .add(buildLoadPeriodFor(first));
-                                parentLoadPeriods
-                                        .add(buildLoadPeriodFor(middle));
-                                parentLoadPeriods.add(buildLoadPeriodFor(last));
-                            }
-                        }
-                        date = summary.getEndDate();
-                        previousSummary = summary;
+                        parentTimeSegments.add(summary.getStartDate());
+                        parentTimeSegments.add(summary.getEndDate());
+                    } else {
+                        global = summary;
                     }
                 }
+
+                // build LoadTimeLine for resource
+                Collections.sort(parentTimeSegments);
+                List<LoadPeriod> parentLoadPeriods = new ArrayList<LoadPeriod>();
+                for (int i = 1; i < parentTimeSegments.size(); i++) {
+                    LocalDate startDate = parentTimeSegments.get(i - 1);
+                    LocalDate endDate = parentTimeSegments.get(i);
+                    // FIXME: there is a problem with the right limit of the
+                    // interval, it is taking one day more than it should
+                    if (!endDate.isBefore(startDate)) {
+                        parentLoadPeriods.add(buildLoadPeriodFor(global
+                                .getSubEffortSummary(startDate, endDate)));
+                    }
+                }
+
                 TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(entry
                         .getKey());
                 LoadTimeLine main = new LoadTimeLine(entry.getKey().getName(),
