@@ -235,6 +235,10 @@ public class EffortSummary extends BaseEntity {
                 .getSeconds());
         BigDecimal available = new BigDecimal(getAccumulatedAvailableEffort()
                 .getSeconds());
+        if (available.compareTo(BigDecimal.ZERO) == 0) {
+            return assigned.compareTo(BigDecimal.ZERO) == 0 ?
+                    0 : Integer.MAX_VALUE;
+        }
         return assigned.divide(available, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100)).intValue();
     }
