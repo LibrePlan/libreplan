@@ -121,6 +121,9 @@ public class EffortSummary extends BaseEntity {
 
             LocalDate startDate = allocation.getStartDate();
             LocalDate endDate = allocation.getEndDate();
+            if (allocation.getIntraDayEndDate().isStartOfDay()) {
+                endDate = endDate.minusDays(1);
+            }
             int numberOfElements = Days.daysBetween(startDate, endDate)
                     .getDays() + 1;
 

@@ -383,7 +383,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
         LoadPeriod buildLoadPeriodFor(EffortSummary summary) {
             LoadPeriod cosa = new LoadPeriod(
                     GanttDate.createFrom(summary.getStartDate()),
-                    GanttDate.createFrom(summary.getEndDate()),
+                    GanttDate.createFrom(summary.getEndDate().plusDays(1)),
+                        // +1 day, because the right limit must reach the
+                        // beginning of the next day
                     summary.getAccumulatedAvailableEffort().toString(),
                     summary.getAccumulatedAssignedEffort().toString(),
                     new LoadLevel(summary.getLoadPercentage()));
@@ -411,8 +413,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
                                 summary.getTask().getName(),
                                 Collections.singletonList(loadPeriod), role));
 
-                        parentTimeSegments.add(summary.getStartDate());
-                        parentTimeSegments.add(summary.getEndDate());
+                        parentTimeSegments.add(loadPeriod.getStart()
+                                .toLocalDate());
+                        parentTimeSegments.add(loadPeriod.getEnd()
+                                .toLocalDate());
                     } else {
                         global = summary;
                     }
@@ -423,9 +427,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 List<LoadPeriod> parentLoadPeriods = new ArrayList<LoadPeriod>();
                 for (int i = 1; i < parentTimeSegments.size(); i++) {
                     LocalDate startDate = parentTimeSegments.get(i - 1);
-                    LocalDate endDate = parentTimeSegments.get(i);
-                    // FIXME: there is a problem with the right limit of the
-                    // interval, it is taking one day more than it should
+                    LocalDate endDate = parentTimeSegments.get(i).minusDays(1);
                     if (!endDate.isBefore(startDate)) {
                         parentLoadPeriods.add(buildLoadPeriodFor(global
                                 .getSubEffortSummary(startDate, endDate)));
