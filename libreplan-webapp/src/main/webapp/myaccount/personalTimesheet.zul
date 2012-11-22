@@ -139,6 +139,30 @@
             label="${i18n:_('Cancel')}"
             sclass="cancel-button global-action" />
 
+        <popup id="personalTimesheetPopup" width="300px">
+            <grid>
+                <columns>
+                    <column width="50px"/>
+                    <column />
+                </columns>
+                <rows>
+                    <row>
+                        <label value="${i18n:_('Task')}" />
+                        <label id="personalTimesheetPopupTask" />
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Date')}" />
+                        <label id="personalTimesheetPopupDate" />
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Effort')}" />
+                        <div id="personalTimesheetPopupEffort" />
+                    </row>
+                </rows>
+            </grid>
+            <button onClick="controller.closePersonalTimesheetPopup();"
+                label="${i18n:_('Ok')}" />
+        </popup>
 
     </window>
 </zk>
