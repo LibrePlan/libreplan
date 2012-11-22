@@ -52,6 +52,10 @@ import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
@@ -64,7 +68,9 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Div;
 import org.zkoss.zul.api.Grid;
+import org.zkoss.zul.api.Popup;
 
 /**
  * Controller for creation/edition of a personal timesheet
@@ -109,6 +115,14 @@ public class PersonalTimesheetController extends GenericForwardComposer
     private Label summaryTotalExtraPerDay;
 
     private Label summaryTotalExtra;
+
+    private Popup personalTimesheetPopup;
+
+    private Label personalTimesheetPopupTask;
+
+    private Label personalTimesheetPopupDate;
+
+    private Div personalTimesheetPopupEffort;
 
     @Resource
     private IPersonalTimesheetController personalTimesheetController;
@@ -212,6 +226,19 @@ public class PersonalTimesheetController extends GenericForwardComposer
 
                 });
 
+                EventListener openPersonalTimesheetPopup = new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        openPersonalTimesheetPopup(textbox,
+                                orderElement, textboxDate);
+                    }
+
+                };
+                textbox.addEventListener(Events.ON_DOUBLE_CLICK,
+                        openPersonalTimesheetPopup);
+                textbox.addEventListener(Events.ON_OK,
+                        openPersonalTimesheetPopup);
+
                 if (personalTimesheetModel
                         .wasModified(orderElement, textboxDate)) {
                     markAsModified(textbox);
@@ -224,6 +251,45 @@ public class PersonalTimesheetController extends GenericForwardComposer
                 row.appendChild(cell);
             }
 
+        }
+
+        private void openPersonalTimesheetPopup(Textbox textbox,
+                OrderElement orderElement, LocalDate textboxDate) {
+            Textbox toFocus = setupPersonalTimesheetPopup(textbox,
+                    orderElement, textboxDate);
+            personalTimesheetPopup.open(textbox, "after_start");
+            toFocus.setFocus(true);
+        }
+
+        private Textbox setupPersonalTimesheetPopup(final Textbox textbox,
+                final OrderElement orderElement, final LocalDate textboxDate) {
+            personalTimesheetPopupTask.setValue(orderElement.getName());
+            personalTimesheetPopupDate.setValue(textboxDate.toString());
+
+            personalTimesheetPopupEffort.getChildren().clear();
+            Textbox effortTextbox = Util.bind(new Textbox(),
+                    new Util.Getter<String>() {
+                @Override
+                public String get() {
+                    EffortDuration effortDuration = personalTimesheetModel
+                            .getEffortDuration(orderElement, textboxDate);
+                    return effortDurationToString(effortDuration);
+                }
+            }, new Util.Setter<String>() {
+                @Override
+                public void set(String value) {
+                    EffortDuration effortDuration = effortDurationFromString(value);
+                    if (effortDuration == null) {
+                        throw new WrongValueException(
+                                personalTimesheetPopupEffort,
+                                _("Invalid Effort Duration"));
+                    }
+                    Events.sendEvent(new InputEvent(Events.ON_CHANGE, textbox,
+                            value));
+                }
+            });
+            personalTimesheetPopupEffort.appendChild(effortTextbox);
+            return effortTextbox;
         }
 
         private void markAsModified(final Textbox textbox) {
@@ -816,6 +882,9 @@ public class PersonalTimesheetController extends GenericForwardComposer
         return personalTimesheetModel.hasOtherReports();
     }
 
+    public void closePersonalTimesheetPopup() {
+        personalTimesheetPopup.close();
+    }
 
 }
 
