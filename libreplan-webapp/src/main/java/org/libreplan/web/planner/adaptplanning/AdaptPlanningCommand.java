@@ -82,7 +82,7 @@ public class AdaptPlanningCommand implements IAdaptPlanningCommand {
                 .getAllChildren();
         for (TaskElement taskElement : taskElements) {
             // Only adapt task leafs
-            if (!taskElement.isLeaf()) {
+            if (!taskElement.isTask()) {
                 continue;
             }
 
