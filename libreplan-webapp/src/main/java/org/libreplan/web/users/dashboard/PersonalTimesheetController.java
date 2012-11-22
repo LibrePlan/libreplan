@@ -291,6 +291,7 @@ public class PersonalTimesheetController extends GenericForwardComposer
                             value));
                 }
             });
+            addOnOkEventToClosePopup(effortTextbox);
             personalTimesheetPopupEffort.appendChild(effortTextbox);
 
             personalTimesheetPopupFinished.getChildren().clear();
@@ -313,9 +314,20 @@ public class PersonalTimesheetController extends GenericForwardComposer
                 finishedCheckbox.setDisabled(personalTimesheetModel
                         .isFinished(orderElement));
             }
+            addOnOkEventToClosePopup(finishedCheckbox);
             personalTimesheetPopupFinished.appendChild(finishedCheckbox);
 
             return effortTextbox;
+        }
+
+        private boolean addOnOkEventToClosePopup(Component component) {
+            return component.addEventListener(Events.ON_OK,
+                    new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    closePersonalTimesheetPopup();
+                }
+            });
         }
 
         private void markAsModified(final Textbox textbox) {
