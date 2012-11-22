@@ -69,7 +69,7 @@ public interface IWorkReportLineDAO extends
     Pair<Date, Date> findMinAndMaxDatesByOrderElement(
             OrderElement orderElement);
 
-    List<WorkReportLine> findByOrderElementNotInWorkReportAnotherTransaction(
+    List<WorkReportLine> findFinishedByOrderElementNotInWorkReportAnotherTransaction(
             OrderElement orderElement, WorkReport workReport);
 
     Boolean isFinished(OrderElement orderElement);

@@ -158,6 +158,10 @@
                         <label value="${i18n:_('Effort')}" />
                         <div id="personalTimesheetPopupEffort" />
                     </row>
+                    <row>
+                        <label value="${i18n:_('Finished')}" />
+                        <div id="personalTimesheetPopupFinished" />
+                    </row>
                 </rows>
             </grid>
             <button onClick="controller.closePersonalTimesheetPopup();"

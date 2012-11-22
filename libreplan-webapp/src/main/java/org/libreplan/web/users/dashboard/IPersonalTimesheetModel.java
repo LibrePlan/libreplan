@@ -30,6 +30,7 @@ import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.entities.WorkReport;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 
 /**
  * Interface for creation/edition of a personal timesheet model
@@ -226,5 +227,27 @@ public interface IPersonalTimesheetModel {
      * configured periodicity.
      */
     LocalDate getNext();
+
+    /**
+     * Returns <code>true</code> (or <code>false</code>) if the specified
+     * <code>orderElement</code> is marked as finished (or not) in the current
+     * personal timesheet for the specified <code>date</code>.
+     */
+    Boolean isFinished(OrderElement orderElement, LocalDate date);
+
+    /**
+     * Mark the specified <code>orderElement</code> as finished in the current
+     * personal timesheet for the specified <code>date</code>.<br />
+     *
+     * Marks the current personal timesheet as modified.
+     */
+    void setFinished(OrderElement orderElement, LocalDate textboxDate,
+            Boolean finished);
+
+    /**
+     * Checks if the specified <code>orderElement</code> is marked or not as
+     * finished in any {@link WorkReportLine}.
+     */
+    Boolean isFinished(OrderElement orderElement);
 
 }

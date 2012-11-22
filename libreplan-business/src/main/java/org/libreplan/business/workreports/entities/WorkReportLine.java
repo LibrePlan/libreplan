@@ -571,15 +571,9 @@ public class WorkReportLine extends IntegrationEntity implements Comparable,
         }
 
         List<WorkReportLine> lines = Registry.getWorkReportLineDAO()
-                .findByOrderElementNotInWorkReportAnotherTransaction(
+                .findFinishedByOrderElementNotInWorkReportAnotherTransaction(
                         orderElement, workReport);
-        for (WorkReportLine line : lines) {
-            if (line.isFinished()) {
-                return false;
-            }
-        }
-
-        return true;
+        return lines.isEmpty();
     }
 
 }

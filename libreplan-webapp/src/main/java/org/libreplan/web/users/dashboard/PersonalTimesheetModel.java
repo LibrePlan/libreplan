@@ -396,14 +396,21 @@ public class PersonalTimesheetModel implements IPersonalTimesheetModel {
     @Transactional(readOnly = true)
     public void setEffortDuration(OrderElement orderElement, LocalDate date,
             EffortDuration effortDuration) {
+        WorkReportLine workReportLine = getOrCreateWorkReportLine(orderElement,
+                date);
+        workReportLine.setEffort(effortDuration);
+        modified = true;
+        markAsModified(orderElement, date);
+    }
+
+    private WorkReportLine getOrCreateWorkReportLine(OrderElement orderElement,
+            LocalDate date) {
         WorkReportLine workReportLine = getWorkReportLine(orderElement, date);
         if (workReportLine == null) {
             workReportLine = createWorkReportLine(orderElement, date);
             workReport.addWorkReportLine(workReportLine);
         }
-        workReportLine.setEffort(effortDuration);
-        modified = true;
-        markAsModified(orderElement, date);
+        return workReportLine;
     }
 
     private void markAsModified(OrderElement orderElement, LocalDate date) {
@@ -617,6 +624,37 @@ public class PersonalTimesheetModel implements IPersonalTimesheetModel {
     @Override
     public LocalDate getNext() {
         return periodicity.next(date);
+    }
+
+    @Override
+    public Boolean isFinished(OrderElement orderElement, LocalDate date) {
+        WorkReportLine workReportLine = getWorkReportLine(orderElement, date);
+        if (workReportLine == null) {
+            return false;
+        }
+        return workReportLine.isFinished();
+    }
+
+    @Override
+    public void setFinished(OrderElement orderElement, LocalDate date,
+            Boolean finished) {
+        WorkReportLine workReportLine = getOrCreateWorkReportLine(orderElement,
+                date);
+        workReportLine.setFinished(finished);
+        modified = true;
+        markAsModified(orderElement, date);
+    }
+
+    @Override
+    public Boolean isFinished(OrderElement orderElement) {
+        if (workReport.isFinished(orderElement)) {
+            return true;
+        }
+
+        List<WorkReportLine> lines = workReportLineDAO
+                .findFinishedByOrderElementNotInWorkReportAnotherTransaction(
+                        orderElement, workReport);
+        return !lines.isEmpty();
     }
 
 }
