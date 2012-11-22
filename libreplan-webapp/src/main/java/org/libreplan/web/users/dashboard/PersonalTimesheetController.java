@@ -60,6 +60,7 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Cell;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Frozen;
@@ -123,6 +124,8 @@ public class PersonalTimesheetController extends GenericForwardComposer
     private Label personalTimesheetPopupDate;
 
     private Div personalTimesheetPopupEffort;
+
+    private Div personalTimesheetPopupFinished;
 
     @Resource
     private IPersonalTimesheetController personalTimesheetController;
@@ -289,6 +292,29 @@ public class PersonalTimesheetController extends GenericForwardComposer
                 }
             });
             personalTimesheetPopupEffort.appendChild(effortTextbox);
+
+            personalTimesheetPopupFinished.getChildren().clear();
+            Checkbox finishedCheckbox = Util.bind(new Checkbox(),
+                    new Util.Getter<Boolean>() {
+                        @Override
+                        public Boolean get() {
+                            return personalTimesheetModel.isFinished(
+                                    orderElement, textboxDate);
+                        }
+                    }, new Util.Setter<Boolean>() {
+                        @Override
+                        public void set(Boolean value) {
+                            personalTimesheetModel.setFinished(orderElement,
+                                    textboxDate, value);
+                            markAsModified(textbox);
+                        }
+                    });
+            if (!finishedCheckbox.isChecked()) {
+                finishedCheckbox.setDisabled(personalTimesheetModel
+                        .isFinished(orderElement));
+            }
+            personalTimesheetPopupFinished.appendChild(finishedCheckbox);
+
             return effortTextbox;
         }
 

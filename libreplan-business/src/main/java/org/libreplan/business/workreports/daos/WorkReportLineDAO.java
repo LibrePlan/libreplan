@@ -171,13 +171,13 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public List<WorkReportLine> findByOrderElementNotInWorkReportAnotherTransaction(
+    public List<WorkReportLine> findFinishedByOrderElementNotInWorkReportAnotherTransaction(
             OrderElement orderElement, WorkReport workReport) {
-        return findByOrderElementNotInWorkReport(orderElement, workReport);
+        return findFinishedByOrderElementNotInWorkReport(orderElement, workReport);
     }
 
     @SuppressWarnings("unchecked")
-    private List<WorkReportLine> findByOrderElementNotInWorkReport(
+    private List<WorkReportLine> findFinishedByOrderElementNotInWorkReport(
             OrderElement orderElement, WorkReport workReport) {
         Criteria criteria = getSession().createCriteria(WorkReportLine.class);
 
@@ -185,6 +185,7 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         if (!workReport.isNewObject()) {
             criteria.add(Restrictions.ne("workReport", workReport));
         }
+        criteria.add(Restrictions.eq("finished", true));
 
         return (List<WorkReportLine>) criteria.list();
     }

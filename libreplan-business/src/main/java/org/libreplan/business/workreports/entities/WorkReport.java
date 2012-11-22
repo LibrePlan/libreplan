@@ -555,4 +555,14 @@ public class WorkReport extends IntegrationEntity implements
         return true;
     }
 
+    public boolean isFinished(OrderElement orderElement) {
+        for (WorkReportLine line : workReportLines) {
+            if (line.isFinished()
+                    && Util.equals(line.getOrderElement(), orderElement)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

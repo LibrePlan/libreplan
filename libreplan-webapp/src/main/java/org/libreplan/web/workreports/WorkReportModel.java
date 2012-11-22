@@ -34,7 +34,6 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.libreplan.business.common.IntegrationEntity;
-import org.libreplan.business.common.Util;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -661,22 +660,14 @@ public class WorkReportModel extends IntegrationEntityModel implements
     @Override
     @Transactional(readOnly = true)
     public boolean isFinished(OrderElement orderElement) {
-        for (WorkReportLine line : workReport.getWorkReportLines()) {
-            if (line.isFinished()
-                    && Util.equals(line.getOrderElement(), orderElement)) {
-                return true;
-            }
+        if (workReport.isFinished(orderElement)) {
+            return true;
         }
 
         List<WorkReportLine> lines = workReportLineDAO
-                .findByOrderElementNotInWorkReportAnotherTransaction(
+                .findFinishedByOrderElementNotInWorkReportAnotherTransaction(
                         orderElement, workReport);
-        for (WorkReportLine line : lines) {
-            if (line.isFinished()) {
-                return true;
-            }
-        }
-        return false;
+        return !lines.isEmpty();
     }
 
 }
