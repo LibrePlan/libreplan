@@ -25,6 +25,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import org.hibernate.validator.NotNull;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.daos.ICalendarAvailabilityDAO;
 import org.libreplan.business.common.IntegrationEntity;
@@ -124,6 +125,42 @@ public class CalendarAvailability extends IntegrationEntity {
     @Override
     protected ICalendarAvailabilityDAO getIntegrationEntityDAO() {
         return Registry.getCalendarAvailabilityDAO();
+    }
+
+    public boolean isActiveBetween(LocalDate filterStartDate,
+            LocalDate filterEndDate) {
+        if (filterStartDate == null && filterEndDate == null) {
+            return true;
+        }
+
+        if (filterStartDate == null) {
+            if (endDate == null) {
+                return startDate.compareTo(filterEndDate) <= 0;
+            }
+            return startDate.compareTo(filterEndDate) <= 0
+                    || endDate.compareTo(filterEndDate) <= 0;
+        }
+
+        if (filterEndDate == null) {
+            if (endDate == null) {
+                return true;
+            }
+            return startDate.compareTo(filterStartDate) >= 0
+                    || endDate.compareTo(filterStartDate) >= 0;
+        }
+
+        if (endDate == null) {
+            return startDate.compareTo(filterStartDate) >= 0
+                    && startDate.compareTo(filterEndDate) <= 0;
+        }
+
+        Interval filterPeriod = new Interval(
+                filterStartDate.toDateTimeAtStartOfDay(), filterEndDate
+                        .plusDays(1).toDateTimeAtStartOfDay());
+        Interval activationPeriod = new Interval(
+                startDate.toDateTimeAtStartOfDay(), endDate.plusDays(1)
+                        .toDateTimeAtStartOfDay());
+        return filterPeriod.overlaps(activationPeriod);
     }
 
 }
