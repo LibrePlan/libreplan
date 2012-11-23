@@ -805,9 +805,16 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         LocalDate date = new LocalDate(earnedValueChartLegendDatebox.getRawValue());
         org.zkoss.zk.ui.Component child = earnedValueChartLegendContainer
                 .getFellow("indicatorsTable");
-        earnedValueChartLegendContainer.removeChild(child);
-        earnedValueChartLegendContainer.appendChild(getEarnedValueChartConfigurableLegend(
-                earnedValueChartFiller, date));
+        updateEarnedValueChartLegend(date);
+    }
+
+    private void updateEarnedValueChartLegend(LocalDate date) {
+        for (EarnedValueType type : EarnedValueType.values()) {
+            Label valueLabel = (Label) earnedValueChartLegendContainer
+                    .getFellow(type.toString());
+            valueLabel.setValue(getLabelTextEarnedValueType(
+                    earnedValueChartFiller, type, date));
+        }
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
@@ -832,15 +839,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
-            BigDecimal value = earnedValueChartFiller.getIndicator(type, date);
-            String units = _("h");
-            if (type.equals(EarnedValueType.CPI)
-                    || type.equals(EarnedValueType.SPI)) {
-                value = value.multiply(new BigDecimal(100));
-                units = "%";
-            }
-            Label valueLabel = new Label(
-                    value.setScale(0, RoundingMode.HALF_UP) + " " + units);
+            Label valueLabel = new Label(getLabelTextEarnedValueType(
+                    earnedValueChartFiller, type, date));
+            valueLabel.setId(type.toString());
 
             Hbox hbox = new Hbox();
             hbox.appendChild(checkbox);
@@ -869,6 +870,19 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         markAsSelectedDefaultIndicators();
 
         return mainhbox;
+    }
+
+    private String getLabelTextEarnedValueType(
+            OrderEarnedValueChartFiller earnedValueChartFiller,
+            EarnedValueType type, LocalDate date) {
+        BigDecimal value = earnedValueChartFiller.getIndicator(type, date);
+        String units = _("h");
+        if (type.equals(EarnedValueType.CPI)
+                || type.equals(EarnedValueType.SPI)) {
+            value = value.multiply(new BigDecimal(100));
+            units = "%";
+        }
+        return value.setScale(0, RoundingMode.HALF_UP) + " " + units;
     }
 
     private void markAsSelectedDefaultIndicators() {
