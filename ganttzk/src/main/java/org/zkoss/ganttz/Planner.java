@@ -73,6 +73,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.South;
+import org.zkoss.zul.api.Combobox;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -636,11 +637,13 @@ public class Planner extends HtmlMacroComponent  {
     public void showAdvances() {
         Button showAdvancesButton = (Button) getFellow("showAdvances");
         if (disabilityConfiguration.isAdvancesEnabled()) {
+            Combobox progressTypesCombo = (Combobox) getFellow("cbProgressTypes");
             if (isShowingAdvances) {
                 context.hideAdvances();
                 diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
                 showAdvancesButton.setSclass("planner-command");
                 showAdvancesButton.setTooltiptext(_("Show progress"));
+                progressTypesCombo.setSelectedIndex(0);
             } else {
                 context.showAdvances();
                 diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
