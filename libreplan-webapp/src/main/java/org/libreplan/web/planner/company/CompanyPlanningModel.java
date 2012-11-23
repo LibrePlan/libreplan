@@ -345,13 +345,19 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 LocalDate date = new LocalDate(datebox.getValue());
                 org.zkoss.zk.ui.Component child = vbox
                         .getFellow("indicatorsTable");
-                vbox.removeChild(child);
-                vbox.appendChild(getEarnedValueChartConfigurableLegend(
-                        earnedValueChartFiller, date));
+                updateEarnedValueChartLegend(vbox, earnedValueChartFiller, date);
                 dateInfutureMessage(datebox);
             }
 
         });
+    }
+
+    private void updateEarnedValueChartLegend(Vbox vbox,
+            CompanyEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
+        for (EarnedValueType type : EarnedValueType.values()) {
+            Label valueLabel = (Label) vbox.getFellow(type.toString());
+            valueLabel.setValue(getLabelTextEarnedValueType(earnedValueChartFiller, type, date));
+        }
     }
 
     private void dateInfutureMessage(Datebox datebox) {
@@ -466,16 +472,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
-            BigDecimal value = earnedValueChartFiller.getIndicator(type, date) != null ? earnedValueChartFiller
-                    .getIndicator(type, date)
-                    : BigDecimal.ZERO;
-            String units = _("h");
-            if (type.equals(EarnedValueType.CPI)
-                    || type.equals(EarnedValueType.SPI)) {
-                value = value.multiply(new BigDecimal(100));
-                units = "%";
-            }
-            Label valueLabel = new Label(value.intValue() + " " + units);
+            Label valueLabel = new Label(getLabelTextEarnedValueType(
+                    earnedValueChartFiller, type, date));
+            valueLabel.setId(type.toString());
 
             Hbox hbox = new Hbox();
             hbox.appendChild(checkbox);
@@ -504,6 +503,20 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         markAsSelectedDefaultIndicators();
 
         return mainhbox;
+    }
+
+    private String getLabelTextEarnedValueType(
+            CompanyEarnedValueChartFiller earnedValueChartFiller,
+            EarnedValueType type, LocalDate date) {
+        BigDecimal value = earnedValueChartFiller.getIndicator(type, date) != null ? earnedValueChartFiller
+                .getIndicator(type, date) : BigDecimal.ZERO;
+        String units = _("h");
+        if (type.equals(EarnedValueType.CPI)
+                || type.equals(EarnedValueType.SPI)) {
+            value = value.multiply(new BigDecimal(100));
+            units = "%";
+        }
+        return value.intValue() + " " + units;
     }
 
     private void markAsSelectedDefaultIndicators() {
