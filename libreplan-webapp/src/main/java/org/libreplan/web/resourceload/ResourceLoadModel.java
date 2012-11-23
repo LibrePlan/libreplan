@@ -309,7 +309,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
                             if (parameters.thereIsCurrentOrder()) {
                                 return resourcesForActiveTasks();
                             } else {
-                                return allResources();
+                                return allResourcesActiveBetween(
+                                        parameters.getInitDateFilter(),
+                                        parameters.getEndDateFilter());
                             }
                         }
 
@@ -317,6 +319,23 @@ public class ResourceLoadModel implements IResourceLoadModel {
                             return Resource.sortByName(parameters
                                     .getPlanningState()
                                     .getResourcesRelatedWithAllocations());
+                        }
+
+                        private List<Resource> allResourcesActiveBetween(
+                                LocalDate startDate, LocalDate endDate) {
+                            List<Resource> allResources = allResources();
+                            if (startDate == null && endDate == null) {
+                                return allResources;
+                            }
+
+                            List<Resource> resources = new ArrayList<Resource>();
+                            for (Resource resource : allResources) {
+                                if (resource
+                                        .isActiveBetween(startDate, endDate)) {
+                                    resources.add(resource);
+                                }
+                            }
+                            return resources;
                         }
 
                         private List<Resource> allResources() {

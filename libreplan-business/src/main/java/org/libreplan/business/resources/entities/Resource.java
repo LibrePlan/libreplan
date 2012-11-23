@@ -1199,4 +1199,8 @@ public abstract class Resource extends IntegrationEntity implements
         return true;
     }
 
+    public boolean isActiveBetween(LocalDate startDate, LocalDate endDate) {
+        return calendar.isActiveBetween(startDate, endDate);
+    }
+
 }
