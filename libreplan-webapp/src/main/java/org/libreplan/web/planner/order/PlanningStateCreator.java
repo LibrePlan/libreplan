@@ -70,6 +70,7 @@ import org.libreplan.business.planner.entities.consolidations.CalculatedConsolid
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.resources.daos.ICriterionDAO;
 import org.libreplan.business.resources.daos.IResourceDAO;
+import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.IAssignmentsOnResourceCalculator;
@@ -87,6 +88,7 @@ import org.libreplan.business.users.entities.UserOrderAuthorization;
 import org.libreplan.web.UserUtil;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.planner.TaskElementAdapter;
+import org.libreplan.web.planner.tabs.CriticalPathBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -178,6 +180,9 @@ public class PlanningStateCreator {
 
     @Autowired
     private IMoneyCostCalculator moneyCostCalculator;
+
+    @Autowired
+    private IResourcesSearcher resourcesSearcher;
 
     void synchronizeWithSchedule(Order order, IOptionalPersistence persistence) {
         List<TaskSourceSynchronization> synchronizationsNeeded = order
@@ -1113,6 +1118,10 @@ public class PlanningStateCreator {
 
         public void updateSavedOrderState() {
             savedOrderState = order.getState();
+        }
+
+        public List<TaskElement> getCriticalPath() {
+            return CriticalPathBuilder.criticalPathFor(this, resourcesSearcher);
         }
 
     }
