@@ -121,3 +121,13 @@ tr.z-grid-odd .z-cell,
 .z-auxheader .z-auxheader-cnt {
     text-align: center;
 }
+
+.timeTrackedTableWithLeftPane .taskspanelgap tr.z-row {
+height: 24px;
+}
+
+
+.advancedallocationlayout .advancedassignmentdetails tr.z-row,
+.advancedallocationlayout .taskspanelgap tr.z-row {
+height: 25px;
+}
