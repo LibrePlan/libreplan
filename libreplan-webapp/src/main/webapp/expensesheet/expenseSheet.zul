@@ -54,7 +54,7 @@
                     <column label="${i18n:_('Code')}"
                         sort="auto(code)" />
                     <column label="${i18n:_('Description')}"
-                        sort="auto(description)" />
+                         sort="auto(description)" />
                     <column label="${i18n:_('Type')}"
                         sort="auto(personal)" />
                     <column label="${i18n:_('Operations')}" />
@@ -98,7 +98,7 @@
                 </vbox>
             </groupbox>
             <separator bar="false" spacing="5px" orient="horizontal"/>
-            <groupbox closable="false" width="600px">
+            <groupbox closable="false" width="600px" visible="false">
                 <caption label="${i18n:_('Expense properties')}" />
                 <separator bar="false" spacing="5px" orient="horizontal"/>
                 <vbox>
@@ -111,11 +111,7 @@
                             model="@{controller.orders}"
                             selectedElement="@{controller.project, access='both'}"/>
                     </hbox>
-                    <hbox>
-                        <label value="${i18n:_('Expense date')}" />
-                        <datebox id="dateboxExpenseDate" width="150px"
-                            value="@{controller.expenseSheetLineDate}"/>
-                    </hbox>
+
                 </vbox>
             </groupbox>
 			<separator bar="false" spacing="5px" orient="horizontal"/>
@@ -128,7 +124,8 @@
                         widthListbox="700px"
                         finder="OrderElementInExpenseSheetBandboxFinder"
                         model="@{controller.tasks}"
-                        selectedElement="@{controller.newExpenseSheetLine.orderElement, access='both'}"/>
+                        selectedElement="@{controller.newExpenseSheetLine.orderElement, access='both'}"
+                        onBlur="controller.addExpenseSheetLine();"/>
 
 					<separator bar="false" spacing="10px" orient="vertical"/>
 
@@ -136,12 +133,23 @@
                     <decimalbox id="dboxValue"
                         value="@{controller.newExpenseSheetLine.value}"
                         format="@{controller.moneyFormat}"
-                        constraint="@{controller.checkConstraintExpenseValue}"/>
+                        constraint="@{controller.checkConstraintExpenseValue}"
+                        onOK="controller.addExpenseSheetLine();"/>
 
 					<separator bar="false" spacing="10px" orient="vertical"/>
 
+                    <hbox>
+                        <label value="${i18n:_('Expense date')}" />
+                        <datebox id="dateboxExpenseDate" width="150px"
+                            value="@{controller.expenseSheetLineDate}"/>
+                    </hbox>
+
+                    <separator bar="false" spacing="10px" orient="vertical"/>
+
+
                     <label value="${i18n:_('Concept')}" />
-                    <textbox id="tbConcept" width="200px" value="@{controller.newExpenseSheetLine.concept}" />
+                    <textbox id="tbConcept" width="200px" value="@{controller.newExpenseSheetLine.concept}"
+                    onOK="controller.addExpenseSheetLine();"/>
 
                     <separator bar="false" spacing="10px" orient="vertical"/>
 
