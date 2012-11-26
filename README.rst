@@ -1,6 +1,9 @@
 LibrePlan
 =========
 
+.. figure:: libreplan-logo.png
+
+   LibrePlan Logo
 
 Description
 -----------
