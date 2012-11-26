@@ -203,9 +203,29 @@ public class MultipleTabsPlannerController implements Composer,
     @Autowired
     private URLHandlerRegistry registry;
 
-    private TabsConfiguration buildTabsConfiguration() {
+    private TabsConfiguration buildTabsConfiguration(final Desktop desktop) {
 
         Map<String, String[]> parameters = getURLQueryParametersMap();
+
+        mode.addListener(new ModeTypeChangedListener() {
+
+            @Override
+            public void typeChanged(ModeType oldType, ModeType newType) {
+                switch (newType) {
+                case GLOBAL:
+                    Clients.confirmClose(null);
+                    break;
+                case ORDER:
+                    if (SecurityUtils
+                            .isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+                        confirmCloseThread(desktop);
+                    }
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
 
         planningTab = doFeedbackOn(PlanningTabCreator.create(mode,
                 companyPlanningController, orderPlanningController, orderDAO,
@@ -402,7 +422,8 @@ public class MultipleTabsPlannerController implements Composer,
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
-        tabsSwitcher.setConfiguration(buildTabsConfiguration());
+        tabsSwitcher
+                .setConfiguration(buildTabsConfiguration(comp.getDesktop()));
         final EntryPointsHandler<IGlobalViewEntryPoints> handler = registry
                 .getRedirectorFor(IGlobalViewEntryPoints.class);
         if (!handler.applyIfMatches(this)) {
@@ -428,7 +449,6 @@ public class MultipleTabsPlannerController implements Composer,
 
             }
         }
-        confirmCloseThread(comp.getDesktop());
     }
 
     private void confirmCloseThread(Desktop desktop) {
