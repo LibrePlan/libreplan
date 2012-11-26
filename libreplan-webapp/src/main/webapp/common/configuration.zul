@@ -209,6 +209,17 @@
                                     label="${i18n:_('MonteCarlo method')}"
                                     checked="@{configurationController.monteCarloMethodTabVisible}" />
                             </row>
+                            <row>
+                                <label
+                                    value="${i18n:_('Seconds planning warning')}" />
+                                <hbox>
+                                    <intbox width="50px"
+                                        value="@{configurationController.secondsPlanningWarning}"
+                                        constraint="no empty,no negative:${i18n:_('cannot be negative or empty')}" />
+                                    <label
+                                        value="${i18n:_('Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning.')}" />
+                                </hbox>
+                            </row>
                         </rows>
                     </grid>
                 </tabpanel>

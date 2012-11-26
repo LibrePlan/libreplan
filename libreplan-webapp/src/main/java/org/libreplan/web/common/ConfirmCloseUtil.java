@@ -18,6 +18,7 @@
  */
 package org.libreplan.web.common;
 
+import org.libreplan.business.common.Registry;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
@@ -32,37 +33,41 @@ import org.zkoss.zk.ui.util.Clients;
  */
 public class ConfirmCloseUtil {
 
-    private static final int WARNING_ON_EXIT_MS = 30000; // 30 seconds
-
     public static void resetConfirmClose() {
         Clients.confirmClose(null);
     }
 
     public static void setConfirmClose(Desktop desktop, final String message) {
-        LongOperationFeedback
-                .progressive(
-                        desktop,
-                        new IBackGroundOperation<LongOperationFeedback.IDesktopUpdate>() {
+        final Integer seconds = Registry.getConfigurationDAO()
+                .getConfigurationWithReadOnlyTransaction()
+                .getSecondsPlanningWarning();
 
-                            @Override
-                            public void doOperation(
-                                    IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
-                                try {
-                                    Thread.sleep(WARNING_ON_EXIT_MS);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
+        if (seconds > 0) {
+            LongOperationFeedback
+                    .progressive(
+                            desktop,
+                            new IBackGroundOperation<LongOperationFeedback.IDesktopUpdate>() {
+
+                                @Override
+                                public void doOperation(
+                                        IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
+                                    try {
+                                        Thread.sleep(seconds * 1000);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    desktopUpdateEmitter
+                                            .doUpdate(new IDesktopUpdate() {
+
+                                                @Override
+                                                public void doUpdate() {
+                                                    resetConfirmClose();
+                                                    Clients.confirmClose(message);
+                                                }
+                                            });
                                 }
-                                desktopUpdateEmitter
-                                        .doUpdate(new IDesktopUpdate() {
-
-                                            @Override
-                                            public void doUpdate() {
-                                                resetConfirmClose();
-                                                Clients.confirmClose(message);
-                                            }
-                                        });
-                            }
-                        });
+                            });
+        }
     }
 
 }

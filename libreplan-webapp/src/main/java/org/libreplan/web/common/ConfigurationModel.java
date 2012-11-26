@@ -657,4 +657,14 @@ public class ConfigurationModel implements IConfigurationModel {
         return !workReportDAO.isAnyPersonalTimesheetAlreadySaved();
     }
 
+    @Override
+    public Integer getSecondsPlanningWarning() {
+        return configuration.getSecondsPlanningWarning();
+    }
+
+    @Override
+    public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
+        configuration.setSecondsPlanningWarning(secondsPlanningWarning);
+    }
+
 }
