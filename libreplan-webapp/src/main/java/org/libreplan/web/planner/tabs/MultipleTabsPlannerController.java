@@ -471,7 +471,7 @@ public class MultipleTabsPlannerController implements Composer,
                                             @Override
                                             public void doUpdate() {
                                                 Clients.confirmClose(null);
-                                                Clients.confirmClose("You are about to leave the project planning edition, confirm that you have saved your changes");
+                                                Clients.confirmClose(_("You are about to leave the project planning edition, please confirm that you have saved your changes"));
                                             }
                                         });
                             }
