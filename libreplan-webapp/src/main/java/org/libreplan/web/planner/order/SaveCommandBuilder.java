@@ -105,6 +105,7 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
@@ -274,6 +275,9 @@ public class SaveCommandBuilder {
                 @Override
                 public void doActions() {
                     notifyUserThatSavingIsDone();
+                    if (Executions.getCurrent() != null) {
+                        Clients.confirmClose(null);
+                    }
                 }
             });
         }
