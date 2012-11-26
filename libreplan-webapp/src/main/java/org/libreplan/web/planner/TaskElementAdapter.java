@@ -468,6 +468,16 @@ public class TaskElementAdapter {
             }
 
             @Override
+            public String getCode() {
+                return taskElement.getCode();
+            }
+
+            @Override
+            public String getProjectCode() {
+                return taskElement.getProjectCode();
+            }
+
+            @Override
             public String getNotes() {
                 return taskElement.getNotes();
             }
