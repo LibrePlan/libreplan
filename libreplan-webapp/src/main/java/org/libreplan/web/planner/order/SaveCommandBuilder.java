@@ -104,6 +104,11 @@ import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.extensions.IContext;
+import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Label;
@@ -125,6 +130,7 @@ import org.zkoss.zul.Messagebox;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class SaveCommandBuilder {
 
+    private static final int WARNING_ON_EXIT_MS = 3000;
 
     private static final Log LOG = LogFactory.getLog(SaveCommandBuilder.class);
 
@@ -275,11 +281,34 @@ public class SaveCommandBuilder {
                 @Override
                 public void doActions() {
                     notifyUserThatSavingIsDone();
-                    if (Executions.getCurrent() != null) {
-                        Clients.confirmClose(null);
-                    }
                 }
             });
+        }
+
+        private void confirmCloseThread(Desktop desktop) {
+            LongOperationFeedback
+                    .progressive(
+                            desktop,
+                            new IBackGroundOperation<LongOperationFeedback.IDesktopUpdate>() {
+
+                                @Override
+                                public void doOperation(
+                                        IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
+                                    try {
+                                        Thread.sleep(WARNING_ON_EXIT_MS);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    desktopUpdateEmitter
+                                            .doUpdate(new IDesktopUpdate() {
+
+                                                @Override
+                                                public void doUpdate() {
+                                                    Clients.confirmClose(_("You are about to leave the planning edition, unsaved changes will be lost."));
+                                                }
+                                            });
+                                }
+                            });
         }
 
         @Override
@@ -368,6 +397,13 @@ public class SaveCommandBuilder {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            // Reset timer of warning on leaving page
+            Clients.confirmClose(null);
+            if (Executions.getCurrent() != null) {
+                Clients.confirmClose(null);
+                confirmCloseThread(Executions.getCurrent().getDesktop());
+            }
+
         }
 
         private void doTheSaving() {

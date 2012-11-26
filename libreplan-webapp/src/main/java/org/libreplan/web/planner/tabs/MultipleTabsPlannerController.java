@@ -87,6 +87,8 @@ import org.zkoss.zk.ui.util.Composer;
 public class MultipleTabsPlannerController implements Composer,
         IGlobalViewEntryPoints {
 
+    private static final int WARNING_ON_EXIT_MS = 30000; // 30 seconds
+
     private final class TabWithLoadingFeedback extends TabProxy {
         private boolean feedback = true;
 
@@ -461,7 +463,7 @@ public class MultipleTabsPlannerController implements Composer,
                             public void doOperation(
                                     IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
                                 try {
-                                    Thread.sleep(1000);
+                                    Thread.sleep(WARNING_ON_EXIT_MS);
                                 } catch (InterruptedException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -471,7 +473,7 @@ public class MultipleTabsPlannerController implements Composer,
                                             @Override
                                             public void doUpdate() {
                                                 Clients.confirmClose(null);
-                                                Clients.confirmClose(_("You are about to leave the project planning edition, please confirm that you have saved your changes"));
+                                                Clients.confirmClose(_("You are about to leave the planning edition, unsaved changes will be lost."));
                                             }
                                         });
                             }
