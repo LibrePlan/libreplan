@@ -193,4 +193,19 @@
             constraintName="order_element_code_key" />
     </changeSet>
 
+    <changeSet id="add-seconds_planning_warning-column-to-configuration"
+        author="mrego">
+        <comment>Add seconds_planning_warning column to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="seconds_planning_warning" type="INTEGER" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="seconds_planning_warning" value="30" />
+        </update>
+        <addNotNullConstraint tableName="configuration"
+            columnName="seconds_planning_warning"
+            defaultNullValue="30"
+            columnDataType="INTEGER" />
+    </changeSet>
+
 </databaseChangeLog>

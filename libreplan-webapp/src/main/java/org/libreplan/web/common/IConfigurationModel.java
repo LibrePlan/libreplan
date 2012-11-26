@@ -180,4 +180,9 @@ public interface IConfigurationModel {
 
     boolean isAnyPersonalTimesheetAlreadySaved();
 
+    Integer getSecondsPlanningWarning();
+
+    void setSecondsPlanningWarning(
+            Integer planningWarningExitWithoutSavingSeconds);
+
 }
