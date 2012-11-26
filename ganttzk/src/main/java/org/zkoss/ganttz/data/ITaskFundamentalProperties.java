@@ -131,4 +131,8 @@ public interface ITaskFundamentalProperties {
 
     Date getLastTimesheetDate();
 
+    public String getCode();
+
+    public String getProjectCode();
+
 }

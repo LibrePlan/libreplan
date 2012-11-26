@@ -323,4 +323,14 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return null;
     }
 
+    @Override
+    public String getCode() {
+        return "";
+    }
+
+    @Override
+    public String getProjectCode() {
+        return "";
+    }
+
 }

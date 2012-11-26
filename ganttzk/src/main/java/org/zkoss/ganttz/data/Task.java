@@ -570,4 +570,11 @@ public abstract class Task implements ITaskFundamentalProperties {
                 getEndDate());
     }
 
+    public String getCode() {
+        return fundamentalProperties.getCode();
+    }
+
+    public String getProjectCode() {
+        return fundamentalProperties.getProjectCode();
+    }
 }

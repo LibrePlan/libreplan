@@ -250,6 +250,14 @@ public abstract class TaskElement extends BaseEntity {
         return name;
     }
 
+    public String getCode() {
+        return getOrderElement().getCode();
+    }
+
+    public String getProjectCode() {
+        return getOrderElement().getOrder().getCode();
+    }
+
     public void setName(String name) {
         this.name = name;
         if (taskSource != null && taskSource.getOrderElement() != null) {
