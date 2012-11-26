@@ -87,6 +87,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.workingday.IntraDayDate;
+import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
@@ -104,13 +105,7 @@ import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.extensions.IContext;
-import org.zkoss.ganttz.util.LongOperationFeedback;
-import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
-import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
-import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
-import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
@@ -129,8 +124,6 @@ import org.zkoss.zul.Messagebox;
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class SaveCommandBuilder {
-
-    private static final int WARNING_ON_EXIT_MS = 3000;
 
     private static final Log LOG = LogFactory.getLog(SaveCommandBuilder.class);
 
@@ -285,32 +278,6 @@ public class SaveCommandBuilder {
             });
         }
 
-        private void confirmCloseThread(Desktop desktop) {
-            LongOperationFeedback
-                    .progressive(
-                            desktop,
-                            new IBackGroundOperation<LongOperationFeedback.IDesktopUpdate>() {
-
-                                @Override
-                                public void doOperation(
-                                        IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
-                                    try {
-                                        Thread.sleep(WARNING_ON_EXIT_MS);
-                                    } catch (InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                    desktopUpdateEmitter
-                                            .doUpdate(new IDesktopUpdate() {
-
-                                                @Override
-                                                public void doUpdate() {
-                                                    Clients.confirmClose(_("You are about to leave the planning edition, unsaved changes will be lost."));
-                                                }
-                                            });
-                                }
-                            });
-        }
-
         @Override
         public void save(final IBeforeSaveActions beforeSaveActions,
                 IAfterSaveActions afterSaveActions) {
@@ -398,10 +365,12 @@ public class SaveCommandBuilder {
                 throw new RuntimeException(e);
             }
             // Reset timer of warning on leaving page
-            Clients.confirmClose(null);
+            ConfirmCloseUtil.resetConfirmClose();
             if (Executions.getCurrent() != null) {
-                Clients.confirmClose(null);
-                confirmCloseThread(Executions.getCurrent().getDesktop());
+                ConfirmCloseUtil
+                        .setConfirmClose(
+                                Executions.getCurrent().getDesktop(),
+                                _("You are about to leave the planning edition, unsaved changes will be lost."));
             }
 
         }
