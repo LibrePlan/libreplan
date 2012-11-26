@@ -64,11 +64,16 @@ import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.TabProxy;
 import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 
 /**
@@ -423,6 +428,34 @@ public class MultipleTabsPlannerController implements Composer,
 
             }
         }
+        confirmCloseThread(comp.getDesktop());
+    }
+
+    private void confirmCloseThread(Desktop desktop) {
+        LongOperationFeedback
+                .progressive(
+                        desktop,
+                        new IBackGroundOperation<LongOperationFeedback.IDesktopUpdate>() {
+
+                            @Override
+                            public void doOperation(
+                                    IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                desktopUpdateEmitter
+                                        .doUpdate(new IDesktopUpdate() {
+
+                                            @Override
+                                            public void doUpdate() {
+                                                Clients.confirmClose(null);
+                                                Clients.confirmClose("You are about to leave the project planning edition, confirm that you have saved your changes");
+                                            }
+                                        });
+                            }
+                        });
     }
 
     private TabsRegistry getTabsRegistry() {
