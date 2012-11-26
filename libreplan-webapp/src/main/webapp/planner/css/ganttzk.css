@@ -159,6 +159,7 @@
 .fixed {
     box-shadow: 3px 3px 3px #999;
     border: #999;
+    cursor: default;
 }
 
 /* Task lane properties */
