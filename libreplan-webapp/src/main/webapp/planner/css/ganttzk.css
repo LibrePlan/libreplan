@@ -284,16 +284,22 @@ div.box.limiting-unassigned {
     font-weight: bold;
     /* By default marks are hidden */
     display: none;
+    border: 2px solid #F21CFF;
+    height: 5px;
+    width: 2px;
+    opacity: 0.5;
 }
 
 .first-timesheet-date {
     position: absolute;
-    margin-top: -19px;
+    margin-top: -16px;
+    border-right: 0;
 }
 
 .last-timesheet-date {
     position: absolute;
-    margin-top: -19px;
+    margin-top: -16px;
+    border-left: 0;
 }
 
 .completion2 {
