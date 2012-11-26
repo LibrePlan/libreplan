@@ -300,6 +300,7 @@ div.box.limiting-unassigned {
 .last-timesheet-date {
     position: absolute;
     margin-top: -16px;
+    margin-left: -4px;
     border-left: 0;
 }
 
