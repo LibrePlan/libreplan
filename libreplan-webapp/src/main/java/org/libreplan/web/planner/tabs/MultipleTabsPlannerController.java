@@ -213,8 +213,7 @@ public class MultipleTabsPlannerController implements Composer,
                     ConfirmCloseUtil.resetConfirmClose();
                     break;
                 case ORDER:
-                    if (SecurityUtils
-                            .isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
+                    if (SecurityUtils.loggedUserCanWrite(mode.getOrder())) {
                         ConfirmCloseUtil
                                 .setConfirmClose(
                                         desktop,

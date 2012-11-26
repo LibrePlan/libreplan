@@ -93,6 +93,7 @@ import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -367,10 +368,12 @@ public class SaveCommandBuilder {
             // Reset timer of warning on leaving page
             ConfirmCloseUtil.resetConfirmClose();
             if (Executions.getCurrent() != null) {
-                ConfirmCloseUtil
-                        .setConfirmClose(
-                                Executions.getCurrent().getDesktop(),
-                                _("You are about to leave the planning edition, unsaved changes will be lost."));
+                if (SecurityUtils.loggedUserCanWrite(state.getOrder())) {
+                    ConfirmCloseUtil
+                            .setConfirmClose(
+                                    Executions.getCurrent().getDesktop(),
+                                    _("You are about to leave the planning edition, unsaved changes will be lost."));
+                }
             }
 
         }

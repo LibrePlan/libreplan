@@ -123,7 +123,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     boolean userCanRead(Order order, String loginName);
 
-    boolean userCanWrite(Order order, String loginName);
+    boolean userCanWrite(Order order);
 
     boolean isAlreadyInUse(OrderElement orderElement);
 
