@@ -68,7 +68,7 @@ Debian/Ubuntu
 
 * Download source code::
 
-    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
+    $ git clone git://github.com/Igalia/libreplan.git
 
 * Compile project::
 
@@ -129,7 +129,7 @@ Fedora
 
 * Download source code::
 
-    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
+    $ git clone git://github.com/Igalia/libreplan.git
 
 * Compile project::
 
@@ -190,7 +190,7 @@ openSUSE
 
 * Download source code::
 
-    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
+    $ git clone git://github.com/Igalia/libreplan.git
 
 * Compile project::
 

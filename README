@@ -122,7 +122,7 @@ Availability
 ------------
 
 The cutting-edge version of this project is always available from the Git
-repository at http://libreplan.git.sourceforge.net/.
+repository at https://github.com/Igalia/libreplan.
 
 Released versions are available at
 http://sourceforge.net/projects/libreplan/files/.
