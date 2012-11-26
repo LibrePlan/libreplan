@@ -36,6 +36,7 @@ import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
@@ -64,16 +65,12 @@ import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.ganttz.extensions.TabProxy;
 import org.zkoss.ganttz.util.LongOperationFeedback;
-import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
-import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
-import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.Composer;
 
 /**
@@ -86,8 +83,6 @@ import org.zkoss.zk.ui.util.Composer;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MultipleTabsPlannerController implements Composer,
         IGlobalViewEntryPoints {
-
-    private static final int WARNING_ON_EXIT_MS = 30000; // 30 seconds
 
     private final class TabWithLoadingFeedback extends TabProxy {
         private boolean feedback = true;
@@ -215,12 +210,15 @@ public class MultipleTabsPlannerController implements Composer,
             public void typeChanged(ModeType oldType, ModeType newType) {
                 switch (newType) {
                 case GLOBAL:
-                    Clients.confirmClose(null);
+                    ConfirmCloseUtil.resetConfirmClose();
                     break;
                 case ORDER:
                     if (SecurityUtils
                             .isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
-                        confirmCloseThread(desktop);
+                        ConfirmCloseUtil
+                                .setConfirmClose(
+                                        desktop,
+                                        _("You are about to leave the planning edition, unsaved changes will be lost."));
                     }
                     break;
                 default:
@@ -451,33 +449,6 @@ public class MultipleTabsPlannerController implements Composer,
 
             }
         }
-    }
-
-    private void confirmCloseThread(Desktop desktop) {
-        LongOperationFeedback
-                .progressive(
-                        desktop,
-                        new IBackGroundOperation<LongOperationFeedback.IDesktopUpdate>() {
-
-                            @Override
-                            public void doOperation(
-                                    IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
-                                try {
-                                    Thread.sleep(WARNING_ON_EXIT_MS);
-                                } catch (InterruptedException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                desktopUpdateEmitter
-                                        .doUpdate(new IDesktopUpdate() {
-
-                                            @Override
-                                            public void doUpdate() {
-                                                Clients.confirmClose(null);
-                                                Clients.confirmClose(_("You are about to leave the planning edition, unsaved changes will be lost."));
-                                            }
-                                        });
-                            }
-                        });
     }
 
     private TabsRegistry getTabsRegistry() {
