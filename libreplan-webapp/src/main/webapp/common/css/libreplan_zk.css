@@ -1326,6 +1326,10 @@ overflow: visible;
     cursor: pointer;
 }
 
+.clickable-rows:hover {
+    text-decoration: underline;
+}
+
 .clickable-rows tr.z-row:hover .z-row-cnt {
     color: #000000;
 }
