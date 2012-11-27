@@ -757,7 +757,7 @@ public class FormBinder {
             allResourcesPerDay.setValue((BigDecimal) null);
             AllocationRow.unknownResourcesPerDay(rows);
         } else {
-            allResourcesPerDay.setValue(BigDecimal.ZERO);
+            allResourcesPerDay.setValue(BigDecimal.ONE);
             distributeResourcesPerDayToRows();
             allResourcesPerDay.focus();
         }
