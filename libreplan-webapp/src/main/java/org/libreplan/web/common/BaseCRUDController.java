@@ -26,6 +26,7 @@ import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Caption;
@@ -108,6 +109,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
         getVisibility().showOnly(editWindow);
         updateWindowTitle();
         Util.reloadBindings(editWindow);
+        Clients.evalJavaScript("$('.focus-element').focus();");
     }
 
     public final void updateWindowTitle() {
