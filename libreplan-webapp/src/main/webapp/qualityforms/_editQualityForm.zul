@@ -43,7 +43,7 @@
                                 <textbox id="qualityFormName"
                                     width="500px" value="@{controller.qualityForm.name}"
                                     constraint="@{controller.checkConstraintUniqueQualityFormName}"
-                                    onBlur="controller.updateWindowTitle()"/>
+                                    onBlur="controller.updateWindowTitle()" sclass="focus-element" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Description')}" />
