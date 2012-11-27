@@ -1326,7 +1326,7 @@ overflow: visible;
     cursor: pointer;
 }
 
-.clickable-rows:hover {
+.listdetails .clickable-rows:hover {
     text-decoration: underline;
 }
 
