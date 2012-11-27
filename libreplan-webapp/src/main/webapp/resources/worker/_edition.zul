@@ -60,7 +60,7 @@
                             <row visible="@{controller.isRealWorker}">
                                 <label value="${i18n:_('First name')}" />
                                 <textbox
-                                    value="@{controller.worker.firstName}" constraint="no empty" width="500px"
+                                    value="@{controller.worker.firstName}" id="workerFirstname" constraint="no empty" width="500px"
                                     onBlur="controller.updateWindowTitle()" />
                             </row>
                             <row visible="@{controller.isVirtualWorker}">

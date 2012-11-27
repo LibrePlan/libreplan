@@ -41,7 +41,7 @@
                                 <textbox id="name"
                                     value="@{controller.profile.profileName}" width="300px"
                                     constraint="no empty:${i18n:_('cannot be empty')}"
-                                    onBlur="controller.updateWindowTitle()"/>
+                                    onBlur="controller.updateWindowTitle()"  sclass="focus-element" />
                             </row>
                         </rows>
                     </grid>

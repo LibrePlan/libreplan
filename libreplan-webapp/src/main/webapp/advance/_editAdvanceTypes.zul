@@ -38,7 +38,8 @@
                             <label value="${i18n:_('Unit name')}" />
                             <textbox id="unitName" value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"
                                 disabled="@{controller.immutable}"
-                                onBlur="controller.updateWindowTitle()" />
+                                onBlur="controller.updateWindowTitle()"
+                                sclass="focus-element" />
                         </row>
                         <row>
                             <label value="${i18n:_('Active')}" />
