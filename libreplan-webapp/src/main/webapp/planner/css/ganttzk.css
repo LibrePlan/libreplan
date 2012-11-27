@@ -416,6 +416,7 @@ div.box.limiting-unassigned {
 
 #timetrackerheader .second_level_ td {
     -moz-box-sizing: border-box;
+    box-sizing: border-box;
     border-right: solid 1px #9EB6CE;
 }
 
