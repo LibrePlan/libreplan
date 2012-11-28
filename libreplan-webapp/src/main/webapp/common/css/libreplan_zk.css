@@ -270,16 +270,14 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .message_ERROR, .message_INFO {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 10px;
     padding: 15px;
     margin: 10px;
     width: 300px;
 }
 
 .message_WARNING {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 10px;
     padding: 10px 5px;
     margin: 5px;
 }
@@ -321,8 +319,7 @@ div.z-errbox {
     background-color: #EECCCC;
     color:red;
     border:solid 1px red;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 10px;
 }
 
 .advancedallocationlayout .message_WARNING {
@@ -332,8 +329,7 @@ div.z-errbox {
 }
 
 h4.message_WARNING {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 10px;
     padding: 10px 5px;
     margin: 25px;
     font-size: 12px;
@@ -868,8 +864,7 @@ div.z-listbox-pgi-b {
 .orderTree .not-scheduled span.scheduling-state,
 .orderTree .partially-scheduled span.scheduling-state,
 .orderTree .completely-scheduled span.scheduling-state {
-    -moz-border-radius: 1px 6px 1px 6px;
-    -webkit-border-radius: 1px 6px 1px 6px;
+    border-radius: 1px 6px 1px 6px;
     border: 1px solid #888888;
     color: #888888;
     font-weight: bold;
@@ -914,8 +909,7 @@ span.z-dottree-line {
 
 .z-menu-body {
    background-color: #d4e1ef;
-   -moz-border-radius: 10px 10px 0 0;
-   -webkit-border-radius: 10px 10px 0 0;
+   border-radius: 10px 10px 0 0;
 }
 
 .z-menu-inner-m .z-menu-btn {
@@ -981,8 +975,7 @@ span.z-dottree-line {
     padding-top: 60px;
     background-position: 18px 10px;
     background-repeat: no-repeat;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
+    border-radius: 2px;
 }
 
 .perspective .z-button-cm {
@@ -1011,8 +1004,7 @@ span.z-dottree-line {
 }
 
 .perspective-active .z-button-cm {
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
+    border-radius: 2px;
     color: #FFFFFF;
     border-color:#006699 #DFF5FE #DFF5FE #006699;
 }
@@ -1256,8 +1248,7 @@ tr.z-treerow-over input {
 }
 
 .migas_linea span.scheduling-state {
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
+    border-radius: 6px;
     border: 1px solid #888888;
     color: #888888;
     font-weight: normal;
@@ -1685,8 +1676,7 @@ input.z-datebox-text-disd {
 
 .perspectives-column .z-button-cm,
 .toolbar-box .z-button-cm  {
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
+    border-radius: 2px;
 }
 
 .z-button.icono tbody, .z-button.icono tbody:hover, .z-button.icono tbody:active {
