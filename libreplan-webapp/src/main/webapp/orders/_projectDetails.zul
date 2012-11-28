@@ -80,6 +80,12 @@
                     onSelect="projectController.setBaseCalendar(self.selectedItem.value);" />
             </row>
 
+            <row>
+                <label value="${i18n:_('Description')}" />
+                <textbox rows="3" id="txtDescription"
+                value="@{projectController.order.description}" width="500px" />
+            </row>
+
         </rows>
     </grid>
 
