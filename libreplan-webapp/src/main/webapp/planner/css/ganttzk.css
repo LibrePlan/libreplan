@@ -249,14 +249,12 @@
 
 div.box.limiting-assigned {
     background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
+    border-radius: 15px;
 }
 
 div.box.limiting-unassigned {
     background-color: #c1d9d1; /* LIMITING_RESOURCES_GREEN */
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
+    border-radius: 15px;
 }
 
 .toggled {
@@ -805,8 +803,7 @@ div.limitingresourcesleftpane  {
 
 .queue-element {
     background-color: #61b598; /* LIMITING_RESOURCES_DARK_GREEN */
-    -moz-border-radius: 12px;
-    -webkit-border-radius: 12px;
+    border-radius: 12px;
     border: solid 1px;
     float:left;
     height:10px;
@@ -814,8 +811,7 @@ div.limitingresourcesleftpane  {
 }
 
 .queue-element.truncated-end {
-    -moz-border-radius: 12px 0 0 12px;
-    -webkit-border-radius: 12px 0 0 12px;
+    border-radius: 12px 0 0 12px;
 }
 
 .queue-element.unmet-deadline {
@@ -897,8 +893,7 @@ height: 100%
     z-index: 6;
     background-color: rgb(255, 202, 135);
     background-color: rgba(255, 202, 135, 0.9);
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
+    border-radius: 2px;
     padding: 0 3px;
 }
 
@@ -1252,10 +1247,8 @@ body .perspectives-column {
     background-color: #407865;
     height: 6px;
     margin-top: 2px;
-    -moz-border-radius-bottomleft: 2px;
-    -moz-border-radius-topleft: 2px;
-    -webkit-bottom-left-radius: 2px;
-    -webkit-top-left-radius: 2px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
 }
 
 .limiting-assigned .completion2, .limiting-unassigned .completion2 {
