@@ -5,7 +5,7 @@ Web Services
 
 :Author: Manuel Rego Casasnovas
 :Contact: rego@igalia.com
-:Date: 27/08/2012
+:Date: 28/11/2012
 :Copyright:
   Some rights reserved. This document is distributed under the Creative
   Commons Attribution-ShareAlike 3.0 licence, available in
@@ -311,3 +311,41 @@ Other
       * URL: ``/ws/rest/resourceshours/<resource-code>/<start-date>/<end-date>/``
 
   * DTO: ``org.libreplan.ws.resources.api.ResourceWorkedHoursListDTO``
+
+Bound users
+~~~~~~~~~~~
+
+Special services intended to be used by bound resources. The user and password
+for the service correspond to the bound user.
+
+There are 3 services:
+
+* My tasks:
+
+  * Export assigned tasks to the bound user:
+
+    * HTTP method: ``GET``
+    * No parameters
+    * URL: ``/ws/rest/bounduser/mytasks/``
+
+  * DTO: ``org.libreplan.ws.boundusers.api.TaskListDTO``
+
+* Timesheets by task:
+
+  * Export the personal timesheets data of the bound user for a task:
+
+    * HTTP method: ``GET``
+    * Parameters: ``<task-code>``
+    * URL: ``/ws/rest/bounduser/timesheets/<task-code>``
+
+  * DTO: ``org.libreplan.ws.boundusers.api.PersonalTimesheetEntryListDTO``
+
+* Import personal timesheets:
+
+  * Import personal timesheets of the bound user:
+
+    * HTTP method: ``POST``
+    * No parameters
+    * URL: ``/ws/rest/bounduser/timesheets/``
+
+  * DTO: ``org.libreplan.ws.boundusers.api.PersonalTimesheetEntryListDTO``
