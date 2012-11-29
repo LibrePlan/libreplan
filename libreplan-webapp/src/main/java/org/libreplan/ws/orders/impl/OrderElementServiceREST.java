@@ -183,7 +183,8 @@ public class OrderElementServiceREST extends
             }
 
             OrderLineGroup parent = orderElement.getParent();
-            if (!parent.isOrder() && parent.getChildren().size() == 1) {
+            if (parent != null && !parent.isOrder()
+                    && parent.getChildren().size() == 1) {
                 if (orderElementDAO.isAlreadyInUse(parent)) {
                     return "You cannot remove the order element '"
                             + orderElement.getName()
