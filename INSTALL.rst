@@ -65,10 +65,18 @@ Instructions:
 
   If you have memory problems review the section `Fix memory errors`_.
 
-Fedora and openSUSE OBS (openSUSE Build Service)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fedora, CentOS and openSUSE OBS (openSUSE Build Service)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Instructions depending on the distribution:
+
+* Fedora 17::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_17/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
+
+  Follow the instructions in /usr/share/doc/libreplan-1.3.0/README.Fedora afterwards.
 
 * Fedora 16::
 
@@ -76,11 +84,20 @@ Instructions depending on the distribution:
     # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_16/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
 
-* Fedora 15::
+  Follow the instructions in /usr/share/doc/libreplan-1.3.0/README.Fedora afterwards.
+
+* CentOS 6::
 
     # cd /etc/yum.repos.d
-    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_15/home:jsuarezr:LibrePlan.repo
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/CentOS_CentOS-6/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
+
+* openSUSE Factory::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_Factory/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
 
 * openSUSE 12.1::
 
@@ -105,6 +122,8 @@ RPM Packages
 
 There are several LibrePlan RPM packages available in the following URL:
 http://download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/
+
+Follow the instructions in the corresponding README file to finish the installation.
 
 .. WARNING::
 
