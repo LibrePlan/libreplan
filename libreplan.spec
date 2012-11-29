@@ -23,7 +23,11 @@ BuildArch:      noarch
 %if 0%{?fedora} || 0%{?centos}
 Requires:       postgresql-jdbc
 %endif
+%if 0%{?fedora} >= 17
+Requires:	java-1.7.0-openjdk
+%else
 Requires:       java-1.6.0-openjdk
+%endif
 Requires:       postgresql
 Requires:       postgresql-server
 Requires:       tomcat6
