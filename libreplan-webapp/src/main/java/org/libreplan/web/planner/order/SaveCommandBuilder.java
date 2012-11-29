@@ -365,9 +365,9 @@ public class SaveCommandBuilder {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            // Reset timer of warning on leaving page
-            ConfirmCloseUtil.resetConfirmClose();
             if (Executions.getCurrent() != null) {
+                // Reset timer of warning on leaving page
+                ConfirmCloseUtil.resetConfirmClose();
                 if (SecurityUtils.loggedUserCanWrite(state.getOrder())) {
                     ConfirmCloseUtil
                             .setConfirmClose(
