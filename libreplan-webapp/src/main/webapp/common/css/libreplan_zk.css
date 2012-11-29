@@ -6,8 +6,6 @@
  * to integrate the custom appearance of the web application.
  */
 
-
-
     /* ----- Predefined Height dependent styles ----- */
     .scheduling-graphics {
         height:200px;
@@ -1902,4 +1900,8 @@ select {
 .remarked {
     font-weight: bold;
     color: #0F3B82;
+}
+
+.z-menu-popup a:focus {
+    text-decoration: none !important;
 }
