@@ -95,7 +95,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS COPYING NEWS README README.%{distro} TODO INSTALL HACKING
+%doc AUTHORS.rst COPYING NEWS.rst README.rst README.%{distro}.rst TODO.rst INSTALL.rst HACKING.rst
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/webapps
 %dir %{_datadir}/%{name}/pgsql
