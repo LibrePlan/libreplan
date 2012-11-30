@@ -1,6 +1,267 @@
 NEWS
 ====
 
+Version 1.3.2 (30 Nov 2012)
+---------------------------
+
+Summary
+~~~~~~~
+
+A new minor version of LibrePlan including all the fixes done since previous
+version and some new features that have been developed lately. It also includes
+some of the tasks done during the 1st LibrePlan Hackfest arranged in A Coruña
+the 8th of November.
+
+Highlights:
+
+* Improvements in "Project Status" report:
+
+  * New columns showing information about costs.
+  * Included filter by criteria and labels.
+  * Some data are written in red when the planning (or estimation) is not
+    enough.
+
+* Planning adjustment according to timesheets: New feature providing the
+  possibility to adapt the Gantt view to reflect the reality with the data
+  extracted from the timesheets. Moreover, it includes the option to mark a task
+  as finished in the timesheets. On adjusting the planning acoording to
+  timesheets if one task has been marked as finished in the timesheets then,
+  additionally, a new progress type of type timesheets with a 100% measurement.
+
+* New DELETE operation in order elements web service: The new web service
+  operation allows to remove whole projects or individual tasks on top of the
+  current functionality to import/update projects or tasks.
+
+* New bound resources web service operations: 3 new web services have been
+  implemented related to bound resources. They provide the list of assigned
+  tasks, get the personal timesheets of a task and update the personal
+  timesheets data for a bound user.
+
+* Other:
+
+  * Compatibility issues with OpenJDK 7 fixed. This solves the problems with the
+    latest Ubuntu and Fedora versions.
+
+  * The project planning persectives have been protected in order to avoid
+    leaving them without saving. There is a new configuration variable to define
+    the number of seconds since the last saving in order to activate a warning
+    when the user leaves the planning views. Several users have reported
+    inconvenient data losses due to abandoning the project edition without
+    saving. With this warning this situation is fixed. By default the number of
+    seconds is configured to 30 and if you set it to 0 you disable the warning.
+
+  * Option to edit manually if a user is a database or LDAP user.
+
+  * By clicking on the project name in the left side part of the projects
+    planning perspective (home page), the user is able to enter directly into
+    the project planning edition.
+
+  * The list of project states has been reviewed and expanded. The final list is
+    composed by: PRE-SALES, OFFERED, OUTSOURCED, ACCEPTED, STARTED, ON HOLD,
+    FINISHED, CANCELLED and STORED.
+
+Notes
+~~~~~
+
+.. WARNING::
+
+  Remove web browser cache to avoid any problem with changes in JavaScript
+  resources.
+
+If you are upgrading from 1.3.1 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.3.2.sql``.
+
+If you are upgrading from 1.3.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.3.1.sql`` and
+``scripts/database/upgrade_1.3.2.sql``.
+
+If you are upgrading from a previous version without using the Debian package,
+review the *Notes* section for version 1.3.0.
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jacobo Aragunde Pérez
+* Manuel Rego Casasnovas
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [ca] Daniel Díaz Sañudo
+* [es] Manuel Rego Casasnovas
+* [fr] Philippe Poumaroux
+* [gl] Manuel Rego Casasnovas
+* [nl] Jeroen Baten
+* [pt] Thiago Cangussu
+
+Changes
+~~~~~~~
+
+* Update RPM package for LibrePlan 1.3.2
+* Update Debian package for LibrePlan 1.3.2
+* Update database scripts for LibrePlan 1.3.2
+* Only use ConfirmCloseUtil when saving if you are in the UI (not from web services)
+* Avoid confirm close warning when you get a concurrent modification exception
+* Fix issue deleting a project from the webservice
+* Update installation instructions for RPM based distros.
+* Fedora17 requires JDK 1.7
+* Fixed effect which caused previously clicked menu elements to be shown underlined
+* Fix printing due to change in entry points that now use code instead of id
+* Fixed NPE when deleting nodes too fast on project or template WBS trees
+* Bug #1562: Fix issue filtering properly resources according to their activation periods
+* doc: Add .rst extension to web services README
+* doc: Add documentation about the new bound users web services
+* Increased opacity of markers for first and last day with reported hours
+* Shifted right the last reported day marker
+* Changed cursor over gantt bars with fixed properties
+* Revamped appearance of markers for first and last reported progress dates
+* Replaced browser-prefixed border-radius elements from CSS files
+* Bug 1581: Avoid exception when desktop is not alive in LongOperationFeedback
+* doc: Add .rst extension to documentation files to take advantage of GitHub rendering for RST files
+* Change links to repository from sourceforge to github
+* doc: Added Thiago Cangussu as new Portuguese translator
+* i18n: Update Portuguese translation
+* i18n: Update French translation
+* i18n: Update Dutch translation
+* i18n: Update Catalan translation
+* i18n: Update Galician translation
+* i18n: Update Spanish translation
+* Fix Bug 1580: Force position recalculation after accepting task properties pop-up
+* Made explicit focused elements on main menu
+* Fixed side-effect of clickable-rows:hover effect on grids
+* Bug #1571: Fixed style on timetracker sencond level width causing a disaligment of 1px per element
+* Bug #1436: Fix issue setting recommended allocation resources per day to 1
+* Add new field to configure seconds for planning warning
+* Fixed permissions in order to set confirm close dialogue properly
+* Moved repeated code to ConfirmCloseUtil class
+* When executing saveCommand the timer on confirmClose is resetted
+* Internationalized warn message when leaving the planning
+* Removed confirmClose warning when leaving project planning after Save Command
+* Attached listener to call confirmClose notification
+* Added confirmClose method to give the user a warning when leaving the order edition mode
+* Added onClick listener to project names on company view to enter into the planning
+* Exposed project and tasks codes from fundamental properties to generate entry point URLs
+* Bug #1546: Force recalculation of critical path progresses on saving project
+* Bug #1541: Fix issue reseting selected element when progress is hidden
+* Bug #1570: Fix issue updating the EV chart legend instead of creating it from scratch
+* i18n: Update keys.pot files
+* Add event to close popup with ENTER over effort or finished inputs
+* Add checkbox to mark task as finished in personal timesheets popup
+* Fix bug in adapt planning command if Gantt has milestones
+* Add popup to fill personal timesheets in each day
+* Bug #1566: Do not launch exception in MonteCarlo view is critical path is only a milestone
+* Bug #1568: Allow to move a task before start date if it does not have consolidations
+* Bug #1553: Fixed test due to change in behavior
+* Bug #1553, #1554: Remove unique constraint in DB for OrderElement codes
+* Bug #1553: Fix issue modifying methods toLeaf and toContainer
+* Calculate progress and hours bars always proportionally to task size
+* Fix problems in service to import personal timesheets
+* Remove TIMESHEETS progress in tasks that are not updated from timesheets
+* Fix typo in "according"
+* Bug #1556: Allow to choose between database or LDAP in user creation
+* Bug #1556: Fix problems with i18n of the new enum
+* Bug #1556: Allow changing the value of UserAuthenticationType field in user edition screen.
+* Bug #1556: Use a combo box to show the value of UserAuthenticationType field.
+* Bug #1556: Use an enum to express the value of UserAuthenticationType field.
+* doc: Update INSTALL file with instructions to configure log directory
+* Prevent NPE in TemplateController if logged user is null
+* Change style of tasks that cannot be moved in the Gantt
+* Update dates on left part of Gantt view after adapt the planning
+* Merge branch 'libreplan-1.3' into adapt-planning-according-timesheets
+* Sort timesheet entries descending by date in bound users service
+* Include project code in tasks list service for bound users
+* Bug #1561: Upgrade AspectJ dependency to the latest version.
+* Show marks from timesheet dates in tasks when showing reported hours bar
+* Bug #1560: Fire property change for task dates after closing allocation pop-up
+* Bug #1559: Remove WorkReportLines with zero effort in personal timesheets
+* Add feedback message for user while adapting planning
+* Only adapt task leafs according to timesheets
+* Invalidate planner in order to repaint dependencies after updating tasks in Gantt
+* Update tasks in Gantt after adapting start and end date of all tasks
+* Remove assignments after end date for tasks marked as finished in the timesheets
+* Disable drag & drop for tasks updated from timesheets in the WBS
+* Disable new, new from template, up, down, indent and unindent buttons in WBS
+* Remove unused code in TreeController
+* Prevent tasks updated from timesheets to be reassigned
+* Disable advanced allocation window for tasks updated from timesheets
+* Disable tasks movement for tasks updated from timesheets
+* Disable resource allocation pop-up for tasks updated from timesheets
+* Bug #1517: Select the parent row in the WBS when it's transformed into a container.
+* Rename SUBCONTRACTED_PENDING_ORDER to OUTSOURCED
+* Configure default project status as PRE-SALES
+* Update order state in database due to new status added to the enum
+* Add new status in OrderStatusEnum: PRE-SALES and ON HOLD
+* Updated HACKING instructions for Fedora 17 and above.
+* Fix visibility issues in OpenJDK 1.7.
+* Add example scripts to import personal timesheets data
+* Add new service to import personal timesheets data
+* Add example script to test the service returning timsheets data for a task
+* New web service returning the personal timesheets data for a task of a bound user
+* Add example script for service that returns tasks of a bound user
+* New web service returning the assigned tasks of a user
+* Disable change of scheduling state point in WBS for tasks updated from timesheets
+* Disable constraints combo in tasks updated from timesheets
+* Set properly task position for tasks updated from timesheets even if dependencies have priority
+* Fix remove order elements service test in MySQL
+* Wrap concurrent modification exceptions in the web services inside a proper DTO
+* Add missing class ErrorDTO used in commit 7306b124deafa60a701b236eb9c9176a40733ed4
+* Implement main operations in adapt planning command
+* Bug #1555: Fix issue adding condition in both UI and web service
+* Add test for new delete order elements service
+* Update web services documentation with the new delete service
+* Fix example removal scripts reusing generic code
+* Include validations in the new service to remove order elements
+* Remove properly order element using OrderModel class
+* Convert parent in leaf if the element removed was the only child
+* Basic implementation of DELETE operation in order elements web service
+* Add new button to adapt planning according to timesheets
+* Add new field updatedFromTimesheets to TaskElement
+* Use code instead of id for ResourceHoursService
+* Fix parameters order in import example rest scripts
+* Add implementation to calculate if a task is finished according to timesheets
+* Add new attribute finishedTimesheets in SumChargedEffort
+* Disable finished checkbox in work reports UI if the task is already finished
+* Implement constraint to check that only one WorkReportLine per task is finished
+* Add checkbox in work reports standard edition UI
+* Add new attribute finished to WorkReportLine
+* Create new default progress type TIMESHEETS
+* Calculate first/last timesheets dates when saving/editing/deleting a timesheet
+* Calculate first/last timesheet dates when recalculating a SumChargedEffortDAO
+* Add new columns in SumChargedEffort for first and last timesheet date
+* Bug #1549: Avoid exception avoiding checking lines resource if there are no lines
+* Add filter by order authorizations in project status report
+* Merge branch 'master' into project-status-report
+* Reset MoneyCostCalculator before generating project status report
+* Add hours and cost mark in status report header too
+* Sort order elements by code in OrderElementDAO.findByLabelsAndCriteria
+* Add query to get OrderElements filtered by labels and criteria
+* Marking with red color special cases in project status report
+* Add exclamation mark in status report if hours or cost exceed the expected value
+* Add information about filter in project status report header if no project is selected
+* Avoid project in status report header if not selected
+* Add project name in tasks when no project is selected in status report
+* Add option to do not filter by project if you are filtering by labels or criteria
+* Bug #1551: Added FIXME notes to two tests that are causing trouble.
+* Fix CriterionSatisfactionDAOTest when run individually.
+* Fix ResourceDAOTest when run individually.
+* Fix criteria filtering discounting children with invalidated criteria
+* Implement filtering by criteria
+* Add UI to filter by criteria
+* Add filter by labels to project status report
+* Modify project status report to include new data
+* Modify project status report layout to include information about costs
+* Add transactional readonly in findCode to avoid bug introduced in previous patch
+* Use code to go to entry points when possible
+* Bug #1547: Allow user with role SUPERUSER to create new projects
+
+
 Version 1.3.1 (15 Oct 2012)
 ---------------------------
 
