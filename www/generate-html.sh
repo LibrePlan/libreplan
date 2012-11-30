@@ -1,15 +1,15 @@
 #!/bin/bash
 
 FILES="\
-    AUTHORS \
-    HACKING \
-    INSTALL \
-    NEWS \
-    README \
-    README.Fedora \
-    README.openSUSE \
-    TODO \
-    UPDATE \
+    AUTHORS.rst \
+    HACKING.rst \
+    INSTALL.rst \
+    NEWS.rst \
+    README.rst \
+    README.Fedora.rst \
+    README.openSUSE.rst \
+    TODO.rst \
+    UPDATE.rst \
     howto-create-a-new-report-in-libreplan.rst \
     howto-develop-a-use-case-in-libreplan.rst \
     howto-start-development-with-eclipse.rst \

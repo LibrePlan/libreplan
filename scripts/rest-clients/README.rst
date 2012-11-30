@@ -5,7 +5,7 @@ Web Services
 
 :Author: Manuel Rego Casasnovas
 :Contact: rego@igalia.com
-:Date: 27/08/2012
+:Date: 28/11/2012
 :Copyright:
   Some rights reserved. This document is distributed under the Creative
   Commons Attribution-ShareAlike 3.0 licence, available in
@@ -47,17 +47,20 @@ methods with the following meaning:
   * If it already exists: Update entity with new data.
   * If it does not exist: Add the new entity.
 
-These means that delete is not allowed from web services, in that way only new
-info could be added or updated. This is because of entities are related with
-others and remove operation could be dangerous. Then if necessary, the
-recommendation would be add a field to disable such entity.
+These means that delete is not allowed for all the entities in the web services,
+in that way only new info could be added or updated. This is because of entities
+are related with others and remove operation could be dangerous. Anyway for some
+specific entities the delete operation has been implemented.
 
 
 Requirements
 ------------
 
 These scripts are written in bash so you need to be running a bash terminal to
-use them.
+use them. And they use cURL to do the HTTP requests, you can install it with the
+following command in Debian based distributions::
+
+  # apt-get install curl
 
 Moreover, it is recommended to have Tidy available in your system. You can
 install it with the following command in Debian based distributions::
@@ -205,11 +208,11 @@ For each entity there are the following methods:
   * No parameters
   * URL: ``/ws/rest/<service-path>/``
 
-* Remove entity (only available for work reports):
+* Remove entity (only available for work reports and order elements):
 
   * HTTP method: ``DELETE``
   * Parameter: ``entity-code``
-  * URL: ``/ws/rest/workreports/<entity-code>/``
+  * URL: ``/ws/rest/<service-path>/<entity-code>/``
 
   * Special URL for work report lines:
     ``/ws/rest/workreports/line/<entity-code>/``
@@ -308,3 +311,41 @@ Other
       * URL: ``/ws/rest/resourceshours/<resource-code>/<start-date>/<end-date>/``
 
   * DTO: ``org.libreplan.ws.resources.api.ResourceWorkedHoursListDTO``
+
+Bound users
+~~~~~~~~~~~
+
+Special services intended to be used by bound resources. The user and password
+for the service correspond to the bound user.
+
+There are 3 services:
+
+* My tasks:
+
+  * Export assigned tasks to the bound user:
+
+    * HTTP method: ``GET``
+    * No parameters
+    * URL: ``/ws/rest/bounduser/mytasks/``
+
+  * DTO: ``org.libreplan.ws.boundusers.api.TaskListDTO``
+
+* Timesheets by task:
+
+  * Export the personal timesheets data of the bound user for a task:
+
+    * HTTP method: ``GET``
+    * Parameters: ``<task-code>``
+    * URL: ``/ws/rest/bounduser/timesheets/<task-code>``
+
+  * DTO: ``org.libreplan.ws.boundusers.api.PersonalTimesheetEntryListDTO``
+
+* Import personal timesheets:
+
+  * Import personal timesheets of the bound user:
+
+    * HTTP method: ``POST``
+    * No parameters
+    * URL: ``/ws/rest/bounduser/timesheets/``
+
+  * DTO: ``org.libreplan.ws.boundusers.api.PersonalTimesheetEntryListDTO``

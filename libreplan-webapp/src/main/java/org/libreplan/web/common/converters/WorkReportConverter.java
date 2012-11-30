@@ -46,13 +46,13 @@ public class WorkReportConverter implements IConverter<WorkReport> {
 
     @Override
     public String asString(WorkReport entity) {
-        return entity.getId() + "";
+        return entity.getCode();
     }
 
     @Override
     public WorkReport asObject(String stringRepresentation) {
         try {
-            return workReportDAO.find(Long.parseLong(stringRepresentation));
+            return workReportDAO.findByCode(stringRepresentation);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

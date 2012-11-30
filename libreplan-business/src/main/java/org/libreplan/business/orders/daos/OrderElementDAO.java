@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,10 +42,13 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.expensesheet.daos.IExpenseSheetLineDAO;
+import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
@@ -202,6 +206,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
     @SuppressWarnings("unchecked")
     @Override
+    @Transactional(readOnly = true)
     public OrderElement findByCode(String code)
             throws InstanceNotFoundException {
 
@@ -251,22 +256,6 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     public OrderElement findUniqueByCodeAnotherTransaction(String code)
             throws InstanceNotFoundException {
         return findUniqueByCode(code);
-    }
-
-    @Override
-    public boolean existsOtherOrderElementByCode(OrderElement orderElement) {
-        try {
-            OrderElement t = findUniqueByCode(orderElement.getCode());
-            return t != null && t != orderElement;
-        } catch (InstanceNotFoundException e) {
-            return false;
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public boolean existsByCodeAnotherTransaction(OrderElement orderElement) {
-        return existsOtherOrderElementByCode(orderElement);
     }
 
     @Override
@@ -417,7 +406,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         return min;
     }
 
-    private boolean isAlreadyInUse(OrderElement orderElement) {
+    @Override
+    public boolean isAlreadyInUse(OrderElement orderElement) {
         if (orderElement.isNewObject()) {
             return false;
         }
@@ -488,9 +478,11 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             OrderElement orderElementInDB = orderElementsInDB.get(code);
 
             // There's an element in the DB with the same code and it's a
-            // different element
+            // different element in a different order
             if (orderElementInDB != null
-                    && !orderElementInDB.getId().equals(orderElement.getId())) {
+                    && !orderElementInDB.getId().equals(orderElement.getId())
+                    && !orderElementInDB.getOrder().getId()
+                            .equals(orderElement.getOrder().getId())) {
                 return orderElement;
             }
         }
@@ -514,8 +506,101 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     }
 
     @Override
-    public boolean hasImputedExpenseSheet(Long id) throws InstanceNotFoundException {
+    public boolean hasImputedExpenseSheet(Long id)
+            throws InstanceNotFoundException {
+        OrderElement orderElement = find(id);
+        return (!expenseSheetLineDAO.findByOrderElement(orderElement).isEmpty());
+    }
+
+    @Override
+    public boolean hasImputedExpenseSheetThisOrAnyOfItsChildren(Long id) throws InstanceNotFoundException {
         OrderElement orderElement = find(id);
         return (!expenseSheetLineDAO.findByOrderElementAndChildren(orderElement).isEmpty());
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<OrderElement> findByLabelsAndCriteria(Set<Label> labels,
+            Set<Criterion> criteria) {
+
+        String strQuery = "SELECT oe.id ";
+        strQuery += "FROM OrderElement oe ";
+
+        String where = "";
+        if (labels != null && !labels.isEmpty()) {
+            for (int i = 0; i < labels.size(); i++) {
+                if (where.isEmpty()) {
+                    where += "WHERE ";
+                } else {
+                    where += "AND ";
+                }
+                where += ":label" + i + " IN elements(oe.labels) ";
+            }
+        }
+
+        if (criteria != null && !criteria.isEmpty()) {
+            strQuery += "JOIN oe.criterionRequirements cr ";
+            if (where.isEmpty()) {
+                where += "WHERE ";
+            } else {
+                where += "AND ";
+            }
+            where += "cr.criterion IN (:criteria) ";
+            where += "AND cr.class = DirectCriterionRequirement ";
+            where += "GROUP BY oe.id ";
+            where += "HAVING count(oe.id) = :criteriaSize ";
+        }
+
+        strQuery += where;
+
+        Query query = getSession().createQuery(strQuery);
+        if (labels != null && !labels.isEmpty()) {
+            int i = 0;
+            for (Label label : labels) {
+                query.setParameter("label" + i, label);
+                i++;
+            }
+        }
+        if (criteria != null && !criteria.isEmpty()) {
+            query.setParameterList("criteria", criteria);
+            query.setParameter("criteriaSize", (long) criteria.size());
+        }
+
+        List<Long> orderElementsIds = query.list();
+        if (orderElementsIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return getSession()
+                .createQuery(
+                        "FROM OrderElement oe WHERE oe.id IN (:ids) ORDER BY oe.infoComponent.code")
+                .setParameterList("ids", orderElementsIds).list();
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByCodeInAnotherOrderAnotherTransaction(
+            OrderElement orderElement) {
+        return existsByCodeInAnotherOrder(orderElement);
+    }
+
+    private boolean existsByCodeInAnotherOrder(OrderElement orderElement) {
+        try {
+            OrderElement found = findUniqueByCode(orderElement.getCode());
+            return !areInTheSameOrder(orderElement, found);
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    private boolean areInTheSameOrder(OrderElement orderElement1,
+            OrderElement orderElement2) {
+        Order order1 = orderElement1.getOrder();
+        Order order2 = orderElement2.getOrder();
+        if (order1.getId() == null || order2.getId() == null) {
+            return false;
+        }
+        return order1.getId().equals(order2.getId());
+    }
+
 }

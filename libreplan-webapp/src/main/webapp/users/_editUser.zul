@@ -85,9 +85,10 @@
                                 <textbox id="email"
                                     value="@{controller.user.email}" width="300px"/>
                             </row>
-                            <row>
+                            <row id="authenticationTypeComboRow">
                                 <label value="${i18n:_('Authentication type')}" />
-                                <label value="@{controller.authenticationType}" />
+                                <combobox id="authenticationTypeCombo" autodrop="true"
+                                onChange="controller.setAuthenticationType(self.selectedItem)" />
                             </row>
                         </rows>
                     </grid>

@@ -68,7 +68,7 @@ Debian/Ubuntu
 
 * Download source code::
 
-    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
+    $ git clone git://github.com/Igalia/libreplan.git
 
 * Compile project::
 
@@ -87,12 +87,21 @@ Fedora
 
 * Install requirements::
 
-    # yum install git maven java-1.6.0-openjdk postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
+    # yum install git maven java-1.7.0-openjdk-devel postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
+
+.. WARNING:: Use the following command in Fedora 16 or below::
+
+               # yum install git maven java-1.6.0-openjdk postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
 
 * Start database service::
 
-    # service postgresql initdb
-    # service postgresql start
+    # su - postgres -c "PGDATA=/var/lib/pgsql/data initdb"
+    # systemctl start postgresql.service
+
+.. WARNING:: Use the following commands in Fedora 16 or below::
+
+               # service postgresql initdb
+               # service postgresql start
 
 * Connect to database::
 
@@ -110,15 +119,17 @@ Fedora
 
     ALTER USER postgres WITH PASSWORD 'postgres';
 
-* Edit ``/var/lib/pgsql/data/pg_hba.conf`` and replace ``ident`` by ``md5``
+.. WARNING:: These steps are only for Fedora 16 and below:
 
-* Reload database configuration::
+               * Edit ``/var/lib/pgsql/data/pg_hba.conf`` and replace ``ident`` by ``md5``
 
-    # service postgresql reload
+               * Reload database configuration::
+
+                 # service postgresql reload
 
 * Download source code::
 
-    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
+    $ git clone git://github.com/Igalia/libreplan.git
 
 * Compile project::
 
@@ -179,7 +190,7 @@ openSUSE
 
 * Download source code::
 
-    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan
+    $ git clone git://github.com/Igalia/libreplan.git
 
 * Compile project::
 

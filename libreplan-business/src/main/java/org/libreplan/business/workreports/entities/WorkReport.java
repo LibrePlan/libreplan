@@ -36,6 +36,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.Util;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -535,6 +536,32 @@ public class WorkReport extends IntegrationEntity implements
             }
         }
 
+        return false;
+    }
+
+    @AssertTrue(message = "the same task is marked as finished by more than one timesheet line")
+    public boolean checkConstraintSameOrderElementFinishedBySeveralWorkReportLines() {
+        Set<OrderElement> finishedOrderElements = new HashSet<OrderElement>();
+
+        for (WorkReportLine line : workReportLines) {
+            if (line.isFinished()) {
+                if (Util.contains(finishedOrderElements, line.getOrderElement())) {
+                    return false;
+                }
+                finishedOrderElements.add(line.getOrderElement());
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isFinished(OrderElement orderElement) {
+        for (WorkReportLine line : workReportLines) {
+            if (line.isFinished()
+                    && Util.equals(line.getOrderElement(), orderElement)) {
+                return true;
+            }
+        }
         return false;
     }
 

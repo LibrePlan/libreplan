@@ -702,7 +702,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     @Override
     public void remove(OrderElement element) {
-        boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheets(element);
+        boolean hasImputedExpenseSheets = orderModel
+                .hasImputedExpenseSheetsThisOrAnyOfItsChildren(element);
         if (hasImputedExpenseSheets) {
             messagesForUser
                     .showMessage(
@@ -719,10 +720,22 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                             Level.ERROR,
                             _("You cannot remove the task \"{0}\" because it has work reported on it or any of its children",
                                     element.getName()));
-        } else {
-            super.remove(element);
-            getRenderer().removeCodeTextbox(element);
+            return;
         }
+
+        boolean onlyChildAndParentAlreadyInUseByHoursOrExpenses = orderModel
+                .isOnlyChildAndParentAlreadyInUseByHoursOrExpenses(element);
+        if (onlyChildAndParentAlreadyInUseByHoursOrExpenses) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("You cannot remove the task \"{0}\" because it is the only child of its parent and its parent has tracked time or imputed expenses",
+                                    element.getName()));
+            return;
+        }
+
+        super.remove(element);
+        getRenderer().removeCodeTextbox(element);
     }
 
     @Override

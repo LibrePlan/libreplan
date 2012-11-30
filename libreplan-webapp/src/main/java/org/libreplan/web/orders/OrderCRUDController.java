@@ -821,7 +821,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void confirmRemove(Order order) {
-        if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())) {
+        if (orderModel.userCanWrite(order)) {
             try {
                 int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", order.getName()),
                         "Delete", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
@@ -843,7 +843,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void remove(Order order) {
-        boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheets(order);
+        boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheetsThisOrAnyOfItsChildren(order);
         if (hasImputedExpenseSheets) {
             messagesForUser
                     .showMessage(
@@ -1237,7 +1237,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void appendButtonDelete(final Hbox hbox, final Order order) {
-        if(orderModel.userCanWrite(order, SecurityUtils.getSessionUserLoginName())) {
+        if (orderModel.userCanWrite(order)) {
             Button buttonDelete = new Button();
             buttonDelete.setSclass("icono");
             buttonDelete.setImage("/common/img/ico_borrar1.png");
@@ -1439,7 +1439,8 @@ public class OrderCRUDController extends GenericForwardComposer {
      * the create buttons accordingly.
      */
     private void checkCreationPermissions() {
-        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
+        if (!SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             if (createOrderButton != null) {
                 createOrderButton.setDisabled(true);
             }
@@ -1451,8 +1452,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void updateDisabilitiesOnInterface() {
         Order order = orderModel.getOrder();
 
-        boolean permissionForWriting = orderModel.userCanWrite(order,
-                SecurityUtils.getSessionUserLoginName());
+        boolean permissionForWriting = orderModel.userCanWrite(order);
         boolean isInStoredState = order.getState() == OrderStatusEnum.STORED;
         boolean isInitiallyStored = orderModel.getPlanningState()
                 .getSavedOrderState() == OrderStatusEnum.STORED;

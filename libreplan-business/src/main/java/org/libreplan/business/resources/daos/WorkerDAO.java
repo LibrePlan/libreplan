@@ -147,8 +147,8 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
     @Override
     @Transactional(readOnly = true)
     public List<Object[]> getWorkingHoursGroupedPerWorker(
-            List<String> workerNifs, Date startingDate, Date endingDate) {
-        String strQuery = "SELECT worker.nif, SUM(wrl.effort) "
+            List<String> workerCodes, Date startingDate, Date endingDate) {
+        String strQuery = "SELECT worker.code, SUM(wrl.effort) "
                 + "FROM Worker worker, WorkReportLine wrl "
                 + "LEFT OUTER JOIN wrl.resource resource "
                 + "WHERE resource.id = worker.id ";
@@ -165,15 +165,15 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         }
 
         // Set workers
-        if (workerNifs != null && !workerNifs.isEmpty()) {
-            strQuery += "AND worker.nif IN (:workerNifs) ";
+        if (workerCodes != null && !workerCodes.isEmpty()) {
+            strQuery += "AND worker.code IN (:workerCodes) ";
         }
 
         // Group by
-        strQuery += "GROUP BY worker.nif ";
+        strQuery += "GROUP BY worker.code ";
 
         // Order by
-        strQuery += "ORDER BY worker.nif";
+        strQuery += "ORDER BY worker.code";
 
         // Set parameters
         Query query = getSession().createQuery(strQuery);
@@ -183,8 +183,8 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         if (endingDate != null) {
             query.setParameter("endingDate", endingDate);
         }
-        if (workerNifs != null && !workerNifs.isEmpty()) {
-            query.setParameterList("workerNifs", workerNifs);
+        if (workerCodes != null && !workerCodes.isEmpty()) {
+            query.setParameterList("workerCodes", workerCodes);
         }
 
         // Get result

@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
@@ -42,6 +43,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceAssignment;
+import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.entities.IndirectAdvanceAssignment;
@@ -64,11 +66,13 @@ import org.libreplan.business.qualityforms.entities.TaskQualityForm;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.requirements.entities.IndirectCriterionRequirement;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.trees.ITreeNode;
 import org.libreplan.business.util.deepcopy.DeepCopy;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.IntraDayDate;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
@@ -944,7 +948,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                 newRequirement);
     }
 
-    protected Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
+    public Set<IndirectCriterionRequirement> getIndirectCriterionRequirement() {
         return criterionRequirementHandler.getIndirectCriterionRequirement(criterionRequirements);
     }
 
@@ -1009,6 +1013,14 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public TaskSource getTaskSource() {
         return getCurrentSchedulingData().getTaskSource();
+    }
+
+    public TaskElement getTaskElement() {
+        TaskSource taskSource = getTaskSource();
+        if (taskSource == null) {
+            return null;
+        }
+        return taskSource.getTask();
     }
 
     public Set<TaskElement> getTaskElements() {
@@ -1156,6 +1168,16 @@ public abstract class OrderElement extends IntegrationEntity implements
         return true;
     }
 
+    @AssertTrue(message = "code is already used in another project")
+    public boolean checkConstraintCodeRepeatedInAnotherOrder() {
+        if (StringUtils.isBlank(getCode())) {
+            return true;
+        }
+
+        return !Registry.getOrderElementDAO()
+                .existsByCodeInAnotherOrderAnotherTransaction(this);
+    }
+
     @AssertTrue(message = "a label can not be assigned twice in the same branch")
     public boolean checkConstraintLabelNotRepeatedInTheSameBranch() {
         return checkConstraintLabelNotRepeatedInTheSameBranch(new HashSet<Label>());
@@ -1256,6 +1278,36 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
 
         return false;
+    }
+
+    public boolean containsLabels(Set<Label> labels) {
+        Integer matches = 0;
+        for (Label label : labels) {
+            if (containsLabel(label.getCode())) {
+                matches++;
+            }
+        }
+        return matches == labels.size();
+    }
+
+    public boolean containsCriterion(String code) {
+        for (CriterionRequirement criterionRequirement : getDirectCriterionRequirement()) {
+            if (criterionRequirement.getCriterion().getCode().equals(code)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean containsCriteria(Set<Criterion> criteria) {
+        Integer matches = 0;
+        for (Criterion criterion : criteria) {
+            if (containsCriterion(criterion.getCode())) {
+                matches++;
+            }
+        }
+        return matches == criteria.size();
     }
 
     public boolean containsMaterialAssignment(String materialCode) {
@@ -1551,6 +1603,63 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public boolean isOrder() {
         return false;
+    }
+
+    public boolean hasTimesheetsReportingHours() {
+        if (sumChargedEffort == null) {
+            return false;
+        }
+        return sumChargedEffort.getFirstTimesheetDate() != null;
+    }
+
+    public boolean isFinishedTimesheets() {
+        if (sumChargedEffort == null) {
+            return false;
+        }
+        return sumChargedEffort.isFinishedTimesheets();
+    }
+
+    @Override
+    public boolean isUpdatedFromTimesheets() {
+        TaskElement taskElement = getTaskElement();
+        if (taskElement == null) {
+            return false;
+        }
+
+        return taskElement.isUpdatedFromTimesheets();
+    }
+
+    public Date getFirstTimesheetDate() {
+        if (sumChargedEffort == null) {
+            return null;
+        }
+        return sumChargedEffort.getFirstTimesheetDate();
+    }
+
+    public Date getLastTimesheetDate() {
+        if (sumChargedEffort == null) {
+            return null;
+        }
+        return sumChargedEffort.getLastTimesheetDate();
+    }
+
+    public void detachFromParent() {
+        parent = null;
+    }
+
+    public AdvanceMeasurement getLastAdvanceMeasurement() {
+        DirectAdvanceAssignment advanceAssignment = getReportGlobalAdvanceAssignment();
+        if (advanceAssignment == null) {
+            return null;
+        }
+        return advanceAssignment.getLastAdvanceMeasurement();
+    }
+
+    public String getEffortAsString() {
+        SumChargedEffort sumChargedEffort = getSumChargedEffort();
+        EffortDuration effort = sumChargedEffort != null ? sumChargedEffort
+                .getTotalChargedEffort() : EffortDuration.zero();
+        return effort.toFormattedString();
     }
 
 }

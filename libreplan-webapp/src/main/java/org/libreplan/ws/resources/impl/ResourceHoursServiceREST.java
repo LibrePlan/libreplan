@@ -87,13 +87,13 @@ public class ResourceHoursServiceREST implements IResourceHoursService {
             throw new RuntimeException(e);
         }
 
-        List<String> workerNifs = null;
+        List<String> workerCodes = null;
         if (resourceCode != null) {
-            workerNifs = Arrays.asList(resourceCode);
+            workerCodes = Arrays.asList(resourceCode);
         }
 
         List<Object[]> hoursPerWorker = workerDAO
-                .getWorkingHoursGroupedPerWorker(workerNifs, startingDate,
+                .getWorkingHoursGroupedPerWorker(workerCodes, startingDate,
                         endingDate);
 
         for (Object[] pair : hoursPerWorker) {

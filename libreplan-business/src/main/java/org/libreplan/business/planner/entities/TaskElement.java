@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -136,7 +137,7 @@ public abstract class TaskElement extends BaseEntity {
 
     protected static <T extends TaskElement> T create(T taskElement,
             TaskSource taskSource) {
-        taskElement.taskSource = taskSource;
+        taskElement.setTaskSource(taskSource);
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
         taskElement.updateAdvancePercentageFromOrderElement();
@@ -182,6 +183,8 @@ public abstract class TaskElement extends BaseEntity {
 
     private Boolean simplifiedAssignedStatusCalculationEnabled = false;
 
+    private Boolean updatedFromTimesheets = false;
+
     public void initializeDatesIfNeeded() {
         if (getIntraDayEndDate() == null || getIntraDayStartDate() == null) {
             initializeDates();
@@ -218,6 +221,10 @@ public abstract class TaskElement extends BaseEntity {
         return taskSource;
     }
 
+    protected void setTaskSource(TaskSource taskSource) {
+        this.taskSource = taskSource;
+    }
+
     protected void copyDependenciesTo(TaskElement result) {
         for (Dependency dependency : getDependenciesWithThisOrigin()) {
             Dependency.create(result, dependency.getDestination(),
@@ -241,6 +248,14 @@ public abstract class TaskElement extends BaseEntity {
 
     public String getName() {
         return name;
+    }
+
+    public String getCode() {
+        return getOrderElement().getCode();
+    }
+
+    public String getProjectCode() {
+        return getOrderElement().getOrder().getCode();
     }
 
     public void setName(String name) {
@@ -831,6 +846,14 @@ public abstract class TaskElement extends BaseEntity {
             }
         }
         return result;
+    }
+
+    public Boolean isUpdatedFromTimesheets() {
+        return updatedFromTimesheets;
+    }
+
+    public void setUpdatedFromTimesheets(Boolean updatedFromTimesheets) {
+        this.updatedFromTimesheets = BooleanUtils.isTrue(updatedFromTimesheets);
     }
 
 }

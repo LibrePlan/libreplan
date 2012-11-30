@@ -39,4 +39,10 @@ public interface ICommand<T> {
 
     boolean isDisabled();
 
+    /**
+     * Describes if a command is for the planner toolbar. Otherwise it'll be
+     * inserted in the common toolbar.
+     */
+    boolean isPlannerCommand();
+
 }

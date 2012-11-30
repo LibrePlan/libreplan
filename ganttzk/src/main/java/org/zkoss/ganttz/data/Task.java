@@ -384,8 +384,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public BigDecimal getHoursAdvancePercentage() {
-        return fundamentalProperties.getHoursAdvancePercentage();
+    public BigDecimal getHoursAdvanceBarPercentage() {
+        return fundamentalProperties.getHoursAdvanceBarPercentage();
     }
 
     @Override
@@ -394,8 +394,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public GanttDate getHoursAdvanceEndDate() {
-        return fundamentalProperties.getHoursAdvanceEndDate();
+    public GanttDate getHoursAdvanceBarEndDate() {
+        return fundamentalProperties.getHoursAdvanceBarEndDate();
     }
 
     @Override
@@ -409,12 +409,12 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public GanttDate getAdvanceEndDate() {
-        return fundamentalProperties.getAdvanceEndDate();
+    public GanttDate getAdvanceBarEndDate() {
+        return fundamentalProperties.getAdvanceBarEndDate();
     }
 
-    public GanttDate getAdvanceEndDate(String progressType) {
-        return fundamentalProperties.getAdvanceEndDate(progressType);
+    public GanttDate getAdvanceBarEndDate(String progressType) {
+        return fundamentalProperties.getAdvanceBarEndDate(progressType);
     }
 
     public String getTooltipText() {
@@ -548,4 +548,33 @@ public abstract class Task implements ITaskFundamentalProperties {
                 getBeginDate());
     }
 
+    @Override
+    public boolean isUpdatedFromTimesheets() {
+        return fundamentalProperties.isUpdatedFromTimesheets();
+    }
+
+    @Override
+    public Date getFirstTimesheetDate() {
+        return fundamentalProperties.getFirstTimesheetDate();
+    }
+
+    @Override
+    public Date getLastTimesheetDate() {
+        return fundamentalProperties.getLastTimesheetDate();
+    }
+
+    public void firePropertyChangeForTaskDates() {
+        fundamentalPropertiesListeners.firePropertyChange("beginDate", null,
+                getBeginDate());
+        fundamentalPropertiesListeners.firePropertyChange("endDate", null,
+                getEndDate());
+    }
+
+    public String getCode() {
+        return fundamentalProperties.getCode();
+    }
+
+    public String getProjectCode() {
+        return fundamentalProperties.getProjectCode();
+    }
 }

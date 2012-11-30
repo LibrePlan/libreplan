@@ -35,6 +35,7 @@ import org.libreplan.web.common.ITemplateModel.IOnFinished;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.users.bootstrap.PredefinedUsers;
+import org.libreplan.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -227,7 +228,11 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getUsername() {
-        return SecurityUtils.getLoggedUser().getUsername();
+        CustomUser user = SecurityUtils.getLoggedUser();
+        if (user == null) {
+            return "";
+        }
+        return user.getUsername();
     }
 
 }

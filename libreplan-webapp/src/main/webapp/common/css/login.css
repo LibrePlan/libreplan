@@ -22,8 +22,7 @@ body {
     background-color: #E4F3D9; /* green0 (normal background) */
     color: #58A758; /* green3 (text) */
     border: 1px solid #439e32; /* green4 (border) */
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
+    border-radius: 3px;
     font-size:12px;
     font-family: Arial, Helvetica, sans-serif;
     margin-top:15px;
@@ -84,8 +83,7 @@ a.ayuda:hover {
     color: #ee0000;
     border: solid 1px #ee0000;
     background-color: #eecccc;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 10px;
     padding: 15px;
     margin: 10px;
     margin-top: 30px;
@@ -105,8 +103,7 @@ body .not-supported {
     padding: 10px;
     border: solid 1px #ee0000;
     background-color: #eecccc;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    border-radius: 10px;
 }
 
 .libreplan-version {

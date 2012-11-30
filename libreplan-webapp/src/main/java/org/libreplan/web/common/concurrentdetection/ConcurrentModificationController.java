@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.web.common.ConfirmCloseUtil;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -48,8 +49,13 @@ public class ConcurrentModificationController extends GenericForwardComposer {
                 .info(
                         "an OptimistLockingFailureException caused a disruption to an user",
                         exception);
-        Executions.sendRedirect("/common/concurrent_modification.zul?back="
-                + backURL);
+        if (Executions.getCurrent() != null) {
+            ConfirmCloseUtil.resetConfirmClose();
+            Executions.sendRedirect("/common/concurrent_modification.zul?back="
+                    + backURL);
+        } else {
+            LOG.warn("Impossible to do redirect due to OptimisticLockingFailureException because of Executions.getCurrent() is null");
+        }
     }
 
     private static String getBackURL() {

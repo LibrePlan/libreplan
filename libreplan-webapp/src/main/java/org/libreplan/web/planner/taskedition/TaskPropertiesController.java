@@ -138,7 +138,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
         disabledConstraintsAndAllocations = currentTaskElement
                 .isSubcontractedAndWasAlreadySent()
-                || currentTaskElement.isLimitingAndHasDayAssignments();
+                || currentTaskElement.isLimitingAndHasDayAssignments()
+                || currentTaskElement.isUpdatedFromTimesheets();
         if (!disabledConstraintsAndAllocations && (currentTaskElement.isTask())) {
             disabledConstraintsAndAllocations = ((Task) currentTaskElement)
                     .isManualAnyAllocation();

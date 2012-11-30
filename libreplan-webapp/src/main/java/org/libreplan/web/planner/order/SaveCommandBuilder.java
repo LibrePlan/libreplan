@@ -87,11 +87,13 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.workingday.IntraDayDate;
+import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -123,7 +125,6 @@ import org.zkoss.zul.Messagebox;
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class SaveCommandBuilder {
-
 
     private static final Log LOG = LogFactory.getLog(SaveCommandBuilder.class);
 
@@ -364,6 +365,17 @@ public class SaveCommandBuilder {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            if (Executions.getCurrent() != null) {
+                // Reset timer of warning on leaving page
+                ConfirmCloseUtil.resetConfirmClose();
+                if (SecurityUtils.loggedUserCanWrite(state.getOrder())) {
+                    ConfirmCloseUtil
+                            .setConfirmClose(
+                                    Executions.getCurrent().getDesktop(),
+                                    _("You are about to leave the planning edition, unsaved changes will be lost."));
+                }
+            }
+
         }
 
         private void doTheSaving() {
@@ -384,6 +396,7 @@ public class SaveCommandBuilder {
                 // the deletes on cascade a new root task is fetched causing a
                 // NonUniqueObjectException later
                 taskElementDAO.reattach(rootTask);
+                rootTask.updateCriticalPathProgress(state.getCriticalPath());
             }
             orderDAO.save(order);
 
@@ -1036,6 +1049,11 @@ public class SaveCommandBuilder {
         @Override
         public boolean isDisabled() {
             return disabled;
+        }
+
+        @Override
+        public boolean isPlannerCommand() {
+            return false;
         }
 
     }

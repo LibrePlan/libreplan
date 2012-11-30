@@ -771,7 +771,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             return true;
         }
         if (order.isNewObject()
-                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
+                & SecurityUtils
+                        .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             return true;
         }
         try {
@@ -795,30 +796,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean userCanWrite(Order order, String loginName) {
-        if (SecurityUtils
-                .isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
-            return true;
-        }
-        if (order.isNewObject()
-                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
-            return true;
-        }
-        try {
-            User user = userDAO.findByLoginName(loginName);
-            for(OrderAuthorization authorization :
-                    orderAuthorizationDAO.listByOrderUserAndItsProfiles(order, user)) {
-                if(authorization.getAuthorizationType() ==
-                        OrderAuthorizationType.WRITE_AUTHORIZATION) {
-                    return true;
-                }
-            }
-        }
-        catch(InstanceNotFoundException e) {
-            //this case shouldn't happen, because it would mean that there isn't a logged user
-            //anyway, if it happenned we don't allow the user to pass
-        }
-        return false;
+    public boolean userCanWrite(Order order) {
+        return SecurityUtils.loggedUserCanWrite(order);
     }
 
     @Override
@@ -867,12 +846,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean hasImputedExpenseSheets(OrderElement order) {
+    public boolean hasImputedExpenseSheetsThisOrAnyOfItsChildren(OrderElement order) {
         if (order.isNewObject()) {
             return false;
         }
         try {
-            return orderElementDAO.hasImputedExpenseSheet(order.getId());
+            return orderElementDAO.hasImputedExpenseSheetThisOrAnyOfItsChildren(order.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -927,6 +906,26 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         }
 
         return planningState.getRootTask().isAnyTaskWithConstraint(type);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isOnlyChildAndParentAlreadyInUseByHoursOrExpenses(
+            OrderElement orderElement) {
+        try {
+            OrderLineGroup parent = orderElement.getParent();
+            if (!parent.isOrder() && parent.getChildren().size() == 1) {
+                if (orderElementDAO.isAlreadyInUse(parent)) {
+                    return true;
+                }
+                if (orderElementDAO.hasImputedExpenseSheet(parent.getId())) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

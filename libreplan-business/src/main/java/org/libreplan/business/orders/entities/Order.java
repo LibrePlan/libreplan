@@ -675,4 +675,20 @@ public class Order extends OrderLineGroup implements Comparable {
         return true;
     }
 
+    @AssertTrue(message = "task code is repeated inside the project")
+    public boolean checkConstraintUniqueCodeInsideOrder() {
+        List<String> codes = new ArrayList<String>();
+        codes.add(getCode());
+
+        for (OrderElement child : getAllChildren()) {
+            String childCode = child.getCode();
+            if (codes.contains(childCode)) {
+                return false;
+            }
+            codes.add(childCode);
+        }
+
+        return true;
+    }
+
 }

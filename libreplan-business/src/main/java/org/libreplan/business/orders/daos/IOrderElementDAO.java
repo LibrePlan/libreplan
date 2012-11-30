@@ -27,7 +27,9 @@ import java.util.Set;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.workingday.EffortDuration;
 
@@ -85,10 +87,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     OrderElement findUniqueByCodeAnotherTransaction(String code)
             throws InstanceNotFoundException;
 
-    boolean existsOtherOrderElementByCode(OrderElement orderElement);
-
-    boolean existsByCodeAnotherTransaction(OrderElement orderElement);
-
     List<OrderElement> getAll();
 
     public List<OrderElement> findOrderElementsWithExternalCode();
@@ -106,6 +104,8 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     EffortDuration calculateMaxWorkedHours(final List<OrderElement> list);
 
     EffortDuration calculateMinWorkedHours(final List<OrderElement> list);
+
+    boolean isAlreadyInUse(OrderElement orderElement);
 
     boolean isAlreadyInUseThisOrAnyOfItsChildren(OrderElement orderElement);
 
@@ -128,6 +128,14 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
 
     boolean hasImputedExpenseSheet(Long id) throws InstanceNotFoundException;
 
+    boolean hasImputedExpenseSheetThisOrAnyOfItsChildren(Long id) throws InstanceNotFoundException;
+
     OrderElement findByExternalCode(String code) throws InstanceNotFoundException;
+
+    public List<OrderElement> findByLabelsAndCriteria(Set<Label> labels,
+            Set<Criterion> criteria);
+
+    boolean existsByCodeInAnotherOrderAnotherTransaction(
+            OrderElement orderElement);
 
 }

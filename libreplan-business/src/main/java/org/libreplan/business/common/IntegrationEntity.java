@@ -67,7 +67,7 @@ public abstract class IntegrationEntity extends BaseEntity {
         T integrationEntity, String code) {
 
         BaseEntity.create(integrationEntity);
-        integrationEntity.code = code;
+        integrationEntity.setCode(code);
 
         return integrationEntity;
 
@@ -82,7 +82,7 @@ public abstract class IntegrationEntity extends BaseEntity {
         T integrationEntity) {
 
         BaseEntity.create(integrationEntity);
-        integrationEntity.code = generateCode();
+        integrationEntity.setCode(generateCode());
 
         return integrationEntity;
 

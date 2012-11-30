@@ -1,5 +1,5 @@
 Name:           libreplan
-Version:        1.3.1
+Version:        1.3.2
 Release:        1
 Summary:        Web application for project planning, monitoring and control
 License:        AGPLv3
@@ -23,7 +23,11 @@ BuildArch:      noarch
 %if 0%{?fedora} || 0%{?centos}
 Requires:       postgresql-jdbc
 %endif
+%if 0%{?fedora} >= 17
+Requires:	java-1.7.0-openjdk
+%else
 Requires:       java-1.6.0-openjdk
+%endif
 Requires:       postgresql
 Requires:       postgresql-server
 Requires:       tomcat6
@@ -101,6 +105,8 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{name}/conf/*
 
 %changelog
+* Fri Nov 30 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.3.2-1
+- Released LibrePlan 1.3.2
 * Mon Oct 15 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.3.1-1
 - Released LibrePlan 1.3.1
 - Removed dependency with freefont

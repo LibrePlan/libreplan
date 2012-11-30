@@ -61,6 +61,9 @@ public class ReassignConfiguration {
     }
 
     private boolean isChoosenForReassignation(Task each) {
+        if (each.isUpdatedFromTimesheets()) {
+            return false;
+        }
         return type == Type.ALL || isAfterDate(each);
     }
 

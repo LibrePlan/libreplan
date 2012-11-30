@@ -75,15 +75,15 @@ public interface ITaskFundamentalProperties {
 
     public void setNotes(String notes);
 
-    public GanttDate getHoursAdvanceEndDate();
+    public GanttDate getHoursAdvanceBarEndDate();
 
     public GanttDate getMoneyCostBarEndDate();
 
     BigDecimal getMoneyCostBarPercentage();
 
-    public GanttDate getAdvanceEndDate();
+    public GanttDate getAdvanceBarEndDate();
 
-    public BigDecimal getHoursAdvancePercentage();
+    public BigDecimal getHoursAdvanceBarPercentage();
 
     public BigDecimal getAdvancePercentage();
 
@@ -115,7 +115,7 @@ public interface ITaskFundamentalProperties {
 
     public List<Constraint<GanttDate>> getCurrentLengthConstraint();
 
-    public GanttDate getAdvanceEndDate(String progressType);
+    public GanttDate getAdvanceBarEndDate(String progressType);
 
     String updateTooltipText(String progressType);
 
@@ -124,5 +124,15 @@ public interface ITaskFundamentalProperties {
     public boolean belongsClosedProject();
 
     public boolean isRoot();
+
+    boolean isUpdatedFromTimesheets();
+
+    Date getFirstTimesheetDate();
+
+    Date getLastTimesheetDate();
+
+    public String getCode();
+
+    public String getProjectCode();
 
 }

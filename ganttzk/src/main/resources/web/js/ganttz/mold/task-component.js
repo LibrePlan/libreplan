@@ -14,6 +14,8 @@ function(out){
         out.push('<div class="completionMoneyCostBar"></div>');
         out.push('<div class="completion"></div>');
         out.push('<div class="completion2"></div>');
+        out.push('<div class="timesheet-date-mark first-timesheet-date"></div>');
+        out.push('<div class="timesheet-date-mark last-timesheet-date"></div>');
 
         out.push('<div id="tasktooltip', this.uuid,'" class="task_tooltip">',
                 this.getTooltipText(),

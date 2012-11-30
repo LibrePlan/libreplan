@@ -73,6 +73,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.South;
+import org.zkoss.zul.api.Combobox;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -509,9 +510,11 @@ public class Planner extends HtmlMacroComponent  {
         }
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
             // Comparison through icon as name is internationalized
-            if (c.getCommand().getImage()
-                    .equals("/common/img/ico_reassign.png")) {
-                if (plannerToolbar.getChildren().isEmpty()) {
+            if (c.getCommand().isPlannerCommand()) {
+                // FIXME Avoid hard-coding the number of planner commands
+                // At this moment we have 2 planner commands: reassign and adapt
+                // planning
+                if (plannerToolbar.getChildren().size() < 2) {
                     plannerToolbar.appendChild(c.toButton());
                 }
             } else {
@@ -634,11 +637,13 @@ public class Planner extends HtmlMacroComponent  {
     public void showAdvances() {
         Button showAdvancesButton = (Button) getFellow("showAdvances");
         if (disabilityConfiguration.isAdvancesEnabled()) {
+            Combobox progressTypesCombo = (Combobox) getFellow("cbProgressTypes");
             if (isShowingAdvances) {
                 context.hideAdvances();
                 diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
                 showAdvancesButton.setSclass("planner-command");
                 showAdvancesButton.setTooltiptext(_("Show progress"));
+                progressTypesCombo.setSelectedIndex(0);
             } else {
                 context.showAdvances();
                 diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
@@ -940,6 +945,20 @@ public class Planner extends HtmlMacroComponent  {
                 each.invalidate();
             }
         }
+    }
+
+    public TaskComponent getTaskComponentRelatedTo(
+            org.zkoss.ganttz.data.Task task) {
+        TaskList taskList = getTaskList();
+        if (taskList != null) {
+            for (TaskComponent each : taskList.getTaskComponents()) {
+                if (each.getTask().equals(task)) {
+                    return each;
+                }
+            }
+        }
+
+        return null;
     }
 
 }

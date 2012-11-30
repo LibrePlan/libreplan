@@ -60,6 +60,7 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
 
     @SuppressWarnings("unchecked")
     @Override
+    @Transactional(readOnly = true)
     public E findByCode(String code) throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(code)) {

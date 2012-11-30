@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.web.UserUtil;
 
 /**
  * Utilities class for user dashboard window
@@ -36,6 +37,14 @@ public class UserDashboardUtil {
         List<Resource> resource = new ArrayList<Resource>();
         resource.add(user.getWorker());
         return resource;
+    }
+
+    public static Resource getBoundResourceFromSession() {
+        User user = UserUtil.getUserFromSession();
+        if (user.isBound()) {
+            return user.getWorker();
+        }
+        return null;
     }
 
 }

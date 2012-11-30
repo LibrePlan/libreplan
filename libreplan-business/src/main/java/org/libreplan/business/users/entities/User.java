@@ -340,9 +340,24 @@ public class User extends BaseEntity implements IHumanIdentifiable{
         return worker != null;
     }
 
-    public String getUserType() {
-        return isLibrePlanUser().equals(Boolean.TRUE) ? _("Database")
-                : _("LDAP");
+    public enum UserAuthenticationType {
+
+        DATABASE(_("Database")), LDAP(_("LDAP"));
+
+        private String name;
+
+        private UserAuthenticationType(String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
+
+    public UserAuthenticationType getUserType() {
+        return isLibrePlanUser() ? UserAuthenticationType.DATABASE
+                : UserAuthenticationType.LDAP;
     }
 
     @AssertTrue(message = "You have exceeded the maximum limit of users")

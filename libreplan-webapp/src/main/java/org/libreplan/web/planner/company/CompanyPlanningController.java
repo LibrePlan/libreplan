@@ -45,7 +45,6 @@ import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.web.servlet.dsp.action.Page;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -149,7 +148,8 @@ public class CompanyPlanningController implements Composer {
      * the create buttons accordingly.
      */
     private void checkCreationPermissions() {
-        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
+        if (!SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             Button createOrderButton = (Button) planner.getPage().getFellow(
                     "createOrderButton");
             if (createOrderButton != null) {
@@ -197,7 +197,7 @@ public class CompanyPlanningController implements Composer {
 
         @Override
         public void render(Comboitem item, Object data) {
-            ProgressType progressType = (ProgressType) data;
+            final ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));
 

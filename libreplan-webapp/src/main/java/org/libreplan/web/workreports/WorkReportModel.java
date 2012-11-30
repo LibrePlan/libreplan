@@ -51,6 +51,7 @@ import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLabelTypeAssigment;
@@ -85,6 +86,9 @@ public class WorkReportModel extends IntegrationEntityModel implements
 
     @Autowired
     private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
@@ -274,12 +278,17 @@ public class WorkReportModel extends IntegrationEntityModel implements
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        Set<OrderElement> orderElements = sumChargedEffortDAO
+                .getOrderElementsToRecalculateTimsheetDates(
+                        workReport.getWorkReportLines(),
+                        deletedWorkReportLinesSet);
         sumChargedEffortDAO.updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(deletedWorkReportLinesSet);
         sumChargedEffortDAO
                 .updateRelatedSumChargedEffortWithWorkReportLineSet(workReport
                         .getWorkReportLines());
 
         workReportDAO.save(workReport);
+        sumChargedEffortDAO.recalculateTimesheetData(orderElements);
     }
 
     @Override
@@ -412,10 +421,14 @@ public class WorkReportModel extends IntegrationEntityModel implements
         //before deleting the report, update OrderElement.SumChargedHours
         try {
             workReportDAO.reattach(workReport);
+            Set<OrderElement> orderElements = sumChargedEffortDAO
+                    .getOrderElementsToRecalculateTimsheetDates(null,
+                            workReport.getWorkReportLines());
             sumChargedEffortDAO
                     .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
                             .getWorkReportLines());
             workReportDAO.remove(workReport.getId());
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -642,6 +655,19 @@ public class WorkReportModel extends IntegrationEntityModel implements
     @Override
     public WorkReportLine getFirstWorkReportLine() {
         return workReport.getWorkReportLines().iterator().next();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isFinished(OrderElement orderElement) {
+        if (workReport.isFinished(orderElement)) {
+            return true;
+        }
+
+        List<WorkReportLine> lines = workReportLineDAO
+                .findFinishedByOrderElementNotInWorkReportAnotherTransaction(
+                        orderElement, workReport);
+        return !lines.isEmpty();
     }
 
 }

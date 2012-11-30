@@ -95,7 +95,7 @@ public class CriticalPathBuilder {
                 });
     }
 
-    private List<TaskElement> criticalPathFor(PlanningState state,
+    public static List<TaskElement> criticalPathFor(PlanningState state,
             IResourcesSearcher resourcesSearcher) {
         final Order order = state.getOrder();
         final Scenario currentScenario = state.getCurrentScenario();
@@ -110,7 +110,7 @@ public class CriticalPathBuilder {
         return criticalPathCalculator.calculateCriticalPath(graph);
     }
 
-    private LocalDate asLocalDate(Date date) {
+    private static LocalDate asLocalDate(Date date) {
         return date != null ? LocalDate.fromDateFields(date) : null;
     }
 

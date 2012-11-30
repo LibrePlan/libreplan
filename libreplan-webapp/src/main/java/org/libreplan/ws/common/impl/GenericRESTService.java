@@ -143,6 +143,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
                 entity.validate();
                 beforeSaving(entity);
                 entityDAO.saveWithoutValidating(entity);
+                afterSaving(entity);
 
                 return null;
 
@@ -155,9 +156,20 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
     }
 
     /**
-     * it adds operations that must be done before saving.
+     * It allows to add operations that must be done before saving.
+     *
+     * Default implementation is empty.
      */
     protected void beforeSaving(E entity) {
+
+    }
+
+    /**
+     * It allows to add operations that must be done after saving.
+     *
+     * Default implementation is empty.
+     */
+    protected void afterSaving(E entity) {
 
     }
 

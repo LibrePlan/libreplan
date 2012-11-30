@@ -71,6 +71,7 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.ViewSwitcher;
+import org.libreplan.web.planner.adaptplanning.IAdaptPlanningCommand;
 import org.libreplan.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.libreplan.web.planner.advances.IAdvanceAssignmentPlanningCommand;
 import org.libreplan.web.planner.allocation.IAdvancedAllocationCommand;
@@ -223,6 +224,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private IReassignCommand reassignCommand;
 
     @Autowired
+    private IAdaptPlanningCommand adaptPlanningCommand;
+
+    @Autowired
     private IResourceAllocationCommand resourceAllocationCommand;
 
     @Autowired
@@ -332,6 +336,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         configuration.addGlobalCommand(buildReassigningCommand());
         configuration.addGlobalCommand(buildCancelEditionCommand());
+        configuration.addGlobalCommand(buildAdaptPlanningCommand());
 
         NullSeparatorCommandOnTask<TaskElement> separator = new NullSeparatorCommandOnTask<TaskElement>();
 
@@ -800,9 +805,16 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         LocalDate date = new LocalDate(earnedValueChartLegendDatebox.getRawValue());
         org.zkoss.zk.ui.Component child = earnedValueChartLegendContainer
                 .getFellow("indicatorsTable");
-        earnedValueChartLegendContainer.removeChild(child);
-        earnedValueChartLegendContainer.appendChild(getEarnedValueChartConfigurableLegend(
-                earnedValueChartFiller, date));
+        updateEarnedValueChartLegend(date);
+    }
+
+    private void updateEarnedValueChartLegend(LocalDate date) {
+        for (EarnedValueType type : EarnedValueType.values()) {
+            Label valueLabel = (Label) earnedValueChartLegendContainer
+                    .getFellow(type.toString());
+            valueLabel.setValue(getLabelTextEarnedValueType(
+                    earnedValueChartFiller, type, date));
+        }
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
@@ -827,15 +839,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
-            BigDecimal value = earnedValueChartFiller.getIndicator(type, date);
-            String units = _("h");
-            if (type.equals(EarnedValueType.CPI)
-                    || type.equals(EarnedValueType.SPI)) {
-                value = value.multiply(new BigDecimal(100));
-                units = "%";
-            }
-            Label valueLabel = new Label(
-                    value.setScale(0, RoundingMode.HALF_UP) + " " + units);
+            Label valueLabel = new Label(getLabelTextEarnedValueType(
+                    earnedValueChartFiller, type, date));
+            valueLabel.setId(type.toString());
 
             Hbox hbox = new Hbox();
             hbox.appendChild(checkbox);
@@ -864,6 +870,19 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         markAsSelectedDefaultIndicators();
 
         return mainhbox;
+    }
+
+    private String getLabelTextEarnedValueType(
+            OrderEarnedValueChartFiller earnedValueChartFiller,
+            EarnedValueType type, LocalDate date) {
+        BigDecimal value = earnedValueChartFiller.getIndicator(type, date);
+        String units = _("h");
+        if (type.equals(EarnedValueType.CPI)
+                || type.equals(EarnedValueType.SPI)) {
+            value = value.multiply(new BigDecimal(100));
+            units = "%";
+        }
+        return value.setScale(0, RoundingMode.HALF_UP) + " " + units;
     }
 
     private void markAsSelectedDefaultIndicators() {
@@ -1055,6 +1074,11 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         return reassignCommand;
     }
 
+    private ICommand<TaskElement> buildAdaptPlanningCommand() {
+        adaptPlanningCommand.setState(planningState);
+        return adaptPlanningCommand;
+    }
+
     private ICommand<TaskElement> buildCancelEditionCommand() {
         return new ICommand<TaskElement>() {
 
@@ -1094,6 +1118,11 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
             @Override
             public boolean isDisabled() {
+                return false;
+            }
+
+            @Override
+            public boolean isPlannerCommand() {
                 return false;
             }
 

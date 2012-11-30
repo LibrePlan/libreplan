@@ -65,10 +65,18 @@ Instructions:
 
   If you have memory problems review the section `Fix memory errors`_.
 
-Fedora and openSUSE OBS (openSUSE Build Service)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fedora, CentOS and openSUSE OBS (openSUSE Build Service)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Instructions depending on the distribution:
+
+* Fedora 17::
+
+    # cd /etc/yum.repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_17/home:jsuarezr:LibrePlan.repo
+    # yum install libreplan
+
+  Follow the instructions in /usr/share/doc/libreplan-1.3.0/README.Fedora afterwards.
 
 * Fedora 16::
 
@@ -76,11 +84,20 @@ Instructions depending on the distribution:
     # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_16/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
 
-* Fedora 15::
+  Follow the instructions in /usr/share/doc/libreplan-1.3.0/README.Fedora afterwards.
+
+* CentOS 6::
 
     # cd /etc/yum.repos.d
-    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/Fedora_15/home:jsuarezr:LibrePlan.repo
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/CentOS_CentOS-6/home:jsuarezr:LibrePlan.repo
     # yum install libreplan
+
+* openSUSE Factory::
+
+    # cd /etc/zypp/repos.d
+    # wget download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/openSUSE_Factory/home:jsuarezr:LibrePlan.repo
+    # zypper ref
+    # zypper install libreplan
 
 * openSUSE 12.1::
 
@@ -105,6 +122,8 @@ RPM Packages
 
 There are several LibrePlan RPM packages available in the following URL:
 http://download.opensuse.org/repositories/home:/jsuarezr:/LibrePlan/
+
+Follow the instructions in the corresponding README file to finish the installation.
 
 .. WARNING::
 
@@ -307,6 +326,26 @@ folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
 
 Inside this new directory there will be two files (``libreplan.log`` and
 ``libreplan-error.log``) that will be rotated every day.
+
+Configure log directory
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Anyway if you want to set manually LibrePlan log path you will have to
+configure ``JAVA_OPTS`` variable in your server. This variable is configured in
+different files depending on the distribution:
+
+* Debian or Ubuntu: ``/etc/default/tomcat6``
+* Fedora or openSUSE: ``/etc/tomcat6/tomcat6.conf``
+
+Where you will need to add the next line::
+
+  # Configure LibrePlan log directory
+  JAVA_OPTS="${JAVA_OPTS} -Dlibreplan-log-directory=/my/path/to/libreplan/log/"
+
+.. WARNING::
+
+  You have to be sure that the user running Tomcat (usually ``tomcat6``) has
+  permissions to write in the specified directory.
 
 
 Fix printing in Debian Squeeze

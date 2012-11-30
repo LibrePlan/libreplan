@@ -45,6 +45,8 @@ import java.util.SortedSet;
 import java.util.UUID;
 
 import javax.annotation.Resource;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
@@ -536,6 +538,18 @@ public class OrderElementServiceTest {
     public void validOrderWithOrderLineGroup() {
         String code = UUID.randomUUID().toString();
 
+        OrderDTO orderDTO = createOrderDTOWithChildren(code);
+
+        OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
+
+        checkIfExistsByCodeInAnotherTransaction(code);
+    }
+
+    private OrderDTO createOrderDTOWithChildren(String code) {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
         orderDTO.code = code;
@@ -557,6 +571,14 @@ public class OrderElementServiceTest {
         orderLineGroupDTO.children.add(orderLineDTO);
 
         orderDTO.children.add(orderLineGroupDTO);
+        return orderDTO;
+    }
+
+    @Test
+    public void removeOrderElement() {
+        final String code = UUID.randomUUID().toString();
+
+        final OrderDTO orderDTO = createOrderDTOWithChildren(code);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
@@ -565,6 +587,32 @@ public class OrderElementServiceTest {
                 instanceConstraintViolationsList.size() == 0);
 
         checkIfExistsByCodeInAnotherTransaction(code);
+
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                String codeToRemove = orderDTO.children.get(0).code;
+                Response response = orderElementService
+                        .removeOrderElement(codeToRemove);
+                assertThat(response.getStatus(),
+                        equalTo(Status.OK.getStatusCode()));
+
+                try {
+                    orderElementDAO.findByCode(codeToRemove);
+                } catch (InstanceNotFoundException e) {
+                    assertTrue(true);
+                }
+
+                try {
+                    OrderElement order = orderElementDAO.findByCode(code);
+                    assertTrue(order.getChildren().isEmpty());
+                } catch (InstanceNotFoundException e) {
+                    fail();
+                }
+                return null;
+            }
+        });
     }
 
     @Test

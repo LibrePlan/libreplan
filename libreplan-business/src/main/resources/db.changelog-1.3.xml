@@ -73,4 +73,139 @@
         </update>
     </changeSet>
 
+    <changeSet id="add-columns-first-and-last-timesheet_date-to-sum_charged_effort"
+        author="mrego">
+        <comment>
+            Add columns first_timesheet_date and last_timesheet_date to
+            sum_charged_effort table
+        </comment>
+        <addColumn tableName="sum_charged_effort">
+            <column name="first_timesheet_date" type="DATETIME" />
+        </addColumn>
+        <addColumn tableName="sum_charged_effort">
+            <column name="last_timesheet_date" type="DATETIME" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-read_only-to-advance_type" author="mrego">
+        <comment>
+            Add new column read_only with default value FALSE to advance_type
+            table.
+        </comment>
+        <addColumn tableName="advance_type">
+            <column name="read_only" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="advance_type" columnName="read_only"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="advance_type"
+            columnName="read_only"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-finished-to-work_report_line" author="mrego">
+        <comment>
+            Add new column finished with default value FALSE to
+            work_report_line table.
+        </comment>
+        <addColumn tableName="work_report_line">
+            <column name="finished" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="work_report_line" columnName="finished"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="work_report_line"
+            columnName="finished"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-finished_timesheets-to-sum_charged_effort"
+        author="mrego">
+        <comment>
+            Add new column finished_timesheets with default value FALSE to
+            sum_charged_effort table.
+        </comment>
+        <addColumn tableName="sum_charged_effort">
+            <column name="finished_timesheets" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="sum_charged_effort"
+            columnName="finished_timesheets"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="sum_charged_effort"
+            columnName="finished_timesheets"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-updated_from_timesheets-to-task_element"
+        author="mrego">
+        <comment>
+            Add new column updated_from_timesheets with default value FALSE to
+            task_element table.
+        </comment>
+        <addColumn tableName="task_element">
+            <column name="updated_from_timesheets" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="task_element"
+            columnName="updated_from_timesheets"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="task_element"
+            columnName="updated_from_timesheets"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="update-status-values-in-order_table" author="mrego">
+        <comment>Updating status values in order_table</comment>
+        <update tableName="order_table">
+            <column name="state" value="8" />
+            <where>state='6'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="7" />
+            <where>state='4'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="6" />
+            <where>state='3'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="4" />
+            <where>state='2'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="3" />
+            <where>state='1'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="2" />
+            <where>state='5'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="1" />
+            <where>state='0'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="drop-unique-constraint-code-in-order_element" author="mrego">
+        <comment>Drop unique constraint for code in order_element table</comment>
+        <dropUniqueConstraint tableName="order_element"
+            constraintName="order_element_code_key" />
+    </changeSet>
+
+    <changeSet id="add-seconds_planning_warning-column-to-configuration"
+        author="mrego">
+        <comment>Add seconds_planning_warning column to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="seconds_planning_warning" type="INTEGER" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="seconds_planning_warning" value="30" />
+        </update>
+        <addNotNullConstraint tableName="configuration"
+            columnName="seconds_planning_warning"
+            defaultNullValue="30"
+            columnDataType="INTEGER" />
+    </changeSet>
+
 </databaseChangeLog>

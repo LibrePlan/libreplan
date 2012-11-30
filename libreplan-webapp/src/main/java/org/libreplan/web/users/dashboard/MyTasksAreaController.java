@@ -28,12 +28,9 @@ import javax.annotation.Resource;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
-import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.planner.entities.Task;
-import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -75,38 +72,21 @@ public class MyTasksAreaController extends GenericForwardComposer {
 
             Util.appendLabel(row, getProgress(orderElement));
 
-            Util.appendLabel(row, getEffort(orderElement));
+            Util.appendLabel(row, _("{0} h", orderElement.getEffortAsString()));
 
             appendTimeTrackingButton(row, task);
         }
 
-        private String getEffort(OrderElement orderElement) {
-            SumChargedEffort sumChargedEffort = orderElement.getSumChargedEffort();
-            EffortDuration effort = sumChargedEffort != null ? sumChargedEffort
-                    .getTotalChargedEffort() : EffortDuration.zero();
-            return _("{0} h", effort.toFormattedString());
-        }
-
         private String getProgress(OrderElement orderElement) {
 
-            AdvanceMeasurement lastAdvanceMeasurement = getLastAdvanceMeasurement(orderElement);
+            AdvanceMeasurement lastAdvanceMeasurement = orderElement
+                    .getLastAdvanceMeasurement();
             if (lastAdvanceMeasurement != null) {
                 return MessageFormat.format("[{0} %] ({1})",
                         lastAdvanceMeasurement.getValue(),
                         lastAdvanceMeasurement.getDate());
             }
             return "";
-        }
-
-        private AdvanceMeasurement getLastAdvanceMeasurement(
-                OrderElement orderElement) {
-            DirectAdvanceAssignment advanceAssignment = orderElement
-                            .getReportGlobalAdvanceAssignment();
-            if (advanceAssignment == null) {
-                return null;
-            }
-            return advanceAssignment
-                    .getLastAdvanceMeasurement();
         }
 
         private void appendTimeTrackingButton(Row row, final Task task) {

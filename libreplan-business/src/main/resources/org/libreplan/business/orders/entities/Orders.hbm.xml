@@ -11,7 +11,7 @@
         <component name="infoComponent" class="org.libreplan.business.orders.entities.InfoComponentWithCode">
             <property name="name" access="field" />
             <property name="description" access="field" type="text" />
-            <property name="code" access="field" unique="true" />
+            <property name="code" access="field" />
         </component>
         <property name="initDate" access="field" column="init_date" />
         <property name="deadline" access="field" />
@@ -55,7 +55,8 @@
             access="field"
             cascade="all"
             class="org.libreplan.business.orders.entities.OrderLineGroup"
-            index="idx_order_element_on_parent"/>
+            index="idx_order_element_on_parent"
+            lazy="false" />
 
         <many-to-one name="template"
             access="field"
@@ -271,6 +272,14 @@
         <property name="indirectChargedEffort" access="field"
             column="indirect_charged_effort"
             type="org.libreplan.business.workingday.hibernate.EffortDurationType" />
+
+        <property name="firstTimesheetDate" access="field"
+            column="first_timesheet_date" />
+        <property name="lastTimesheetDate" access="field"
+            column="last_timesheet_date" />
+        <property name="finishedTimesheets"
+            column="finished_timesheets" />
+
     </class>
 
     <class name="SumExpenses" table="sum_expenses">

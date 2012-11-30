@@ -915,4 +915,12 @@ public class ConfigurationController extends GenericForwardComposer {
         return "";
     }
 
+    public Integer getSecondsPlanningWarning() {
+        return configurationModel.getSecondsPlanningWarning();
+    }
+
+    public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
+        configurationModel.setSecondsPlanningWarning(secondsPlanningWarning);
+    }
+
 }

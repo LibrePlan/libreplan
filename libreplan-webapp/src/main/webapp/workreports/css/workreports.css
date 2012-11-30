@@ -14,7 +14,7 @@
 }
 
 .listWorkReportLines .operations-column {
-    width: 40px;
+    width: 15px;
 }
 
 .listWorkReportLines .resource-column {
@@ -23,6 +23,10 @@
 
 .listWorkReportLines .code-column {
     width: 150px;
+}
+
+.listWorkReportLines .finished-column {
+    width: 20px;
 }
 
 .listWorkReportLines .order-code-column {

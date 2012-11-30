@@ -174,7 +174,7 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public GanttDate getHoursAdvanceEndDate() {
+    public GanttDate getHoursAdvanceBarEndDate() {
         return GanttDate.createFrom(new Date(hoursAdvanceEndDate));
     }
 
@@ -189,13 +189,13 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public GanttDate getAdvanceEndDate() {
+    public GanttDate getAdvanceBarEndDate() {
         return advanceEndDate != null ? GanttDate.createFrom(new Date(
                 advanceEndDate.getTime()))
                 : null;
     }
     @Override
-    public BigDecimal getHoursAdvancePercentage() {
+    public BigDecimal getHoursAdvanceBarPercentage() {
         return hoursAdvancePercentage;
     }
 
@@ -284,7 +284,7 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public GanttDate getAdvanceEndDate(String progressType) {
+    public GanttDate getAdvanceBarEndDate(String progressType) {
         return null;
     }
 
@@ -306,6 +306,31 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public boolean isRoot() {
         return false;
+    }
+
+    @Override
+    public boolean isUpdatedFromTimesheets() {
+        return false;
+    }
+
+    @Override
+    public Date getFirstTimesheetDate() {
+        return null;
+    }
+
+    @Override
+    public Date getLastTimesheetDate() {
+        return null;
+    }
+
+    @Override
+    public String getCode() {
+        return "";
+    }
+
+    @Override
+    public String getProjectCode() {
+        return "";
     }
 
 }

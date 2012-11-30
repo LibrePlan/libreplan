@@ -23,6 +23,7 @@ package org.libreplan.business.common.entities;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.Min;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.calendars.entities.BaseCalendar;
@@ -112,6 +113,8 @@ public class Configuration extends BaseEntity {
     private TypeOfWorkHours personalTimesheetsTypeOfWorkHours;
 
     private PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity = PersonalTimesheetsPeriodicityEnum.MONTHLY;
+
+    private Integer secondsPlanningWarning = 30;
 
     /**
      * Maximum users configurable directly in database for SaaS products. If
@@ -488,6 +491,16 @@ public class Configuration extends BaseEntity {
 
     public Integer getMaxResources() {
         return maxResources;
+    }
+
+    @Min(value = 0, message = "seconds planning warning cannot be negative")
+    @NotNull(message = "seconds planning warning not specified")
+    public Integer getSecondsPlanningWarning() {
+        return secondsPlanningWarning;
+    }
+
+    public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
+        this.secondsPlanningWarning = secondsPlanningWarning;
     }
 
 }
