@@ -1222,8 +1222,9 @@ class Row {
 
         // Disable if task is updated from timesheets
         assignmentFunctionsCombo.setDisabled(task.isUpdatedFromTimesheets());
-        assignmentFunctionsConfigureButton.setDisabled(task
-                .isUpdatedFromTimesheets());
+        assignmentFunctionsConfigureButton
+                .setDisabled(assignmentFunctionsConfigureButton.isDisabled()
+                        || task.isUpdatedFromTimesheets());
     }
 
     /**
