@@ -643,7 +643,9 @@ public class Planner extends HtmlMacroComponent  {
                 diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
                 showAdvancesButton.setSclass("planner-command");
                 showAdvancesButton.setTooltiptext(_("Show progress"));
-                progressTypesCombo.setSelectedIndex(0);
+                if (progressTypesCombo.getItemCount() > 0) {
+                    progressTypesCombo.setSelectedIndex(0);
+                }
             } else {
                 context.showAdvances();
                 diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
