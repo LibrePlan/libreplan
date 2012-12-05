@@ -833,6 +833,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         int columnNumber = 0;
 
+        earnedValueChartConfigurationCheckboxes.clear();
         for (EarnedValueType type : EarnedValueType.values()) {
             Checkbox checkbox = new Checkbox(type.getAcronym());
             checkbox.setTooltiptext(type.getName());
