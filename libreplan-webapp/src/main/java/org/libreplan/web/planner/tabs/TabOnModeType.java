@@ -133,11 +133,11 @@ public class TabOnModeType implements ITab {
 
     @Override
     public void show() {
-        beingShown = true;
         ITab currentTab = getCurrentTab();
-        if (currentTab != null) {
+        if (currentTab != null && !beingShown) {
             currentTab.show();
         }
+        beingShown = true;
     }
 
 }
