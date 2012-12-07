@@ -139,7 +139,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
     public void accept() {
         if (validate()) {
             if (tabs != null) {
-                tabs.goToOrdersList();
+                tabs.goToOrderDetails(orderController.getOrder());
             }
             if (bdProjectTemplate.getSelectedElement() != null) {
                 OrderTemplate template = (OrderTemplate) bdProjectTemplate
