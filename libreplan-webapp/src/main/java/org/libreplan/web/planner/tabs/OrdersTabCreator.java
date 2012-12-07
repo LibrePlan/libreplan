@@ -110,7 +110,7 @@ public class OrdersTabCreator {
 
             @Override
             protected void afterCreateAction(org.zkoss.zk.ui.Component component) {
-                Util.createBindingsFor(component, false);
+                Util.createBindingsFor(component);
             }
 
             @Override

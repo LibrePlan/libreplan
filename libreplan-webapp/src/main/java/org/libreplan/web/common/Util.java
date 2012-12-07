@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -112,27 +111,8 @@ public class Util {
     }
 
     public static void createBindingsFor(org.zkoss.zk.ui.Component result) {
-        createBindingsFor(result, true);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static void createBindingsFor(org.zkoss.zk.ui.Component result,
-            boolean loadBindings) {
-        List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
-                result.getChildren());
-        for (org.zkoss.zk.ui.Component child : children) {
-            createBindingsFor(child);
-        }
-        setBinderFor(result, loadBindings);
-    }
-
-    private static void setBinderFor(org.zkoss.zk.ui.Component result,
-            boolean loadBindings) {
         AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
         result.setVariable("binder", binder, true);
-        if (loadBindings) {
-            binder.loadAll();
-        }
     }
 
     /**
