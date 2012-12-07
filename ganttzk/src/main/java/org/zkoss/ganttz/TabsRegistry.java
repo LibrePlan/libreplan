@@ -65,10 +65,23 @@ public class TabsRegistry {
         show(tab, DO_NOTHING);
     }
 
+    public void showWithoutAfterCreate(ITab tab) {
+        show(tab, DO_NOTHING, false);
+    }
+
     public void show(ITab tab, IBeforeShowAction beforeShowAction) {
+        show(tab, beforeShowAction, true);
+    }
+
+    private void show(ITab tab, IBeforeShowAction beforeShowAction,
+            boolean afterCreate) {
         hideAllExcept(tab);
         beforeShowAction.doAction();
-        tab.show();
+        if (afterCreate) {
+            tab.show();
+        } else {
+            tab.showWithoutAfterCreate();
+        }
         parent.invalidate();
         activateMenuIfRegistered(tab);
     }

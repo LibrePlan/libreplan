@@ -37,6 +37,8 @@ public interface ITab {
 
     void show();
 
+    void showWithoutAfterCreate();
+
     void hide();
 
 }
