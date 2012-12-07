@@ -111,20 +111,28 @@ public class Util {
         return (DataBinder) component.getVariable("binder", false);
     }
 
-    @SuppressWarnings("unchecked")
     public static void createBindingsFor(org.zkoss.zk.ui.Component result) {
+        createBindingsFor(result, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void createBindingsFor(org.zkoss.zk.ui.Component result,
+            boolean loadBindings) {
         List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
                 result.getChildren());
         for (org.zkoss.zk.ui.Component child : children) {
             createBindingsFor(child);
         }
-        setBinderFor(result);
+        setBinderFor(result, loadBindings);
     }
 
-    private static void setBinderFor(org.zkoss.zk.ui.Component result) {
+    private static void setBinderFor(org.zkoss.zk.ui.Component result,
+            boolean loadBindings) {
         AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
         result.setVariable("binder", binder, true);
-        binder.loadAll();
+        if (loadBindings) {
+            binder.loadAll();
+        }
     }
 
     /**

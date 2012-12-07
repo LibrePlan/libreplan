@@ -140,4 +140,13 @@ public class TabOnModeType implements ITab {
         }
     }
 
+    @Override
+    public void showWithoutAfterCreate() {
+        beingShown = true;
+        ITab currentTab = getCurrentTab();
+        if (currentTab != null) {
+            currentTab.showWithoutAfterCreate();
+        }
+    }
+
 }

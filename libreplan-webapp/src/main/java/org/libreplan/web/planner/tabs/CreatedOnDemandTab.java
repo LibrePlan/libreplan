@@ -72,9 +72,21 @@ public class CreatedOnDemandTab implements ITab {
 
     @Override
     public void show() {
+        show(true);
+    }
+
+    @Override
+    public void showWithoutAfterCreate() {
+        show(false);
+    }
+
+    private void show(boolean afterCreate) {
         beforeShowAction();
         if (component == null) {
             component = componentCreator.create(parent);
+            if (afterCreate) {
+                afterCreateAction(component);
+            }
         }
         component.setParent(parent);
         afterShowAction();
@@ -88,6 +100,9 @@ public class CreatedOnDemandTab implements ITab {
     }
 
     protected void beforeShowAction() {
+    }
+
+    protected void afterCreateAction(Component component) {
     }
 
     protected void afterShowAction() {
