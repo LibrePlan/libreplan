@@ -494,9 +494,14 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     @Override
-    public void goToOrderElementDetails(Order order, OrderElement orderElement) {
-        getTabsRegistry().show(ordersTab, changeModeTo(order));
-        orderCRUDController.highLight(orderElement);
+    public void goToOrderElementDetails(final Order order,
+            final OrderElement orderElement) {
+        Util.executeIgnoringCreationOfBindings(new Runnable() {
+            public void run() {
+                getTabsRegistry().show(ordersTab, changeModeTo(order));
+                orderCRUDController.highLight(orderElement);
+            }
+        });
     }
 
     @Override
@@ -505,8 +510,12 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     @Override
-    public void goToOrderDetails(Order order) {
-        getTabsRegistry().show(ordersTab, changeModeTo(order));
+    public void goToOrderDetails(final Order order) {
+        Util.executeIgnoringCreationOfBindings(new Runnable() {
+            public void run() {
+                getTabsRegistry().show(ordersTab, changeModeTo(order));
+            }
+        });
     }
 
     @Override
