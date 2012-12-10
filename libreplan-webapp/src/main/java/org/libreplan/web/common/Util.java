@@ -198,7 +198,25 @@ public class Util {
         return (DataBinder) component.getVariable("binder", false);
     }
 
+    private static final ThreadLocal<Boolean> ignoreCreateBindings = new ThreadLocal<Boolean>() {
+        protected Boolean initialValue() {
+            return false;
+        };
+    };
+
+    public static void executeIgnoringCreationOfBindings(Runnable action) {
+        try {
+            ignoreCreateBindings.set(true);
+            action.run();
+        } finally {
+            ignoreCreateBindings.set(false);
+        }
+    }
+
     public static void createBindingsFor(org.zkoss.zk.ui.Component result) {
+        if (ignoreCreateBindings.get()) {
+            return;
+        }
         AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
         result.setVariable("binder", binder, true);
         markAsNotReloadedForThisRequest(result);
