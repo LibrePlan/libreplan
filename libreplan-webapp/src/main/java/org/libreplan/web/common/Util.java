@@ -27,9 +27,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -85,16 +88,52 @@ public class Util {
     private static final String[] DECIMAL_FORMAT_SPECIAL_CHARS = { "0", ",",
             ".", "\u2030", "%", "#", ";", "-" };
 
+    private static final String RELOADED_COMPONENTS_ATTR = Util.class.getName()
+            + ":" + "reloaded";
+
     private Util() {
     }
 
     public static void reloadBindings(Component... toReload) {
         for (Component reload : toReload) {
             DataBinder binder = Util.getBinder(reload);
-            if (binder != null) {
+            if (binder != null && notReloadedInThisRequest(reload)) {
                 binder.loadComponent(reload);
+                markAsReloadedForThisRequest(reload);
             }
         }
+    }
+
+    private static boolean notReloadedInThisRequest(Component reload) {
+        return !getReloadedComponents(reload).contains(reload);
+    }
+
+    private static Set<Component> getReloadedComponents(Component component) {
+        Execution execution = component.getDesktop().getExecution();
+        @SuppressWarnings("unchecked")
+        Set<Component> result = (Set<Component>) execution
+                .getAttribute(RELOADED_COMPONENTS_ATTR);
+        if (result == null) {
+            result = new HashSet<Component>();
+            execution.setAttribute(RELOADED_COMPONENTS_ATTR, result);
+        }
+        return result;
+    }
+
+    private static void markAsReloadedForThisRequest(Component component) {
+        Set<Component> reloadedComponents = getReloadedComponents(component);
+        reloadedComponents.add(component);
+        reloadedComponents.addAll(getAllDescendants(component));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Component> getAllDescendants(Component component) {
+        List<Component> result = new ArrayList<Component>();
+        for (Component each : (List<Component>) component.getChildren()) {
+            result.add(each);
+            result.addAll(getAllDescendants(each));
+        }
+        return result;
     }
 
     public static void saveBindings(Component... toReload) {
