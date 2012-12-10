@@ -54,11 +54,6 @@ public class TabProxy implements ITab {
     }
 
     @Override
-    public void showWithoutAfterCreate() {
-        proxiedTab.showWithoutAfterCreate();
-    }
-
-    @Override
     public String getCssClass() {
         return proxiedTab.getCssClass();
     }
