@@ -68,6 +68,8 @@ public class OrdersTabCreator {
             args.put("orderController", setupOrderCrudController());
             result = Executions.createComponents("/orders/_ordersTab.zul",
                     parent, args);
+            Util.createBindingsFor(result);
+            Util.reloadBindings(result);
             return result;
         }
 
@@ -106,11 +108,6 @@ public class OrdersTabCreator {
                         .isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
                     Util.sendForbiddenStatusCodeInHttpServletResponse();
                 }
-            }
-
-            @Override
-            protected void afterCreateAction(org.zkoss.zk.ui.Component component) {
-                Util.createBindingsFor(component);
             }
 
             @Override
