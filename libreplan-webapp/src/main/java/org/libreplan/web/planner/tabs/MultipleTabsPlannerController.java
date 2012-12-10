@@ -37,6 +37,7 @@ import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
@@ -471,8 +472,11 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrdersList() {
-        // ordersTab.show();
-        getTabsRegistry().show(ordersTab);
+        Util.executeIgnoringCreationOfBindings(new Runnable() {
+            public void run() {
+                getTabsRegistry().show(ordersTab);
+            }
+        });
     }
 
     public void goToCreateForm() {
