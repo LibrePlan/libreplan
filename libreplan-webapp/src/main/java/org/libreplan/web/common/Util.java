@@ -27,9 +27,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -85,16 +88,101 @@ public class Util {
     private static final String[] DECIMAL_FORMAT_SPECIAL_CHARS = { "0", ",",
             ".", "\u2030", "%", "#", ";", "-" };
 
+    private static final String RELOADED_COMPONENTS_ATTR = Util.class.getName()
+            + ":" + "reloaded";
+
     private Util() {
     }
 
+    /**
+     * Forces to reload the bindings of the provided components if there is an
+     * associated {@link DataBinder}.
+     *
+     * @param toReload
+     *            the components to reload
+     */
     public static void reloadBindings(Component... toReload) {
+        reloadBindings(ReloadStrategy.FORCE, toReload);
+    }
+
+    public enum ReloadStrategy {
+        /**
+         * If the {@link DataBinder} exists the bindings are reloaded no matter
+         * what.
+         */
+        FORCE,
+        /**
+         * Once the bindings for a component have been manually loaded in one
+         * request, subsequent calls for reload the bindings of the same
+         * component or descendants using this strategy are ignored.
+         */
+        ONE_PER_REQUEST;
+
+        public static boolean isForced(ReloadStrategy reloadStrategy) {
+            return reloadStrategy == ReloadStrategy.FORCE;
+        }
+    }
+
+    /**
+     * Reload the bindings of the provided components if there is an associated
+     * {@link DataBinder} and the {@link ReloadStrategy} allows it.
+     *
+     * @param toReload
+     *            the components to reload
+     */
+    public static void reloadBindings(ReloadStrategy reloadStrategy,
+            Component... toReload) {
+        reloadBindings(ReloadStrategy.isForced(reloadStrategy), toReload);
+    }
+
+    private static void reloadBindings(boolean forceReload,
+            Component... toReload) {
         for (Component reload : toReload) {
             DataBinder binder = Util.getBinder(reload);
-            if (binder != null) {
+            if (binder != null
+                    && (forceReload || notReloadedInThisRequest(reload))) {
                 binder.loadComponent(reload);
+                markAsReloadedForThisRequest(reload);
             }
         }
+    }
+
+    private static boolean notReloadedInThisRequest(Component reload) {
+        return !getReloadedComponents(reload).contains(reload);
+    }
+
+    private static Set<Component> getReloadedComponents(Component component) {
+        Execution execution = component.getDesktop().getExecution();
+        @SuppressWarnings("unchecked")
+        Set<Component> result = (Set<Component>) execution
+                .getAttribute(RELOADED_COMPONENTS_ATTR);
+        if (result == null) {
+            result = new HashSet<Component>();
+            execution.setAttribute(RELOADED_COMPONENTS_ATTR, result);
+        }
+        return result;
+    }
+
+    private static void markAsReloadedForThisRequest(Component component) {
+        Set<Component> reloadedComponents = getReloadedComponents(component);
+        reloadedComponents.add(component);
+        reloadedComponents.addAll(getAllDescendants(component));
+    }
+
+    private static void markAsNotReloadedForThisRequest(Component component) {
+        Set<Component> reloadedComponents = getReloadedComponents(component);
+        reloadedComponents.remove(component);
+        reloadedComponents.removeAll(getAllDescendants(component));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Component> getAllDescendants(Component component) {
+        List<Component> result = new ArrayList<Component>();
+        for (Component each : (List<Component>) component.getChildren()) {
+            result.add(each);
+            result.addAll(getAllDescendants(each));
+        }
+        return result;
     }
 
     public static void saveBindings(Component... toReload) {
@@ -113,6 +201,7 @@ public class Util {
     public static void createBindingsFor(org.zkoss.zk.ui.Component result) {
         AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
         result.setVariable("binder", binder, true);
+        markAsNotReloadedForThisRequest(result);
     }
 
     /**
