@@ -37,6 +37,7 @@ import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.URLHandlerRegistry;
 import org.libreplan.web.dashboard.DashboardController;
@@ -471,8 +472,11 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrdersList() {
-        // ordersTab.show();
-        getTabsRegistry().showWithoutAfterCreate(ordersTab);
+        Util.executeIgnoringCreationOfBindings(new Runnable() {
+            public void run() {
+                getTabsRegistry().show(ordersTab);
+            }
+        });
     }
 
     public void goToCreateForm() {
@@ -490,9 +494,14 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     @Override
-    public void goToOrderElementDetails(Order order, OrderElement orderElement) {
-        getTabsRegistry().show(ordersTab, changeModeTo(order));
-        orderCRUDController.highLight(orderElement);
+    public void goToOrderElementDetails(final Order order,
+            final OrderElement orderElement) {
+        Util.executeIgnoringCreationOfBindings(new Runnable() {
+            public void run() {
+                getTabsRegistry().show(ordersTab, changeModeTo(order));
+                orderCRUDController.highLight(orderElement);
+            }
+        });
     }
 
     @Override
@@ -501,8 +510,12 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     @Override
-    public void goToOrderDetails(Order order) {
-        getTabsRegistry().show(ordersTab, changeModeTo(order));
+    public void goToOrderDetails(final Order order) {
+        Util.executeIgnoringCreationOfBindings(new Runnable() {
+            public void run() {
+                getTabsRegistry().show(ordersTab, changeModeTo(order));
+            }
+        });
     }
 
     @Override
