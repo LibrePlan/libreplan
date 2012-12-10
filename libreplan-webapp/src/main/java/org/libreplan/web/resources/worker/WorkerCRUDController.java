@@ -187,6 +187,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             this.label = label;
         }
 
+        /**
+         * Helper function to mark text to be translated
+         */
+        private static String _(String text) {
+            return text;
+        }
+
     };
 
     public WorkerCRUDController() {
@@ -487,7 +494,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private void initUserBindingOptions() {
         UserBindingOption[] values = UserBindingOption.values();
         for (UserBindingOption option : values) {
-            Radio radio = new Radio(option.label);
+            Radio radio = new Radio(_(option.label));
             if (option.equals(UserBindingOption.CREATE_NEW_USER)
                     && !SecurityUtils
                             .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {
