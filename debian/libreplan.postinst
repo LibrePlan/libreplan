@@ -118,4 +118,9 @@ if [ -x /etc/init.d/tomcat6 ] ; then
 	fi
 fi
 
+source /usr/share/debconf/confmodule
+db_info 'Please review the Tomcat6 memory configuration in your server at /etc/default/tomcat6 file.
+Furthermore, in order to have printing working properly if you are in Debian Squeeze you have to install CutyCapt package from Wheezy (testing).
+You can find more information about these issues at INSTALL file or in the following link: http://libreplan.org/INSTALL.html'
+
 #DEBHELPER#
