@@ -55,6 +55,7 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.Util.ReloadStrategy;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
@@ -799,7 +800,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void showWindow(Window window) {
         getVisibility().showOnly(window);
-        Util.reloadBindings(window);
+        Util.reloadBindings(ReloadStrategy.ONE_PER_REQUEST, window);
     }
 
     public void reloadHoursGroupOrder() {
