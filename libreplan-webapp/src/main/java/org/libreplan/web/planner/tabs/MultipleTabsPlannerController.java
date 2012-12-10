@@ -471,7 +471,6 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrdersList() {
-        // ordersTab.show();
         getTabsRegistry().show(ordersTab);
     }
 
