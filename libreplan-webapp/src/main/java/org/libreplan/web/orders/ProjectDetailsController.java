@@ -42,6 +42,7 @@ import org.libreplan.web.planner.consolidations.AdvanceConsolidationController;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -138,13 +139,18 @@ public class ProjectDetailsController extends GenericForwardComposer {
 
     public void accept() {
         if (validate()) {
-            if (tabs != null) {
-                tabs.goToOrderDetails(orderController.getOrder());
-            }
+            Desktop desktop = window.getDesktop();
+            IOrderModel orderModel = orderController.getOrderModel();
             if (bdProjectTemplate.getSelectedElement() != null) {
                 OrderTemplate template = (OrderTemplate) bdProjectTemplate
                         .getSelectedElement();
-                orderController.createFromTemplate(template);
+                orderModel.prepareCreationFrom(template, desktop);
+            } else {
+                orderModel.initEdit(orderController.getOrder(), desktop);
+            }
+            orderModel.save();
+            if (tabs != null) {
+                tabs.goToOrderDetails(orderController.getOrder());
             }
             orderController.editNewCreatedOrder(window);
         }
