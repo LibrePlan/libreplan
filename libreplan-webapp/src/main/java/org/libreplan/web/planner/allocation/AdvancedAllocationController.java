@@ -462,8 +462,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 DateTime itemEnd = intervalStart.plus(intervalIncrease());
                 while (intervalEnd.isAfter(itemStart)) {
                     if (intervalEnd.isBefore(itemEnd)
-                            || !intervalEnd.isAfter(itemEnd
-                                    .plus(intervalIncrease()))) {
+                            || itemEnd.plus(intervalIncrease()).isAfter(
+                                    intervalEnd)) {
                         itemEnd = intervalEnd;
                     }
                     Listitem item = new Listitem(Util.formatDate(itemStart)
