@@ -940,6 +940,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         prepareEditWindow(_("Edit project"));
     }
 
+    public IOrderModel getOrderModel() {
+        return orderModel;
+    }
+
     private Desktop getDesktop() {
         return listWindow.getDesktop();
     }
@@ -1068,7 +1072,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         detailsWindow.setVisible(false);
         setupOrderAuthorizationController();
         detailsWindow.getAttributes();
-        saveAndContinue(false);
     }
 
     public ProjectDetailsController getCreationPopup() {
