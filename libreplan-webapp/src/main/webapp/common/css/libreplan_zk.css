@@ -1013,6 +1013,10 @@ span.perspective, span.perspective-active {
     border-top:0;
 }
 
+.taskdetail-company-view .clickable-rows {
+    margin-left: 5px;
+}
+
 .z-button.perspective .z-button-cm,
 .z-button.perspective-active .z-button-cm {
     white-space:normal;
