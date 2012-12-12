@@ -20,3 +20,12 @@ libreplan-webapp/*.log.????-??-??
 #ignore backup files
 *~
 \#*\#
+
+# ignore documentation auto-generated files
+doc/src/user/en/html/
+doc/src/user/en/index.rst
+doc/src/user/es/html/
+doc/src/user/es/index.rst
+doc/src/user/gl/html/
+doc/src/user/gl/index.rst
+libreplan-webapp/src/main/webapp/help/
