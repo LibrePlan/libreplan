@@ -4,6 +4,12 @@
     <addon-name>ganttz</addon-name>
     <language-name>xul/html</language-name>
 
+    <!-- When the version is changed, the browser will reload the
+        JavaScript modules. -->
+    <javascript-module name="ganttz" version="1.3.2" />
+    <javascript-module name="ganttz.resourceload" version="1.3.2" />
+    <javascript-module name="common" version="1.3.2" />
+
     <extension>zul</extension>
     <extension>xul</extension>
 
