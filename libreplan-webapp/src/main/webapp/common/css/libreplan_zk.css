@@ -1214,6 +1214,10 @@ tr.z-treerow-over input {
     min-height:14px;
 }
 
+.allocation-criterion-selector .z-treecell-cnt {
+    line-height: inherit;
+}
+
 .timeplot-copyright {
     display: none;
 }
