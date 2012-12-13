@@ -65,10 +65,10 @@
             </row>
             <row id="startConstraint">
                 <label value="${i18n:_('Constraint')}" />
-                <vbox>
-                    <combobox id="startConstraintTypes" width="300px" />
+                <hbox>
+                    <combobox id="startConstraintTypes" width="180px" />
                     <datebox id="startConstraintDate" constraint ="no empty"/>
-                </vbox>
+                </hbox>
             </row>
             <row id="resourceAllocationType" visible="@{editController.isTask}">
                 <label value="${i18n:_('Resource allocation type')}" />
