@@ -43,7 +43,7 @@
                                 <textbox id="label_type_name"
                                     width="500px" value="@{controller.labelType.name}"
                                     constraint="no empty:${i18n:_('cannot be empty')}"
-                                    onBlur="controller.updateWindowTitle()" />
+                                    onBlur="controller.updateWindowTitle()" sclass="focus-element" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Code')}" />
