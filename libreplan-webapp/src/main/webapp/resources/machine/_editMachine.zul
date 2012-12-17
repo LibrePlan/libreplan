@@ -95,7 +95,7 @@
         </tabpanels>
     </tabbox>
     <button label="${i18n:_('Save')}"
-        onClick="controller.saveAndExit();"
+        onClick="controller.saveAndExit();" autodisable="self"
         sclass="save-button global-action"/>
     <button label="${i18n:_('Save &amp; Continue')}"
         onClick="controller.saveAndContinue();"
