@@ -598,12 +598,12 @@ public class MachineCRUDController extends BaseCRUDController<Machine> {
 
     @Override
     protected String getEntityType() {
-        return "Machine";
+        return _("Machine");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return "Machines";
+        return _("Machines");
     }
 
     @Override

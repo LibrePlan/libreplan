@@ -156,7 +156,7 @@
                         </hbox>
                       </row>
                       <row>
-                        <label value="Dedication" />
+                        <label value="${i18n:_('Dedication')}" />
                         <hbox align="middle">
                           <label value="${i18n:_('Normal Effort')}:" />
                           <hbox id="exceptionDayNormalEffortRow" />
