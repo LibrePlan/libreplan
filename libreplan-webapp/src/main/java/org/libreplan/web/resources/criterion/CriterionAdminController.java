@@ -197,12 +197,12 @@ public class CriterionAdminController extends BaseCRUDController<CriterionType> 
 
     @Override
     protected String getEntityType() {
-        return "Criterion Type";
+        return _("Criterion Type");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return "Criterion Types";
+        return _("Criterion Types");
     }
 
     @Override

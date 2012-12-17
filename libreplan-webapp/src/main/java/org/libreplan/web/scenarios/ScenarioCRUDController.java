@@ -235,12 +235,12 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
 
     @Override
     protected String getEntityType() {
-        return "Scenario";
+        return _("Scenario");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return "Scenarios";
+        return _("Scenarios");
     }
 
     @Override
