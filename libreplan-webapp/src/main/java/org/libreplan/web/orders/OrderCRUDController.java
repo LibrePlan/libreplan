@@ -50,6 +50,7 @@ import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -241,6 +242,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                                                         throws InterruptedException {
                                                     if (evt.getName().equals(
                                                             "onOK")) {
+                                                        ConfirmCloseUtil.resetConfirmClose();
                                                         Executions
                                                                 .sendRedirect("/planner/index.zul;company_scheduling");
                                                     }
