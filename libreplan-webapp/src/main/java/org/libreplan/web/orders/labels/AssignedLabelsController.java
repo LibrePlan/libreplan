@@ -70,8 +70,8 @@ public abstract class AssignedLabelsController<T, M> extends
         bdLabels.clear();
         txtLabelName.setValue("");
 
+        Util.createBindingsFor(self);
         Util.reloadBindings(self);
-        Util.reloadBindings(directLabels);
     }
 
     IOrderElementModel orderElementModel;
