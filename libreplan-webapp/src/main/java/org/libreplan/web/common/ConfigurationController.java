@@ -485,7 +485,8 @@ public class ConfigurationController extends GenericForwardComposer {
             final EntityNameEnum entityName = entitySequence.getEntityName();
 
             row.setValue(entityName);
-            row.appendChild(new Label(_(entityName.getSequenceLiteral())));
+            row.appendChild(new Label(_("{0} sequences",
+                    entityName.getDescription())));
 
             row.setValue(entitySequence);
             appendActiveRadiobox(row, entitySequence);
