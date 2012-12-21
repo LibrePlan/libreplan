@@ -122,7 +122,7 @@
         </tabpanels>
     </tabbox>
     <hbox>
-        <button label="${i18n:_('Save')}" onClick="templatesForOrdersController.saveAndExit()"
+        <button label="${i18n:_('Save')}" onClick="templatesForOrdersController.saveAndExit()" autodisable="self"
             sclass="save-button global-action" />
         <button label="${i18n:_('Save &amp; Continue')}" onClick="templatesForOrdersController.saveAndContinue()"
             sclass="saveandcontinue-button global-action" />

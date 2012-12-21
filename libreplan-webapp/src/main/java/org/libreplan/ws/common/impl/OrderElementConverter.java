@@ -542,14 +542,22 @@ public final class OrderElementConverter {
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
             throws ValidationException {
-        updateExceptCriterionRequirements(orderElement, orderElementDTO,
-                configuration);
+        update(null, orderElement, orderElementDTO, configuration);
+    }
+
+    private final static void update(OrderVersion orderVersion,
+            OrderElement orderElement, OrderElementDTO orderElementDTO,
+            ConfigurationOrderElementConverter configuration)
+            throws ValidationException {
+        updateExceptCriterionRequirements(orderVersion, orderElement,
+                orderElementDTO, configuration);
         if (configuration.isCriterionRequirements()) {
             addOrCriterionRequirements(orderElement, orderElementDTO);
         }
     }
 
     private final static void updateExceptCriterionRequirements(
+            OrderVersion orderVersion,
             OrderElement orderElement, OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
             throws ValidationException {
@@ -577,7 +585,6 @@ public final class OrderElementConverter {
                 }
             }
         } else { // orderElementDTO instanceof OrderLineGroupDTO
-            OrderVersion orderVersion = null;
             if (orderElementDTO instanceof OrderDTO) {
                 if (!(orderElement instanceof Order)) {
                     throw new ValidationException(MessageFormat.format(
@@ -623,7 +630,8 @@ public final class OrderElementConverter {
 
             for (OrderElementDTO childDTO : ((OrderLineGroupDTO) orderElementDTO).children) {
                 if (orderElement.containsOrderElement(childDTO.code)) {
-                    update(orderElement.getOrderElement(childDTO.code),
+                    update(orderVersion,
+                            orderElement.getOrderElement(childDTO.code),
                             childDTO, configuration);
                 } else {
                     if (checkConstraintUniqueOrderCode(childDTO)) {

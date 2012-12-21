@@ -150,6 +150,7 @@ public class EditTaskController extends GenericForwardComposer {
         try {
             window.setTitle(_("Edit task: {0}", taskElement.getName()));
             showSelectedTabPanel();
+            Util.createBindingsFor(window);
             Util.reloadBindings(window);
             if (fromLimitingResourcesView) {
                 window.doModal();

@@ -157,10 +157,13 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private LocalDate filterStartDate;
     private LocalDate filterFinishDate;
+
+    // All the status but CANCELLED and STORED
     private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = EnumSet
-            .of(OrderStatusEnum.ACCEPTED, OrderStatusEnum.OFFERED,
-                    OrderStatusEnum.STARTED,
-                    OrderStatusEnum.OUTSOURCED);
+            .of(OrderStatusEnum.PRE_SALES, OrderStatusEnum.OFFERED,
+                    OrderStatusEnum.OUTSOURCED, OrderStatusEnum.ACCEPTED,
+                    OrderStatusEnum.STARTED, OrderStatusEnum.ON_HOLD,
+                    OrderStatusEnum.FINISHED);
 
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
@@ -466,6 +469,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         int columnNumber = 0;
 
+        earnedValueChartConfigurationCheckboxes.clear();
         for (EarnedValueType type : EarnedValueType.values()) {
             Checkbox checkbox = new Checkbox(type.getAcronym());
             checkbox.setTooltiptext(type.getName());

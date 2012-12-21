@@ -56,7 +56,7 @@
                             <label value="${i18n:_('Name')}" />
                             <textbox value="@{controller.machine.name}" width="500px"
                                 constraint="no empty:${i18n:_('cannot be empty')}"
-                                onBlur="controller.updateWindowTitle()" />
+                                onBlur="controller.updateWindowTitle()" sclass="focus-element"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Description')}" />
@@ -95,7 +95,7 @@
         </tabpanels>
     </tabbox>
     <button label="${i18n:_('Save')}"
-        onClick="controller.saveAndExit();"
+        onClick="controller.saveAndExit();" autodisable="self"
         sclass="save-button global-action"/>
     <button label="${i18n:_('Save &amp; Continue')}"
         onClick="controller.saveAndContinue();"

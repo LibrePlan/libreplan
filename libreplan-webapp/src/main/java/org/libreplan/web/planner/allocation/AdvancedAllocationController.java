@@ -462,8 +462,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 DateTime itemEnd = intervalStart.plus(intervalIncrease());
                 while (intervalEnd.isAfter(itemStart)) {
                     if (intervalEnd.isBefore(itemEnd)
-                            || !intervalEnd.isAfter(itemEnd
-                                    .plus(intervalIncrease()))) {
+                            || itemEnd.plus(intervalIncrease()).isAfter(
+                                    intervalEnd)) {
                         itemEnd = intervalEnd;
                     }
                     Listitem item = new Listitem(Util.formatDate(itemStart)
@@ -1222,8 +1222,9 @@ class Row {
 
         // Disable if task is updated from timesheets
         assignmentFunctionsCombo.setDisabled(task.isUpdatedFromTimesheets());
-        assignmentFunctionsConfigureButton.setDisabled(task
-                .isUpdatedFromTimesheets());
+        assignmentFunctionsConfigureButton
+                .setDisabled(assignmentFunctionsConfigureButton.isDisabled()
+                        || task.isUpdatedFromTimesheets());
     }
 
     /**

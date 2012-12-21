@@ -70,6 +70,7 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.calendars.BaseCalendarModel;
+import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.ViewSwitcher;
 import org.libreplan.web.planner.adaptplanning.IAdaptPlanningCommand;
 import org.libreplan.web.planner.advances.AdvanceAssignmentPlanningController;
@@ -833,6 +834,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         int columnNumber = 0;
 
+        earnedValueChartConfigurationCheckboxes.clear();
         for (EarnedValueType type : EarnedValueType.values()) {
             Checkbox checkbox = new Checkbox(type.getAcronym());
             checkbox.setTooltiptext(type.getName());
@@ -1101,6 +1103,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                 public void onEvent(Event evt)
                                         throws InterruptedException {
                                     if (evt.getName().equals("onOK")) {
+                                        ConfirmCloseUtil.resetConfirmClose();
                                         Executions
                                                 .sendRedirect("/planner/index.zul;company_scheduling");
                                     }

@@ -60,7 +60,7 @@
                             <row visible="@{controller.isRealWorker}">
                                 <label value="${i18n:_('First name')}" />
                                 <textbox
-                                    value="@{controller.worker.firstName}" constraint="no empty" width="500px"
+                                    value="@{controller.worker.firstName}" id="workerFirstname" constraint="no empty" width="500px"
                                     onBlur="controller.updateWindowTitle()" />
                             </row>
                             <row visible="@{controller.isVirtualWorker}">
@@ -180,7 +180,7 @@
             </tabpanel>
         </tabpanels>
     </tabbox>
-    <button onClick="controller.saveAndExit();"
+    <button onClick="controller.saveAndExit();" autodisable="self"
         label="${arg.save_button_label}" sclass="save-button global-action"/>
     <button onClick="controller.saveAndContinue();"
         label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />

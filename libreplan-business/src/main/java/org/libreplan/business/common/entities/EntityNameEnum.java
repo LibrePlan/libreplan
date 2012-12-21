@@ -127,8 +127,4 @@ public enum EntityNameEnum {
         }
     }
 
-    public String getSequenceLiteral() {
-        return getDescription() + " sequences";
-    }
-
 }

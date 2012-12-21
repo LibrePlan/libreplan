@@ -61,7 +61,7 @@
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
 
-                    <hbox align="bottom" sclass="add-resources-or-criteria">
+                    <hbox align="center" sclass="add-resources-or-criteria">
                         <newAllocationSelectorCombo id="newAllocationSelectorCombo" behaviour="NON_LIMITING"/>
                         <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)"
                             disabled="@{allocationController.isAnyManualOrTaskUpdatedFromTimesheets}" />

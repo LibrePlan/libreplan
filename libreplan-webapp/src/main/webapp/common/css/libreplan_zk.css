@@ -853,6 +853,9 @@ div.z-listbox-pgi-b {
     font-weight: bold;
     margin: 4px 3px 2px 0;
     padding: 1px 5px;
+    height: 14px;
+    font-size: 9px;
+    width: 5px;
 }
 
 
@@ -1008,6 +1011,10 @@ span.perspective, span.perspective-active {
 .resourceloaddetailsContainer {
     border-left:0;
     border-top:0;
+}
+
+.taskdetail-company-view .clickable-rows {
+    margin-left: 5px;
 }
 
 .z-button.perspective .z-button-cm,
@@ -1205,6 +1212,10 @@ tr.z-treerow-over input {
 .allocation-criterion-selector span.z-dottree-ico,
 .allocation-criterion-selector span.z-dottree-line {
     min-height:14px;
+}
+
+.allocation-criterion-selector .z-treecell-cnt {
+    line-height: inherit;
 }
 
 .timeplot-copyright {

@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.converters.IConverter;
 import org.libreplan.web.common.converters.IConverterFactory;
 import org.zkoss.zk.ui.Execution;
@@ -283,20 +284,25 @@ public class EntryPointsHandler<T> {
         return applyIfMatches(controller, matrixParams);
     }
 
-    private <S> boolean applyIfMatches(S controller,
+    private <S> boolean applyIfMatches(final S controller,
             Map<String, String> matrixParams) {
         flagAlreadyExecutedInThisRequest();
         Set<String> matrixParamsNames = matrixParams.keySet();
         for (Entry<String, EntryPointMetadata> entry : metadata.entrySet()) {
-            EntryPointMetadata entryPointMetadata = entry.getValue();
+            final EntryPointMetadata entryPointMetadata = entry.getValue();
             EntryPoint entryPointAnnotation = entryPointMetadata.annotation;
             HashSet<String> requiredParams = new HashSet<String>(Arrays
                     .asList(entryPointAnnotation.value()));
             if (matrixParamsNames.equals(requiredParams)) {
-                Object[] arguments = retrieveArguments(matrixParams,
+                final Object[] arguments = retrieveArguments(matrixParams,
                         entryPointAnnotation, entryPointMetadata.method
                                 .getParameterTypes());
-                callMethod(controller, entryPointMetadata.method, arguments);
+                Util.executeIgnoringCreationOfBindings(new Runnable() {
+                    public void run() {
+                        callMethod(controller, entryPointMetadata.method,
+                                arguments);
+                    }
+                });
                 return true;
             }
         }

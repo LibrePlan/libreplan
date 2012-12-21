@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.Util.ReloadStrategy;
 import org.libreplan.web.orders.OrderCRUDController;
 import org.libreplan.web.planner.order.IOrderPlanningGate;
 import org.libreplan.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
@@ -69,7 +70,7 @@ public class OrdersTabCreator {
             result = Executions.createComponents("/orders/_ordersTab.zul",
                     parent, args);
             Util.createBindingsFor(result);
-            Util.reloadBindings(result);
+            Util.reloadBindings(ReloadStrategy.ONE_PER_REQUEST, result);
             return result;
         }
 

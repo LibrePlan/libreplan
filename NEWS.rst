@@ -1,6 +1,132 @@
 NEWS
 ====
 
+Version 1.3.3 (21 Dec 2012)
+---------------------------
+
+Summary
+~~~~~~~
+
+A new minor version of LibrePlan including all the fixes done since previous
+version and some new features that have been developed lately.
+
+Highlights:
+
+* A custom Mobile Application has been developed. This is a tool to allow
+  LibrePlan users to access the tasks they are assigned to, from any project,
+  report worked hours and check their progresses from a mobile device.
+  http://www.libreplan.com/download/mobile-application/
+  You can download this application for free to any of the currently supported
+  platforms, and configure it to connect to your LibrePlan installation to start
+  using it.
+
+Apart from this. Several changes have also been made on LibrePlan, of which the
+most remarkable are:
+
+* Performance improvements on the project listing window (specially when
+  working with a lot of projects), and on the project creation and WBS
+  manipulation.
+
+* We have changed the internals of the custom JavaScript files inside LibrePlan,
+  to avoid some problems due to the caching of those files, and creating issues
+  that forced manual cache refresh when upgrading LibrePlan installations.
+
+* An informative message has been added to the installation package to suggest
+  Java configuration tunning, in order to avoid Memory problems.
+
+* The visibility of the projects on the company view has been modified, to show
+  by default all projects but CANCELLED and STORED.
+
+Notes
+~~~~~
+
+If you are upgrading from 1.3.1 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.3.2.sql``.
+
+If you are upgrading from 1.3.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.3.1.sql`` and
+``scripts/database/upgrade_1.3.2.sql``.
+
+If you are upgrading from a previous version without using the Debian package,
+review the *Notes* section for version 1.3.0.
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Óscar González Fernández
+* Manuel Rego Casasnovas
+* Juan A. Suarez Romero
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [ca] Daniel Díaz Sañudo
+* [es] Manuel Rego Casasnovas
+* [gl] Manuel Rego Casasnovas
+* [nl] Jeroen Baten
+* [pt] Thiago Cangussu
+
+Changes
+~~~~~~~
+
+* Update RPM package for LibrePlan 1.3.3
+* Update Debian package for LibrePlan 1.3.3
+* debian: Use echo to show information as db_info is causing problems
+* Fix typo in Labels tab in project details view
+* i18n: Update Portuguese translation
+* i18n: Mark some missing strings to be translated
+* i18n: Mark some missing strings to be translated
+* Bug #1600: Fix issue creating bindings on open resource allocation pop-up
+* Use for company view filtering all projects with status different to STORED or CANCELLED
+* Bug #1598: Fix empty labels bandbox creating bindings for tab on open
+* Bug #1579: Add autodisable to save-and-exit button on all standard CRUD forms
+* Make more readable date constraint component on taskdetails
+* Fix vertical alignment problems on component to add new resource allocations
+* Make more compact advanced search criteria filter tree
+* Fix left padding issue on company view project names
+* Add first input focus-element behaviour to BaseCRUDController subclasses
+* Bug #1418: Focused worker firstname on creation
+* Fix extra vertical padding issue on WBS tree rows
+* Add support to BaseCRUDController for automatically focusing first .focus-element component
+* Improved task name style inside gantt view popup
+* Replaced comma separator on Task resourcesText as it was already used on each resource
+* Bug #1584: Fix corner case issue filling the advanced assignment pagination intervals
+* i18n: Mark some missing strings to be translated
+* Bug #1596: Disable confirm close message if user uses back button
+* i18n: Update Catalan translation
+* i18n: Update Dutch translation
+* i18n: Update Spanish and Galician translations
+* Modify .gitignore to ignore documentation auto-generated files
+* Set version for JavaScript modules in lang-addon.xml files
+* Bug #1592: Fix problem not showing the tab if it is already being shown
+* Bug #1592: Save Order before showing it
+* Bug #1590: Avoid repeated calls to goToOrdersList
+* Avoid some redundant loads of bindings in the same request
+* Revert "Bug #1590: Fix problem calling several times the same method in OrderModel"
+* Revert "Bug #1592: Fix problem not showing the tab if it is already being shown"
+* Bug #1594: Fix issue opening transaction at DAO if needed
+* Bug #1593: Fix issue translating the options while rendering
+* debian: Add information about common issues in LibrePlan installation
+* Bug #1592: Fix problem not showing the tab if it is already being shown
+* i18n: Update keys.pot files
+* Bug #1590: Simplify Util.createBindingsFor
+* Bug #1590: Avoid go to projects list when creating a project
+* Bug #1590: Fix problem calling several times the same method in OrderModel
+* Bug #1589: Fix issue using orderVersion for all the elements to be updated or added
+* Bug #1586: Fix issue reseting list of checkboxes before adding them
+* Bug #1583: If assignment function is not configurable keep button disabled
+* Bug #1587: Fix issue only resetting index of progress combo if it has items
+* Bug 1581: Avoid exception in LongOperationFeedback if desktop is not ready
+* Update RPM spec file
+
+
 Version 1.3.2 (30 Nov 2012)
 ---------------------------
 

@@ -41,7 +41,7 @@
                                 <textbox id="name"
                                     value="@{controller.company.name}" width="500px"
                                     constraint="no empty:${i18n:_('cannot be empty')}"
-                                    onBlur="controller.updateWindowTitle()"/>
+                                    onBlur="controller.updateWindowTitle()" sclass="focus-element" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Company ID')}:" />
@@ -98,7 +98,7 @@
         </tabpanels>
     </tabbox>
 
-    <button onClick="controller.saveAndExit();"
+    <button onClick="controller.saveAndExit();" autodisable="self"
         label="${i18n:_('Save')}" sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue();"
         label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />

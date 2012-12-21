@@ -7,9 +7,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: libreplan-1.3.2\n"
+"Project-Id-Version: libreplan-1.3.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-22 13:41+0100\n"
+"POT-Creation-Date: 2012-12-07 13:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Worker"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:684
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:689
 msgid "Show money cost bar"
 msgstr ""
 
@@ -39,7 +39,7 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:663
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:668
 msgid "Show reported hours"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Criterion"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:690
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:695
 msgid "Hide money cost bar"
 msgstr ""
 
@@ -145,7 +145,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:643
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:645
 msgid "Show progress"
 msgstr ""
 
@@ -177,11 +177,11 @@ msgstr ""
 msgid "Set End-Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:308
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:309
 msgid "decreasing zoom"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:624
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:625
 msgid "Hide critical path"
 msgstr ""
 
@@ -189,7 +189,7 @@ msgstr ""
 msgid "Day"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:670
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:675
 msgid "Hide reported hours"
 msgstr ""
 
@@ -222,7 +222,7 @@ msgstr ""
 msgid "See resource allocation"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:291
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:292
 msgid "increasing zoom"
 msgstr ""
 
@@ -238,10 +238,10 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:619
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:620
 msgid "Show critical path"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:648
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:653
 msgid "Hide progress"
 msgstr ""

@@ -32,6 +32,7 @@ import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.users.entities.Profile;
 import org.libreplan.business.users.entities.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate DAO for the {@link OrderAuthorization} entity.
@@ -103,6 +104,7 @@ public class OrderAuthorizationDAO extends GenericDAOHibernate<OrderAuthorizatio
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderAuthorization> listByOrderUserAndItsProfiles(Order order, User user) {
         List<OrderAuthorization> list = new ArrayList<OrderAuthorization>();
         list.addAll(listByOrderAndUser(order,user));

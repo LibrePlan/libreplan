@@ -43,7 +43,7 @@
                                 <textbox id="qualityFormName"
                                     width="500px" value="@{controller.qualityForm.name}"
                                     constraint="@{controller.checkConstraintUniqueQualityFormName}"
-                                    onBlur="controller.updateWindowTitle()"/>
+                                    onBlur="controller.updateWindowTitle()" sclass="focus-element" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Description')}" />
@@ -129,7 +129,7 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Save')}"
-            onClick="controller.saveAndExit()"
+            onClick="controller.saveAndExit()" autodisable="self"
             sclass="save-button global-action"/>
         <button label="${i18n:_('Save &amp; Continue')}"
             onClick="controller.saveAndContinue()"

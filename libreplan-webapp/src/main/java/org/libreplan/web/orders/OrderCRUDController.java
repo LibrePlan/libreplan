@@ -50,11 +50,13 @@ import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.Util.ReloadStrategy;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
@@ -240,6 +242,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                                                         throws InterruptedException {
                                                     if (evt.getName().equals(
                                                             "onOK")) {
+                                                        ConfirmCloseUtil.resetConfirmClose();
                                                         Executions
                                                                 .sendRedirect("/planner/index.zul;company_scheduling");
                                                     }
@@ -799,7 +802,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void showWindow(Window window) {
         getVisibility().showOnly(window);
-        Util.reloadBindings(window);
+        Util.reloadBindings(ReloadStrategy.ONE_PER_REQUEST, window);
     }
 
     public void reloadHoursGroupOrder() {
@@ -939,6 +942,10 @@ public class OrderCRUDController extends GenericForwardComposer {
         prepareEditWindow(_("Edit project"));
     }
 
+    public IOrderModel getOrderModel() {
+        return orderModel;
+    }
+
     private Desktop getDesktop() {
         return listWindow.getDesktop();
     }
@@ -1067,7 +1074,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         detailsWindow.setVisible(false);
         setupOrderAuthorizationController();
         detailsWindow.getAttributes();
-        saveAndContinue(false);
     }
 
     public ProjectDetailsController getCreationPopup() {
@@ -1541,8 +1547,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public String getProjectType() {
-        return (isSubcontractedProject()) ? "Subcontracted by client"
-                : "Regular project";
+        return (isSubcontractedProject()) ? _("Subcontracted by client")
+                : _("Regular project");
     }
 
     public void setCurrentDeliveryDate(Grid listDeliveryDates) {
