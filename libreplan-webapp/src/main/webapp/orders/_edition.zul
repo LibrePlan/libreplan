@@ -45,7 +45,7 @@
                 onSelect = "controller.setupAssignedHoursToOrderElementController();"/>
             <tab id="tabAdvances" label="${i18n:_('Progress')}"
                 onSelect = "controller.setupManageOrderElementAdvancesController();"/>
-            <tab id="tabLabels" label="${i18n:_('Label')}"
+            <tab id="tabLabels" label="${i18n:_('Labels')}"
                 onSelect = "controller.setupAssignedLabelsToOrderElementController();"/>
             <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}"
                 onSelect = "controller.setupAssignedCriterionRequirementsToOrderElementController();"
