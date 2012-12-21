@@ -10,10 +10,10 @@
 # Thiago Cangussu <cangussu.br@gmail.com>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.3.2\n"
+"Project-Id-Version: 1.3.3\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
-"POT-Creation-Date: 2012-11-22 13:41+0100\n"
-"PO-Revision-Date: 2012-11-22 12:51+0000\n"
+"POT-Creation-Date: 2012-12-07 13:59+0100\n"
+"PO-Revision-Date: 2012-12-17 12:12+0000\n"
 "Last-Translator: Thiago Cangussu\n"
 "Language-Team: Português\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Language: pt\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:449
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:452
 msgid "currency code not specified"
 msgstr "Código da moeda não especificado"
 
@@ -34,7 +34,7 @@ msgstr "Você não tem permissão para criar novos usuários"
 msgid "Availability ratio"
 msgstr "Proporção de Disponibilidade"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:367
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:378
 msgid "Group path"
 msgstr "Estratégia de grupo"
 
@@ -147,7 +147,7 @@ msgstr "Criar Trabalhador Virtual"
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAdvances.zul:70
 #: libreplan-webapp/src/main/webapp/orders/components/_listOrderElementLabels.zul:57
 #: libreplan-webapp/src/main/webapp/limitingresources/limitingResourcesLayout.zul:143
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:255
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:266
 msgid "Operations"
 msgstr "Operações"
 
@@ -181,9 +181,9 @@ msgstr "Data de início não pode estar vazia"
 msgid "Materials"
 msgstr "Materiais"
 
-#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/BaseCalendar.java:1094
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/BaseCalendar.java:1106
 msgid "dates must be sorted and cannot overlap"
-msgstr ""
+msgstr "datas devem ser ordenadas e não podem se sobrepor"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/reassign/ReassignCommand.java:361
 msgid "Reassign"
@@ -191,7 +191,7 @@ msgstr "Voltar a atribuir"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:180
 msgid "Not bound"
-msgstr ""
+msgstr "Não vinculado"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/GlobalProgressChart.java:62
 msgid "By critical path hours"
@@ -326,7 +326,7 @@ msgstr "Deixar de atribuir"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:37
 msgid "Filter timesheet lines by"
-msgstr ""
+msgstr "Filtrar planilha de tempo por linha"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/ManualAllocationController.java:506
 msgid "Manual assignment"
@@ -403,7 +403,7 @@ msgstr "Deve ser maior ou igual a 0"
 msgid "Transfer Projects Between Scenarios"
 msgstr "Transferir Projetos Entre Cenários"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:107
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:109
 msgid "changing perspective"
 msgstr "mudança de perspectiva"
 
@@ -489,7 +489,7 @@ msgstr "Indentar"
 msgid "Reassignation"
 msgstr "Reatribuição"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:340
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:351
 msgid "Save passwords in database"
 msgstr "Guardar palavras-passe na base de dados"
 
@@ -647,7 +647,7 @@ msgstr "não existem recursos com os critérios solicitados: {0}. Portanto, não
 msgid "must be later than start date"
 msgstr "Deve ser após a data de início"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:360
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:371
 msgid "Role search strategy"
 msgstr "Estratégia de pesquisa de função"
 
@@ -696,15 +696,15 @@ msgstr "Localizações não atribuídas"
 msgid "Application URI"
 msgstr "URI da aplicação"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:362
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:373
 msgid "Group strategy"
 msgstr "Estratégia de grupo"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:894
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:904
 msgid "Budget: {0}, Consumed: {1} ({2}%)"
 msgstr "Orçamento: {0}, Consumido: {1} ({2}%)"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1561
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1562
 msgid "Configure"
 msgstr "Configurar"
 
@@ -754,7 +754,7 @@ msgstr "Ver"
 msgid "subcontratation date not specified"
 msgstr "Data de sub-contratação não especificada"
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:177
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:180
 msgid "base not specified"
 msgstr "Base não especificada"
 
@@ -837,15 +837,15 @@ msgstr "Data de fim"
 
 #: libreplan-webapp/src/main/webapp/excetiondays/exceptionDays.zul:22
 msgid "LibrePlan: Calendar Exception Days"
-msgstr ""
+msgstr "LibrePlan: Dias de Exceção do Calendário"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:976
 msgid "Worker and bound user deleted"
-msgstr ""
+msgstr "Trabalhador e vínculo removidos"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Worker.java:271
 msgid "Bound user does not have the proper role"
-msgstr ""
+msgstr "Usuário vinculado não tem o papel adequado"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/criterion/CriterionTreeModel.java:330
 msgid "Already exists another criterion with the same name"
@@ -857,7 +857,7 @@ msgstr "o nome do perfil já está a ser usado por outro perfil"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/scenarios/ScenarioModel.java:126
 msgid "You cannot remove the current scenario"
-msgstr ""
+msgstr "Você não pode remover o cenário atual"
 
 #: libreplan-webapp/src/main/webapp/users/_editUser.zul:84
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:71
@@ -966,11 +966,11 @@ msgstr "{0} anotação obrigatória em {1}"
 msgid "Some sequences to be removed do not exist"
 msgstr "Algumas sequências a serem removidas não existem"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1286
+#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1290
 msgid "Modified"
 msgstr "Modificado"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:995
+#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:999
 msgid "cannot be negative"
 msgstr "não pode ser negativo"
 
@@ -984,7 +984,7 @@ msgstr "formato de prefixo inválido. Não pode estar vazio ou conter espaços e
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarEditionController.java:1227
 msgid "inherited exception can not be removed"
-msgstr ""
+msgstr "exceção herdada não pode ser removida"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/CriterionsController.java:89
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:457
@@ -1029,7 +1029,7 @@ msgstr "Lista de modelos"
 msgid "Criteria: {0}"
 msgstr "Critério: {0}"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:253
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:264
 msgid "Last value"
 msgstr "Último valor"
 
@@ -1072,7 +1072,7 @@ msgstr ""
 msgid "Materials Needs At Date"
 msgstr "Necesidades de Materiais para Data"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:305
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:316
 msgid "UserDn"
 msgstr "UserDn"
 
@@ -1141,7 +1141,7 @@ msgstr "Tem a certeza de que deseja mudar o tipo de recurso? Perderá os critér
 msgid "This Criterion has already been added."
 msgstr "Este Critério já foi adicionado."
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:235
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:246
 msgid "add"
 msgstr "adicionar"
 
@@ -1164,7 +1164,7 @@ msgstr "Trabalhadores"
 msgid ""
 "You can not remove the project \"{0}\" because it has time tracked at some "
 "of its tasks"
-msgstr ""
+msgstr "Você não pode remover o projeto \"{0}\" por que ele possui horas apontadas em algumas das suas tarefas"
 
 #: libreplan-webapp/src/main/webapp/resources/search/allocation_selector.zul:53
 msgid "Resources matching selected criteria"
@@ -1244,8 +1244,8 @@ msgstr "Adicionar função"
 msgid "Exception end date should be greater or equals than start date"
 msgstr "A data de fim duma exceção deve ser maior ou igual que a data de início"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:516
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:526
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:529
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:539
 msgid "Repeated Project code {0} in Project {1}"
 msgstr "Código {0} de projeto repetido no projeto {1}"
 
@@ -1292,7 +1292,7 @@ msgstr "Perfis"
 msgid "First expense"
 msgstr "Gasto inicial"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:284
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:295
 msgid "Host"
 msgstr "Host"
 
@@ -1403,8 +1403,8 @@ msgstr "URL do logotipo da empresa"
 msgid "No worker selected"
 msgstr "Nenhum trabalhador selecionado"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:233
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:251
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:244
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:262
 msgid "Number of digits"
 msgstr "Número de digitos"
 
@@ -1412,7 +1412,7 @@ msgstr "Número de digitos"
 msgid "Task not found"
 msgstr "Tarefa não encontrada"
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:149
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:152
 msgid "company code cannot contain whitespaces"
 msgstr "Código da Empresa não pode conter espaços em branco"
 
@@ -1449,7 +1449,7 @@ msgstr "Lista de Perfis"
 msgid "both {0} of category {1} and {2} of category {3} have the same code"
 msgstr "ambos os {0} da categoria {1} e {2} da categoria {3} têm o mesmo código"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:905
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:915
 #: libreplan-webapp/src/main/java/org/libreplan/web/reports/ProjectStatusReportController.java:160
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/TemplatesTreeController.java:226
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:709
@@ -1471,7 +1471,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:106
 #: libreplan-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:47
 msgid "New timesheet"
-msgstr ""
+msgstr "Nova planilha de tempo"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelSubcontract.zul:116
 msgid "End date communicated by the subcontractor."
@@ -1496,7 +1496,7 @@ msgid "Filter by task status"
 msgstr "Filtrar por estado da tarefa"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:496
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/company/CompanyPlanningModel.java:418
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/company/CompanyPlanningModel.java:424
 msgid "Select date"
 msgstr "Selecione data"
 
@@ -1515,7 +1515,7 @@ msgstr "Por favor, volte a tentar."
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementModel.java:266
 msgid "cannot be checked until the previous item is checked before"
-msgstr ""
+msgstr "não pode ser selecionado antes que o item anterior seja selecionado"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:57
 msgid "Company code"
@@ -1533,7 +1533,7 @@ msgstr "Soma das horas apontadas nas tarefas filhas"
 msgid "passwords can not be empty"
 msgstr "As palavras-passe não podem estar vazias"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:1061
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:1074
 msgid "Task {0}"
 msgstr "Tarefa {0}"
 
@@ -1541,7 +1541,7 @@ msgstr "Tarefa {0}"
 msgid ""
 "Please try to contact with any administrator in order to review your "
 "permissions in LibrePlan."
-msgstr ""
+msgstr "Por favor contate o administrador para rever suas permissões no LibrePlan."
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Machine.java:101
 msgid "machine name not specified"
@@ -1601,6 +1601,13 @@ msgstr "O navegador que está a usar"
 msgid "scenario"
 msgstr "Cenário"
 
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:220
+msgid ""
+"Defines the time since last saving operation at project planning "
+"perspectives after which a warning is raised on leaving. Set to 0 in order "
+"to disable the warning."
+msgstr ""
+
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:52
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:58
 #: libreplan-webapp/src/main/webapp/resources/search/_resourceFilter.zul:42
@@ -1623,7 +1630,7 @@ msgstr "nome do trabalhador não especificado"
 msgid "End date can only be deleted in the the last activation"
 msgstr "Data de término só pode ser removida na última ativação"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:363
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:374
 msgid "Property strategy"
 msgstr "Estratégia de propriedade"
 
@@ -1676,7 +1683,7 @@ msgid "Last name"
 msgstr "Apelidos"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/calendars/BaseCalendarCRUDController.java:382
-#: libreplan-webapp/src/main/java/org/libreplan/web/common/Util.java:580
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/Util.java:568
 msgid "Remove"
 msgstr "Apagar"
 
@@ -1700,7 +1707,7 @@ msgstr "Tipo de Progresso"
 msgid "name not specified or empty"
 msgstr "nome não especificado ou vazio"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1310
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1311
 msgid "Task contains consolidated progress. Cannot apply sigmoid function."
 msgstr "A tarefa contém progresso consolidado. Não se pode aplicar a função sigmoide."
 
@@ -1710,9 +1717,9 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/resources/worker/virtualWorkers.zul:22
 msgid "LibrePlan: Virtual Worker Groups"
-msgstr ""
+msgstr "LibrePlan: Grupos de Trabalhadores Virtuais"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:333
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:344
 msgid "UserId"
 msgstr "Userld"
 
@@ -1731,7 +1738,7 @@ msgstr "A data de início não é válida, a nova data de início deve ser anter
 msgid "Create New Project"
 msgstr "Criar Novo Projeto"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1445
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1446
 msgid "Stretches list"
 msgstr "Lista de trechos"
 
@@ -1747,7 +1754,7 @@ msgstr "LibrePlan: Total de Horas Trabalhadas por Recurso no Mês"
 msgid "Zoom"
 msgstr "Zoom"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:873
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:886
 #: libreplan-webapp/src/main/webapp/labels/_editLabelType.zul:112
 #: libreplan-webapp/src/main/webapp/advance/advanceTypes.zul:38
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:91
@@ -1776,7 +1783,7 @@ msgstr "Zoom"
 #: libreplan-webapp/src/main/webapp/resources/criterions/_workers.zul:48
 #: libreplan-webapp/src/main/webapp/limitingresources/limitingResourcesLayout.zul:59
 #: libreplan-webapp/src/main/webapp/typeofworkhours/_editTypeOfWorkHours.zul:77
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:408
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:419
 msgid "Save"
 msgstr "Guardar"
 
@@ -1826,7 +1833,7 @@ msgstr "O progresso de propagação não pode ser alterado se existir uma consol
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:313
 msgid "Schedule from deadline to start"
-msgstr ""
+msgstr "Agendado do prazo de entrega para o início"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementAuthorizations.zul:51
 msgid "Users authorization"
@@ -1845,11 +1852,11 @@ msgstr "Remover modelo. Tem certeza?"
 msgid "Expense date"
 msgstr "Data do gasto"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:245
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:256
 msgid "Entity type"
 msgstr "Tipo de entidade"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:1081
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:1096
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:234
 msgid "Unsaved changes will be lost. Are you sure?"
 msgstr "As alterações não guardadas serão perdidas. Deseja continuar?"
@@ -1898,7 +1905,7 @@ msgstr "Expandir/Colapsar tudo"
 msgid "Overload due to current project"
 msgstr "Sobrecarga devido ao projeto atual"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:877
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:887
 msgid "Name: {0}"
 msgstr "Nome: {0}"
 
@@ -2031,7 +2038,7 @@ msgstr "Recursos por dia não pode ser vazio ou menor que 0"
 msgid "Criterion cannot be empty"
 msgstr "Critério não pode estar vazio"
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:144
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:147
 msgid "company code not specified"
 msgstr "Código da Empresa não especificado"
 
@@ -2135,11 +2142,11 @@ msgstr "Tipo de rótulo já atribuído"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeCRUDController.java:939
 msgid "Timesheets Template"
-msgstr ""
+msgstr "Modelo de planilha de tempo"
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:157
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:160
 msgid "host not specified"
-msgstr ""
+msgstr "hospedeiro não especificado"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/QualityForm.java:266
 msgid "percentages in quality form items must be unique"
@@ -2155,7 +2162,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:236
 msgid "Expenses cost"
-msgstr ""
+msgstr "Despesas"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportType.java:158
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeModel.java:416
@@ -2200,7 +2207,7 @@ msgstr ""
 msgid "Surname"
 msgstr "Apelidos"
 
-#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/BaseCalendar.java:1206
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/BaseCalendar.java:1218
 msgid "calendars with zero hours are not allowed"
 msgstr ""
 
@@ -2239,7 +2246,7 @@ msgstr "Adicionar a partir de modelo"
 
 #: libreplan-webapp/src/main/webapp/expensesheet/expenseSheet.zul:32
 msgid "Expense Sheets List"
-msgstr ""
+msgstr "Lista de Planilhas de Despesas"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/TaskPropertiesController.java:574
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/TaskPropertiesController.java:612
@@ -2254,7 +2261,7 @@ msgstr "Filtrar por mês"
 msgid "The code is not valid. There is another unit type with the same code"
 msgstr "O código não é válido. Existe outro tipo de unidade com o mesmo código"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:268
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:279
 msgid "Enable LDAP authentication"
 msgstr "Ativar autenticação LDAP"
 
@@ -2280,7 +2287,7 @@ msgid "Cannot calculate charts for current data"
 msgstr "Não se podem calcular gráficos para os dados atuais"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ProjectDetailsController.java:172
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1506
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1505
 msgid "project name already being used"
 msgstr "o nome do projeto já está a ser usado"
 
@@ -2356,8 +2363,8 @@ msgstr ""
 msgid "Quality forms"
 msgstr "Formulários de qualidade"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:539
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:549
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:552
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:562
 msgid "Repeated Hours Group code {0} in Project {1}"
 msgstr "Código {0} de grupo de horas repetido no projeto {1}"
 
@@ -2430,7 +2437,7 @@ msgstr "Por favor selecione uma fonte de estrutura"
 msgid "Company ID"
 msgstr "Número de Contribuinte"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1583
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1582
 msgid ""
 "It will only be possible to add an end date if all the exiting ones in the "
 "table have already been sent to the customer."
@@ -2466,7 +2473,7 @@ msgstr "Atraso desde o início (em dias)"
 msgid "Total Hours"
 msgstr "Horas totais"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:398
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:409
 msgid "LibrePlan Role"
 msgstr "Função LibrePlan"
 
@@ -2487,7 +2494,7 @@ msgstr "Confirmar cancelamento"
 msgid "Work And Progress Per Task"
 msgstr "Trabalho e Progresso por Tarefa"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1530
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1529
 msgid "project code already being used"
 msgstr "código de projeto já em uso"
 
@@ -2757,11 +2764,11 @@ msgid "Create new project"
 msgstr "Criar novo projeto"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:772
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/company/CompanyPlanningModel.java:362
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/company/CompanyPlanningModel.java:368
 msgid "date in the future"
 msgstr "data no futuro"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:886
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:896
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/TaskGroupFilterEnum.java:31
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/OrderFilterEnum.java:31
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractedTasks.zul:56
@@ -2779,7 +2786,7 @@ msgstr "Deve começar depois"
 msgid "Fully, Partially or Unscheduled. (Drag and drop to move tasks)"
 msgstr "Totalmente, Parcialmente ou Não agendado (Arraste e solte para mover tarefas)"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1321
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1322
 msgid "Confirm change"
 msgstr "Confirmar alteração"
 
@@ -2795,7 +2802,7 @@ msgstr "unidade não especificada"
 msgid "Code already included in Hours Group codes"
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:131
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:133
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/OrderTemplatesController.java:303
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:296
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:531
@@ -2803,7 +2810,7 @@ msgstr ""
 msgid "Planning"
 msgstr "Planejamento"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/EditTaskController.java:368
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/EditTaskController.java:370
 msgid ""
 "The task has got progress consolidations. To change resource allocation type"
 " all consolidations must be removed before"
@@ -2914,17 +2921,17 @@ msgstr ""
 msgid "criterion name not specified"
 msgstr "nome do critério não especificado"
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:167
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:170
 msgid "port not specified"
 msgstr "porta não especificada"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/OrderTemplatesController.java:263
 msgid "calendar not specified"
-msgstr ""
+msgstr "calendário não especificado"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReportLine.java:277
 msgid "Start hour cannot be greater than finish hour"
-msgstr ""
+msgstr "Hora de início não pode ser maior que a hora de término"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:784
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:793
@@ -2941,7 +2948,7 @@ msgstr "Preferências"
 msgid "Manual allocation"
 msgstr "Atribuição manual"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:375
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:386
 msgid "Role property"
 msgstr "Propriedade da função"
 
@@ -2974,7 +2981,7 @@ msgstr "Cálculo de progresso não pode ser deletado. Cálculo de progresso já 
 msgid "Recommended allocation"
 msgstr "Atribuição recomendada"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:267
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:278
 msgid "Activation"
 msgstr "Ativação"
 
@@ -2995,7 +3002,7 @@ msgstr "Total de Horas Trabalhadas por Recurso num Mês"
 msgid "LibrePlan: Access Forbidden"
 msgstr "LibrePlan: acesso proibido"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadModel.java:684
+#: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadModel.java:703
 msgid "Other projects"
 msgstr "Outros projetos"
 
@@ -3013,7 +3020,7 @@ msgstr "Código não pode estar vazio"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/OrderTemplatesController.java:391
 msgid "Template cannot be removed because it has applications"
-msgstr ""
+msgstr "Modelo não pode ser removido pois possui aplicações"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationModel.java:187
 msgid "At least one {0} sequence must be active"
@@ -3055,7 +3062,7 @@ msgstr "Atribuído"
 msgid "Total capacity"
 msgstr "Capacidade total"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:270
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:281
 msgid "Use LDAP roles"
 msgstr "Usar funções LDAP"
 
@@ -3107,7 +3114,7 @@ msgstr "LibrePlan: Trabalho e Progresso por Tarefa"
 msgid "Projects"
 msgstr "Projetos"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:1082
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:1097
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:235
 msgid "Confirm exit dialog"
 msgstr "Diálogo de confirmação de saída"
@@ -3215,9 +3222,9 @@ msgstr "o tipo de recurso não permite critérios ativados"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/scenarios/TransferOrdersModel.java:148
 msgid "Please, select a destination scenario"
-msgstr ""
+msgstr "Por favor, selecione o cenário destino"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:1073
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:1088
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/assigntemplates/TemplateFinderPopup.java:126
 #: libreplan-webapp/src/main/webapp/labels/_editLabelType.zul:116
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:97
@@ -3251,7 +3258,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/limitingresources/manualAllocation.zul:135
 #: libreplan-webapp/src/main/webapp/typeofworkhours/_editTypeOfWorkHours.zul:81
 #: libreplan-webapp/src/main/webapp/common/layout/template.zul:104
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:411
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:422
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -3368,13 +3375,13 @@ msgstr "Categoria de Custo"
 msgid "end"
 msgstr "fim"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:382
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:393
 msgid "Role search query"
 msgstr "Consulta para a busca de funções"
 
 #: libreplan-business/src/main/java/org/libreplan/business/costcategories/entities/CostCategory.java:285
 msgid "The hour cost codes must be unique."
-msgstr ""
+msgstr "Os códigos de custo de hora devem ser únicos"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_localizations.zul:63
 msgid "Log"
@@ -3382,7 +3389,7 @@ msgstr "Registo"
 
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:68
 msgid "Inherited exception"
-msgstr ""
+msgstr "Exceção herdada"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:57
 msgid "Authorizations"
@@ -3399,18 +3406,18 @@ msgstr "Editar tarefa: {0}"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:23
 msgid "LibrePlan: Timesheets"
-msgstr ""
+msgstr "LibrePlan: Planilha de Horas"
 
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/User.java:231
 msgid "username is already being used by another user"
-msgstr ""
+msgstr "nome de usuário já está em uso por outro usuário"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/criterion/CriterionTreeController.java:328
 msgid "references"
 msgstr "referências"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SubcontractController.java:140
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1576
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1575
 msgid "You must select a valid date. "
 msgstr "Você deve selecionar uma data válida."
 
@@ -3510,7 +3517,7 @@ msgstr "Nome do critério"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:224
 msgid "date cannot be empty if it is shared by lines"
-msgstr ""
+msgstr "data não pode ser vazia se está compartilhada por linhas"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:126
 msgid "values are not valid, the values must not be null"
@@ -3536,7 +3543,7 @@ msgstr "Nome da tarefa"
 msgid "cost assignment's resource not specified"
 msgstr "recurso da atribuição de custo não especificado"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:1059
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:1072
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:663
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/OrderElementBandboxFinder.java:51
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:66
@@ -3573,7 +3580,7 @@ msgstr "Extra"
 msgid "Unassigned"
 msgstr "Não atribuído"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1588
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1587
 msgid "It already exists a end date with the same date. "
 msgstr "Já existe uma data de término com a mesma data."
 
@@ -3648,7 +3655,7 @@ msgstr ""
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/EntitySequence.java:145
 msgid "number of digits out of range"
-msgstr ""
+msgstr "número de dígitos fora do alcance"
 
 #: libreplan-business/src/main/java/org/libreplan/business/workreports/entities/WorkReport.java:436
 msgid "The timesheet line codes must be unique."
@@ -3658,7 +3665,7 @@ msgstr ""
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:322
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:53
 msgid "Calendar Exception Days"
-msgstr ""
+msgstr "Dias de Exceção do Calendário"
 
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:114
 msgid "Time tracking"
@@ -3668,10 +3675,10 @@ msgstr ""
 msgid ""
 "If you entered the URL directly in the navigation bar of the browser, please"
 " review it or click in the following link in order to go to initial page: "
-msgstr ""
+msgstr "Se você escreveu a URL diretamente na barra de navegação do navegador, por favor revise ou clique no link a seguir para ir para a página inicial:"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:1114
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:1129
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:1124
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:1139
 msgid "{0} not supported yet"
 msgstr "{0} ainda não suportado"
 
@@ -3691,7 +3698,7 @@ msgstr "Nova entrada"
 msgid "Resources Load"
 msgstr "Carga de recursos"
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:187
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:190
 msgid "userId not specified"
 msgstr ""
 
@@ -3701,13 +3708,13 @@ msgstr "Alterações canceladas"
 
 #: libreplan-webapp/src/main/webapp/planner/index.zul:22
 msgid "LibrePlan: Planning"
-msgstr ""
+msgstr "LibrePlan: Planejamento"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:197
 msgid "Expense sheets"
-msgstr ""
+msgstr "Planilha de Despesa"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:325
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:336
 msgid "Authentication"
 msgstr "Autenticação"
 
@@ -3730,7 +3737,7 @@ msgstr "Critérios requeridos atribuídos"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/exceptionDays/CalendarExceptionTypeCRUDController.java:247
 msgid "Calendar Exception Day"
-msgstr ""
+msgstr "Dia de Exceção do Calendário"
 
 #: libreplan-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:117
 #: libreplan-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:117
@@ -3782,7 +3789,7 @@ msgstr "Período"
 msgid "Spread"
 msgstr "Propagação"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1017
+#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1021
 msgid "Disabled because of it contains more than one hours group"
 msgstr ""
 
@@ -3838,8 +3845,8 @@ msgstr ""
 msgid "Value is not valid, the precision value must not be empty"
 msgstr "O valor não é válido, o valor de precisão não deve estar vazio"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:836
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/company/CompanyPlanningModel.java:472
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningModel.java:880
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/company/CompanyPlanningModel.java:514
 msgid "h"
 msgstr "h"
 
@@ -3853,7 +3860,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/myaccount/userDashboard.zul:21
 msgid "LibrePlan: My Dashboard"
-msgstr ""
+msgstr "LibrePlan: Meu Painel"
 
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractorCommunications.zul:33
 msgid "Communications From Subcontractors"
@@ -3895,7 +3902,7 @@ msgstr "Criar & Atribuir"
 msgid "Calculated progress measurements cannot be removed"
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1564
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1565
 msgid "Not configurable"
 msgstr "Não é possível configurar"
 
@@ -3919,7 +3926,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:187
 msgid "Calendar exception days"
-msgstr ""
+msgstr "Dias de exceção do calendário"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationCommand.java:47
 msgid "Advanced allocation"
@@ -4014,7 +4021,7 @@ msgstr "Adicionar Exceção"
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:420
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:445
 #: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:234
-#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:991
+#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:995
 #: libreplan-webapp/src/main/java/org/libreplan/web/costcategories/CostCategoryCRUDController.java:144
 #: libreplan-webapp/src/main/java/org/libreplan/web/costcategories/CostCategoryCRUDController.java:148
 #: libreplan-webapp/src/main/java/org/libreplan/web/costcategories/CostCategoryCRUDController.java:205
@@ -4045,8 +4052,8 @@ msgstr "Adicionar Exceção"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/labels/AssignedLabelsController.java:126
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderElementTreeController.java:394
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:320
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1499
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1523
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1498
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1522
 #: libreplan-webapp/src/main/java/org/libreplan/web/montecarlo/MonteCarloController.java:159
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/ConfigurationController.java:750
 #: libreplan-webapp/src/main/webapp/labels/_editLabelType.zul:45
@@ -4306,7 +4313,7 @@ msgstr "Lista de empresas"
 msgid "Normal resource assignment"
 msgstr ""
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:132
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:135
 msgid "default calendar not specified"
 msgstr "Calendário padrão não especificado"
 
@@ -4314,7 +4321,7 @@ msgstr "Calendário padrão não especificado"
 msgid "indirect progress assignments should have different types"
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1468
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1469
 msgid "Stretches with Interpolation"
 msgstr "Trechos com Interpolação"
 
@@ -4590,8 +4597,8 @@ msgstr ""
 msgid "Customer reference"
 msgstr "Referência do cliente"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:362
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/EditTaskController.java:370
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:363
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/EditTaskController.java:372
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:709
 #: libreplan-webapp/src/main/java/org/libreplan/web/templates/historicalAssignment/OrderElementHistoricalAssignmentComponent.java:160
 #: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadController.java:316
@@ -4619,7 +4626,7 @@ msgstr "Trabalhador guardado"
 
 #: libreplan-webapp/src/main/webapp/subcontract/subcontractedTasks.zul:35
 msgid "Communications To Subcontractors"
-msgstr ""
+msgstr "Comunicação para Sub-contratados"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/criterionrequirements/AssignedCriterionRequirementModel.java:206
 msgid "New hours group "
@@ -4716,7 +4723,7 @@ msgstr "Criar Trabalhador"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/OrderElementInExpenseSheetBandboxFinder.java:45
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/components/finders/OrderInExpenseSheetBandboxFinder.java:44
 msgid "Project name (Project code)"
-msgstr ""
+msgstr "Nome do projeto (Código do projeto)"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityForm.java:114
 msgid "items cannot be checked until the previous items are checked before."
@@ -4753,25 +4760,31 @@ msgstr "Mostrar progresso"
 msgid "Work"
 msgstr "Trabalho"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:341
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:342
 msgid ""
 "Error saving the project\n"
 "{0}"
 msgstr "Erro ao guardar o projeto\n{0}"
+
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:375
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/MultipleTabsPlannerController.java:220
+msgid ""
+"You are about to leave the planning edition, unsaved changes will be lost."
+msgstr ""
 
 #: libreplan-webapp/src/main/webapp/resources/machine/machines.zul:22
 msgid "LibrePlan: Machines"
 msgstr "LibrePlan: Máquinas"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/MyTasksAreaController.java:75
-#: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/CostStatusController.java:117
+#: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/CostStatusController.java:118
 msgid "{0} h"
-msgstr ""
+msgstr "{0} h"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:342
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:343
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/TaskPropertiesController.java:351
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/streches/StretchesFunctionController.java:121
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1311
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1312
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:403
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/LimitingResourcesController.java:628
 msgid "Error"
@@ -4816,7 +4829,7 @@ msgstr "Adicionar nova atribuição de trabalhador"
 
 #: libreplan-webapp/src/main/webapp/myaccount/_myTasksArea.zul:22
 msgid "My tasks"
-msgstr ""
+msgstr "Minhas tarefas"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadController.java:729
 msgid "Show all elements"
@@ -4828,7 +4841,7 @@ msgstr "Informação da tarefa"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/consolidations/AdvanceConsolidationModel.java:515
 msgid "Progress cannot be consolidated."
-msgstr ""
+msgstr "Progresso não pode ser consolidado"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeModel.java:403
 msgid "There is another timesheet template with the same name"
@@ -4895,7 +4908,7 @@ msgstr "Informação de Elemento de Fila"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:98
 msgid "Select template"
-msgstr ""
+msgstr "Selecione modeloo"
 
 #: libreplan-webapp/src/main/webapp/calendars/_edition.zul:151
 msgid "Start Date"
@@ -4928,7 +4941,7 @@ msgstr "Total"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:403
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:66
 msgid "User Accounts"
-msgstr ""
+msgstr "Conta de usuários"
 
 #: libreplan-webapp/src/main/webapp/myaccount/personalTimesheet.zul:158
 msgid "Effort"
@@ -4951,7 +4964,7 @@ msgstr "Horas do orçamento"
 
 #: libreplan-business/src/main/java/org/libreplan/business/qualityforms/entities/TaskQualityFormItem.java:78
 msgid "percentage not specified"
-msgstr ""
+msgstr "porcentagem não especificada"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/taskedition/EditTaskController.java:151
 msgid "Edit task: {0}"
@@ -4977,7 +4990,7 @@ msgstr "Selecionar destino"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/expensesheet/ExpenseSheetCRUDController.java:203
 msgid "cannot be empty or less than zero"
-msgstr ""
+msgstr "não pode ser vazio ou menor que zero"
 
 #: libreplan-webapp/src/main/webapp/planner/order.zul:89
 #: libreplan-webapp/src/main/webapp/planner/order.zul:95
@@ -5021,7 +5034,7 @@ msgstr "Propiedades do dia"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:271
 msgid " (%d tasks)"
-msgstr ""
+msgstr "(tarefas %d)"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportQueryController.java:156
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/OrderPlanningController.java:344
@@ -5081,7 +5094,7 @@ msgstr "novo marco"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReport.zul:236
 msgid "Save & New timesheet"
-msgstr ""
+msgstr "Salvar e Nova planilha de tempo"
 
 #: libreplan-webapp/src/main/webapp/subcontract/reportAdvances.zul:48
 msgid "Value last progress reported"
@@ -5089,7 +5102,7 @@ msgstr "Valor do último progresso notificado"
 
 #: libreplan-webapp/src/main/webapp/workreports/workReportQuery.zul:118
 msgid "Timesheet"
-msgstr ""
+msgstr "Planilha de tempo"
 
 #: libreplan-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:75
 msgid "Show dependencies"
@@ -5155,7 +5168,7 @@ msgstr "CV"
 #: libreplan-webapp/src/main/java/org/libreplan/web/users/dashboard/PersonalTimesheetController.java:613
 #: libreplan-webapp/src/main/webapp/myaccount/userDashboard.zul:35
 msgid "My dashboard"
-msgstr ""
+msgstr "Meu painel"
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelNonLimitingResourceAllocation.zul:91
 msgid "Original"
@@ -5222,6 +5235,10 @@ msgid ""
 "Date is not valid, it must be later than the last progress consolidation"
 msgstr ""
 
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:214
+msgid "Seconds planning warning"
+msgstr ""
+
 #: libreplan-webapp/src/main/webapp/orders/_assignmentsBox.zul:28
 msgid "Reception date"
 msgstr ""
@@ -5243,7 +5260,7 @@ msgstr "Guardar alterações"
 msgid "Application settings"
 msgstr "Configurações da aplicação"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:298
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:309
 msgid "Base"
 msgstr "Base"
 
@@ -5315,8 +5332,8 @@ msgstr "Por favor, selecione um elemento"
 msgid "Cannot be higher than finish hour"
 msgstr "Não pode ser posterior à data de fim"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:230
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:249
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:241
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:260
 msgid "Prefix"
 msgstr "Prefixo"
 
@@ -5463,7 +5480,7 @@ msgstr "Data de início não pode estar vazia no modo adiantado"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:413
 #: libreplan-webapp/src/main/webapp/resources/machine/_editMachine.zul:33
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:276
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:287
 msgid "Configuration"
 msgstr "Configuração"
 
@@ -5473,7 +5490,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:181
 msgid "Violated deadline"
-msgstr ""
+msgstr "Prazo de entrega excedido"
 
 #: libreplan-webapp/src/main/webapp/orders/_edition.zul:243
 msgid "Delivery dates requested by customer. "
@@ -5511,7 +5528,7 @@ msgstr ""
 msgid "Timesheet templates"
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:881
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:891
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:698
 #: libreplan-webapp/src/main/webapp/dashboard/_costStatus.zul:42
 msgid "Hours invested"
@@ -5523,11 +5540,11 @@ msgstr "Horas investidas"
 msgid "Templates"
 msgstr "Modelos"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:352
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:363
 msgid "Authorization"
 msgstr "Autorização"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:362
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:363
 msgid "Project saved"
 msgstr "Projeto guardado"
 
@@ -5576,7 +5593,7 @@ msgstr "Cenário de destino"
 msgid "Company view"
 msgstr "Vista da empresa"
 
-#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:458
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:461
 msgid "currency symbol not specified"
 msgstr "símbolo da moeda não especificado"
 
@@ -5610,7 +5627,7 @@ msgstr "Categoria"
 
 #: libreplan-webapp/src/main/webapp/advance/advanceTypes.zul:22
 msgid "LibrePlan: Progress Types"
-msgstr ""
+msgstr "LibrePlan: Tipos de Progresso"
 
 #: libreplan-webapp/src/main/webapp/resources/search/allocation_selector.zul:79
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/Criterion.java:203
@@ -5673,7 +5690,7 @@ msgstr "Apagar calendário"
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:109
 msgid "Sum of direct expenses"
-msgstr ""
+msgstr "Soma das despesas diretas"
 
 #: libreplan-webapp/src/main/webapp/subcontract/customerCommunications.zul:33
 msgid "Communications From Customers"
@@ -5709,7 +5726,7 @@ msgstr "Total de horas de tarefa"
 #: libreplan-webapp/src/main/java/org/libreplan/web/common/CustomMenuController.java:312
 #: libreplan-business/src/main/java/org/libreplan/business/users/entities/UserRole.java:51
 msgid "Virtual Workers"
-msgstr ""
+msgstr "Trabalhadores Virtuais"
 
 #: libreplan-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:33
 msgid "Configuration unit name"
@@ -5728,9 +5745,13 @@ msgstr "Não foi possível carregar nenhum recurso"
 msgid "Work And Progress Per Project"
 msgstr "Trabalho e Progresso por Projeto"
 
+#: libreplan-business/src/main/java/org/libreplan/business/common/entities/Configuration.java:497
+msgid "seconds planning warning not specified"
+msgstr ""
+
 #: libreplan-business/src/main/java/org/libreplan/business/expensesheet/entities/ExpenseSheet.java:111
 msgid "total must be greater or equal than 0"
-msgstr ""
+msgstr "total deve ser maior ou igual a 0"
 
 #: libreplan-webapp/src/main/webapp/workreports/_editWorkReportType.zul:158
 msgid "Default Label"
@@ -5746,7 +5767,7 @@ msgstr "Fechar"
 msgid "LibrePlan: Timesheet Lines List"
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadModel.java:957
+#: libreplan-webapp/src/main/java/org/libreplan/web/resourceload/ResourceLoadModel.java:976
 msgid "Specific Allocations"
 msgstr "Atribuições Específicas"
 
@@ -5809,15 +5830,15 @@ msgstr ""
 msgid "Cannot remove {0}, since it is being used by some exception day"
 msgstr ""
 
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:94
+msgid "specific allocation"
+msgstr "atribuição específica"
+
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:145
 msgid ""
 "Please use some of the compatible browsers: Chrome, Firefox, Safari or "
 "Epiphany."
 msgstr "Por favor use um navegador compatível: Chrome, Firefox, Safari ou Epiphany."
-
-#: libreplan-webapp/src/main/java/org/libreplan/web/common/components/NewAllocationSelector.java:94
-msgid "specific allocation"
-msgstr "atribuição específica"
 
 #: libreplan-webapp/src/main/webapp/common/concurrent_modification.zul:33
 msgid ""
@@ -5832,11 +5853,11 @@ msgstr "Modelo guardado"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:1684
 msgid "Please set a date"
-msgstr ""
+msgstr "Por favor insira uma data"
 
 #: libreplan-business/src/main/java/org/libreplan/business/common/entities/EntitySequence.java:93
 msgid "prefix not specified"
-msgstr ""
+msgstr "prefixo não especificado"
 
 #: libreplan-business/src/main/java/org/libreplan/business/resources/entities/CriterionType.java:533
 msgid "last criterion sequence code not specified"
@@ -5913,11 +5934,11 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:117
 msgid "Any"
-msgstr ""
+msgstr "Algum"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/resources/worker/WorkerCRUDController.java:1129
 msgid "Confirm user edition"
-msgstr ""
+msgstr "Confirmar edição do usuário"
 
 #: libreplan-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:47
 msgid "Load due to current project"
@@ -6002,13 +6023,13 @@ msgid ""
 "Invalid value. Precission value must be lower than the Default Max value."
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1320
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/allocation/AdvancedAllocationController.java:1321
 msgid "Assignment function will be changed. Are you sure?"
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/orders/_listOrderElementHours.zul:127
 msgid "Total expenses"
-msgstr ""
+msgstr "Total de despesas"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_localizations.zul:26
 msgid "Assigned locations"
@@ -6237,7 +6258,7 @@ msgstr "sim"
 msgid "Select gap"
 msgstr "Selecionar intervalo"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:291
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:302
 msgid "Port"
 msgstr "Porto"
 
@@ -6300,7 +6321,7 @@ msgstr "número de dígitos não especificado"
 msgid "task cannot be empty if it is shared by lines"
 msgstr ""
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:833
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:843
 msgid "All workers"
 msgstr "Todos os trabalhadores"
 
@@ -6448,7 +6469,7 @@ msgstr ""
 msgid "Add task"
 msgstr "Adicionar tarefa"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:878
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:888
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderModel.java:697
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderElementTreeController.java:628
 #: libreplan-webapp/src/main/webapp/templates/_editTemplate.zul:45
@@ -6563,7 +6584,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:44
 #: libreplan-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:43
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:247
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:258
 msgid "Active"
 msgstr "Ativo"
 
@@ -6625,8 +6646,8 @@ msgstr "Mostrar todas as horas registadas"
 msgid "Efforts"
 msgstr "Esforços"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/OrdersTabCreator.java:103
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/OrdersTabCreator.java:122
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/OrdersTabCreator.java:101
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/tabs/OrdersTabCreator.java:125
 msgid "Projects List"
 msgstr "Lista de Projetos"
 
@@ -6720,7 +6741,7 @@ msgstr ""
 msgid "Doing {0} reassignations"
 msgstr "A realizar {0} reatribuições"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:221
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:232
 msgid "Select entity"
 msgstr "Selecione entidade"
 
@@ -6754,7 +6775,7 @@ msgstr "código não especificado"
 msgid "Projects list"
 msgstr "Lista de projetos"
 
-#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/BaseCalendar.java:1201
+#: libreplan-business/src/main/java/org/libreplan/business/calendars/entities/BaseCalendar.java:1213
 msgid "last sequence code not specified"
 msgstr ""
 
@@ -6793,7 +6814,7 @@ msgstr ""
 #: libreplan-webapp/src/main/webapp/myaccount/changePassword.zul:49
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:148
 #: libreplan-webapp/src/main/webapp/common/layout/login.zul:84
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:312
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:323
 msgid "Password"
 msgstr "Palavra-passe"
 
@@ -6806,7 +6827,7 @@ msgstr "Observações"
 msgid "Edit project"
 msgstr "Editar projeto"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:899
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/TaskElementAdapter.java:909
 msgid "Hours cost: {0}, Expenses cost: {1}"
 msgstr ""
 
@@ -6866,14 +6887,14 @@ msgid "Accept"
 msgstr "Aceitar"
 
 #: libreplan-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:81
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:287
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:294
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:301
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:308
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:336
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:371
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:378
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:385
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:298
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:305
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:312
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:319
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:347
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:382
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:389
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:396
 msgid "Example: {0}"
 msgstr "Exemplo: {0}"
 
@@ -6888,6 +6909,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/webapp/templates/_editTemplate.zul:86
 #: libreplan-webapp/src/main/webapp/orders/_orderElementDetails.zul:69
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:218
 msgid "cannot be negative or empty"
 msgstr "não pode ser negativo ou vazio"
 
@@ -7316,7 +7338,7 @@ msgstr "Função"
 msgid "Format"
 msgstr "Formato"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:895
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:908
 msgid "New project version"
 msgstr "Nova versão de projeto"
 
@@ -7331,7 +7353,7 @@ msgstr ""
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderElementTreeController.java:506
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1229
 #: libreplan-webapp/src/main/java/org/libreplan/web/limitingresources/QueueComponent.java:478
-#: libreplan-webapp/src/main/java/org/libreplan/web/common/Util.java:561
+#: libreplan-webapp/src/main/java/org/libreplan/web/common/Util.java:549
 #: libreplan-webapp/src/main/webapp/labels/_listLabelTypes.zul:37
 #: libreplan-webapp/src/main/webapp/advance/_editAdvanceTypes.zul:26
 #: libreplan-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:26
@@ -7582,7 +7604,7 @@ msgstr "ili"
 msgid "Please select a worker"
 msgstr "Por favor selecione um trabalhador"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:318
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:329
 msgid "Test LDAP connection"
 msgstr "Testar a conexão LDAP"
 
@@ -7653,7 +7675,7 @@ msgstr ""
 msgid "Percentage of estimated budget in money / money spent"
 msgstr "Porcentagem do orçamento estimado / Dinheiro gasto"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:894
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:907
 msgid ""
 "Confirm creating a new project version for this scenario and derived. Are "
 "you sure?"
@@ -7709,7 +7731,7 @@ msgstr "Remover Seleção"
 msgid "Queue-based Resources"
 msgstr "Fila de recursos"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:1071
+#: libreplan-webapp/src/main/java/org/libreplan/web/planner/order/SaveCommandBuilder.java:1084
 msgid "Hours Group at {0}"
 msgstr ""
 
@@ -7855,7 +7877,7 @@ msgstr "Nº de Contribuinte do trabalhador não especificado"
 msgid "All project tasks"
 msgstr "Todas as tarefas do projeto"
 
-#: libreplan-webapp/src/main/webapp/common/configuration.zul:399
+#: libreplan-webapp/src/main/webapp/common/configuration.zul:410
 msgid "LDAP Roles (separated by ;)"
 msgstr "Funções LDAP (separadas por ;)"
 
@@ -7892,7 +7914,7 @@ msgstr ""
 msgid "Resources per day are zero"
 msgstr "Há zero recursos por dia"
 
-#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1130
+#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1134
 msgid "Value is not valid in current list of Hours Group"
 msgstr ""
 
@@ -8037,8 +8059,8 @@ msgstr "Data de início não especificada"
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:1269
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:1281
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportTypeCRUDController.java:341
-#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1154
-#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1160
+#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1158
+#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeController.java:1164
 #: libreplan-webapp/src/main/java/org/libreplan/web/costcategories/CostCategoryCRUDController.java:287
 #: libreplan-webapp/src/main/java/org/libreplan/web/costcategories/CostCategoryCRUDController.java:456
 #: libreplan-webapp/src/main/java/org/libreplan/web/costcategories/ResourcesCostCategoryAssignmentController.java:143
@@ -8059,7 +8081,7 @@ msgstr "Data de início não especificada"
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementController.java:331
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/AssignedTaskQualityFormsToOrderElementController.java:404
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1245
-#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1643
+#: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderCRUDController.java:1642
 #: libreplan-webapp/src/main/webapp/labels/_editLabelType.zul:99
 #: libreplan-webapp/src/main/webapp/labels/_listLabelTypes.zul:42
 #: libreplan-webapp/src/main/webapp/externalcompanies/_listExternalCompanies.zul:48
