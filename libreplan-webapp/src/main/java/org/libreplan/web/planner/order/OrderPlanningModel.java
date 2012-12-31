@@ -706,30 +706,53 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void configureModificators(Order orderReloaded,
             PlannerConfiguration<TaskElement> configuration) {
-        if (orderReloaded.getDeadline() != null) {
-            configuration.setSecondLevelModificators(SeveralModificators
-                            .create(BankHolidaysMarker.create(orderReloaded
-                                    .getCalendar()),
-                            createStartAndDeadlineMarker(orderReloaded)));
-        } else {
-            configuration.setSecondLevelModificators(BankHolidaysMarker.create(orderReloaded.getCalendar()));
-        }
+        // Either InitDate or DeadLine must be set, depending on forwards or
+        // backwards planning
+        configuration.setSecondLevelModificators(SeveralModificators.create(
+                BankHolidaysMarker.create(orderReloaded.getCalendar()),
+                createStartDeadlineMarker(orderReloaded)));
     }
 
-    private IDetailItemModificator createStartAndDeadlineMarker(Order order) {
-        final DateTime deadline = new DateTime(order.getDeadline());
+    private IDetailItemModificator createStartDeadlineMarker(Order order) {
         final DateTime projectStart = new DateTime(order.getInitDate());
-        IDetailItemModificator startAndDeadlineMarker = new IDetailItemModificator() {
+        final DateTime deadline = new DateTime(order.getDeadline());
+        IDetailItemModificator detailItemModificator;
 
-            @Override
-            public DetailItem applyModificationsTo(DetailItem item,
-                    ZoomLevel zoomlevel) {
-                item.markDeadlineDay(deadline);
-                item.markProjectStart(projectStart);
-                return item;
+        if (order.getInitDate() != null) {
+            if (order.getDeadline() != null) {
+                // Both project Start and deadline markers
+                detailItemModificator = new IDetailItemModificator() {
+                    @Override
+                    public DetailItem applyModificationsTo(DetailItem item,
+                            ZoomLevel z) {
+                        item.markDeadlineDay(deadline);
+                        item.markProjectStart(projectStart);
+                        return item;
+                    }
+                };
+            } else {
+                // Project Start without deadline
+                detailItemModificator = new IDetailItemModificator() {
+                    @Override
+                    public DetailItem applyModificationsTo(DetailItem item,
+                            ZoomLevel z) {
+                        item.markProjectStart(projectStart);
+                        return item;
+                    }
+                };
             }
-        };
-        return startAndDeadlineMarker;
+        } else {
+            // Only project deadline marker
+            detailItemModificator = new IDetailItemModificator() {
+                @Override
+                public DetailItem applyModificationsTo(DetailItem item,
+                        ZoomLevel z) {
+                    item.markDeadlineDay(deadline);
+                    return item;
+                }
+            };
+        }
+        return detailItemModificator;
     }
 
     private void selectTab(String tabName) {
