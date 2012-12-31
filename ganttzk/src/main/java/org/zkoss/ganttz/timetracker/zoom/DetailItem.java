@@ -102,7 +102,8 @@ public final class DetailItem {
                             new DateTime()).getDays()) + (float) 0.5) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
-            this.markCurrentDay(offsetInPx);
+            // 1px per column side, 1px for right border and 1px own bg-width
+            this.markCurrentDay(Math.min(this.size - 4, offsetInPx));
         }
     }
 
@@ -113,7 +114,7 @@ public final class DetailItem {
                     this.startDate, projectStart).getDays()) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
-            this.markprojectStart(Math.min(this.size - 1, offsetInPx));
+            this.markprojectStart(offsetInPx);
         }
     }
 
@@ -123,8 +124,8 @@ public final class DetailItem {
                     this.startDate, deadline).getDays()) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
-            // Management of left border case for current line format
-            this.markDeadlineDay(Math.min(this.size - 1, offsetInPx));
+            // 1px per column side, 1px for right border and 1px own bg-width
+            this.markDeadlineDay(Math.min(this.size - 4, offsetInPx));
         }
     }
 
