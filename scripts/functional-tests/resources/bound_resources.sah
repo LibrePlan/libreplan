@@ -1,0 +1,217 @@
+/*
+ * This file is part of LibrePlan
+ *
+ * Copyright (C) 2013 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 -  Create a new project
+ * 2 -  Create a new task in this project
+ * 3 -  Create a new Account
+ * 4 -  Create workers
+ *   4.1 - Empty bound user
+ *   4.2 - Existing user
+ *   4.3 - New bound user
+ * 5 -  Add tasks to the first user
+ * 6 -  Add expenses to the first user
+ * 7 -  Try to delete a project with reported tasks (should not work)
+ * 8 -  Delete all the created things
+ *
+*/
+
+_include("../common_functions.sah");
+
+function accountsCreate($name, $password) {
+    commonCreate("User Accounts");
+    accountsForm($name, $password);
+    commonSaveValidation("User", $name);
+    _log("Create a new Account", "custom1");
+}
+
+function accountsForm($name, $password) {
+    _setValue(_textbox(0, _near(_span("Username"))), $name);
+    _setValue(_password(0, _near(_span("Password"))), $password);
+    _setValue(_password(0, _near(_span("Password confirmation"))), $password);
+    _click(_cell("Save"));
+}
+
+function commonWorkerCreateBind($name, $surName, $id, $bind) {
+    commonCreate("Workers");
+    commonWorkerFormBind($name, $surName, $id, $bind);
+    commonWorkerAcctionValidation("saved");
+    _log("Bind an existing user to a worker", "custom1");
+}
+
+function commonWorkerCreateBindEmptyUser($name, $surName, $id, $bind) {
+    commonCreate("Workers");
+    commonWorkerFormBindEmptyUser($name, $surName, $id, $bind);
+    _assertExists(_div("please select a user to bound"));
+    _assert(_isVisible(_div("please select a user to bound")));
+    _log("Is not allowed to bound a resource to a non existing user", "custom1");
+}
+
+function commonWorkerFormBind($name, $surName, $id, $bind) {
+    _setValue(_textbox(0, _near(_span("First name"))), $name);
+    _setValue(_textbox(0, _near(_span("Last name"))), $surName);
+    _setValue(_textbox(0, _near(_span("ID"))), $id);
+    _click(_radio(1, _near(_span("Bound user"))));
+    _click(_div($bind));
+    _click(_cell("Save"));
+}
+
+function commonWorkerFormBindEmptyUser($name, $surName, $id, $bind) {
+    _setValue(_textbox(0, _near(_span("First name"))), $name);
+    _setValue(_textbox(0, _near(_span("Last name"))), $surName);
+    _setValue(_textbox(0, _near(_span("ID"))), $id);
+    _click(_radio(1, _near(_span("Bound user"))));
+    _click(_cell("Save"));
+}
+
+function commonWorkerFormBindNew($name2, $surName2, $id2) {
+    _setValue(_textbox(0, _near(_span("First name"))), $name2);
+    _setValue(_textbox(0, _near(_span("Last name"))), $surName2);
+    _setValue(_textbox(0, _near(_span("ID"))), $id2);
+    _click(_radio(2, _near(_span("Bound user"))));
+    _setValue(_textbox(0, _near(_span("Username"))), $user2);
+    _setValue(_password(0, _near(_span("Password"))), $password);
+    _setValue(_password(0, _near(_span("Password confirmation"))), $password);
+    _click(_cell("Save"));
+}
+
+function commonWorkerCreateBindNew($name2, $surName2, $id2) {
+    commonCreate("Workers");
+    commonWorkerFormBindNew($name2, $surName2, $id2);
+    commonWorkerAcctionValidation("saved");
+    _log("Bind a new user to a worker", "custom1");
+}
+
+function commonAddtasks($hours) {
+    _click(_span(0, _near(_div("Date"))));
+    _click(_div("NewProject"));
+    _click(_cell("Add task"));
+    _setValue(_textbox(0, _near (_span("NewProject"))), $hours);
+    _click(_cell("Save"));
+    _assertExists(_span("/saved/"));
+    _assert(_isVisible(_div("/saved/")));
+    _log("Task added to a month timesheet", "custom1");
+}
+
+function deleteValidation(){
+    _assertExists(_div("/deleted/"));
+    _assert(_isVisible(_div("/deleted/")));
+}
+
+function commonAddExpenses($proj, $task, $idp, $idt, $value, $desc) {
+    _click(_cell("New expense sheet"));
+    _setValue(_textbox(0, _near(_span("Description"))), $desc);
+    _click(_div("/" + $proj + "/"));
+    _click(_div("/" + $task + "/"));
+    _setValue(_textbox(1, _near(_span("Value"))), $value);
+    _setValue(_textbox(2, _near(_span("Concept"))), "concept");
+    _click(_cell("New"));
+    _click(_cell("Save"));
+    _assertExists(_span("/saved/"));
+    _assert(_isVisible(_div("/saved/")));
+    _log("Expense created succesfully", "custom1");
+}
+
+function unboundResource($something ,$name) {
+    _click(_link($something));
+    _click(_span($name));
+    _click(_radio(0, _near(_span("Not bound"))));
+    _click(_cell("Save"));
+    _log("Unbounded resource", "custom1");
+}
+
+function tryDeleteProject($name) {
+    _click(_link("Projects"));
+    _click(_image("ico_borrar1.png", _in(_cell(8, _near(_cell($name))))));
+    _click(_cell("OK"));
+    _assertExists(_div("/You can not remove the project/"));
+    _assert(_isVisible(_div("/You can not remove the project/")));
+    _log("Cannot delete a project with reported tasks", "custom1");
+}
+
+/* test values */
+var $name = "worker1";
+var $name2 = "worker2";
+var $surname = "wor1";
+var $surname2 = "wor2";
+var $id = "abc";
+var $id2 = "cba"
+var $user = "newus1";
+var $user2 = "newus2";
+var $password = "12345";
+var $project = "NewProject";
+var $fakebind = "zzzzzz";
+var $task = "taskForWorker";
+var $hours = "100";
+var $value = "100 €";
+var $idp = "ORDER00007";
+var $idt = "00001";
+var $desc = "desc";
+var $hours = "11";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+commonCreateProject($project);
+
+commonCreateTask($project, $task, $hours);
+
+accountsCreate($user, $password);
+
+commonWorkerCreateBindEmptyUser($name, $surname, $id, $fakebind);
+
+commonWorkerCreateBind($name, $surname, $id, $user);
+
+commonWorkerCreateBindNew($name2, $surname2, $id2);
+
+commonLogout();
+
+commonLogin($user, $password);
+
+commonAddtasks($hours);
+
+commonAddExpenses($project, $task, $idp, $idt, $value, $desc);
+
+commonLogout();
+commonLogin("admin", "admin");
+
+tryDeleteProject($project);
+
+commonDelete("Expenses", $desc, 7);
+deleteValidation();
+
+unboundResource("Workers", $name);
+unboundResource("Workers", $name2);
+
+commonDelete("Timesheets", "/WORK_REPORT/", 5);
+commonWorkReportDeleteValidation();
+
+commonWorkerDelete($name);
+commonWorkerDelete($name2);
+
+commonDelete("User Accounts", $user, 5);
+commonDeleteValidation("User", $user);
+
+commonDelete("User Accounts", $user2, 5);
+commonDeleteValidation("User", $user2);
+
+commonDeleteProject($project);
+
+commonLogout();
