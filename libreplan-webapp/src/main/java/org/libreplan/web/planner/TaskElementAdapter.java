@@ -940,7 +940,7 @@ _(
                 } else {
                     cssClass = "order-closed";
                 }
-                return "<font class='" + cssClass + "'>" + state.toString()
+                return "<font class='" + cssClass + "'>" + _(state.toString())
                         + "</font>";
             }
 
