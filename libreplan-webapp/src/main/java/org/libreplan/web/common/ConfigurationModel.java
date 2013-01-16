@@ -37,8 +37,10 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
+import org.libreplan.business.common.daos.IAppPropertiesDAO;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
+import org.libreplan.business.common.entities.AppProperties;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
@@ -88,6 +90,13 @@ public class ConfigurationModel implements IConfigurationModel {
     @Autowired
     private IWorkReportDAO workReportDAO;
 
+    @Autowired
+    IAppPropertiesDAO appPropertiesDAO;
+
+    private Map<String, List<AppProperties>> appPropertiesMap = new HashMap<String, List<AppProperties>>();
+
+    private String connectorId = "Tim";
+
     @Override
     @Transactional(readOnly = true)
     public List<BaseCalendar> getCalendars() {
@@ -107,6 +116,8 @@ public class ConfigurationModel implements IConfigurationModel {
     public void init() {
         this.configuration = getCurrentConfiguration();
         initEntitySequences();
+        initLdapConfiguration();
+        initConnectorConfiguration();
     }
 
     private void initEntitySequences() {
@@ -117,6 +128,23 @@ public class ConfigurationModel implements IConfigurationModel {
         for (EntitySequence entitySequence : entitySequenceDAO.getAll()) {
             entitySequences.get(entitySequence.getEntityName()).add(
                     entitySequence);
+        }
+    }
+
+    private void initLdapConfiguration() {
+        if (null == configuration.getLdapConfiguration()) {
+            configuration.setLdapConfiguration(LDAPConfiguration.create());
+        }
+    }
+
+    private void initConnectorConfiguration() {
+        this.appPropertiesMap.clear();
+        for (AppProperties appProperties : appPropertiesDAO.getAll()) {
+            if (!this.appPropertiesMap.containsKey(appProperties.getMajorId())) {
+                appPropertiesMap.put(appProperties.getMajorId(),
+                        new ArrayList<AppProperties>());
+            }
+            appPropertiesMap.get(appProperties.getMajorId()).add(appProperties);
         }
     }
 
@@ -160,6 +188,7 @@ public class ConfigurationModel implements IConfigurationModel {
     public void confirm() {
         checkEntitySequences();
         configurationDAO.save(configuration);
+        storeAppProperties();
         try {
             storeAndRemoveEntitySequences();
         } catch (IllegalStateException e) {
@@ -693,6 +722,34 @@ public class ConfigurationModel implements IConfigurationModel {
                         .setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
             }
         }
+    }
+
+    public void storeAppProperties() {
+        List<AppProperties> appProperties = appPropertiesMap
+                .get(getAppConnectorId());
+        for (AppProperties appProperty : appProperties) {
+            appPropertiesDAO.save(appProperty);
+        }
+    }
+
+    @Override
+    public Map<String, List<AppProperties>> getAppProperties() {
+        return appPropertiesMap;
+    }
+
+    @Override
+    public void updateProperties(String key, List<AppProperties> value) {
+        this.appPropertiesMap.put(key, value);
+    }
+
+    @Override
+    public void setAppConnectorId(String connectorId) {
+        this.connectorId = connectorId;
+    }
+
+    @Override
+    public String getAppConnectorId() {
+        return connectorId;
     }
 
 }
