@@ -32,6 +32,7 @@
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 <?component name="listOrderElementAuthorizations" inline="true" macroURI="_listOrderElementAuthorizations.zul"?>
+<?component name="timOrderTimesheetSynchronizer" inline="true" macroURI="components/_timOrderTimesheetSync.zul"?>
 
 <window id="${arg.top_id}">
 
@@ -307,6 +308,7 @@
                        </grid>
                    </hbox>
                 </groupbox>
+                <timOrderTimesheetSynchronizer id="timOrderTimesheetSynchronizer" />
             </tabpanel>
             <tabpanel>
                 <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
