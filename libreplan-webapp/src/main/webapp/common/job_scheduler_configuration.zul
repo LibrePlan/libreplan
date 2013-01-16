@@ -1,0 +1,123 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+
+<?page title="${i18n:_('LibrePlan: Job scheduler')}"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?page  id="List"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+
+    <window id="jobSchedulerWindow" self="@{define(content)}"
+        apply="org.libreplan.web.common.JobSchedulerController"
+        title="${i18n:_('Job scheduling')}">
+        <grid id="jobSchedulerGrid" sizedByContent="false" height="200px"
+            rowRenderer="@{jobSchedulerController.jobSchedulingRenderer}">
+            <columns>
+                <column label="${i18n:_('Job group')}" width="140px" />
+                <column label="${i18n:_('Job name')}" />
+                <column label="${i18n:_('Cron expression')}" width="160px"/>
+                <column label="${i18n:_('Next fire time')}" />
+                <column label="${i18n:_('Action')}" width="100px"/>
+            </columns>
+        </grid>
+        <div>
+            <groupbox closable="false" >
+                <caption label="Cron expression format" />
+                <grid width="400px">
+                <columns>
+                   <column label="${i18n:_('Field')}" width="40%"/>
+                   <column label="${i18n:_('Allowed values')}" />
+                </columns>
+                <rows>
+                <row>
+                    <label value="Seconds"/>
+                    <label value="0-59"/>
+                </row>
+                <row>
+                    <label value="Minutes"/>
+                    <label value="0-59"/>
+                </row>
+                <row>
+                    <label value="Hours"/>
+                    <label value="0-23"/>
+                </row>
+                <row>
+                    <label value="Day of month"/>
+                    <label value="1-31"/>
+                </row>
+                <row>
+                    <label value="Month"/>
+                    <label value="1-12(or names[Jan-Dec])"/>
+                </row>
+                <row>
+                    <label value="Day of week"/>
+                    <label value="0-7 (0 or 7 is Sun, or use names[Sun-sat])"/>
+                </row>
+                <row>
+                    <label value="Year(optional)"/>
+                    <label value="1970-2099"/>
+                </row>
+            </rows>
+            </grid>
+            <div>
+            <span>${i18n:_("For more details on cron expression click")}</span>
+            <a class="command" href="http://www.manpagez.com/man/5/crontab/">${i18n:_('this')}</a>
+            </div>
+            </groupbox>
+        </div>
+
+
+        <popup id="cronExpressionInputPopup" width="380px">
+             <label id="jobGroup" value="@{jobSchedulerController.schedulerInfo}"/>
+             <label value="," />
+             <label id="jobName" value="@{jobSchedulerController.schedulerInfo}"/>
+             <grid id="cronExpressionGrid" sizedByContent="false" height="50px">
+                 <columns>
+                      <column label="${i18n:_('sec')}"/>
+                       <column label="${i18n:_('min')}" />
+                       <column label="${i18n:_('hrs')}"/>
+                       <column label="${i18n:_('day of month')}" width="70px"/>
+                       <column label="${i18n:_('month')}"/>
+                       <column label="${i18n:_('day of week')}" width="70px"/>
+                       <column label="${i18n:_('year')}" width="50px"/>
+                 </columns>
+                 <rows>
+                       <row self="@{each=cronExpression}" value="@{cronExpression}">
+                           <textbox value="@{cronExpression.seconds}" />
+                           <textbox value="@{cronExpression.minutes}" />
+                           <textbox value="@{cronExpression.hours}" />
+                           <textbox value="@{cronExpression.dayOfMonth}" />
+                           <textbox value="@{cronExpression.month}" />
+                           <textbox value="@{cronExpression.dayOfWeek}" />
+                           <textbox value="@{cronExpression.year}" />
+                       </row>
+                </rows>
+            </grid>
+             <button onClick="jobSchedulerController.reschedule();" label="${i18n:_('OK')}" />
+             <button onClick="jobSchedulerController.cancel();" label="${i18n:_('Cancel')}" />
+        </popup>
+    </window>
+
+</zk>
