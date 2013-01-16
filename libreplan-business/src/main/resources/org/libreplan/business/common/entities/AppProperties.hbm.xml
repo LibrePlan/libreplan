@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping default-access="field"
+    package="org.libreplan.business.common.entities">
+
+    <class name="AppProperties" table="app_properties">
+        <id name="id" column="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <version name="version" access="property" type="long" />
+
+        <property name="majorId" column="major_id" not-null="true" />
+        <property name="minorId" column="minor_id" />
+        <property name="propertyName" column="property_name" not-null="true"/>
+        <property name="propertyValue" column="property_value" />
+    </class>
+
+</hibernate-mapping>
