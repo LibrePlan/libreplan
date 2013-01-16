@@ -300,4 +300,20 @@
         <property name="totalIndirectExpenses" access="field" column="total_indirect_expenses"/>
     </class>
 
+    <class name="OrderSyncInfo" table="order_sync_info">
+        <id name="id" access="property" type="long">
+            <generator class="hilo" >
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+        <version name="version" access="property" type="long" />
+        <property name="lastSyncDate" column="last_sync_date" access="field" />
+        <property name="label" access="field" />
+        <property name="code" access="field" />
+
+        <many-to-one name="order" class="Order">
+            <column name="order_element_id" not-null="true"/>
+        </many-to-one>
+    </class>
+
 </hibernate-mapping>
