@@ -289,7 +289,13 @@
                 <version>2.5.6</version>
                 <scope>test</scope>
             </dependency>
-             <!--  Spring security -->
+            <!-- QuartzJobBean in spring-context-support.jar -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>2.5.6</version>
+            </dependency>
+            <!--  Spring security -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
@@ -772,6 +778,12 @@
                 <artifactId>jqplot4java</artifactId>
                 <version>1.2.3-javascript</version>
             </dependency>
+            <!-- Quartz framework -->
+           <dependency>
+              <groupId>org.quartz-scheduler</groupId>
+              <artifactId>quartz</artifactId>
+              <version>1.8.0</version>
+           </dependency>
         </dependencies>
     </dependencyManagement>
 
