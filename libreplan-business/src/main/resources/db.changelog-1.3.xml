@@ -310,4 +310,133 @@
         <sql>ALTER TABLE configuration MODIFY jira_labels TEXT</sql>
     </changeSet>
 
+    <!-- order sync info -->
+    <changeSet author="miciele" id="create-table-order-sync-info">
+        <comment>Create new table order_sync_info</comment>
+        <createTable tableName="order_sync_info">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="order_sync_info_pkey"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_sync_date" type="DATETIME" />
+            <column name="label" type="VARCHAR(255)" />
+            <column name="code" type="VARCHAR(255)" />
+            <column name="order_element_id" type="BIGINT" />
+        </createTable>
+        <addForeignKeyConstraint constraintName="order_sync_info_order_table_fkey"
+            baseTableName="order_sync_info" baseColumnNames="order_element_id"
+            referencedTableName="order_table" referencedColumnNames="order_element_id" />
+    </changeSet>
+    <!-- app properties -->
+    <changeSet author="miciele" id="create-table-app-properties">
+        <comment>Create new table app_properties</comment>
+        <createTable tableName="app_properties">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="major_id" type="VARCHAR(255)" >
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="minor_id" type="VARCHAR(255)" />
+            <column name="property_name" type="VARCHAR(255)" >
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="property_value" type="VARCHAR(255)" />
+        </createTable>
+    </changeSet>
+    <changeSet author="miciele" id="insert-predefined-names">
+        <comment>Insert some default keys and values</comment>
+        <insert tableName="app_properties">
+            <column name="major_id" value="Tim"/>
+            <column name="version" value="0"/>
+            <column name="property_name" value="Activated" />
+            <column name="property_value" value="Y" />
+        </insert>
+        <insert tableName="app_properties">
+            <column name="major_id" value="Tim"/>
+            <column name="version" value="0"/>
+            <column name="property_name" value="Server" />
+            <column name="property_value" value="http://azn-svap270.amg.local:10980/impexp/" />
+        </insert>
+        <insert tableName="app_properties">
+            <column name="major_id" value="Tim"/>
+            <column name="version" value="0"/>
+            <column name="property_name" value="Username" />
+            <column name="property_value" value="timnsoap" />
+        </insert>
+        <insert tableName="app_properties">
+            <column name="major_id" value="Tim"/>
+            <column name="version" value="0"/>
+            <column name="property_name" value="Password" />
+            <column name="property_value" value="aenova" />
+        </insert>
+        <insert tableName="app_properties">
+            <column name="major_id" value="Tim"/>
+            <column name="version" value="0"/>
+            <column name="property_name" value="NrDaysTimesheetToTim" />
+            <column name="property_value" value="7" />
+        </insert>
+        <insert tableName="app_properties">
+            <column name="major_id" value="Tim"/>
+            <column name="version" value="0"/>
+            <column name="property_name" value="NrDaysRosterFromTim" />
+            <column name="property_value" value="90" />
+        </insert>
+    </changeSet>
+    <!-- scheduler configuration -->
+    <changeSet author="miciele" id="create-table-job-scheduler-configuration">
+        <comment>Create new table job_scheduler_configuration</comment>
+        <createTable tableName="job_scheduler_configuration">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="job_group" type="VARCHAR(255)" >
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="job_name" type="VARCHAR(255)" >
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="trigger_group" type="VARCHAR(255)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="trigger_name" type="VARCHAR(255)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="cron_expression" type="VARCHAR(255)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="job_class_name" type="VARCHAR(255)" >
+                <constraints nullable="false" />
+            </column>
+       </createTable>
+    </changeSet>
+    <changeSet author="miciele" id="insert-predefined-jobs">
+        <comment>Insert jobs to be scheduled with default cron-expression</comment>
+        <insert tableName="job_scheduler_configuration">
+            <column name="version" value="0"/>
+            <column name="job_group" value="Tim"/>
+            <column name="job_name" value="Import roster from Tim" />
+            <column name="trigger_group" value="TimTrigger" />
+            <column name="trigger_name" value="Import roster from Tim-trigger" />
+            <column name="cron_expression" value="0 59 22 ? * *" />
+            <column name="job_class_name" value="ImportRosterFromTimJob" />
+        </insert>
+        <insert tableName="job_scheduler_configuration">
+            <column name="version" value="0"/>
+            <column name="job_group" value="Tim"/>
+            <column name="job_name" value="Export timesheet to Tim" />
+            <column name="trigger_group" value="TimTrigger" />
+            <column name="trigger_name" value="Export timesheet to Tim-trigger" />
+            <column name="cron_expression" value="0 59 23 ? * *" />
+            <column name="job_class_name" value="ExportTimesheetToTimJob" />
+       </insert>
+  </changeSet>
 </databaseChangeLog>
