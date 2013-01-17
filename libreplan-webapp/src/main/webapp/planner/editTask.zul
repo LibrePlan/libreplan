@@ -34,6 +34,10 @@
     macroURI="/planner/taskpanels/_tabPanelSubcontract.zul"
     inline="true" ?>
 
+<?component name="tabPanelRecurrenceInformation"
+    macroURI="/planner/taskpanels/_tabPanelRecurrenceInformation.zul"
+    inline="true" ?>
+
 <zk>
 
     <zscript><![CDATA[
@@ -44,6 +48,7 @@
         limitingAllocationController = editController.limitingResourceAllocationController;
 
         subController = editController.subcontractController;
+        recurrenceInformationController = editController.recurrenceInformationController;
     ]]>
     </zscript>
 
@@ -68,12 +73,14 @@
                 <tab id="limitingResourceAllocationTab" label="${i18n:_('Queue-based resource allocation')}" />
                 <tab id="subcontractTab" label="${i18n:_('Subcontract')}"
                     onSelect = "subController.refressGridEndDates();"/>
+                <tab id="recurrenceInformationTab" label="${i18n:_('Recurrence information')}" />
             </tabs>
             <tabpanels>
                 <tabPanelTaskProperties id="taskPropertiesTabpanel" />
                 <tabPanelNonLimitingResourceAllocation id="resourceAllocationTabpanel" />
                 <tabPanelLimitingResourceAllocation id="limitingResourceAllocationTabpanel" />
                 <tabPanelSubcontract id="subcontractTabpanel" />
+                <tabPanelRecurrenceInformation id="recurrenceInformationTabpanel" />
             </tabpanels>
         </tabbox>
 

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,6 +27,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.planner.entities.ITaskPositionConstrained;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -34,6 +35,7 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.allocation.ResourceAllocationController;
 import org.libreplan.web.planner.limiting.allocation.LimitingResourceAllocationController;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
+import org.libreplan.web.planner.order.RecurrenceInformationController;
 import org.libreplan.web.planner.order.SubcontractController;
 import org.libreplan.web.planner.taskedition.TaskPropertiesController.ResourceAllocationTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +73,9 @@ public class EditTaskController extends GenericForwardComposer {
     @Autowired
     private SubcontractController subcontractController;
 
+    @Autowired
+    private RecurrenceInformationController recurrenceInformationController;
+
     private Window window;
 
     private Tabbox editTaskTabbox;
@@ -79,11 +84,13 @@ public class EditTaskController extends GenericForwardComposer {
     private Tab resourceAllocationTab;
     private Tab limitingResourceAllocationTab;
     private Tab subcontractTab;
+    private Tab recurrenceInformationTab;
 
     private Tabpanel taskPropertiesTabpanel;
     private Tabpanel resourceAllocationTabpanel;
     private Tabpanel limitingResourceAllocationTabpanel;
     private Tabpanel subcontractTabpanel;
+    private Tabpanel recurrenceInformationTabpanel;
 
     private Component messagesContainer;
 
@@ -105,6 +112,8 @@ public class EditTaskController extends GenericForwardComposer {
         resourceAllocationController.doAfterCompose(resourceAllocationTabpanel);
         resourceAllocationController.setEditTaskController(this);
         subcontractController.doAfterCompose(subcontractTabpanel);
+        recurrenceInformationController
+                .doAfterCompose(recurrenceInformationTabpanel);
         initLimitingResourceAllocationController();
     }
 
@@ -131,6 +140,10 @@ public class EditTaskController extends GenericForwardComposer {
 
     public SubcontractController getSubcontractController() {
         return subcontractController;
+    }
+
+    public RecurrenceInformationController getRecurrenceInformationController() {
+        return recurrenceInformationController;
     }
 
     private void showEditForm(IContextWithPlannerTask<TaskElement> context,
@@ -172,6 +185,7 @@ public class EditTaskController extends GenericForwardComposer {
         subcontractTab.setVisible(false);
         resourceAllocationTab.setVisible(false);
         limitingResourceAllocationTab.setVisible(false);
+        recurrenceInformationTab.setVisible(false);
 
         if (ResourceAllocationTypeEnum.SUBCONTRACT
                 .equals(resourceAllocationType)) {
@@ -182,7 +196,10 @@ public class EditTaskController extends GenericForwardComposer {
         } else if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES
                 .equals(resourceAllocationType)) {
             resourceAllocationController.init(context, asTask(taskElement), planningState, messagesForUser);
+            recurrenceInformationController.init(asTask(taskElement));
             showNonLimitingResourcesTab();
+            showRepetitionInformationTab();
+
         } else if (ResourceAllocationTypeEnum.LIMITING_RESOURCES
                 .equals(resourceAllocationType)) {
             limitingResourceAllocationController.init(context, asTask(taskElement),
@@ -203,6 +220,10 @@ public class EditTaskController extends GenericForwardComposer {
     private void showLimitingResourcesTab() {
         limitingResourceAllocationController.clear();
         limitingResourceAllocationTab.setVisible(true);
+    }
+
+    private void showRepetitionInformationTab() {
+        recurrenceInformationTab.setVisible(true);
     }
 
     public void showEditFormTaskProperties(
