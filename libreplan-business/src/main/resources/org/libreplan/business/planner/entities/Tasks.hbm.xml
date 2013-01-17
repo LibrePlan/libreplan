@@ -101,6 +101,11 @@
 
             <property name="priority" />
 
+        <component name="recurrenceInformation"
+            class="org.libreplan.business.recurring.RecurrenceInformation">
+            <property name="repetitions" column="repetitions" />
+        </component>
+
         </joined-subclass>
 
         <joined-subclass name="TaskGroup" table="task_group">
@@ -233,5 +238,4 @@
 	        <one-to-many class="org.libreplan.business.externalcompanies.entities.EndDateCommunication" />
 		</set>
     </class>
-
 </hibernate-mapping>
