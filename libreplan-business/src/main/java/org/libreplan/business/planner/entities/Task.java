@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -61,6 +61,7 @@ import org.libreplan.business.planner.entities.allocationalgorithms.EffortModifi
 import org.libreplan.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.libreplan.business.planner.entities.consolidations.Consolidation;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.libreplan.business.recurring.RecurrenceInformation;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
@@ -76,6 +77,7 @@ import org.libreplan.business.workingday.ResourcesPerDay;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class Task extends TaskElement implements ITaskPositionConstrained {
 
@@ -169,6 +171,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private TaskPositionConstraint positionConstraint = new TaskPositionConstraint();
 
     private SubcontractedTaskData subcontractedTaskData;
+
+    private RecurrenceInformation recurrenceInformation;
 
     private Integer priority;
 
@@ -943,6 +947,15 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return subcontractedTaskData;
     }
 
+    public RecurrenceInformation getRecurrenceInformation() {
+        return recurrenceInformation;
+    }
+
+    public void setRecurrenceInformation(
+            RecurrenceInformation recurrenceInformation) {
+        this.recurrenceInformation = recurrenceInformation;
+    }
+
     public ExternalCompany getSubcontractedCompany() {
         return subcontractedTaskData.getExternalCompany();
     }
@@ -1268,5 +1281,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public boolean isAnyTaskWithConstraint(PositionConstraintType type) {
         return getPositionConstraint().getConstraintType().equals(type);
     }
+
 
 }
