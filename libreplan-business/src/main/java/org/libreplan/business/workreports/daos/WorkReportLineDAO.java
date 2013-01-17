@@ -216,4 +216,33 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         return (List<WorkReportLine>) criteria.list();
     }
 
+    @Transactional(readOnly = true)
+    public List<WorkReportLine> findByOrderElementAndChildrenFilteredByDate(
+            OrderElement orderElement, Date start, Date end, boolean sortByDate) {
+
+        if (orderElement.isNewObject()) {
+            return new ArrayList<WorkReportLine>();
+        }
+
+        Collection<OrderElement> orderElements = orderElement.getAllChildren();
+        orderElements.add(orderElement);
+
+        // Prepare criteria
+        final Criteria criteria = getSession().createCriteria(
+                WorkReportLine.class);
+        criteria.add(Restrictions.in("orderElement", orderElements));
+
+        if (start != null) {
+            criteria.add(Restrictions.ge("date", start));
+        }
+        if (end != null) {
+            criteria.add(Restrictions.le("date", end));
+        }
+        if (sortByDate) {
+            criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+        }
+        return criteria.list();
+
+    }
+
 }
