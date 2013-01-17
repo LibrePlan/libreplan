@@ -315,7 +315,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         Roster roster = createRoster(nrDaysRosterFromTim);
 
         Period periode = new Period();
-        periode.setStart(new org.joda.time.DateTime().minusDays(10));
+        periode.setStart(new org.joda.time.DateTime());
         periode.setEnd(new org.joda.time.DateTime()
                 .plusDays(nrDaysRosterFromTim));
         List<Period> periods = new ArrayList<Period>();
@@ -373,7 +373,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
      */
     private Roster createRoster(int nrDaysRosterFromTim) {
         Roster roster = new Roster();
-        roster.setStartDate(new LocalDate().minusDays(10));
+        roster.setStartDate(new LocalDate());
         roster.setEndDate(new LocalDate().plusDays(nrDaysRosterFromTim));
         roster.setResourcePlanning(false);
         roster.setDayPlanning(false);
