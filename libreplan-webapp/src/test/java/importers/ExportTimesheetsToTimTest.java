@@ -20,6 +20,7 @@
 package importers;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -62,9 +63,7 @@ public class ExportTimesheetsToTimTest {
     private TimeRegistration createTimeRegistration(String name,
             String productCode, LocalDate localDate, Double hours) {
         Person person = new Person();
-        // person.setEmailAddress("j.baten@antoniusziekenhuis.nl");
         person.setName(name);
-        // person.setNetworkName("j.baten");
         person.setOptions(TimOptions.UPDATE_OR_INSERT);
 
         Product product = new Product();
@@ -103,6 +102,9 @@ public class ExportTimesheetsToTimTest {
                         properties.getProperty("password"),
                         timeRegistrationRequest,
                         TimeRegistrationResponse.class);
+        if (timeRegistrationResponse == null) {
+            fail("Time Registration Response is null");
+        }
         assertTrue(!timeRegistrationResponse.getRefs().isEmpty());
     }
 
@@ -126,6 +128,9 @@ public class ExportTimesheetsToTimTest {
                         properties.getProperty("username"),
                         properties.getProperty("password"),
                         timeRegistrationRequest, TimeRegistrationResponse.class);
+        if (timeRegistrationResponse == null) {
+            fail("Time Registration Response is null");
+        }
         assertTrue(!timeRegistrationResponse.getRefs().isEmpty());
     }
 
