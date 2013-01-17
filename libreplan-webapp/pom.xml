@@ -327,6 +327,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
         </dependency>
+        <!-- QuartzJobBean in spring-context-support.jar -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
         <!--  Spring security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -467,6 +472,11 @@
         <dependency>
             <groupId>br.com.digilabs.jqplot</groupId>
             <artifactId>jqplot4java</artifactId>
+        </dependency>
+        <!-- Quartz framework -->
+        <dependency>
+           <groupId>org.quartz-scheduler</groupId>
+           <artifactId>quartz</artifactId>
         </dependency>
    </dependencies>
 </project>
