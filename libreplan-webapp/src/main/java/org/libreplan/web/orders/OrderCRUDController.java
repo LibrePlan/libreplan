@@ -194,6 +194,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private ProjectDetailsController projectDetailsController;
 
+    private TimSynchronizationController timSynchronizationController;
+
     @Autowired
     private IOrderDAO orderDAO;
 
@@ -1036,6 +1038,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         initializeCustomerComponent();
         reloadOrderDetailsTab();
         orderDatesHandler.chooseCurrentSchedulingMode();
+        setupTimSynchronizationController();
     }
 
     public void reloadOrderDetailsTab() {
@@ -1860,6 +1863,18 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public boolean isJiraActivated() {
         return orderModel.isJiraActivated();
+    }
+
+    public void setupTimSynchronizationController() {
+        if (timSynchronizationController == null) {
+            timSynchronizationController = new TimSynchronizationController();
+        }
+        try {
+            timSynchronizationController.doAfterCompose(self
+                    .getFellow("editOrderElement"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
