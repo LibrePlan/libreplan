@@ -1569,6 +1569,24 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     /**
+     * Gets workReportLines of this order-element between the specified
+     * <code>startDate</code> and <code>endDate</code>
+     *
+     * @param startDate
+     *            the startDate
+     * @param endDate
+     *            the endDate
+     * @param sortedByDate
+     * @return list of workReportLines
+     */
+    public List<WorkReportLine> getWorkReportLines(Date startDate,
+            Date endDate, boolean sortedByDate) {
+        IWorkReportLineDAO workReportLineDAO = Registry.getWorkReportLineDAO();
+        return workReportLineDAO.findByOrderElementAndChildrenFilteredByDate(
+                this, startDate, endDate, sortedByDate);
+    }
+
+    /**
      * Checks if it has nay consolidated advance, if not checks if any parent
      * has it
      */
