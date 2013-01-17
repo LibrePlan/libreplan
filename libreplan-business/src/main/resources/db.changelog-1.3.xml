@@ -381,4 +381,16 @@
             onDelete="SET NULL"/>
     </changeSet>
 
+    <changeSet id="add-repetitions-column-to-task"
+        author="ltilve">
+        <comment>Add repetitions column to task</comment>
+        <addColumn tableName="task">
+            <column name="repetitions" type="INTEGER" />
+        </addColumn>
+        <update tableName="task">
+            <column name="repetitions" value="0" />
+        </update>
+    </changeSet>
+
+
 </databaseChangeLog>
