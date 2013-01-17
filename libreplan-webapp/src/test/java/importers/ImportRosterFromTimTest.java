@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
@@ -230,13 +231,16 @@ public class ImportRosterFromTimTest {
         return worker;
     }
 
-    // @Test
+    @Test
     public void testImportRostersFromServer() {
         RosterResponse rosterResponse = TimSoapClient
                 .sendRequestReceiveResponse(properties.getProperty("url"),
                         properties.getProperty("username"),
                         properties.getProperty("password"),
                         createtRosterRequest(), RosterResponse.class);
+        if (rosterResponse == null) {
+            fail("Roster Response is null");
+        }
         assertTrue(rosterResponse != null);
     }
 
@@ -250,7 +254,7 @@ public class ImportRosterFromTimTest {
     public void testRosterExceptionType() {
         List<Roster> rosters = getTheFirstRosterException();
         String exceptionType = getExceptionType(rosters);
-        assertEquals(exceptionType, "3 Vakantie");
+        assertEquals(exceptionType, "1Jus uren (van budget)");
     }
 
     @Test
@@ -258,7 +262,7 @@ public class ImportRosterFromTimTest {
         List<Roster> rosters = getTheFirstRosterException();
         Entry<LocalDate, EffortDuration> effortDurationMap = getTheFirstEffortDuration(rosters);
         EffortDuration duration = effortDurationMap.getValue();
-        assertThat(duration.getHours(), equalTo(9));
+        assertThat(duration.getHours(), equalTo(8));
     }
 
     @Test
