@@ -76,5 +76,12 @@ public interface IWorkReportLineDAO extends
 
     List<WorkReportLine> findByOrderElementAndWorkReports(
             OrderElement orderElement, List<WorkReport> workReports);
+    /**
+     * Returns the {@link WorkReportLine}s of the specified
+     * <code>orderElement</code> specified between <code>start</code> date and
+     * <code>end</code> date
+     */
+    List<WorkReportLine> findByOrderElementAndChildrenFilteredByDate(
+            OrderElement orderElement, Date start, Date end, boolean sortByDate);
 
 }
