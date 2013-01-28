@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,7 +28,9 @@ import static org.libreplan.web.resourceload.ResourceLoadModel.toLocal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
@@ -38,6 +40,7 @@ import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.chart.ILoadChartData;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
@@ -46,6 +49,8 @@ import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.planner.chart.Chart;
@@ -77,6 +82,7 @@ import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Emitter;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -98,6 +104,7 @@ import org.zkoss.zul.api.Combobox;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -111,6 +118,9 @@ public class ResourceLoadController implements Composer {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
@@ -268,7 +278,33 @@ public class ResourceLoadController implements Composer {
         FilterTypeChanger filterTypeChanger = new FilterTypeChanger(onChange,
                 filterBy);
         result.add(filterTypeChanger);
-        result.add(new ByDatesFilter(onChange, filterBy));
+
+        User user;
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        // Calculate filter based on user preferences
+        if (user != null) {
+            if (user.getResourcesLoadFilterPeriodSince() != null) {
+                startDate = new LocalDate()
+.minusMonths(user
+                        .getResourcesLoadFilterPeriodSince());
+            } else {
+                startDate = new LocalDate().minusDays(1);
+            }
+            if (user.getResourcesLoadFilterPeriodTo() != null) {
+                endDate = new LocalDate()
+.plusMonths(user
+                        .getResourcesLoadFilterPeriodTo());
+            }
+        }
+
+        result.add(new ByDatesFilter(onChange, filterBy, startDate, endDate));
         WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
                 onChange, filterBy, filterTypeChanger, resourcesSearcher);
         result.add(bandbox);
@@ -412,10 +448,14 @@ public class ResourceLoadController implements Composer {
 
         private final Datebox endBox = new Datebox();
 
-        private ByDatesFilter(Runnable onChange, PlanningState filterBy) {
+        private ByDatesFilter(Runnable onChange, PlanningState filterBy,
+                LocalDate startDate, LocalDate endDate) {
             super(onChange, filterBy);
-            startDateValue = isAppliedToOrder() ? null : new LocalDate()
-                    .minusDays(1);
+            startDateValue = (isAppliedToOrder() || (startDate == null)) ? null
+                    : startDate
+                    .toDateTimeAtStartOfDay().toLocalDate();
+            endDateValue = (endDate == null) ? null : endDate
+                    .toDateMidnight().toLocalDate();
         }
 
         @Override
@@ -439,6 +479,7 @@ public class ResourceLoadController implements Composer {
                     }
                 }
             });
+
             endBox.setValue(asDate(endDateValue));
             endBox.setWidth("100px");
             endBox.addEventListener(Events.ON_CHANGE, new EventListener() {
@@ -451,6 +492,7 @@ public class ResourceLoadController implements Composer {
                     }
                 }
             });
+
             Hbox hbox = new Hbox();
             hbox.appendChild(new Label(_("From") + ":"));
             hbox.appendChild(startBox);
