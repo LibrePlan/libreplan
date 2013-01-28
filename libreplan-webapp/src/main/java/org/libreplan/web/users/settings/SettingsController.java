@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 ComtecSF, S.L.
+ * Copyright (C) 2013 Igalia.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,6 +42,7 @@ import org.zkoss.zul.Textbox;
  *
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class SettingsController extends GenericForwardComposer {
 
@@ -174,6 +176,38 @@ public class SettingsController extends GenericForwardComposer {
 
     public boolean isBound() {
         return settingsModel.isBound();
+    }
+
+    public Integer getProjectsFilterPeriodSince() {
+        return settingsModel.getProjectsFilterPeriodSince();
+    }
+
+    public void setProjectsFilterPeriodSince(Integer period) {
+        settingsModel.setProjectsFilterPeriodSince(period);
+    }
+
+    public Integer getProjectsFilterPeriodTo() {
+        return settingsModel.getProjectsFilterPeriodTo();
+    }
+
+    public void setProjectsFilterPeriodTo(Integer period) {
+        settingsModel.setProjectsFilterPeriodTo(period);
+    }
+
+    public Integer getResourcesLoadFilterPeriodSince() {
+        return settingsModel.getResourcesLoadFilterPeriodSince();
+    }
+
+    public void setResourcesLoadFilterPeriodSince(Integer period) {
+        settingsModel.setResourcesLoadFilterPeriodSince(period);
+    }
+
+    public Integer getResourcesLoadFilterPeriodTo() {
+        return settingsModel.getResourcesLoadFilterPeriodTo();
+    }
+
+    public void setResourcesLoadFilterPeriodTo(Integer period) {
+        settingsModel.setResourcesLoadFilterPeriodTo(period);
     }
 
 }
