@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,6 +33,7 @@ import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.settings.entities.Language;
@@ -47,6 +48,7 @@ import org.libreplan.business.users.daos.IUserDAO;
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class User extends BaseEntity implements IHumanIdentifiable{
 
@@ -80,6 +82,16 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     private String lastName = "";
 
     private Worker worker;
+
+    private Label projectsFilterLabel = null;
+
+    private Integer projectsFilterPeriodSince;
+
+    private Integer projectsFilterPeriodTo;
+
+    private Integer resourcesLoadFilterPeriodSince;
+
+    private Integer resourcesLoadFilterPeriodTo;
 
     /**
      * Necessary for Hibernate. Please, do not call it.
@@ -371,6 +383,45 @@ public class User extends BaseEntity implements IHumanIdentifiable{
             }
         }
         return true;
+    }
+
+    public Label getProjectsFilterLabel() {
+        return projectsFilterLabel;
+    }
+
+    public void setProjectsFilterLabel(Label label) {
+        projectsFilterLabel = label;
+    }
+
+    public Integer getProjectsFilterPeriodSince() {
+        return projectsFilterPeriodSince;
+    }
+    public void setProjectsFilterPeriodSince(Integer period) {
+        projectsFilterPeriodSince = period;
+    }
+
+    public Integer getProjectsFilterPeriodTo() {
+        return projectsFilterPeriodTo;
+    }
+
+    public void setProjectsFilterPeriodTo(Integer period) {
+        projectsFilterPeriodTo = period;
+    }
+
+    public Integer getResourcesLoadFilterPeriodSince() {
+        return resourcesLoadFilterPeriodSince;
+    }
+
+    public void setResourcesLoadFilterPeriodSince(Integer period) {
+        resourcesLoadFilterPeriodSince = period;
+    }
+
+    public Integer getResourcesLoadFilterPeriodTo() {
+        return resourcesLoadFilterPeriodTo;
+    }
+
+    public void setResourcesLoadFilterPeriodTo(Integer period) {
+        resourcesLoadFilterPeriodTo = period;
     }
 
 }
