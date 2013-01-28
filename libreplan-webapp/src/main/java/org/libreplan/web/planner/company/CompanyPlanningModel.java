@@ -716,23 +716,61 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Override
     @Transactional(readOnly = true)
     public IPredicate getDefaultPredicate(Boolean includeOrderElements) {
-        if (currentScenario == null) {
-            currentScenario = scenarioManager.getCurrent();
-        }
 
-        List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
-                SecurityUtils.getSessionUserLoginName(), currentScenario);
         Date startDate = null;
         Date endDate = null;
-        for (Order each : list) {
-            each.useSchedulingDataFor(currentScenario, false);
-            TaskGroup associatedTaskElement = each.getAssociatedTaskElement();
-            if (associatedTaskElement != null
-                    && STATUS_VISUALIZED.contains(each.getState())) {
-                startDate = Collections.min(notNull(startDate, each.getInitDate(),
-                        associatedTaskElement.getStartDate()));
-                endDate = Collections.max(notNull(endDate, each.getDeadline(),
-                        associatedTaskElement.getEndDate()));
+
+        boolean calculateStartDate = true;
+        boolean calculateEndDate = true;
+
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Calculate filter based on user preferences
+        if (user != null) {
+            if (user.getProjectsFilterPeriodSince() != null) {
+                startDate = new LocalDate()
+                        .minusMonths(user.getProjectsFilterPeriodSince())
+                        .toDateTimeAtStartOfDay().toDate();
+                calculateStartDate = false;
+            }
+            if (user.getProjectsFilterPeriodTo() != null) {
+                endDate = new LocalDate()
+                        .plusMonths(user.getProjectsFilterPeriodTo())
+                        .toDateMidnight().toDate();
+                calculateEndDate = false;
+            }
+        }
+
+        // Filter predicate needs to be calculated based on the projects dates
+        if ((calculateStartDate) || (calculateEndDate)) {
+            if (currentScenario == null) {
+                currentScenario = scenarioManager.getCurrent();
+            }
+            List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
+                    SecurityUtils.getSessionUserLoginName(), currentScenario);
+            for (Order each : list) {
+                each.useSchedulingDataFor(currentScenario, false);
+                TaskGroup associatedTaskElement = each
+                        .getAssociatedTaskElement();
+                if (associatedTaskElement != null
+                        && STATUS_VISUALIZED.contains(each.getState())) {
+                    if (calculateStartDate) {
+                        startDate = Collections.min(notNull(startDate,
+                                each.getInitDate(),
+                                associatedTaskElement.getStartDate()));
+                    }
+                    if (calculateEndDate) {
+                        endDate = Collections.max(notNull(endDate,
+                                each.getDeadline(),
+                                associatedTaskElement.getEndDate()));
+                    }
+                }
             }
         }
         filterStartDate = startDate != null ? LocalDate
