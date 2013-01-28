@@ -63,6 +63,16 @@
         <one-to-one name="worker" property-ref="user"
             class="org.libreplan.business.resources.entities.Worker" />
 
+        <one-to-one name="projectsFilterLabel" class="org.libreplan.business.labels.entities.Label" />
+
+        <property name="projectsFilterPeriodSince" column="projects_filter_period_since"/>
+
+        <property name="projectsFilterPeriodTo" column="projects_filter_period_to"/>
+
+        <property name="resourcesLoadFilterPeriodSince" column="resources_load_filter_period_since"/>
+
+        <property name="resourcesLoadFilterPeriodTo" column="resources_load_filter_period_to"/>
+
     </class>
 
     <class name="Profile" table="profile_table">
