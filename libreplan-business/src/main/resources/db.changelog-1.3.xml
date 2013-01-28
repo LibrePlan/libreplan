@@ -208,4 +208,36 @@
             columnDataType="INTEGER" />
     </changeSet>
 
+    <changeSet id="add-projects_filter_period_since-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store project filtering interval 'range since' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_period_since" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-projects_filter_period_to-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store project filtering interval 'range to' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_period_to" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_period_since-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store resources load filtering interval 'range since' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="resources_load_filter_period_since" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_period_to-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store resources load filtering interval 'range to' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="resources_load_filter_period_to" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
