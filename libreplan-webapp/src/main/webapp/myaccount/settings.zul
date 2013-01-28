@@ -117,6 +117,30 @@
                                         </rows>
                                     </grid>
                                 </row>
+                                <row>
+                                    <label
+                                        value="${i18n:_('Projects view filtering')}" />
+                                    <hbox>
+                                        <label value="${i18n:_('Label filter')}" />
+                                        <listbox id="projectsFilterLabel" width="200px" height="15px"/>
+                                        <label value="${i18n:_('Projects since')}" />
+                                        <intbox id="projectsFilterPeriodSince" value="@{settingsController.projectsFilterPeriodSince}" />
+                                        <label value="${i18n:_('months to')}" />
+                                        <intbox id="projectsFilterPeriodTo" value="@{settingsController.projectsFilterPeriodTo}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label
+                                        value="${i18n:_('Resources load filtering')}" />
+                                    <hbox>
+                                        <label value="${i18n:_('Label filter')}" />
+                                        <listbox id="resourcesFilterLabel" width="200px" height="15px"/>
+                                        <label value="${i18n:_('Resources load since')}" />
+                                        <intbox id="resourcesLoadFilterPeriodSince" value="@{settingsController.resourcesLoadFilterPeriodSince}" />
+                                        <label value="${i18n:_('months to')}" />
+                                        <intbox id="resourcesLoadFilterPeriodTo" value="@{settingsController.resourcesLoadFilterPeriodTo}" />
+                                    </hbox>
+                                </row>
                             </rows>
                         </grid>
                     </groupbox>
