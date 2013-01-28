@@ -94,6 +94,7 @@ import org.zkoss.ganttz.util.Emitter;
 import org.zkoss.ganttz.util.Emitter.IEmissionListener;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -717,11 +718,13 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Transactional(readOnly = true)
     public IPredicate getDefaultPredicate(Boolean includeOrderElements) {
 
-        Date startDate = null;
-        Date endDate = null;
+        Date startDate = (Date) Sessions.getCurrent().getAttribute(
+                "companyFilterStartDate");
+        Date endDate = (Date) Sessions.getCurrent().getAttribute(
+                "companyFilterFinishDate");
 
-        boolean calculateStartDate = true;
-        boolean calculateEndDate = true;
+        boolean calculateStartDate = (startDate == null);
+        boolean calculateEndDate = (endDate == null);
 
         User user;
         try {
@@ -733,13 +736,14 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         // Calculate filter based on user preferences
         if (user != null) {
-            if (user.getProjectsFilterPeriodSince() != null) {
+            if (calculateStartDate
+                    && (user.getProjectsFilterPeriodSince() != null)) {
                 startDate = new LocalDate()
                         .minusMonths(user.getProjectsFilterPeriodSince())
                         .toDateTimeAtStartOfDay().toDate();
                 calculateStartDate = false;
             }
-            if (user.getProjectsFilterPeriodTo() != null) {
+            if (calculateEndDate && (user.getProjectsFilterPeriodTo() != null)) {
                 endDate = new LocalDate()
                         .plusMonths(user.getProjectsFilterPeriodTo())
                         .toDateMidnight().toDate();
