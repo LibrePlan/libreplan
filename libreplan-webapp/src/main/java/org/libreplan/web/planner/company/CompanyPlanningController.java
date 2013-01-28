@@ -47,6 +47,7 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -279,6 +280,10 @@ public class CompanyPlanningController implements Composer {
     }
 
     public void onApplyFilter() {
+        Sessions.getCurrent().setAttribute("companyFilterStartDate",
+                filterStartDate.getValue());
+        Sessions.getCurrent().setAttribute("companyFilterFinishDate",
+                filterFinishDate.getValue());
         filterByPredicate(createPredicate());
     }
 
