@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 ComtecSF, S.L.
+ * Copyright (C) 2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +20,7 @@
 package org.libreplan.web.users.settings;
 
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.settings.entities.Language;
 
 
@@ -27,6 +29,7 @@ import org.libreplan.business.settings.entities.Language;
  *
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public interface ISettingsModel {
 
@@ -66,5 +69,23 @@ public interface ISettingsModel {
     String getLoginName();
 
     boolean isBound();
+
+    Integer getProjectsFilterPeriodSince();
+
+    void setProjectsFilterPeriodSince(Integer period);
+
+    Integer getProjectsFilterPeriodTo();
+
+    void setProjectsFilterPeriodTo(Integer period);
+
+    Integer getResourcesLoadFilterPeriodSince();
+
+    void setResourcesLoadFilterPeriodSince(Integer period);
+
+    Integer getResourcesLoadFilterPeriodTo();
+
+    void setResourcesLoadFilterPeriodTo(Integer period);
+
+    Label getProjectsFilterLabel();
 
 }

@@ -22,6 +22,7 @@ package org.libreplan.web.users.settings;
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.Profile;
@@ -200,6 +201,51 @@ public class SettingsModel implements ISettingsModel {
             return user.isBound();
         }
         return false;
+    }
+
+    @Override
+    public Label getProjectsFilterLabel() {
+        return user.getProjectsFilterLabel();
+    }
+
+    @Override
+    public Integer getProjectsFilterPeriodSince() {
+        return user.getProjectsFilterPeriodSince();
+    }
+
+    @Override
+    public void setProjectsFilterPeriodSince(Integer period) {
+        user.setProjectsFilterPeriodSince(period);
+    }
+
+    @Override
+    public Integer getProjectsFilterPeriodTo() {
+        return user.getProjectsFilterPeriodTo();
+    }
+
+    @Override
+    public void setProjectsFilterPeriodTo(Integer period) {
+        user.setProjectsFilterPeriodTo(period);
+    }
+
+    @Override
+    public Integer getResourcesLoadFilterPeriodSince() {
+        return user.getResourcesLoadFilterPeriodSince();
+    }
+
+    @Override
+    public void setResourcesLoadFilterPeriodSince(Integer period) {
+        user.setResourcesLoadFilterPeriodSince(period);
+    }
+
+    @Override
+    public Integer getResourcesLoadFilterPeriodTo() {
+        return user.getResourcesLoadFilterPeriodTo();
+    }
+
+    @Override
+    public void setResourcesLoadFilterPeriodTo(Integer period) {
+        user.setResourcesLoadFilterPeriodTo(period);
     }
 
 }
