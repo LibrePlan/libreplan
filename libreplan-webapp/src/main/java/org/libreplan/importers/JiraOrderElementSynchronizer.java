@@ -38,6 +38,7 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
+import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.importers.jira.Issue;
 import org.libreplan.importers.jira.Status;
 import org.libreplan.importers.jira.TimeTracking;
@@ -105,8 +106,9 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
                 continue;
             }
 
-            syncHoursGroup(orderLine, code, getEstimatedHours(issue.getFields()
-                    .getTimetracking()));
+            syncHoursGroup(orderLine, code,
+                    getEstimatedHours(issue.getFields().getTimetracking())
+                            .getHours());
 
             syncProgressMeasurement(orderLine, issue);
         }
@@ -199,16 +201,16 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
             return;
         }
 
-        Integer estimatedHours = getEstimatedHours(issue.getFields()
+        EffortDuration estimatedHours = getEstimatedHours(issue.getFields()
                 .getTimetracking());
 
-        if (estimatedHours == 0) {
+        if (estimatedHours.isZero()) {
             jiraSyncInfo.addSyncFailedReason("Estimated time for '"
                     + issue.getKey() + "' issue is 0");
             return;
         }
 
-        Integer loggedHours = getLoggedHours(issue.getFields()
+        EffortDuration loggedHours = getLoggedHours(issue.getFields()
                 .getTimetracking());
 
         BigDecimal percentage;
@@ -219,7 +221,9 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         if (isIssueClosed(issue.getFields().getStatus())) {
             percentage = new BigDecimal(100);
         } else {
-            percentage = calculatePercentage(estimatedHours, loggedHours);
+            percentage = loggedHours.dividedByAndResultAsBigDecimal(
+                    estimatedHours.plus(loggedHours)).multiply(
+                    new BigDecimal(100));
         }
 
         LocalDate latestWorkLogDate = LocalDate
@@ -233,60 +237,51 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     /**
      * Get the estimated seconds from
      * {@link TimeTracking#getRemainingEstimateSeconds()} or
-     * {@link TimeTracking#getOriginalEstimateSeconds()} and convert it to hours
+     * {@link TimeTracking#getOriginalEstimateSeconds()} and convert it to
+     * {@link EffortDuration}
      *
      * @param timeTracking
      *            where the estimated time to get from
      * @return estimatedHours
      */
-    private Integer getEstimatedHours(TimeTracking timeTracking) {
+    private EffortDuration getEstimatedHours(TimeTracking timeTracking) {
         if (timeTracking == null) {
-            return 0;
+            return EffortDuration.zero();
         }
 
         Integer timeestimate = timeTracking.getRemainingEstimateSeconds();
         if (timeestimate != null && timeestimate > 0) {
-            return secondsToHours(timeestimate);
+            return EffortDuration.seconds(timeestimate);
         }
 
         Integer timeoriginalestimate = timeTracking
                 .getOriginalEstimateSeconds();
         if (timeoriginalestimate != null) {
-            return secondsToHours(timeoriginalestimate);
+            return EffortDuration.seconds(timeoriginalestimate);
         }
-        return 0;
+        return EffortDuration.zero();
     }
 
     /**
      * Get the time spent in seconds from
-     * {@link TimeTracking#getTimeSpentSeconds()} and convert it to hours
+     * {@link TimeTracking#getTimeSpentSeconds()} and convert it to
+     * {@link EffortDuration}
      *
      * @param timeTracking
      *            where the timespent to get from
      * @return timespent in hous
      */
-    private Integer getLoggedHours(TimeTracking timeTracking) {
+    private EffortDuration getLoggedHours(TimeTracking timeTracking) {
         if (timeTracking == null) {
-            return 0;
+            return EffortDuration.zero();
         }
 
         Integer timespentInSec = timeTracking.getTimeSpentSeconds();
         if (timespentInSec != null && timespentInSec > 0) {
-            return secondsToHours(timespentInSec);
+            return EffortDuration.seconds(timespentInSec);
         }
 
-        return 0;
-    }
-
-    /**
-     * Convert seconds to hours
-     *
-     * @param seconds
-     *
-     * @return hours
-     */
-    private Integer secondsToHours(Integer seconds) {
-        return Math.round(seconds / 3600);
+        return EffortDuration.zero();
     }
 
     /**
@@ -357,29 +352,6 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
             return false;
         }
         return status.getName().equals("Closed");
-    }
-
-    /**
-     * Calculate percentage based on <code>loggedHours</code> and
-     * <code>estimatedHours</code>
-     *
-     * @param estimatedHours
-     *            the estimated hours
-     * @param loggedHours
-     *            time spent so far
-     *
-     * @return the calculated percentage
-     */
-    private BigDecimal calculatePercentage(Integer estimatedHours,
-            Integer loggedHours) {
-
-        if (estimatedHours == 0) {
-            return BigDecimal.ZERO;
-        }
-
-        double percentage = (loggedHours * 100)
-                / (loggedHours + estimatedHours);
-        return new BigDecimal(percentage);
     }
 
     /**
