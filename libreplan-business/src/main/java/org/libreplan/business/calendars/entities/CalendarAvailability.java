@@ -150,8 +150,8 @@ public class CalendarAvailability extends IntegrationEntity {
         }
 
         if (endDate == null) {
-            return startDate.compareTo(filterStartDate) >= 0
-                    && startDate.compareTo(filterEndDate) <= 0;
+            return startDate.compareTo(filterStartDate) <= 0
+                    || startDate.compareTo(filterEndDate) <= 0;
         }
 
         Interval filterPeriod = new Interval(
