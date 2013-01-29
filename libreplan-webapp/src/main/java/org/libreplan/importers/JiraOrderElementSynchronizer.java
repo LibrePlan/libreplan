@@ -71,18 +71,12 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Override
     @Transactional(readOnly = true)
     public List<Issue> getJiraIssues(String label) {
+        JiraConfiguration jiraConfiguration = configurationDAO
+                .getConfiguration().getJiraConfiguration();
 
-        String url = configurationDAO.getConfigurationWithReadOnlyTransaction()
-                .getJiraConfiguration()
-                .getJiraUrl();
-
-        String username = configurationDAO
-                .getConfigurationWithReadOnlyTransaction()
-                .getJiraConfiguration().getJiraUserId();
-
-        String password = configurationDAO
-                .getConfigurationWithReadOnlyTransaction()
-                .getJiraConfiguration().getJiraPassword();
+        String url = jiraConfiguration.getJiraUrl();
+        String username = jiraConfiguration.getJiraUserId();
+        String password = jiraConfiguration.getJiraPassword();
 
         String path = "rest/api/latest/search";
         String query = "labels=" + label;
