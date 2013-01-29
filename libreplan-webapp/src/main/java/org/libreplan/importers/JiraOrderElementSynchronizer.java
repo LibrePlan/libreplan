@@ -105,7 +105,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
                     (OrderLine) order.getOrderElement(code), code,
                     getEstimatedHours(issue.getFields().getTimetracking()));
 
-            syncPorgressMeasurement(order.getOrderElement(code), issue);
+            syncProgressMeasurement(order.getOrderElement(code), issue);
         }
 
     }
@@ -173,7 +173,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
      *            jira's issue to synchronize with progress assignment and
      *            measurement
      */
-    private void syncPorgressMeasurement(OrderElement orderElement, Issue issue) {
+    private void syncProgressMeasurement(OrderElement orderElement, Issue issue) {
 
         WorkLog workLog = issue.getFields().getWorklog();
 
