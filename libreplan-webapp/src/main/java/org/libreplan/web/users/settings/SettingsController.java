@@ -28,12 +28,19 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
+import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 
@@ -54,6 +61,8 @@ public class SettingsController extends GenericForwardComposer {
 
     private Textbox password;
 
+    private BandboxSearch projectsFilterLabelBandboxSearch;
+
     public static ListitemRenderer languagesRenderer = new ListitemRenderer() {
         @Override
         public void render(org.zkoss.zul.Listitem item, Object data)
@@ -73,6 +82,15 @@ public class SettingsController extends GenericForwardComposer {
         comp.setVariable("settingsController", this, true);
         messages = new MessagesForUser(messagesContainer);
         settingsModel.initEditLoggedUser();
+        projectsFilterLabelBandboxSearch.setListboxEventListener(
+                Events.ON_SELECT, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
+                                .getSelectedItems().iterator().next();
+                        setProjectsFilterLabel((Label) selectedItem.getValue());
+                    }
+                });
     }
 
     public List<Language> getLanguages() {
@@ -208,6 +226,18 @@ public class SettingsController extends GenericForwardComposer {
 
     public void setResourcesLoadFilterPeriodTo(Integer period) {
         settingsModel.setResourcesLoadFilterPeriodTo(period);
+    }
+
+    public List<Label> getAllLabels() {
+        return settingsModel.getAllLabels();
+    }
+
+    public Label getProjectsFilterLabel() {
+        return settingsModel.getProjectsFilterLabel();
+    }
+
+    public void setProjectsFilterLabel(Label label) {
+        settingsModel.setProjectsFilterLabel(label);
     }
 
 }
