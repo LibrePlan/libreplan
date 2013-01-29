@@ -19,6 +19,8 @@
  */
 package org.libreplan.web.users.settings;
 
+import java.util.List;
+
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.settings.entities.Language;
@@ -87,5 +89,9 @@ public interface ISettingsModel {
     void setResourcesLoadFilterPeriodTo(Integer period);
 
     Label getProjectsFilterLabel();
+
+    List<Label> getAllLabels();
+
+    void setProjectsFilterLabel(Label label);
 
 }

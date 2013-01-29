@@ -19,9 +19,14 @@
 
 package org.libreplan.web.users.settings;
 
+import java.util.List;
+
 import org.apache.commons.lang.Validate;
+import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
+import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -50,7 +55,12 @@ public class SettingsModel implements ISettingsModel {
     @Autowired
     private IUserDAO userDAO;
 
+    @Autowired
+    private ILabelDAO labelsDAO;
+
     private User user;
+
+    private List<Label> allLabels;
 
     @Override
     public Language getApplicationLanguage() {
@@ -75,6 +85,16 @@ public class SettingsModel implements ISettingsModel {
     public void initEditLoggedUser() {
         User user = findByLoginUser(SecurityUtils.getSessionUserLoginName());
         this.user = getFromDB(user);
+        loadAllLabels();
+    }
+
+    @Transactional(readOnly = true)
+    private void loadAllLabels() {
+        allLabels = labelsDAO.getAll();
+        // initialize the labels
+        for (Label label : allLabels) {
+            label.getType().getName();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -204,11 +224,6 @@ public class SettingsModel implements ISettingsModel {
     }
 
     @Override
-    public Label getProjectsFilterLabel() {
-        return user.getProjectsFilterLabel();
-    }
-
-    @Override
     public Integer getProjectsFilterPeriodSince() {
         return user.getProjectsFilterPeriodSince();
     }
@@ -246,6 +261,22 @@ public class SettingsModel implements ISettingsModel {
     @Override
     public void setResourcesLoadFilterPeriodTo(Integer period) {
         user.setResourcesLoadFilterPeriodTo(period);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Label> getAllLabels() {
+        return allLabels;
+    }
+
+    @Override
+    public Label getProjectsFilterLabel() {
+        return user.getProjectsFilterLabel();
+    }
+
+    @Override
+    public void setProjectsFilterLabel(Label label) {
+        user.setProjectsFilterLabel(label);
     }
 
 }
