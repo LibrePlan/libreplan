@@ -62,8 +62,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Override
     @Transactional(readOnly = true)
     public List<String> getAllJiraLabels() {
-        String jiraLabelUrl = configurationDAO
-                .getConfigurationWithReadOnlyTransaction()
+        String jiraLabelUrl = configurationDAO.getConfiguration()
                 .getJiraConfiguration().getJiraLabelUrl();
 
         return JiraRESTClient.getAllLables(jiraLabelUrl);
