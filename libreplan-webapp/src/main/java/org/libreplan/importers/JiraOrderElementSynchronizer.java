@@ -97,7 +97,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     @Override
     @Transactional(readOnly = true)
-    public void syncOrderElementsWithJiraIssues(Order order, List<Issue> issues) {
+    public void syncOrderElementsWithJiraIssues(List<Issue> issues, Order order) {
 
         jiraSyncInfo = new JiraSyncInfo();
 

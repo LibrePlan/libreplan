@@ -80,7 +80,7 @@ public interface IJiraOrderElementSynchronizer {
      * @param issues
      *            jira issues
      */
-    void syncOrderElementsWithJiraIssues(Order order, List<Issue> issues);
+    void syncOrderElementsWithJiraIssues(List<Issue> issues, Order order);
 
     /**
      * returns synchronization info, success or fail info
