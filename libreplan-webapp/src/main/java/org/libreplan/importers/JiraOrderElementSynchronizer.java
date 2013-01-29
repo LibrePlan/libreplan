@@ -98,14 +98,17 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
                     + issue.getKey();
             String name = issue.getFields().getSummary();
 
-            syncOrderLine(order, code, name);
+            OrderLine orderLine = syncOrderLine(order, code, name);
+            if (orderLine == null) {
+                jiraSyncInfo.addSyncFailedReason("Order-element for '"
+                        + issue.getKey() + "' issue not found");
+                continue;
+            }
 
+            syncHoursGroup(orderLine, code, getEstimatedHours(issue.getFields()
+                    .getTimetracking()));
 
-            syncHoursGroup(
-                    (OrderLine) order.getOrderElement(code), code,
-                    getEstimatedHours(issue.getFields().getTimetracking()));
-
-            syncProgressMeasurement(order.getOrderElement(code), issue);
+            syncProgressMeasurement(orderLine, issue);
         }
 
     }
@@ -126,15 +129,21 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
      * @param name
      *            name for the orderLine to be added or updated
      */
-    private void syncOrderLine(Order order, String code,
+    private OrderLine syncOrderLine(Order order, String code,
             String name) {
-        OrderLine orderLine = (OrderLine) order.getOrderElement(code);
+        OrderElement orderElement = order.getOrderElement(code);
+        if (orderElement != null && !orderElement.isLeaf()) {
+            return null;
+        }
+
+        OrderLine orderLine = (OrderLine) orderElement;
         if (orderLine == null) {
             orderLine = OrderLine.create();
             orderLine.setCode(code);
             order.add(orderLine);
         }
         orderLine.setName(name);
+        return orderLine;
     }
 
     /**
@@ -167,24 +176,19 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     /**
      * Synchronize progress assignment and measurement
      *
-     * @param orderElement
-     *            an exist orderElement
+     * @param orderLine
+     *            an exist orderLine
      * @param issue
      *            jira's issue to synchronize with progress assignment and
      *            measurement
      */
-    private void syncProgressMeasurement(OrderElement orderElement, Issue issue) {
+    private void syncProgressMeasurement(OrderLine orderLine, Issue issue) {
 
         WorkLog workLog = issue.getFields().getWorklog();
 
         if (workLog == null) {
             jiraSyncInfo.addSyncFailedReason("No worklogs found for '"
                     + issue.getKey() + "' issue");
-            return;
-        }
-        if (orderElement == null) {
-            jiraSyncInfo.addSyncFailedReason("Order-element for '"
-                    + issue.getKey() + "' issue not found");
             return;
         }
 
@@ -221,7 +225,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         LocalDate latestWorkLogDate = LocalDate
                 .fromDateFields(getTheLatestWorkLoggedDate(workLogItems));
 
-        updateOrCreateProgressAssignmentAndMeasurement(orderElement,
+        updateOrCreateProgressAssignmentAndMeasurement(orderLine,
                 percentage, latestWorkLogDate);
 
     }
