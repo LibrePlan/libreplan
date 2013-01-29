@@ -23,6 +23,11 @@ import org.libreplan.business.common.BaseEntity;
 
 public class JiraConfiguration extends BaseEntity {
 
+    /**
+     * Code prefix for different entities integrated with JIRA.
+     */
+    public static final String CODE_PREFIX = "JIRA-";
+
     public static JiraConfiguration create() {
         return create(new JiraConfiguration());
     }

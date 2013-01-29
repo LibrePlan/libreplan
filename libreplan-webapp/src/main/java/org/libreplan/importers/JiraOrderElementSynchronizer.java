@@ -33,6 +33,7 @@ import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -51,8 +52,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchronizer {
-
-    private static final String CODE_PREFIX = "JIRA-";
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -102,7 +101,8 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         jiraSyncInfo = new JiraSyncInfo();
 
         for (Issue issue : issues) {
-            String code = CODE_PREFIX + order.getCode() + "-" + issue.getKey();
+            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
+                    + issue.getKey();
             String name = issue.getFields().getSummary();
 
             syncOrderLine(order, code, name);

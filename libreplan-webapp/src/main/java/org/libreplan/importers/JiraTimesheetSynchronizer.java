@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.hibernate.NonUniqueResultException;
 import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
@@ -55,8 +56,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
-
-    private static String CODE_PREFIX = "JIRA-";
 
     private JiraSyncInfo jiraSyncInfo;
 
@@ -139,8 +138,8 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
                                     + issue.getKey() + "' issue");
                 } else {
 
-                    String codeOrderElement = CODE_PREFIX + order.getCode() + "-"
-                            + issue.getKey();
+                    String codeOrderElement = JiraConfiguration.CODE_PREFIX
+                            + order.getCode() + "-" + issue.getKey();
 
                     OrderElement orderElement = order.getOrderElement(codeOrderElement);
 

@@ -53,6 +53,7 @@ import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalA
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
@@ -207,7 +208,8 @@ public class JiraOrderElementSynchronizerTest {
         OrderVersion version = setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(version);
         for (Issue issue : issues) {
-            String code = "JIRA-" + order.getCode() + "-" + issue.getKey();
+            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
+                    + issue.getKey();
             String name = issue.getFields().getSummary();
 
             syncOrderLine(order, code, name);
@@ -374,7 +376,8 @@ public class JiraOrderElementSynchronizerTest {
     public void testSyncOrderElementsOfAnExistingOrderWithNoOrderLines() {
         Order order = givenOrder();
         for (Issue issue : issues) {
-            String code = "JIRA-" + order.getCode() + "-" + issue.getKey();
+            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
+                    + issue.getKey();
             String name = issue.getFields().getSummary();
 
             syncOrderLine(order, code, name);
@@ -396,7 +399,8 @@ public class JiraOrderElementSynchronizerTest {
         Order order = givenOrderWithValidOrderLines();
         Integer workingHours = order.getWorkHours();
         for (Issue issue : issues) {
-            String code = "JIRA-" + order.getCode() + "-" + issue.getKey();
+            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
+                    + issue.getKey();
             String name = issue.getFields().getSummary();
 
             syncOrderLine(order, code, name);

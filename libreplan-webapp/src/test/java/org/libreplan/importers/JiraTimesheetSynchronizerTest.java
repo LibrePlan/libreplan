@@ -46,6 +46,7 @@ import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.daos.IOrderDAO;
@@ -185,7 +186,8 @@ public class JiraTimesheetSynchronizerTest {
         OrderVersion version = setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(version);
         for (Issue issue : issues) {
-            String code = "JIRA-" + order.getCode() + "-" + issue.getKey();
+            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
+                    + issue.getKey();
             String name = issue.getFields().getSummary();
 
             OrderLine orderLine = OrderLine
@@ -336,8 +338,8 @@ public class JiraTimesheetSynchronizerTest {
                 List<WorkLogItem> workLogItems = worklog.getWorklogs();
                 if (workLogItems != null && !workLogItems.isEmpty()) {
 
-                    String code1 = "JIRA-" + order.getCode() + "-"
-                            + issue.getKey();
+                    String code1 = JiraConfiguration.CODE_PREFIX
+                            + order.getCode() + "-" + issue.getKey();
 
                     OrderElement orderElement = order.getOrderElement(code1);
 
