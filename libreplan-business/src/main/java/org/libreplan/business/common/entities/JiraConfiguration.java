@@ -37,6 +37,11 @@ public class JiraConfiguration extends BaseEntity {
 
     private String jiraPassword;
 
+    /**
+     * Constructor for Hibernate. Do not use!
+     */
+    protected JiraConfiguration() {
+    }
 
     public boolean isJiraActivated() {
         return jiraActivated;
