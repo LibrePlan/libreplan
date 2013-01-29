@@ -103,7 +103,6 @@ public class JiraTimesheetSynchronizerTest {
     @Autowired
     private IScenarioManager scenarioManager;
 
-    private static final String PATH = "rest/api/latest/search";
     private static final String LABEL = "labels=epd_12a_ZorgActiviteiten";
 
     private List<Issue> issues;
@@ -143,7 +142,8 @@ public class JiraTimesheetSynchronizerTest {
             Properties properties = loadProperties();
             issues = JiraRESTClient.getIssues(properties.getProperty("url"),
                     properties.getProperty("username"),
-                    properties.getProperty("password"), PATH, LABEL);
+                    properties.getProperty("password"),
+                    JiraRESTClient.PATH_SEARCH, LABEL);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

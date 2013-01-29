@@ -42,6 +42,11 @@ import org.libreplan.ws.common.impl.Util;
  */
 public class JiraRESTClient {
 
+    /**
+     * Path for search operation in JIRA REST API
+     */
+    public static final String PATH_SEARCH = "rest/api/latest/search";
+
     private static final MediaType[] mediaTypes = new MediaType[] {
             MediaType.valueOf(MediaType.APPLICATION_JSON),
             MediaType.valueOf(MediaType.APPLICATION_XML) };

@@ -78,7 +78,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         String username = jiraConfiguration.getJiraUserId();
         String password = jiraConfiguration.getJiraPassword();
 
-        String path = "rest/api/latest/search";
+        String path = JiraRESTClient.PATH_SEARCH;
         String query = "labels=" + label;
 
         List<Issue> issues = JiraRESTClient.getIssues(url, username, password,

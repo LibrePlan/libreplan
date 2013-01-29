@@ -70,7 +70,7 @@ public class JiraRESTClientTest {
         List<Issue> issues = JiraRESTClient.getIssues(
                 properties.getProperty("url"),
                 properties.getProperty("username"),
-                properties.getProperty("password"), "rest/api/latest/search",
+                properties.getProperty("password"), JiraRESTClient.PATH_SEARCH,
                 "labels=Intrasprint");
         assertTrue(issues.size() > 0);
     }
@@ -78,7 +78,7 @@ public class JiraRESTClientTest {
     @Test(expected = RuntimeException.class)
     public void testGetIssuesForValidLabelButUnAuthorizedUser() {
         JiraRESTClient.getIssues(properties.getProperty("url"), "", "",
-                "rest/api/latest/search", "labels=Intrasprint");
+                JiraRESTClient.PATH_SEARCH, "labels=Intrasprint");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class JiraRESTClientTest {
         List<Issue> issues = JiraRESTClient.getIssues(
                 properties.getProperty("url"),
                 properties.getProperty("username"),
-                properties.getProperty("password"), "rest/api/latest/search",
+                properties.getProperty("password"), JiraRESTClient.PATH_SEARCH,
                 "");
         assertTrue(issues.size() > 0);
     }
