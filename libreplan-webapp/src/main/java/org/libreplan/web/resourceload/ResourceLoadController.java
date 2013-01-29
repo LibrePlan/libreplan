@@ -280,26 +280,31 @@ public class ResourceLoadController implements Composer {
         result.add(filterTypeChanger);
 
         User user;
-        LocalDate startDate = null;
-        LocalDate endDate = null;
+        LocalDate startDate = (LocalDate) Sessions.getCurrent().getAttribute(
+                "resourceLoadStartDate");
+        LocalDate endDate = (LocalDate) Sessions.getCurrent().getAttribute(
+                "resourceLoadEndDate");
         try {
             user = this.userDAO.findByLoginName(SecurityUtils
                     .getSessionUserLoginName());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         // Calculate filter based on user preferences
         if (user != null) {
-            if (user.getResourcesLoadFilterPeriodSince() != null) {
-                startDate = new LocalDate()
-.minusMonths(user
-                        .getResourcesLoadFilterPeriodSince());
-            } else {
-                startDate = new LocalDate().minusDays(1);
+            if (startDate == null) {
+                if (user.getResourcesLoadFilterPeriodSince() != null) {
+                    startDate = new LocalDate().minusMonths(user
+                            .getResourcesLoadFilterPeriodSince());
+                } else {
+                    // Default filter start
+                    startDate = new LocalDate().minusDays(1);
+                }
             }
-            if (user.getResourcesLoadFilterPeriodTo() != null) {
-                endDate = new LocalDate()
-.plusMonths(user
+            if ((endDate == null)
+                    && (user.getResourcesLoadFilterPeriodTo() != null)) {
+                endDate = new LocalDate().plusMonths(user
                         .getResourcesLoadFilterPeriodTo());
             }
         }
@@ -475,6 +480,8 @@ public class ResourceLoadController implements Composer {
                     LocalDate newStart = toLocal(startBox.getValue());
                     if (!ObjectUtils.equals(startDateValue, newStart)) {
                         startDateValue = newStart;
+                        Sessions.getCurrent().setAttribute(
+                                "resourceLoadStartDate", startDateValue);
                         notifyChange();
                     }
                 }
@@ -488,6 +495,8 @@ public class ResourceLoadController implements Composer {
                     LocalDate newEnd = toLocal(endBox.getValue());
                     if (!ObjectUtils.equals(endBox, newEnd)) {
                         endDateValue = newEnd;
+                        Sessions.getCurrent().setAttribute(
+                                "resourceLoadEndDate", endDateValue);
                         notifyChange();
                     }
                 }
