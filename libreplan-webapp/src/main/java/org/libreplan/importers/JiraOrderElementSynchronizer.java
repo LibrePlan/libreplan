@@ -106,11 +106,21 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
                 continue;
             }
 
-            syncHoursGroup(orderLine, code,
-                    getEstimatedHours(issue.getFields().getTimetracking())
-                            .getHours());
+            EffortDuration loggedHours = getLoggedHours(issue.getFields()
+                    .getTimetracking());
+            EffortDuration estimatedHours = getEstimatedHours(issue.getFields()
+                    .getTimetracking(), loggedHours);
 
-            syncProgressMeasurement(orderLine, issue);
+            if (estimatedHours.isZero()) {
+                jiraSyncInfo.addSyncFailedReason("Estimated time for '"
+                        + issue.getKey() + "' issue is 0");
+                continue;
+            }
+
+            syncHoursGroup(orderLine, code, estimatedHours.getHours());
+
+            syncProgressMeasurement(orderLine, issue, estimatedHours,
+                    loggedHours);
         }
 
     }
@@ -184,7 +194,8 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
      *            jira's issue to synchronize with progress assignment and
      *            measurement
      */
-    private void syncProgressMeasurement(OrderLine orderLine, Issue issue) {
+    private void syncProgressMeasurement(OrderLine orderLine, Issue issue,
+            EffortDuration estimatedHours, EffortDuration loggedHours) {
 
         WorkLog workLog = issue.getFields().getWorklog();
 
@@ -201,18 +212,6 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
             return;
         }
 
-        EffortDuration estimatedHours = getEstimatedHours(issue.getFields()
-                .getTimetracking());
-
-        if (estimatedHours.isZero()) {
-            jiraSyncInfo.addSyncFailedReason("Estimated time for '"
-                    + issue.getKey() + "' issue is 0");
-            return;
-        }
-
-        EffortDuration loggedHours = getLoggedHours(issue.getFields()
-                .getTimetracking());
-
         BigDecimal percentage;
 
         // if status is closed, the progress percentage is 100% regardless the
@@ -222,8 +221,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
             percentage = new BigDecimal(100);
         } else {
             percentage = loggedHours.dividedByAndResultAsBigDecimal(
-                    estimatedHours.plus(loggedHours)).multiply(
-                    new BigDecimal(100));
+                    estimatedHours).multiply(new BigDecimal(100));
         }
 
         LocalDate latestWorkLogDate = LocalDate
@@ -236,22 +234,25 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     /**
      * Get the estimated seconds from
-     * {@link TimeTracking#getRemainingEstimateSeconds()} or
+     * {@link TimeTracking#getRemainingEstimateSeconds()} plus logged hours or
      * {@link TimeTracking#getOriginalEstimateSeconds()} and convert it to
      * {@link EffortDuration}
      *
      * @param timeTracking
      *            where the estimated time to get from
+     * @param loggedHours
+     *            hours already logged
      * @return estimatedHours
      */
-    private EffortDuration getEstimatedHours(TimeTracking timeTracking) {
+    private EffortDuration getEstimatedHours(TimeTracking timeTracking,
+            EffortDuration loggedHours) {
         if (timeTracking == null) {
             return EffortDuration.zero();
         }
 
         Integer timeestimate = timeTracking.getRemainingEstimateSeconds();
         if (timeestimate != null && timeestimate > 0) {
-            return EffortDuration.seconds(timeestimate);
+            return EffortDuration.seconds(timeestimate).plus(loggedHours);
         }
 
         Integer timeoriginalestimate = timeTracking
