@@ -41,10 +41,11 @@ public interface IJiraOrderElementSynchronizer {
     /**
      * Gets all distinct jira lables from an external 'php' script.
      *
-     * This is because at this moment Jira doesn't support Labels request. As
-     * workaround we build a simple php script to do the query in Jira database
-     * and returns a comma separated string(labels). Once Jira supports the
-     * labels request this method will be modified.
+     * FIXME: This is because at this moment Jira doesn't support Labels
+     * request. As workaround we build a simple php script to do the query in
+     * Jira database and returns a comma separated string(labels). Once Jira
+     * supports the labels request this method will be modified. More info:
+     * https://jira.atlassian.com/browse/JRA-29409
      *
      * @return A list of labels
      */
