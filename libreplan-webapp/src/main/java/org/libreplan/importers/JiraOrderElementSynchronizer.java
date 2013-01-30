@@ -308,37 +308,39 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
             directAdvanceAssignment = DirectAdvanceAssignment.create(false,
                     new BigDecimal(100));
             directAdvanceAssignment.setAdvanceType(advanceType);
+            try {
+                orderElement.addAdvanceAssignment(directAdvanceAssignment);
+            } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
+                // This couldn't happen as it has just created the
+                // directAdvanceAssignment with false as reportGlobalAdvance
+                throw new RuntimeException(e);
+            } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
+                // This could happen if a parent or child of the current
+                // OrderElement has an advance of type PERCENTAGE
+                jiraSyncInfo
+                        .addSyncFailedReason("Duplicate value AdvanceAssignment for order element of '"
+                                + orderElement.getCode() + "'");
+                return;
+            }
         }
-        directAdvanceAssignment.setOrderElement(orderElement);
 
         AdvanceMeasurement advanceMeasurement = directAdvanceAssignment
                 .getAdvanceMeasurementAtExactDate(latestWorkLogDate);
         if (advanceMeasurement == null) {
             advanceMeasurement = AdvanceMeasurement.create();
+            advanceMeasurement.setDate(latestWorkLogDate);
+            directAdvanceAssignment.addAdvanceMeasurements(advanceMeasurement);
         }
 
         advanceMeasurement.setValue(percentage);
-        advanceMeasurement.setDate(latestWorkLogDate);
 
-        directAdvanceAssignment.addAdvanceMeasurements(advanceMeasurement);
-
-        advanceMeasurement.setAdvanceAssignment(directAdvanceAssignment);
-
-        if (directAdvanceAssignment.isNewObject()) {
-            try {
-                directAdvanceAssignment.getOrderElement().addAdvanceAssignment(
-                        directAdvanceAssignment);
-            } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
-                jiraSyncInfo
-                        .addSyncFailedReason("Duplicate value ReportGlobablAdvance for '"
-                                + orderElement.getCode() + "'");
-            } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-                jiraSyncInfo
-                        .addSyncFailedReason("Duplicate value AdvanceAssignment for order element of '"
-                                + orderElement.getCode() + "'");
-            }
+        DirectAdvanceAssignment spreadAdvanceAssignment = orderElement
+                .getReportGlobalAdvanceAssignment();
+        if (spreadAdvanceAssignment != null) {
+            spreadAdvanceAssignment.setReportGlobalAdvance(false);
         }
 
+        directAdvanceAssignment.setReportGlobalAdvance(true);
     }
 
     /**
