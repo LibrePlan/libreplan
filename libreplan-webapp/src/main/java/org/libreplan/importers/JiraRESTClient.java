@@ -21,12 +21,14 @@ package org.libreplan.importers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
@@ -42,10 +44,21 @@ import org.libreplan.ws.common.impl.Util;
  */
 public class JiraRESTClient {
 
+
     /**
      * Path for search operation in JIRA REST API
      */
     public static final String PATH_SEARCH = "rest/api/latest/search";
+
+    /**
+     * Path for authenticate session in JIRA REST API
+     */
+    public static final String PATH_AUTH_SESSION = "rest/auth/latest/session";
+
+    /**
+     * Path for issue operations in JIRA REST API
+     */
+    public static final String PATH_ISSUE = "/rest/api/latest/issue/";
 
     private static final MediaType[] mediaTypes = new MediaType[] {
             MediaType.valueOf(MediaType.APPLICATION_JSON),
@@ -62,7 +75,7 @@ public class JiraRESTClient {
     public static List<String> getAllLables(String url) {
         WebClient client = WebClient.create(url).accept(mediaTypes);
         String labels = client.get(String.class);
-        return Arrays.asList(labels.split("\\s*,\\s*"));
+        return Arrays.asList(StringUtils.split(labels, ","));
     }
 
     /**
@@ -104,11 +117,10 @@ public class JiraRESTClient {
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
         jacksonJaxbJsonProvider.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES,
                 false);
-        List<Object> providers = new ArrayList<Object>();
 
-        providers.add(jacksonJaxbJsonProvider);
-
-        return WebClient.create(url, providers).accept(mediaTypes);
+        return WebClient.create(url,
+                Collections.singletonList(jacksonJaxbJsonProvider)).accept(
+                mediaTypes);
 
     }
 
@@ -126,7 +138,7 @@ public class JiraRESTClient {
             String password) {
         NaiveTrustProvider.setAlwaysTrust(true);
 
-        client.path("rest/auth/latest/session");
+        client.path(PATH_AUTH_SESSION);
 
         Util.addAuthorizationHeader(client, login, password);
         Response response = client.get();
@@ -149,7 +161,7 @@ public class JiraRESTClient {
     private static List<Issue> getIssuesDetails(WebClient client, List<Issue> issues) {
 
         client.back(true);
-        client.path("/rest/api/latest/issue/");
+        client.path(PATH_ISSUE);
 
         List<Issue> issueDetails = new ArrayList<Issue>();
         for (Issue issue : issues) {

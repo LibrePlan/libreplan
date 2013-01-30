@@ -50,6 +50,7 @@ import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.importers.JiraRESTClient;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
@@ -273,7 +274,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 .getJiraConfiguration();
 
         WebClient client = WebClient.create(jiraConfiguration.getJiraUrl());
-        client.path("rest/auth/latest/session").accept(
+        client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(
                 MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
 
         org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
