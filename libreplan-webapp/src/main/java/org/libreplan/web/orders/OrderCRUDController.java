@@ -1707,7 +1707,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getJiraConfiguration().isJiraActivated();
     }
 
-    public void syncWithJira(Event event) {
+    public void syncWithJira() {
 
         List<String> items = jiraOrderElementSynchronizer.getAllJiraLabels();
 

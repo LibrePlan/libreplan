@@ -299,7 +299,7 @@
                                        <textbox id="txtImportedLabel" value="@{controller.order.importedLabel}"
                                            width="350px" disabled="true"/>
                                         <button label="${i18n:_('Sync with JIRA')}" id="syncWithJiraButton" disabled="@{controller.jiraDeactivated}"
-                                           onClick="controller.syncWithJira(event)" />
+                                           onClick="controller.syncWithJira()" />
                                     </hbox>
                                </row>
                            </rows>
