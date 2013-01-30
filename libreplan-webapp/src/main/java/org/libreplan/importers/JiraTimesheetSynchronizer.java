@@ -93,11 +93,15 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
 
         workReportType = findWorkReportType("Jira-connector");
         if (workReportType == null) {
+            jiraSyncInfo
+                    .addSyncFailedReason("Work repor type \"Jira-connector\" not found");
             return;
         }
 
         typeOfWorkHours = findTypeOfWorkHours("Default");
         if (typeOfWorkHours == null) {
+            jiraSyncInfo
+                    .addSyncFailedReason("Type of work hours \"Default\" not found");
             return;
         }
 
