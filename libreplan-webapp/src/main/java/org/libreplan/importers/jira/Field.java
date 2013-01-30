@@ -21,10 +21,10 @@ package org.libreplan.importers.jira;
 
 public class Field {
 
-    String summary;
-    Status status;
-    TimeTracking timetracking;
-    WorkLog worklog;
+    private String summary;
+    private Status status;
+    private TimeTracking timetracking;
+    private WorkLog worklog;
 
     public String getSummary() {
         return summary;
