@@ -1739,7 +1739,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues(issues,
                 order);
 
-        saveAndContinue(false);
         if (jirasyncPopup != null) {
             jirasyncPopup.close();
         }
