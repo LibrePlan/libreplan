@@ -41,6 +41,7 @@ import javax.annotation.Resource;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
@@ -373,6 +374,7 @@ public class JiraOrderElementSynchronizerTest {
     }
 
     @Test
+    @Ignore("Only working if you have a JIRA server configured")
     public void testSyncOrderElementsOfAnExistingOrderWithNoOrderLines() {
         Order order = givenOrder();
         for (Issue issue : issues) {
@@ -395,6 +397,7 @@ public class JiraOrderElementSynchronizerTest {
 
 
     @Test
+    @Ignore("Only working if you have a JIRA server configured")
     public void testReSyncOrderElementsOfAnExistingOrderWithOrderLines() {
         Order order = givenOrderWithValidOrderLines();
         Integer workingHours = order.getWorkHours();

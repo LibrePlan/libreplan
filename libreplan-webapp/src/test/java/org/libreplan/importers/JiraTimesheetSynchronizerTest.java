@@ -40,6 +40,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
@@ -321,6 +322,7 @@ public class JiraTimesheetSynchronizerTest {
     }
 
     @Test
+    @Ignore("Only working if you have a JIRA server configured")
     public void testSyncJiraTimesheet() {
 
         workReportType = createWorkReportType("Jira-connector");

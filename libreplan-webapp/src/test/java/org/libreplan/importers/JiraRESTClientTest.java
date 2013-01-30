@@ -30,6 +30,7 @@ import java.util.Properties;
 import javax.ws.rs.WebApplicationException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.libreplan.importers.jira.Issue;
 
@@ -54,6 +55,7 @@ public class JiraRESTClientTest {
     }
 
     @Test
+    @Ignore("Only working if you have a JIRA server configured")
     public void testGetAllLablesFromValidLabelUrl() {
         List<String> result = JiraRESTClient.getAllLables(properties
                 .getProperty("label_url"));
@@ -66,6 +68,7 @@ public class JiraRESTClientTest {
     }
 
     @Test
+    @Ignore("Only working if you have a JIRA server configured")
     public void testGetIssuesForValidLabelAndAuthorizedUser() {
         List<Issue> issues = JiraRESTClient.getIssues(
                 properties.getProperty("url"),
@@ -82,6 +85,7 @@ public class JiraRESTClientTest {
     }
 
     @Test
+    @Ignore("Only working if you have a JIRA server configured")
     public void testGetIssuesForEmptyLabel() {
         List<Issue> issues = JiraRESTClient.getIssues(
                 properties.getProperty("url"),
