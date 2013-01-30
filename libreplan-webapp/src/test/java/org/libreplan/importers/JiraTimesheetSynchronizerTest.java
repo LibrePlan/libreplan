@@ -146,9 +146,9 @@ public class JiraTimesheetSynchronizerTest {
                     properties.getProperty("password"),
                     JiraRESTClient.PATH_SEARCH, LABEL);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return issues;
     }

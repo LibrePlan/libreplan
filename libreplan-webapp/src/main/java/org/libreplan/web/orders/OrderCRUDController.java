@@ -1773,9 +1773,9 @@ public class OrderCRUDController extends GenericForwardComposer {
         try {
             jiraSyncInfoWindow.doModal();
         } catch (SuspendNotAllowedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
