@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.hibernate.NonUniqueResultException;
 import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
@@ -84,6 +85,9 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Autowired
+    private IConfigurationDAO configurationDAO;
+
+    @Autowired
     private IAdHocTransactionService adHocTransactionService;
 
     @Override
@@ -98,12 +102,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
             return;
         }
 
-        typeOfWorkHours = findTypeOfWorkHours("Default");
-        if (typeOfWorkHours == null) {
-            jiraSyncInfo
-                    .addSyncFailedReason("Type of work hours \"Default\" not found");
-            return;
-        }
+        typeOfWorkHours = getTypeOfWorkHours();
 
         workers = getWorkers();
         if (workers == null && workers.isEmpty()) {
@@ -291,21 +290,13 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     }
 
     /**
-     * Searches for {@link TypeOfWorkHours} for the specified parameter
-     * <code>name</code>
+     * Returns {@link TypeOfWorkHours} configured for JIRA connector
      *
-     * @param name
-     *            unique name
-     * @return TypeOfWorkHours if found, null otherwise
+     * @return TypeOfWorkHours for JIRA connector
      */
-    private TypeOfWorkHours findTypeOfWorkHours(String name) {
-        try {
-            return typeOfWorkHoursDAO.findUniqueByName(name);
-        } catch (InstanceNotFoundException e) {
-            jiraSyncInfo.addSyncFailedReason("Type of workhours '" + name
-                    + "' not found");
-        }
-        return null;
+    private TypeOfWorkHours getTypeOfWorkHours() {
+        return configurationDAO.getConfiguration().getJiraConfiguration()
+                .getJiraConnectorTypeOfWorkHours();
     }
 
     /**
