@@ -19,7 +19,6 @@
 
 package org.libreplan.importers;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -243,21 +242,18 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
      */
     private void updateOrCreateDescriptionValuesAndAddToWorkReportLine(WorkReportLine workReportLine,
             String comment) {
-        Set<DescriptionValue> descriptionValues = new HashSet<DescriptionValue>();
-        for (DescriptionField descriptionField : workReportType.getLineFields()) {
-            DescriptionValue descriptionValue;
-            try {
-                descriptionValue = workReportLine
-                        .getDescriptionValueByFieldName(descriptionField
-                                .getFieldName());
-                descriptionValue.setValue(comment.substring(0,
-                        Math.min(comment.length(), 254)));
-            } catch (InstanceNotFoundException e) {
-                descriptionValue = DescriptionValue.create(
-                        descriptionField.getFieldName(), comment);
-            }
-            descriptionValues.add(descriptionValue);
+        DescriptionField descriptionField = workReportType.getLineFields().iterator().next();
+        comment = comment.substring(0, descriptionField.getLength() - 1);
+
+        Set<DescriptionValue> descriptionValues = workReportLine
+                .getDescriptionValues();
+        if (descriptionValues.isEmpty()) {
+            descriptionValues.add(DescriptionValue.create(
+                    descriptionField.getFieldName(), comment));
+        } else {
+            descriptionValues.iterator().next().setValue(comment);
         }
+
         workReportLine.setDescriptionValues(descriptionValues);
     }
 
