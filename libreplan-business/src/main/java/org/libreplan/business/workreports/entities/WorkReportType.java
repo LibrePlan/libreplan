@@ -532,4 +532,11 @@ public class WorkReportType extends IntegrationEntity implements IHumanIdentifia
                 .getName());
     }
 
+    public boolean isJiraTimesheetsType() {
+        if (StringUtils.isBlank(name)) {
+            return false;
+        }
+        return name.equals(PredefinedWorkReportTypes.JIRA_TIMESHEETS.getName());
+    }
+
 }

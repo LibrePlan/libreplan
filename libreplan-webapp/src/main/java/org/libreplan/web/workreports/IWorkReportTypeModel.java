@@ -56,7 +56,7 @@ public interface IWorkReportTypeModel extends IIntegrationEntityModel {
      *
      * @return A {@link List} of {@link WorkReportType}
      */
-    List<WorkReportType> getWorkReportTypesExceptPersonalTimeSheets();
+    List<WorkReportType> getWorkReportTypesExceptPersonalAndJiraTimesheets();
 
     /**
      * Stores the current {@link WorkReportType}.
