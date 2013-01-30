@@ -286,10 +286,10 @@ public class ConfigurationController extends GenericForwardComposer {
 
         if (response.getStatus() == Status.OK.getStatusCode()) {
             messages.showMessage(Level.INFO,
-                    _("Jira connection was successful"));
+                    _("JIRA connection was successful"));
         } else {
             messages.showMessage(Level.ERROR,
-                    _("Cannot connect to Jira server"));
+                    _("Cannot connect to JIRA server"));
         }
 
     }

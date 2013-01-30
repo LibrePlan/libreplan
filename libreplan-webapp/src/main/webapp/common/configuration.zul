@@ -42,7 +42,7 @@
                 <tab label="${i18n:_('Main preferences')}" />
                 <tab label="${i18n:_('Entity sequences')}" />
                 <tab label="${i18n:_('LDAP configuration')}" />
-                <tab label="${i18n:_('Jira connector')}" />
+                <tab label="${i18n:_('JIRA connector')}" />
             </tabs>
             <tabpanels>
                 <tabpanel id="panelConfiguration">
@@ -427,19 +427,19 @@
                                 <checkbox id="jiraActivated" checked="@{configurationController.jiraConfiguration.jiraActivated}" width="300px" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Jira URL')}" />
+                                <label value="${i18n:_('JIRA URL')}" />
                                 <textbox id="jiraURL" value="@{configurationController.jiraConfiguration.jiraUrl}"  width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Jira label URL')}" />
+                                <label value="${i18n:_('JIRA label URL')}" />
                                 <textbox id="jiraLabelURL" value="@{configurationController.jiraConfiguration.jiraLabelUrl}"  width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Jira sync account')}" />
+                                <label value="${i18n:_('JIRA sync account')}" />
                                 <textbox id="jiraSyncAccount" value="@{configurationController.jiraConfiguration.jiraUserId}"  width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Jira sync password')}" />
+                                <label value="${i18n:_('JIRA sync password')}" />
                                 <textbox id="jiraSyncPassword" value="@{configurationController.jiraConfiguration.jiraPassword}"  type="password" width="300px"/>
                             </row>
                             <row>

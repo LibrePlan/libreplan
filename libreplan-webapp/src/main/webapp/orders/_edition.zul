@@ -282,7 +282,7 @@
                      </groupbox>
                 </groupbox>
                 <groupbox style="margin-top: 5px" sclass="jiraLabel" closable="false">
-                   <caption label="${i18n:_('Jira import information')}" />
+                   <caption label="${i18n:_('JIRA import information')}" />
                    <separator spacing="10px"/>
                    <hbox width="100%">
                        <separator spacing="10px" width="100%"/>
@@ -294,11 +294,11 @@
                            </columns>
                            <rows>
                                  <row>
-                                    <label value="${i18n:_('Jira label')}" width="50px"/>
+                                    <label value="${i18n:_('JIRA label')}" width="50px"/>
                                     <hbox>
                                        <textbox id="txtImportedLabel" value="@{controller.order.importedLabel}"
                                            width="350px" disabled="true"/>
-                                        <button label="${i18n:_('Sync with Jira')}" id="syncWithJiraButton" disabled="@{controller.jiraDeactivated}"
+                                        <button label="${i18n:_('Sync with JIRA')}" id="syncWithJiraButton" disabled="@{controller.jiraDeactivated}"
                                            onClick="controller.syncWithJira(event)" />
                                     </hbox>
                                </row>
