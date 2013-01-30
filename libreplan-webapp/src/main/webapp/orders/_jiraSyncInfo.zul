@@ -20,29 +20,24 @@
 <window id="winJiraSyncInfo" title="${i18n:_('LibrePlan: Jira synchronization info')}"
     width="500px" border="normal" mode="modal">
     <div>
-           <hbox>
-               <label value="${i18n:_('Synchronizition of order elements with jira issues was successful.')}" sclass="remarked" />
-           </hbox>
 
-           <hbox>
-               <label value="${i18n:_('except synchronization of progress assignment is not completed for the following reasons.')}" if="${not args.showSyncProgressSuccess}"/>
-           </hbox>
-           <hbox>
-               <listbox model="${arg.jiraSyncProgressFailedReasons}"/>
-           </hbox>
+        <vbox>
+            <label value="${i18n:_('Synchronization of order elements with JIRA issues was successful')}" sclass="remarked" />
+            <vbox if="${not args.showSyncProgressSuccess}">
+                <label value="${i18n:_('Synchronization of progress assignment is not completed for the following reasons:')}" />
+                <listbox model="${arg.jiraSyncProgressFailedReasons}"/>
+            </vbox>
+        </vbox>
 
-           <separator spacing="20px"/>
+        <separator spacing="20px"/>
 
-           <hbox>
-               <label value="${i18n:_('Synchronizition of timesheets with jira issues was successful.')}" sclass="remarked" if="${args.showSyncTimesheetSuccess}"/>
-           </hbox>
-
-           <hbox>
-               <label value="${i18n:_('Synchronizition of timesheets is not completed for the follwing reasons.')}" if="${not args.showSyncTimesheetSuccess}"/>
-           </hbox>
-           <hbox>
-               <listbox model="${arg.jiraSyncTimesheetFailedReasons}"/>
-           </hbox>
+        <vbox>
+            <label value="${i18n:_('Synchronization of timesheets with JIRA issues was successful')}" sclass="remarked" if="${args.showSyncTimesheetSuccess}"/>
+            <vbox if="${not args.showSyncTimesheetSuccess}">
+                <label value="${i18n:_('Synchronization of timesheets is not completed for the following reasons:')}" />
+                <listbox model="${arg.jiraSyncTimesheetFailedReasons}"/>
+            </vbox>
+        </vbox>
 
     </div>
     <button id="closeBtn" label="${i18n:_('Close')}" onClick="winJiraSyncInfo.detach()"
