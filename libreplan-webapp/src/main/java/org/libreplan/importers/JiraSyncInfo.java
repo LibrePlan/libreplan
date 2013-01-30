@@ -20,9 +20,8 @@
 package org.libreplan.importers;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Keeps track the synchronization info.
@@ -31,7 +30,7 @@ import java.util.Set;
  */
 public class JiraSyncInfo {
 
-    private Set<String> syncFailedReasons = new HashSet<String>();
+    private List<String> syncFailedReasons = new ArrayList<String>();
 
     /**
      * Add the specified <code>reason</code> to syncFailedReasons list
@@ -56,9 +55,7 @@ public class JiraSyncInfo {
      * returns reasons why synchronization is failed
      */
     public List<String> getSyncFailedReasons() {
-        List<String> failedReasons = new ArrayList<String>();
-        failedReasons.addAll(syncFailedReasons);
-        return failedReasons;
+        return Collections.unmodifiableList(syncFailedReasons);
     }
 
 }
