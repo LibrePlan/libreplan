@@ -89,20 +89,6 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     @Override
     @Transactional
     public void syncJiraTimesheetWithJiraIssues(List<Issue> issues, Order order) {
-        startSync(issues, order);
-
-    }
-
-    /**
-     * Start synchronization of timesheets
-     *
-     * @param issues
-     *            the jira issues
-     * @param order
-     *            an existing order
-     */
-    private void startSync(List<Issue> issues, Order order) {
-
         jiraSyncInfo = new JiraSyncInfo();
 
         workReportType = findWorkReportType("Jira-connector");
