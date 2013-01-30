@@ -110,7 +110,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
             return;
         }
 
-        String code = order.getCode() + " " + order.getImportedLabel();
+        String code = order.getCode() + "-" + order.getImportedLabel();
 
         WorkReport workReport = updateOrCreateWorkReport(code);
 
