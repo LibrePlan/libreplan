@@ -107,8 +107,6 @@ public class ConfigurationModel implements IConfigurationModel {
     public void init() {
         this.configuration = getCurrentConfiguration();
         initEntitySequences();
-        initLdapConfiguration();
-        initJiraConfiguration();
     }
 
     private void initEntitySequences() {
@@ -119,18 +117,6 @@ public class ConfigurationModel implements IConfigurationModel {
         for (EntitySequence entitySequence : entitySequenceDAO.getAll()) {
             entitySequences.get(entitySequence.getEntityName()).add(
                     entitySequence);
-        }
-    }
-
-    private void initLdapConfiguration() {
-        if (null == configuration.getLdapConfiguration()) {
-            configuration.setLdapConfiguration(LDAPConfiguration.create());
-        }
-    }
-
-    private void initJiraConfiguration() {
-        if (null == configuration.getJiraConfiguration()) {
-            configuration.setJiraConfiguration(JiraConfiguration.create());
         }
     }
 

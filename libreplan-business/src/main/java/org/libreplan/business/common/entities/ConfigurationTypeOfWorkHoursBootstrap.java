@@ -32,8 +32,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Fills the attribute {@link Configuration#personalTimesheetsTypeOfWorkHours}
- * with a default value.<br />
+ * Fills the attributes {@link Configuration#personalTimesheetsTypeOfWorkHours}
+ * and {@link JiraConfiguration#jiraConnectorTypeOfWorkHours} with a default
+ * values.<br />
  *
  * If possible it uses the "Default" {@link TypeOfWorkHours}, but if it doesn't
  * exist, it uses the first {@link TypeOfWorkHours} found.<br />
@@ -47,8 +48,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Scope("singleton")
 @BootstrapOrder(1)
-public class PersonalTimesheetsTypeOfWorkHoursBootstrap implements
-        IPersonalTimesheetsTypeOfWorkHoursBootstrap {
+public class ConfigurationTypeOfWorkHoursBootstrap implements
+        IConfigurationTypeOfWorkHoursBootstrap {
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -74,6 +75,8 @@ public class PersonalTimesheetsTypeOfWorkHoursBootstrap implements
         }
 
         configuration.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
+        configuration.getJiraConfiguration().setJiraConnectorTypeOfWorkHours(
+                typeOfWorkHours);
         configurationDAO.save(configuration);
     }
 
