@@ -160,11 +160,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private LocalDate filterFinishDate;
 
     // All the status but CANCELLED and STORED
-    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = EnumSet
-            .of(OrderStatusEnum.PRE_SALES, OrderStatusEnum.OFFERED,
-                    OrderStatusEnum.OUTSOURCED, OrderStatusEnum.ACCEPTED,
-                    OrderStatusEnum.STARTED, OrderStatusEnum.ON_HOLD,
-                    OrderStatusEnum.FINISHED);
+    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = OrderStatusEnum
+            .getVisibleStatus();
 
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
