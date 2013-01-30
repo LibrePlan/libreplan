@@ -1006,7 +1006,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void addHoursCell(final T currentElement) {
             Intbox intboxHours = buildHoursIntboxFor(currentElement);
             hoursIntBoxByElement.put(currentElement, intboxHours);
-            if (readOnly || codeFromJira) {
+            // TODO: Disable for JIRA issues
+            if (readOnly) {
                 intboxHours.setDisabled(true);
             }
             Treecell cellHours = addCell(intboxHours);
@@ -1313,12 +1314,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             ((Hbox) orderElementTreeComponent.getFellowIfAny("selectedRowButtons")).setVisible(!readOnly);
             Util.reloadBindings(orderElementTreeComponent);
         }
-    }
-
-    protected boolean codeFromJira = false;
-
-    public void setCodeFromJira(boolean codeFromJira) {
-        this.codeFromJira = codeFromJira;
     }
 
     protected TreeComponent orderElementTreeComponent;
