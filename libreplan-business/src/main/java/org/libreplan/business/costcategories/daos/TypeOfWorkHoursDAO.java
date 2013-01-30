@@ -149,6 +149,7 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         checkHasHourCost(type);
         checkHasWorkReportLine(type);
         checkIsPersonalTimesheetsTypeOfWorkHours(type);
+        checkIsJiraConnectorTypeOfWorkHours(type);
     }
 
     private void checkHasWorkReportLine(TypeOfWorkHours type) {
@@ -190,6 +191,17 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         Criteria c = getSession().createCriteria(TypeOfWorkHours.class).add(
                 Restrictions.eq("name", typeOfWorkHours.getName()));
         return c.uniqueResult() != null;
+    }
+
+    private void checkIsJiraConnectorTypeOfWorkHours(TypeOfWorkHours type) {
+        Configuration configuration = configurationDAO.getConfiguration();
+        if (configuration.getJiraConfiguration()
+                .getJiraConnectorTypeOfWorkHours().getId().equals(type.getId())) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete the type of work hours. It is configured as type of work hours for JIRA connector.",
+                            type);
+        }
     }
 
 }
