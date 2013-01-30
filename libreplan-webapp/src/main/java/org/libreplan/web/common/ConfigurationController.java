@@ -34,6 +34,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -283,7 +284,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
         Response response = client.get();
 
-        if (response.getStatus() == 200) {
+        if (response.getStatus() == Status.OK.getStatusCode()) {
             messages.showMessage(Level.INFO,
                     _("Jira connection was successful"));
         } else {
