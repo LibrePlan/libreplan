@@ -185,13 +185,14 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
 
         for (WorkLogItem workLogItem : workLogItems) {
             WorkReportLine workReportLine;
+            String code = orderElement.getCode() + "-" + workLogItem.getId();
+
             try {
-                workReportLine = workReport
-                        .getWorkReportLineByCode(orderElement.getCode() + "-"
-                                + workLogItem.getId());
+                workReportLine = workReport.getWorkReportLineByCode(code);
             } catch (InstanceNotFoundException e) {
                 workReportLine = WorkReportLine.create(workReport);
                 workReport.addWorkReportLine(workReportLine);
+                workReportLine.setCode(code);
             }
 
             Resource resource = getWorker(workLogItem.getAuthor().getName());
@@ -219,10 +220,8 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
             OrderElement orderElement, WorkLogItem workLogItem,
             Resource resource) {
 
-        String code = orderElement.getCode() + "-" + workLogItem.getId();
         int timeSpent = workLogItem.getTimeSpentSeconds().intValue();
 
-        workReportLine.setCode(code);
         workReportLine.setDate(workLogItem.getStarted());
         workReportLine.setResource(resource);
         workReportLine.setOrderElement(orderElement);
