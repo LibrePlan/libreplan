@@ -442,6 +442,12 @@
                                 <label value="${i18n:_('Jira sync password')}" />
                                 <textbox id="jiraSyncPassword" value="@{configurationController.jiraConfiguration.jiraPassword}"  type="password" width="300px"/>
                             </row>
+                            <row>
+                                <label value="${i18n:_('Hours type for JIRA connector')}" />
+                                <bandboxSearch
+                                    finder="TypeOfWorkHoursBandboxFinder"
+                                    selectedElement="@{configurationController.jiraConnectorTypeOfWorkHours, access='both'}" />
+                            </row>
                         </rows>
                     </grid>
                     <separator />

@@ -965,4 +965,12 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setSecondsPlanningWarning(secondsPlanningWarning);
     }
 
+    public TypeOfWorkHours getJiraConnectorTypeOfWorkHours() {
+        return configurationModel.getJiraConnectorTypeOfWorkHours();
+    }
+
+    public void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
+        configurationModel.setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
+    }
+
 }

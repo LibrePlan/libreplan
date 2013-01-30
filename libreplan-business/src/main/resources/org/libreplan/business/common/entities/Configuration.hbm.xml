@@ -128,7 +128,10 @@
             <property name="jiraLabelUrl" column="jira_label_url"/>
             <property name="jiraUserId" column="jira_user_id"/>
             <property name="jiraPassword" column="jira_password"/>
+            <many-to-one name="jiraConnectorTypeOfWorkHours" cascade="none"
+                column="jira_connector_type_of_work_hours" />
         </component>
+
     </class>
 
 </hibernate-mapping>

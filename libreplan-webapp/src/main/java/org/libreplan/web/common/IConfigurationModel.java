@@ -190,4 +190,8 @@ public interface IConfigurationModel {
 
     JiraConfiguration getJiraConfiguration();
 
+    TypeOfWorkHours getJiraConnectorTypeOfWorkHours();
+
+    void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
+
 }

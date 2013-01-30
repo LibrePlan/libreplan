@@ -20,6 +20,7 @@
 package org.libreplan.business.common.entities;
 
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 
 public class JiraConfiguration extends BaseEntity {
 
@@ -41,6 +42,8 @@ public class JiraConfiguration extends BaseEntity {
     private String jiraUserId;
 
     private String jiraPassword;
+
+    private TypeOfWorkHours jiraConnectorTypeOfWorkHours;
 
     /**
      * Constructor for Hibernate. Do not use!
@@ -88,5 +91,12 @@ public class JiraConfiguration extends BaseEntity {
         this.jiraPassword = jiraPassword;
     }
 
+    public TypeOfWorkHours getJiraConnectorTypeOfWorkHours() {
+        return jiraConnectorTypeOfWorkHours;
+    }
+
+    public void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
+        jiraConnectorTypeOfWorkHours = typeOfWorkHours;
+    }
 
 }

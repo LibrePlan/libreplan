@@ -269,4 +269,21 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-jira_connector_type_of_work_hours-to-configuration"
+        author="mrego">
+        <comment>
+            Add new column jira_connector_type_of_work_hours to configuration
+            table.
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_connector_type_of_work_hours" type="BIGINT" />
+        </addColumn>
+        <addForeignKeyConstraint
+            constraintName="configuration_jira_connector_type_of_work_hours_fkey"
+            baseTableName="configuration"
+            baseColumnNames="jira_connector_type_of_work_hours"
+            referencedTableName="type_of_work_hours"
+            referencedColumnNames="id" />
+    </changeSet>
+
 </databaseChangeLog>
