@@ -39,6 +39,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
+import org.libreplan.business.workreports.entities.PredefinedWorkReportTypes;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
@@ -95,13 +96,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     public void syncJiraTimesheetWithJiraIssues(List<Issue> issues, Order order) {
         jiraSyncInfo = new JiraSyncInfo();
 
-        workReportType = findWorkReportType("Jira-connector");
-        if (workReportType == null) {
-            jiraSyncInfo
-                    .addSyncFailedReason("Work repor type \"Jira-connector\" not found");
-            return;
-        }
-
+        workReportType = getJiraTimesheetsWorkReportType();
         typeOfWorkHours = getTypeOfWorkHours();
 
         workers = getWorkers();
@@ -268,24 +263,22 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     }
 
     /**
-     * Searches for {@link WorkReportType} for the specified parameter
-     * <code>name</code>
+     * Returns {@link WorkReportType} for JIRA connector
      *
-     * @param name
-     *            unique name
-     * @return WorkReportType if found, null otherwise
+     * @return WorkReportType for JIRA connector
      */
-    private WorkReportType findWorkReportType(String name) {
+    private WorkReportType getJiraTimesheetsWorkReportType() {
+        WorkReportType workReportType;
         try {
-            return workReportTypeDAO.findUniqueByName(name);
+            workReportType = workReportTypeDAO
+                    .findUniqueByName(PredefinedWorkReportTypes.JIRA_TIMESHEETS
+                            .getName());
         } catch (NonUniqueResultException e) {
-            jiraSyncInfo
-                    .addSyncFailedReason("Work report type 'Jira-connector' is not unique");
+            throw new RuntimeException(e);
         } catch (InstanceNotFoundException e) {
-            jiraSyncInfo
-                    .addSyncFailedReason("Work report type 'Jira-connector' not found");
+            throw new RuntimeException(e);
         }
-        return null;
+        return workReportType;
     }
 
     /**
