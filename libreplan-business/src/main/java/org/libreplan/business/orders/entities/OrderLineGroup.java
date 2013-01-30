@@ -163,6 +163,11 @@ public class OrderLineGroup extends OrderElement implements
             return getThis().isUpdatedFromTimesheets();
         }
 
+        @Override
+        public boolean isJiraIssue() {
+            return getThis().isJiraIssue();
+        }
+
     }
 
     public static OrderLineGroup create() {

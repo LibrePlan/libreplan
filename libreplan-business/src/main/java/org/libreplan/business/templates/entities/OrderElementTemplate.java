@@ -625,4 +625,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return false;
     }
 
+    @Override
+    public boolean isJiraIssue() {
+        return false;
+    }
+
 }

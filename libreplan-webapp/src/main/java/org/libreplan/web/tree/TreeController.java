@@ -1006,8 +1006,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void addHoursCell(final T currentElement) {
             Intbox intboxHours = buildHoursIntboxFor(currentElement);
             hoursIntBoxByElement.put(currentElement, intboxHours);
-            // TODO: Disable for JIRA issues
-            if (readOnly) {
+            if (readOnly || currentElement.isJiraIssue()) {
                 intboxHours.setDisabled(true);
             }
             Treecell cellHours = addCell(intboxHours);

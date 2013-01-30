@@ -105,6 +105,11 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
             return false;
         }
 
+        @Override
+        public boolean isJiraIssue() {
+            return false;
+        }
+
     }
 
     public static OrderLineGroupTemplate createNew() {
