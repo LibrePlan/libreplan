@@ -183,6 +183,11 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
             List<WorkLogItem> workLogItems) {
 
         for (WorkLogItem workLogItem : workLogItems) {
+            Resource resource = getWorker(workLogItem.getAuthor().getName());
+            if (resource == null) {
+                continue;
+            }
+
             WorkReportLine workReportLine;
             String code = orderElement.getCode() + "-" + workLogItem.getId();
 
@@ -194,11 +199,8 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
                 workReportLine.setCode(code);
             }
 
-            Resource resource = getWorker(workLogItem.getAuthor().getName());
-            if (resource != null) {
-                updateWorkReportLine(workReportLine, orderElement,
-                        workLogItem, resource);
-            }
+            updateWorkReportLine(workReportLine, orderElement, workLogItem,
+                    resource);
         }
 
     }
