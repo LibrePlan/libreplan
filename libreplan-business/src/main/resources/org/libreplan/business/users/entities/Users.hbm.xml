@@ -74,6 +74,9 @@
         <many-to-one name="projectsFilterLabel" cascade="none"
             column="projects_filter_label_id" />
 
+        <many-to-one name="resourcesLoadFilterCriterion" cascade="none"
+            column="resources_load_filter_criterion_id" />
+
     </class>
 
     <class name="Profile" table="profile_table">
