@@ -20,7 +20,6 @@
 package org.libreplan.importers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
@@ -70,12 +68,11 @@ public class JiraRESTClient {
      *
      * @param url
      *            the url from where to fetch data
-     * @return List of labels
+     * @return String with the list of labels sepparated by comma
      */
-    public static List<String> getAllLables(String url) {
+    public static String getAllLables(String url) {
         WebClient client = WebClient.create(url).accept(mediaTypes);
-        String labels = client.get(String.class);
-        return Arrays.asList(StringUtils.split(labels, ","));
+        return client.get(String.class);
     }
 
     /**

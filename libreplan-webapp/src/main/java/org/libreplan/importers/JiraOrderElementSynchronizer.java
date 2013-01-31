@@ -21,11 +21,15 @@ package org.libreplan.importers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
@@ -67,7 +71,14 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         String jiraLabelUrl = configurationDAO.getConfiguration()
                 .getJiraConfiguration().getJiraLabelUrl();
 
-        return JiraRESTClient.getAllLables(jiraLabelUrl);
+        String labels;
+        try {
+            new URL(jiraLabelUrl);
+            labels = JiraRESTClient.getAllLables(jiraLabelUrl);
+        } catch (MalformedURLException e) {
+            labels = jiraLabelUrl;
+        }
+        return Arrays.asList(StringUtils.split(labels, ","));
     }
 
     @Override

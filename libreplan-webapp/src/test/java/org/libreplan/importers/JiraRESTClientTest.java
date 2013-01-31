@@ -24,11 +24,13 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
 import javax.ws.rs.WebApplicationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -57,8 +59,9 @@ public class JiraRESTClientTest {
     @Test
     @Ignore("Only working if you have a JIRA server configured")
     public void testGetAllLablesFromValidLabelUrl() {
-        List<String> result = JiraRESTClient.getAllLables(properties
+        String labels = JiraRESTClient.getAllLables(properties
                 .getProperty("label_url"));
+        List<String> result = Arrays.asList(StringUtils.split(labels, ","));
         assertTrue(result.size() > 0);
     }
 
