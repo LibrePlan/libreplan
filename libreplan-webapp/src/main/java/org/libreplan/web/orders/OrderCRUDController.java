@@ -36,6 +36,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
@@ -49,6 +50,8 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.templates.entities.OrderTemplate;
+import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.IMessagesForUser;
@@ -77,6 +80,7 @@ import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -127,6 +131,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     @Autowired
     private IOrderModel orderModel;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     private IMessagesForUser messagesForUser;
 
@@ -210,9 +217,47 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("bdFilters");
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
-
         checkCreationPermissions();
         setupGlobalButtons();
+        initializeFilter();
+    }
+
+    private void initializeFilter() {
+        Date startDate = (Date) Sessions.getCurrent().getAttribute("companyFilterStartDate");
+        Date endDate = (Date) Sessions.getCurrent().getAttribute("companyFilterFinishDate");
+
+        boolean calculateStartDate = (startDate == null);
+        boolean calculateEndDate = (endDate == null);
+
+        // Filter predicate needs to be calculated based on the projects dates
+        if ((calculateStartDate) || (calculateEndDate)) {
+
+            User user;
+            try {
+                user = this.userDAO.findByLoginName(SecurityUtils
+                        .getSessionUserLoginName());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
+            // Calculate filter based on user preferences
+            if (user != null) {
+                if ((startDate == null)
+                        && (user.getProjectsFilterPeriodSince() != null)) {
+                    startDate = new LocalDate()
+                            .minusMonths(user.getProjectsFilterPeriodSince())
+                            .toDateTimeAtStartOfDay().toDate();
+                }
+                if ((endDate == null)
+                        && (user.getProjectsFilterPeriodTo() != null)) {
+                    endDate = new LocalDate()
+                            .plusMonths(user.getProjectsFilterPeriodTo())
+                            .toDateMidnight().toDate();
+                }
+            }
+        }
+        filterStartDate.setValue(startDate);
+        filterFinishDate.setValue(endDate);
     }
 
     private void setupGlobalButtons() {
@@ -797,7 +842,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         listing = (Grid) listWindow.getFellow("listing");
         showOrderFilter();
         showCreateButtons(true);
-        clearFilterDates();
     }
 
     private void showWindow(Window window) {
@@ -1313,9 +1357,9 @@ public class OrderCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 Date finishDate = (Date) value;
                 if ((finishDate != null)
-                        && (filterStartDate.getValue() != null)
-                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
-                    filterFinishDate.setValue(null);
+                        && (filterStartDate.getRawValue() != null)
+                        && (finishDate.compareTo((Date) filterStartDate
+                                .getRawValue()) < 0)) {
                     throw new WrongValueException(comp,
                             _("must be after start date"));
                 }
@@ -1330,9 +1374,10 @@ public class OrderCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 Date startDate = (Date) value;
                 if ((startDate != null)
-                        && (filterFinishDate.getValue() != null)
-                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
-                    filterStartDate.setValue(null);
+                        && (filterFinishDate.getRawValue() != null)
+                        && (startDate.compareTo((Date) filterFinishDate
+                                .getRawValue()) > 0)) {
+                    // filterStartDate.setValue(null);
                     throw new WrongValueException(comp,
                             _("must be lower than end date"));
                 }
@@ -1367,11 +1412,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         List<Order> filterOrders = orderModel.getFilterOrders(predicate);
         listing.setModel(new SimpleListModel(filterOrders.toArray()));
         listing.invalidate();
-    }
-
-    private void clearFilterDates() {
-        filterStartDate.setValue(null);
-        filterFinishDate.setValue(null);
     }
 
     public void showAllOrders() {
