@@ -196,9 +196,9 @@ public class TaskElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void addLabel(LabelType type, Label label) {
-        String pattern = label.getName() + " ( " + type.getName() + " )";
         getListMatching().add(
-                new FilterPair(TaskElementFilterEnum.Label, pattern, label));
+                new FilterPair(TaskElementFilterEnum.Label, label
+                        .getFinderPattern(), label));
     }
 
     private List<FilterPair> fillWithFirstTenFiltersResources() {
