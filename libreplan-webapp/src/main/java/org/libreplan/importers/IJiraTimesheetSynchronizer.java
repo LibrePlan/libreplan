@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.workreports.entities.WorkReportType;
-import org.libreplan.importers.jira.Issue;
+import org.libreplan.importers.jira.IssueDTO;
 
 /**
  * Synchronize the timesheets of order tasks of an existing order with jira
@@ -52,7 +52,7 @@ public interface IJiraTimesheetSynchronizer {
      * @param order
      *            an existing order
      */
-    void syncJiraTimesheetWithJiraIssues(List<Issue> issues, Order order);
+    void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order);
 
     /**
      * returns synchronization info, success or fail info

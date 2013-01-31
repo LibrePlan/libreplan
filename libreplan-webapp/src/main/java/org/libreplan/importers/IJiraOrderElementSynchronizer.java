@@ -25,7 +25,7 @@ import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.importers.jira.Issue;
+import org.libreplan.importers.jira.IssueDTO;
 
 /**
  * Synchronize order elements inclusive progress assignments and measurements of
@@ -60,7 +60,7 @@ public interface IJiraOrderElementSynchronizer {
      *
      * @return list of jira issues
      */
-    List<Issue> getJiraIssues(String label);
+    List<IssueDTO> getJiraIssues(String label);
 
     /**
      * Synchronizes the list of {@link OrderElement}s,
@@ -80,7 +80,7 @@ public interface IJiraOrderElementSynchronizer {
      * @param issues
      *            jira issues
      */
-    void syncOrderElementsWithJiraIssues(List<Issue> issues, Order order);
+    void syncOrderElementsWithJiraIssues(List<IssueDTO> issues, Order order);
 
     /**
      * returns synchronization info, success or fail info

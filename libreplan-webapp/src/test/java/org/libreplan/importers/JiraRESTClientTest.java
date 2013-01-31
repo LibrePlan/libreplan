@@ -34,7 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.libreplan.importers.jira.Issue;
+import org.libreplan.importers.jira.IssueDTO;
 
 /**
  * Test for {@link JiraRESTClient }
@@ -73,7 +73,7 @@ public class JiraRESTClientTest {
     @Test
     @Ignore("Only working if you have a JIRA server configured")
     public void testGetIssuesForValidLabelAndAuthorizedUser() {
-        List<Issue> issues = JiraRESTClient.getIssues(
+        List<IssueDTO> issues = JiraRESTClient.getIssues(
                 properties.getProperty("url"),
                 properties.getProperty("username"),
                 properties.getProperty("password"), JiraRESTClient.PATH_SEARCH,
@@ -90,7 +90,7 @@ public class JiraRESTClientTest {
     @Test
     @Ignore("Only working if you have a JIRA server configured")
     public void testGetIssuesForEmptyLabel() {
-        List<Issue> issues = JiraRESTClient.getIssues(
+        List<IssueDTO> issues = JiraRESTClient.getIssues(
                 properties.getProperty("url"),
                 properties.getProperty("username"),
                 properties.getProperty("password"), JiraRESTClient.PATH_SEARCH,

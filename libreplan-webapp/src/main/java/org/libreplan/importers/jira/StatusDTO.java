@@ -19,7 +19,13 @@
 
 package org.libreplan.importers.jira;
 
-public class Status {
+
+/**
+ * DTO representing a jira-issue Status
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
+public class StatusDTO {
     Integer id;
     String name;
     String self;

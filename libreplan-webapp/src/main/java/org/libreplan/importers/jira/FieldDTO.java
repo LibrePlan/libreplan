@@ -19,12 +19,18 @@
 
 package org.libreplan.importers.jira;
 
-public class Field {
+
+/**
+ * DTO representing a jira-issue Field
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
+public class FieldDTO {
 
     private String summary;
-    private Status status;
-    private TimeTracking timetracking;
-    private WorkLog worklog;
+    private StatusDTO status;
+    private TimeTrackingDTO timetracking;
+    private WorkLogDTO worklog;
 
     public String getSummary() {
         return summary;
@@ -34,27 +40,27 @@ public class Field {
         this.summary = summary;
     }
 
-    public TimeTracking getTimetracking() {
+    public TimeTrackingDTO getTimetracking() {
         return timetracking;
     }
 
-    public void setTimetracking(TimeTracking timetracking) {
+    public void setTimetracking(TimeTrackingDTO timetracking) {
         this.timetracking = timetracking;
     }
 
-    public WorkLog getWorklog() {
+    public WorkLogDTO getWorklog() {
         return worklog;
     }
 
-    public void setWorklog(WorkLog worklog) {
+    public void setWorklog(WorkLogDTO worklog) {
         this.worklog = worklog;
     }
 
-    public Status getStatus() {
+    public StatusDTO getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(StatusDTO status) {
         this.status = status;
     }
 

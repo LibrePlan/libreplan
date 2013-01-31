@@ -19,45 +19,30 @@
 
 package org.libreplan.importers.jira;
 
-import java.util.List;
+/**
+ * DTO representing a jira-issue LabelIssue
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
+public class LabelIssueDTO {
 
-public class WorkLog {
+    String key;
+    String self;
 
-    private Integer startAt;
-    private Integer maxResults;
-    private Integer total;
-    private List<WorkLogItem> worklogs;
-
-    public Integer getStartAt() {
-        return startAt;
+    public String getKey() {
+        return key;
     }
 
-    public void setStartAt(Integer startAt) {
-        this.startAt = startAt;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public Integer getMaxResults() {
-        return maxResults;
+    public String getSelf() {
+        return self;
     }
 
-    public void setMaxResults(Integer maxResults) {
-        this.maxResults = maxResults;
-    }
-
-    public Integer getTotal() {
-        return total;
-    }
-
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
-
-    public List<WorkLogItem> getWorklogs() {
-        return worklogs;
-    }
-
-    public void setWorklogs(List<WorkLogItem> worklogs) {
-        this.worklogs = worklogs;
+    public void setSelf(String self) {
+        this.self = self;
     }
 
 }

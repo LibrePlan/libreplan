@@ -22,6 +22,11 @@ package org.libreplan.business.common.entities;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 
+/**
+ * JiraConfiguration entity
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 public class JiraConfiguration extends BaseEntity {
 
     /**

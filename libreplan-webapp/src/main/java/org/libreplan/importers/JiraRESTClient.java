@@ -30,8 +30,8 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
-import org.libreplan.importers.jira.Issue;
-import org.libreplan.importers.jira.SearchResult;
+import org.libreplan.importers.jira.IssueDTO;
+import org.libreplan.importers.jira.SearchResultDTO;
 import org.libreplan.ws.cert.NaiveTrustProvider;
 import org.libreplan.ws.common.impl.Util;
 
@@ -84,7 +84,7 @@ public class JiraRESTClient {
      *            the query
      * @return List of jira Issues
      */
-    public static List<Issue> getIssues(String url, String username,
+    public static List<IssueDTO> getIssues(String url, String username,
             String password, String path, String query) {
 
         WebClient client = createClient(url);
@@ -97,7 +97,7 @@ public class JiraRESTClient {
             client.query("jql", query);
             client.query("maxResults", 1000);
         }
-        SearchResult searchResult = client.get(SearchResult.class);
+        SearchResultDTO searchResult = client.get(SearchResultDTO.class);
 
         return getIssuesDetails(client, searchResult.getIssues());
     }
@@ -155,14 +155,14 @@ public class JiraRESTClient {
      *
      * @return List of jira issue details
      */
-    private static List<Issue> getIssuesDetails(WebClient client, List<Issue> issues) {
+    private static List<IssueDTO> getIssuesDetails(WebClient client, List<IssueDTO> issues) {
 
         client.back(true);
         client.path(PATH_ISSUE);
 
-        List<Issue> issueDetails = new ArrayList<Issue>();
-        for (Issue issue : issues) {
-            issueDetails.add(client.path(issue.getId()).get(Issue.class));
+        List<IssueDTO> issueDetails = new ArrayList<IssueDTO>();
+        for (IssueDTO issue : issues) {
+            issueDetails.add(client.path(issue.getId()).get(IssueDTO.class));
             client.back(false);
         }
         return issueDetails;

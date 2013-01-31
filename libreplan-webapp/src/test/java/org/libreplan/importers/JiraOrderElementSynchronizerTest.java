@@ -64,10 +64,10 @@ import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.importers.jira.Issue;
-import org.libreplan.importers.jira.TimeTracking;
-import org.libreplan.importers.jira.WorkLog;
-import org.libreplan.importers.jira.WorkLogItem;
+import org.libreplan.importers.jira.IssueDTO;
+import org.libreplan.importers.jira.TimeTrackingDTO;
+import org.libreplan.importers.jira.WorkLogDTO;
+import org.libreplan.importers.jira.WorkLogItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -106,7 +106,7 @@ public class JiraOrderElementSynchronizerTest {
 
     private static final String LABEL = "labels=epd_12a_ZorgActiviteiten";
 
-    private List<Issue> issues;
+    private List<IssueDTO> issues;
 
     @Autowired
     private IOrderDAO orderDAO;
@@ -130,8 +130,8 @@ public class JiraOrderElementSynchronizerTest {
         transactionService.runOnAnotherTransaction(load);
     }
 
-    private List<Issue> getJiraIssues() {
-        List<Issue> issues = new ArrayList<Issue>();
+    private List<IssueDTO> getJiraIssues() {
+        List<IssueDTO> issues = new ArrayList<IssueDTO>();
         try {
             Properties properties = loadProperties();
             issues = JiraRESTClient.getIssues(properties.getProperty("url"),
@@ -208,7 +208,7 @@ public class JiraOrderElementSynchronizerTest {
                 .getDefaultCalendar());
         OrderVersion version = setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(version);
-        for (Issue issue : issues) {
+        for (IssueDTO issue : issues) {
             String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
                     + issue.getKey();
             String name = issue.getFields().getSummary();
@@ -267,9 +267,9 @@ public class JiraOrderElementSynchronizerTest {
 
     }
 
-    private void syncPorgressMeasurement(OrderElement orderElement, Issue issue) {
+    private void syncPorgressMeasurement(OrderElement orderElement, IssueDTO issue) {
 
-        WorkLog workLog = issue.getFields().getWorklog();
+        WorkLogDTO workLog = issue.getFields().getWorklog();
 
         if (workLog == null) {
             return;
@@ -278,7 +278,7 @@ public class JiraOrderElementSynchronizerTest {
             return;
         }
 
-        List<WorkLogItem> workLogItems = workLog.getWorklogs();
+        List<WorkLogItemDTO> workLogItems = workLog.getWorklogs();
         if (workLogItems.isEmpty()) {
             return;
         }
@@ -342,7 +342,7 @@ public class JiraOrderElementSynchronizerTest {
 
     }
 
-    private Integer getEstimatedHours(TimeTracking timeTracking) {
+    private Integer getEstimatedHours(TimeTrackingDTO timeTracking) {
         if (timeTracking == null) {
             return 0;
         }
@@ -360,7 +360,7 @@ public class JiraOrderElementSynchronizerTest {
         return 0;
     }
 
-    private Integer getLoggedHours(TimeTracking timeTracking) {
+    private Integer getLoggedHours(TimeTrackingDTO timeTracking) {
         if (timeTracking == null) {
             return 0;
         }
@@ -377,7 +377,7 @@ public class JiraOrderElementSynchronizerTest {
     @Ignore("Only working if you have a JIRA server configured")
     public void testSyncOrderElementsOfAnExistingOrderWithNoOrderLines() {
         Order order = givenOrder();
-        for (Issue issue : issues) {
+        for (IssueDTO issue : issues) {
             String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
                     + issue.getKey();
             String name = issue.getFields().getSummary();
@@ -401,7 +401,7 @@ public class JiraOrderElementSynchronizerTest {
     public void testReSyncOrderElementsOfAnExistingOrderWithOrderLines() {
         Order order = givenOrderWithValidOrderLines();
         Integer workingHours = order.getWorkHours();
-        for (Issue issue : issues) {
+        for (IssueDTO issue : issues) {
             String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
                     + issue.getKey();
             String name = issue.getFields().getSummary();

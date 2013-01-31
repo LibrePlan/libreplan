@@ -19,7 +19,13 @@
 
 package org.libreplan.importers.jira;
 
-public class Issue {
+
+/**
+ * DTO representing a jira-issue
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
+public class IssueDTO {
 
     private String expand;
 
@@ -29,7 +35,7 @@ public class Issue {
 
     private String self;
 
-    private Field fields;
+    private FieldDTO fields;
 
     public String getExpand() {
         return expand;
@@ -63,11 +69,11 @@ public class Issue {
         this.self = self;
     }
 
-    public Field getFields() {
+    public FieldDTO getFields() {
         return fields;
     }
 
-    public void setFields(Field fields) {
+    public void setFields(FieldDTO fields) {
         this.fields = fields;
     }
 

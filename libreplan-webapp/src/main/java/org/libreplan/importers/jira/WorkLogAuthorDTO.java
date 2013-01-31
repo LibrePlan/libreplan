@@ -19,37 +19,47 @@
 
 package org.libreplan.importers.jira;
 
+/**
+ * DTO representing a jira-issue WorkLogAuthor
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
+public class WorkLogAuthorDTO {
+    private boolean active;
+    private String displayName;
+    private String name;
+    private String self;
 
-public class TimeTracking {
-
-    private Integer originalEstimateSeconds;
-    private Integer remainingEstimateSeconds;
-    private Integer timeSpentSeconds;
-
-    public Integer getOriginalEstimateSeconds() {
-        return originalEstimateSeconds;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setOriginalEstimateSeconds(Integer originalEstimateSeconds) {
-        this.originalEstimateSeconds = originalEstimateSeconds;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
-    public Integer getRemainingEstimateSeconds() {
-        return remainingEstimateSeconds;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setRemainingEstimateSeconds(Integer remainingEstimateSeconds) {
-        this.remainingEstimateSeconds = remainingEstimateSeconds;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
-    public Integer getTimeSpentSeconds() {
-        return timeSpentSeconds;
+    public String getName() {
+        return name;
     }
 
-    public void setTimeSpentSeconds(Integer timeSpentSeconds) {
-        this.timeSpentSeconds = timeSpentSeconds;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public String getSelf() {
+        return self;
+    }
 
+    public void setSelf(String self) {
+        this.self = self;
+    }
 
 }

@@ -21,12 +21,20 @@ package org.libreplan.importers.jira;
 
 import java.util.List;
 
-public class SearchResult {
+import org.libreplan.business.orders.entities.OrderElement;
+
+/**
+ * DTO representing jira search result(response), it will be used for
+ * synchronization with {@link OrderElement}
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
+public class SearchResultDTO {
 
     private Integer startAt;
     private Integer maxResults;
     private Integer total;
-    private List<Issue> issues;
+    private List<IssueDTO> issues;
 
     public Integer getStartAt() {
         return startAt;
@@ -52,11 +60,11 @@ public class SearchResult {
         this.total = total;
     }
 
-    public List<Issue> getIssues() {
+    public List<IssueDTO> getIssues() {
         return issues;
     }
 
-    public void setIssues(List<Issue> issues) {
+    public void setIssues(List<IssueDTO> issues) {
         this.issues = issues;
     }
 

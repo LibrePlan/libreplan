@@ -44,17 +44,22 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.importers.jira.Issue;
-import org.libreplan.importers.jira.Status;
-import org.libreplan.importers.jira.TimeTracking;
-import org.libreplan.importers.jira.WorkLog;
-import org.libreplan.importers.jira.WorkLogItem;
+import org.libreplan.importers.jira.IssueDTO;
+import org.libreplan.importers.jira.StatusDTO;
+import org.libreplan.importers.jira.TimeTrackingDTO;
+import org.libreplan.importers.jira.WorkLogDTO;
+import org.libreplan.importers.jira.WorkLogItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of Synchronize order elements with jira issues
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchronizer {
@@ -83,7 +88,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     @Override
     @Transactional(readOnly = true)
-    public List<Issue> getJiraIssues(String label) {
+    public List<IssueDTO> getJiraIssues(String label) {
         JiraConfiguration jiraConfiguration = configurationDAO
                 .getConfiguration().getJiraConfiguration();
 
@@ -94,7 +99,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         String path = JiraRESTClient.PATH_SEARCH;
         String query = "labels=" + label;
 
-        List<Issue> issues = JiraRESTClient.getIssues(url, username, password,
+        List<IssueDTO> issues = JiraRESTClient.getIssues(url, username, password,
                 path, query);
 
         return issues;
@@ -102,11 +107,11 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     @Override
     @Transactional(readOnly = true)
-    public void syncOrderElementsWithJiraIssues(List<Issue> issues, Order order) {
+    public void syncOrderElementsWithJiraIssues(List<IssueDTO> issues, Order order) {
 
         jiraSyncInfo = new JiraSyncInfo();
 
-        for (Issue issue : issues) {
+        for (IssueDTO issue : issues) {
             String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
                     + issue.getKey();
             String name = issue.getFields().getSummary();
@@ -206,10 +211,10 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
      *            jira's issue to synchronize with progress assignment and
      *            measurement
      */
-    private void syncProgressMeasurement(OrderLine orderLine, Issue issue,
+    private void syncProgressMeasurement(OrderLine orderLine, IssueDTO issue,
             EffortDuration estimatedHours, EffortDuration loggedHours) {
 
-        WorkLog workLog = issue.getFields().getWorklog();
+        WorkLogDTO workLog = issue.getFields().getWorklog();
 
         if (workLog == null) {
             jiraSyncInfo.addSyncFailedReason("No worklogs found for '"
@@ -217,7 +222,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
             return;
         }
 
-        List<WorkLogItem> workLogItems = workLog.getWorklogs();
+        List<WorkLogItemDTO> workLogItems = workLog.getWorklogs();
         if (workLogItems.isEmpty()) {
             jiraSyncInfo.addSyncFailedReason("No worklog items found for '"
                     + issue.getKey() + "' issue");
@@ -246,8 +251,8 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     /**
      * Get the estimated seconds from
-     * {@link TimeTracking#getRemainingEstimateSeconds()} plus logged hours or
-     * {@link TimeTracking#getOriginalEstimateSeconds()} and convert it to
+     * {@link TimeTrackingDTO#getRemainingEstimateSeconds()} plus logged hours or
+     * {@link TimeTrackingDTO#getOriginalEstimateSeconds()} and convert it to
      * {@link EffortDuration}
      *
      * @param timeTracking
@@ -256,7 +261,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
      *            hours already logged
      * @return estimatedHours
      */
-    private EffortDuration getEstimatedHours(TimeTracking timeTracking,
+    private EffortDuration getEstimatedHours(TimeTrackingDTO timeTracking,
             EffortDuration loggedHours) {
         if (timeTracking == null) {
             return EffortDuration.zero();
@@ -277,14 +282,14 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     /**
      * Get the time spent in seconds from
-     * {@link TimeTracking#getTimeSpentSeconds()} and convert it to
+     * {@link TimeTrackingDTO#getTimeSpentSeconds()} and convert it to
      * {@link EffortDuration}
      *
      * @param timeTracking
      *            where the timespent to get from
      * @return timespent in hous
      */
-    private EffortDuration getLoggedHours(TimeTracking timeTracking) {
+    private EffortDuration getLoggedHours(TimeTrackingDTO timeTracking) {
         if (timeTracking == null) {
             return EffortDuration.zero();
         }
@@ -363,7 +368,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
      *            the status of the issue
      * @return true if status is Closed
      */
-    private boolean isIssueClosed(Status status) {
+    private boolean isIssueClosed(StatusDTO status) {
         if (status == null) {
             return false;
         }
@@ -377,9 +382,9 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
      *            list of workLogItems
      * @return latest date
      */
-    private Date getTheLatestWorkLoggedDate(List<WorkLogItem> workLogItems) {
+    private Date getTheLatestWorkLoggedDate(List<WorkLogItemDTO> workLogItems) {
         List<Date> dates = new ArrayList<Date>();
-        for (WorkLogItem workLogItem : workLogItems) {
+        for (WorkLogItemDTO workLogItem : workLogItems) {
             if (workLogItem.getStarted() != null) {
                 dates.add(workLogItem.getStarted());
             }

@@ -21,9 +21,14 @@ package org.libreplan.importers.jira;
 
 import java.util.Date;
 
-public class WorkLogItem {
+/**
+ * DTO representing a jira-issue WorkLogItem
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
+public class WorkLogItemDTO {
 
-    private WorkLogAuthor author;
+    private WorkLogAuthorDTO author;
     private Integer id;
     private String self;
     private Date created;
@@ -32,11 +37,11 @@ public class WorkLogItem {
     private Integer timeSpentSeconds;
     private String comment;
 
-    public WorkLogAuthor getAuthor() {
+    public WorkLogAuthorDTO getAuthor() {
         return author;
     }
 
-    public void setAuthor(WorkLogAuthor author) {
+    public void setAuthor(WorkLogAuthorDTO author) {
         this.author = author;
     }
 

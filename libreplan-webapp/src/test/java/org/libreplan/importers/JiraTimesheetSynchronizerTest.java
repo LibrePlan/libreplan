@@ -65,9 +65,9 @@ import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
-import org.libreplan.importers.jira.Issue;
-import org.libreplan.importers.jira.WorkLog;
-import org.libreplan.importers.jira.WorkLogItem;
+import org.libreplan.importers.jira.IssueDTO;
+import org.libreplan.importers.jira.WorkLogDTO;
+import org.libreplan.importers.jira.WorkLogItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -106,7 +106,7 @@ public class JiraTimesheetSynchronizerTest {
 
     private static final String LABEL = "labels=epd_12a_ZorgActiviteiten";
 
-    private List<Issue> issues;
+    private List<IssueDTO> issues;
 
     @Autowired
     private IOrderDAO orderDAO;
@@ -137,8 +137,8 @@ public class JiraTimesheetSynchronizerTest {
         transactionService.runOnAnotherTransaction(load);
     }
 
-    private List<Issue> getJiraIssues() {
-        List<Issue> issues = new ArrayList<Issue>();
+    private List<IssueDTO> getJiraIssues() {
+        List<IssueDTO> issues = new ArrayList<IssueDTO>();
         try {
             Properties properties = loadProperties();
             issues = JiraRESTClient.getIssues(properties.getProperty("url"),
@@ -186,7 +186,7 @@ public class JiraTimesheetSynchronizerTest {
                 .getDefaultCalendar());
         OrderVersion version = setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(version);
-        for (Issue issue : issues) {
+        for (IssueDTO issue : issues) {
             String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
                     + issue.getKey();
             String name = issue.getFields().getSummary();
@@ -228,9 +228,9 @@ public class JiraTimesheetSynchronizerTest {
 
     private void updateOrCreateWorkReportLineAndAddToWorkReport(
             WorkReport workReport, OrderElement orderElement,
-            List<WorkLogItem> workLogItems) {
+            List<WorkLogItemDTO> workLogItems) {
 
-        for (WorkLogItem workLogItem : workLogItems) {
+        for (WorkLogItemDTO workLogItem : workLogItems) {
             WorkReportLine workReportLine;
             try {
                 workReportLine = workReport
@@ -255,7 +255,7 @@ public class JiraTimesheetSynchronizerTest {
     }
 
     private void updateWorkReportLine(WorkReportLine workReportLine,
-            OrderElement orderElement, WorkLogItem workLogItem,
+            OrderElement orderElement, WorkLogItemDTO workLogItem,
             org.libreplan.business.resources.entities.Resource resource) {
 
         String code = orderElement.getCode() + "-" + workLogItem.getId();
@@ -334,10 +334,10 @@ public class JiraTimesheetSynchronizerTest {
 
         WorkReport workReport = getOrCreateWorkReport(code);
 
-        for (Issue issue : issues) {
-            WorkLog worklog = issue.getFields().getWorklog();
+        for (IssueDTO issue : issues) {
+            WorkLogDTO worklog = issue.getFields().getWorklog();
             if (worklog != null) {
-                List<WorkLogItem> workLogItems = worklog.getWorklogs();
+                List<WorkLogItemDTO> workLogItems = worklog.getWorklogs();
                 if (workLogItems != null && !workLogItems.isEmpty()) {
 
                     String code1 = JiraConfiguration.CODE_PREFIX

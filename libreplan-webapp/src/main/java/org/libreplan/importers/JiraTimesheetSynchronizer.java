@@ -44,9 +44,9 @@ import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.business.workreports.valueobjects.DescriptionField;
 import org.libreplan.business.workreports.valueobjects.DescriptionValue;
-import org.libreplan.importers.jira.Issue;
-import org.libreplan.importers.jira.WorkLog;
-import org.libreplan.importers.jira.WorkLogItem;
+import org.libreplan.importers.jira.IssueDTO;
+import org.libreplan.importers.jira.WorkLogDTO;
+import org.libreplan.importers.jira.WorkLogItemDTO;
 import org.libreplan.web.workreports.IWorkReportModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -54,6 +54,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of Synchronize timesheets with jira issues
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
@@ -92,7 +97,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
 
     @Override
     @Transactional
-    public void syncJiraTimesheetWithJiraIssues(List<Issue> issues, Order order) {
+    public void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order) {
         jiraSyncInfo = new JiraSyncInfo();
 
         workReportType = getJiraTimesheetsWorkReportType();
@@ -108,13 +113,13 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
 
         WorkReport workReport = updateOrCreateWorkReport(code);
 
-        for (Issue issue : issues) {
-            WorkLog worklog = issue.getFields().getWorklog();
+        for (IssueDTO issue : issues) {
+            WorkLogDTO worklog = issue.getFields().getWorklog();
             if (worklog == null) {
                 jiraSyncInfo.addSyncFailedReason("No worklogs found for '"
                         + issue.getKey() + "'");
             } else {
-                List<WorkLogItem> workLogItems = worklog.getWorklogs();
+                List<WorkLogItemDTO> workLogItems = worklog.getWorklogs();
                 if (workLogItems == null || workLogItems.isEmpty()) {
                     jiraSyncInfo
                             .addSyncFailedReason("No worklog items found for '"
@@ -180,9 +185,9 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
      */
     private void updateOrCreateWorkReportLineAndAddToWorkReport(WorkReport workReport,
             OrderElement orderElement,
-            List<WorkLogItem> workLogItems) {
+            List<WorkLogItemDTO> workLogItems) {
 
-        for (WorkLogItem workLogItem : workLogItems) {
+        for (WorkLogItemDTO workLogItem : workLogItems) {
             Resource resource = getWorker(workLogItem.getAuthor().getName());
             if (resource == null) {
                 continue;
@@ -218,7 +223,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
      *            the resource
      */
     private void updateWorkReportLine(WorkReportLine workReportLine,
-            OrderElement orderElement, WorkLogItem workLogItem,
+            OrderElement orderElement, WorkLogItemDTO workLogItem,
             Resource resource) {
 
         int timeSpent = workLogItem.getTimeSpentSeconds().intValue();
