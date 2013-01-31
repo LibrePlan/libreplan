@@ -31,10 +31,16 @@ import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.common.entities.ProgressType;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.users.daos.IUserDAO;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.IFilterEnum;
+import org.libreplan.web.common.components.finders.OrderFilterEnum;
+import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
 import org.libreplan.web.security.SecurityUtils;
@@ -75,6 +81,9 @@ public class CompanyPlanningController implements Composer {
 
     @Autowired
     private ICompanyPlanningModel model;
+
+    @Autowired
+    private IUserDAO userDAO;
 
     private List<ICommandOnTask<TaskElement>> additional = new ArrayList<ICommandOnTask<TaskElement>>();
 
@@ -136,12 +145,32 @@ public class CompanyPlanningController implements Composer {
         bdFilters = (BandboxMultipleSearch) filterComponent
                 .getFellow("bdFilters");
         bdFilters.setFinder("taskGroupsMultipleFiltersFinder");
+        loadPredefinedBandboxFilter();
+
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
 
         checkCreationPermissions();
 
+    }
+
+    private void loadPredefinedBandboxFilter() {
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Calculate filter based on user preferences
+        if ((user != null) && (user.getProjectsFilterLabel() != null)) {
+            bdFilters.addSelectedElement(new FilterPair(
+                    TaskGroupFilterEnum.Label, user.getProjectsFilterLabel()
+                            .getCompleteName(), user
+                            .getProjectsFilterLabel()));
+        }
     }
 
     /**
@@ -305,6 +334,7 @@ public class CompanyPlanningController implements Composer {
                 filterFinishDate.setValue(model.getFilterFinishDate().
                         toDateMidnight().toDate());
             }
+
             return predicate;
         }
         return new TaskGroupPredicate(listFilters, startDate, finishDate,
