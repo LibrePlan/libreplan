@@ -34,6 +34,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.annotation.Resource;
+import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
@@ -1726,7 +1727,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
             jirasyncPopup.open(syncWithJiraButton, "before_start");
 
-        } catch (Exception e) {
+        } catch (WebApplicationException e) {
             LOG.info(e);
             messagesForUser.showMessage(Level.ERROR,
                     _("Cannot connect to JIRA server"));
@@ -1756,7 +1757,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     order);
 
             showSyncInfo();
-        } catch (Exception e) {
+        } catch (WebApplicationException e) {
             LOG.info(e);
             messagesForUser.showMessage(Level.ERROR,
                     _("Cannot connect to JIRA server"));
