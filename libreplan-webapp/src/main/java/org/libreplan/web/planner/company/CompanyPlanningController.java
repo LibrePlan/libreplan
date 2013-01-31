@@ -156,6 +156,15 @@ public class CompanyPlanningController implements Composer {
     }
 
     private void loadPredefinedBandboxFilter() {
+        List<FilterPair> sessionFilterPairs = (List<FilterPair>) Sessions
+                .getCurrent().getAttribute("companyFilterLabel");
+        if (sessionFilterPairs != null && !sessionFilterPairs.isEmpty()) {
+            for (FilterPair filterPair : sessionFilterPairs) {
+                bdFilters.addSelectedElement(filterPair);
+            }
+            return;
+        }
+
         User user;
         try {
             user = this.userDAO.findByLoginName(SecurityUtils
@@ -313,6 +322,8 @@ public class CompanyPlanningController implements Composer {
                 filterStartDate.getValue());
         Sessions.getCurrent().setAttribute("companyFilterFinishDate",
                 filterFinishDate.getValue());
+        Sessions.getCurrent().setAttribute("companyFilterLabel",
+                bdFilters.getSelectedElements());
         filterByPredicate(createPredicate());
     }
 
