@@ -245,7 +245,11 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     private void updateOrCreateDescriptionValuesAndAddToWorkReportLine(WorkReportLine workReportLine,
             String comment) {
         DescriptionField descriptionField = workReportType.getLineFields().iterator().next();
-        comment = comment.substring(0, descriptionField.getLength() - 1);
+
+        Integer maxLenght = descriptionField.getLength();
+        if (comment.length() > maxLenght) {
+            comment = comment.substring(0, maxLenght - 1);
+        }
 
         Set<DescriptionValue> descriptionValues = workReportLine
                 .getDescriptionValues();
