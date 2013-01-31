@@ -931,7 +931,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         private void updateCodeFor(T element) {
-            if (!readOnly) {
+            if (!readOnly && !element.isJiraIssue()) {
                 Textbox textbox = codeTextboxByElement.get(element);
                 textbox.setValue(getCodeHandler().getCodeFor(element));
             }
