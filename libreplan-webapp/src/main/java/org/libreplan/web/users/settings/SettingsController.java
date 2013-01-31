@@ -125,6 +125,7 @@ public class SettingsController extends GenericForwardComposer {
 
     public boolean save() {
         try {
+            checkEmptyBandboxes();
             settingsModel.confirmSave();
             messages.showMessage(Level.INFO, _("Settings saved"));
             return true;
@@ -132,6 +133,15 @@ public class SettingsController extends GenericForwardComposer {
             messages.showInvalidValues(e);
         }
         return false;
+    }
+
+    private void checkEmptyBandboxes() {
+        if (projectsFilterLabelBandboxSearch.getSelectedElement() == null) {
+            settingsModel.setProjectsFilterLabel(null);
+        }
+        if (resourcesLoadFilterCriterionBandboxSearch.getSelectedElement() == null) {
+            settingsModel.setResourcesLoadFilterCriterion(null);
+        }
     }
 
     public void setSelectedLanguage(Language language) {
