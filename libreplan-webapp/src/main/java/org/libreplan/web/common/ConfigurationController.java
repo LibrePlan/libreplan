@@ -274,20 +274,29 @@ public class ConfigurationController extends GenericForwardComposer {
         JiraConfiguration jiraConfiguration = configurationModel
                 .getJiraConfiguration();
 
-        WebClient client = WebClient.create(jiraConfiguration.getJiraUrl());
-        client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(
-                MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
+        try {
 
-        org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
-                jiraConfiguration.getJiraUserId(),
-                jiraConfiguration.getJiraPassword());
+            WebClient client = WebClient.create(jiraConfiguration.getJiraUrl());
+            client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(
+                    MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
 
-        Response response = client.get();
+            org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
+                    jiraConfiguration.getJiraUserId(),
+                    jiraConfiguration.getJiraPassword());
 
-        if (response.getStatus() == Status.OK.getStatusCode()) {
-            messages.showMessage(Level.INFO,
-                    _("JIRA connection was successful"));
-        } else {
+            Response response = client.get();
+
+            if (response.getStatus() == Status.OK.getStatusCode()) {
+                messages.showMessage(Level.INFO,
+                        _("JIRA connection was successful"));
+            } else {
+                LOG.info("Status code: " + response.getStatus());
+                messages.showMessage(Level.ERROR,
+                        _("Cannot connect to JIRA server"));
+            }
+
+        } catch (Exception e) {
+            LOG.info(e);
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to JIRA server"));
         }
