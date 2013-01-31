@@ -34,6 +34,7 @@ import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.settings.entities.Language;
@@ -88,6 +89,8 @@ public class User extends BaseEntity implements IHumanIdentifiable{
     private Integer projectsFilterPeriodSince;
 
     private Integer projectsFilterPeriodTo;
+
+    private Criterion resourcesLoadFilterCriterion = null;
 
     private Integer resourcesLoadFilterPeriodSince;
 
@@ -391,6 +394,14 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     public void setProjectsFilterLabel(Label label) {
         projectsFilterLabel = label;
+    }
+
+    public Criterion getResourcesLoadFilterCriterion() {
+        return resourcesLoadFilterCriterion;
+    }
+
+    public void setResourcesLoadFilterCriterion(Criterion criterion) {
+        resourcesLoadFilterCriterion = criterion;
     }
 
     public Integer getProjectsFilterPeriodSince() {

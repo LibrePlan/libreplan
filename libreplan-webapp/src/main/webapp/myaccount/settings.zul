@@ -138,8 +138,12 @@
                                     <label
                                         value="${i18n:_('Resources load filtering')}" />
                                     <hbox>
-                                        <label value="${i18n:_('Label filter')}" />
-                                        <listbox id="resourcesFilterLabel" width="200px" height="15px"/>
+                                        <label value="${i18n:_('Criterion filter')}" />
+                                        <bandboxSearch
+                                            id="resourcesLoadFilterCriterionBandboxSearch"
+                                            finder="CriterionBandboxFinder"
+                                            model="@{settingsController.allCriteria}"
+                                            selectedElement="@{settingsController.resourcesLoadFilterCriterion}" />
                                         <label value="${i18n:_('Resources load since')}" />
                                         <intbox id="resourcesLoadFilterPeriodSince" value="@{settingsController.resourcesLoadFilterPeriodSince}" />
                                         <label value="${i18n:_('months to')}" />
