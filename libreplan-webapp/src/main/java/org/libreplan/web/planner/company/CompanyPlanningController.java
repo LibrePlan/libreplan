@@ -168,7 +168,7 @@ public class CompanyPlanningController implements Composer {
         if ((user != null) && (user.getProjectsFilterLabel() != null)) {
             bdFilters.addSelectedElement(new FilterPair(
                     TaskGroupFilterEnum.Label, user.getProjectsFilterLabel()
-                            .getCompleteName(), user
+                            .getFinderPattern(), user
                             .getProjectsFilterLabel()));
         }
     }
