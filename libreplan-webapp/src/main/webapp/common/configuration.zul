@@ -431,16 +431,16 @@
                                 <textbox id="jiraURL" value="@{configurationController.jiraConfiguration.jiraUrl}"  width="300px"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('JIRA label URL')}" />
-                                <textbox id="jiraLabelURL" value="@{configurationController.jiraConfiguration.jiraLabelUrl}"  width="300px"/>
-                            </row>
-                            <row>
                                 <label value="${i18n:_('JIRA sync account')}" />
                                 <textbox id="jiraSyncAccount" value="@{configurationController.jiraConfiguration.jiraUserId}"  width="300px"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('JIRA sync password')}" />
                                 <textbox id="jiraSyncPassword" value="@{configurationController.jiraConfiguration.jiraPassword}"  type="password" width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('JIRA labels: comma-separated list of labels or URL')}" />
+                                <textbox id="jiraLabels" value="@{configurationController.jiraConfiguration.jiraLabels}"  width="300px"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Hours type for JIRA connector')}" />

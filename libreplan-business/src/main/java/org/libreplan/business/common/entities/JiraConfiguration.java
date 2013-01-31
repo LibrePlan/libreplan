@@ -37,7 +37,14 @@ public class JiraConfiguration extends BaseEntity {
 
     private String jiraUrl;
 
-    private String jiraLabelUrl;
+    /**
+     * Stores one of the next 2 options:
+     * <ul>
+     * <li>A comma-separated list of labels</li>
+     * <li>A URL that will return a comma-separated list of labels</li>
+     * </ul>
+     */
+    private String jiraLabels;
 
     private String jiraUserId;
 
@@ -67,12 +74,12 @@ public class JiraConfiguration extends BaseEntity {
         this.jiraUrl = jiraUrl;
     }
 
-    public String getJiraLabelUrl() {
-        return jiraLabelUrl;
+    public String getJiraLabels() {
+        return jiraLabels;
     }
 
-    public void setJiraLabelUrl(String jiraLabelUrl) {
-        this.jiraLabelUrl = jiraLabelUrl;
+    public void setJiraLabels(String jiraLabels) {
+        this.jiraLabels = jiraLabels;
     }
 
     public String getJiraUserId() {

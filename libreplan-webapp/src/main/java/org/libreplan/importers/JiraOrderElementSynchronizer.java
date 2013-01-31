@@ -68,15 +68,15 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Override
     @Transactional(readOnly = true)
     public List<String> getAllJiraLabels() {
-        String jiraLabelUrl = configurationDAO.getConfiguration()
-                .getJiraConfiguration().getJiraLabelUrl();
+        String jiraLabels = configurationDAO.getConfiguration()
+                .getJiraConfiguration().getJiraLabels();
 
         String labels;
         try {
-            new URL(jiraLabelUrl);
-            labels = JiraRESTClient.getAllLables(jiraLabelUrl);
+            new URL(jiraLabels);
+            labels = JiraRESTClient.getAllLables(jiraLabels);
         } catch (MalformedURLException e) {
-            labels = jiraLabelUrl;
+            labels = jiraLabels;
         }
         return Arrays.asList(StringUtils.split(labels, ","));
     }

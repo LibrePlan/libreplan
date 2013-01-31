@@ -286,4 +286,15 @@
             referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="rename-column-jira_label_url-in-configuration"
+        author="mrego">
+        <comment>
+            Rename column jira_label_url to jira_labels in configuration table
+        </comment>
+        <renameColumn tableName="configuration"
+            oldColumnName="jira_label_url"
+            newColumnName="jira_labels"
+            columnDataType="VARCHAR(255)" />
+    </changeSet>
+
 </databaseChangeLog>
