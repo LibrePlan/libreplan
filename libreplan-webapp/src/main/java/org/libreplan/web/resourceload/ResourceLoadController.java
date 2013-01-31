@@ -53,6 +53,7 @@ import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.ResourceFilterEnum;
 import org.libreplan.web.planner.chart.Chart;
 import org.libreplan.web.planner.chart.StandardLoadChartFiller;
 import org.libreplan.web.planner.company.CompanyPlanningModel;
@@ -284,6 +285,10 @@ public class ResourceLoadController implements Composer {
                 "resourceLoadStartDate");
         LocalDate endDate = (LocalDate) Sessions.getCurrent().getAttribute(
                 "resourceLoadEndDate");
+        List<FilterPair> bandboxFilterPairs = (List<FilterPair>) Sessions
+                .getCurrent()
+                .getAttribute(
+                        "resourceLoadFilterWorkerOrCriterion");
         try {
             user = this.userDAO.findByLoginName(SecurityUtils
                     .getSessionUserLoginName());
@@ -312,6 +317,18 @@ public class ResourceLoadController implements Composer {
         result.add(new ByDatesFilter(onChange, filterBy, startDate, endDate));
         WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
                 onChange, filterBy, filterTypeChanger, resourcesSearcher);
+
+        if (bandboxFilterPairs != null && !bandboxFilterPairs.isEmpty()) {
+            for (FilterPair filterPair : bandboxFilterPairs) {
+                bandbox.getBandBox().addSelectedElement(filterPair);
+            }
+        } else if ((user != null)
+                && (user.getResourcesLoadFilterCriterion() != null)) {
+            bandboxFilterPairs = new ArrayList<FilterPair>();
+            bandboxFilterPairs.add(new FilterPair(ResourceFilterEnum.Criterion,
+                    user.getResourcesLoadFilterCriterion().getFinderPattern(),
+                    user.getResourcesLoadFilterCriterion()));
+        }
         result.add(bandbox);
         result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
                 bandbox));
@@ -559,6 +576,10 @@ public class ResourceLoadController implements Composer {
 
         private Label label = new Label();
 
+        public BandboxMultipleSearch getBandBox() {
+            return bandBox;
+        }
+
         private WorkersOrCriteriaBandbox(Runnable onChange,
                 PlanningState filterBy, FilterTypeChanger filterType,
                 IResourcesSearcher resourcesSearcher) {
@@ -585,6 +606,9 @@ public class ResourceLoadController implements Composer {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     entitiesSelected = getSelected();
+                    Sessions.getCurrent().setAttribute(
+                            "resourceLoadFilterWorkerOrCriterion",
+                            bandBox.getSelectedElements());
                     notifyChange();
                 }
             });
@@ -673,6 +697,12 @@ public class ResourceLoadController implements Composer {
                 result.add(filterPair.getValue());
             }
             return result;
+        }
+
+        public void addSelectedElementsToBandbox(List<FilterPair> criterion) {
+            for (FilterPair object : criterion) {
+                bandBox.addSelectedElement(object);
+            }
         }
 
     }
