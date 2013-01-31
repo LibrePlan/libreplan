@@ -20,6 +20,7 @@
 package org.libreplan.importers;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -306,7 +307,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
                 .getDirectAdvanceAssignmentByType(advanceType);
         if (directAdvanceAssignment == null) {
             directAdvanceAssignment = DirectAdvanceAssignment.create(false,
-                    new BigDecimal(100));
+                    new BigDecimal(100).setScale(2));
             directAdvanceAssignment.setAdvanceType(advanceType);
             try {
                 orderElement.addAdvanceAssignment(directAdvanceAssignment);
@@ -332,7 +333,8 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
             directAdvanceAssignment.addAdvanceMeasurements(advanceMeasurement);
         }
 
-        advanceMeasurement.setValue(percentage);
+        advanceMeasurement.setValue(percentage
+                .setScale(2, RoundingMode.HALF_UP));
 
         DirectAdvanceAssignment spreadAdvanceAssignment = orderElement
                 .getReportGlobalAdvanceAssignment();
