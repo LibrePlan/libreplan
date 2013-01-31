@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -63,6 +64,8 @@ public class SettingsController extends GenericForwardComposer {
 
     private BandboxSearch projectsFilterLabelBandboxSearch;
 
+    private BandboxSearch resourcesLoadFilterCriterionBandboxSearch;
+
     public static ListitemRenderer languagesRenderer = new ListitemRenderer() {
         @Override
         public void render(org.zkoss.zul.Listitem item, Object data)
@@ -89,6 +92,16 @@ public class SettingsController extends GenericForwardComposer {
                         Listitem selectedItem = (Listitem) ((SelectEvent) event)
                                 .getSelectedItems().iterator().next();
                         setProjectsFilterLabel((Label) selectedItem.getValue());
+                    }
+                });
+        resourcesLoadFilterCriterionBandboxSearch.setListboxEventListener(
+                Events.ON_SELECT, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
+                                .getSelectedItems().iterator().next();
+                        setResourcesLoadFilterCriterion((Criterion) selectedItem
+                                .getValue());
                     }
                 });
     }
@@ -238,6 +251,18 @@ public class SettingsController extends GenericForwardComposer {
 
     public void setProjectsFilterLabel(Label label) {
         settingsModel.setProjectsFilterLabel(label);
+    }
+
+    public List<Criterion> getAllCriteria() {
+        return settingsModel.getAllCriteria();
+    }
+
+    public Criterion getResourcesLoadFilterCriterion() {
+        return settingsModel.getResourcesLoadFilterCriterion();
+    }
+
+    public void setResourcesLoadFilterCriterion(Criterion criterion) {
+        settingsModel.setResourcesLoadFilterCriterion(criterion);
     }
 
 }

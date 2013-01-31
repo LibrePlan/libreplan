@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.settings.entities.Language;
 
 
@@ -93,5 +94,11 @@ public interface ISettingsModel {
     List<Label> getAllLabels();
 
     void setProjectsFilterLabel(Label label);
+
+    List<Criterion> getAllCriteria();
+
+    Criterion getResourcesLoadFilterCriterion();
+
+    void setResourcesLoadFilterCriterion(Criterion criterion);
 
 }
