@@ -131,6 +131,8 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
                 final String inputText = ((InputEvent) event).getValue();
                 if ((inputText == null) || (inputText.isEmpty())) {
                     clear();
+                    listbox.setSelectedIndex(0);
+                    Events.postEvent(Events.ON_CHANGE, listbox, null);
                 } else {
                     searchMultipleFilters(inputText);
                 }
