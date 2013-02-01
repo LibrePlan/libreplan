@@ -62,6 +62,7 @@ import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -211,6 +212,8 @@ public class OrderPlanningController implements Composer {
 
     private void updateConfiguration() {
         if (order != null) {
+            importOrderFiltersFromSession();
+
             long time = System.currentTimeMillis();
             model.setConfigurationToPlanner(planner, order, viewSwitcher,
                     editTaskController, advancedAllocationTaskController,
@@ -222,6 +225,20 @@ public class OrderPlanningController implements Composer {
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();
 
+        }
+    }
+
+    private void importOrderFiltersFromSession() {
+        filterNameOrderElement.setValue((String) Sessions.getCurrent()
+                .getAttribute(order.getCode() + "-tasknameFilter"));
+        filterStartDateOrderElement.setValue((Date) Sessions.getCurrent()
+                .getAttribute(order.getCode() + "-startDateFilter"));
+        filterFinishDateOrderElement.setValue((Date) Sessions.getCurrent()
+                .getAttribute(order.getCode() + "-endDateFilter"));
+        if (Sessions.getCurrent().getAttribute(
+                order.getCode() + "-inheritanceFilter") != null) {
+        labelsWithoutInheritance.setChecked((Boolean) Sessions.getCurrent()
+                .getAttribute(order.getCode() + "-inheritanceFilter"));
         }
     }
 
@@ -261,7 +278,17 @@ public class OrderPlanningController implements Composer {
                 && name == null) {
             return null;
         }
-
+        Sessions.getCurrent().setAttribute(order.getCode() + "-tasknameFilter",
+                name);
+        Sessions.getCurrent().setAttribute(
+                order.getCode() + "-startDateFilter", startDate);
+        Sessions.getCurrent().setAttribute(order.getCode() + "-endDateFilter",
+                finishDate);
+        Sessions.getCurrent()
+                .setAttribute(order.getCode() + "-inheritanceFilter",
+                        ignoreLabelsInheritance);
+        Sessions.getCurrent().setAttribute(
+                order.getCode() + "-labelsandcriteriaFilter", listFilters);
         return new TaskElementPredicate(listFilters, startDate, finishDate,
                 name, ignoreLabelsInheritance);
     }
