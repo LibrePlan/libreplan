@@ -281,7 +281,7 @@
                        </grid>
                      </groupbox>
                 </groupbox>
-                <groupbox style="margin-top: 5px" sclass="jiraLabel" closable="false"
+                <groupbox style="margin-top: 5px" closable="false"
                     visible="@{controller.jiraActivated}">
                    <caption label="${i18n:_('JIRA import information')}" />
                    <separator spacing="10px"/>
@@ -335,7 +335,7 @@
      <popup id="jirasyncPopup" sclass="finder-popup">
         <groupbox mold="3d" closable="false" width="420px">
             <caption id="jiraSyncCaption" label="Select a label" />
-            <combobox id="comboJiraLabel" autodrop="true" mold="rounded" buttonVisible="false" width="400px"/>
+            <combobox id="comboJiraLabel" autodrop="true" width="400px"/>
             <separator/>
             <hbox>
                 <button id="startJiraSyncButton" />
