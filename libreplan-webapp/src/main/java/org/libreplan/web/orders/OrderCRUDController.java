@@ -1855,4 +1855,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
+    public boolean isJiraActivated() {
+        return orderModel.isJiraActivated();
+    }
+
 }

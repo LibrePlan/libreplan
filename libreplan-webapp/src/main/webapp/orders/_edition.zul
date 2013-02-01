@@ -281,7 +281,8 @@
                        </grid>
                      </groupbox>
                 </groupbox>
-                <groupbox style="margin-top: 5px" sclass="jiraLabel" closable="false">
+                <groupbox style="margin-top: 5px" sclass="jiraLabel" closable="false"
+                    visible="@{controller.jiraActivated}">
                    <caption label="${i18n:_('JIRA import information')}" />
                    <separator spacing="10px"/>
                    <hbox width="100%">
