@@ -125,7 +125,7 @@
         <component name="jiraConfiguration" class="org.libreplan.business.common.entities.JiraConfiguration">
             <property name="jiraActivated" column="jira_activated" not-null="true"/>
             <property name="jiraUrl" column="jira_url"/>
-            <property name="jiraLabels" column="jira_labels"/>
+            <property name="jiraLabels" column="jira_labels" type="text"/>
             <property name="jiraUserId" column="jira_user_id"/>
             <property name="jiraPassword" column="jira_password"/>
             <many-to-one name="jiraConnectorTypeOfWorkHours" cascade="none"

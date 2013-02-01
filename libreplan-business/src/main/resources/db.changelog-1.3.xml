@@ -297,4 +297,17 @@
             columnDataType="VARCHAR(255)" />
     </changeSet>
 
+    <changeSet id="change-column-jira_labels-in-configuration-to-text"
+        author="mrego" dbms="postgresql">
+        <comment>Change column jira_labels in configuration to TEXT</comment>
+        <modifyDataType tableName="configuration" columnName="jira_labels"
+            newDataType="TEXT" />
+    </changeSet>
+
+    <changeSet id="change-column-jira_labels-in-configuration-to-text-in-mysql"
+        author="mrego" dbms="mysql">
+        <comment>Change column jira_labels in configuration to TEXT in MySQL</comment>
+        <sql>ALTER TABLE configuration MODIFY jira_labels TEXT</sql>
+    </changeSet>
+
 </databaseChangeLog>

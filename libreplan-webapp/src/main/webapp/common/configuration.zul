@@ -440,7 +440,7 @@
                             </row>
                             <row>
                                 <label value="${i18n:_('JIRA labels: comma-separated list of labels or URL')}" />
-                                <textbox id="jiraLabels" value="@{configurationController.jiraConfiguration.jiraLabels}"  width="300px"/>
+                                <textbox id="jiraLabels" value="@{configurationController.jiraConfiguration.jiraLabels}"  width="600px"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Hours type for JIRA connector')}" />
