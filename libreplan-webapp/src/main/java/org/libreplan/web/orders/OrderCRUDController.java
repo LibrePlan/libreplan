@@ -1826,6 +1826,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     }
 
+    /**
+     * This class provides case insensitive search for the {@link Combobox}.
+     */
     private class SimpleListModelExt extends SimpleListModel {
 
         public SimpleListModelExt(List data) {
@@ -1851,7 +1854,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         public boolean entryMatchesText(String entry, String text) {
-            return entry.toLowerCase().startsWith(text.toLowerCase());
+            return entry.toLowerCase().contains(text.toLowerCase());
         }
     }
 
