@@ -1757,6 +1757,11 @@ public class OrderCRUDController extends GenericForwardComposer {
                     order);
 
             showSyncInfo();
+
+            // Reload order info in all tabs
+            Tab previousTab = getCurrentTab();
+            initEdit(order);
+            selectTab(previousTab.getId());
         } catch (WebApplicationException e) {
             LOG.info(e);
             messagesForUser.showMessage(Level.ERROR,
