@@ -22,8 +22,14 @@
     <div>
 
         <vbox>
-            <label value="${i18n:_('Synchronization of order elements with JIRA issues was successful')}" sclass="remarked" />
-            <vbox if="${not args.showSyncProgressSuccess}">
+            <label value="${i18n:_('Synchronization of order elements with JIRA issues was successful and project has been updated accordingly')}" sclass="remarked" />
+        </vbox>
+
+        <separator spacing="20px"/>
+
+        <vbox>
+            <label value="${i18n:_('Synchronization of progress assignment was successful')}" sclass="remarked" if="${arg.showSyncProgressSuccess}"/>
+            <vbox if="${not arg.showSyncProgressSuccess}">
                 <label value="${i18n:_('Synchronization of progress assignment is not completed for the following reasons:')}" />
                 <listbox model="${arg.jiraSyncProgressFailedReasons}"/>
             </vbox>
@@ -32,8 +38,8 @@
         <separator spacing="20px"/>
 
         <vbox>
-            <label value="${i18n:_('Synchronization of timesheets with JIRA issues was successful')}" sclass="remarked" if="${args.showSyncTimesheetSuccess}"/>
-            <vbox if="${not args.showSyncTimesheetSuccess}">
+            <label value="${i18n:_('Synchronization of timesheets was successful')}" sclass="remarked" if="${arg.showSyncTimesheetSuccess}"/>
+            <vbox if="${not arg.showSyncTimesheetSuccess}">
                 <label value="${i18n:_('Synchronization of timesheets is not completed for the following reasons:')}" />
                 <listbox model="${arg.jiraSyncTimesheetFailedReasons}"/>
             </vbox>
