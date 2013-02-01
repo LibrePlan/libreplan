@@ -39,35 +39,21 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
-import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
-import org.libreplan.business.advance.entities.AdvanceMeasurement;
-import org.libreplan.business.advance.entities.AdvanceType;
-import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
-import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
-import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
-import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.importers.jira.IssueDTO;
-import org.libreplan.importers.jira.TimeTrackingDTO;
-import org.libreplan.importers.jira.WorkLogDTO;
-import org.libreplan.importers.jira.WorkLogItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -104,12 +90,13 @@ public class JiraOrderElementSynchronizerTest {
     @Autowired
     private IScenarioManager scenarioManager;
 
-    private static final String LABEL = "labels=epd_12a_ZorgActiviteiten";
-
     private List<IssueDTO> issues;
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private IJiraOrderElementSynchronizer jiraOrderElementSynchronizer;
 
 
     @Before
@@ -137,7 +124,8 @@ public class JiraOrderElementSynchronizerTest {
             issues = JiraRESTClient.getIssues(properties.getProperty("url"),
                     properties.getProperty("username"),
                     properties.getProperty("password"),
-                    JiraRESTClient.PATH_SEARCH, LABEL);
+                    JiraRESTClient.PATH_SEARCH,
+                    getJiraLabel(properties.getProperty("label")));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -158,6 +146,10 @@ public class JiraOrderElementSynchronizerTest {
 
     }
 
+    private String getJiraLabel(String label) {
+        return "labels=" + label;
+    }
+
     private Order givenOrder() {
         return transactionService
                 .runOnAnotherTransaction(new IOnTransaction<Order>() {
@@ -167,8 +159,6 @@ public class JiraOrderElementSynchronizerTest {
                     }
                 });
     }
-
-
 
     private Order givenValidOrderAlreadyStored() {
         Order order = Order.create();
@@ -199,32 +189,12 @@ public class JiraOrderElementSynchronizerTest {
                 });
     }
 
+
     private Order givenValidOrderWithValidOrderLinesAlreadyStored() {
-        Order order = Order.create();
-        order.setCode(UUID.randomUUID().toString());
-        order.setName("Order name " + UUID.randomUUID());
-        order.setInitDate(new Date());
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
-        OrderVersion version = setupVersionUsing(scenarioManager, order);
-        order.useSchedulingDataFor(version);
-        for (IssueDTO issue : issues) {
-            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
-                    + issue.getKey();
-            String name = issue.getFields().getSummary();
-
-            syncOrderLine(order, code, name);
-
-            int estimatedHours = getEstimatedHours(
-                    issue.getFields().getTimetracking()).intValue();
-
-            syncHoursGroup((OrderLine) order.getOrderElement(code), code,
-                    estimatedHours);
-
-            syncPorgressMeasurement(order.getOrderElement(code), issue);
-
-        }
-        orderDAO.save(order);
+        Order order = givenOrder();
+        jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues(issues, order);
+        order.dontPoseAsTransientObjectAnymore();
+        orderDAO.saveWithoutValidating(order);
         orderDAO.flush();
         try {
             return orderDAO.find(order.getId());
@@ -241,155 +211,11 @@ public class JiraOrderElementSynchronizerTest {
         return result;
     }
 
-
-
-    private void syncOrderLine(Order order, String code, String name) {
-        OrderLine orderLine = (OrderLine) order.getOrderElement(code);
-        if (orderLine == null) {
-            orderLine = OrderLine.createOrderLineWithUnfixedPercentage(1000);
-            order.add(orderLine);
-            orderLine.setCode(code);
-        }
-        orderLine.setName(name);
-
-    }
-
-    private void syncHoursGroup(OrderLine orderLine, String code,
-            Integer workingHours) {
-        HoursGroup hoursGroup = orderLine.getHoursGroup(code);
-        if (hoursGroup == null) {
-            hoursGroup = HoursGroup.create(orderLine);
-            hoursGroup.setCode(code);
-            orderLine.addHoursGroup(hoursGroup);
-        }
-
-        hoursGroup.setWorkingHours(workingHours);
-
-    }
-
-    private void syncPorgressMeasurement(OrderElement orderElement, IssueDTO issue) {
-
-        WorkLogDTO workLog = issue.getFields().getWorklog();
-
-        if (workLog == null) {
-            return;
-        }
-        if (orderElement == null) {
-            return;
-        }
-
-        List<WorkLogItemDTO> workLogItems = workLog.getWorklogs();
-        if (workLogItems.isEmpty()) {
-            return;
-        }
-
-        Integer estimatedHours = getEstimatedHours(issue.getFields()
-                .getTimetracking());
-
-        if (estimatedHours == 0) {
-            return;
-        }
-
-        Integer loggedHours = getLoggedHours(issue.getFields()
-                .getTimetracking());
-
-        BigDecimal percentage = new BigDecimal((loggedHours * 100)
-                / (loggedHours + estimatedHours));
-
-        LocalDate latestWorkLogDate = new LocalDate();
-
-        updateOrCreateProgressAssignmentAndMeasurement(orderElement,
-                percentage, latestWorkLogDate);
-
-    }
-
-    private void updateOrCreateProgressAssignmentAndMeasurement(
-            OrderElement orderElement, BigDecimal percentage,
-            LocalDate latestWorkLogDate) {
-
-        AdvanceType advanceType = PredefinedAdvancedTypes.PERCENTAGE.getType();
-
-        DirectAdvanceAssignment directAdvanceAssignment = orderElement
-                .getDirectAdvanceAssignmentByType(advanceType);
-        if (directAdvanceAssignment == null) {
-            directAdvanceAssignment = DirectAdvanceAssignment.create(false,
-                    new BigDecimal(100));
-            directAdvanceAssignment.setAdvanceType(advanceType);
-        }
-        directAdvanceAssignment.setOrderElement(orderElement);
-
-        AdvanceMeasurement advanceMeasurement = directAdvanceAssignment
-                .getAdvanceMeasurementAtExactDate(latestWorkLogDate);
-        if (advanceMeasurement == null) {
-            advanceMeasurement = AdvanceMeasurement.create();
-        }
-
-        advanceMeasurement.setValue(percentage);
-        advanceMeasurement.setDate(latestWorkLogDate);
-
-        directAdvanceAssignment.addAdvanceMeasurements(advanceMeasurement);
-
-        advanceMeasurement.setAdvanceAssignment(directAdvanceAssignment);
-
-        if (directAdvanceAssignment.isNewObject()) {
-            try {
-                directAdvanceAssignment.getOrderElement().addAdvanceAssignment(
-                        directAdvanceAssignment);
-            } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
-            } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-            }
-        }
-
-    }
-
-    private Integer getEstimatedHours(TimeTrackingDTO timeTracking) {
-        if (timeTracking == null) {
-            return 0;
-        }
-
-        Integer timeestimate = timeTracking.getRemainingEstimateSeconds();
-        if (timeestimate != null && timeestimate > 0) {
-            return timeestimate / 3600;
-        }
-
-        Integer timeoriginalestimate = timeTracking
-                .getOriginalEstimateSeconds();
-        if (timeoriginalestimate != null) {
-            return timeoriginalestimate / 3600;
-        }
-        return 0;
-    }
-
-    private Integer getLoggedHours(TimeTrackingDTO timeTracking) {
-        if (timeTracking == null) {
-            return 0;
-        }
-
-        Integer timespentInSec = timeTracking.getTimeSpentSeconds();
-        if (timespentInSec != null && timespentInSec > 0) {
-            return timespentInSec / 3600;
-        }
-
-        return 0;
-    }
-
     @Test
     @Ignore("Only working if you have a JIRA server configured")
     public void testSyncOrderElementsOfAnExistingOrderWithNoOrderLines() {
         Order order = givenOrder();
-        for (IssueDTO issue : issues) {
-            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
-                    + issue.getKey();
-            String name = issue.getFields().getSummary();
-
-            syncOrderLine(order, code, name);
-
-            syncHoursGroup((OrderLine) order.getOrderElement(code), code,
-                    getEstimatedHours(issue.getFields().getTimetracking()));
-
-            syncPorgressMeasurement(order.getOrderElement(code), issue);
-
-        }
+        jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues(issues, order);
         assertEquals(order.getOrderElements().size(), issues.size());
         assertTrue(order.getOrderElements().get(0).getHoursGroups().size() > 0);
         assertTrue(!order.getAdvancePercentage().equals(BigDecimal.ZERO));
@@ -401,25 +227,9 @@ public class JiraOrderElementSynchronizerTest {
     public void testReSyncOrderElementsOfAnExistingOrderWithOrderLines() {
         Order order = givenOrderWithValidOrderLines();
         Integer workingHours = order.getWorkHours();
-        for (IssueDTO issue : issues) {
-            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
-                    + issue.getKey();
-            String name = issue.getFields().getSummary();
-
-            syncOrderLine(order, code, name);
-
-            Integer estimatedHours = getEstimatedHours(issue.getFields()
-                    .getTimetracking()) * 10;
-
-            syncHoursGroup((OrderLine) order.getOrderElement(code), code,
-                    estimatedHours);
-
-            syncPorgressMeasurement(order.getOrderElement(code), issue);
-
-        }
+        jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues(issues, order);
         assertEquals(order.getOrderElements().size(), issues.size());
-        assertEquals(workingHours.intValue(),
-                (order.getWorkHours().intValue() / 10));
+        assertEquals(workingHours.intValue(), order.getWorkHours().intValue());
     }
 
 }

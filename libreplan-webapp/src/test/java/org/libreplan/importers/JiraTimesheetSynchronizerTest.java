@@ -31,10 +31,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -47,27 +45,14 @@ import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
-import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.orders.entities.OrderLine;
-import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.business.workreports.daos.IWorkReportDAO;
-import org.libreplan.business.workreports.entities.WorkReport;
-import org.libreplan.business.workreports.entities.WorkReportLine;
-import org.libreplan.business.workreports.entities.WorkReportType;
-import org.libreplan.business.workreports.valueobjects.DescriptionField;
-import org.libreplan.business.workreports.valueobjects.DescriptionValue;
+import org.libreplan.business.workreports.entities.IWorkReportTypeBootstrap;
 import org.libreplan.importers.jira.IssueDTO;
-import org.libreplan.importers.jira.WorkLogDTO;
-import org.libreplan.importers.jira.WorkLogItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -95,6 +80,9 @@ public class JiraTimesheetSynchronizerTest {
     @Resource
     private IDataBootstrap configurationBootstrap;
 
+    @Resource
+    private IWorkReportTypeBootstrap workReportTypeBootstrap;
+
     @Autowired
     private IAdHocTransactionService transactionService;
 
@@ -104,20 +92,16 @@ public class JiraTimesheetSynchronizerTest {
     @Autowired
     private IScenarioManager scenarioManager;
 
-    private static final String LABEL = "labels=epd_12a_ZorgActiviteiten";
-
     private List<IssueDTO> issues;
 
     @Autowired
     private IOrderDAO orderDAO;
 
     @Autowired
-    private IWorkReportDAO workReportDAO;
+    private IJiraOrderElementSynchronizer jiraOrderElementSynchronizer;
 
-    private TypeOfWorkHours typeOfWorkHours;
-
-    private WorkReportType workReportType;
-
+    @Autowired
+    private IJiraTimesheetSynchronizer jiraTimesheetSynchronizer;
 
     @Before
     public void loadRequiredaData() {
@@ -129,6 +113,7 @@ public class JiraTimesheetSynchronizerTest {
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();
                 configurationBootstrap.loadRequiredData();
                 scenariosBootstrap.loadRequiredData();
+                workReportTypeBootstrap.loadRequiredData();
                 issues = getJiraIssues();
                 return null;
             }
@@ -144,7 +129,8 @@ public class JiraTimesheetSynchronizerTest {
             issues = JiraRESTClient.getIssues(properties.getProperty("url"),
                     properties.getProperty("username"),
                     properties.getProperty("password"),
-                    JiraRESTClient.PATH_SEARCH, LABEL);
+                    JiraRESTClient.PATH_SEARCH,
+                    getJiraLabel(properties.getProperty("label")));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
@@ -165,7 +151,40 @@ public class JiraTimesheetSynchronizerTest {
 
     }
 
+    private String getJiraLabel(String label) {
+        return "labels=" + label;
+    }
+
     private Order givenOrder() {
+        return transactionService
+                .runOnAnotherTransaction(new IOnTransaction<Order>() {
+                    @Override
+                    public Order execute() {
+                        return givenValidOrderAlreadyStored();
+                    }
+                });
+    }
+
+    private Order givenValidOrderAlreadyStored() {
+        Order order = Order.create();
+        order.setCode(UUID.randomUUID().toString());
+        order.setName("Order name " + UUID.randomUUID());
+        order.setInitDate(new Date());
+        order.setCalendar(configurationDAO.getConfiguration()
+                .getDefaultCalendar());
+        OrderVersion version = setupVersionUsing(scenarioManager, order);
+        order.useSchedulingDataFor(version);
+
+        orderDAO.save(order);
+        orderDAO.flush();
+        try {
+            return orderDAO.find(order.getId());
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
+    }
+
+    private Order givenOrderWithValidOrderLines() {
         return transactionService
                 .runOnAnotherTransaction(new IOnTransaction<Order>() {
                     @Override
@@ -176,30 +195,12 @@ public class JiraTimesheetSynchronizerTest {
     }
 
 
-
     private Order givenValidOrderWithValidOrderLinesAlreadyStored() {
-        Order order = Order.create();
-        order.setCode(UUID.randomUUID().toString());
-        order.setName("Order name " + UUID.randomUUID());
-        order.setInitDate(new Date());
-        order.setCalendar(configurationDAO.getConfiguration()
-                .getDefaultCalendar());
-        OrderVersion version = setupVersionUsing(scenarioManager, order);
-        order.useSchedulingDataFor(version);
-        for (IssueDTO issue : issues) {
-            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
-                    + issue.getKey();
-            String name = issue.getFields().getSummary();
-
-            OrderLine orderLine = OrderLine
-                    .createOrderLineWithUnfixedPercentage(1000);
-            orderLine.useSchedulingDataFor(version);
-            order.add(orderLine);
-            orderLine.setCode(code);
-            orderLine.setName(name);
-
-        }
-        orderDAO.save(order);
+        Order order = givenOrder();
+        jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues(issues,
+                order);
+        order.dontPoseAsTransientObjectAnymore();
+        orderDAO.saveWithoutValidating(order);
         orderDAO.flush();
         try {
             return orderDAO.find(order.getId());
@@ -216,144 +217,15 @@ public class JiraTimesheetSynchronizerTest {
         return result;
     }
 
-    private WorkReport getOrCreateWorkReport(String code) {
-        WorkReport workReport = findWorkReport(code);
-        if (workReport == null) {
-            workReport = WorkReport.create(workReportType);
-            workReport.setCode(code);
-        }
-        return workReport;
-    }
-
-
-    private void updateOrCreateWorkReportLineAndAddToWorkReport(
-            WorkReport workReport, OrderElement orderElement,
-            List<WorkLogItemDTO> workLogItems) {
-
-        for (WorkLogItemDTO workLogItem : workLogItems) {
-            WorkReportLine workReportLine;
-            try {
-                workReportLine = workReport
-                        .getWorkReportLineByCode(orderElement.getCode() + "-"
-                                + workLogItem.getId());
-            } catch (InstanceNotFoundException e) {
-                workReportLine = WorkReportLine.create(workReport);
-            }
-
-            org.libreplan.business.resources.entities.Resource resource = createAndGetWorker(workLogItem
-                    .getAuthor().getName());
-            if (resource != null) {
-
-                updateWorkReportLine(workReportLine, orderElement, workLogItem,
-                        resource);
-                if (workReportLine.isNewObject()) {
-                    workReport.addWorkReportLine(workReportLine);
-                }
-            }
-        }
-
-    }
-
-    private void updateWorkReportLine(WorkReportLine workReportLine,
-            OrderElement orderElement, WorkLogItemDTO workLogItem,
-            org.libreplan.business.resources.entities.Resource resource) {
-
-        String code = orderElement.getCode() + "-" + workLogItem.getId();
-        int timeSpent = workLogItem.getTimeSpentSeconds().intValue();
-
-        workReportLine.setCode(code);
-        workReportLine.setDate(workLogItem.getStarted());
-        workReportLine.setResource(resource);
-        workReportLine.setOrderElement(orderElement);
-        workReportLine.setEffort(EffortDuration
-                .hours(EffortDuration.Granularity.HOURS
-                        .convertFromSeconds(timeSpent)));
-        workReportLine.setTypeOfWorkHours(typeOfWorkHours);
-
-        updateOrCreateDescriptionValuesAndAddToWorkReportLine(workReportLine,
-                workLogItem.getComment());
-    }
-
-    private void updateOrCreateDescriptionValuesAndAddToWorkReportLine(
-            WorkReportLine workReportLine, String comment) {
-        Set<DescriptionValue> descriptionValues = new HashSet<DescriptionValue>();
-        for (DescriptionField descriptionField : workReportType.getLineFields()) {
-            DescriptionValue descriptionValue;
-            try {
-                descriptionValue = workReportLine
-                        .getDescriptionValueByFieldName(descriptionField
-                                .getFieldName());
-                descriptionValue.setValue(comment.substring(0,
-                        Math.min(comment.length(), 254)));
-            } catch (InstanceNotFoundException e) {
-                descriptionValue = DescriptionValue.create(
-                        descriptionField.getFieldName(), comment);
-            }
-            descriptionValues.add(descriptionValue);
-        }
-        workReportLine.setDescriptionValues(descriptionValues);
-    }
-
-    private WorkReport findWorkReport(String code) {
-        try {
-            return workReportDAO.findByCodeAnotherTransaction(code);
-        } catch (InstanceNotFoundException e) {
-        }
-        return null;
-    }
-
-    private WorkReportType createWorkReportType(String name) {
-        WorkReportType workReportType = WorkReportType.create();
-        workReportType.setName("Jira-connector");
-        workReportType.setCodeAutogenerated(true);
-        return workReportType;
-    }
-
-    private TypeOfWorkHours createTypeOfWorkHours(String name) {
-        typeOfWorkHours = TypeOfWorkHours.create();
-        typeOfWorkHours.setName("Default");
-        typeOfWorkHours.setCodeAutogenerated(true);
-        return typeOfWorkHours;
-    }
-
-    private Worker createAndGetWorker(String nif) {
-        Worker worker = Worker.create(nif, nif, nif);
-        return worker;
-    }
 
     @Test
     @Ignore("Only working if you have a JIRA server configured")
     public void testSyncJiraTimesheet() {
 
-        workReportType = createWorkReportType("Jira-connector");
-        typeOfWorkHours = createTypeOfWorkHours("Default");
-
-        Order order = givenOrder();
-
-        String code = order.getCode();
-
-        WorkReport workReport = getOrCreateWorkReport(code);
-
-        for (IssueDTO issue : issues) {
-            WorkLogDTO worklog = issue.getFields().getWorklog();
-            if (worklog != null) {
-                List<WorkLogItemDTO> workLogItems = worklog.getWorklogs();
-                if (workLogItems != null && !workLogItems.isEmpty()) {
-
-                    String code1 = JiraConfiguration.CODE_PREFIX
-                            + order.getCode() + "-" + issue.getKey();
-
-                    OrderElement orderElement = order.getOrderElement(code1);
-
-                    if (orderElement != null) {
-                        updateOrCreateWorkReportLineAndAddToWorkReport(
-                                workReport, orderElement, workLogItems);
-
-                    }
-                }
-            }
-        }
-        assertTrue(workReport.getWorkReportLines().size() > 0);
+        Order order = givenOrderWithValidOrderLines();
+        jiraTimesheetSynchronizer
+                .syncJiraTimesheetWithJiraIssues(issues, order);
+        assertTrue(order.getWorkReportLines(false).size() > 0);
     }
 
 }
