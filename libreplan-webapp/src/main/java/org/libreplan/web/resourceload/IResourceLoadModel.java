@@ -23,6 +23,7 @@ package org.libreplan.web.resourceload;
 
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.users.entities.User;
 
 public interface IResourceLoadModel {
 
@@ -34,5 +35,7 @@ public interface IResourceLoadModel {
     boolean userCanRead(Order order, String loginName);
 
     boolean isExpandResourceLoadViewCharts();
+
+    User getUser();
 
 }
