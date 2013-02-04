@@ -23,6 +23,8 @@ package org.libreplan.web.orders;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,6 +51,7 @@ import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
@@ -63,6 +66,7 @@ import org.libreplan.web.common.Util.ReloadStrategy;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.OrderFilterEnum;
 import org.libreplan.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
 import org.libreplan.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.libreplan.web.orders.labels.LabelsAssignmentToOrderElementComponent;
@@ -694,7 +698,43 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public List<Order> getOrders() {
-        return orderModel.getOrders();
+        List<org.libreplan.business.labels.entities.Label> labels = new ArrayList<org.libreplan.business.labels.entities.Label>();
+        List<Criterion> criteria = new ArrayList<Criterion>();
+        ExternalCompany customer = null;
+        OrderStatusEnum state = null;
+
+        for (FilterPair filterPair : (List<FilterPair>) bdFilters
+                .getSelectedElements()) {
+            OrderFilterEnum type = (OrderFilterEnum) filterPair.getType();
+            switch (type) {
+            case Label:
+                labels.add((org.libreplan.business.labels.entities.Label) filterPair
+                        .getValue());
+                break;
+            case Criterion:
+                criteria.add((Criterion) filterPair.getValue());
+                break;
+            case ExternalCompany:
+                if (customer != null) {
+                    // It's impossible to have an Order associated to more than
+                    // 1 customer
+                    return Collections.emptyList();
+                }
+                customer = (ExternalCompany) filterPair.getValue();
+                break;
+            case State:
+                if (state != null) {
+                    // It's impossible to have an Order associated with more
+                    // than 1 state
+                    return Collections.emptyList();
+                }
+                state = (OrderStatusEnum) filterPair.getValue();
+                break;
+            }
+        }
+
+        return orderModel.getOrders(filterStartDate.getValue(),
+                filterFinishDate.getValue(), labels, criteria, customer, state);
     }
 
     private OnlyOneVisible getVisibility() {
