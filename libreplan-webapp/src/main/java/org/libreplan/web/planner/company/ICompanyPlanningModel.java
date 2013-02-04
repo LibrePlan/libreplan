@@ -22,6 +22,7 @@
 package org.libreplan.web.planner.company;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.entities.ProgressType;
@@ -45,9 +46,9 @@ public interface ICompanyPlanningModel {
 
     public void setTabsController(MultipleTabsPlannerController tabsController);
 
-    LocalDate getFilterStartDate();
+    Date getFilterStartDate();
 
-    LocalDate getFilterFinishDate();
+    Date getFilterFinishDate();
 
     ProgressType getProgressTypeFromConfiguration();
 

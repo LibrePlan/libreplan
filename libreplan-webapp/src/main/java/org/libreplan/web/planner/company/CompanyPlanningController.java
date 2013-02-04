@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -185,6 +186,23 @@ public class CompanyPlanningController implements Composer {
                             .getFinderPattern(), user
                             .getProjectsFilterLabel()));
         }
+
+        // Calculate filter based on user preferences
+        if (user != null) {
+            if (filterStartDate.getValue() == null
+                    && (user.getProjectsFilterPeriodSince() != null)) {
+                filterStartDate.setValue(new LocalDate()
+                        .minusMonths(user.getProjectsFilterPeriodSince())
+                        .toDateTimeAtStartOfDay().toDate());
+            }
+            if (filterFinishDate.getValue() == null
+                    && (user.getProjectsFilterPeriodTo() != null)) {
+                filterFinishDate.setValue(new LocalDate()
+                        .plusMonths(user.getProjectsFilterPeriodTo())
+                        .toDateMidnight().toDate());
+            }
+        }
+
     }
 
     /**
@@ -343,12 +361,10 @@ public class CompanyPlanningController implements Composer {
             IPredicate predicate = model.getDefaultPredicate(includeOrderElements);
             //show filter dates calculated by default on screen
             if(model.getFilterStartDate() != null) {
-                filterStartDate.setValue(model.getFilterStartDate().
-                        toDateMidnight().toDate());
+                filterStartDate.setValue(model.getFilterStartDate());
             }
             if(model.getFilterFinishDate() != null) {
-                filterFinishDate.setValue(model.getFilterFinishDate().
-                        toDateMidnight().toDate());
+                filterFinishDate.setValue(model.getFilterFinishDate());
             }
 
             return predicate;

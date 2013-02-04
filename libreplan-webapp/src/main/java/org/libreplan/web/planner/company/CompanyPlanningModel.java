@@ -745,23 +745,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             throw new RuntimeException(e);
         }
 
-        // Calculate filter based on user preferences
-        if (user != null) {
-            if (calculateStartDate
-                    && (user.getProjectsFilterPeriodSince() != null)) {
-                startDate = new LocalDate()
-                        .minusMonths(user.getProjectsFilterPeriodSince())
-                        .toDateTimeAtStartOfDay().toDate();
-                calculateStartDate = false;
-            }
-            if (calculateEndDate && (user.getProjectsFilterPeriodTo() != null)) {
-                endDate = new LocalDate()
-                        .plusMonths(user.getProjectsFilterPeriodTo())
-                        .toDateMidnight().toDate();
-                calculateEndDate = false;
-            }
-        }
-
         // Filter predicate needs to be calculated based on the projects dates
         if ((calculateStartDate) || (calculateEndDate)) {
             if (currentScenario == null) {
@@ -807,18 +790,19 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     @Override
-    public LocalDate getFilterStartDate() {
-        return filterStartDate;
+    public Date getFilterStartDate() {
+        return ((filterStartDate == null) ? null : filterStartDate
+                .toDateTimeAtStartOfDay().toDate());
     }
-
     @Override
-    public LocalDate getFilterFinishDate() {
-        return filterFinishDate;
+    public Date getFilterFinishDate() {
+        return ((filterStartDate == null) ? null : filterFinishDate
+                .toDateMidnight().toDate());
     }
 
     private AvailabilityTimeLine.Interval getFilterInterval() {
-        return AvailabilityTimeLine.Interval.create(getFilterStartDate(),
-                getFilterFinishDate());
+        return AvailabilityTimeLine.Interval.create(filterStartDate,
+                filterFinishDate);
     }
 
     private class CompanyLoadChartFiller extends StandardLoadChartFiller {
