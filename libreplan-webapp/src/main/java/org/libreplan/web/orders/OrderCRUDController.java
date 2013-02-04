@@ -698,6 +698,14 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public List<Order> getOrders() {
+        if (checkIncludeOrderElements.isChecked()) {
+            return orderModel.getOrders();
+        }
+
+        return getOrdersFiltered();
+    }
+
+    private List<Order> getOrdersFiltered() {
         List<org.libreplan.business.labels.entities.Label> labels = new ArrayList<org.libreplan.business.labels.entities.Label>();
         List<Criterion> criteria = new ArrayList<Criterion>();
         ExternalCompany customer = null;
@@ -1427,7 +1435,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void onApplyFilter() {
         OrderPredicate predicate = createPredicate();
-        if (predicate != null) {
+        if (predicate != null && checkIncludeOrderElements.isChecked()) {
+            // Force reload conversation state in oderModel
+            getOrders();
             filterByPredicate(predicate);
         } else {
             showAllOrders();
@@ -1454,8 +1464,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         listing.invalidate();
     }
 
-    public void showAllOrders() {
-        listing.setModel(new SimpleListModel(orderModel.getOrders().toArray()));
+    private void showAllOrders() {
+        listing.setModel(new SimpleListModel(getOrders().toArray()));
         listing.invalidate();
     }
 
