@@ -36,6 +36,8 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -126,6 +128,7 @@ public class SettingsController extends GenericForwardComposer {
     public boolean save() {
         try {
             checkEmptyBandboxes();
+            clearSessionVariables();
             settingsModel.confirmSave();
             messages.showMessage(Level.INFO, _("Settings saved"));
             return true;
@@ -133,6 +136,20 @@ public class SettingsController extends GenericForwardComposer {
             messages.showInvalidValues(e);
         }
         return false;
+    }
+
+    private void clearSessionVariables() {
+        Session current = Sessions.getCurrent();
+
+        // Projects filters
+        current.setAttribute("companyFilterStartDate", null);
+        current.setAttribute("companyFilterEndtDate", null);
+        current.setAttribute("companyFilterLabel", null);
+
+        // ResourcesLoad filters
+        current.setAttribute("resourceLoadStartDate", null);
+        current.setAttribute("resourceLoadEndDate", null);
+        current.setAttribute("resourceLoadFilterWorkerOrCriterion", null);
     }
 
     private void checkEmptyBandboxes() {
