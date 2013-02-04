@@ -172,6 +172,21 @@ public class OrderPlanningController implements Composer {
                 && !(parameters.isEmpty())) {
             zoomLevelParameter = parameters.get("zoom")[0];
         }
+        ZoomLevel sessionZoom = (ZoomLevel) Sessions.getCurrent().getAttribute(
+                "zoomLevel");
+        // ZoomLevel sessionZoom = (ZoomLevel)
+        // Sessions.getCurrent().getAttribute(
+        // order.getCode() + "zoomLevel");
+        if (order != null) {
+            System.out.println("expecting to get" + order.getCode()
+                    + sessionZoom);
+        } else {
+            System.out.println("expecting to get (null)" + sessionZoom);
+        }
+        if (sessionZoom != null) {
+            zoomLevelParameter = sessionZoom.getInternalName();
+        }
+
         if (zoomLevelParameter != null) {
             planner.setInitialZoomLevel(ZoomLevel
                     .getFromString(zoomLevelParameter));

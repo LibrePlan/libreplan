@@ -123,6 +123,7 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -1174,6 +1175,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 loadChart.setZoomLevel(detailLevel);
+                sessionStoreZoomLevel(detailLevel);
 
                 transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
@@ -1188,6 +1190,10 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                                 return null;
                             }
                         });
+            }
+
+            private void sessionStoreZoomLevel(ZoomLevel detailLevel) {
+                Sessions.getCurrent().setAttribute("zoomLevel", detailLevel);
             }
         };
 
