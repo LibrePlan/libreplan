@@ -152,6 +152,7 @@ public class ResourceLoadController implements Composer {
         this.parent = comp;
     }
 
+
     public void reload() {
         reloader.resetToInitialState();
         reloadWithoutReset();
@@ -280,21 +281,12 @@ public class ResourceLoadController implements Composer {
                 filterBy);
         result.add(filterTypeChanger);
 
-        User user;
         LocalDate startDate = (LocalDate) Sessions.getCurrent().getAttribute(
                 "resourceLoadStartDate");
         LocalDate endDate = (LocalDate) Sessions.getCurrent().getAttribute(
                 "resourceLoadEndDate");
-        List<FilterPair> bandboxFilterPairs = (List<FilterPair>) Sessions
-                .getCurrent()
-                .getAttribute(
-                        "resourceLoadFilterWorkerOrCriterion");
-        try {
-            user = this.userDAO.findByLoginName(SecurityUtils
-                    .getSessionUserLoginName());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+
+        User user = resourceLoadModel.getUser();
 
         // Calculate filter based on user preferences
         if (user != null) {
@@ -315,20 +307,14 @@ public class ResourceLoadController implements Composer {
         }
 
         result.add(new ByDatesFilter(onChange, filterBy, startDate, endDate));
-        WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
-                onChange, filterBy, filterTypeChanger, resourcesSearcher);
 
-        if (bandboxFilterPairs != null && !bandboxFilterPairs.isEmpty()) {
-            for (FilterPair filterPair : bandboxFilterPairs) {
-                bandbox.getBandBox().addSelectedElement(filterPair);
-            }
-        } else if ((user != null)
-                && (user.getResourcesLoadFilterCriterion() != null)) {
-            bandboxFilterPairs = new ArrayList<FilterPair>();
-            bandboxFilterPairs.add(new FilterPair(ResourceFilterEnum.Criterion,
-                    user.getResourcesLoadFilterCriterion().getFinderPattern(),
-                    user.getResourcesLoadFilterCriterion()));
-        }
+        List<FilterPair> filterPairs = (List<FilterPair>) Sessions
+                .getCurrent().getAttribute(
+                        "resourceLoadFilterWorkerOrCriterion");
+
+        WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
+                onChange, filterBy, filterTypeChanger, resourcesSearcher, filterPairs);
+
         result.add(bandbox);
         result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
                 bandbox));
@@ -572,19 +558,19 @@ public class ResourceLoadController implements Composer {
 
         private List<Object> entitiesSelected = null;
 
+        private List<FilterPair> bandboxParameters = null;
+
         private final IResourcesSearcher resourcesSearcher;
 
         private Label label = new Label();
 
-        public BandboxMultipleSearch getBandBox() {
-            return bandBox;
-        }
-
         private WorkersOrCriteriaBandbox(Runnable onChange,
                 PlanningState filterBy, FilterTypeChanger filterType,
-                IResourcesSearcher resourcesSearcher) {
+                IResourcesSearcher resourcesSearcher,
+                List<FilterPair> bandboxParameters) {
             super(onChange, filterBy, filterType);
             this.resourcesSearcher = resourcesSearcher;
+            this.bandboxParameters = bandboxParameters;
         }
 
         @Override
@@ -612,6 +598,14 @@ public class ResourceLoadController implements Composer {
                     notifyChange();
                 }
             });
+
+            // Seems to fill combobox, but does not filter
+            if ((bandboxParameters != null) && !bandboxParameters.isEmpty()) {
+                for (FilterPair filterPair : bandboxParameters) {
+                    bandBox.addSelectedElement(filterPair);
+                }
+                entitiesSelected = getSelected();
+            }
 
             Hbox hbox = new Hbox();
             hbox.appendChild(getLabel());
@@ -685,6 +679,27 @@ public class ResourceLoadController implements Composer {
             return resources;
         }
 
+        private List<Resource> calculateManualResourcesToShow() {
+            List<Resource> resources = new ArrayList<Resource>();
+            List<Criterion> criteria = new ArrayList<Criterion>();
+
+
+            for (Object each : entitiesSelected) {
+                if (each instanceof Resource) {
+                    resources.add((Resource) each);
+                } else {
+                    criteria.add((Criterion) each);
+                }
+            }
+
+            if (!criteria.isEmpty()) {
+                resources.addAll(resourcesSearcher.searchBoth()
+                        .byCriteria(criteria).execute());
+            }
+
+            return resources;
+        }
+
         public boolean hasEntitiesSelected() {
             return entitiesSelected != null && !entitiesSelected.isEmpty();
         }
@@ -697,12 +712,6 @@ public class ResourceLoadController implements Composer {
                 result.add(filterPair.getValue());
             }
             return result;
-        }
-
-        public void addSelectedElementsToBandbox(List<FilterPair> criterion) {
-            for (FilterPair object : criterion) {
-                bandBox.addSelectedElement(object);
-            }
         }
 
     }
