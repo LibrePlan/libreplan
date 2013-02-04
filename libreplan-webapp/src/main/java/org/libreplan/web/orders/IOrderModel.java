@@ -33,6 +33,7 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.resources.entities.Criterion;
@@ -86,6 +87,10 @@ public interface IOrderModel extends IIntegrationEntityModel {
     OrderElementTreeModel getOrderElementTreeModel();
 
     List<Order> getOrders();
+
+    List<Order> getOrders(Date startDate, Date endDate, List<Label> labels,
+            List<Criterion> criteria, ExternalCompany customer,
+            OrderStatusEnum state);
 
     void initEdit(Order order, Desktop desktop);
 
