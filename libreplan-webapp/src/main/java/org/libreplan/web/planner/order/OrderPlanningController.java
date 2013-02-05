@@ -145,6 +145,7 @@ public class OrderPlanningController implements Composer {
         if (planner != null) {
             ensureIsInPlanningOrderView();
             updateConfiguration();
+            onApplyFilter();
         }
     }
 
