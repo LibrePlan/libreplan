@@ -44,6 +44,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
@@ -205,8 +206,27 @@ public class PlanningTabCreator {
                 }
             }
 
+            private boolean checkFiltersChanged() {
+                return (Sessions.getCurrent() != null)
+                        && (Sessions.getCurrent().getAttribute(
+                                "companyFilterChanged") != null)
+                        && ((Boolean) Sessions.getCurrent().getAttribute(
+                                "companyFilterChanged"));
+            }
+
+            private void setFiltersUnchanged() {
+                Sessions.getCurrent()
+                        .getAttribute("companyFilterChanged", true);
+            }
+
             @Override
             protected void afterShowAction() {
+                if (checkFiltersChanged()) {
+                    companyPlanningController.readSessionVariables();
+                    companyPlanningController.onApplyFilter();
+                }
+                setFiltersUnchanged();
+
                 companyPlanningController.setConfigurationForPlanner();
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
