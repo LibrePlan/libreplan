@@ -320,11 +320,11 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         String strQuery = "SELECT t.taskSource.schedulingData.orderElement.id "
                 + "FROM TaskElement t "
                 + "WHERE t.parent IS NULL ";
-        if (startDate != null) {
-            strQuery += "AND t.startDate.date >= :startDate ";
-        }
         if (endDate != null) {
-            strQuery += "AND t.endDate.date <= :endDate ";
+            strQuery += "AND t.startDate.date <= :endDate ";
+        }
+        if (startDate != null) {
+            strQuery += "AND t.endDate.date >= :startDate ";
         }
 
         Query query = getSession().createQuery(strQuery);
