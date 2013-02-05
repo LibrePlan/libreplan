@@ -1493,8 +1493,40 @@ public class OrderCRUDController extends GenericForwardComposer {
         Sessions.getCurrent().setAttribute("companyFilterFinishDate",
                 filterFinishDate.getValue());
         Sessions.getCurrent().setAttribute("companyFilterLabel",
-                bdFilters.getSelectedElements());
+                getSelectedBandboxAsTaskGroupFilters());
         Sessions.getCurrent().setAttribute("companyFilterChanged", true);
+    }
+
+    private List<FilterPair> getSelectedBandboxAsTaskGroupFilters() {
+        List<FilterPair> result = new ArrayList<FilterPair>();
+        for (FilterPair filterPair : (List<FilterPair>) bdFilters
+                .getSelectedElements()) {
+            OrderFilterEnum type = (OrderFilterEnum) filterPair
+                    .getType();
+            switch (type) {
+            case Label:
+                result.add(new FilterPair(TaskGroupFilterEnum.Label, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            case Criterion:
+                result.add(new FilterPair(TaskGroupFilterEnum.Criterion,
+                        filterPair.getPattern(), filterPair.getValue()));
+                break;
+            case ExternalCompany:
+                result.add(new FilterPair(TaskGroupFilterEnum.ExternalCompany,
+                        filterPair.getPattern(), filterPair.getValue()));
+                break;
+            case State:
+                result.add(new FilterPair(TaskGroupFilterEnum.State, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            default:
+                result.add(new FilterPair(OrderFilterEnum.Label, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            }
+        }
+        return result;
     }
 
     private OrderPredicate createPredicate() {

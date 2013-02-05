@@ -162,6 +162,7 @@ public class CompanyPlanningController implements Composer {
         List<FilterPair> sessionFilterPairs = (List<FilterPair>) Sessions
                 .getCurrent().getAttribute("companyFilterLabel");
         if (sessionFilterPairs != null && !sessionFilterPairs.isEmpty()) {
+            bdFilters.clear();
             for (FilterPair filterPair : sessionFilterPairs) {
                 bdFilters.addSelectedElement(filterPair);
             }
@@ -342,6 +343,7 @@ public class CompanyPlanningController implements Composer {
                 "companyFilterStartDate"));
         filterFinishDate.setValue((Date) Sessions.getCurrent().getAttribute(
                 "companyFilterFinishDate"));
+        loadPredefinedBandboxFilter();
     }
 
     public void onApplyFilter() {
