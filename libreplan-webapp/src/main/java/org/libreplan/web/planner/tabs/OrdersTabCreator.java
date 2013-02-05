@@ -36,6 +36,7 @@ import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
@@ -111,9 +112,29 @@ public class OrdersTabCreator {
                 }
             }
 
+            private boolean checkFiltersChanged() {
+                return (Sessions.getCurrent() != null)
+                        && (Sessions.getCurrent().getAttribute(
+                                "companyFilterChanged") != null)
+                        && ((Boolean) Sessions.getCurrent().getAttribute(
+                                "companyFilterChanged"));
+            }
+
+            private void setFiltersUnchanged() {
+                Sessions.getCurrent()
+                        .getAttribute("companyFilterChanged", true);
+            }
+
             @Override
             protected void afterShowAction() {
+
                 orderCRUDController.goToList();
+                if (checkFiltersChanged()) {
+                    orderCRUDController.readSessionVariables();
+                    orderCRUDController.onApplyFilter();
+                }
+                setFiltersUnchanged();
+
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }

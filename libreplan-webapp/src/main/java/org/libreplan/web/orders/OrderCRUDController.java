@@ -1477,6 +1477,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void onApplyFilter() {
         OrderPredicate predicate = createPredicate();
+        storeSessionVariables();
         if (predicate != null && checkIncludeOrderElements.isChecked()) {
             // Force reload conversation state in oderModel
             getOrders();
@@ -1484,6 +1485,16 @@ public class OrderCRUDController extends GenericForwardComposer {
         } else {
             showAllOrders();
         }
+    }
+
+    private void storeSessionVariables() {
+        Sessions.getCurrent().setAttribute("companyFilterStartDate",
+                filterStartDate.getValue());
+        Sessions.getCurrent().setAttribute("companyFilterFinishDate",
+                filterFinishDate.getValue());
+        Sessions.getCurrent().setAttribute("companyFilterLabel",
+                bdFilters.getSelectedElements());
+        Sessions.getCurrent().setAttribute("companyFilterChanged", true);
     }
 
     private OrderPredicate createPredicate() {
@@ -1809,6 +1820,13 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public String getCurrencySymbol() {
         return Util.getCurrencySymbol();
+    }
+
+    public void readSessionVariables() {
+        filterStartDate.setValue((Date) Sessions.getCurrent().getAttribute(
+                "companyFilterStartDate"));
+        filterFinishDate.setValue((Date) Sessions.getCurrent().getAttribute(
+                "companyFilterFinishDate"));
     }
 
 }

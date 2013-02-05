@@ -302,4 +302,8 @@ public class TaskGroupPredicate implements IPredicate {
         return finishDate;
     }
 
+    public void setFilters(List<FilterPair> listFilters) {
+        filters = listFilters;
+    }
+
 }

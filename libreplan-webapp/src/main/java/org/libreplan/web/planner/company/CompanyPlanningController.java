@@ -337,6 +337,13 @@ public class CompanyPlanningController implements Composer {
         };
     }
 
+    public void readSessionVariables() {
+        filterStartDate.setValue((Date) Sessions.getCurrent().getAttribute(
+                "companyFilterStartDate"));
+        filterFinishDate.setValue((Date) Sessions.getCurrent().getAttribute(
+                "companyFilterFinishDate"));
+    }
+
     public void onApplyFilter() {
         Sessions.getCurrent().setAttribute("companyFilterStartDate",
                 filterStartDate.getValue());
@@ -344,6 +351,7 @@ public class CompanyPlanningController implements Composer {
                 filterFinishDate.getValue());
         Sessions.getCurrent().setAttribute("companyFilterLabel",
                 bdFilters.getSelectedElements());
+        Sessions.getCurrent().setAttribute("companyFilterChanged", true);
         filterByPredicate(createPredicate());
     }
 
@@ -354,7 +362,7 @@ public class CompanyPlanningController implements Composer {
         Date finishDate = filterFinishDate.getValue();
         Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
 
-        if (listFilters.isEmpty() && startDate == null && finishDate == null) {
+        if (startDate == null && finishDate == null) {
             TaskGroupPredicate predicate = model
                     .getDefaultPredicate(includeOrderElements);
             //show filter dates calculated by default on screen
@@ -364,7 +372,7 @@ public class CompanyPlanningController implements Composer {
             if(model.getFilterFinishDate() != null) {
                 filterFinishDate.setValue(model.getFilterFinishDate());
             }
-
+            predicate.setFilters(listFilters);
             return predicate;
         }
         return new TaskGroupPredicate(listFilters, startDate, finishDate,
