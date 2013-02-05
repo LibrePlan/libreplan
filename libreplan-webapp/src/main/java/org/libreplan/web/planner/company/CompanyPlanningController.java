@@ -39,8 +39,6 @@ import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
-import org.libreplan.web.common.components.finders.IFilterEnum;
-import org.libreplan.web.common.components.finders.OrderFilterEnum;
 import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
@@ -48,7 +46,6 @@ import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -350,7 +347,7 @@ public class CompanyPlanningController implements Composer {
         filterByPredicate(createPredicate());
     }
 
-    private IPredicate createPredicate() {
+    private TaskGroupPredicate createPredicate() {
         List<FilterPair> listFilters = (List<FilterPair>) bdFilters
                 .getSelectedElements();
         Date startDate = filterStartDate.getValue();
@@ -358,7 +355,8 @@ public class CompanyPlanningController implements Composer {
         Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
 
         if (listFilters.isEmpty() && startDate == null && finishDate == null) {
-            IPredicate predicate = model.getDefaultPredicate(includeOrderElements);
+            TaskGroupPredicate predicate = model
+                    .getDefaultPredicate(includeOrderElements);
             //show filter dates calculated by default on screen
             if(model.getFilterStartDate() != null) {
                 filterStartDate.setValue(model.getFilterStartDate());
@@ -373,7 +371,7 @@ public class CompanyPlanningController implements Composer {
                 includeOrderElements);
     }
 
-    private void filterByPredicate(IPredicate predicate) {
+    private void filterByPredicate(TaskGroupPredicate predicate) {
         // Recalculate predicate
         model.setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, predicate);
