@@ -19,7 +19,6 @@
 
 package org.libreplan.importers;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,6 +57,16 @@ public class JiraRESTClient {
      */
     public static final String PATH_ISSUE = "/rest/api/latest/issue/";
 
+    /**
+     * Fields to include in the response of rest/api/latest/search.
+     */
+    private static final String FIELDS_TO_INCLUDE_IN_RESPONSE = "summary,status,timetracking,worklog";
+
+    /**
+     * Max number of issues to return(default is 50)
+     */
+    private static final long MAX_RESULTS = 1000;
+
     private static final MediaType[] mediaTypes = new MediaType[] {
             MediaType.valueOf(MediaType.APPLICATION_JSON),
             MediaType.valueOf(MediaType.APPLICATION_XML) };
@@ -78,11 +87,17 @@ public class JiraRESTClient {
     /**
      * Query Jira for all issues with the specified query parameter
      *
+     * @param url
+     *            the url(end point)
+     * @param username
+     *            the user name
+     * @param password
+     *            the password
      * @param path
      *            the path segment
      * @param query
      *            the query
-     * @return List of jira Issues
+     * @return list of jira issues
      */
     public static List<IssueDTO> getIssues(String url, String username,
             String password, String path, String query) {
@@ -95,11 +110,13 @@ public class JiraRESTClient {
         client.path(path);
         if (!query.isEmpty()) {
             client.query("jql", query);
-            client.query("maxResults", 1000);
         }
+        client.query("maxResults", MAX_RESULTS);
+        client.query("fields", stripWhiteSpace(FIELDS_TO_INCLUDE_IN_RESPONSE));
+
         SearchResultDTO searchResult = client.get(SearchResultDTO.class);
 
-        return getIssuesDetails(client, searchResult.getIssues());
+        return searchResult.getIssues();
     }
 
     /**
@@ -146,25 +163,13 @@ public class JiraRESTClient {
     }
 
     /**
-     * Iterate through issues and get issue details
+     * Strip all white spaces of the specified <code>str<code>
      *
-     * @param client
-     *            the jira client
-     * @param issues
-     *            jira issues
-     *
-     * @return List of jira issue details
+     * @param str
+     *            the string
+     * @return string with out white spaces
      */
-    private static List<IssueDTO> getIssuesDetails(WebClient client, List<IssueDTO> issues) {
-
-        client.back(true);
-        client.path(PATH_ISSUE);
-
-        List<IssueDTO> issueDetails = new ArrayList<IssueDTO>();
-        for (IssueDTO issue : issues) {
-            issueDetails.add(client.path(issue.getId()).get(IssueDTO.class));
-            client.back(false);
-        }
-        return issueDetails;
+    private static String stripWhiteSpace(String str) {
+        return str.replaceAll("\\s+", "");
     }
 }

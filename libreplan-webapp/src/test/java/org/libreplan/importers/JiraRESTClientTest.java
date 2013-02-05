@@ -56,6 +56,10 @@ public class JiraRESTClientTest {
 
     }
 
+    private String getJiraLabel(String label) {
+        return "labels=" + label;
+    }
+
     @Test
     @Ignore("Only working if you have a JIRA server configured")
     public void testGetAllLablesFromValidLabelUrl() {
@@ -77,14 +81,15 @@ public class JiraRESTClientTest {
                 properties.getProperty("url"),
                 properties.getProperty("username"),
                 properties.getProperty("password"), JiraRESTClient.PATH_SEARCH,
-                "labels=Intrasprint");
+                getJiraLabel(properties.getProperty("label")));
         assertTrue(issues.size() > 0);
     }
 
     @Test(expected = RuntimeException.class)
     public void testGetIssuesForValidLabelButUnAuthorizedUser() {
         JiraRESTClient.getIssues(properties.getProperty("url"), "", "",
-                JiraRESTClient.PATH_SEARCH, "labels=Intrasprint");
+                JiraRESTClient.PATH_SEARCH,
+                getJiraLabel(properties.getProperty("label")));
     }
 
     @Test
