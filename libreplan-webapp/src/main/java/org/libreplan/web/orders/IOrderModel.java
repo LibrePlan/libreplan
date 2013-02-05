@@ -40,6 +40,7 @@ import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderTemplate;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.IIntegrationEntityModel;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.ganttz.IPredicate;
@@ -152,5 +153,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     boolean isOnlyChildAndParentAlreadyInUseByHoursOrExpenses(
             OrderElement orderElement);
+
+    User getUser();
 
 }

@@ -945,4 +945,21 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public User getUser() {
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        // Attach filter bandbox elements
+        if (user.getProjectsFilterLabel() != null) {
+            user.getProjectsFilterLabel().getFinderPattern();
+        }
+        return user;
+    }
+
 }

@@ -51,9 +51,9 @@ import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.templates.entities.OrderTemplate;
-import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
@@ -67,6 +67,8 @@ import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.components.finders.OrderFilterEnum;
+import org.libreplan.web.common.components.finders.TaskElementFilterEnum;
+import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
 import org.libreplan.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.libreplan.web.orders.labels.LabelsAssignmentToOrderElementComponent;
@@ -135,9 +137,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     @Autowired
     private IOrderModel orderModel;
-
-    @Autowired
-    private IUserDAO userDAO;
 
     private IMessagesForUser messagesForUser;
 
@@ -236,14 +235,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         // Filter predicate needs to be calculated based on the projects dates
         if ((calculateStartDate) || (calculateEndDate)) {
 
-            User user;
-            try {
-                user = this.userDAO.findByLoginName(SecurityUtils
-                        .getSessionUserLoginName());
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-
+            User user = orderModel.getUser();
             // Calculate filter based on user preferences
             if (user != null) {
                 if ((startDate == null)
@@ -262,6 +254,56 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         filterStartDate.setValue(startDate);
         filterFinishDate.setValue(endDate);
+
+        loadLabels();
+
+    }
+
+    private void loadLabels() {
+        List<FilterPair> sessionFilterPairs = (List<FilterPair>) Sessions
+                .getCurrent().getAttribute("companyFilterLabel");
+        if (sessionFilterPairs != null && !sessionFilterPairs.isEmpty()) {
+            for (FilterPair filterPair : sessionFilterPairs) {
+
+                FilterPair toadd;
+                TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair
+                        .getType();
+                switch (type) {
+                case Label:
+                    toadd = new FilterPair(OrderFilterEnum.Label,
+                            filterPair.getPattern(), filterPair.getValue());
+                    break;
+                case Criterion:
+                    toadd = new FilterPair(OrderFilterEnum.Criterion,
+                            filterPair.getPattern(), filterPair.getValue());
+                    break;
+                case ExternalCompany:
+                    toadd = new FilterPair(OrderFilterEnum.ExternalCompany,
+                            filterPair.getPattern(), filterPair.getValue());
+                    break;
+                case State:
+                    toadd = new FilterPair(OrderFilterEnum.State,
+                            filterPair.getPattern(), filterPair.getValue());
+
+                    break;
+                default:
+                    toadd = new FilterPair(OrderFilterEnum.Label,
+                            filterPair.getPattern(), filterPair.getValue());
+                    break;
+                }
+                bdFilters.addSelectedElement(toadd);
+            }
+            return;
+        }
+
+        User user = orderModel.getUser();
+
+        // Calculate filter based on user preferences
+        if ((user != null) && (user.getProjectsFilterLabel() != null)) {
+            bdFilters.addSelectedElement(new FilterPair(OrderFilterEnum.Label,
+                    user.getProjectsFilterLabel().getFinderPattern(), user
+                            .getProjectsFilterLabel()));
+        }
     }
 
     private void setupGlobalButtons() {
