@@ -277,7 +277,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private void sessionSetZoomLevel(ZoomLevel level) {
         if (level != null) {
             Sessions.getCurrent().setAttribute("zoomLevel", level);
-            System.out.println("setting !");
         }
     }
 
