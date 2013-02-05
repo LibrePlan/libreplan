@@ -43,6 +43,7 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
+import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.reports.dtos.CostExpenseSheetDTO;
@@ -231,17 +232,65 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             return Collections.emptyList();
         }
 
+        List<Long> ordersIdsUnscheduled = getOrdersIdsUnscheduled(startDate,
+                endDate);
+
         Criteria c = getSession().createCriteria(Order.class);
-        if (ordersIdsFiltered != null) {
-            c.add(Restrictions.in("id", ordersIdsFiltered));
-        }
-        if (ordersIdsByDates != null) {
-            c.add(Restrictions.in("id", ordersIdsByDates));
+        if (ordersIdsFiltered != null && ordersIdsByDates != null) {
+            org.hibernate.criterion.Criterion and = Restrictions.and(
+                    Restrictions.in("id", ordersIdsFiltered),
+                    Restrictions.in("id", ordersIdsByDates));
+            c.add(Restrictions.or(and,
+                    Restrictions.in("id", ordersIdsUnscheduled)));
+        } else {
+            if (ordersIdsFiltered != null) {
+                c.add(Restrictions.or(Restrictions.in("id", ordersIdsFiltered),
+                        Restrictions.in("id", ordersIdsUnscheduled)));
+            }
+            if (ordersIdsByDates != null) {
+                c.add(Restrictions.or(Restrictions.in("id", ordersIdsByDates),
+                        Restrictions.in("id", ordersIdsUnscheduled)));
+            }
         }
 
         c.addOrder(org.hibernate.criterion.Order.desc("initDate"));
         c.addOrder(org.hibernate.criterion.Order.asc("infoComponent.name"));
         return c.list();
+    }
+
+    private List<Long> getOrdersIdsUnscheduled(Date startDate, Date endDate) {
+        String strQuery = "SELECT s.orderElement.id "
+                + "FROM SchedulingDataForVersion s "
+                + "WHERE s.schedulingStateType = :type";
+        Query query = getSession().createQuery(strQuery);
+        query.setParameter("type", SchedulingState.Type.NO_SCHEDULED);
+
+        List<Long> ordersIdsUnscheduled = query.list();
+        if (ordersIdsUnscheduled.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        String strQueryDates = "SELECT o.id "
+                + "FROM Order o "
+                + "WHERE o.id IN (:ids) ";
+
+        if (startDate != null) {
+            strQueryDates += "AND o.initDate >= :startDate ";
+        }
+        if (endDate != null) {
+            strQueryDates += "AND o.initDate <= :endDate ";
+        }
+
+        Query queryDates = getSession().createQuery(strQueryDates);
+        if (startDate != null) {
+            queryDates.setParameter("startDate", startDate);
+        }
+        if (endDate != null) {
+            queryDates.setParameter("endDate", endDate);
+        }
+        queryDates.setParameterList("ids", ordersIdsUnscheduled);
+
+        return queryDates.list();
     }
 
     /**
