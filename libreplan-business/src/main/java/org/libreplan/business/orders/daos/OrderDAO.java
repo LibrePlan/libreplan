@@ -343,7 +343,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             } else {
                 where += "AND ";
             }
-            where += "o.id = :ids ";
+            where += "o.id IN (:ids) ";
         }
 
         strQuery += where;
