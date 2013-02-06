@@ -233,11 +233,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
 
-        ZoomLevel defaultZoomLevel = sessionGetZoomLevel();
-        if (defaultZoomLevel == null) {
-            defaultZoomLevel = OrderPlanningModel
+        ZoomLevel defaultZoomLevel = OrderPlanningModel
                 .calculateDefaultLevel(configuration);
-        }
         OrderPlanningModel.configureInitialZoomLevelFor(planner,
                 defaultZoomLevel);
 
@@ -267,16 +264,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                         event.getTarget().removeEventListener("onOpen", this);
                     }
                 });
-        }
-    }
-
-    private ZoomLevel sessionGetZoomLevel() {
-        return (ZoomLevel) Sessions.getCurrent().getAttribute("zoomLevel");
-    }
-
-    private void sessionSetZoomLevel(ZoomLevel level) {
-        if (level != null) {
-            Sessions.getCurrent().setAttribute("zoomLevel", level);
         }
     }
 
@@ -676,7 +663,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 loadChart.setZoomLevel(detailLevel);
-                sessionSetZoomLevel(detailLevel);
+
                 transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                     @Override

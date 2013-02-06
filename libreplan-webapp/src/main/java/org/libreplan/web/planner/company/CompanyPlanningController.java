@@ -110,11 +110,6 @@ public class CompanyPlanningController implements Composer {
                 && !(parameters.isEmpty())) {
             zoomLevelParameter = parameters.get("zoom")[0];
         }
-        ZoomLevel sessionZoom = (ZoomLevel) Sessions.getCurrent().getAttribute(
-                "zoomLevel");
-        if (sessionZoom != null) {
-            zoomLevelParameter = sessionZoom.getInternalName();
-        }
         if (zoomLevelParameter != null) {
             planner.setInitialZoomLevel(ZoomLevel
                     .getFromString(zoomLevelParameter));
