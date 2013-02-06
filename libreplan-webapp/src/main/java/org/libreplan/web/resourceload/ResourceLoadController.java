@@ -42,14 +42,17 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.chart.ILoadChartData;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
+import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.ResourceAllocationFilterEnum;
 import org.libreplan.web.planner.chart.Chart;
 import org.libreplan.web.planner.chart.StandardLoadChartFiller;
 import org.libreplan.web.planner.company.CompanyPlanningModel;
@@ -304,9 +307,16 @@ public class ResourceLoadController implements Composer {
 
         result.add(new ByDatesFilter(onChange, filterBy, startDate, endDate));
 
-        List<FilterPair> filterPairs = (List<FilterPair>) Sessions
-                .getCurrent().getAttribute(
-                        "resourceLoadFilterWorkerOrCriterion");
+        List<FilterPair> filterPairs = (List<FilterPair>) FilterUtils
+                .readResourceLoadsBandbox();
+        if (filterPairs == null || filterPairs.size()!=0) {
+            filterPairs = new ArrayList<FilterPair>();
+            filterPairs.add(new FilterPair(
+                    ResourceAllocationFilterEnum.Criterion, user
+                            .getResourcesLoadFilterCriterion()
+                            .getFinderPattern(), user
+                            .getResourcesLoadFilterCriterion()));
+        }
 
         WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
                 onChange, filterBy, filterTypeChanger, resourcesSearcher, filterPairs);
