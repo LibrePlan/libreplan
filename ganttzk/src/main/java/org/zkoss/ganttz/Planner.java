@@ -62,7 +62,6 @@ import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -278,9 +277,7 @@ public class Planner extends HtmlMacroComponent  {
             return;
         }
         this.fixedZoomByUser = true;
-
         initialZoomLevel = zoomLevel;
-        Sessions.getCurrent().setAttribute("zoomLevel", zoomLevel);
         ganttPanel.setZoomLevel(zoomLevel, scrollLeft);
     }
 
@@ -412,7 +409,8 @@ public class Planner extends HtmlMacroComponent  {
                 if (command.equals("onZoomLevelChange")){
                     zoomindex=  (Integer) retrieveData(request, "zoomindex");
                     scrollLeft = (Integer) retrieveData(request, "scrollLeft");
-                    setZoomLevel((ZoomLevel) ((Listbox) getFellow("listZoomLevels"))
+
+                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels"))
                             .getModel().getElementAt(zoomindex),
                             scrollLeft);
                     return true;
