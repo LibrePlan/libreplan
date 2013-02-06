@@ -44,6 +44,7 @@ import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
@@ -59,7 +60,6 @@ import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -280,30 +280,22 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     private void importOrderFiltersFromSession() {
-        filterNameOrderElement.setValue((String) Sessions.getCurrent()
-                .getAttribute(
-                        orderModel.getOrder().getCode() + "-tasknameFilter"));
-        filterStartDateOrderElement.setValue((Date) Sessions.getCurrent()
-                .getAttribute(
-                        orderModel.getOrder().getCode() + "-startDateFilter"));
-        filterFinishDateOrderElement.setValue((Date) Sessions.getCurrent()
-                .getAttribute(
-                        orderModel.getOrder().getCode() + "-endDateFilter"));
-        if (Sessions.getCurrent().getAttribute(
-                orderModel.getOrder().getCode() + "-labelsandcriteriaFilter") != null) {
-            for (Object each : (List<Object>) Sessions.getCurrent()
-                    .getAttribute(
-                            orderModel.getOrder().getCode()
-                                    + "-labelsandcriteriaFilter")) {
+        String orderCode = orderModel.getOrder().getCode();
+        filterNameOrderElement.setValue(FilterUtils
+                .readOrderTaskName(orderCode));
+        filterStartDateOrderElement.setValue(FilterUtils
+                .readOrderStartDate(orderCode));
+        filterFinishDateOrderElement.setValue(FilterUtils
+                .readOrderEndDate(orderCode));
+        if (FilterUtils.readOrderParameters(orderCode) != null) {
+            for (Object each : (List<Object>) FilterUtils
+                    .readOrderParameters(orderCode)) {
                 bdFiltersOrderElement.addSelectedElement(each);
             }
         }
-        if (Sessions.getCurrent().getAttribute(
-                orderModel.getOrder().getCode() + "-inheritanceFilter") != null) {
-            labelsWithoutInheritance.setChecked((Boolean) Sessions.getCurrent()
-                    .getAttribute(
-                            orderModel.getOrder().getCode()
-                                    + "-inheritanceFilter"));
+        if (FilterUtils.readOrderInheritance(orderCode) != null) {
+            labelsWithoutInheritance.setChecked(FilterUtils
+                    .readOrderInheritance(orderCode));
         }
     }
 
@@ -559,6 +551,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
      * Apply filter to order elements in current order
      */
     public void onApplyFilter() {
+        writeFilterParameters();
         OrderElementPredicate predicate = createPredicate();
         this.predicate = predicate;
 
@@ -567,6 +560,16 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         } else {
             showAllOrderElements();
         }
+    }
+
+    private void writeFilterParameters() {
+        String orderCode = orderModel.getOrder().getCode();
+        FilterUtils.writeOrderStartDate(orderCode,
+                filterStartDateOrderElement.getValue());
+        FilterUtils.writeOrderEndDate(orderCode,
+                filterFinishDateOrderElement.getValue());
+        FilterUtils.writeOrderTaskName(orderCode,
+                filterNameOrderElement.getValue());
     }
 
     private OrderElementPredicate createPredicate() {
