@@ -123,6 +123,7 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -319,9 +320,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 .isExpandOrderPlanningViewCharts());
         addAdditional(additional, configuration);
 
-        ZoomLevel defaultZoomLevel = OrderPlanningModel
-                .calculateDefaultLevel(configuration);
-        planner.setInitialZoomLevel(defaultZoomLevel);
+        planner.setInitialZoomLevel(getZoomLevel(configuration, order));
 
         final boolean writingAllowed = isWritingAllowedOnOrder();
         ISaveCommand saveCommand = setupSaveCommand(configuration,
@@ -370,6 +369,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         PROFILING_LOG.debug("setConfiguration on planner took: "
                 + (System.currentTimeMillis() - setConfigurationTime) + " ms");
         long preparingChartsAndMisc = System.currentTimeMillis();
+
+        setupZoomLevelListener(planner, order);
+
         // Prepare tabpanels
         Tabpanels chartTabpanels = new Tabpanels();
 
@@ -400,6 +402,36 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         long overalProgressContentTime = System.currentTimeMillis();
         PROFILING_LOG.debug("overalProgressContent took: "
                 + (System.currentTimeMillis() - overalProgressContentTime));
+    }
+
+    private ZoomLevel getZoomLevel(
+            PlannerConfiguration<TaskElement> configuration, Order order) {
+        ZoomLevel sessionZoom = (ZoomLevel) Sessions.getCurrent().getAttribute(
+                order.getCode() + "-zoomLevel");
+        if (sessionZoom != null) {
+            return sessionZoom;
+        }
+        return OrderPlanningModel.calculateDefaultLevel(configuration);
+    }
+
+    private void setupZoomLevelListener(Planner planner, Order order) {
+        planner.getTimeTracker().addZoomListener(
+                getSessionZoomLevelListener(order));
+    }
+
+    private IZoomLevelChangedListener getSessionZoomLevelListener(
+            final Order order) {
+        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                Sessions.getCurrent().setAttribute(
+                        order.getCode() + "-zoomLevel", detailLevel);
+            }
+        };
+
+        keepAliveZoomListeners.add(zoomListener);
+        return zoomListener;
     }
 
     private OrderEarnedValueChartFiller earnedValueChartFiller;
