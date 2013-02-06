@@ -144,8 +144,6 @@ public class Planner extends HtmlMacroComponent  {
 
     private GanttPanel ganttPanel;
 
-    private boolean fixedZoomByUser = false;
-
     private List<? extends CommandContextualized<?>> contextualizedGlobalCommands;
 
     private CommandContextualized<?> goingDownInLastArrowCommand;
@@ -276,7 +274,6 @@ public class Planner extends HtmlMacroComponent  {
         if (ganttPanel == null) {
             return;
         }
-        this.fixedZoomByUser = true;
         initialZoomLevel = zoomLevel;
         ganttPanel.setZoomLevel(zoomLevel, scrollLeft);
     }
@@ -738,10 +735,6 @@ public class Planner extends HtmlMacroComponent  {
         return ganttPanel.getTimeTracker().getDetailLevel();
     }
 
-    public boolean isFixedZoomByUser() {
-        return this.fixedZoomByUser;
-    }
-
     public void setInitialZoomLevel(final ZoomLevel zoomLevel) {
         if (this.initialZoomLevel != null) {
             // already initialized
@@ -821,12 +814,10 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void updateSelectedZoomLevel() {
-        if (!isFixedZoomByUser()) {
-            Listitem selectedItem = (Listitem) listZoomLevels.getItems().get(
-                    initialZoomLevel.ordinal());
-            listZoomLevels.setSelectedItem(selectedItem);
-            listZoomLevels.invalidate();
-        }
+        Listitem selectedItem = (Listitem) listZoomLevels.getItems().get(
+                initialZoomLevel.ordinal());
+        listZoomLevels.setSelectedItem(selectedItem);
+        listZoomLevels.invalidate();
     }
 
     public IContext<?> getContext() {

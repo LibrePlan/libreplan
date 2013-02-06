@@ -181,13 +181,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    public static void configureInitialZoomLevelFor(Planner planner,
-            ZoomLevel defaultZoomLevel) {
-        if (!planner.isFixedZoomByUser()) {
-            planner.setInitialZoomLevel(defaultZoomLevel);
-        }
-    }
-
     public static ZoomLevel calculateDefaultLevel(
             PlannerConfiguration<TaskElement> configuration) {
         if (configuration.getData().isEmpty()) {
@@ -328,7 +321,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         ZoomLevel defaultZoomLevel = OrderPlanningModel
                 .calculateDefaultLevel(configuration);
-        configureInitialZoomLevelFor(planner, defaultZoomLevel);
+        planner.setInitialZoomLevel(defaultZoomLevel);
 
         final boolean writingAllowed = isWritingAllowedOnOrder();
         ISaveCommand saveCommand = setupSaveCommand(configuration,

@@ -235,8 +235,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         ZoomLevel defaultZoomLevel = OrderPlanningModel
                 .calculateDefaultLevel(configuration);
-        OrderPlanningModel.configureInitialZoomLevelFor(planner,
-                defaultZoomLevel);
+        planner.setInitialZoomLevel(defaultZoomLevel);
 
         configuration.setSecondLevelModificators(BankHolidaysMarker.create(getDefaultCalendar()));
         planner.setConfiguration(configuration);
