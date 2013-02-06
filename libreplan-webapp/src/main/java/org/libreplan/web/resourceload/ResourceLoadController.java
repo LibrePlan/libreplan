@@ -42,12 +42,10 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.chart.ILoadChartData;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
 import org.libreplan.business.planner.entities.DayAssignment;
-import org.libreplan.business.planner.entities.ResourceAllocation;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
-import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
@@ -82,7 +80,6 @@ import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Emitter;
 import org.zkoss.ganttz.util.Interval;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -118,9 +115,6 @@ public class ResourceLoadController implements Composer {
 
     @Autowired
     private IAdHocTransactionService transactionService;
-
-    @Autowired
-    private IUserDAO userDAO;
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
@@ -280,10 +274,8 @@ public class ResourceLoadController implements Composer {
                 filterBy);
         result.add(filterTypeChanger);
 
-        LocalDate startDate = (LocalDate) Sessions.getCurrent().getAttribute(
-                "resourceLoadStartDate");
-        LocalDate endDate = (LocalDate) Sessions.getCurrent().getAttribute(
-                "resourceLoadEndDate");
+        LocalDate startDate = FilterUtils.readResourceLoadsStartDate();
+        LocalDate endDate = FilterUtils.readResourceLoadsEndDate();
 
         User user = resourceLoadModel.getUser();
 
@@ -309,7 +301,7 @@ public class ResourceLoadController implements Composer {
 
         List<FilterPair> filterPairs = (List<FilterPair>) FilterUtils
                 .readResourceLoadsBandbox();
-        if (filterPairs == null || filterPairs.size()!=0) {
+        if (filterPairs == null || filterPairs.isEmpty()) {
             filterPairs = new ArrayList<FilterPair>();
             filterPairs.add(new FilterPair(
                     ResourceAllocationFilterEnum.Criterion, user
@@ -489,8 +481,7 @@ public class ResourceLoadController implements Composer {
                     LocalDate newStart = toLocal(startBox.getValue());
                     if (!ObjectUtils.equals(startDateValue, newStart)) {
                         startDateValue = newStart;
-                        Sessions.getCurrent().setAttribute(
-                                "resourceLoadStartDate", startDateValue);
+                        FilterUtils.writeResourceLoadsStartDate(startDateValue);
                         notifyChange();
                     }
                 }
@@ -504,8 +495,7 @@ public class ResourceLoadController implements Composer {
                     LocalDate newEnd = toLocal(endBox.getValue());
                     if (!ObjectUtils.equals(endBox, newEnd)) {
                         endDateValue = newEnd;
-                        Sessions.getCurrent().setAttribute(
-                                "resourceLoadEndDate", endDateValue);
+                        FilterUtils.writeResourceLoadsEndDate(endDateValue);
                         notifyChange();
                     }
                 }
@@ -604,9 +594,8 @@ public class ResourceLoadController implements Composer {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     entitiesSelected = getSelected();
-                    Sessions.getCurrent().setAttribute(
-                            "resourceLoadFilterWorkerOrCriterion",
-                            bandBox.getSelectedElements());
+                    FilterUtils.writeResourceLoadsParameters(bandBox
+                            .getSelectedElements());
                     notifyChange();
                 }
             });
