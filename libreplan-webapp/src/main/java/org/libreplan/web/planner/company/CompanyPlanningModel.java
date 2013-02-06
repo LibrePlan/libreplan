@@ -233,12 +233,12 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
 
-        ZoomLevel defaultZoomLevel = OrderPlanningModel
-                .calculateDefaultLevel(configuration);
-        planner.setInitialZoomLevel(defaultZoomLevel);
+        planner.setInitialZoomLevel(getZoomLevel(configuration));
 
         configuration.setSecondLevelModificators(BankHolidaysMarker.create(getDefaultCalendar()));
         planner.setConfiguration(configuration);
+
+        setupZoomLevelListener(planner);
 
         if(expandPlanningViewChart) {
             //if the chart is expanded, we load the data now
@@ -264,6 +264,33 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                     }
                 });
         }
+    }
+
+    private ZoomLevel getZoomLevel(
+            PlannerConfiguration<TaskElement> configuration) {
+        ZoomLevel sessionZoom = (ZoomLevel) Sessions.getCurrent().getAttribute(
+                "zoomLevel");
+        if (sessionZoom != null) {
+            return sessionZoom;
+        }
+        return OrderPlanningModel.calculateDefaultLevel(configuration);
+    }
+
+    private void setupZoomLevelListener(Planner planner) {
+        planner.getTimeTracker().addZoomListener(getSessionZoomLevelListener());
+    }
+
+    private IZoomLevelChangedListener getSessionZoomLevelListener() {
+        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                Sessions.getCurrent().setAttribute("zoomLevel", detailLevel);
+            }
+        };
+
+        keepAliveZoomListeners.add(zoomListener);
+        return zoomListener;
     }
 
     private BaseCalendar getDefaultCalendar() {
