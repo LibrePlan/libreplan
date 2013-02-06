@@ -59,6 +59,7 @@ import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -274,7 +275,36 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         operationsForOrderElement.tree(tree)
                 .orderTemplates(this.orderTemplates);
 
+        importOrderFiltersFromSession();
         disableCreateTemplateButtonIfNeeded(comp);
+    }
+
+    private void importOrderFiltersFromSession() {
+        filterNameOrderElement.setValue((String) Sessions.getCurrent()
+                .getAttribute(
+                        orderModel.getOrder().getCode() + "-tasknameFilter"));
+        filterStartDateOrderElement.setValue((Date) Sessions.getCurrent()
+                .getAttribute(
+                        orderModel.getOrder().getCode() + "-startDateFilter"));
+        filterFinishDateOrderElement.setValue((Date) Sessions.getCurrent()
+                .getAttribute(
+                        orderModel.getOrder().getCode() + "-endDateFilter"));
+        if (Sessions.getCurrent().getAttribute(
+                orderModel.getOrder().getCode() + "-labelsandcriteriaFilter") != null) {
+            for (Object each : (List<Object>) Sessions.getCurrent()
+                    .getAttribute(
+                            orderModel.getOrder().getCode()
+                                    + "-labelsandcriteriaFilter")) {
+                bdFiltersOrderElement.addSelectedElement(each);
+            }
+        }
+        if (Sessions.getCurrent().getAttribute(
+                orderModel.getOrder().getCode() + "-inheritanceFilter") != null) {
+            labelsWithoutInheritance.setChecked((Boolean) Sessions.getCurrent()
+                    .getAttribute(
+                            orderModel.getOrder().getCode()
+                                    + "-inheritanceFilter"));
+        }
     }
 
     private void disableCreateTemplateButtonIfNeeded(Component comp) {
