@@ -179,6 +179,7 @@ public class CompanyPlanningController implements Composer {
 
         // Calculate filter based on user preferences
         if ((user != null) && (user.getProjectsFilterLabel() != null)) {
+            bdFilters.clear();
             bdFilters.addSelectedElement(new FilterPair(
                     TaskGroupFilterEnum.Label, user.getProjectsFilterLabel()
                             .getFinderPattern(), user
