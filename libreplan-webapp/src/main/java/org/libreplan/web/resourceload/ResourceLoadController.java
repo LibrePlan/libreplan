@@ -28,9 +28,7 @@ import static org.libreplan.web.resourceload.ResourceLoadModel.toLocal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
@@ -40,7 +38,6 @@ import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.chart.ILoadChartData;
 import org.libreplan.business.planner.chart.ResourceLoadChartData;
@@ -53,7 +50,6 @@ import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
-import org.libreplan.web.common.components.finders.ResourceFilterEnum;
 import org.libreplan.web.planner.chart.Chart;
 import org.libreplan.web.planner.chart.StandardLoadChartFiller;
 import org.libreplan.web.planner.company.CompanyPlanningModel;
@@ -558,8 +554,6 @@ public class ResourceLoadController implements Composer {
 
         private List<Object> entitiesSelected = null;
 
-        private List<FilterPair> bandboxParameters = null;
-
         private final IResourcesSearcher resourcesSearcher;
 
         private Label label = new Label();
@@ -567,10 +561,18 @@ public class ResourceLoadController implements Composer {
         private WorkersOrCriteriaBandbox(Runnable onChange,
                 PlanningState filterBy, FilterTypeChanger filterType,
                 IResourcesSearcher resourcesSearcher,
-                List<FilterPair> bandboxParameters) {
+                List<FilterPair> selectedFilters) {
             super(onChange, filterBy, filterType);
             this.resourcesSearcher = resourcesSearcher;
-            this.bandboxParameters = bandboxParameters;
+
+            initBandbox();
+
+            if ((selectedFilters != null) && !selectedFilters.isEmpty()) {
+                for (FilterPair filterPair : selectedFilters) {
+                    bandBox.addSelectedElement(filterPair);
+                }
+                entitiesSelected = getSelected();
+            }
         }
 
         @Override
@@ -581,7 +583,7 @@ public class ResourceLoadController implements Composer {
             panel.setSecondOptionalFilter(buildBandboxFilterer());
         }
 
-        private Hbox buildBandboxFilterer() {
+        private void initBandbox() {
             bandBox.setId("workerBandboxMultipleSearch");
             bandBox.setWidthBandbox("185px");
             bandBox.setWidthListbox("450px");
@@ -598,15 +600,9 @@ public class ResourceLoadController implements Composer {
                     notifyChange();
                 }
             });
+        }
 
-            // Seems to fill combobox, but does not filter
-            if ((bandboxParameters != null) && !bandboxParameters.isEmpty()) {
-                for (FilterPair filterPair : bandboxParameters) {
-                    bandBox.addSelectedElement(filterPair);
-                }
-                entitiesSelected = getSelected();
-            }
-
+        private Hbox buildBandboxFilterer() {
             Hbox hbox = new Hbox();
             hbox.appendChild(getLabel());
             hbox.appendChild(bandBox);
@@ -662,27 +658,6 @@ public class ResourceLoadController implements Composer {
         private List<Resource> calculateResourcesToShow() {
             List<Resource> resources = new ArrayList<Resource>();
             List<Criterion> criteria = new ArrayList<Criterion>();
-
-            for (Object each : entitiesSelected) {
-                if (each instanceof Resource) {
-                    resources.add((Resource) each);
-                } else {
-                    criteria.add((Criterion) each);
-                }
-            }
-
-            if (!criteria.isEmpty()) {
-                resources.addAll(resourcesSearcher.searchBoth()
-                        .byCriteria(criteria).execute());
-            }
-
-            return resources;
-        }
-
-        private List<Resource> calculateManualResourcesToShow() {
-            List<Resource> resources = new ArrayList<Resource>();
-            List<Criterion> criteria = new ArrayList<Criterion>();
-
 
             for (Object each : entitiesSelected) {
                 if (each instanceof Resource) {
