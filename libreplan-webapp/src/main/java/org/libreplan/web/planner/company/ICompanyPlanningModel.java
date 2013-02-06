@@ -27,6 +27,7 @@ import java.util.Date;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
 import org.zkoss.ganttz.Planner;
@@ -54,4 +55,5 @@ public interface ICompanyPlanningModel {
 
     public TaskGroupPredicate getDefaultPredicate(Boolean includeOrderElements);
 
+    User getUser();
 }

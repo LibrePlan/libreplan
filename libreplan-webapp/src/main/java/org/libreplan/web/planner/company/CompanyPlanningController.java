@@ -80,9 +80,6 @@ public class CompanyPlanningController implements Composer {
     @Autowired
     private ICompanyPlanningModel model;
 
-    @Autowired
-    private IUserDAO userDAO;
-
     private List<ICommandOnTask<TaskElement>> additional = new ArrayList<ICommandOnTask<TaskElement>>();
 
     private Planner planner;
@@ -169,14 +166,7 @@ public class CompanyPlanningController implements Composer {
             return;
         }
 
-        User user;
-        try {
-            user = this.userDAO.findByLoginName(SecurityUtils
-                    .getSessionUserLoginName());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
+        User user = model.getUser();
         // Calculate filter based on user preferences
         if ((user != null) && (user.getProjectsFilterLabel() != null)) {
             bdFilters.clear();
