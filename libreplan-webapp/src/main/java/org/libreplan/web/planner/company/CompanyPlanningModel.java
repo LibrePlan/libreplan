@@ -801,14 +801,6 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         boolean calculateStartDate = (startDate == null);
         boolean calculateEndDate = (endDate == null);
 
-        User user;
-        try {
-            user = this.userDAO.findByLoginName(SecurityUtils
-                    .getSessionUserLoginName());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
         // Filter predicate needs to be calculated based on the projects dates
         if ((calculateStartDate) || (calculateEndDate)) {
             if (currentScenario == null) {
@@ -933,6 +925,23 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Transactional(readOnly=true)
     public ProgressType getProgressTypeFromConfiguration() {
         return configurationDAO.getConfiguration().getProgressType();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getUser() {
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        // Attach filter bandbox elements
+        if (user.getProjectsFilterLabel() != null) {
+            user.getProjectsFilterLabel().getFinderPattern();
+        }
+        return user;
     }
 
 }
