@@ -243,6 +243,14 @@ public class OrderPlanningController implements Composer {
         filterFinishDateOrderElement.setValue((Date) Sessions.getCurrent()
                 .getAttribute(order.getCode() + "-endDateFilter"));
         if (Sessions.getCurrent().getAttribute(
+                order.getCode() + "-labelsandcriteriaFilter") != null) {
+            for (Object each : (List<Object>) Sessions.getCurrent()
+                .getAttribute(
+                order.getCode() + "-labelsandcriteriaFilter")) {
+                bdFiltersOrderElement.addSelectedElement(each);
+        }
+        }
+        if (Sessions.getCurrent().getAttribute(
                 order.getCode() + "-inheritanceFilter") != null) {
         labelsWithoutInheritance.setChecked((Boolean) Sessions.getCurrent()
                 .getAttribute(order.getCode() + "-inheritanceFilter"));
