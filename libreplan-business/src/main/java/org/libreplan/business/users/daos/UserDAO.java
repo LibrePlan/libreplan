@@ -28,8 +28,6 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.labels.entities.Label;
-import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.entities.OrderAuthorization;
@@ -178,20 +176,6 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     @Override
     public List<User> findAll() {
         return list(User.class);
-    }
-
-    @Override
-    public List<User> findByLabelFilterSetting(List<Label> labels) {
-        Criteria c = getSession().createCriteria(User.class);
-        c.add(Restrictions.in("projectsFilterLabel", labels));
-        return c.list();
-    }
-
-    @Override
-    public List<User> findByCriterionFilterSetting(List<Criterion> criteria) {
-        Criteria c = getSession().createCriteria(User.class);
-        c.add(Restrictions.in("resourcesLoadFilterCriterion", criteria));
-        return c.list();
     }
 
 }

@@ -39,9 +39,6 @@ import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.daos.ILabelTypeDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
-import org.libreplan.business.users.daos.IUserDAO;
-import org.libreplan.business.users.entities.User;
-import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,12 +65,7 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     @Autowired
     private IConfigurationDAO configurationDAO;
 
-    @Autowired
-    private IUserDAO userDAO;
-
     private LabelType labelType;
-
-    private List<Label> removedLabels = new ArrayList<Label>();
 
     public LabelTypeModel() {
 
@@ -137,15 +129,6 @@ public class LabelTypeModel extends IntegrationEntityModel implements
 
         generateCodes();
         labelTypeDAO.save(labelType);
-
-        if (!removedLabels.isEmpty()) {
-            List<User> users = userDAO.findByLabelFilterSetting(removedLabels);
-            for (User user : users) {
-                user.setProjectsFilterLabel(null);
-                userDAO.save(user);
-            }
-            FilterUtils.clearBandboxes();
-        }
     }
 
     @Override
@@ -250,7 +233,6 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     @Override
     public void confirmDeleteLabel(Label label) {
         labelType.removeLabel(label);
-        removedLabels.add(label);
     }
 
     @Override
