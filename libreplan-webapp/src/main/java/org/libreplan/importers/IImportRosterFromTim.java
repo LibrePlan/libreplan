@@ -20,20 +20,25 @@
 package org.libreplan.importers;
 
 import org.libreplan.business.calendars.entities.CalendarException;
+import org.libreplan.business.common.entities.AppProperties;
 
 /**
  * Import Rosters from Tim SOAP server using {@link TimSoapClient} and updates
  * worker's Exception calendar accordingly
+ *
+ * It imports the Rosters between periods current-date and current-date plus
+ * <code>NrDaysRosterFromTim</code> specified in configuration entity
+ * {@link AppProperties}
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 public interface IImportRosterFromTim {
 
     /**
-     * Import rosters from Tim and update workers' {@link CalendarException}
-     * <p>
-     * If worker's calendar exception already exists it will be removed and
-     * added new one, in other cases a new calendar exception will be created
+     * Import rosters from Tim and update workers {@link CalendarException}
+     *
+     * If worker calendar exception already exists it will be removed and added
+     * new one, in other cases a new calendar exception will be created
      */
     void importRosters();
 }

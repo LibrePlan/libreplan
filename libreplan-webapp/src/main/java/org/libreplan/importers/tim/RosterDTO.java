@@ -32,9 +32,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
+/**
+ * DTO representing a tim-connector Roster
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "bezettingblok")
-public class Roster {
+public class RosterDTO {
 
     @XmlAttribute(name = "startdate", required = true)
     private LocalDate startDate;
@@ -61,16 +66,16 @@ public class Roster {
     private Boolean concept;
 
     @XmlElement
-    private Filter filter;
+    private FilterDTO filter;
 
     @XmlElement(name = "Persoon")
-    private List<Person> persons;
+    private List<PersonDTO> persons;
 
     @XmlElement(name = "Roostercategorie")
-    private List<RosterCategory> rosterCategories;
+    private List<RosterCategoryDTO> rosterCategories;
 
     @XmlElement(name = "Afdeling")
-    private Department department;
+    private DepartmentDTO department;
 
     @XmlElement(name = "Datum", required = true, nillable = true)
     private LocalDate date;
@@ -87,7 +92,7 @@ public class Roster {
     private String precence;
 
     @XmlElement(name = "periode")
-    private List<Period> periods;
+    private List<PeriodDTO> periods;
 
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlElement(name = "status")
@@ -157,35 +162,35 @@ public class Roster {
         this.concept = concept;
     }
 
-    public Filter getFilter() {
+    public FilterDTO getFilter() {
         return filter;
     }
 
-    public void setFilter(Filter filter) {
+    public void setFilter(FilterDTO filter) {
         this.filter = filter;
     }
 
-    public List<Person> getPersons() {
+    public List<PersonDTO> getPersons() {
         return persons;
     }
 
-    public void setPersons(List<Person> persons) {
+    public void setPersons(List<PersonDTO> persons) {
         this.persons = persons;
     }
 
-    public List<RosterCategory> getRosterCategories() {
+    public List<RosterCategoryDTO> getRosterCategories() {
         return rosterCategories;
     }
 
-    public void setRosterCategories(List<RosterCategory> rosterCategories) {
+    public void setRosterCategories(List<RosterCategoryDTO> rosterCategories) {
         this.rosterCategories = rosterCategories;
     }
 
-    public Department getDepartment() {
+    public DepartmentDTO getDepartment() {
         return department;
     }
 
-    public void setDepartment(Department department) {
+    public void setDepartment(DepartmentDTO department) {
         this.department = department;
     }
 
@@ -221,11 +226,11 @@ public class Roster {
         this.precence = precence;
     }
 
-    public List<Period> getPeriods() {
+    public List<PeriodDTO> getPeriods() {
         return periods;
     }
 
-    public void setPeriods(List<Period> periods) {
+    public void setPeriods(List<PeriodDTO> periods) {
         this.periods = periods;
     }
 

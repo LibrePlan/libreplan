@@ -33,7 +33,8 @@ import org.libreplan.business.orders.entities.OrderSyncInfo;
 public interface IOrderSyncInfoDAO extends IGenericDAO<OrderSyncInfo, Long> {
 
     /**
-     * Search last sychronized info for the specified <code>{@link Order}</code>
+     * Search last synchronized info for the specified
+     * <code>{@link Order}</code>
      *
      * @param order
      *            the order to search for

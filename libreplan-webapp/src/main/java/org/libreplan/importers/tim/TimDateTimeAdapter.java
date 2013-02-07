@@ -25,6 +25,12 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+/**
+ * Adapter responsible for converting from <code>DateTime</code> to
+ * string(tim-string-datetime) and vice versa
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 public class TimDateTimeAdapter extends XmlAdapter<String, DateTime> {
 
     @Override

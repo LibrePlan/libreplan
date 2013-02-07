@@ -38,15 +38,14 @@ import javax.xml.soap.SOAPPart;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.common.util.Base64Utility;
-import org.libreplan.importers.tim.RosterResponse;
+import org.libreplan.importers.tim.RosterResponseDTO;
 
 /**
  * Client to interact with Tim SOAP server.
- * <p>
- * It creates SOAP message, makes connection to the SOAP server and sends the
- * request.
- * <p>
- * The received response is converted to java objects
+ *
+ * This client creates SOAP message, makes connection to the SOAP server and
+ * sends the request. It is also the task of this client to convert the
+ * response(xml document) to java objects
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
@@ -58,13 +57,16 @@ public class TimSoapClient {
      * Creates request message to be send to the SOAP server
      *
      * @param clazz
+     *            object to be marshaled
      * @param userName
      *            the user name
      * @param password
      *            the password
      * @return the created soap message
      * @throws SOAPException
+     *             if unable to create message or envelope
      * @throws JAXBException
+     *             if unable to marshal the clazz
      */
     private static <T> SOAPMessage createRequest(T clazz, String userName,
             String password) throws SOAPException, JAXBException {
@@ -85,8 +87,9 @@ public class TimSoapClient {
     /**
      * Creates SOAP message to be send to the SOAP server
      *
-     * @return the SOAP message
+     * @return the created SOAP message
      * @throws SOAPException
+     *             if unable to create soap message
      */
     private static SOAPMessage createMessage() throws SOAPException {
         MessageFactory messageFactory = MessageFactory.newInstance();
@@ -113,7 +116,8 @@ public class TimSoapClient {
     }
 
     /**
-     * Creates SOAP envelope
+     * Creates SOAP envelope and adds namespace declaration and sets encoding
+     * style
      *
      * @param soapPart
      *            the message part
@@ -164,13 +168,15 @@ public class TimSoapClient {
     }
 
     /**
-     * Marshals the specified parameter <code>clazz</code>
+     * Marshals the specified parameter <code>clazz</code> to the specified
+     * <code>soapBody</code>
      *
      * @param clazz
      *            the object to be marshaled
      * @param soapBody
-     *            the SOAP body
+     *            the SOAP body, result of marshal
      * @throws JAXBException
+     *             if marshaling failed
      */
     private static <T> void marshal(T clazz, SOAPBody soapBody)
             throws JAXBException {
@@ -180,14 +186,16 @@ public class TimSoapClient {
     }
 
     /**
-     * Unmarshals the specified paramter <code>soapBody</code>
+     * Unmarshals the specified paramter <code>soapBody</code> to the specified
+     * <code>clazz</code>
      *
      * @param clazz
-     *            object for unmarashal
+     *            object to hold unmarashal result
      * @param soapBody
      *            the soap body to be unmarshalled
      * @return the unmarashalled object
      * @throws JAXBException
+     *             if unmarshal failed
      */
     @SuppressWarnings("unchecked")
     private static <T> T unmarshal(Class<T> clazz, SOAPBody soapBody)
@@ -211,6 +219,7 @@ public class TimSoapClient {
      *            the SOAP message to be send
      * @return the response, SOAP message
      * @throws SOAPException
+     *             if unable to send request
      */
     private static SOAPMessage sendRequest(String url, SOAPMessage message)
             throws SOAPException {
@@ -233,6 +242,7 @@ public class TimSoapClient {
      *
      * @return the SOAPconnection object
      * @throws SOAPException
+     *             if unable to create connection
      */
     private static SOAPConnection createConnection() throws SOAPException {
         SOAPConnectionFactory soapConnectionFactory = SOAPConnectionFactory
@@ -247,6 +257,7 @@ public class TimSoapClient {
      * @param connection
      *            the SOAP connection
      * @throws SOAPException
+     *             if unable to close connection
      */
     private static void closeConnection(SOAPConnection connection)
             throws SOAPException {
@@ -267,7 +278,7 @@ public class TimSoapClient {
      *            the request object
      * @param response
      *            the response class
-     * @return returns the expected object
+     * @return the expected object or null
      */
     public static <T, U> T sendRequestReceiveResponse(String url,
             String userName, String password, U request, Class<T> response) {
@@ -285,7 +296,7 @@ public class TimSoapClient {
     }
 
     /**
-     * Checks authorization based on the specified <code>username</code> and
+     * Checks authorization for the specified <code>username</code> and
      * <code>password</code>
      *
      * @param url
@@ -311,21 +322,23 @@ public class TimSoapClient {
 
     /**
      * simulates roster response, to be used for example by unit test
-     * <p>
-     * unmarshals roster xml from file and returns {@link RosterResponse}
+     *
+     * unmarshals the roster xml from the specified <code>file</code> and
+     * returns {@link RosterResponseDTO}
      *
      * @param file
      *            file with xml contents
+     * @return exportRosterDTO if unmarshal succeeded otherwise null
      */
-    public static RosterResponse unmarshalRosterFromFile(File file) {
+    public static RosterResponseDTO unmarshalRosterFromFile(File file) {
         try {
             JAXBContext jaxbContext = JAXBContext
-                    .newInstance(RosterResponse.class);
+                    .newInstance(RosterResponseDTO.class);
 
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            RosterResponse exportResponse = (RosterResponse) unmarshaller
+            RosterResponseDTO exportResponseDTO = (RosterResponseDTO) unmarshaller
                     .unmarshal(file);
-            return exportResponse;
+            return exportResponseDTO;
         } catch (JAXBException e) {
             LOG.error("Error processing response: ", e);
         }

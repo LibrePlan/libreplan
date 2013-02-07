@@ -20,15 +20,36 @@
 package importers;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.libreplan.importers.TimSoapClient;
+import org.libreplan.importers.tim.DataDTO;
+import org.libreplan.importers.tim.DepartmentDTO;
+import org.libreplan.importers.tim.DurationDTO;
+import org.libreplan.importers.tim.FilterDTO;
+import org.libreplan.importers.tim.PeriodDTO;
+import org.libreplan.importers.tim.PersonDTO;
+import org.libreplan.importers.tim.ProductDTO;
+import org.libreplan.importers.tim.RegistrationDateDTO;
+import org.libreplan.importers.tim.RosterCategoryDTO;
+import org.libreplan.importers.tim.RosterDTO;
+import org.libreplan.importers.tim.RosterRequestDTO;
+import org.libreplan.importers.tim.RosterResponseDTO;
+import org.libreplan.importers.tim.TimOptions;
+import org.libreplan.importers.tim.TimeRegistrationDTO;
+import org.libreplan.importers.tim.TimeRegistrationRequestDTO;
+import org.libreplan.importers.tim.TimeRegistrationResponseDTO;
 
 /**
  * Test for {@link TimSoapClient}
@@ -47,13 +68,172 @@ public class TimSoapClientTest {
         properties.load(new FileInputStream(filename));
     }
 
+    private TimeRegistrationDTO createTimeRegistration(String name,
+            String productCode, LocalDate localDate, Double hours) {
+        PersonDTO personDTO = new PersonDTO();
+        personDTO.setName(name);
+        personDTO.setOptions(TimOptions.UPDATE_OR_INSERT);
+
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setOptions(TimOptions.UPDATE_OR_INSERT);
+        productDTO.setCode(productCode);
+
+        RegistrationDateDTO dateDTO = new RegistrationDateDTO();
+        dateDTO.setOptions(TimOptions.UPDATE_OR_INSERT);
+        dateDTO.setDate(localDate);
+
+        DurationDTO durationDTO = new DurationDTO();
+        durationDTO.setOptions(TimOptions.DECIMAL);
+        durationDTO.setDuration(hours);
+
+        TimeRegistrationDTO timeRegistrationDTO = new TimeRegistrationDTO();
+        timeRegistrationDTO.setPerson(personDTO);
+        timeRegistrationDTO.setProduct(productDTO);
+        timeRegistrationDTO.setRegistrationDate(dateDTO);
+        timeRegistrationDTO.setDuration(durationDTO);
+        return timeRegistrationDTO;
+    }
+
+    private RosterRequestDTO createtRosterRequest() {
+        RosterDTO rosterDTO = new RosterDTO();
+        rosterDTO.setStartDate(new LocalDate());
+        rosterDTO.setEndDate(new LocalDate().plusDays(7));
+        rosterDTO.setResourcePlanning(false);
+        rosterDTO.setDayPlanning(false);
+        rosterDTO.setCalendar(false);
+        rosterDTO.setNonPlaned(true);
+        rosterDTO.setFullDay(false);
+        rosterDTO.setConcept(false);
+
+        PeriodDTO periodeDTO = new PeriodDTO();
+        periodeDTO.setStart(new org.joda.time.DateTime());
+        periodeDTO.setEnd(new org.joda.time.DateTime().plusDays(7));
+        List<PeriodDTO> periods = new ArrayList<PeriodDTO>();
+        periods.add(periodeDTO);
+
+        DepartmentDTO departmentDTO = new DepartmentDTO();
+        departmentDTO.setRef("4");
+
+        RosterCategoryDTO rosterCategoryDTO = new RosterCategoryDTO();
+        rosterCategoryDTO.setName(new String());
+        List<RosterCategoryDTO> rosterCategories = new ArrayList<RosterCategoryDTO>();
+        rosterCategories.add(rosterCategoryDTO);
+
+        FilterDTO filterDTO = new FilterDTO();
+        filterDTO.setPeriods(periods);
+        filterDTO.setDepartment(departmentDTO);
+
+        rosterDTO.setFilter(filterDTO);
+
+        List<PersonDTO> personDTOs = new ArrayList<PersonDTO>();
+        personDTOs.add(new PersonDTO());
+        rosterDTO.setPersons(personDTOs);
+
+        rosterDTO.setRosterCategories(rosterCategories);
+
+        rosterDTO.setDepartment(departmentDTO);
+
+        rosterDTO.setPrecence(new String());
+
+        rosterDTO.setPeriods(periods);
+
+        RosterRequestDTO exportRosterRequestDTO = new RosterRequestDTO();
+        DataDTO<RosterDTO> data = new DataDTO<RosterDTO>();
+        data.setData(rosterDTO);
+
+        exportRosterRequestDTO.setData(data);
+        return exportRosterRequestDTO;
+
+    }
+
     @Test
-    public void testAuthorization() {
+    public void testValidAuthorization() {
         boolean result = TimSoapClient.checkAuthorization(
                 properties.getProperty("url"),
                 properties.getProperty("username"),
                 properties.getProperty("password"));
         assertTrue(result);
+    }
+
+    @Test
+    public void testInvalidAuthorization() {
+        boolean result = TimSoapClient.checkAuthorization(
+                properties.getProperty("url"),
+                properties.getProperty("username"), properties.getProperty(""));
+        assertTrue(!result);
+    }
+
+    @Test
+    public void testImportRostersFromFile() {
+        String filename = System.getProperty("user.dir")
+                + "/../scripts/tim_test/rosterResponse.xml";
+        File file = new File(filename);
+        RosterResponseDTO rosterResponseDTO = TimSoapClient
+                .unmarshalRosterFromFile(file);
+        if (rosterResponseDTO == null) {
+            fail("Roster Response is null");
+        }
+        assertTrue(rosterResponseDTO.getRosters().size() > 0);
+    }
+
+    @Test
+    public void testImportRostersFromServer() {
+        RosterResponseDTO rosterResponseDTO = TimSoapClient
+                .sendRequestReceiveResponse(properties.getProperty("url"),
+                        properties.getProperty("username"),
+                        properties.getProperty("password"),
+                        createtRosterRequest(), RosterResponseDTO.class);
+        if (rosterResponseDTO == null) {
+            fail("Roster Response is null");
+        }
+        assertTrue(rosterResponseDTO.getRosters().size() > 0);
+    }
+
+    @Test
+    public void testExportTimeRegistrationWith1Item() {
+        List<TimeRegistrationDTO> timeRegistrations = new ArrayList<TimeRegistrationDTO>();
+        TimeRegistrationDTO timeRegistration = createTimeRegistration(
+                "Baten, Jeroen", "5160", new LocalDate().minusDays(1), 9.00);
+        timeRegistrations.add(timeRegistration);
+        TimeRegistrationRequestDTO timeRegistrationRequestDTO = new TimeRegistrationRequestDTO();
+        timeRegistrationRequestDTO.setTimeRegistrations(timeRegistrations);
+
+        TimeRegistrationResponseDTO timeRegistrationResponse = TimSoapClient
+                .sendRequestReceiveResponse(properties.getProperty("url"),
+                        properties.getProperty("username"),
+                        properties.getProperty("password"),
+                        timeRegistrationRequestDTO,
+                        TimeRegistrationResponseDTO.class);
+        if (timeRegistrationResponse == null) {
+            fail("Time Registration Response is null");
+        }
+        assertTrue(!timeRegistrationResponse.getRefs().isEmpty());
+    }
+
+    @Test
+    public void testExportTimeRegistrationWith2Items() {
+        List<TimeRegistrationDTO> timeRegistrationDTOs = new ArrayList<TimeRegistrationDTO>();
+        TimeRegistrationDTO timeRegistrationDTO1 = createTimeRegistration(
+                "Baten, Jeroen", "5160", new LocalDate(), 8.00);
+        timeRegistrationDTOs.add(timeRegistrationDTO1);
+
+        TimeRegistrationDTO timeRegistrationDTO2 = createTimeRegistration(
+                "Baten, Jeroen", "5160", new LocalDate(), 9.00);
+        timeRegistrationDTOs.add(timeRegistrationDTO2);
+
+        TimeRegistrationRequestDTO timeRegistrationRequest = new TimeRegistrationRequestDTO();
+        timeRegistrationRequest.setTimeRegistrations(timeRegistrationDTOs);
+
+        TimeRegistrationResponseDTO timeRegistrationResponse = TimSoapClient
+                .sendRequestReceiveResponse(properties.getProperty("url"),
+                        properties.getProperty("username"),
+                        properties.getProperty("password"),
+                        timeRegistrationRequest,
+                        TimeRegistrationResponseDTO.class);
+        if (timeRegistrationResponse == null) {
+            fail("Time Registration Response is null");
+        }
+        assertTrue(!timeRegistrationResponse.getRefs().isEmpty());
     }
 
 }

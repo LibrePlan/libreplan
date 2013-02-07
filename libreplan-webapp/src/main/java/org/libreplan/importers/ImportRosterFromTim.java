@@ -45,15 +45,15 @@ import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.importers.RosterException.RosterExceptionItem;
-import org.libreplan.importers.tim.Data;
-import org.libreplan.importers.tim.Department;
-import org.libreplan.importers.tim.Filter;
-import org.libreplan.importers.tim.Period;
-import org.libreplan.importers.tim.Person;
-import org.libreplan.importers.tim.Roster;
-import org.libreplan.importers.tim.RosterCategory;
-import org.libreplan.importers.tim.RosterRequest;
-import org.libreplan.importers.tim.RosterResponse;
+import org.libreplan.importers.tim.DataDTO;
+import org.libreplan.importers.tim.DepartmentDTO;
+import org.libreplan.importers.tim.FilterDTO;
+import org.libreplan.importers.tim.PeriodDTO;
+import org.libreplan.importers.tim.PersonDTO;
+import org.libreplan.importers.tim.RosterCategoryDTO;
+import org.libreplan.importers.tim.RosterDTO;
+import org.libreplan.importers.tim.RosterRequestDTO;
+import org.libreplan.importers.tim.RosterResponseDTO;
 import org.libreplan.web.calendars.IBaseCalendarModel;
 import org.libreplan.web.resources.worker.IWorkerModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +63,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of import roosters from tim
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ImportRosterFromTim implements IImportRosterFromTim {
@@ -106,12 +111,12 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         int nrDaysRosterFromTim = Integer.parseInt(prop
                 .get("NrDaysRosterFromTim"));
 
-        RosterRequest rosterRequest = createRosterRequest(nrDaysRosterFromTim);
-        RosterResponse rosterResponse = TimSoapClient
+        RosterRequestDTO rosterRequestDTO = createRosterRequest(nrDaysRosterFromTim);
+        RosterResponseDTO rosterResponseDTO = TimSoapClient
                 .sendRequestReceiveResponse(url, userName, password,
-                        rosterRequest, RosterResponse.class);
+                        rosterRequestDTO, RosterResponseDTO.class);
 
-        updateWorkersCalendarException(rosterResponse);
+        updateWorkersCalendarException(rosterResponseDTO);
     }
 
 
@@ -122,7 +127,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
      *            the response from Tim SOAP server
      */
     private void updateWorkersCalendarException(
-            final RosterResponse rosterResponse) {
+            final RosterResponseDTO rosterResponse) {
         adHocTransactionService
                 .runOnAnotherTransaction(new IOnTransaction<Void>() {
 
@@ -133,7 +138,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                         if (!rosterExceptions.isEmpty()) {
                             updateCalendarException(rosterExceptions);
                         } else {
-                            LOG.info("No roster-exceptions found in the response object");
+                            LOG.info("No roster-exceptions found in the response");
                         }
                         return null;
                     }
@@ -141,25 +146,25 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     }
 
     /**
-     * Loops through <code>rosterResponse</code> and creates
-     * {@link RosterException}s if any and link them to the worker
+     * Loops through <code>rosterResponseDTO</code> and creates
+     * {@link RosterException}s and link them to the <code>worker</code>
      *
-     * @param rosterResponse
+     * @param rosterResponseDTO
      *            the response
      * @return a list of RosterExceptions
      */
     private List<RosterException> getRosterExceptions(
-            RosterResponse rosterResponse) {
-        Map<String, List<Roster>> map = getRosterExceptionPerWorker(rosterResponse);
+            RosterResponseDTO rosterResponseDTO) {
+        Map<String, List<RosterDTO>> map = getRosterExceptionPerWorker(rosterResponseDTO);
         List<RosterException> rosterExceptions = new ArrayList<RosterException>();
 
-        for (Map.Entry<String, List<Roster>> entry : map.entrySet()) {
+        for (Map.Entry<String, List<RosterDTO>> entry : map.entrySet()) {
             Worker worker = getWorker(entry.getKey());
             if (worker != null) {
-                List<Roster> list = entry.getValue();
-                Collections.sort(list, new Comparator<Roster>() {
+                List<RosterDTO> list = entry.getValue();
+                Collections.sort(list, new Comparator<RosterDTO>() {
                     @Override
-                    public int compare(Roster o1, Roster o2) {
+                    public int compare(RosterDTO o1, RosterDTO o2) {
                         return o1.getDate().compareTo(o2.getDate());
                     }
                 });
@@ -172,25 +177,26 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     }
 
     /**
-     * Filters the roster exceptions and creates map of personsNetwork name with
-     * associated roster (exceptions)
+     * Filters the roster on exceptions(absence) and creates a map with
+     * <code>personsNetwork-name</name> as key
+     * and list of <code>roster-exception</code> as value
      *
-     * @param rosterResponse
+     * @param rosterResponseDTO
      *            the response
      * @return person-roster exception map
      */
-    private Map<String, List<Roster>> getRosterExceptionPerWorker(
-            RosterResponse rosterResponse) {
-        Map<String, List<Roster>> rosterMap = new HashMap<String, List<Roster>>();
-        List<Roster> rosters = rosterResponse.getRosters();
-        for (Roster roster : rosters) {
-            if (roster.getPrecence().equals("Afwezig")) {
-                String personsNetWorkName = roster.getPersons().get(0)
+    private Map<String, List<RosterDTO>> getRosterExceptionPerWorker(
+            RosterResponseDTO rosterResponseDTO) {
+        Map<String, List<RosterDTO>> rosterMap = new HashMap<String, List<RosterDTO>>();
+        List<RosterDTO> rosterDTOs = rosterResponseDTO.getRosters();
+        for (RosterDTO rosterDTO : rosterDTOs) {
+            if (rosterDTO.getPrecence().equals("Afwezig")) {
+                String personsNetWorkName = rosterDTO.getPersons().get(0)
                         .getNetworkName();
                 if (!rosterMap.containsKey(personsNetWorkName)) {
-                    rosterMap.put(personsNetWorkName, new ArrayList<Roster>());
+                    rosterMap.put(personsNetWorkName, new ArrayList<RosterDTO>());
                 }
-                rosterMap.get(personsNetWorkName).add(roster);
+                rosterMap.get(personsNetWorkName).add(rosterDTO);
             }
         }
         return rosterMap;
@@ -198,7 +204,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
 
 
     /**
-     * updates workers calendar exception
+     * updates the workers calendar exception
      *
      * @param rosterExceptions
      *            list of roster exceptions
@@ -218,8 +224,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
 
 
     /**
-     * updates calendar exception of the specified <code>{@link Worker}</code>
-     * for the specified <code>date</code>
+     * updates the calendar exception of the specified
+     * <code>{@link Worker}</code> for the specified <code>date</code>
      *
      * @param worker
      *            the worker
@@ -265,7 +271,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
      */
     private CalendarExceptionType getCalendarExceptionType(String name) {
         if (name == null || name.isEmpty()) {
-            LOG.error("name should not be empty");
+            LOG.error("Exception name should not be empty");
             return null;
         }
         try {
@@ -290,7 +296,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     }
 
     /**
-     * returns {@link Worker} based on the specified <code>nif</code>
+     * returns {@link Worker} for the specified <code>nif</code>
      *
      * @param nif
      *            the worker's nif
@@ -306,81 +312,81 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     }
 
     /**
-     * creates and returns {@link RosterRequest}
+     * creates and returns {@link RosterRequestDTO}
      *
      * @param nrDaysRosterFromTim
      *            nr of days required to set the end date
      */
-    private RosterRequest createRosterRequest(int nrDaysRosterFromTim) {
-        Roster roster = createRoster(nrDaysRosterFromTim);
+    private RosterRequestDTO createRosterRequest(int nrDaysRosterFromTim) {
+        RosterDTO rosterDTO = createRoster(nrDaysRosterFromTim);
 
-        Period periode = new Period();
-        periode.setStart(new org.joda.time.DateTime());
-        periode.setEnd(new org.joda.time.DateTime()
+        PeriodDTO periodeDTO = new PeriodDTO();
+        periodeDTO.setStart(new org.joda.time.DateTime());
+        periodeDTO.setEnd(new org.joda.time.DateTime()
                 .plusDays(nrDaysRosterFromTim));
-        List<Period> periods = new ArrayList<Period>();
-        periods.add(periode);
+        List<PeriodDTO> periodDTOs = new ArrayList<PeriodDTO>();
+        periodDTOs.add(periodeDTO);
 
-        Department department = new Department();
-        department.setRef("4"); // TODO: make this configurable
+        DepartmentDTO departmentDTO = new DepartmentDTO();
+        departmentDTO.setRef("4"); // TODO: make this configurable
 
-        Filter filter = new Filter();
-        filter.setPeriods(periods);
-        filter.setDepartment(department);
+        FilterDTO filterDTO = new FilterDTO();
+        filterDTO.setPeriods(periodDTOs);
+        filterDTO.setDepartment(departmentDTO);
 
-        roster.setFilter(filter);
+        rosterDTO.setFilter(filterDTO);
 
-        roster.setPersons(createPerson());
+        rosterDTO.setPersons(createPerson());
 
-        roster.setRosterCategories(createRosterCategory());
+        rosterDTO.setRosterCategories(createRosterCategory());
 
-        roster.setDepartment(department);
+        rosterDTO.setDepartment(departmentDTO);
 
-        roster.setPrecence(new String());
-        roster.setPeriods(periods);
+        rosterDTO.setPrecence(new String());
+        rosterDTO.setPeriods(periodDTOs);
 
-        RosterRequest exportRosterRequest = new RosterRequest();
-        Data<Roster> data = new Data<Roster>();
-        data.setData(roster);
+        RosterRequestDTO exportRosterRequestDTO = new RosterRequestDTO();
+        DataDTO<RosterDTO> dataDTO = new DataDTO<RosterDTO>();
+        dataDTO.setData(rosterDTO);
 
-        exportRosterRequest.setData(data);
-        return exportRosterRequest;
+        exportRosterRequestDTO.setData(dataDTO);
+        return exportRosterRequestDTO;
 
     }
 
     /**
-     * creates and returns list of {@link Persoon}
+     * creates and returns list of {@link PersonDTO}
      */
-    private List<Person> createPerson() {
-        List<Person> persons = new ArrayList<Person>();
-        persons.add(new Person());
-        return persons;
+    private List<PersonDTO> createPerson() {
+        List<PersonDTO> personDTOs = new ArrayList<PersonDTO>();
+        personDTOs.add(new PersonDTO());
+        return personDTOs;
     }
 
     /**
-     * creates and returns list of {@link RosterCategory}
+     * creates and returns list of {@link RosterCategoryDTO}
      */
-    private List<RosterCategory> createRosterCategory() {
-        List<RosterCategory> rosterCategories = new ArrayList<RosterCategory>();
-        RosterCategory rosterCategory = new RosterCategory();
-        rosterCategory.setName(new String());
-        rosterCategories.add(rosterCategory);
-        return rosterCategories;
+    private List<RosterCategoryDTO> createRosterCategory() {
+        List<RosterCategoryDTO> rosterCategorieDTOs = new ArrayList<RosterCategoryDTO>();
+        RosterCategoryDTO rosterCategoryDTO = new RosterCategoryDTO();
+        rosterCategoryDTO.setName(new String());
+        rosterCategorieDTOs.add(rosterCategoryDTO);
+        return rosterCategorieDTOs;
     }
 
     /**
-     * creates and returns {@Roster}
+     * creates and returns {@link RosterDTO}
      */
-    private Roster createRoster(int nrDaysRosterFromTim) {
-        Roster roster = new Roster();
-        roster.setStartDate(new LocalDate());
-        roster.setEndDate(new LocalDate().plusDays(nrDaysRosterFromTim));
-        roster.setResourcePlanning(false);
-        roster.setDayPlanning(false);
-        roster.setCalendar(false);
-        roster.setNonPlaned(true);
-        roster.setFullDay(false);
-        roster.setConcept(false);
-        return roster;
+    private RosterDTO createRoster(int nrDaysRosterFromTim) {
+        RosterDTO rosterDTO = new RosterDTO();
+        rosterDTO.setStartDate(new LocalDate());
+        rosterDTO.setEndDate(new LocalDate().plusDays(nrDaysRosterFromTim));
+        rosterDTO.setResourcePlanning(false);
+        rosterDTO.setDayPlanning(false);
+        rosterDTO.setCalendar(false);
+        rosterDTO.setNonPlaned(true);
+        rosterDTO.setFullDay(false);
+        rosterDTO.setConcept(false);
+        return rosterDTO;
     }
 }

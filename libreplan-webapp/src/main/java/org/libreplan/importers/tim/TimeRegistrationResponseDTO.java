@@ -19,56 +19,33 @@
 
 package org.libreplan.importers.tim;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * DTO representing a tim-connector TimeRegistrationResponse
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "tijdregistratie")
-public class TimeRegistration {
+@XmlRootElement(name = "importResponse", namespace = "impexp.timn.aenova.nl")
+public class TimeRegistrationResponseDTO {
 
-    @XmlElement(name = "persoon")
-    private Person person;
+    @XmlElementWrapper(name = "return")
+    @XmlElement(name = "ref")
+    private List<Integer> ref;
 
-    private Product product;
-
-    @XmlElement(name = "datum")
-    private RegistrationDate registrationDate;
-
-    @XmlElement(name = "duur")
-    private Duration duration;
-
-    public Person getPerson() {
-        return person;
+    public List<Integer> getRefs() {
+        return ref;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public RegistrationDate getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(RegistrationDate registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public Duration getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
+    public void setRefs(List<Integer> ref) {
+        this.ref = ref;
     }
 
 }

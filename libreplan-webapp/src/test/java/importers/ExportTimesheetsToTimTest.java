@@ -21,36 +21,58 @@ package importers;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
+import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 import java.util.Properties;
+import java.util.UUID;
 
-import org.joda.time.LocalDate;
+import javax.annotation.Resource;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
+import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.scenarios.IScenarioManager;
+import org.libreplan.business.scenarios.entities.OrderVersion;
+import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.importers.ExportTimesheetsToTim;
-import org.libreplan.importers.TimSoapClient;
-import org.libreplan.importers.tim.Duration;
-import org.libreplan.importers.tim.Person;
-import org.libreplan.importers.tim.Product;
-import org.libreplan.importers.tim.RegistrationDate;
-import org.libreplan.importers.tim.TimOptions;
-import org.libreplan.importers.tim.TimeRegistration;
-import org.libreplan.importers.tim.TimeRegistrationRequest;
-import org.libreplan.importers.tim.TimeRegistrationResponse;
+import org.libreplan.importers.IExportTimesheetsToTim;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test for {@link ExportTimesheetsToTim}
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
+@Transactional
 public class ExportTimesheetsToTimTest {
 
     private Properties properties = null;
+
+    @Autowired
+    IExportTimesheetsToTim exportTimesheetsToTim;
 
     @Before
     public void loadProperties() throws FileNotFoundException, IOException {
@@ -60,78 +82,99 @@ public class ExportTimesheetsToTimTest {
         properties.load(new FileInputStream(filename));
     }
 
-    private TimeRegistration createTimeRegistration(String name,
-            String productCode, LocalDate localDate, Double hours) {
-        Person person = new Person();
-        person.setName(name);
-        person.setOptions(TimOptions.UPDATE_OR_INSERT);
+    @Resource
+    private IDataBootstrap defaultAdvanceTypesBootstrapListener;
 
-        Product product = new Product();
-        product.setOptions(TimOptions.UPDATE_OR_INSERT);
-        product.setCode(productCode);
+    @Resource
+    private IDataBootstrap scenariosBootstrap;
 
-        RegistrationDate date = new RegistrationDate();
-        date.setOptions(TimOptions.UPDATE_OR_INSERT);
-        date.setDate(localDate);
+    @Resource
+    private IDataBootstrap configurationBootstrap;
 
-        Duration duration = new Duration();
-        duration.setOptions(TimOptions.DECIMAL);
-        duration.setDuration(hours);
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
-        TimeRegistration timeRegistration = new TimeRegistration();
-        timeRegistration.setPerson(person);
-        timeRegistration.setProduct(product);
-        timeRegistration.setRegistrationDate(date);
-        timeRegistration.setDuration(duration);
-        return timeRegistration;
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
+    @Before
+    public void loadRequiredaData() {
+
+        IOnTransaction<Void> load = new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                defaultAdvanceTypesBootstrapListener.loadRequiredData();
+                configurationBootstrap.loadRequiredData();
+                scenariosBootstrap.loadRequiredData();
+                return null;
+            }
+        };
+
+        transactionService.runOnAnotherTransaction(load);
+    }
+
+    private Order givenOrder() {
+        return transactionService
+                .runOnAnotherTransaction(new IOnTransaction<Order>() {
+                    @Override
+                    public Order execute() {
+                        return givenValidOrderAlreadyStored();
+                    }
+                });
+    }
+
+    private Order givenValidOrderAlreadyStored() {
+        Order order = Order.create();
+        order.setCode(UUID.randomUUID().toString());
+        order.setName("Order name " + UUID.randomUUID());
+        order.setInitDate(new Date());
+        order.setCalendar(configurationDAO.getConfiguration()
+                .getDefaultCalendar());
+        OrderVersion version = setupVersionUsing(scenarioManager, order);
+        order.useSchedulingDataFor(version);
+
+        orderDAO.save(order);
+        orderDAO.flush();
+        try {
+            return orderDAO.find(order.getId());
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
+    }
+
+    private OrderVersion setupVersionUsing(IScenarioManager scenarioManager,
+            Order order) {
+        Scenario current = scenarioManager.getCurrent();
+        OrderVersion result = OrderVersion.createInitialVersion(current);
+        order.setVersionForScenario(current, result);
+        return result;
     }
 
     @Test
-    public void testExporttTimeRegistrationWith1Item() {
-        List<TimeRegistration> timeRegistrations = new ArrayList<TimeRegistration>();
-        TimeRegistration timeRegistration = createTimeRegistration(
-                "Baten, Jeroen", "5160", new LocalDate().minusDays(1),
-                9.00);
-        timeRegistrations.add(timeRegistration);
-        TimeRegistrationRequest timeRegistrationRequest = new TimeRegistrationRequest();
-        timeRegistrationRequest.setTimeRegistrations(timeRegistrations);
-
-        TimeRegistrationResponse timeRegistrationResponse = TimSoapClient
-                .sendRequestReceiveResponse(properties.getProperty("url"),
-                        properties.getProperty("username"),
-                        properties.getProperty("password"),
-                        timeRegistrationRequest,
-                        TimeRegistrationResponse.class);
-        if (timeRegistrationResponse == null) {
-            fail("Time Registration Response is null");
+    public void testExportTimesheetsToTimWithValidCodeAndOrder() {
+        Order order = givenOrder();
+        boolean result = exportTimesheetsToTim.exportTimesheets("5160", order);
+        if (!result) {
+            fail("Export timesheets to tim failed");
         }
-        assertTrue(!timeRegistrationResponse.getRefs().isEmpty());
+        assertTrue(result);
     }
 
-    @Test
-    public void testExportTimeRegistrationWith2Items() {
-        List<TimeRegistration> timeRegistrations = new ArrayList<TimeRegistration>();
-        TimeRegistration timeRegistration1 = createTimeRegistration(
-                "Baten, Jeroen", "5160", new LocalDate(),
-                8.00);
-        timeRegistrations.add(timeRegistration1);
-
-        TimeRegistration timeRegistration2 = createTimeRegistration(
-                "Baten, Jeroen", "5160", new LocalDate(), 9.00);
-        timeRegistrations.add(timeRegistration2);
-
-        TimeRegistrationRequest timeRegistrationRequest = new TimeRegistrationRequest();
-        timeRegistrationRequest.setTimeRegistrations(timeRegistrations);
-
-        TimeRegistrationResponse timeRegistrationResponse = TimSoapClient
-                .sendRequestReceiveResponse(properties.getProperty("url"),
-                        properties.getProperty("username"),
-                        properties.getProperty("password"),
-                        timeRegistrationRequest, TimeRegistrationResponse.class);
-        if (timeRegistrationResponse == null) {
-            fail("Time Registration Response is null");
-        }
-        assertTrue(!timeRegistrationResponse.getRefs().isEmpty());
+    @Test(expected = RuntimeException.class)
+    public void testExportTimesheetsToTimWithInvalidCode() {
+        Order order = givenOrder();
+        exportTimesheetsToTim.exportTimesheets("", order);
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testExportTimesheetsToTimWithOrderNull() {
+        exportTimesheetsToTim.exportTimesheets("5160", null);
+    }
 }

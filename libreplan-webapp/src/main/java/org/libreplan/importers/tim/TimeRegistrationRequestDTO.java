@@ -27,20 +27,24 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * DTO representing a tim-connector TimeRegistrationRequest
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "exportResponse", namespace = "impexp.timn.aenova.nl")
-public class RosterResponse {
+@XmlRootElement(name = "import", namespace = "impexp.timn.aenova.nl")
+public class TimeRegistrationRequestDTO {
 
-    @XmlElementWrapper(name = "return")
-    @XmlElement(name = "bezettingblok")
-    private List<Roster> rosters;
+    @XmlElementWrapper(name = "data")
+    @XmlElement(name = "tijdregistratie")
+    private List<TimeRegistrationDTO> timeRegistrations;
 
-    public List<Roster> getRosters() {
-        return rosters;
+    public List<TimeRegistrationDTO> getTimeRegistrations() {
+        return timeRegistrations;
     }
 
-    public void setRosters(List<Roster> rosters) {
-        this.rosters = rosters;
+    public void setTimeRegistrations(List<TimeRegistrationDTO> timeRegistrations) {
+        this.timeRegistrations = timeRegistrations;
     }
-
 }

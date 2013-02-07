@@ -19,27 +19,31 @@
 
 package org.libreplan.importers.tim;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+/**
+ * DTO representing a tim-connector Department
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "importResponse", namespace = "impexp.timn.aenova.nl")
-public class TimeRegistrationResponse {
+@XmlRootElement(name = "Afdeling")
+public class DepartmentDTO {
 
-    @XmlElementWrapper(name = "return")
-    @XmlElement(name = "ref")
-    private List<Integer> ref;
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlElement
+    private String ref;
 
-    public List<Integer> getRefs() {
+    public String getRef() {
         return ref;
     }
 
-    public void setRefs(List<Integer> ref) {
+    public void setRef(String ref) {
         this.ref = ref;
     }
 

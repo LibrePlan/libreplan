@@ -17,6 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * An xmlAdapaters that will be applied within this package
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
         @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = DateTime.class, value = org.libreplan.importers.tim.TimDateTimeAdapter.class),
         @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = LocalDate.class, value = org.libreplan.importers.tim.TimLocalDateAdapter.class),

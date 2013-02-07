@@ -225,6 +225,7 @@ public class JobSchedulerController extends GenericForwardComposer {
     private String getNextToken(String token) {
         return token.isEmpty() ? "" : token.trim();
     }
+
     private void appendManualStart(final Row row,
             final SchedulerInfo schedulerInfo) {
         final Button rescheduleButton = new Button("Manual");
@@ -266,6 +267,9 @@ public class JobSchedulerController extends GenericForwardComposer {
         cronExpressionInputPopup.close();
     }
 
+    /**
+     * Class representing cron expression
+     */
     public class CronExpression {
         private String seconds;
         private String minutes;

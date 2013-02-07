@@ -28,35 +28,36 @@ import org.springframework.scheduling.quartz.JobDetailBean;
 /**
  * A manager(client) that dynamically creates jobs and cron-triggers using
  * spring quartz library.
- * <p>
+ *
  * The start and destroy of the scheduler itself is managed by the Spring
  * framework. The scheduler starts automatically when the application starts and
  * destroyed when the application stops. The sole purpose of this manager is to
  * create jobs {@link JobDetailBean} and cron-triggers {@link CronTriggerBean}
  * when the scheduler is started. It links the triggers with the jobs and add
  * them to the scheduler.
- * <p>
- * It also supports the rescheduling of jobs.
- * <p>
+ *
  * The SchedulerManager reads the jobs to be scheduled and the cron-triggers to
- * fire the jobs form {@link JobSchedulerConfiguration}. Hence the
- * {@link JobSchedulerConfiguration} must exist with predefined jobs and valid
- * cron-triggers
+ * fire the jobs form the {@link JobSchedulerConfiguration} entity. Hence the
+ * {@link JobSchedulerConfiguration} entity must exist with predefined jobs and
+ * valid cron-triggers
+ *
+ * This manager also supports the rescheduling of jobs.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 public interface ISchedulerManager {
 
     /**
-     * Reads job configuration from the database and schedules the jobs
+     * Reads job configuration from the {@link JobSchedulerConfiguration} and
+     * schedules the jobs as defined in the configuration
      */
     void scheduleJobs();
 
     /**
      * Reschedule the job.
-     * <p>
+     *
      * Reads the job to be rescheduled from the specified parameter
-     * {@link JobSchedulerConfiguration} and reschedule the job
+     * {@link JobSchedulerConfiguration} and reschedule the job accordingly
      *
      * @param jobSchedulerConfiguration
      *            the job scheduler configuration
@@ -64,9 +65,9 @@ public interface ISchedulerManager {
     void rescheduleJob(JobSchedulerConfiguration jobSchedulerConfiguration);
 
     /**
-     * returns the scheduler info list. This is necessary for UI
+     * returns the scheduler info list. Can be useful to display in UI
      *
-     * @return
+     * @return list of scheduler info
      */
     List<SchedulerInfo> getSchedulerInfos();
 

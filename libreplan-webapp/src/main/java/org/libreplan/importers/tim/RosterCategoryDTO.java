@@ -27,10 +27,15 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+/**
+ * DTO representing a tim-connector RosterCategory
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "roostercategorie")
 @XmlType(propOrder = { "name", "presence", "status" })
-public class RosterCategory {
+public class RosterCategoryDTO {
 
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlElement(name = "naam", required = true, nillable = true)

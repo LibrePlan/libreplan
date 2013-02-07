@@ -21,24 +21,52 @@ package org.libreplan.importers.tim;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+/**
+ * DTO representing a tim-connector Product
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
-@XmlSeeAlso({ Roster.class })
-public class Data<T> {
+public class ProductDTO {
 
-    @XmlAnyElement
-    private T data;
+    @XmlAttribute(required = true)
+    private String options;
 
-    public T getData() {
-        return data;
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlElement
+    private String code;
+
+    private String name;
+
+    public String getOptions() {
+        return options;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setOptions(String options) {
+        this.options = options;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

@@ -23,6 +23,12 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.joda.time.LocalTime;
 
+/**
+ * Adapter responsible for converting from <code>LocalTime</code> to
+ * string(tim-string-time) and vice versa
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 public class TimTimeAdapter extends XmlAdapter<String, LocalTime> {
 
     @Override

@@ -41,6 +41,11 @@ import org.springframework.scheduling.quartz.JobDetailBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of scheduler manager
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @Service
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class SchedulerManager implements ISchedulerManager {

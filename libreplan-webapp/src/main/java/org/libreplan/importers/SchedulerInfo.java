@@ -22,7 +22,8 @@ package org.libreplan.importers;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 
 /**
- * The schedulerInfo non persistent entity
+ * Holds information about the scheduler, The information comes partly form
+ * {@link JobSchedulerConfiguration} and partly form {@link SchedulerManager}
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */

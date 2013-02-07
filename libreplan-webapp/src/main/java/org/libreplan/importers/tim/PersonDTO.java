@@ -28,10 +28,15 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+/**
+ * DTO representing a tim-connector Person
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "Persoon")
 @XmlType(propOrder = { "networkName", "name", "emailAddress" })
-public class Person {
+public class PersonDTO {
 
     @XmlAttribute(name = "options")
     private String options;

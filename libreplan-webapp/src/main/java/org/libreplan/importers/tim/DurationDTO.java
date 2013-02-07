@@ -21,25 +21,42 @@ package org.libreplan.importers.tim;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+/**
+ * DTO representing a tim-connector Duration
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "Afdeling")
-public class Department {
+@XmlRootElement
+public class DurationDTO {
 
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlElement
-    private String ref;
+    @XmlAttribute(name = "options", required = true)
+    private String options;
 
-    public String getRef() {
-        return ref;
+
+    @XmlValue
+    @XmlJavaTypeAdapter(TimDoubleAdapter.class)
+    private Double duration;
+
+    public String getOptions() {
+        return options;
     }
 
-    public void setRef(String ref) {
-        this.ref = ref;
+    public void setOptions(String options) {
+        this.options = options;
+    }
+
+    public Double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Double duration) {
+        this.duration = duration;
     }
 
 }

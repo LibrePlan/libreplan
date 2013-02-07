@@ -40,20 +40,25 @@ import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
-import org.libreplan.importers.tim.Duration;
-import org.libreplan.importers.tim.Person;
-import org.libreplan.importers.tim.Product;
-import org.libreplan.importers.tim.RegistrationDate;
+import org.libreplan.importers.tim.DurationDTO;
+import org.libreplan.importers.tim.PersonDTO;
+import org.libreplan.importers.tim.ProductDTO;
+import org.libreplan.importers.tim.RegistrationDateDTO;
 import org.libreplan.importers.tim.TimOptions;
-import org.libreplan.importers.tim.TimeRegistration;
-import org.libreplan.importers.tim.TimeRegistrationRequest;
-import org.libreplan.importers.tim.TimeRegistrationResponse;
+import org.libreplan.importers.tim.TimeRegistrationDTO;
+import org.libreplan.importers.tim.TimeRegistrationRequestDTO;
+import org.libreplan.importers.tim.TimeRegistrationResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of export timesheets to tim
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
@@ -134,8 +139,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             Map<String, String> appProperties) {
 
         workers = workerDAO.findAll();
-        LOG.info("workers.findAll(): " + workers.size());
-        if (workers == null && workers.isEmpty()) {
+        if (workers == null || workers.isEmpty()) {
             LOG.warn("No workers found!");
             return false;
         }
@@ -156,30 +160,30 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             return false;
         }
 
-        List<TimeRegistration> timeRegistrations = new ArrayList<TimeRegistration>();
+        List<TimeRegistrationDTO> timeRegistrationDTOs = new ArrayList<TimeRegistrationDTO>();
 
         for (WorkReportLine workReportLine : workReportLines) {
-            TimeRegistration timeRegistration = createExportTimeRegistration(
+            TimeRegistrationDTO timeRegistrationDTO = createExportTimeRegistration(
                     productCode, workReportLine);
-            if (timeRegistration != null) {
-                timeRegistrations.add(timeRegistration);
+            if (timeRegistrationDTO != null) {
+                timeRegistrationDTOs.add(timeRegistrationDTO);
             }
         }
 
-        if (timeRegistrations.isEmpty()) {
-            LOG.warn("Unable to crate timeregistration request");
+        if (timeRegistrationDTOs.isEmpty()) {
+            LOG.warn("Unable to crate timeregistration for request");
             return false;
         }
 
-        TimeRegistrationRequest timeRegistrationRequest = new TimeRegistrationRequest();
-        timeRegistrationRequest.setTimeRegistrations(timeRegistrations);
+        TimeRegistrationRequestDTO timeRegistrationRequestDTO = new TimeRegistrationRequestDTO();
+        timeRegistrationRequestDTO.setTimeRegistrations(timeRegistrationDTOs);
 
-        TimeRegistrationResponse timeRegistrationResponse = TimSoapClient
+        TimeRegistrationResponseDTO timeRegistrationResponseDTO = TimSoapClient
                 .sendRequestReceiveResponse(url, userName, password,
-                        timeRegistrationRequest, TimeRegistrationResponse.class);
+                        timeRegistrationRequestDTO, TimeRegistrationResponseDTO.class);
 
-        if (isRefsListEmpty(timeRegistrationResponse.getRefs())) {
-            LOG.warn("Registration response empty refs");
+        if (isRefsListEmpty(timeRegistrationResponseDTO.getRefs())) {
+            LOG.warn("Registration response with empty refs");
             return false;
         }
         saveSyncInfoOnAnotherTransaction(productCode, order);
@@ -231,9 +235,9 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
      *            the product code
      * @param workReportLine
      *            the workreportLine
-     * @return timeRegistration
+     * @return timeRegistration DTO
      */
-    private TimeRegistration createExportTimeRegistration(String productCode,
+    private TimeRegistrationDTO createExportTimeRegistration(String productCode,
             WorkReportLine workReportLine) {
         Worker worker = getWorker(workReportLine.getResource().getCode());
         if (worker == null) {
@@ -241,30 +245,30 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             return null;
         }
 
-        Person person = new Person();
-        person.setName(worker.getName());
+        PersonDTO personDTO = new PersonDTO();
+        personDTO.setName(worker.getName());
         // person.setNetworkName(worker.getNif());
-        person.setOptions(TimOptions.UPDATE_OR_INSERT);
+        personDTO.setOptions(TimOptions.UPDATE_OR_INSERT);
 
-        Product product = new Product();
-        product.setOptions(TimOptions.UPDATE_OR_INSERT);
-        product.setCode(productCode);
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setOptions(TimOptions.UPDATE_OR_INSERT);
+        productDTO.setCode(productCode);
 
-        RegistrationDate date = new RegistrationDate();
-        date.setOptions(TimOptions.UPDATE_OR_INSERT);
-        date.setDate(workReportLine.getLocalDate());
+        RegistrationDateDTO registrationDTO = new RegistrationDateDTO();
+        registrationDTO.setOptions(TimOptions.UPDATE_OR_INSERT);
+        registrationDTO.setDate(workReportLine.getLocalDate());
 
-        Duration duration = new Duration();
-        duration.setOptions(TimOptions.DECIMAL);
-        duration.setDuration(workReportLine.getEffort()
+        DurationDTO durationDTO = new DurationDTO();
+        durationDTO.setOptions(TimOptions.DECIMAL);
+        durationDTO.setDuration(workReportLine.getEffort()
                 .toHoursAsDecimalWithScale(2).doubleValue());
 
-        TimeRegistration timeRegistration = new TimeRegistration();
-        timeRegistration.setPerson(person);
-        timeRegistration.setProduct(product);
-        timeRegistration.setRegistrationDate(date);
-        timeRegistration.setDuration(duration);
-        return timeRegistration;
+        TimeRegistrationDTO timeRegistrationDTO = new TimeRegistrationDTO();
+        timeRegistrationDTO.setPerson(personDTO);
+        timeRegistrationDTO.setProduct(productDTO);
+        timeRegistrationDTO.setRegistrationDate(registrationDTO);
+        timeRegistrationDTO.setDuration(durationDTO);
+        return timeRegistrationDTO;
     }
 
     /**

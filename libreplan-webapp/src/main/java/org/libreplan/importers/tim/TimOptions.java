@@ -19,7 +19,12 @@
 
 package org.libreplan.importers.tim;
 
-public class TimOptions {
+/**
+ * Class containing all constants for Tim-options.
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
+public final class TimOptions {
 
     private TimOptions() {
 

@@ -19,51 +19,33 @@
 
 package org.libreplan.importers.tim;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+/**
+ * DTO representing a tim-connector RosterResponse
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
-public class Product {
+@XmlRootElement(name = "exportResponse", namespace = "impexp.timn.aenova.nl")
+public class RosterResponseDTO {
 
-    @XmlAttribute(required = true)
-    private String options;
+    @XmlElementWrapper(name = "return")
+    @XmlElement(name = "bezettingblok")
+    private List<RosterDTO> rosters;
 
-    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @XmlElement
-    private String code;
-
-    // @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    // @XmlElement(name = "naam", nillable = true)
-    private String name;
-
-    public String getOptions() {
-        return options;
+    public List<RosterDTO> getRosters() {
+        return rosters;
     }
 
-    public void setOptions(String options) {
-        this.options = options;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setRosters(List<RosterDTO> rosters) {
+        this.rosters = rosters;
     }
 
 }

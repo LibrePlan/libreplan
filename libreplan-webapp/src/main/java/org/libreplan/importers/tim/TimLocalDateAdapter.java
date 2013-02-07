@@ -25,6 +25,12 @@ import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+/**
+ * Adapter responsible for converting from <code>LocalDate</code> to
+ * string(tim-string-date) and vice versa
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 public class TimLocalDateAdapter extends XmlAdapter<String, LocalDate> {
 
     @Override

@@ -26,51 +26,56 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * DTO representing a tim-connector filter
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
-public class Filter {
+public class FilterDTO {
 
     @XmlElement(name = "persoon")
-    private Person person;
+    private PersonDTO person;
 
     @XmlElement(name = "periode")
-    private List<Period> periods;
+    private List<PeriodDTO> periods;
 
     @XmlElement(name = "Afdeling")
-    private Department department;
+    private DepartmentDTO department;
 
     @XmlElement(name = "roostercategorie")
-    private RosterCategory rosterCategory;
+    private RosterCategoryDTO rosterCategory;
 
-    public Person getPerson() {
+    public PersonDTO getPerson() {
         return person;
     }
 
-    public void setPerson(Person person) {
+    public void setPerson(PersonDTO person) {
         this.person = person;
     }
 
-    public List<Period> getPeriods() {
+    public List<PeriodDTO> getPeriods() {
         return periods;
     }
 
-    public void setPeriods(List<Period> periods) {
+    public void setPeriods(List<PeriodDTO> periods) {
         this.periods = periods;
     }
 
-    public Department getDepartment() {
+    public DepartmentDTO getDepartment() {
         return department;
     }
 
-    public void setDepartment(Department department) {
+    public void setDepartment(DepartmentDTO department) {
         this.department = department;
     }
 
-    public RosterCategory getRosterCategory() {
+    public RosterCategoryDTO getRosterCategory() {
         return rosterCategory;
     }
 
-    public void setRosterCategory(RosterCategory rosterCategory) {
+    public void setRosterCategory(RosterCategoryDTO rosterCategory) {
         this.rosterCategory = rosterCategory;
     }
 

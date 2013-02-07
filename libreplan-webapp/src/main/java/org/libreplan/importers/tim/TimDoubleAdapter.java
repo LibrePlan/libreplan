@@ -24,6 +24,12 @@ import java.util.Locale;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+/**
+ * Adapter responsible for converting from <code>Double</code> to
+ * string(tim-string-double) and vice versa
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 public class TimDoubleAdapter extends XmlAdapter<String, Double> {
 
     @Override

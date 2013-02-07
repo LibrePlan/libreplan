@@ -24,18 +24,23 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * DTO representing a tim-connector RosterRequest
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "export", namespace = "impexp.timn.aenova.nl")
-public class RosterRequest {
+public class RosterRequestDTO {
 
     @XmlElement
-    private Data<Roster> data;
+    private DataDTO<RosterDTO> data;
 
-    public Data<Roster> getData() {
+    public DataDTO<RosterDTO> getData() {
         return data;
     }
 
-    public void setData(Data<Roster> data) {
+    public void setData(DataDTO<RosterDTO> data) {
         this.data = data;
     }
 

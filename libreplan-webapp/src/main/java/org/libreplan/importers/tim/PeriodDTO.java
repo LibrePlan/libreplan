@@ -19,27 +19,41 @@
 
 package org.libreplan.importers.tim;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.joda.time.DateTime;
+
+/**
+ * DTO representing a tim-connector Period
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "import", namespace = "impexp.timn.aenova.nl")
-public class TimeRegistrationRequest {
+@XmlRootElement
+public class PeriodDTO {
 
-    @XmlElementWrapper(name = "data")
-    @XmlElement(name = "tijdregistratie")
-    private List<TimeRegistration> timeRegistrations;
+    @XmlElement(name = "startdate", required = true, nillable = true)
+    private DateTime start;
 
-    public List<TimeRegistration> getTimeRegistrations() {
-        return timeRegistrations;
+    @XmlElement(name = "enddate", required = true, nillable = true)
+    private DateTime end;
+
+    public DateTime getStart() {
+        return start;
     }
 
-    public void setTimeRegistrations(List<TimeRegistration> timeRegistrations) {
-        this.timeRegistrations = timeRegistrations;
+    public void setStart(DateTime start) {
+        this.start = start;
+    }
+
+    public DateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(DateTime end) {
+        this.end = end;
     }
 }

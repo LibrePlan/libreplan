@@ -19,6 +19,7 @@
 
 package org.libreplan.importers;
 
+import org.libreplan.business.common.entities.AppProperties;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderSyncInfo;
 
@@ -26,13 +27,17 @@ import org.libreplan.business.orders.entities.OrderSyncInfo;
  * Export time sheets of an existing order to Tim SOAP server using
  * {@link TimSoapClient}.
  *
+ * It exports the time sheets between periods current-date minus
+ * <code>NrDaysTimesheetToTim</code> specified in configuration entity
+ * {@link AppProperties} and the current-date
+ *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 public interface IExportTimesheetsToTim {
 
     /**
      * Exports time sheets of the specified <code>productCode</code> and
-     * <code>{@link Order}</code>
+     * <code>{@link Order}</code> to Tim SOAP server
      *
      * @param productCode
      *            the Tim's productCode
@@ -42,11 +47,9 @@ public interface IExportTimesheetsToTim {
     boolean exportTimesheets(String productCode, Order order);
 
     /**
-     * Loops through all the time sheets of all {@link Order}s which has tim's
-     * productcodes and export them to Tim SOAP server
-     * <p>
-     * This method is of importance for the scheduler service
-     * </p>
+     * Loops through all existing {@link Order}s and searches for last
+     * synchronized order. if found, start exporting the time sheets of that
+     * order to Tim SOAP server. if not found write info to the log file.
      */
     void exportTimesheets();
 

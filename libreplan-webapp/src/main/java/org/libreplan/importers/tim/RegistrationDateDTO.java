@@ -21,34 +21,41 @@ package org.libreplan.importers.tim;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
+/**
+ * DTO representing a tim-connector RegistrationDate
+ *
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
-public class Period {
+@XmlRootElement(name = "datum")
+public class RegistrationDateDTO {
 
-    @XmlElement(name = "startdate", required = true, nillable = true)
-    private DateTime start;
+    @XmlAttribute(name = "options", required = true)
+    private String options;
 
-    @XmlElement(name = "enddate", required = true, nillable = true)
-    private DateTime end;
+    @XmlValue
+    private LocalDate date;
 
-    public DateTime getStart() {
-        return start;
+    public String getOptions() {
+        return options;
     }
 
-    public void setStart(DateTime start) {
-        this.start = start;
+    public void setOptions(String options) {
+        this.options = options;
     }
 
-    public DateTime getEnd() {
-        return end;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setEnd(DateTime end) {
-        this.end = end;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
+
 }

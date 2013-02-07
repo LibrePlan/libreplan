@@ -27,10 +27,10 @@ import java.util.TreeMap;
 import org.joda.time.LocalDate;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
-import org.libreplan.importers.tim.Roster;
+import org.libreplan.importers.tim.RosterDTO;
 
 /**
- * Helper class to convert the Roster response to the RosterExceptions
+ * Class to convert the Roster response DTO to the <code>RosterException<code>
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
@@ -46,20 +46,21 @@ public class RosterException {
      * Reads the rosters and add the exceptions to
      * <code>rosterExceptionItems</code>
      *
-     * @param rosters
+     * @param rosterDTOs
+     *            list of rosterDTO
      */
-    public void addRosterExceptions(List<Roster> rosters) {
-        Map<LocalDate, List<Roster>> mapDateRoster = new TreeMap<LocalDate, List<Roster>>();
+    public void addRosterExceptions(List<RosterDTO> rosterDTOs) {
+        Map<LocalDate, List<RosterDTO>> mapDateRosterDTO = new TreeMap<LocalDate, List<RosterDTO>>();
 
-        for (Roster roster : rosters) {
-            if (!mapDateRoster.containsKey(roster.getDate())) {
-                mapDateRoster.put(roster.getDate(), new ArrayList<Roster>());
+        for (RosterDTO rosterDTO : rosterDTOs) {
+            if (!mapDateRosterDTO.containsKey(rosterDTO.getDate())) {
+                mapDateRosterDTO.put(rosterDTO.getDate(), new ArrayList<RosterDTO>());
             }
-            mapDateRoster.get(roster.getDate()).add(roster);
+            mapDateRosterDTO.get(rosterDTO.getDate()).add(rosterDTO);
 
         }
 
-        for (Map.Entry<LocalDate, List<Roster>> entry : mapDateRoster
+        for (Map.Entry<LocalDate, List<RosterDTO>> entry : mapDateRosterDTO
                 .entrySet()) {
             RosterExceptionItem item = new RosterExceptionItem(entry.getKey());
             updateExceptionTypeAndEffort(item, entry.getValue());
@@ -72,20 +73,21 @@ public class RosterException {
      *
      * @param rosterExceptionItem
      *            the rosterException item
-     * @param rosters
-     *            list of rosters
+     * @param rosterDTOs
+     *            list of rosterDTO
      */
     private void updateExceptionTypeAndEffort(
-            RosterExceptionItem rosterExceptionItem, List<Roster> rosters) {
+            RosterExceptionItem rosterExceptionItem, List<RosterDTO> rosterDTOs) {
         EffortDuration max = EffortDuration.zero();
         EffortDuration sum = EffortDuration.zero();
-        String rosterCatName = rosters.get(0).getRosterCategories().get(0)
+        String rosterCatName = rosterDTOs.get(0).getRosterCategories().get(0)
                 .getName();
-        for (Roster roster : rosters) {
+        for (RosterDTO rosterDTO : rosterDTOs) {
             EffortDuration duration = EffortDuration
-                    .parseFromFormattedString(roster.getDuration());
+                    .parseFromFormattedString(rosterDTO.getDuration());
             if (duration.compareTo(max) > 0) {
-                rosterCatName = roster.getRosterCategories().get(0).getName();
+                rosterCatName = rosterDTO.getRosterCategories().get(0)
+                        .getName();
             }
             max = EffortDuration.max(max, duration);
             sum = EffortDuration.sum(sum, duration);
@@ -109,6 +111,9 @@ public class RosterException {
         return rosterExceptionItems;
     }
 
+    /**
+     * class representing RosterExceptionItem
+     */
     public class RosterExceptionItem {
         private LocalDate date;
         private String exceptionType;
