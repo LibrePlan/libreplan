@@ -252,12 +252,50 @@ public class ResourceLoadController implements Composer {
         }
 
         private TimeTracker buildTimeTracker(ResourceLoadDisplayData dataToShow) {
-            ZoomLevel zoomLevel = dataToShow.getInitialZoomLevel();
+            ZoomLevel zoomLevel = getZoomLevel(dataToShow);
             TimeTracker result = new TimeTracker(dataToShow.getViewInterval(),
                     zoomLevel, SeveralModificators.create(),
                     SeveralModificators.create(createBankHolidaysMarker()),
                     parent);
+            setupZoomLevelListener(result);
             return result;
+        }
+
+        private ZoomLevel getZoomLevel(ResourceLoadDisplayData dataToShow) {
+            if (filterBy != null) {
+                Order order = filterBy.getOrder();
+                ZoomLevel sessionZoom = FilterUtils.readZoomLevel(order);
+                if (sessionZoom != null) {
+                    return sessionZoom;
+                }
+            }
+
+            ZoomLevel sessionZoom = FilterUtils.readZoomLevelResourcesLoad();
+            if (sessionZoom != null) {
+                return sessionZoom;
+            }
+            return dataToShow.getInitialZoomLevel();
+        }
+
+        private void setupZoomLevelListener(TimeTracker timeTracker) {
+            timeTracker.addZoomListener(getSessionZoomLevelListener());
+        }
+
+        private IZoomLevelChangedListener getSessionZoomLevelListener() {
+            IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+
+                @Override
+                public void zoomLevelChanged(ZoomLevel detailLevel) {
+                    if (filterBy != null) {
+                        Order order = filterBy.getOrder();
+                        FilterUtils.writeZoomLevel(order, detailLevel);
+                    } else {
+                        FilterUtils.writeZoomLevelResourcesLoad(detailLevel);
+                    }
+                }
+            };
+
+            return zoomListener;
         }
 
         private ResourcesLoadPanel buildPanel(ResourceLoadDisplayData dataToShow) {

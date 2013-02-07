@@ -151,12 +151,22 @@ public class FilterUtils {
         }
     }
 
-    public static ZoomLevel readZoomLevel() {
-        return (ZoomLevel) Sessions.getCurrent().getAttribute("zoomLevel");
+    public static ZoomLevel readZoomLevelCompanyView() {
+        return (ZoomLevel) Sessions.getCurrent().getAttribute(
+                "zoomLevelCompanyView");
     }
 
-    public static void writeZoomLevel(ZoomLevel zoomLevel) {
-        Sessions.getCurrent().setAttribute("zoomLevel", zoomLevel);
+    public static void writeZoomLevelCompanyView(ZoomLevel zoomLevel) {
+        Sessions.getCurrent().setAttribute("zoomLevelCompanyView", zoomLevel);
+    }
+
+    public static ZoomLevel readZoomLevelResourcesLoad() {
+        return (ZoomLevel) Sessions.getCurrent().getAttribute(
+                "zoomLevelResourcesLoad");
+    }
+
+    public static void writeZoomLevelResourcesLoad(ZoomLevel zoomLevel) {
+        Sessions.getCurrent().setAttribute("zoomLevelResourcesLoad", zoomLevel);
     }
 
     public static ZoomLevel readZoomLevel(Order order) {

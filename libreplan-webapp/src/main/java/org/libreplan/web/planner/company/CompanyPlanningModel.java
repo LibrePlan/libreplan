@@ -269,7 +269,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private ZoomLevel getZoomLevel(
             PlannerConfiguration<TaskElement> configuration) {
-        ZoomLevel sessionZoom = FilterUtils.readZoomLevel();
+        ZoomLevel sessionZoom = FilterUtils.readZoomLevelCompanyView();
         if (sessionZoom != null) {
             return sessionZoom;
         }
@@ -285,7 +285,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                FilterUtils.writeZoomLevel(detailLevel);
+                FilterUtils.writeZoomLevelCompanyView(detailLevel);
             }
         };
 
