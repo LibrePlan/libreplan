@@ -56,6 +56,7 @@ import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -84,7 +85,6 @@ import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -224,8 +224,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void initializeFilter() {
-        Date startDate = (Date) Sessions.getCurrent().getAttribute("companyFilterStartDate");
-        Date endDate = (Date) Sessions.getCurrent().getAttribute("companyFilterFinishDate");
+        Date startDate = (Date) FilterUtils.readProjectsStartDate();
+        Date endDate = FilterUtils.readProjectsEndDate();
 
         boolean calculateStartDate = (startDate == null);
         boolean calculateEndDate = (endDate == null);
@@ -258,8 +258,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void loadLabels() {
-        List<FilterPair> sessionFilterPairs = (List<FilterPair>) Sessions
-                .getCurrent().getAttribute("companyFilterLabel");
+        List<FilterPair> sessionFilterPairs = FilterUtils
+                .readProjectsParameters();
         if (sessionFilterPairs != null && !sessionFilterPairs.isEmpty()) {
             for (FilterPair filterPair : sessionFilterPairs) {
 
@@ -1486,13 +1486,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void storeSessionVariables() {
-        Sessions.getCurrent().setAttribute("companyFilterStartDate",
-                filterStartDate.getValue());
-        Sessions.getCurrent().setAttribute("companyFilterFinishDate",
-                filterFinishDate.getValue());
-        Sessions.getCurrent().setAttribute("companyFilterLabel",
+        FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
+                filterFinishDate.getValue(),
                 getSelectedBandboxAsTaskGroupFilters());
-        Sessions.getCurrent().setAttribute("companyFilterChanged", true);
+        FilterUtils.writeProjectFilterChanged(true);
     }
 
     private List<FilterPair> getSelectedBandboxAsTaskGroupFilters() {
@@ -1852,11 +1849,9 @@ public class OrderCRUDController extends GenericForwardComposer {
         return Util.getCurrencySymbol();
     }
 
-    public void readSessionVariables() {
-        filterStartDate.setValue((Date) Sessions.getCurrent().getAttribute(
-                "companyFilterStartDate"));
-        filterFinishDate.setValue((Date) Sessions.getCurrent().getAttribute(
-                "companyFilterFinishDate"));
+    public void readSessionFilterDates() {
+        filterStartDate.setValue(FilterUtils.readProjectsStartDate());
+        filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
     }
 
 }

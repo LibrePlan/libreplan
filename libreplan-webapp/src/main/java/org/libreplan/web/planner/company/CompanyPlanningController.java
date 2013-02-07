@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,11 +32,10 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.entities.ProgressType;
-import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.planner.entities.TaskElement;
-import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
@@ -51,7 +50,6 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -72,6 +70,7 @@ import org.zkoss.zul.Vbox;
  * planner.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -151,8 +150,8 @@ public class CompanyPlanningController implements Composer {
     }
 
     private void loadPredefinedBandboxFilter() {
-        List<FilterPair> sessionFilterPairs = (List<FilterPair>) Sessions
-                .getCurrent().getAttribute("companyFilterLabel");
+        List<FilterPair> sessionFilterPairs = FilterUtils
+                .readProjectsParameters();
         if (sessionFilterPairs != null && !sessionFilterPairs.isEmpty()) {
             bdFilters.clear();
             for (FilterPair filterPair : sessionFilterPairs) {
@@ -325,21 +324,15 @@ public class CompanyPlanningController implements Composer {
     }
 
     public void readSessionVariables() {
-        filterStartDate.setValue((Date) Sessions.getCurrent().getAttribute(
-                "companyFilterStartDate"));
-        filterFinishDate.setValue((Date) Sessions.getCurrent().getAttribute(
-                "companyFilterFinishDate"));
+        filterStartDate.setValue(FilterUtils.readProjectsStartDate());
+        filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
         loadPredefinedBandboxFilter();
     }
 
     public void onApplyFilter() {
-        Sessions.getCurrent().setAttribute("companyFilterStartDate",
-                filterStartDate.getValue());
-        Sessions.getCurrent().setAttribute("companyFilterFinishDate",
-                filterFinishDate.getValue());
-        Sessions.getCurrent().setAttribute("companyFilterLabel",
-                bdFilters.getSelectedElements());
-        Sessions.getCurrent().setAttribute("companyFilterChanged", true);
+        FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
+                filterFinishDate.getValue(), bdFilters.getSelectedElements());
+        FilterUtils.writeProjectFilterChanged(true);
         filterByPredicate(createPredicate());
     }
 
