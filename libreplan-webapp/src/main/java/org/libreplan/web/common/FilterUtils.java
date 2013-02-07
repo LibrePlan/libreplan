@@ -21,6 +21,7 @@ package org.libreplan.web.common;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.libreplan.web.common.components.finders.FilterPair;
@@ -59,7 +60,7 @@ public class FilterUtils {
     }
 
     public static void writeProjectsParameters(List<Object> parameters) {
-        Sessions.getCurrent().getAttribute("companyFilterLabel");
+        Sessions.getCurrent().setAttribute("companyFilterLabel", parameters);
     }
 
     public static void writeProjectsFilter(Date startDate, Date endDate,
@@ -95,8 +96,8 @@ public class FilterUtils {
     }
 
     public static void writeResourceLoadsParameters(List<Object> parameters) {
-        Sessions.getCurrent().getAttribute(
-                "resourceLoadFilterWorkerOrCriterion");
+        Sessions.getCurrent().setAttribute(
+                "resourceLoadFilterWorkerOrCriterion", parameters);
     }
 
     // Project gantt and WBS filter parameters
@@ -135,6 +136,17 @@ public class FilterUtils {
     }
     public static void writeOrderTaskName(String orderCode, String name) {
         Sessions.getCurrent().setAttribute(orderCode + "-tasknameFilter", name);
+    }
+
+    public static void clearBandboxes() {
+        writeProjectsParameters(null);
+        writeResourceLoadsParameters(null);
+        // Locate all order-specific bandboxes
+        for (String key : (Set <String>) Sessions.getCurrent().getAttributes().keySet() ) {
+            if (key.contains("-tasknameFilter")) {
+                Sessions.getCurrent().setAttribute(key, null);
+            }
+        }
     }
 
 }
