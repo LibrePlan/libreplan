@@ -145,7 +145,7 @@ public class OrderPlanningController implements Composer {
         if (planner != null) {
             ensureIsInPlanningOrderView();
             updateConfiguration();
-            onApplyFilter();
+            planner.setTaskListPredicate(getFilterAndParentExpanedPredicates(createPredicate()));
         }
     }
 
@@ -317,25 +317,7 @@ public class OrderPlanningController implements Composer {
             public void doAction() {
                 // FIXME remove or change
                 model.forceLoadLabelsAndCriterionRequirements();
-
-                final IContext<?> context = planner.getContext();
-                FilterAndParentExpandedPredicates newPredicate = new FilterAndParentExpandedPredicates(
-                        context) {
-                    @Override
-                    public boolean accpetsFilterPredicate(Task task) {
-                        if (predicate == null) {
-                            return true;
-                        }
-                        TaskElement taskElement = (TaskElement) context
-                                .getMapper()
-                                .findAssociatedDomainObject(task);
-                        return predicate.accepts(taskElement);
-                    }
-
-                };
-                newPredicate.setFilterContainers(planner.getPredicate()
-                        .isFilterContainers());
-                planner.setTaskListPredicate(newPredicate);
+                planner.setTaskListPredicate(getFilterAndParentExpanedPredicates(predicate));
             }
 
             @Override
@@ -344,6 +326,27 @@ public class OrderPlanningController implements Composer {
             }
 
         });
+    }
+
+    private FilterAndParentExpandedPredicates getFilterAndParentExpanedPredicates(
+            final TaskElementPredicate predicate) {
+        final IContext<?> context = planner.getContext();
+        FilterAndParentExpandedPredicates newPredicate = new FilterAndParentExpandedPredicates(
+                context) {
+            @Override
+            public boolean accpetsFilterPredicate(Task task) {
+                if (predicate == null) {
+                    return true;
+                }
+                TaskElement taskElement = (TaskElement) context.getMapper()
+                        .findAssociatedDomainObject(task);
+                return predicate.accepts(taskElement);
+            }
+
+        };
+        newPredicate.setFilterContainers(planner.getPredicate()
+                .isFilterContainers());
+        return newPredicate;
     }
 
     public Constraint checkConstraintFinishDate() {
