@@ -31,7 +31,6 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.annotations.Filters;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.EntityNameEnum;
@@ -45,9 +44,6 @@ import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.ICriterionType;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
-import org.libreplan.business.users.daos.IUserDAO;
-import org.libreplan.business.users.entities.User;
-import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IntegrationEntityModel;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,16 +78,11 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
     @Autowired
     private IConfigurationDAO configurationDAO;
 
-    @Autowired
-    private IUserDAO userDAO;
-
     private CriterionType criterionType;
 
     private Criterion criterion;
 
     private ICriterionTreeModel criterionTreeModel;
-
-    private List<Criterion> removedCriterion = new ArrayList<Criterion>();
 
     @Override
     @Transactional(readOnly = true)
@@ -196,16 +187,6 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
         }
         criterionTreeModel.saveCriterions(criterionType);
         criterionTypeDAO.save(criterionType);
-
-        if (!removedCriterion.isEmpty()) {
-            List<User> users = userDAO
-                    .findByCriterionFilterSetting(removedCriterion);
-            for (User user : users) {
-                user.setResourcesLoadFilterCriterion(null);
-                userDAO.save(user);
-            }
-            FilterUtils.clearBandboxes();
-        }
     }
 
     @Override
@@ -282,7 +263,6 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
     @Override
     public void addForRemoval(Criterion criterion) {
         criterionType.getCriterions().remove(criterion);
-        removedCriterion.add(criterion);
     }
 
     @Override
