@@ -25,11 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController;
-import org.libreplan.web.planner.allocation.AllocationResult;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.libreplan.web.planner.allocation.AdvancedAllocationController.IBack;
+import org.libreplan.web.planner.allocation.AllocationResult;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -54,20 +55,23 @@ public class ViewSwitcher implements Composer {
         isInPlanningOrder = true;
     }
 
-    public void goToAdvancedAllocation(AllocationResult allocationResult,
+    public void goToAdvancedAllocation(Order order,
+            AllocationResult allocationResult,
             IAdvanceAllocationResultReceiver resultReceiver) {
-        planningOrder = ComponentsReplacer.replaceAllChildren(parent,
-                "advance_allocation.zul", createArgsForAdvancedAllocation(
-                        allocationResult, resultReceiver));
+        planningOrder = ComponentsReplacer.replaceAllChildren(
+                parent,
+                "advance_allocation.zul",
+                createArgsForAdvancedAllocation(order, allocationResult,
+                        resultReceiver));
         isInPlanningOrder = false;
     }
 
-    private Map<String, Object> createArgsForAdvancedAllocation(
+    private Map<String, Object> createArgsForAdvancedAllocation(Order order,
             AllocationResult allocationResult,
             IAdvanceAllocationResultReceiver resultReceiver) {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put("advancedAllocationController",
-                new AdvancedAllocationController(createBack(),
+                new AdvancedAllocationController(order, createBack(),
                         asAllocationInput(allocationResult, resultReceiver)));
         return result;
     }
