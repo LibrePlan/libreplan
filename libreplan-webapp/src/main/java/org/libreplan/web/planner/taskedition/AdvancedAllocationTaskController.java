@@ -78,8 +78,8 @@ public class AdvancedAllocationTaskController extends GenericForwardComposer {
             return;
         }
 
-        getSwitcher().goToAdvancedAllocation(allocationResult,
-                createResultReceiver(allocationResult));
+        getSwitcher().goToAdvancedAllocation(planningState.getOrder(),
+                allocationResult, createResultReceiver(allocationResult));
     }
 
 
