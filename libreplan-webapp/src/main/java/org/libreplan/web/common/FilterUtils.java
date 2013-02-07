@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.zk.ui.Sessions;
 
 /**
@@ -147,6 +149,24 @@ public class FilterUtils {
                 Sessions.getCurrent().setAttribute(key, null);
             }
         }
+    }
+
+    public static ZoomLevel readZoomLevel() {
+        return (ZoomLevel) Sessions.getCurrent().getAttribute("zoomLevel");
+    }
+
+    public static void writeZoomLevel(ZoomLevel zoomLevel) {
+        Sessions.getCurrent().setAttribute("zoomLevel", zoomLevel);
+    }
+
+    public static ZoomLevel readZoomLevel(Order order) {
+        return (ZoomLevel) Sessions.getCurrent().getAttribute(
+                order.getCode() + "-zoomLevel");
+    }
+
+    public static void writeZoomLevel(Order order, ZoomLevel zoomLevel) {
+        Sessions.getCurrent().setAttribute(order.getCode() + "-zoomLevel",
+                zoomLevel);
     }
 
 }
