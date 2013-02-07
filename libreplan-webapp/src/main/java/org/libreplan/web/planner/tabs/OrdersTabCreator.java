@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,6 +27,7 @@ import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSc
 import java.util.HashMap;
 import java.util.Map;
 
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.Util.ReloadStrategy;
 import org.libreplan.web.orders.OrderCRUDController;
@@ -36,12 +37,12 @@ import org.libreplan.web.security.SecurityUtils;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  *
  */
 public class OrdersTabCreator {
@@ -113,16 +114,14 @@ public class OrdersTabCreator {
             }
 
             private boolean checkFiltersChanged() {
-                return (Sessions.getCurrent() != null)
-                        && (Sessions.getCurrent().getAttribute(
-                                "companyFilterChanged") != null)
-                        && ((Boolean) Sessions.getCurrent().getAttribute(
-                                "companyFilterChanged"));
+                return (FilterUtils.sessionExists() && FilterUtils
+                        .hasProjectFilterChanged());
             }
 
             private void setFiltersUnchanged() {
-                Sessions.getCurrent()
-                        .getAttribute("companyFilterChanged", true);
+                FilterUtils.writeProjectFilterChanged(false);
+                // Sessions.getCurrent()
+                // .getAttribute("companyFilterChanged", true);
             }
 
             @Override
@@ -130,7 +129,7 @@ public class OrdersTabCreator {
 
                 orderCRUDController.goToList();
                 if (checkFiltersChanged()) {
-                    orderCRUDController.readSessionVariables();
+                    orderCRUDController.readSessionFilterDates();
                     orderCRUDController.onApplyFilter();
                 }
                 setFiltersUnchanged();

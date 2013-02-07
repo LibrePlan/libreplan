@@ -98,7 +98,6 @@ import org.zkoss.ganttz.util.Emitter;
 import org.zkoss.ganttz.util.Emitter.IEmissionListener;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -806,10 +805,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Transactional(readOnly = true)
     public TaskGroupPredicate getDefaultPredicate(Boolean includeOrderElements) {
 
-        Date startDate = (Date) Sessions.getCurrent().getAttribute(
-                "companyFilterStartDate");
-        Date endDate = (Date) Sessions.getCurrent().getAttribute(
-                "companyFilterFinishDate");
+        Date startDate = FilterUtils.readProjectsStartDate();
+        Date endDate = FilterUtils.readProjectsEndDate();
 
         boolean calculateStartDate = (startDate == null);
         boolean calculateEndDate = (endDate == null);

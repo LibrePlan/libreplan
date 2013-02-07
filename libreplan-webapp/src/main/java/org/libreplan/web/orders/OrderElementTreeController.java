@@ -36,6 +36,8 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.weaver.ast.Instanceof;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
@@ -51,6 +53,7 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.OrderElementFilterEnum;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.security.SecurityUtils;
@@ -280,22 +283,33 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     private void importOrderFiltersFromSession() {
-        String orderCode = orderModel.getOrder().getCode();
+        Order order = orderModel.getOrder();
         filterNameOrderElement.setValue(FilterUtils
-                .readOrderTaskName(orderCode));
+.readOrderTaskName(order));
         filterStartDateOrderElement.setValue(FilterUtils
-                .readOrderStartDate(orderCode));
+                .readOrderStartDate(order));
         filterFinishDateOrderElement.setValue(FilterUtils
-                .readOrderEndDate(orderCode));
-        if (FilterUtils.readOrderParameters(orderCode) != null) {
-            for (Object each : (List<Object>) FilterUtils
-                    .readOrderParameters(orderCode)) {
-                bdFiltersOrderElement.addSelectedElement(each);
+                .readOrderEndDate(order));
+        if (FilterUtils.readOrderParameters(order) != null) {
+            for (FilterPair each : (List<FilterPair>) FilterUtils
+                    .readOrderParameters(order)) {
+                bdFiltersOrderElement
+                        .addSelectedElement(toOrderFilterEnum(each));
             }
         }
-        if (FilterUtils.readOrderInheritance(orderCode) != null) {
+        if (FilterUtils.readOrderInheritance(order) != null) {
             labelsWithoutInheritance.setChecked(FilterUtils
-                    .readOrderInheritance(orderCode));
+                    .readOrderInheritance(order));
+        }
+    }
+
+    private FilterPair toOrderFilterEnum(FilterPair each) {
+        if (each.getValue() instanceof Label) {
+            return new FilterPair(OrderElementFilterEnum.Label,
+                    each.getPattern(), each.getValue());
+        } else {
+            return new FilterPair(OrderElementFilterEnum.Criterion,
+                    each.getPattern(), each.getValue());
         }
     }
 
@@ -563,12 +577,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     private void writeFilterParameters() {
-        String orderCode = orderModel.getOrder().getCode();
-        FilterUtils.writeOrderStartDate(orderCode,
+        Order order = orderModel.getOrder();
+        FilterUtils.writeOrderStartDate(order,
                 filterStartDateOrderElement.getValue());
-        FilterUtils.writeOrderEndDate(orderCode,
+        FilterUtils.writeOrderEndDate(order,
                 filterFinishDateOrderElement.getValue());
-        FilterUtils.writeOrderTaskName(orderCode,
+        FilterUtils
+                .writeOrderTaskName(order,
                 filterNameOrderElement.getValue());
     }
 
@@ -592,7 +607,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     private void filterByPredicate(OrderElementPredicate predicate) {
         OrderElementTreeModel orderElementTreeModel = orderModel
                 .getOrderElementsFilteredByPredicate(predicate);
-        tree.setModel(orderElementTreeModel.asTree());
         tree.invalidate();
     }
 

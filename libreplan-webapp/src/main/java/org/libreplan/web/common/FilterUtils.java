@@ -48,8 +48,8 @@ public class FilterUtils {
                 .getAttribute("companyFilterEndDate");
     }
 
-    public static List<Object> readProjectsParameters() {
-        return (List<Object>) Sessions.getCurrent().getAttribute(
+    public static List<FilterPair> readProjectsParameters() {
+        return (List<FilterPair>) Sessions.getCurrent().getAttribute(
                 "companyFilterLabel");
     }
 
@@ -61,15 +61,25 @@ public class FilterUtils {
         Sessions.getCurrent().setAttribute("companyFilterEndDate", date);
     }
 
-    public static void writeProjectsParameters(List<Object> parameters) {
+    public static void writeProjectsParameters(List<FilterPair> parameters) {
         Sessions.getCurrent().setAttribute("companyFilterLabel", parameters);
     }
 
     public static void writeProjectsFilter(Date startDate, Date endDate,
-            List<Object> parameters) {
+            List<FilterPair> parameters) {
         writeProjectsStartDate(startDate);
         writeProjectsEndDate(endDate);
         writeProjectsParameters(parameters);
+    }
+
+    public static void writeProjectFilterChanged(boolean b) {
+        Sessions.getCurrent().setAttribute("companyFilterChanged", true);
+    }
+
+    public static boolean hasProjectFilterChanged() {
+        return (Sessions.getCurrent().getAttribute("companyFilterChanged") != null)
+                && ((Boolean) Sessions.getCurrent().getAttribute(
+                        "companyFilterChanged"));
     }
 
     // Resources load filter
@@ -104,40 +114,56 @@ public class FilterUtils {
 
     // Project gantt and WBS filter parameters
 
-    public static Date readOrderStartDate(String orderCode) {
+    public static Date readOrderStartDate(Order order) {
         return (Date) Sessions.getCurrent().getAttribute(
-                orderCode + "-startDateFilter");
+                order.getCode() + "-startDateFilter");
     }
 
-    public static Date readOrderEndDate(String orderCode) {
+    public static Date readOrderEndDate(Order order) {
         return (Date) Sessions.getCurrent().getAttribute(
-                orderCode + "-endDateFilter");
+                order.getCode() + "-endDateFilter");
     }
 
-    public static String readOrderTaskName(String orderCode) {
+    public static String readOrderTaskName(Order order) {
         return (String) Sessions.getCurrent().getAttribute(
-                orderCode + "-tasknameFilter");
+                order.getCode() + "-tasknameFilter");
     }
 
-    public static List<Object> readOrderParameters(String orderCode) {
-        return (List<Object>) Sessions.getCurrent().getAttribute(
-                orderCode + "-labelsandcriteriaFilter");
+    public static List<FilterPair> readOrderParameters(Order order) {
+        return (List<FilterPair>) Sessions.getCurrent().getAttribute(
+                order.getCode() + "-labelsandcriteriaFilter");
     }
 
-    public static Boolean readOrderInheritance(String orderCode) {
+    public static Boolean readOrderInheritance(Order order) {
         return (Boolean) Sessions.getCurrent().getAttribute(
-                orderCode + "-inheritanceFilter");
+                order.getCode() + "-inheritanceFilter");
     }
 
-    public static void writeOrderStartDate(String orderCode, Date date) {
-        Sessions.getCurrent()
-                .setAttribute(orderCode + "-startDateFilter", date);
+
+    public static void writeOrderStartDate(Order order, Date date) {
+        Sessions.getCurrent().setAttribute(
+                order.getCode() + "-startDateFilter", date);
     }
-    public static void writeOrderEndDate(String orderCode, Date date) {
-        Sessions.getCurrent().setAttribute(orderCode + "-endDateFilter", date);
+
+    public static void writeOrderEndDate(Order order, Date date) {
+        Sessions.getCurrent().setAttribute(order.getCode() + "-endDateFilter",
+                date);
     }
-    public static void writeOrderTaskName(String orderCode, String name) {
-        Sessions.getCurrent().setAttribute(orderCode + "-tasknameFilter", name);
+
+    public static void writeOrderTaskName(Order order, String name) {
+        Sessions.getCurrent().setAttribute(order.getCode() + "-tasknameFilter",
+                name);
+    }
+
+    public static void writeOrderParameters(Order order,
+            List<FilterPair> parameters) {
+        Sessions.getCurrent().setAttribute(
+                order.getCode() + "-labelsandcriteriaFilter", parameters);
+    }
+
+    public static void writeOrderInheritance(Order order, boolean value) {
+        Sessions.getCurrent().setAttribute(
+                order.getCode() + "-inheritanceFilter", value);
     }
 
     public static void clearBandboxes() {
@@ -177,6 +203,10 @@ public class FilterUtils {
     public static void writeZoomLevel(Order order, ZoomLevel zoomLevel) {
         Sessions.getCurrent().setAttribute(order.getCode() + "-zoomLevel",
                 zoomLevel);
+    }
+
+    public static boolean sessionExists() {
+        return Sessions.getCurrent() != null;
     }
 
 }

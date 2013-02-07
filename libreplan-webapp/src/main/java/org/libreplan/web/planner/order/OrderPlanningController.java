@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  * Copyright (C) 2010-2011 WirelessGalicia S.L.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.ViewSwitcher;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
@@ -62,7 +63,6 @@ import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -76,6 +76,7 @@ import org.zkoss.zul.Vbox;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -230,24 +231,19 @@ public class OrderPlanningController implements Composer {
     }
 
     private void importOrderFiltersFromSession() {
-        filterNameOrderElement.setValue((String) Sessions.getCurrent()
-                .getAttribute(order.getCode() + "-tasknameFilter"));
-        filterStartDateOrderElement.setValue((Date) Sessions.getCurrent()
-                .getAttribute(order.getCode() + "-startDateFilter"));
-        filterFinishDateOrderElement.setValue((Date) Sessions.getCurrent()
-                .getAttribute(order.getCode() + "-endDateFilter"));
-        if (Sessions.getCurrent().getAttribute(
-                order.getCode() + "-labelsandcriteriaFilter") != null) {
-            for (Object each : (List<Object>) Sessions.getCurrent()
-                .getAttribute(
-                order.getCode() + "-labelsandcriteriaFilter")) {
+        filterNameOrderElement.setValue(FilterUtils.readOrderTaskName(order));
+        filterStartDateOrderElement.setValue(FilterUtils
+                .readOrderStartDate(order));
+        filterFinishDateOrderElement.setValue(FilterUtils
+                .readOrderEndDate(order));
+        if (FilterUtils.readOrderParameters(order) != null) {
+            for (Object each : FilterUtils.readOrderParameters(order)) {
                 bdFiltersOrderElement.addSelectedElement(each);
+            }
         }
-        }
-        if (Sessions.getCurrent().getAttribute(
-                order.getCode() + "-inheritanceFilter") != null) {
-        labelsWithoutInheritance.setChecked((Boolean) Sessions.getCurrent()
-                .getAttribute(order.getCode() + "-inheritanceFilter"));
+        if (FilterUtils.readOrderInheritance(order) != null) {
+            labelsWithoutInheritance.setChecked(FilterUtils
+                    .readOrderInheritance(order));
         }
     }
 
@@ -287,17 +283,13 @@ public class OrderPlanningController implements Composer {
                 && name == null) {
             return null;
         }
-        Sessions.getCurrent().setAttribute(order.getCode() + "-tasknameFilter",
-                name);
-        Sessions.getCurrent().setAttribute(
-                order.getCode() + "-startDateFilter", startDate);
-        Sessions.getCurrent().setAttribute(order.getCode() + "-endDateFilter",
-                finishDate);
-        Sessions.getCurrent()
-                .setAttribute(order.getCode() + "-inheritanceFilter",
-                        ignoreLabelsInheritance);
-        Sessions.getCurrent().setAttribute(
-                order.getCode() + "-labelsandcriteriaFilter", listFilters);
+        FilterUtils.writeOrderTaskName(order, name);
+        FilterUtils.writeOrderStartDate(order, startDate);
+        FilterUtils.writeOrderEndDate(order, finishDate);
+
+        // Peding to change
+        FilterUtils.writeOrderInheritance(order, ignoreLabelsInheritance);
+        FilterUtils.writeOrderParameters(order, listFilters);
         return new TaskElementPredicate(listFilters, startDate, finishDate,
                 name, ignoreLabelsInheritance);
     }
