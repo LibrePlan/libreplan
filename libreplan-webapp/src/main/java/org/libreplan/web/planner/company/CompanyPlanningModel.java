@@ -63,6 +63,7 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.planner.TaskElementAdapter;
@@ -268,8 +269,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private ZoomLevel getZoomLevel(
             PlannerConfiguration<TaskElement> configuration) {
-        ZoomLevel sessionZoom = (ZoomLevel) Sessions.getCurrent().getAttribute(
-                "zoomLevel");
+        ZoomLevel sessionZoom = FilterUtils.readZoomLevel();
         if (sessionZoom != null) {
             return sessionZoom;
         }
@@ -285,7 +285,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                Sessions.getCurrent().setAttribute("zoomLevel", detailLevel);
+                FilterUtils.writeZoomLevel(detailLevel);
             }
         };
 

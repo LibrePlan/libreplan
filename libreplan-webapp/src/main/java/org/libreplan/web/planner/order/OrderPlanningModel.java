@@ -71,6 +71,7 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.ConfirmCloseUtil;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.ViewSwitcher;
 import org.libreplan.web.planner.adaptplanning.IAdaptPlanningCommand;
 import org.libreplan.web.planner.advances.AdvanceAssignmentPlanningController;
@@ -123,7 +124,6 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -406,8 +406,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private ZoomLevel getZoomLevel(
             PlannerConfiguration<TaskElement> configuration, Order order) {
-        ZoomLevel sessionZoom = (ZoomLevel) Sessions.getCurrent().getAttribute(
-                order.getCode() + "-zoomLevel");
+        ZoomLevel sessionZoom = FilterUtils.readZoomLevel(order);
         if (sessionZoom != null) {
             return sessionZoom;
         }
@@ -425,8 +424,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                Sessions.getCurrent().setAttribute(
-                        order.getCode() + "-zoomLevel", detailLevel);
+                FilterUtils.writeZoomLevel(order, detailLevel);
             }
         };
 
