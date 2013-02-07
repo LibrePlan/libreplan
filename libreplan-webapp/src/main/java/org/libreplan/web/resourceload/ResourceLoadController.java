@@ -301,7 +301,8 @@ public class ResourceLoadController implements Composer {
 
         List<FilterPair> filterPairs = (List<FilterPair>) FilterUtils
                 .readResourceLoadsBandbox();
-        if (filterPairs == null || filterPairs.isEmpty()) {
+        if ((filterPairs == null || filterPairs.isEmpty())
+                && user.getResourcesLoadFilterCriterion() != null) {
             filterPairs = new ArrayList<FilterPair>();
             filterPairs.add(new FilterPair(
                     ResourceAllocationFilterEnum.Criterion, user

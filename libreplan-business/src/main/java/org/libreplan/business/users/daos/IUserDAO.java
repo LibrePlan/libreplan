@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.libreplan.business.common.daos.IGenericDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.entities.OrderAuthorization;
@@ -101,5 +103,9 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
     void remove(User user) throws InstanceNotFoundException;
 
     List<User> findAll();
+
+    public List<User> findByLabelFilterSetting(List<Label> removedLabels);
+
+    public List<User> findByCriterionFilterSetting(List<Criterion> criteria);
 
 }
