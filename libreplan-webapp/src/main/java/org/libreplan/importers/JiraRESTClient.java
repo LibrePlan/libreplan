@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
@@ -112,7 +113,8 @@ public class JiraRESTClient {
             client.query("jql", query);
         }
         client.query("maxResults", MAX_RESULTS);
-        client.query("fields", stripWhiteSpace(FIELDS_TO_INCLUDE_IN_RESPONSE));
+        client.query("fields",
+                StringUtils.deleteWhitespace(FIELDS_TO_INCLUDE_IN_RESPONSE));
 
         SearchResultDTO searchResult = client.get(SearchResultDTO.class);
 
@@ -162,14 +164,4 @@ public class JiraRESTClient {
         }
     }
 
-    /**
-     * Strip all white spaces of the specified <code>str<code>
-     *
-     * @param str
-     *            the string
-     * @return string with out white spaces
-     */
-    private static String stripWhiteSpace(String str) {
-        return str.replaceAll("\\s+", "");
-    }
 }
