@@ -733,9 +733,8 @@ msgid "Configure"
 msgstr "Configurar"
 
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:141
-#, fuzzy
 msgid "Criterion filter"
-msgstr "Nombre del criterio"
+msgstr "Por criterio"
 
 #: libreplan-webapp/src/main/webapp/resources/worker/_list.zul:36
 #: libreplan-webapp/src/main/webapp/resources/worker/_edition.zul:61
@@ -1484,9 +1483,8 @@ msgid "Problems connecting with client web service"
 msgstr "Problemas al conectar con el servicio web cliente"
 
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:131
-#, fuzzy
 msgid "Projects since"
-msgstr "Proyectos desde hace"
+msgstr "proyectos desde hace"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/OrderElementTreeController.java:775
 msgid ""
@@ -1682,7 +1680,7 @@ msgstr "escenario"
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:133
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:149
 msgid "months to"
-msgstr "meses hasta"
+msgstr "meses hasta dentro de"
 
 #: libreplan-webapp/src/main/webapp/common/configuration.zul:220
 msgid ""
@@ -3244,7 +3242,6 @@ msgid "Parent"
 msgstr "Padre"
 
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:139
-#, fuzzy
 msgid "Resources load filtering"
 msgstr "Filtro de carga de recursos"
 
@@ -4181,7 +4178,6 @@ msgid "Add Exception"
 msgstr "Añadir excepción"
 
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:123
-#, fuzzy
 msgid "Projects view filtering"
 msgstr "Filtros de lista de proyectos"
 
@@ -4285,9 +4281,8 @@ msgid "Dedication"
 msgstr "Gráfico de dedicación"
 
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:147
-#, fuzzy
 msgid "Resources load since"
-msgstr "Filtrar asignaciones desde"
+msgstr "asignaciones desde hace"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:425
 msgid "Effort must be greater than zero"
@@ -4719,9 +4714,8 @@ msgid "Task quality forms"
 msgstr "Formularios de calidad de tarea"
 
 #: libreplan-webapp/src/main/webapp/myaccount/settings.zul:125
-#, fuzzy
 msgid "Label filter"
-msgstr "Filtrar por etiqueta"
+msgstr "Por etiqueta"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/orders/ManageOrderElementAdvancesController.java:1235
 msgid ""
