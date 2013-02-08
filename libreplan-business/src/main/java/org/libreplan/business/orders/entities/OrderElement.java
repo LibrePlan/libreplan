@@ -1662,4 +1662,8 @@ public abstract class OrderElement extends IntegrationEntity implements
         return effort.toFormattedString();
     }
 
+    public boolean isConvertedToContainer() {
+        return false;
+    }
+
 }

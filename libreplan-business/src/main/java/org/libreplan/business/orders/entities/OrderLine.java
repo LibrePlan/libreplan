@@ -88,6 +88,8 @@ public class OrderLine extends OrderElement {
 
     private Integer lastHoursGroupSequenceCode = 0;
 
+    private boolean convertedToContainer = false;
+
     @Override
     public Integer getWorkHours() {
         return hoursGroupOrderLineHandler.calculateTotalHours(hoursGroups);
@@ -156,6 +158,7 @@ public class OrderLine extends OrderElement {
         result.setName(getName());
         setCode("");
         setName("");
+        convertedToContainer = true;
         return result;
     }
 
@@ -390,6 +393,11 @@ public class OrderLine extends OrderElement {
     @NotNull(message = "budget not specified")
     public BigDecimal getBudget() {
         return budget;
+    }
+
+    @Override
+    public boolean isConvertedToContainer() {
+        return convertedToContainer;
     }
 
 }
