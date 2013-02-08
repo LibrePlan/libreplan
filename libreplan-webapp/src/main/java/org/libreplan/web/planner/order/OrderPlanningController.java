@@ -237,8 +237,9 @@ public class OrderPlanningController implements Composer {
         filterFinishDateOrderElement.setValue(FilterUtils
                 .readOrderEndDate(order));
         if (FilterUtils.readOrderParameters(order) != null) {
+            bdFiltersOrderElement.clear();
             for (Object each : FilterUtils.readOrderParameters(order)) {
-                bdFiltersOrderElement.addSelectedElement(each);
+                    bdFiltersOrderElement.addSelectedElement(each);
             }
         }
         if (FilterUtils.readOrderInheritance(order) != null) {

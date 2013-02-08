@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Filter;
 
 import javax.annotation.Resource;
 
@@ -591,6 +592,27 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         FilterUtils
                 .writeOrderTaskName(order,
                 filterNameOrderElement.getValue());
+        FilterUtils.writeOrderInheritance(order,
+                labelsWithoutInheritance.isChecked());
+        List<FilterPair> result = new ArrayList<FilterPair>();
+        for (FilterPair filterPair : (List<FilterPair>) bdFiltersOrderElement
+                .getSelectedElements()) {
+            result.add(toTasKElementFilterEnum(filterPair));
+        }
+        FilterUtils.writeOrderParameters(order, result);
+
+    }
+
+    private FilterPair toTasKElementFilterEnum(FilterPair each) {
+        switch ((OrderElementFilterEnum) each.getType()) {
+        case Label:
+            return new FilterPair(TaskElementFilterEnum.Label,
+                    each.getPattern(), each.getValue());
+        case Criterion:
+            return new FilterPair(TaskElementFilterEnum.Criterion,
+                    each.getPattern(), each.getValue());
+        }
+        return null;
     }
 
     private OrderElementPredicate createPredicate() {
