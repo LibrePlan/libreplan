@@ -36,14 +36,11 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.aspectj.weaver.ast.Instanceof;
-import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.SchedulingState;
-import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.users.entities.UserRole;
@@ -54,7 +51,6 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
-import org.libreplan.web.common.components.finders.IFilterEnum;
 import org.libreplan.web.common.components.finders.OrderElementFilterEnum;
 import org.libreplan.web.common.components.finders.TaskElementFilterEnum;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
@@ -76,6 +72,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
@@ -611,6 +608,29 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
         return new OrderElementPredicate(listFilters, startDate, finishDate,
                 name, ignoreLabelsInheritance);
+    }
+
+    public TreeModel getFilteredTreeModel() {
+        OrderElementTreeModel filteredModel = getFilteredModel();
+        if (filteredModel == null) {
+            return null;
+        }
+        return filteredModel.asTree();
+    }
+
+    public OrderElementTreeModel getFilteredModel() {
+        if (orderModel == null) {
+            return null;
+        }
+
+        OrderElementPredicate predicate = createPredicate();
+        this.predicate = predicate;
+
+        if (predicate != null) {
+            return orderModel.getOrderElementsFilteredByPredicate(predicate);
+        } else {
+            return orderModel.getOrderElementTreeModel();
+        }
     }
 
     private void filterByPredicate(OrderElementPredicate predicate) {

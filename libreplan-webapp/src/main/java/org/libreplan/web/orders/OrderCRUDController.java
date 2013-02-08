@@ -51,7 +51,6 @@ import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
-import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.User;
@@ -68,7 +67,6 @@ import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
 import org.libreplan.web.common.components.finders.OrderFilterEnum;
-import org.libreplan.web.common.components.finders.TaskElementFilterEnum;
 import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
 import org.libreplan.web.orders.labels.AssignedLabelsToOrderElementController;
@@ -543,7 +541,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void reloadTree(TreeComponent orderElementsTree) {
         final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
-        tree.setModel(orderElementTreeController.getTreeModel());
+        tree.setModel(orderElementTreeController.getFilteredTreeModel());
         tree.addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
             public void onEvent(Event event) {
