@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import org.joda.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.libreplan.importers.TimSoapClient;
 import org.libreplan.importers.tim.DataDTO;
@@ -147,6 +148,7 @@ public class TimSoapClientTest {
     }
 
     @Test
+    @Ignore("Only working if you have a Tim server configured")
     public void testValidAuthorization() {
         boolean result = TimSoapClient.checkAuthorization(
                 properties.getProperty("url"),
@@ -164,6 +166,7 @@ public class TimSoapClientTest {
     }
 
     @Test
+    @Ignore("Only working if you have a Tim server configured")
     public void testImportRostersFromFile() {
         String filename = System.getProperty("user.dir")
                 + "/../scripts/tim_test/rosterResponse.xml";
@@ -177,6 +180,7 @@ public class TimSoapClientTest {
     }
 
     @Test
+    @Ignore("Only working if you have a Tim server configured")
     public void testImportRostersFromServer() {
         RosterResponseDTO rosterResponseDTO = TimSoapClient
                 .sendRequestReceiveResponse(properties.getProperty("url"),
@@ -190,6 +194,7 @@ public class TimSoapClientTest {
     }
 
     @Test
+    @Ignore("Only working if you have a Tim server configured")
     public void testExportTimeRegistrationWith1Item() {
         List<TimeRegistrationDTO> timeRegistrations = new ArrayList<TimeRegistrationDTO>();
         TimeRegistrationDTO timeRegistration = createTimeRegistration(
@@ -211,6 +216,7 @@ public class TimSoapClientTest {
     }
 
     @Test
+    @Ignore("Only working if you have a Tim server configured")
     public void testExportTimeRegistrationWith2Items() {
         List<TimeRegistrationDTO> timeRegistrationDTOs = new ArrayList<TimeRegistrationDTO>();
         TimeRegistrationDTO timeRegistrationDTO1 = createTimeRegistration(

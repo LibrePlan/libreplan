@@ -29,6 +29,7 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 import javax.annotation.Resource;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
@@ -91,6 +92,7 @@ public class ImportRosterFromTimTest {
     }
 
     @Test
+    @Ignore("Only working if you have a Tim server configured")
     public void testImportRosters() {
         importRosterFromTim.importRosters();
         assertTrue(baseCalendarModel.getCalendarExceptionType() != null);

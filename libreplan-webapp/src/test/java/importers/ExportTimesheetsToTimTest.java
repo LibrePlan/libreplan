@@ -37,6 +37,7 @@ import java.util.UUID;
 import javax.annotation.Resource;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
@@ -158,6 +159,7 @@ public class ExportTimesheetsToTimTest {
     }
 
     @Test
+    @Ignore("Only working if you have a Tim server configured")
     public void testExportTimesheetsToTimWithValidCodeAndOrder() {
         Order order = givenOrder();
         boolean result = exportTimesheetsToTim.exportTimesheets("5160", order);
