@@ -43,6 +43,7 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.SchedulingState;
+import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.users.entities.UserRole;
@@ -53,7 +54,9 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.IFilterEnum;
 import org.libreplan.web.common.components.finders.OrderElementFilterEnum;
+import org.libreplan.web.common.components.finders.TaskElementFilterEnum;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.security.SecurityUtils;
@@ -293,8 +296,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         if (FilterUtils.readOrderParameters(order) != null) {
             for (FilterPair each : (List<FilterPair>) FilterUtils
                     .readOrderParameters(order)) {
-                bdFiltersOrderElement
-                        .addSelectedElement(toOrderFilterEnum(each));
+                if (toOrderFilterEnum(each) != null) {
+                    bdFiltersOrderElement
+                            .addSelectedElement(toOrderFilterEnum(each));
+                }
             }
         }
         if (FilterUtils.readOrderInheritance(order) != null) {
@@ -304,13 +309,17 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     private FilterPair toOrderFilterEnum(FilterPair each) {
-        if (each.getValue() instanceof Label) {
+        switch ((TaskElementFilterEnum) each.getType()) {
+        case Label:
             return new FilterPair(OrderElementFilterEnum.Label,
                     each.getPattern(), each.getValue());
-        } else {
+        case Criterion:
             return new FilterPair(OrderElementFilterEnum.Criterion,
                     each.getPattern(), each.getValue());
+        case Resource:
+            // Resources are discarded on WBS filter
         }
+        return null;
     }
 
     private void disableCreateTemplateButtonIfNeeded(Component comp) {
