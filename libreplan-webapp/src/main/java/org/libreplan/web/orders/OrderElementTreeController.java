@@ -607,6 +607,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     private void filterByPredicate(OrderElementPredicate predicate) {
         OrderElementTreeModel orderElementTreeModel = orderModel
                 .getOrderElementsFilteredByPredicate(predicate);
+        tree.setModel(orderElementTreeModel.asTree());
         tree.invalidate();
     }
 
