@@ -71,7 +71,7 @@ public class OrderElementPredicate implements IPredicate {
         if (orderElement == null) {
             return false;
         }
-        if (orderElement.isNewObject()) {
+        if (orderElement.isNewObject() || orderElement.isConvertedToContainer()) {
             return true;
         }
         if (acceptFilters(orderElement) && acceptFiltersDates(orderElement)
