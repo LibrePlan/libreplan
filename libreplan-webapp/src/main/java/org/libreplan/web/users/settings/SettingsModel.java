@@ -105,7 +105,9 @@ public class SettingsModel implements ISettingsModel {
         for (Label label : allLabels) {
             label.getType().getName();
         }
-        Collections.sort(allLabels);
+        if ((allLabels != null) && (!allLabels.isEmpty())) {
+            Collections.sort(allLabels);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -115,7 +117,9 @@ public class SettingsModel implements ISettingsModel {
         for (Criterion criterion : allCriteria) {
             criterion.getType().getName();
         }
-        Collections.sort(allCriteria);
+        if ((allCriteria != null) && (!allCriteria.isEmpty())) {
+            Collections.sort(allCriteria);
+        }
     }
 
     @Transactional(readOnly = true)
