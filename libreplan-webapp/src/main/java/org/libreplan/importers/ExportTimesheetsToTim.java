@@ -20,7 +20,6 @@
 package org.libreplan.importers;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +27,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IAppPropertiesDAO;
@@ -150,11 +150,12 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         int nrDaysTimesheetToTim = Integer.parseInt(appProperties
                 .get("NrDaysTimesheetToTim"));
 
-        Calendar dateNrOfDaysBack = Calendar.getInstance();
-        dateNrOfDaysBack.add(Calendar.DAY_OF_MONTH, -nrDaysTimesheetToTim);
+        LocalDate dateNrOfDaysBack = new LocalDate()
+                .minusDays(nrDaysTimesheetToTim);
 
         List<WorkReportLine> workReportLines = order.getWorkReportLines(
-                new Date(dateNrOfDaysBack.getTimeInMillis()), new Date(), true);
+                dateNrOfDaysBack.toDateTimeAtStartOfDay().toDate(), new Date(),
+                true);
         if (workReportLines == null || workReportLines.isEmpty()) {
             LOG.warn("No work reportlines are found");
             return false;
