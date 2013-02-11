@@ -32,6 +32,7 @@ import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IAppPropertiesDAO;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -80,8 +81,6 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
-
-    private List<Worker> workers;
 
     @Autowired
     private IAppPropertiesDAO appPropertiesDAO;
@@ -137,12 +136,6 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
      */
     private boolean exportTimesheets(String productCode, Order order,
             Map<String, String> appProperties) {
-
-        workers = workerDAO.findAll();
-        if (workers == null || workers.isEmpty()) {
-            LOG.warn("No workers found!");
-            return false;
-        }
 
         String url = appProperties.get("Server");
         String userName = appProperties.get("Username");
@@ -240,9 +233,12 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
      */
     private TimeRegistrationDTO createExportTimeRegistration(String productCode,
             WorkReportLine workReportLine) {
-        Worker worker = getWorker(workReportLine.getResource().getCode());
-        if (worker == null) {
-            LOG.warn("Worker not found!");
+        Worker worker;
+        String workerCode = workReportLine.getResource().getCode();
+        try {
+            worker = workerDAO.findByCode(workerCode);
+        } catch (InstanceNotFoundException e) {
+            LOG.warn("Worker \"" + workerCode + "\" not found!");
             return null;
         }
 
@@ -269,21 +265,6 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         timeRegistrationDTO.setRegistrationDate(registrationDTO);
         timeRegistrationDTO.setDuration(durationDTO);
         return timeRegistrationDTO;
-    }
-
-    /**
-     * get worker based on the specified <code>code</code>
-     *
-     * @param code
-     * @return worker
-     */
-    private Worker getWorker(String code) {
-        for (Worker worker : workers) {
-            if (worker.getCode().equals(code)) {
-                return worker;
-            }
-        }
-        return null;
     }
 
     @Override

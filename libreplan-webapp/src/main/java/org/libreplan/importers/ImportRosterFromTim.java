@@ -99,8 +99,6 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     @Qualifier("subclass")
     private IBaseCalendarModel baseCalendarModel;
 
-    private List<Worker> workers;
-
     @Override
     @Transactional
     public void importRosters() {
@@ -133,7 +131,6 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
 
                     @Override
                     public Void execute() {
-                        addAllWorkers();
                         List<RosterException> rosterExceptions = getRosterExceptions(rosterResponse);
                         if (!rosterExceptions.isEmpty()) {
                             updateCalendarException(rosterExceptions);
@@ -159,7 +156,13 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         List<RosterException> rosterExceptions = new ArrayList<RosterException>();
 
         for (Map.Entry<String, List<RosterDTO>> entry : map.entrySet()) {
-            Worker worker = getWorker(entry.getKey());
+            Worker worker = null;
+            String workerCode = entry.getKey();
+            try {
+                worker = workerDAO.findByCode(workerCode);
+            } catch (InstanceNotFoundException e) {
+                LOG.warn("Worker \"" + workerCode + "\" not found!");
+            }
             if (worker != null) {
                 List<RosterDTO> list = entry.getValue();
                 Collections.sort(list, new Comparator<RosterDTO>() {
@@ -287,29 +290,6 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         return null;
     }
 
-
-    /**
-     * adds all existing workers to workers list
-     */
-    private void addAllWorkers() {
-        workers = workerDAO.findAll();
-    }
-
-    /**
-     * returns {@link Worker} for the specified <code>nif</code>
-     *
-     * @param nif
-     *            the worker's nif
-     * @return Worker if found, otherwise null
-     */
-    private Worker getWorker(String nif) {
-        for (Worker worker : workers) {
-            if (worker.getNif().equals(nif)) {
-                return worker;
-            }
-        }
-        return null;
-    }
 
     /**
      * creates and returns {@link RosterRequestDTO}
