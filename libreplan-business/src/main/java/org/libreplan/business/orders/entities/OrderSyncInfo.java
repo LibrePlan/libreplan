@@ -41,8 +41,10 @@ public class OrderSyncInfo extends BaseEntity {
         return create(new OrderSyncInfo(order));
     }
 
+    /**
+     * Constructor for Hibernate. Do not use!
+     */
     protected OrderSyncInfo() {
-
     }
 
     private OrderSyncInfo(Order order) {

@@ -32,6 +32,12 @@ public class JobSchedulerConfiguration extends BaseEntity {
         return create(new JobSchedulerConfiguration());
     }
 
+    /**
+     * Constructor for Hibernate. Do not use!
+     */
+    protected JobSchedulerConfiguration() {
+    }
+
     private String jobGroup;
     private String jobName;
     private String triggerGroup;

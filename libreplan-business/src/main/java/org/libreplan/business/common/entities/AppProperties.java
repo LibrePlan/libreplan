@@ -37,6 +37,12 @@ public class AppProperties extends BaseEntity {
     private String propertyName;
     private String propertyValue;
 
+    /**
+     * Constructor for Hibernate. Do not use!
+     */
+    protected AppProperties() {
+    }
+
     public String getMajorId() {
         return majorId;
     }
