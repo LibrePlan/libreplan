@@ -248,7 +248,6 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
         PersonDTO personDTO = new PersonDTO();
         personDTO.setName(worker.getName());
-        // person.setNetworkName(worker.getNif());
         personDTO.setOptions(TimOptions.UPDATE_OR_INSERT);
 
         ProductDTO productDTO = new ProductDTO();
