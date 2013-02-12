@@ -52,9 +52,12 @@
     <!-- Scheduler -->
     <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false" />
 
-    <bean class="org.libreplan.importers.SchedulerManager" init-method="scheduleJobs">
-         <property name="scheduler" ref="schedulerFactoryBean"/>
-     </bean>
+    <bean id="schedulerManager"
+        class="org.libreplan.importers.SchedulerManager"
+        scope="singleton"
+        init-method="scheduleJobs">
+        <property name="scheduler" ref="schedulerFactoryBean"/>
+    </bean>
 
     <context:component-scan base-package="org.libreplan"/>
 

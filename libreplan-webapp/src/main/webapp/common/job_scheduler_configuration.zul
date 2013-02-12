@@ -17,107 +17,108 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -->
 
-
-<?page title="${i18n:_('LibrePlan: Job scheduler')}"?>
+<?page id="exceptionDayTypesList" title="${i18n:_('LibrePlan: Job scheduler')}" ?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?page  id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
-<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-<zk>
 
-    <window id="jobSchedulerWindow" self="@{define(content)}"
-        apply="org.libreplan.web.common.JobSchedulerController"
-        title="${i18n:_('Job scheduling')}">
-        <grid id="jobSchedulerGrid" sizedByContent="false" height="200px"
-            rowRenderer="@{jobSchedulerController.jobSchedulingRenderer}">
+<?component name="list" inline="true" macroURI="_listStretchesFunctionTemplates.zul"?>
+<?component name="edit" inline="true" macroURI="_editStretchesFunctionTemplate.zul"?>
+
+<zk>
+    <window self="@{define(content)}"
+        apply="org.libreplan.web.common.JobSchedulerController">
+
+        <grid id="jobSchedulerGrid"
+            rowRenderer="@{jobSchedulerController.jobSchedulingRenderer}"
+            model="@{jobSchedulerController.schedulerInfos}">
             <columns>
-                <column label="${i18n:_('Job group')}" width="140px" />
+                <column label="${i18n:_('Job group')}" />
                 <column label="${i18n:_('Job name')}" />
-                <column label="${i18n:_('Cron expression')}" width="160px"/>
+                <column label="${i18n:_('Cron expression')}" />
                 <column label="${i18n:_('Next fire time')}" />
-                <column label="${i18n:_('Action')}" width="100px"/>
+                <column label="${i18n:_('Action')}" />
             </columns>
         </grid>
         <div>
             <groupbox closable="false" >
-                <caption label="Cron expression format" />
-                <grid width="400px">
-                <columns>
-                   <column label="${i18n:_('Field')}" width="40%"/>
-                   <column label="${i18n:_('Allowed values')}" />
-                </columns>
-                <rows>
-                <row>
-                    <label value="Seconds"/>
-                    <label value="0-59"/>
-                </row>
-                <row>
-                    <label value="Minutes"/>
-                    <label value="0-59"/>
-                </row>
-                <row>
-                    <label value="Hours"/>
-                    <label value="0-23"/>
-                </row>
-                <row>
-                    <label value="Day of month"/>
-                    <label value="1-31"/>
-                </row>
-                <row>
-                    <label value="Month"/>
-                    <label value="1-12(or names[Jan-Dec])"/>
-                </row>
-                <row>
-                    <label value="Day of week"/>
-                    <label value="0-7 (0 or 7 is Sun, or use names[Sun-sat])"/>
-                </row>
-                <row>
-                    <label value="Year(optional)"/>
-                    <label value="1970-2099"/>
-                </row>
-            </rows>
-            </grid>
-            <div>
-            <span>${i18n:_("For more details on cron expression click")}</span>
-            <a class="command" href="http://www.manpagez.com/man/5/crontab/">${i18n:_('this')}</a>
-            </div>
+                <caption label="${i18n:_('Cron expression format')}" />
+                <grid width="500px">
+                    <columns>
+                       <column label="${i18n:_('Field')}" width="150px"/>
+                       <column label="${i18n:_('Allowed values')}" />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Seconds')}"/>
+                            <label value="0-59"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Minutes')}"/>
+                            <label value="0-59"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Hours')}"/>
+                            <label value="0-23"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Day of month')}"/>
+                            <label value="1-31"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Month')}"/>
+                            <span>1-12 (<label value="${i18n:_('or names')}"/> [JAN-DEC])</span>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Day of week')}"/>
+                            <span>0-7 (<label value="${i18n:_('0 or 7 is Sunday, or use names')}"/> [SUN-SAT])</span>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Year (optional)')}"/>
+                            <label value="1970-2099"/>
+                        </row>
+                    </rows>
+                </grid>
+                <div>
+                    ${i18n:_("For more details on cron expression click")}
+                    <a href="http://www.manpagez.com/man/5/crontab/">${i18n:_('here')}.</a>
+                </div>
             </groupbox>
         </div>
 
-
-        <popup id="cronExpressionInputPopup" width="380px">
-             <label id="jobGroup" value="@{jobSchedulerController.schedulerInfo}"/>
-             <label value="," />
-             <label id="jobName" value="@{jobSchedulerController.schedulerInfo}"/>
-             <grid id="cronExpressionGrid" sizedByContent="false" height="50px">
-                 <columns>
-                      <column label="${i18n:_('sec')}"/>
-                       <column label="${i18n:_('min')}" />
-                       <column label="${i18n:_('hrs')}"/>
-                       <column label="${i18n:_('day of month')}" width="70px"/>
-                       <column label="${i18n:_('month')}"/>
-                       <column label="${i18n:_('day of week')}" width="70px"/>
-                       <column label="${i18n:_('year')}" width="50px"/>
-                 </columns>
-                 <rows>
-                       <row self="@{each=cronExpression}" value="@{cronExpression}">
-                           <textbox value="@{cronExpression.seconds}" />
-                           <textbox value="@{cronExpression.minutes}" />
-                           <textbox value="@{cronExpression.hours}" />
-                           <textbox value="@{cronExpression.dayOfMonth}" />
-                           <textbox value="@{cronExpression.month}" />
-                           <textbox value="@{cronExpression.dayOfWeek}" />
-                           <textbox value="@{cronExpression.year}" />
-                       </row>
+        <popup id="cronExpressionInputPopup" width="525px">
+            <label id="jobGroup" value="@{jobSchedulerController.schedulerInfo}"/>
+            -
+            <label id="jobName" value="@{jobSchedulerController.schedulerInfo}"/>
+            <grid id="cronExpressionGrid">
+                <columns>
+                    <column label="${i18n:_('Seconds')}"/>
+                    <column label="${i18n:_('Minutes')}" />
+                    <column label="${i18n:_('Hours')}"/>
+                    <column label="${i18n:_('Day of month')}"/>
+                    <column label="${i18n:_('Month')}"/>
+                    <column label="${i18n:_('Day of week')}"/>
+                    <column label="${i18n:_('Year')}"/>
+                </columns>
+                <rows>
+                    <row>
+                        <textbox id="cronExpressionSeconds" width="60px" />
+                        <textbox id="cronExpressionMinutes" width="60px" />
+                        <textbox id="cronExpressionHours" width="60px" />
+                        <textbox id="cronExpressionDayOfMonth" width="60px" />
+                        <textbox id="cronExpressionMonth" width="60px" />
+                        <textbox id="cronExpressionDayOfWeek" width="60px" />
+                        <textbox id="cronExpressionYear" width="60px" />
+                    </row>
                 </rows>
-            </grid>
+             </grid>
              <button onClick="jobSchedulerController.reschedule();" label="${i18n:_('OK')}" />
              <button onClick="jobSchedulerController.cancel();" label="${i18n:_('Cancel')}" />
         </popup>
+
     </window>
 
 </zk>
