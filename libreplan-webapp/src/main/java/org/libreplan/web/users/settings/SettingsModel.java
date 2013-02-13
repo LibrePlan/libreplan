@@ -23,9 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.hibernate.annotations.Sort;
-import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
-import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.daos.ILabelDAO;
@@ -105,9 +102,6 @@ public class SettingsModel implements ISettingsModel {
         for (Label label : allLabels) {
             label.getType().getName();
         }
-        if ((allLabels != null) && (!allLabels.isEmpty())) {
-            Collections.sort(allLabels);
-        }
     }
 
     @Transactional(readOnly = true)
@@ -116,9 +110,6 @@ public class SettingsModel implements ISettingsModel {
         // initialize the criteria
         for (Criterion criterion : allCriteria) {
             criterion.getType().getName();
-        }
-        if ((allCriteria != null) && (!allCriteria.isEmpty())) {
-            Collections.sort(allCriteria);
         }
     }
 
