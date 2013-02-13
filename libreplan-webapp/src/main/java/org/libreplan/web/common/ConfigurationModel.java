@@ -25,6 +25,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -188,7 +189,7 @@ public class ConfigurationModel implements IConfigurationModel {
     public void confirm() {
         checkEntitySequences();
         configurationDAO.save(configuration);
-        storeAppProperties();
+        saveAppProperties();
         try {
             storeAndRemoveEntitySequences();
         } catch (IllegalStateException e) {
@@ -724,22 +725,18 @@ public class ConfigurationModel implements IConfigurationModel {
         }
     }
 
-    public void storeAppProperties() {
-        List<AppProperties> appProperties = appPropertiesMap
-                .get(getAppConnectorId());
-        for (AppProperties appProperty : appProperties) {
-            appPropertiesDAO.save(appProperty);
+    private void saveAppProperties() {
+        for (String appConnectorId : appPropertiesMap.keySet()) {
+            for (AppProperties appProperty : appPropertiesMap
+                    .get(appConnectorId)) {
+                appPropertiesDAO.save(appProperty);
+            }
         }
     }
 
     @Override
     public Map<String, List<AppProperties>> getAppProperties() {
         return appPropertiesMap;
-    }
-
-    @Override
-    public void updateProperties(String key, List<AppProperties> value) {
-        this.appPropertiesMap.put(key, value);
     }
 
     @Override
@@ -750,6 +747,15 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public String getAppConnectorId() {
         return connectorId;
+    }
+
+    @Override
+    public List<AppProperties> getAllAppPropertiesByMajorId(
+            String majorConnectorId) {
+        if (appPropertiesMap == null) {
+            return Collections.emptyList();
+        }
+        return appPropertiesMap.get(majorConnectorId);
     }
 
 }

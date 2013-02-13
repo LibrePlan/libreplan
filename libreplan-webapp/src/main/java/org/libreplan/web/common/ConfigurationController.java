@@ -219,7 +219,6 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void save() throws InterruptedException {
-        updateConnectorPropertyValues();
         ConstraintChecker.isValid(configurationWindow);
         if (checkValidEntitySequenceRows()) {
             try {
@@ -316,7 +315,7 @@ public class ConfigurationController extends GenericForwardComposer {
     /**
      * Tests connection
      */
-    public void testConnectiion() {
+    public void testConnection() {
         String connectorId = getSelectedConnector();
         if (connectorId == null || connectorId.isEmpty()) {
             throw new RuntimeException("Connector id should not be empty");
@@ -364,7 +363,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
 
     private Map<String, String> getAppProperties(String majorConnectorId) {
-        List<AppProperties> appProperties = getAllPropertiesByMajorId(majorConnectorId);
+        List<AppProperties> appProperties = configurationModel
+                .getAllAppPropertiesByMajorId(majorConnectorId);
         Map<String, String> map = new HashMap<String, String>();
         for (AppProperties appProp : appProperties) {
             map.put(appProp.getPropertyName(), appProp.getPropertyValue());
@@ -1057,30 +1057,13 @@ public class ConfigurationController extends GenericForwardComposer {
         getAppPropertyConnectors();
     }
 
-    public List<String> getAppPropertyConnectors() {
-        List<String> appPropertyConnectors = new ArrayList<String>();
-        Map<String, List<AppProperties>> appPropertiesMap = getAllAppProperties();
-        for (Map.Entry<String, List<AppProperties>> entry : appPropertiesMap
-                .entrySet()) {
-            appPropertyConnectors.add(entry.getKey());
-        }
-        return appPropertyConnectors;
+    public Set<String> getAppPropertyConnectors() {
+        return getAllAppProperties().keySet();
     }
 
     private Map<String, List<AppProperties>> getAllAppProperties() {
         return configurationModel.getAppProperties();
 
-    }
-
-    public ListitemRenderer getAppPropertyConnectorsRenderer() {
-        return new ListitemRenderer() {
-            @Override
-            public void render(Listitem item, Object data) throws Exception {
-                String majorId = (String) data;
-                item.setLabel(majorId);
-                item.setValue(majorId);
-            }
-        };
     }
 
     public String getSelectedConnector() {
@@ -1090,126 +1073,91 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void setSelectedConnector(String connectorId) {
         configurationModel.setAppConnectorId(connectorId);
-        reloadAppProperties(connectorId);
+        Util.reloadBindings(appPropertriesGrid);
     }
 
-    public AppPropertriesRenderer getAppPropertriesRenderer() {
-        return new AppPropertriesRenderer();
-    }
-
-    public class AppPropertriesRenderer implements RowRenderer {
-        @Override
-        public void render(Row row, Object data) {
-
-            AppProperties appProperties = (AppProperties) data;
-            row.appendChild(new Label(appProperties.getPropertyName()));
-            row.setValue(appProperties);
-            appendValueTextbox(row, appProperties);
+    public List<AppProperties> getAppPropertries() {
+        String appConnectorId = configurationModel.getAppConnectorId();
+        if (StringUtils.isEmpty(appConnectorId)) {
+            return Collections.emptyList();
         }
+        return configurationModel.getAllAppPropertiesByMajorId(appConnectorId);
     }
 
-    private void appendValueTextbox(Row row, final AppProperties appProperties) {
-        final Textbox textbox = new Textbox();
-        textbox.setWidth("250px");
-        textbox.setConstraint(checkPropertyValue((AppProperties) row.getValue()));
-
-        Util.bind(textbox, new Util.Getter<String>() {
-
+    public RowRenderer getAppPropertriesRenderer() {
+        return new RowRenderer() {
             @Override
-            public String get() {
-                return appProperties.getPropertyValue();
+            public void render(Row row, Object data) {
+                AppProperties appProperties = (AppProperties) data;
+                row.setValue(appProperties);
+
+                Util.appendLabel(row, appProperties.getPropertyName());
+                appendValueTextbox(row, appProperties);
             }
-        }, new Util.Setter<String>() {
 
-            @Override
-            public void set(String value) {
+            private void appendValueTextbox(Row row,
+                    final AppProperties appProperties) {
+                final Textbox textbox = new Textbox();
+                textbox.setConstraint(checkPropertyValue((AppProperties) row
+                        .getValue()));
+
+                Util.bind(textbox, new Util.Getter<String>() {
+
+                    @Override
+                    public String get() {
+                        return appProperties.getPropertyValue();
+                    }
+                }, new Util.Setter<String>() {
+
+                    @Override
+                    public void set(String value) {
+                        appProperties.setPropertyValue(value);
+                    }
+                });
+                if (appProperties.getPropertyName().equals("Password")) {
+                    textbox.setType("password");
+                }
+
+                row.appendChild(textbox);
+            }
+
+            public Constraint checkPropertyValue(
+                    final AppProperties appProperties) {
+                final String name = appProperties.getPropertyName();
+                return new Constraint() {
+                    @Override
+                    public void validate(Component comp, Object value) {
+                        if (name.equals("Activated")) {
+                            if (!value.equals("Y") && !value.equals("N")) {
+                                throw new WrongValueException(
+                                        _("Only Y/N allowed"));
+                            }
+                        } else if (name.equals("Server")
+                                || name.equals("Username")
+                                || name.equals("Password")) {
+                            ((InputElement) comp).setConstraint("no empty:"
+                                    + _("cannot be empty"));
+                        } else if (name.equals("NrDaysTimesheetToTim")
+                                || name.equals("NrDaysRosterFromTim")) {
+                            if (!isNumeric((String) value)) {
+                                throw new WrongValueException(
+                                        _("Only digits allowed"));
+                            }
+                        }
+                    }
+                };
+            }
+
+            private boolean isNumeric(String input) {
                 try {
-                    appProperties.setPropertyValue(value);
-                } catch (IllegalArgumentException e) {
-                    throw new WrongValueException(textbox, e.getMessage());
+                    Integer.parseInt(input);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
                 }
             }
-        });
-        if (appProperties.getPropertyName().equals("Password")) {
-            textbox.setType("password");
-        }
-        if (appProperties.getPropertyValue().length() < 4) {
-            textbox.setWidth("20px");
-        }
-        textbox.setInplace(true);
 
-        row.appendChild(textbox);
-
-    }
-
-
-    public Constraint checkPropertyValue(final AppProperties appProperties) {
-        final String name = appProperties.getPropertyName();
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value) {
-                if (name.equals("Activated")) {
-                    if (!value.equals("Y") && !value.equals("N")) {
-                        throw new WrongValueException(_("Only Y/N allowed"));
-                    }
-                } else if (name.equals("Server") || name.equals("Username")
-                        || name.equals("Password")) {
-                    ((InputElement) comp).setConstraint("no empty:"
-                            + _("cannot be empty"));
-                } else if (name.equals("NrDaysTimesheetToTim")
-                        || name.equals("NrDaysRosterFromTim")) {
-                    if (!isNumeric((String) value)) {
-                        throw new WrongValueException(_("Only digits allowed"));
-                    }
-                }
-            }
         };
     }
 
-    private boolean isNumeric(String input) {
-        try {
-            Integer.parseInt(input);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private void reloadAppProperties(String connectorMajorId) {
-        appPropertriesGrid.setModel(new SimpleListModel(
-                getAllPropertiesByMajorId(
-                connectorMajorId)
-                .toArray()));
-        appPropertriesGrid.invalidate();
-    }
-
-    private List<AppProperties> getAllPropertiesByMajorId(
-            String connectorMajorId) {
-        List<AppProperties> appPropertiesList = new ArrayList<AppProperties>();
-        Map<String, List<AppProperties>> appPropertiesMap = getAllAppProperties();
-        if (appPropertiesMap.containsKey(connectorMajorId)) {
-            appPropertiesList = appPropertiesMap.get(connectorMajorId);
-        }
-        return appPropertiesList;
-
-    }
-
-    public void getSelectedConnectorProperties() {
-        reloadAppProperties(connectorCombo.getSelectedItem().getLabel());
-    }
-
-    private void updateConnectorPropertyValues() {
-        Rows rows = appPropertriesGrid.getRows();
-        List<AppProperties> appProperties = new ArrayList<AppProperties>();
-
-        for (Row row : (List<Row>) rows.getChildren()) {
-            AppProperties appProp = (AppProperties) row.getValue();
-            if (appProp != null) {
-                appProperties.add(appProp);
-            }
-        }
-        configurationModel.updateProperties(getSelectedConnector(),
-                appProperties);
-
-    }
 }

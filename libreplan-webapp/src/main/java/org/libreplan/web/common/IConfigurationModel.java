@@ -202,6 +202,6 @@ public interface IConfigurationModel {
 
     String getAppConnectorId();
 
-    void updateProperties(String key, List<AppProperties> value);
+    List<AppProperties> getAllAppPropertiesByMajorId(String majorConnectorId);
 
 }

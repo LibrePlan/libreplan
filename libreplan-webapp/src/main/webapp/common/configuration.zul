@@ -456,41 +456,34 @@
                     <separator />
                 </tabpanel>
                 <tabpanel id="panelConnectors">
-                   <panel border="normal"
-                       title="Application properties">
-                       <panelchildren id="panelConnector">
-                                   <vbox>
-                                       <hbox pack="center">
-                                          <label value="${i18n:_('Select connector')}" />
-                                          <combobox id="connectorCombo" autodrop="true"
-                                              model="@{configurationController.appPropertyConnectors}"
-                                              onAfterRender="configurationController.getSelectedConnectorProperties()"
-                                              selectedItem="@{configurationController.selectedConnector}">
-                                              <comboitem
-                                                  self="@{each=appPropertyConnectors}"
-                                                  label="@{appPropertyConnectors}"
-                                                  value="@{appPropertyConnectors}" />
-                                              </combobox>
-                                       </hbox>
-                                       <separator bar="false" height="4px"
-                                           orient="vertical" />
-                                       <grid id="appPropertriesGrid"
-                                           sizedByContent="false" height="300px"
-                                           rowRenderer="@{configurationController.appPropertriesRenderer}">
-                                           <columns>
-                                              <column
-                                                  label="${i18n:_('Name')}" width="200px"/>
-                                              <column
-                                                  label="${i18n:_('Value')}" />
-                                           </columns>
-                                       </grid>
-                                   </vbox>
-                                   <separator />
-                                   <button label="${i18n:_('Test Tim connection')}"
-                                       onClick="configurationController.testConnectiion()" />
-                                   <separator />
-                       </panelchildren>
-                   </panel>
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Application properties')}" />
+                        <vbox>
+                            <hbox pack="center">
+                                <label value="${i18n:_('Select connector')}" />
+                                <combobox id="connectorCombo" autodrop="true"
+                                    model="@{configurationController.appPropertyConnectors}"
+                                    selectedItem="@{configurationController.selectedConnector}">
+                                    <comboitem
+                                        self="@{each=appPropertyConnectors}"
+                                        label="@{appPropertyConnectors}"
+                                        value="@{appPropertyConnectors}" />
+                                    </combobox>
+                            </hbox>
+                            <separator />
+                            <grid id="appPropertriesGrid"
+                                model="@{configurationController.appPropertries}"
+                                rowRenderer="@{configurationController.appPropertriesRenderer}">
+                                <columns>
+                                    <column label="${i18n:_('Name')}" width="200px"/>
+                                    <column label="${i18n:_('Value')}" />
+                                </columns>
+                            </grid>
+                        </vbox>
+                        <separator />
+                        <button label="${i18n:_('Test connection')}"
+                            onClick="configurationController.testConnection()" />
+                    </groupbox>
                 </tabpanel>
             </tabpanels>
         </tabbox>
