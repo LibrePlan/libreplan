@@ -100,9 +100,9 @@ public class TimSynchronizationController extends GenericForwardComposer {
         }
     }
 
-    public boolean isTimDeactivated() {
+    public boolean isTimActivated() {
         AppProperties appProperties = appPropertiesDAO.findByMajorIdAndName(
                 "Tim", "Activated");
-        return !appProperties.getPropertyValue().equalsIgnoreCase("Y");
+        return appProperties.getPropertyValue().equalsIgnoreCase("Y");
     }
 }
