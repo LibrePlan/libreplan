@@ -29,6 +29,7 @@ import static org.libreplan.business.users.entities.UserRole.ROLE_ESTIMATED_PLAN
 import static org.libreplan.business.users.entities.UserRole.ROLE_EXPENSES;
 import static org.libreplan.business.users.entities.UserRole.ROLE_HOURS_TYPES;
 import static org.libreplan.business.users.entities.UserRole.ROLE_HOURS_WORKED_PER_RESOURCE_REPORT;
+import static org.libreplan.business.users.entities.UserRole.ROLE_JOB_SCHEDULING;
 import static org.libreplan.business.users.entities.UserRole.ROLE_LABELS;
 import static org.libreplan.business.users.entities.UserRole.ROLE_MACHINES;
 import static org.libreplan.business.users.entities.UserRole.ROLE_MAIN_SETTINGS;
@@ -74,7 +75,7 @@ import org.libreplan.business.users.entities.UserRole;
 public enum PredefinedProfiles {
 
     SYSTEMS_ADMINISTRATOR("Systems Administrator", ROLE_MAIN_SETTINGS,
-            ROLE_USER_ACCOUNTS, ROLE_PROFILES),
+            ROLE_USER_ACCOUNTS, ROLE_PROFILES, ROLE_JOB_SCHEDULING),
 
     PROJECT_MANAGER("Project Manager", ROLE_READ_ALL_PROJECTS,
             ROLE_EDIT_ALL_PROJECTS, ROLE_CREATE_PROJECTS, ROLE_PLANNING,

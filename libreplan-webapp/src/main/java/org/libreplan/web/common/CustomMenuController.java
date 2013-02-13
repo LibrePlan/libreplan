@@ -411,8 +411,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
         if (SecurityUtils
                 .isSuperuserOrUserInRoles(UserRole.ROLE_JOB_SCHEDULING)) {
-            configurationItems.add(subItem(_("Job Scheduler"),
-                    "/common/job_scheduler_configuration.zul",
+            configurationItems.add(subItem(_("Job Scheduling"),
+                    "/common/job_scheduling.zul",
                     "16-ldap-authentication.html"));
         }
 

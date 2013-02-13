@@ -41,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/common/job_scheduler_configuration.zul")
+@OnConcurrentModification(goToPage = "/common/job_scheduling.zul")
 public class JobSchedulerModel implements IJobSchedulerModel {
 
     @Autowired
