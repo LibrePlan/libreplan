@@ -71,6 +71,22 @@ public class RosterException {
     /**
      * updates the <code>exceptionType</code> and <code>effortDuration</code>
      *
+     * In Tim you can divide your exception day in different
+     * <code>exceptionType</code>, for example on Monday:
+     * <ul>
+     * <li>4 hours RESOURCE_HOLIDAY</li>
+     * <li>2 hours STRIKE</li>
+     * <li>2 hours BANK_HOLIDAY</li>
+     * </ul>
+     *
+     * But Libreplan allows only one <code>exceptionType</code> per day.
+     *
+     * In order to store different <code>exceptionTypes</code> per day as one
+     * <code>exceptionType</code>, this method gets the
+     * <code>exceptionType</code> from the <code>rosterDTO</code> with the
+     * highest duration, in this example RESOURCE_HOLIDAY as a valid exception
+     * type, but the total duration is the sum of all these exception types
+     *
      * @param rosterExceptionItem
      *            the rosterException item
      * @param rosterDTOs

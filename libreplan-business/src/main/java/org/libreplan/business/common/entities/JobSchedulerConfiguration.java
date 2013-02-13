@@ -19,10 +19,17 @@
 
 package org.libreplan.business.common.entities;
 
+import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
 
 /**
- * JobSchedulerConfiguration entity
+ * JobSchedulerConfiguration entity, represents parameters for the jobs to be
+ * scheduled. This entity is used by the <code>SchedulerManager</code> to
+ * schedule jobs and in UI to show the scheduler status.
+ *
+ * The <code>jobGroup</code> and <code>jobName</code> together forms a job key
+ * and non of the fields must be null. Moreover it should contain a valid
+ * <code>cronExpression</code>
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
@@ -39,12 +46,18 @@ public class JobSchedulerConfiguration extends BaseEntity {
     }
 
     private String jobGroup;
+
     private String jobName;
+
     private String triggerGroup;
+
     private String triggerName;
+
     private String cronExpression;
+
     private String jobClassName;
 
+    @NotNull(message = "job group not specified")
     public String getJobGroup() {
         return jobGroup;
     }
@@ -53,6 +66,7 @@ public class JobSchedulerConfiguration extends BaseEntity {
         this.jobGroup = jobGroup;
     }
 
+    @NotNull(message = "job name not specified")
     public String getJobName() {
         return jobName;
     }
@@ -61,6 +75,7 @@ public class JobSchedulerConfiguration extends BaseEntity {
         this.jobName = jobName;
     }
 
+    @NotNull(message = "trigger group not specified")
     public String getTriggerGroup() {
         return triggerGroup;
     }
@@ -69,6 +84,7 @@ public class JobSchedulerConfiguration extends BaseEntity {
         this.triggerGroup = triggerGroup;
     }
 
+    @NotNull(message = "trigger name not specified")
     public String getTriggerName() {
         return triggerName;
     }
@@ -77,6 +93,7 @@ public class JobSchedulerConfiguration extends BaseEntity {
         this.triggerName = triggerName;
     }
 
+    @NotNull(message = "cron expression not specified")
     public String getCronExpression() {
         return cronExpression;
     }
@@ -85,6 +102,7 @@ public class JobSchedulerConfiguration extends BaseEntity {
         this.cronExpression = cronExpression;
     }
 
+    @NotNull(message = "job class name not specified")
     public String getJobClassName() {
         return jobClassName;
     }

@@ -15,7 +15,7 @@
         <property name="majorId" column="major_id" not-null="true" />
         <property name="minorId" column="minor_id" />
         <property name="propertyName" column="property_name" not-null="true"/>
-        <property name="propertyValue" column="property_value" />
+        <property name="propertyValue" column="property_value" not-null="true"/>
     </class>
 
 </hibernate-mapping>

@@ -19,10 +19,22 @@
 
 package org.libreplan.business.common.entities;
 
+import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
 
 /**
- * AppProperties Entity
+ * AppProperties Entity, represents application configuration parameters.
+ *
+ * This property can be used by all applications who needs simple name-value
+ * pair configurations. It consists the following properties:
+ * <ul>
+ * <li>majorId: an indication for some large piece of functionality like "jira"
+ * for "jira-connector"</li>
+ * <li>minorId: used for sub module within this majorId. It can be null if not
+ * used</li>
+ * <li>propertyName: holder for the name of a property</li>
+ * <li>propertyValue: holder for the value of a property</li>
+ * </ul>
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
@@ -33,8 +45,11 @@ public class AppProperties extends BaseEntity {
     }
 
     private String majorId;
+
     private String minorId;
+
     private String propertyName;
+
     private String propertyValue;
 
     /**
@@ -43,6 +58,7 @@ public class AppProperties extends BaseEntity {
     protected AppProperties() {
     }
 
+    @NotNull(message = "majorId not specified")
     public String getMajorId() {
         return majorId;
     }
@@ -59,6 +75,7 @@ public class AppProperties extends BaseEntity {
         this.minorId = minorId;
     }
 
+    @NotNull(message = "property name not specified")
     public String getPropertyName() {
         return propertyName;
     }
@@ -67,6 +84,7 @@ public class AppProperties extends BaseEntity {
         this.propertyName = propertyName;
     }
 
+    @NotNull(message = "property value not specified")
     public String getPropertyValue() {
         return propertyValue;
     }
