@@ -156,4 +156,6 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     User getUser();
 
+    boolean isJiraActivated();
+
 }

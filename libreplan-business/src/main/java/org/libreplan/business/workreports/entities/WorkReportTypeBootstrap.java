@@ -60,6 +60,7 @@ public class WorkReportTypeBootstrap implements IWorkReportTypeBootstrap {
             }
         } else {
             createPersonalTimesheetsWorkReportTypeIfNeeded();
+            createJiraTimesheetsWorkReportTypeIfNeeded();
         }
     }
 
@@ -83,6 +84,18 @@ public class WorkReportTypeBootstrap implements IWorkReportTypeBootstrap {
             throw new RuntimeException(e);
         } catch (InstanceNotFoundException e) {
             createAndSaveWorkReportType(PredefinedWorkReportTypes.PERSONAL_TIMESHEETS);
+        }
+    }
+
+    private void createJiraTimesheetsWorkReportTypeIfNeeded() {
+        try {
+            workReportTypeDAO
+                    .findUniqueByName(PredefinedWorkReportTypes.JIRA_TIMESHEETS
+                            .getName());
+        } catch (NonUniqueResultException e) {
+            throw new RuntimeException(e);
+        } catch (InstanceNotFoundException e) {
+            createAndSaveWorkReportType(PredefinedWorkReportTypes.JIRA_TIMESHEETS);
         }
     }
 

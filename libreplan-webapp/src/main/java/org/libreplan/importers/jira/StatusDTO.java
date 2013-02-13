@@ -1,7 +1,7 @@
 /*
  * This file is part of LibrePlan
  *
- * Copyright (C) 2012 Igalia, S.L.
+ * Copyright (C) 2013 St. Antoniusziekenhuis
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,18 +17,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.common.entities;
+package org.libreplan.importers.jira;
 
-import org.libreplan.business.IDataBootstrap;
 
 /**
- * Contract for {@link PersonalTimesheetsTypeOfWorkHoursBootstrap}.
+ * DTO representing a jira-issue Status
  *
- * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-public interface IPersonalTimesheetsTypeOfWorkHoursBootstrap extends
-        IDataBootstrap {
+public class StatusDTO {
+    Integer id;
+    String name;
+    String self;
 
-    void loadRequiredData();
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSelf() {
+        return self;
+    }
+
+    public void setSelf(String self) {
+        this.self = self;
+    }
 
 }

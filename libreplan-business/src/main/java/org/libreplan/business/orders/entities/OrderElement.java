@@ -52,6 +52,7 @@ import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalA
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.materials.entities.MaterialAssignment;
@@ -1660,6 +1661,14 @@ public abstract class OrderElement extends IntegrationEntity implements
         EffortDuration effort = sumChargedEffort != null ? sumChargedEffort
                 .getTotalChargedEffort() : EffortDuration.zero();
         return effort.toFormattedString();
+    }
+
+    public boolean isJiraIssue() {
+        String code = getCode();
+        if (code == null) {
+            return false;
+        }
+        return code.startsWith(JiraConfiguration.CODE_PREFIX);
     }
 
     public boolean isConvertedToContainer() {

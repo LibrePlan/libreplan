@@ -67,19 +67,28 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
     public void loadRequiredData() {
         loadRequiredDataSequences();
 
-        List<Configuration> list = configurationDAO.list(Configuration.class);
-        if (list.isEmpty()) {
-            Configuration configuration = Configuration.create();
+        Configuration configuration = configurationDAO.getConfiguration();
+        if (configuration == null) {
+            configuration = Configuration.create();
             configuration.setDefaultCalendar(getDefaultCalendar());
             configuration.setCompanyCode(COMPANY_CODE);
-            LDAPConfiguration ldapConfiguration = configuration
-                    .getLdapConfiguration();
-            if (null == configuration.getLdapConfiguration()) {
-                ldapConfiguration = LDAPConfiguration.create();
-            }
-            configuration.setLdapConfiguration(ldapConfiguration);
-            configurationDAO.save(configuration);
         }
+
+        LDAPConfiguration ldapConfiguration = configuration
+                .getLdapConfiguration();
+        if (ldapConfiguration == null) {
+            ldapConfiguration = LDAPConfiguration.create();
+        }
+        configuration.setLdapConfiguration(ldapConfiguration);
+
+        JiraConfiguration jiraConfiguration = configuration
+                .getJiraConfiguration();
+        if (jiraConfiguration == null) {
+            jiraConfiguration = JiraConfiguration.create();
+        }
+        configuration.setJiraConfiguration(jiraConfiguration);
+
+        configurationDAO.save(configuration);
     }
 
     public void loadRequiredDataSequences() {

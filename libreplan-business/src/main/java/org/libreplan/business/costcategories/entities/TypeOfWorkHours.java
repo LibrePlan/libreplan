@@ -165,4 +165,18 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
         return name;
     }
 
+    @AssertTrue(message = "type of work hours for JIRA connector cannot be disabled")
+    public boolean checkJiraConnectorTypeOfWorkHoursNotDisabled() {
+        if (!isNewObject() && !getEnabled()) {
+            TypeOfWorkHours typeOfWorkHours = Registry.getConfigurationDAO()
+                    .getConfiguration().getJiraConfiguration()
+                    .getJiraConnectorTypeOfWorkHours();
+            if (typeOfWorkHours.getId().equals(getId())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

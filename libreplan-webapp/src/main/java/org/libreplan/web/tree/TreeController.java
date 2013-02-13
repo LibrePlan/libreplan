@@ -931,7 +931,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         private void updateCodeFor(T element) {
-            if (!readOnly) {
+            if (!readOnly && !element.isJiraIssue()) {
                 Textbox textbox = codeTextboxByElement.get(element);
                 textbox.setValue(getCodeHandler().getCodeFor(element));
             }
@@ -1006,7 +1006,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         public void addHoursCell(final T currentElement) {
             Intbox intboxHours = buildHoursIntboxFor(currentElement);
             hoursIntBoxByElement.put(currentElement, intboxHours);
-            if (readOnly) {
+            if (readOnly || currentElement.isJiraIssue()) {
                 intboxHours.setDisabled(true);
             }
             Treecell cellHours = addCell(intboxHours);

@@ -962,4 +962,11 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         return user;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isJiraActivated() {
+        return configurationDAO.getConfiguration().getJiraConfiguration()
+                .isJiraActivated();
+    }
+
 }
