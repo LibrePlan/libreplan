@@ -105,9 +105,11 @@ public class JobSchedulerController extends GenericForwardComposer {
     private void appendCronExpressionAndButton(final Row row,
             final SchedulerInfo schedulerInfo) {
         final Hbox hBox = new Hbox();
+        hBox.setWidth("170px");
 
         Label label = new Label(schedulerInfo.getJobSchedulerConfiguration()
                 .getCronExpression());
+        label.setHflex("1");
         hBox.appendChild(label);
 
         Button button = Util.createEditButton(new EventListener() {
