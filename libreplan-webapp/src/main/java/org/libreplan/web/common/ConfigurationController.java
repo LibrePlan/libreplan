@@ -1098,6 +1098,7 @@ public class ConfigurationController extends GenericForwardComposer {
             private void appendValueTextbox(Row row,
                     final AppProperties appProperties) {
                 final Textbox textbox = new Textbox();
+                textbox.setWidth("400px");
                 textbox.setConstraint(checkPropertyValue((AppProperties) row
                         .getValue()));
 
