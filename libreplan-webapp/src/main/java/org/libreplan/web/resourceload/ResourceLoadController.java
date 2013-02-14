@@ -312,6 +312,8 @@ public class ResourceLoadController implements Composer {
                 filterBy);
         result.add(filterTypeChanger);
 
+        // Only by dates and bandbox filter on global resources load
+        if (filterBy == null) {
         LocalDate startDate = FilterUtils.readResourceLoadsStartDate();
         LocalDate endDate = FilterUtils.readResourceLoadsEndDate();
 
@@ -355,6 +357,7 @@ public class ResourceLoadController implements Composer {
         result.add(bandbox);
         result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
                 bandbox));
+        }
         result.add(new LoadChart(onChange, filterBy));
         return result;
     }
