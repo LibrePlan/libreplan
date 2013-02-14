@@ -1130,7 +1130,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     public void validate(Component comp, Object value) {
                         if (name.equals("Activated")) {
                             if (!value.equals("Y") && !value.equals("N")) {
-                                throw new WrongValueException(
+                                throw new WrongValueException(comp,
                                         _("Only Y/N allowed"));
                             }
                         } else if (name.equals("Server")
@@ -1141,7 +1141,7 @@ public class ConfigurationController extends GenericForwardComposer {
                         } else if (name.equals("NrDaysTimesheetToTim")
                                 || name.equals("NrDaysRosterFromTim")) {
                             if (!isNumeric((String) value)) {
-                                throw new WrongValueException(
+                                throw new WrongValueException(comp,
                                         _("Only digits allowed"));
                             }
                         }
