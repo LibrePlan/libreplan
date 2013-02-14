@@ -318,24 +318,15 @@ public class ConfigurationController extends GenericForwardComposer {
     public void testConnection() {
         String connectorId = getSelectedConnector();
         if (connectorId == null || connectorId.isEmpty()) {
-            throw new RuntimeException("Connector id should not be empty");
+            messages.showMessage(Level.ERROR,
+                    _("Please select a connector to test it"));
+            return;
         }
         Map<String, String> appProperties = getAppProperties(connectorId);
-        if (appProperties == null || appProperties.isEmpty()) {
-            throw new RuntimeException("connector properties are empty");
-        }
         String url = appProperties.get("Server");
-        if (url == null || url.isEmpty()) {
-            throw new RuntimeException("Url should not be empty");
-        }
         String username = appProperties.get("Username");
-        if (username == null || username.isEmpty()) {
-            throw new RuntimeException("User name should not be empty");
-        }
         String password = appProperties.get("Password");
-        if (password == null || password.isEmpty()) {
-            throw new RuntimeException("Password should not be empty");
-        }
+
         if (connectorId.equals("Tim")) {
             testTimConnection(url, username, password);
         } else {
