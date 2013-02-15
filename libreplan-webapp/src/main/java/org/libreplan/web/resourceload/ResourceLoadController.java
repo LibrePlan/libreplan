@@ -169,6 +169,8 @@ public class ResourceLoadController implements Composer {
 
         private TimeTracker timeTracker;
 
+        private IZoomLevelChangedListener zoomLevelListener;
+
         public Reloader() {
         }
 
@@ -278,7 +280,8 @@ public class ResourceLoadController implements Composer {
         }
 
         private void setupZoomLevelListener(TimeTracker timeTracker) {
-            timeTracker.addZoomListener(getSessionZoomLevelListener());
+            zoomLevelListener = getSessionZoomLevelListener();
+            timeTracker.addZoomListener(zoomLevelListener);
         }
 
         private IZoomLevelChangedListener getSessionZoomLevelListener() {
