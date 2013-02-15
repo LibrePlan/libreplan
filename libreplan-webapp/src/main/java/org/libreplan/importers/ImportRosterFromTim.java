@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
@@ -99,6 +100,25 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     @Qualifier("subclass")
     private IBaseCalendarModel baseCalendarModel;
 
+    /**
+     * Search criteria for roster exception days in RESPONSE message
+     * {@link RosterDTO}
+     */
+    private static final String ABSENT = "Afwezig";
+
+    /**
+     * The word "Vakantie"(holiday) in RESPONSE message that would be translated
+     * to {@link PredefinedCalendarExceptionTypes#RESOURCE_HOLIDAY }
+     */
+    private static final String HOLIDAY = "Vakantie";
+
+    /**
+     * The word "Feestdag"(bank holiday) in RESPONSE message that would be
+     * translated to {@link PredefinedCalendarExceptionTypes#BANK_HOLIDAY}
+     */
+    private static final String BANK_HOLIDAY = "Feestdag";
+
+
     @Override
     @Transactional
     public void importRosters() {
@@ -106,15 +126,35 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         String url = prop.get("Server");
         String userName = prop.get("Username");
         String password = prop.get("Password");
+
         int nrDaysRosterFromTim = Integer.parseInt(prop
                 .get("NrDaysRosterFromTim"));
 
-        RosterRequestDTO rosterRequestDTO = createRosterRequest(nrDaysRosterFromTim);
-        RosterResponseDTO rosterResponseDTO = TimSoapClient
-                .sendRequestReceiveResponse(url, userName, password,
-                        rosterRequestDTO, RosterResponseDTO.class);
+        int productivityFactor = Integer.parseInt(prop
+                .get("ProductivityFactor"));
 
-        updateWorkersCalendarException(rosterResponseDTO);
+
+        String departmentIds = prop.get("DepartmentIdsToImportRoster");
+
+        if (StringUtils.isEmpty(departmentIds)) {
+            LOG.warn("No departments configured");
+            return;
+        }
+
+        String[] departmentIdsArray = StringUtils.stripAll(StringUtils.split(
+                departmentIds, ","));
+
+        for (String department : departmentIdsArray) {
+            LOG.info("Department: " + department);
+            RosterRequestDTO rosterRequestDTO = createRosterRequest(department,
+                    nrDaysRosterFromTim);
+            RosterResponseDTO rosterResponseDTO = TimSoapClient
+                    .sendRequestReceiveResponse(url, userName, password,
+                            rosterRequestDTO, RosterResponseDTO.class);
+
+            updateWorkersCalendarException(rosterResponseDTO,
+                    productivityFactor);
+        }
     }
 
 
@@ -125,13 +165,14 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
      *            the response from Tim SOAP server
      */
     private void updateWorkersCalendarException(
-            final RosterResponseDTO rosterResponse) {
+            final RosterResponseDTO rosterResponse, final int productivityFactor) {
         adHocTransactionService
                 .runOnAnotherTransaction(new IOnTransaction<Void>() {
 
                     @Override
                     public Void execute() {
-                        List<RosterException> rosterExceptions = getRosterExceptions(rosterResponse);
+                        List<RosterException> rosterExceptions = getRosterExceptions(
+                                rosterResponse, productivityFactor);
                         if (!rosterExceptions.isEmpty()) {
                             updateCalendarException(rosterExceptions);
                         } else {
@@ -151,15 +192,16 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
      * @return a list of RosterExceptions
      */
     private List<RosterException> getRosterExceptions(
-            RosterResponseDTO rosterResponseDTO) {
+            RosterResponseDTO rosterResponseDTO, int productivityFactor) {
         Map<String, List<RosterDTO>> map = getRosterExceptionPerWorker(rosterResponseDTO);
+
         List<RosterException> rosterExceptions = new ArrayList<RosterException>();
 
         for (Map.Entry<String, List<RosterDTO>> entry : map.entrySet()) {
             Worker worker = null;
             String workerCode = entry.getKey();
             try {
-                worker = workerDAO.findByCode(workerCode);
+                worker = workerDAO.findUniqueByNif(workerCode);
             } catch (InstanceNotFoundException e) {
                 LOG.warn("Worker \"" + workerCode + "\" not found!");
             }
@@ -171,7 +213,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                         return o1.getDate().compareTo(o2.getDate());
                     }
                 });
-                RosterException re = new RosterException(worker);
+                RosterException re = new RosterException(worker,
+                        productivityFactor);
                 re.addRosterExceptions(list);
                 rosterExceptions.add(re);
             }
@@ -193,18 +236,18 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         Map<String, List<RosterDTO>> rosterMap = new HashMap<String, List<RosterDTO>>();
         List<RosterDTO> rosterDTOs = rosterResponseDTO.getRosters();
         for (RosterDTO rosterDTO : rosterDTOs) {
-            if (rosterDTO.getPrecence().equals("Afwezig")) {
+            if (rosterDTO.getPrecence().equals(ABSENT)) {
                 String personsNetWorkName = rosterDTO.getPersons().get(0)
                         .getNetworkName();
                 if (!rosterMap.containsKey(personsNetWorkName)) {
-                    rosterMap.put(personsNetWorkName, new ArrayList<RosterDTO>());
+                    rosterMap.put(personsNetWorkName,
+                            new ArrayList<RosterDTO>());
                 }
                 rosterMap.get(personsNetWorkName).add(rosterDTO);
             }
         }
         return rosterMap;
     }
-
 
     /**
      * updates the workers calendar exception
@@ -222,7 +265,6 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                         item.getEffortDuration());
             }
         }
-
     }
 
 
@@ -241,33 +283,34 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
      */
     private void updateCalendarExceptionPerWorker(Worker worker,
             LocalDate date, String exceptionName, EffortDuration effortDuration) {
-        if (!effortDuration.isZero()) {
-            CalendarExceptionType calendarExceptionType = getCalendarExceptionType(exceptionName);
-            if (calendarExceptionType == null) {
-                return;
-            }
-            ResourceCalendar resourceCalendar = worker.getCalendar();
-            if (resourceCalendar == null) {
-                LOG.warn("ResourceCalendar of worker '" + worker.getNif()
-                        + "' not found");
-                return;
-            }
-            CalendarException calendarExceptionDay = resourceCalendar
-                    .getExceptionDay(date);
-            Capacity capacity = Capacity.create(effortDuration);
-            if (calendarExceptionDay != null) {
-                resourceCalendar.removeExceptionDay(calendarExceptionDay
-                        .getDate());
-            }
-            baseCalendarModel.initEdit(resourceCalendar);
-            baseCalendarModel.updateException(calendarExceptionType, date,
-                    date, capacity);
+        CalendarExceptionType calendarExceptionType = getCalendarExceptionType(exceptionName);
+        if (calendarExceptionType == null) {
+            return;
         }
+        ResourceCalendar resourceCalendar = (ResourceCalendar) worker
+                .getCalendarOrDefault();
+        CalendarException calendarExceptionDay = resourceCalendar
+                .getExceptionDay(date);
+        Capacity capacity = Capacity.create(effortDuration);
+        if (calendarExceptionDay != null) {
+            resourceCalendar.removeExceptionDay(calendarExceptionDay.getDate());
+        }
+        baseCalendarModel.initEdit(resourceCalendar);
+        baseCalendarModel.updateException(calendarExceptionType, date, date,
+                capacity);
+        baseCalendarModel.confirmSave();
     }
 
     /**
      * Searches and returns the calendarExcptionType based on the specified
      * <code>name</code>
+     *
+     * If the specified parameter <code>name</code> contains the word
+     * {@link ImportRosterFromTim#HOLIDAY}, the
+     * <code>calendarExceptionType</code> assumed to be the
+     * {@link PredefinedCalendarExceptionTypes#RESOURCE_HOLIDAY}, otherwise it
+     * searches in {@link CalendarExceptionType} for unique
+     * <code>calendarExceptionType</code>
      *
      * @param name
      *            the exception calendar name
@@ -279,8 +322,11 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         }
         try {
             String nameToSearch = name;
-            if (nameToSearch.contains("Vakantie")) {
+            if (nameToSearch.contains(HOLIDAY)) {
                 nameToSearch = PredefinedCalendarExceptionTypes.RESOURCE_HOLIDAY
+                        .toString();
+            } else if (nameToSearch.equals(BANK_HOLIDAY)) {
+                nameToSearch = PredefinedCalendarExceptionTypes.BANK_HOLIDAY
                         .toString();
             }
             return calendarExceptionTypeDAO.findUniqueByName(nameToSearch);
@@ -297,7 +343,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
      * @param nrDaysRosterFromTim
      *            nr of days required to set the end date
      */
-    private RosterRequestDTO createRosterRequest(int nrDaysRosterFromTim) {
+    private RosterRequestDTO createRosterRequest(String department,
+            int nrDaysRosterFromTim) {
         RosterDTO rosterDTO = createRoster(nrDaysRosterFromTim);
 
         PeriodDTO periodeDTO = new PeriodDTO();
@@ -308,7 +355,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         periodDTOs.add(periodeDTO);
 
         DepartmentDTO departmentDTO = new DepartmentDTO();
-        departmentDTO.setRef("4"); // TODO: make this configurable
+        departmentDTO.setRef(department);
 
         FilterDTO filterDTO = new FilterDTO();
         filterDTO.setPeriods(periodDTOs);
@@ -316,9 +363,9 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
 
         rosterDTO.setFilter(filterDTO);
 
-        rosterDTO.setPersons(createPerson());
+        rosterDTO.setPersons(createEmptyPerson());
 
-        rosterDTO.setRosterCategories(createRosterCategory());
+        rosterDTO.setRosterCategories(createEmptyRosterCategory());
 
         rosterDTO.setDepartment(departmentDTO);
 
@@ -335,18 +382,26 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     }
 
     /**
-     * creates and returns list of {@link PersonDTO}
+     * creates and returns list of {@link PersonDTO} with empty
+     * {@link PersonDTO}
+     *
+     * This is an indication to Tim server that it should include this Person
+     * information in the RESPONSE message
      */
-    private List<PersonDTO> createPerson() {
+    private List<PersonDTO> createEmptyPerson() {
         List<PersonDTO> personDTOs = new ArrayList<PersonDTO>();
         personDTOs.add(new PersonDTO());
         return personDTOs;
     }
 
     /**
-     * creates and returns list of {@link RosterCategoryDTO}
+     * creates and returns list of {@link RosterCategoryDTO} with empty
+     * {@link RosterCategoryDTO}
+     *
+     * This is an indication to Tim server that it should include this
+     * RosterCategory information in the RESPONSE message
      */
-    private List<RosterCategoryDTO> createRosterCategory() {
+    private List<RosterCategoryDTO> createEmptyRosterCategory() {
         List<RosterCategoryDTO> rosterCategorieDTOs = new ArrayList<RosterCategoryDTO>();
         RosterCategoryDTO rosterCategoryDTO = new RosterCategoryDTO();
         rosterCategoryDTO.setName(new String());

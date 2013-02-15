@@ -27,6 +27,7 @@ import java.util.TreeMap;
 import org.joda.time.LocalDate;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate.PartialDay;
 import org.libreplan.importers.tim.RosterDTO;
 
 /**
@@ -36,10 +37,13 @@ import org.libreplan.importers.tim.RosterDTO;
  */
 public class RosterException {
     private Worker worker;
+    private int productivityFactor;
+
     List<RosterExceptionItem> rosterExceptionItems = new ArrayList<RosterExceptionItem>();
 
-    public RosterException(Worker worker) {
+    public RosterException(Worker worker, int productivityFactor) {
         this.worker = worker;
+        this.productivityFactor = productivityFactor;
     }
 
     /**
@@ -87,6 +91,12 @@ public class RosterException {
      * highest duration, in this example RESOURCE_HOLIDAY as a valid exception
      * type, but the total duration is the sum of all these exception types
      *
+     * Again in Tim this total duration means that the worker is on holiday for
+     * that total duration, but Libreplan does the opposite. In Libreplan, the
+     * total duration in this case means that the worker is not on holiday. If
+     * he is then the total duration should be Zero. And this method does this
+     * translation
+     *
      * @param rosterExceptionItem
      *            the rosterException item
      * @param rosterDTOs
@@ -109,8 +119,23 @@ public class RosterException {
             sum = EffortDuration.sum(sum, duration);
 
         }
+        EffortDuration exceptionTime = EffortDuration.zero();
+
+        EffortDuration workableTime = worker.getCalendar().getCapacityOn(
+                PartialDay.wholeDay(rosterExceptionItem.getDate()));
+
+        // Convert the total duration from Tim to the productivity time as is
+        // configured in resource calendar
+        EffortDuration productivityTime = sum.multiplyBy(productivityFactor)
+                .divideBy(100);
+
+        // Calculate the exception time
+        if (workableTime.compareTo(productivityTime) >= 0) {
+            exceptionTime = workableTime.minus(productivityTime);
+        }
+
         rosterExceptionItem.setExceptionType(rosterCatName);
-        rosterExceptionItem.setEffortDuration(sum);
+        rosterExceptionItem.setEffortDuration(exceptionTime);
     }
 
     /**
