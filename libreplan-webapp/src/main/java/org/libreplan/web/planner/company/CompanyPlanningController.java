@@ -152,11 +152,8 @@ public class CompanyPlanningController implements Composer {
     private void loadPredefinedBandboxFilter() {
         List<FilterPair> sessionFilterPairs = FilterUtils
                 .readProjectsParameters();
-        if (sessionFilterPairs != null && !sessionFilterPairs.isEmpty()) {
-            bdFilters.clear();
-            for (FilterPair filterPair : sessionFilterPairs) {
-                bdFilters.addSelectedElement(filterPair);
-            }
+        if (sessionFilterPairs != null) {
+            bdFilters.addSelectedElements(sessionFilterPairs);
             return;
         }
 
@@ -323,7 +320,7 @@ public class CompanyPlanningController implements Composer {
         };
     }
 
-    public void readSessionVariables() {
+    public void readSessionVariablesIntoComponents() {
         filterStartDate.setValue(FilterUtils.readProjectsStartDate());
         filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
         loadPredefinedBandboxFilter();
@@ -332,8 +329,12 @@ public class CompanyPlanningController implements Composer {
     public void onApplyFilter() {
         FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
                 filterFinishDate.getValue(), bdFilters.getSelectedElements());
-        FilterUtils.writeProjectFilterChanged(true);
+        FilterUtils.writeProjectPlanningFilterChanged(true);
         filterByPredicate(createPredicate());
+    }
+
+    public void loadSessionFiltersIntoBandbox() {
+        bdFilters.addSelectedElements(FilterUtils.readProjectsParameters());
     }
 
     private TaskGroupPredicate createPredicate() {
@@ -366,6 +367,11 @@ public class CompanyPlanningController implements Composer {
                 doubleClickCommand, predicate);
         planner.updateSelectedZoomLevel();
         planner.invalidate();
+    }
+
+    public void setPredicate() {
+        model.setConfigurationToPlanner(planner, additional,
+                doubleClickCommand, createPredicate());
     }
 
     public void setTabsController(MultipleTabsPlannerController tabsController) {

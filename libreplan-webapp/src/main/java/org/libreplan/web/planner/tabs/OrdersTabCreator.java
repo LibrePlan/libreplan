@@ -115,24 +115,21 @@ public class OrdersTabCreator {
 
             private boolean checkFiltersChanged() {
                 return (FilterUtils.sessionExists() && FilterUtils
-                        .hasProjectFilterChanged());
+                        .hasProjectPlanningFilterChanged());
             }
 
             private void setFiltersUnchanged() {
                 FilterUtils.writeProjectFilterChanged(false);
-                // Sessions.getCurrent()
-                // .getAttribute("companyFilterChanged", true);
             }
 
             @Override
             protected void afterShowAction() {
-
-                orderCRUDController.goToList();
                 if (checkFiltersChanged()) {
                     orderCRUDController.readSessionFilterDates();
                     orderCRUDController.onApplyFilter();
+                    setFiltersUnchanged();
                 }
-                setFiltersUnchanged();
+                orderCRUDController.goToList();
 
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();

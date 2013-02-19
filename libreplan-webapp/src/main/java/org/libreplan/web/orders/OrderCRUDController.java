@@ -280,7 +280,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void loadLabels() {
         List<FilterPair> sessionFilterPairs = FilterUtils
                 .readProjectsParameters();
-        if (sessionFilterPairs != null && !sessionFilterPairs.isEmpty()) {
+        // Allow labels when list is empty
+        if (sessionFilterPairs != null) {
             for (FilterPair filterPair : sessionFilterPairs) {
 
                 FilterPair toadd;
@@ -1496,6 +1497,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void onApplyFilter() {
         OrderPredicate predicate = createPredicate();
         storeSessionVariables();
+        FilterUtils.writeProjectFilterChanged(true);
         if (predicate != null && checkIncludeOrderElements.isChecked()) {
             // Force reload conversation state in oderModel
             getOrders();
@@ -1509,7 +1511,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
                 filterFinishDate.getValue(),
                 getSelectedBandboxAsTaskGroupFilters());
-        FilterUtils.writeProjectFilterChanged(true);
     }
 
     private List<FilterPair> getSelectedBandboxAsTaskGroupFilters() {
@@ -1872,6 +1873,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void readSessionFilterDates() {
         filterStartDate.setValue(FilterUtils.readProjectsStartDate());
         filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
+        loadLabels();
     }
 
     private Popup jirasyncPopup;
