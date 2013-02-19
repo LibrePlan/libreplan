@@ -309,7 +309,6 @@
         <comment>Change column jira_labels in configuration to TEXT in MySQL</comment>
         <sql>ALTER TABLE configuration MODIFY jira_labels TEXT</sql>
     </changeSet>
-
     <!-- order sync info -->
     <changeSet author="miciele" id="create-table-order-sync-info">
         <comment>Create new table order_sync_info</comment>
@@ -320,9 +319,15 @@
             <column name="version" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="last_sync_date" type="DATETIME" />
-            <column name="label" type="VARCHAR(255)" />
-            <column name="code" type="VARCHAR(255)" />
+            <column name="last_sync_date" type="DATETIME" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="key" type="VARCHAR(255)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="connector_id" type="VARCHAR(255)" >
+                <constraints nullable="false"/>
+            </column>
             <column name="order_element_id" type="BIGINT" />
         </createTable>
         <addForeignKeyConstraint constraintName="order_sync_info_order_table_fkey"

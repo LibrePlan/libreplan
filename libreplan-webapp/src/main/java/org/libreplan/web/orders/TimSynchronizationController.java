@@ -95,7 +95,7 @@ public class TimSynchronizationController extends GenericForwardComposer {
                         .getLastSyncDate()));
             }
             if (labelProductCode != null) {
-                labelProductCode.setValue("(" + orderSyncInfo.getCode() + ")");
+                labelProductCode.setValue("(" + orderSyncInfo.getKey() + ")");
             }
         }
     }

@@ -88,19 +88,23 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     @Autowired
     private IOrderDAO orderDAO;
 
+    private static final String CONNECTOR_MAJOR_ID = "Tim";
+
     @Override
     @Transactional(readOnly = true)
     public void exportTimesheets() {
-        Map<String, String> prop = appPropertiesDAO.findByMajorId("Tim");
+        Map<String, String> prop = appPropertiesDAO
+                .findByMajorId(CONNECTOR_MAJOR_ID);
         List<Order> orders = orderDAO.getOrders();
         for (Order order : orders) {
             OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
-                    .findByOrderLastSynchronizedInfo(order);
+                    .findLastSynchronizedInfoByOrderAndConnectorId(order,
+                            CONNECTOR_MAJOR_ID);
             if (orderSyncInfo == null) {
                 LOG.warn("Order '" + order.getName()
                         + "' is not yet synchronized");
             } else {
-                boolean result = exportTimesheets(orderSyncInfo.getCode(),
+                boolean result = exportTimesheets(orderSyncInfo.getKey(),
                         orderSyncInfo.getOrder(), prop);
                 LOG.info("Export successful: " + result);
             }
@@ -117,7 +121,8 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             throw new RuntimeException("Order should not be empty");
         }
 
-        Map<String, String> prop = appPropertiesDAO.findByMajorId("Tim");
+        Map<String, String> prop = appPropertiesDAO
+                .findByMajorId(CONNECTOR_MAJOR_ID);
         return exportTimesheets(productCode, order, prop);
 
     }
@@ -213,9 +218,9 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                 .runOnAnotherTransaction(new IOnTransaction<Void>() {
                     @Override
                     public Void execute() {
-                        OrderSyncInfo orderSyncInfo = OrderSyncInfo
-                                .create(order);
-                        orderSyncInfo.setCode(productCode);
+                        OrderSyncInfo orderSyncInfo = OrderSyncInfo.create(
+                                order, CONNECTOR_MAJOR_ID);
+                        orderSyncInfo.setKey(productCode);
                         orderSyncInfoDAO.save(orderSyncInfo);
                         return null;
                     }
@@ -270,7 +275,8 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     @Override
     @Transactional(readOnly = true)
     public OrderSyncInfo getOrderLastSyncInfo(Order order) {
-        return orderSyncInfoDAO.findByOrderLastSynchronizedInfo(order);
+        return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorId(
+                order, CONNECTOR_MAJOR_ID);
     }
 
 }

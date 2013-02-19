@@ -34,24 +34,29 @@ public interface IOrderSyncInfoDAO extends IGenericDAO<OrderSyncInfo, Long> {
 
     /**
      * Search last synchronized info for the specified
-     * <code>{@link Order}</code>
+     * <code>{@link Order}</code> and <code>connectorId</code>
      *
      * @param order
      *            the order to search for
+     * @param connectorId
+     *            the connector-id
      *
      * @return Last synchronized info
      */
-    OrderSyncInfo findByOrderLastSynchronizedInfo(Order order);
+    OrderSyncInfo findLastSynchronizedInfoByOrderAndConnectorId(Order order,
+            String connectorId);
 
     /**
      * Search last synchronized infos for the specified
-     * <code>{@link Order}</code>
+     * <code>{@link Order}</code> and <code>connectorId</code>
      *
      * @param order
      *            the order to search for
-     *
+     * @param connectorId
+     *            the connector-id
      * @return list of last synchronized infos
      */
-    List<OrderSyncInfo> findByOrderLastSynchronizedInfos(Order order);
+    List<OrderSyncInfo> findLastSynchronizedInfosByOrderAndConnectorId(
+            Order order, String connectorId);
 
 }

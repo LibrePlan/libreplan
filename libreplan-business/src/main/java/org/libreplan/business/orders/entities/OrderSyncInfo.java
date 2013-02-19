@@ -22,23 +22,37 @@ package org.libreplan.business.orders.entities;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
 
 /**
- * OrderSyncInfo entity
+ * OrderSyncInfo entity. This entity holds order synchronization info. Each time
+ * that order synchronization is successfully completed, an instance of this
+ * entity is created and saved to DB to hold the synchronized info. This info is
+ * then displayed in UI.
+ *
+ * This entity contains the following fields:
+ * <ul>
+ * <li>lastSyncDate: last date where synchronization took place</li>
+ * <li>key: an identifier, which connector's key is last synchronized</li>
+ * <li>connectorId: an identifier to distinguish which connector has running the
+ * synchronization</li>
+ * <li>order: order that is synchronized</li>
+ * </ul>
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 public class OrderSyncInfo extends BaseEntity {
 
     private Date lastSyncDate;
-    private String label;
-    private String code;
+    private String key;
+    private String connectorId;
     private Order order;
 
-    public static OrderSyncInfo create(Order order) {
+    public static OrderSyncInfo create(Order order, String connectorId) {
         Validate.notNull(order);
-        return create(new OrderSyncInfo(order));
+        Validate.notEmpty(connectorId);
+        return create(new OrderSyncInfo(order, connectorId));
     }
 
     /**
@@ -47,11 +61,13 @@ public class OrderSyncInfo extends BaseEntity {
     protected OrderSyncInfo() {
     }
 
-    private OrderSyncInfo(Order order) {
+    private OrderSyncInfo(Order order, String connectorId) {
         this.lastSyncDate = new Date();
         this.order = order;
+        this.connectorId = connectorId;
     }
 
+    @NotNull(message = "last synchronized date not specified")
     public Date getLastSyncDate() {
         return lastSyncDate;
     }
@@ -60,20 +76,22 @@ public class OrderSyncInfo extends BaseEntity {
         this.lastSyncDate = lastSyncDate;
     }
 
-    public String getLabel() {
-        return label;
+    @NotNull(message = "key not specified")
+    public String getKey() {
+        return key;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getCode() {
-        return code;
+    @NotNull(message = "connector id not specified")
+    public String getConnectorId() {
+        return connectorId;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setConnectorId(String connectorId) {
+        this.connectorId = connectorId;
     }
 
     public Order getOrder() {
@@ -83,5 +101,4 @@ public class OrderSyncInfo extends BaseEntity {
     public void setOrder(Order order) {
         this.order = order;
     }
-
 }

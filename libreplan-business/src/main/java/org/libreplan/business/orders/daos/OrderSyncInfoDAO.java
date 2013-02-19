@@ -22,9 +22,6 @@ package org.libreplan.business.orders.daos;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.orders.entities.Order;
@@ -44,26 +41,23 @@ public class OrderSyncInfoDAO extends GenericDAOHibernate<OrderSyncInfo, Long>
         implements IOrderSyncInfoDAO {
 
     @Override
-    public OrderSyncInfo findByOrderLastSynchronizedInfo(Order order) {
-        DetachedCriteria mostRecentDate = DetachedCriteria
-                .forClass(OrderSyncInfo.class)
-                .setProjection(Projections.max("lastSyncDate"))
-                .add(Restrictions.isNotNull("code"));
-
-        Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
-
-        criteria.add(Restrictions.eq("order", order));
-        criteria.add(Property.forName("lastSyncDate").eq(mostRecentDate));
-
-        return (OrderSyncInfo) criteria.uniqueResult();
+    public OrderSyncInfo findLastSynchronizedInfoByOrderAndConnectorId(
+            Order order, String connectorId) {
+        List<OrderSyncInfo> orderSyncInfoList = findLastSynchronizedInfosByOrderAndConnectorId(
+                order, connectorId);
+        if (orderSyncInfoList == null || orderSyncInfoList.isEmpty()) {
+            return null;
+        }
+        return orderSyncInfoList.get(0);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<OrderSyncInfo> findByOrderLastSynchronizedInfos(Order order) {
+    public List<OrderSyncInfo> findLastSynchronizedInfosByOrderAndConnectorId(
+            Order order, String connectorId) {
         Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
         criteria.add(Restrictions.eq("order", order));
-        criteria.add(Restrictions.isNotNull("code"));
+        criteria.add(Restrictions.eq("connectorId", connectorId));
         criteria.addOrder(org.hibernate.criterion.Order.desc("lastSyncDate"));
         return criteria.list();
     }
