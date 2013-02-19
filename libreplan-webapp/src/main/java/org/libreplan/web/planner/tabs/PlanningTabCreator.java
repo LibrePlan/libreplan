@@ -213,17 +213,16 @@ public class PlanningTabCreator {
             }
 
             private void setFiltersUnchanged() {
-                // True??
-                FilterUtils.writeProjectFilterChanged(false);
+                FilterUtils.writeProjectPlanningFilterChanged(false);
             }
 
             @Override
             protected void afterShowAction() {
                 if (checkFiltersChanged()) {
-                    companyPlanningController.readSessionVariables();
-                    companyPlanningController.onApplyFilter();
+                    companyPlanningController
+                            .readSessionVariablesIntoComponents();
+                    setFiltersUnchanged();
                 }
-                setFiltersUnchanged();
 
                 companyPlanningController.setConfigurationForPlanner();
                 breadcrumbs.getChildren().clear();

@@ -72,14 +72,26 @@ public class FilterUtils {
         writeProjectsParameters(parameters);
     }
 
-    public static void writeProjectFilterChanged(boolean b) {
-        Sessions.getCurrent().setAttribute("companyFilterChanged", true);
+    public static void writeProjectFilterChanged(boolean changed) {
+        Sessions.getCurrent().setAttribute("companyFilterChanged", changed);
     }
 
     public static boolean hasProjectFilterChanged() {
         return (Sessions.getCurrent().getAttribute("companyFilterChanged") != null)
                 && ((Boolean) Sessions.getCurrent().getAttribute(
                         "companyFilterChanged"));
+    }
+
+    public static void writeProjectPlanningFilterChanged(boolean changed) {
+        Sessions.getCurrent().setAttribute("companyFilterPlanningChanged",
+                changed);
+    }
+
+    public static boolean hasProjectPlanningFilterChanged() {
+        return (Sessions.getCurrent().getAttribute(
+                "companyFilterPlanningChanged") != null)
+                && ((Boolean) Sessions.getCurrent().getAttribute(
+                        "companyFilterPlanningChanged"));
     }
 
     // Resources load filter

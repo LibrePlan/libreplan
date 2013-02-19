@@ -389,4 +389,13 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         return heightBbox;
     }
 
+    public void addSelectedElements(List<FilterPair> sessionFilterPairs) {
+        selectedFilters.clear();
+        for (FilterPair filterPair : sessionFilterPairs) {
+            addFilter(filterPair);
+        }
+        updateselectedFiltersText();
+        updateBandboxValue();
+    }
+
 }
