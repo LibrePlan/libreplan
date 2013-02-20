@@ -352,6 +352,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         strQuery += "FROM Order o ";
 
         String where = "";
+        String whereFinal = "";
         if (labels != null && !labels.isEmpty()) {
             for (int i = 0; i < labels.size(); i++) {
                 if (where.isEmpty()) {
@@ -372,8 +373,8 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             }
             where += "cr.criterion IN (:criteria) ";
             where += "AND cr.class = DirectCriterionRequirement ";
-            where += "GROUP BY o.id ";
-            where += "HAVING count(o.id) = :criteriaSize ";
+            whereFinal += "GROUP BY o.id ";
+            whereFinal += "HAVING count(o.id) = :criteriaSize ";
         }
 
         if (customer != null) {
@@ -409,8 +410,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             where += "o.id IN (:ids) ";
         }
 
-        strQuery += where;
-
+        strQuery += where + whereFinal;
         Query query = getSession().createQuery(strQuery);
         if (labels != null && !labels.isEmpty()) {
             int i = 0;
