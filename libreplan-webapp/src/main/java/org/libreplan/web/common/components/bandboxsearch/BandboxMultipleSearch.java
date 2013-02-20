@@ -233,6 +233,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     public List getSelectedElements() {
+        updateBandboxValue();
         if (this.multipleFiltersFinder != null) {
             if (!multipleFiltersFinder.isValidFormatText(selectedFilters,
                     bandbox.getValue())) {
