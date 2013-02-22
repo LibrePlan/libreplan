@@ -600,7 +600,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             result.add(toTasKElementFilterEnum(filterPair));
         }
         FilterUtils.writeOrderParameters(order, result);
-
+        FilterUtils.writeOrderWBSFiltersChanged(order, true);
     }
 
     private FilterPair toTasKElementFilterEnum(FilterPair each) {

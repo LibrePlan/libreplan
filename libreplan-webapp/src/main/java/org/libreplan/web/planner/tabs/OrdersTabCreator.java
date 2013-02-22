@@ -126,7 +126,6 @@ public class OrdersTabCreator {
             protected void afterShowAction() {
                 if (checkFiltersChanged()) {
                     orderCRUDController.readSessionFilterDates();
-                    orderCRUDController.onApplyFilter();
                     setFiltersUnchanged();
                 }
                 orderCRUDController.goToList();
