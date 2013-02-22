@@ -31,7 +31,9 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
+import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.resources.entities.Criterion;
@@ -377,15 +379,30 @@ public class User extends BaseEntity implements IHumanIdentifiable{
 
     @AssertTrue(message = "You have exceeded the maximum limit of users")
     public boolean checkMaxUsers() {
-        Integer maxUsers = Registry.getConfigurationDAO().getConfiguration()
-                .getMaxUsers();
-        if (maxUsers != null && maxUsers > 0) {
-            List<User> users = Registry.getUserDAO().findAll();
-            if (users.size() > maxUsers) {
-                return false;
-            }
-        }
-        return true;
+        return Registry.getTransactionService()
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Boolean>() {
+                    @Override
+                    public Boolean execute() {
+                        Configuration configuration = Registry
+                                .getConfigurationDAO().getConfiguration();
+                        if (configuration == null) {
+                            return true;
+                        }
+
+                        Integer maxUsers = configuration.getMaxUsers();
+                        if (maxUsers != null && maxUsers > 0) {
+                            List<User> users = Registry.getUserDAO().findAll();
+                            int usersNumber = users.size();
+                            if (isNewObject()) {
+                                usersNumber++;
+                            }
+                            if (usersNumber > maxUsers) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                });
     }
 
     public Label getProjectsFilterLabel() {
