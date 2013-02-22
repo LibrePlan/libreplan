@@ -207,12 +207,19 @@ public class FilterUtils {
     public static void clearBandboxes() {
         writeProjectsParameters(null);
         writeResourceLoadsParameters(null);
-        // Locate all order-specific bandboxes
-        for (String key : (Set <String>) Sessions.getCurrent().getAttributes().keySet() ) {
-            if (key.contains("-tasknameFilter")) {
-                Sessions.getCurrent().setAttribute(key, null);
-            }
-        }
+    }
+
+    public static void clearSessionDates() {
+        writeProjectsStartDate(null);
+        Sessions.getCurrent().setAttribute("companyFilterStartDateChanged",
+                null);
+        writeProjectsEndDate(null);
+        Sessions.getCurrent().setAttribute("companyFilterEndDateChanged", null);
+        writeResourceLoadsStartDate(null);
+        Sessions.getCurrent()
+                .setAttribute("resourceLoadStartDateChanged", null);
+        writeResourceLoadsEndDate(null);
+        Sessions.getCurrent().setAttribute("resourceLoadEndDateChanged", null);
     }
 
     public static ZoomLevel readZoomLevelCompanyView() {
