@@ -274,55 +274,58 @@ public class OrderCRUDController extends GenericForwardComposer {
         filterFinishDate.setValue(endDate);
 
         loadLabels();
-
+        FilterUtils.writeProjectPlanningFilterChanged(false);
     }
 
     private void loadLabels() {
-        List<FilterPair> sessionFilterPairs = FilterUtils
+        List<FilterPair> sessionFilters = FilterUtils
                 .readProjectsParameters();
         // Allow labels when list is empty
-        if (sessionFilterPairs != null) {
-            for (FilterPair filterPair : sessionFilterPairs) {
-
-                FilterPair toadd;
-                TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair
-                        .getType();
-                switch (type) {
-                case Label:
-                    toadd = new FilterPair(OrderFilterEnum.Label,
-                            filterPair.getPattern(), filterPair.getValue());
-                    break;
-                case Criterion:
-                    toadd = new FilterPair(OrderFilterEnum.Criterion,
-                            filterPair.getPattern(), filterPair.getValue());
-                    break;
-                case ExternalCompany:
-                    toadd = new FilterPair(OrderFilterEnum.ExternalCompany,
-                            filterPair.getPattern(), filterPair.getValue());
-                    break;
-                case State:
-                    toadd = new FilterPair(OrderFilterEnum.State,
-                            filterPair.getPattern(), filterPair.getValue());
-
-                    break;
-                default:
-                    toadd = new FilterPair(OrderFilterEnum.Label,
-                            filterPair.getPattern(), filterPair.getValue());
-                    break;
-                }
-                bdFilters.addSelectedElement(toadd);
-            }
+        if (sessionFilters != null) {
+            bdFilters.addSelectedElements(toOrderFilterEnum(sessionFilters));
             return;
         }
 
         User user = orderModel.getUser();
-
         // Calculate filter based on user preferences
         if ((user != null) && (user.getProjectsFilterLabel() != null)) {
             bdFilters.addSelectedElement(new FilterPair(OrderFilterEnum.Label,
                     user.getProjectsFilterLabel().getFinderPattern(), user
                             .getProjectsFilterLabel()));
         }
+    }
+
+    private List<FilterPair> toOrderFilterEnum(List<FilterPair> filterPairs) {
+        List<FilterPair> result = new ArrayList<FilterPair>();
+        for (FilterPair filterPair : filterPairs) {
+            FilterPair toadd;
+            TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair
+                    .getType();
+            switch (type) {
+            case Label:
+                toadd = new FilterPair(OrderFilterEnum.Label,
+                        filterPair.getPattern(), filterPair.getValue());
+                break;
+            case Criterion:
+                toadd = new FilterPair(OrderFilterEnum.Criterion,
+                        filterPair.getPattern(), filterPair.getValue());
+                break;
+            case ExternalCompany:
+                toadd = new FilterPair(OrderFilterEnum.ExternalCompany,
+                        filterPair.getPattern(), filterPair.getValue());
+                break;
+            case State:
+                toadd = new FilterPair(OrderFilterEnum.State,
+                        filterPair.getPattern(), filterPair.getValue());
+                break;
+            default:
+                toadd = new FilterPair(OrderFilterEnum.Label,
+                        filterPair.getPattern(), filterPair.getValue());
+                break;
+            }
+            result.add(toadd);
+        }
+        return result;
     }
 
     private void setupGlobalButtons() {

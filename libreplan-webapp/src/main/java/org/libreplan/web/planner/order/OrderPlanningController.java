@@ -230,7 +230,11 @@ public class OrderPlanningController implements Composer {
         }
     }
 
-    private void importOrderFiltersFromSession() {
+    public void importOrderFiltersFromSession() {
+        importOrderFiltersFromSession(false);
+    }
+
+    public void importOrderFiltersFromSession(boolean forceReload) {
         filterNameOrderElement.setValue(FilterUtils.readOrderTaskName(order));
         filterStartDateOrderElement.setValue(FilterUtils
                 .readOrderStartDate(order));
@@ -238,11 +242,9 @@ public class OrderPlanningController implements Composer {
                 .readOrderEndDate(order));
         List<FilterPair> sessionFilterPairs = FilterUtils
                 .readOrderParameters(order);
-        if (sessionFilterPairs != null
-                && bdFiltersOrderElement.getSelectedElements().isEmpty()) {
-            for (Object each : sessionFilterPairs) {
-                bdFiltersOrderElement.addSelectedElement(each);
-            }
+        if ((sessionFilterPairs != null)
+                && (bdFiltersOrderElement.getSelectedElements().isEmpty() || forceReload)) {
+            bdFiltersOrderElement.addSelectedElements(sessionFilterPairs);
         }
         if (FilterUtils.readOrderInheritance(order) != null) {
             labelsWithoutInheritance.setChecked(FilterUtils
@@ -272,9 +274,18 @@ public class OrderPlanningController implements Composer {
 
     public void onApplyFilter() {
         filterByPredicate(createPredicate());
+        List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement
+                .getSelectedElements();
+        FilterUtils.writeOrderParameters(order, listFilters);
     }
 
     private TaskElementPredicate createPredicate() {
+
+        if (FilterUtils.hasOrderWBSFiltersChanged(order)) {
+            importOrderFiltersFromSession(true);
+            FilterUtils.writeOrderWBSFiltersChanged(order, false);
+        }
+
         List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement
                 .getSelectedElements();
         Date startDate = filterStartDateOrderElement.getValue();
@@ -289,10 +300,7 @@ public class OrderPlanningController implements Composer {
         FilterUtils.writeOrderTaskName(order, name);
         FilterUtils.writeOrderStartDate(order, startDate);
         FilterUtils.writeOrderEndDate(order, finishDate);
-
-        // Peding to change
         FilterUtils.writeOrderInheritance(order, ignoreLabelsInheritance);
-        FilterUtils.writeOrderParameters(order, listFilters);
         return new TaskElementPredicate(listFilters, startDate, finishDate,
                 name, ignoreLabelsInheritance);
     }
@@ -354,7 +362,7 @@ public class OrderPlanningController implements Composer {
                         && (filterStartDateOrderElement.getValue() != null)
                         && (finishDate.compareTo(filterStartDateOrderElement
                                 .getValue()) < 0)) {
-                    filterFinishDateOrderElement.setValue(null);
+                    filterFinishDateOrderElement.setRawValue(null);
                     throw new WrongValueException(comp,
                             _("must be after start date"));
                 }
@@ -373,7 +381,7 @@ public class OrderPlanningController implements Composer {
                         && (filterFinishDateOrderElement.getValue() != null)
                         && (startDate.compareTo(filterFinishDateOrderElement
                                 .getValue()) > 0)) {
-                    filterStartDateOrderElement.setValue(null);
+                    filterStartDateOrderElement.setRawValue(null);
                     throw new WrongValueException(comp,
                             _("must be lower than end date"));
                 }

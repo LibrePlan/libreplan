@@ -221,4 +221,17 @@ public class FilterUtils {
         return Sessions.getCurrent() != null;
     }
 
+    public static boolean hasOrderWBSFiltersChanged(Order order) {
+        return sessionExists()
+                && (Sessions.getCurrent().getAttribute(
+                        order.getCode() + "-orderWBSFilterChanged") != null)
+                && ((Boolean) Sessions.getCurrent().getAttribute(
+                        order.getCode() + "-orderWBSFilterChanged"));
+    }
+
+    public static void writeOrderWBSFiltersChanged(Order order, boolean changed) {
+        Sessions.getCurrent().setAttribute(
+                order.getCode() + "-orderWBSFilterChanged", changed);
+    }
+
 }
