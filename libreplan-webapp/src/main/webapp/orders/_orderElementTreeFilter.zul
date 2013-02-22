@@ -26,7 +26,7 @@
         onChange="treeController.onApplyFilter()" />
     <label value="${i18n:_('with')}"/>
     <bandboxMultipleSearch id="bdFiltersOrderElement" widthBandbox="260px" widthListbox="550px"
-        finder="orderElementsMultipleFiltersFinder" />
+        finder="orderElementsMultipleFiltersFinder" onChange="treeController.onApplyFilter()" />
     <button id="optionsButton" label="${i18n:_('options')}" dir="reverse"
         image="/common/img/ico_dropdown.png" style="margin-top: -2px"
         tooltiptext="${i18n:_('Set Filter Options')}"
