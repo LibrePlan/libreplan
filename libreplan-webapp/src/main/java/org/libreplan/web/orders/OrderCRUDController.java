@@ -257,12 +257,14 @@ public class OrderCRUDController extends GenericForwardComposer {
             // Calculate filter based on user preferences
             if (user != null) {
                 if ((startDate == null)
+                        && !FilterUtils.hasProjectsStartDateChanged()
                         && (user.getProjectsFilterPeriodSince() != null)) {
                     startDate = new LocalDate()
                             .minusMonths(user.getProjectsFilterPeriodSince())
                             .toDateTimeAtStartOfDay().toDate();
                 }
                 if ((endDate == null)
+                        && !FilterUtils.hasProjectsEndDateChanged()
                         && (user.getProjectsFilterPeriodTo() != null)) {
                     endDate = new LocalDate()
                             .plusMonths(user.getProjectsFilterPeriodTo())
