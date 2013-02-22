@@ -280,32 +280,27 @@ public class OrderCRUDController extends GenericForwardComposer {
     private List<FilterPair> toOrderFilterEnum(List<FilterPair> filterPairs) {
         List<FilterPair> result = new ArrayList<FilterPair>();
         for (FilterPair filterPair : filterPairs) {
-            FilterPair toadd;
             TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair
                     .getType();
             switch (type) {
             case Label:
-                toadd = new FilterPair(OrderFilterEnum.Label,
-                        filterPair.getPattern(), filterPair.getValue());
+                result.add(new FilterPair(OrderFilterEnum.Label, filterPair
+                        .getPattern(), filterPair.getValue()));
                 break;
             case Criterion:
-                toadd = new FilterPair(OrderFilterEnum.Criterion,
-                        filterPair.getPattern(), filterPair.getValue());
+                result.add(new FilterPair(OrderFilterEnum.Criterion, filterPair
+                        .getPattern(), filterPair.getValue()));
                 break;
             case ExternalCompany:
-                toadd = new FilterPair(OrderFilterEnum.ExternalCompany,
-                        filterPair.getPattern(), filterPair.getValue());
+                result.add(new FilterPair(OrderFilterEnum.ExternalCompany,
+                        filterPair.getPattern(), filterPair.getValue()));
                 break;
             case State:
-                toadd = new FilterPair(OrderFilterEnum.State,
-                        filterPair.getPattern(), filterPair.getValue());
+                result.add(new FilterPair(OrderFilterEnum.State, filterPair
+                        .getPattern(), filterPair.getValue()));
                 break;
             default:
-                toadd = new FilterPair(OrderFilterEnum.Label,
-                        filterPair.getPattern(), filterPair.getValue());
-                break;
             }
-            result.add(toadd);
         }
         return result;
     }
