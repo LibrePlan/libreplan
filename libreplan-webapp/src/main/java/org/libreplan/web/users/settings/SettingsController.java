@@ -26,11 +26,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Filter;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.settings.entities.Language;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -139,17 +141,8 @@ public class SettingsController extends GenericForwardComposer {
     }
 
     private void clearSessionVariables() {
-        Session current = Sessions.getCurrent();
-
-        // Projects filters
-        current.setAttribute("companyFilterStartDate", null);
-        current.setAttribute("companyFilterEndtDate", null);
-        current.setAttribute("companyFilterLabel", null);
-
-        // ResourcesLoad filters
-        current.setAttribute("resourceLoadStartDate", null);
-        current.setAttribute("resourceLoadEndDate", null);
-        current.setAttribute("resourceLoadFilterWorkerOrCriterion", null);
+        FilterUtils.clearBandboxes();
+        FilterUtils.clearSessionDates();
     }
 
     private void checkEmptyBandboxes() {
