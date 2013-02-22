@@ -144,22 +144,17 @@ public class CompanyPlanningController implements Composer {
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
-
         checkCreationPermissions();
 
     }
 
     private void loadPredefinedBandboxFilter() {
+        User user = model.getUser();
         List<FilterPair> sessionFilterPairs = FilterUtils
                 .readProjectsParameters();
         if (sessionFilterPairs != null) {
             bdFilters.addSelectedElements(sessionFilterPairs);
-            return;
-        }
-
-        User user = model.getUser();
-        // Calculate filter based on user preferences
-        if ((user != null) && (user.getProjectsFilterLabel() != null)) {
+        } else if ((user != null) && (user.getProjectsFilterLabel() != null)) {
             bdFilters.clear();
             bdFilters.addSelectedElement(new FilterPair(
                     TaskGroupFilterEnum.Label, user.getProjectsFilterLabel()
@@ -169,13 +164,15 @@ public class CompanyPlanningController implements Composer {
 
         // Calculate filter based on user preferences
         if (user != null) {
-            if (filterStartDate.getValue() == null
+            if ((filterStartDate.getValue() == null)
+                    && !FilterUtils.hasProjectsStartDateChanged()
                     && (user.getProjectsFilterPeriodSince() != null)) {
                 filterStartDate.setValue(new LocalDate()
                         .minusMonths(user.getProjectsFilterPeriodSince())
                         .toDateTimeAtStartOfDay().toDate());
             }
             if (filterFinishDate.getValue() == null
+                    && !FilterUtils.hasProjectsEndDateChanged()
                     && (user.getProjectsFilterPeriodTo() != null)) {
                 filterFinishDate.setValue(new LocalDate()
                         .plusMonths(user.getProjectsFilterPeriodTo())
@@ -348,10 +345,12 @@ public class CompanyPlanningController implements Composer {
             TaskGroupPredicate predicate = model
                     .getDefaultPredicate(includeOrderElements);
             //show filter dates calculated by default on screen
-            if(model.getFilterStartDate() != null) {
+            if (model.getFilterStartDate() != null
+                    && !FilterUtils.hasProjectsStartDateChanged()) {
                 filterStartDate.setValue(model.getFilterStartDate());
             }
-            if(model.getFilterFinishDate() != null) {
+            if (model.getFilterFinishDate() != null
+                    && !FilterUtils.hasProjectsEndDateChanged()) {
                 filterFinishDate.setValue(model.getFilterFinishDate());
             }
             predicate.setFilters(listFilters);

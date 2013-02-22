@@ -55,11 +55,25 @@ public class FilterUtils {
 
     public static void writeProjectsStartDate(Date date) {
         Sessions.getCurrent().setAttribute("companyFilterStartDate", date);
+        Sessions.getCurrent().setAttribute("companyFilterStartDateChanged",
+                true);
+    }
+
+    public static boolean hasProjectsStartDateChanged() {
+        return Sessions.getCurrent().hasAttribute(
+                "companyFilterStartDateChanged");
     }
 
     public static void writeProjectsEndDate(Date date) {
         Sessions.getCurrent().setAttribute("companyFilterEndDate", date);
+        Sessions.getCurrent().setAttribute("companyFilterEndDateChanged", true);
     }
+
+    public static boolean hasProjectsEndDateChanged() {
+        return Sessions.getCurrent()
+                .hasAttribute("companyFilterEndDateChanged");
+    }
+
 
     public static void writeProjectsParameters(List<FilterPair> parameters) {
         Sessions.getCurrent().setAttribute("companyFilterLabel", parameters);
@@ -113,10 +127,22 @@ public class FilterUtils {
 
     public static void writeResourceLoadsStartDate(LocalDate date) {
         Sessions.getCurrent().setAttribute("resourceLoadStartDate", date);
+        Sessions.getCurrent()
+                .setAttribute("resourceLoadStartDateChanged", true);
+    }
+
+    public static boolean hasResourceLoadsStartDateChanged() {
+        return Sessions.getCurrent().hasAttribute(
+                "resourceLoadStartDateChanged");
     }
 
     public static void writeResourceLoadsEndDate(LocalDate date) {
         Sessions.getCurrent().setAttribute("resourceLoadEndDate", date);
+        Sessions.getCurrent().setAttribute("resourceLoadEndDateChanged", true);
+    }
+
+    public static boolean hasResourceLoadsEndDateChanged() {
+        return Sessions.getCurrent().hasAttribute("resourceLoadEndDateChanged");
     }
 
     public static void writeResourceLoadsParameters(List<Object> parameters) {

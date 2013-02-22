@@ -324,7 +324,8 @@ public class ResourceLoadController implements Composer {
 
         // Calculate filter based on user preferences
         if (user != null) {
-            if (startDate == null) {
+                if (startDate == null
+                        && !FilterUtils.hasResourceLoadsStartDateChanged()) {
                 if (user.getResourcesLoadFilterPeriodSince() != null) {
                     startDate = new LocalDate().minusMonths(user
                             .getResourcesLoadFilterPeriodSince());
@@ -333,7 +334,8 @@ public class ResourceLoadController implements Composer {
                     startDate = new LocalDate().minusDays(1);
                 }
             }
-            if ((endDate == null)
+                if ((endDate == null)
+                        && !FilterUtils.hasResourceLoadsEndDateChanged()
                     && (user.getResourcesLoadFilterPeriodTo() != null)) {
                 endDate = new LocalDate().plusMonths(user
                         .getResourcesLoadFilterPeriodTo());
