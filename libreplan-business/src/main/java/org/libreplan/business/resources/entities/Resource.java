@@ -49,8 +49,10 @@ import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.calendars.entities.SameWorkHoursEveryDay;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
+import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.MultipleInstancesException;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -1188,15 +1190,31 @@ public abstract class Resource extends IntegrationEntity implements
 
     @AssertTrue(message = "You have exceeded the maximum limit of resources")
     public boolean checkMaxResources() {
-        Integer maxResources = Registry.getConfigurationDAO()
-                .getConfiguration().getMaxResources();
-        if (maxResources != null && maxResources > 0) {
-            List<Resource> resources = Registry.getResourceDAO().findAll();
-            if (resources.size() > maxResources) {
-                return false;
-            }
-        }
-        return true;
+        return Registry.getTransactionService()
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<Boolean>() {
+                    @Override
+                    public Boolean execute() {
+                        Configuration configuration = Registry
+                                .getConfigurationDAO().getConfiguration();
+                        if (configuration == null) {
+                            return true;
+                        }
+
+                        Integer maxResources = configuration.getMaxResources();
+                        if (maxResources != null && maxResources > 0) {
+                            List<Resource> resources = Registry
+                                    .getResourceDAO().findAll();
+                            int resourcesNumber = resources.size();
+                            if (isNewObject()) {
+                                resourcesNumber++;
+                            }
+                            if (resourcesNumber > maxResources) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                });
     }
 
     public boolean isActiveBetween(LocalDate startDate, LocalDate endDate) {
