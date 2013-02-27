@@ -22,8 +22,10 @@ package org.libreplan.web.orders;
 import static org.libreplan.web.I18nHelper._;
 
 import org.apache.commons.logging.LogFactory;
-import org.libreplan.business.common.daos.IAppPropertiesDAO;
-import org.libreplan.business.common.entities.AppProperties;
+import org.libreplan.business.common.daos.IConnectorDAO;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.importers.IExportTimesheetsToTim;
 import org.libreplan.web.common.IMessagesForUser;
@@ -55,7 +57,7 @@ public class TimSynchronizationController extends GenericForwardComposer {
     private IExportTimesheetsToTim exportTimesheetsToTim;
 
     @Autowired
-    private IAppPropertiesDAO appPropertiesDAO;
+    private IConnectorDAO connectorDAO;
 
     private Component messagesContainer;
 
@@ -101,8 +103,13 @@ public class TimSynchronizationController extends GenericForwardComposer {
     }
 
     public boolean isTimActivated() {
-        AppProperties appProperties = appPropertiesDAO.findByMajorIdAndName(
-                "Tim", "Activated");
-        return appProperties.getPropertyValue().equalsIgnoreCase("Y");
+        Connector connector = connectorDAO
+                .findUniqueByMajorId(PredefinedConnectors.TIM.getMajorId());
+        if (connector == null) {
+            return false;
+        }
+        return connector.getPropertiesAsMap()
+                .get(PredefinedConnectorProperties.ACTIVATED)
+                .equalsIgnoreCase("Y");
     }
 }

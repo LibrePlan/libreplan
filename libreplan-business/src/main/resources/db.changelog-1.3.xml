@@ -334,65 +334,51 @@
             baseTableName="order_sync_info" baseColumnNames="order_element_id"
             referencedTableName="order_table" referencedColumnNames="order_element_id" />
     </changeSet>
-    <!-- app properties -->
-    <changeSet author="miciele" id="create-table-app-properties">
-        <comment>Create new table app_properties</comment>
-        <createTable tableName="app_properties">
+
+    <!-- connector -->
+    <changeSet author="rego" id="create-tables-related-to-connector-entity">
+        <comment>Create tables related to Connector entity</comment>
+        <createTable tableName="connector">
             <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="connector_pkey" />
             </column>
             <column name="version" type="BIGINT">
                 <constraints nullable="false" />
             </column>
             <column name="major_id" type="VARCHAR(255)" >
-                <constraints nullable="false" primaryKey="true" />
+                <constraints nullable="false" />
             </column>
-            <column name="minor_id" type="VARCHAR(255)" />
-            <column name="property_name" type="VARCHAR(255)" >
-                <constraints nullable="false" primaryKey="true" />
-            </column>
-            <column name="property_value" type="VARCHAR(255)" />
         </createTable>
+
+        <createTable tableName="connector_property">
+            <column name="connector_id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="connector_property_position" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="value" type="VARCHAR(255)" />
+        </createTable>
+
+        <addPrimaryKey
+            columnNames="connector_id,connector_property_position"
+            constraintName="connector_property_pkey"
+            tableName="connector_property"/>
+
+        <addForeignKeyConstraint
+            baseColumnNames="connector_id"
+            baseTableName="connector_property"
+            constraintName="connector_property_connector_id_fkey"
+            deferrable="false" initiallyDeferred="false"
+            onDelete="NO ACTION" onUpdate="NO ACTION"
+            referencedColumnNames="id"
+            referencedTableName="connector"
+            referencesUniqueColumn="false"/>
     </changeSet>
-    <changeSet author="miciele" id="insert-predefined-names">
-        <comment>Insert some default keys and values</comment>
-        <insert tableName="app_properties">
-            <column name="major_id" value="Tim"/>
-            <column name="version" value="0"/>
-            <column name="property_name" value="Activated" />
-            <column name="property_value" value="Y" />
-        </insert>
-        <insert tableName="app_properties">
-            <column name="major_id" value="Tim"/>
-            <column name="version" value="0"/>
-            <column name="property_name" value="Server" />
-            <column name="property_value" value="http://azn-svap270.amg.local:10980/impexp/" />
-        </insert>
-        <insert tableName="app_properties">
-            <column name="major_id" value="Tim"/>
-            <column name="version" value="0"/>
-            <column name="property_name" value="Username" />
-            <column name="property_value" value="timnsoap" />
-        </insert>
-        <insert tableName="app_properties">
-            <column name="major_id" value="Tim"/>
-            <column name="version" value="0"/>
-            <column name="property_name" value="Password" />
-            <column name="property_value" value="aenova" />
-        </insert>
-        <insert tableName="app_properties">
-            <column name="major_id" value="Tim"/>
-            <column name="version" value="0"/>
-            <column name="property_name" value="NrDaysTimesheetToTim" />
-            <column name="property_value" value="7" />
-        </insert>
-        <insert tableName="app_properties">
-            <column name="major_id" value="Tim"/>
-            <column name="version" value="0"/>
-            <column name="property_name" value="NrDaysRosterFromTim" />
-            <column name="property_value" value="90" />
-        </insert>
-    </changeSet>
+
     <!-- scheduler configuration -->
     <changeSet author="miciele" id="create-table-job-scheduler-configuration">
         <comment>Create new table job_scheduler_configuration</comment>

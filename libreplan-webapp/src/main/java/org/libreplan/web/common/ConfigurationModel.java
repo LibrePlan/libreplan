@@ -38,11 +38,11 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.common.daos.IAppPropertiesDAO;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
-import org.libreplan.business.common.entities.AppProperties;
 import org.libreplan.business.common.entities.Configuration;
+import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.JiraConfiguration;
@@ -79,6 +79,8 @@ public class ConfigurationModel implements IConfigurationModel {
 
     private static Map<String, String> currencies = getAllCurrencies();
 
+    private List<Connector> connectors;
+
     @Autowired
     private IConfigurationDAO configurationDAO;
 
@@ -92,11 +94,7 @@ public class ConfigurationModel implements IConfigurationModel {
     private IWorkReportDAO workReportDAO;
 
     @Autowired
-    IAppPropertiesDAO appPropertiesDAO;
-
-    private Map<String, List<AppProperties>> appPropertiesMap = new HashMap<String, List<AppProperties>>();
-
-    private String connectorId = "Tim";
+    private IConnectorDAO connectorDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -139,13 +137,13 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     private void initConnectorConfiguration() {
-        this.appPropertiesMap.clear();
-        for (AppProperties appProperties : appPropertiesDAO.getAll()) {
-            if (!this.appPropertiesMap.containsKey(appProperties.getMajorId())) {
-                appPropertiesMap.put(appProperties.getMajorId(),
-                        new ArrayList<AppProperties>());
-            }
-            appPropertiesMap.get(appProperties.getMajorId()).add(appProperties);
+        connectors = connectorDAO.getAll();
+        forceLoadConnectors();
+    }
+
+    private void forceLoadConnectors() {
+        for (Connector connector : connectors) {
+            connector.getProperties().size();
         }
     }
 
@@ -189,7 +187,7 @@ public class ConfigurationModel implements IConfigurationModel {
     public void confirm() {
         checkEntitySequences();
         configurationDAO.save(configuration);
-        saveAppProperties();
+        saveConnectors();
         try {
             storeAndRemoveEntitySequences();
         } catch (IllegalStateException e) {
@@ -725,37 +723,29 @@ public class ConfigurationModel implements IConfigurationModel {
         }
     }
 
-    private void saveAppProperties() {
-        for (String appConnectorId : appPropertiesMap.keySet()) {
-            for (AppProperties appProperty : appPropertiesMap
-                    .get(appConnectorId)) {
-                appPropertiesDAO.save(appProperty);
+    private void saveConnectors() {
+        for (Connector connector : connectors) {
+            connectorDAO.save(connector);
+        }
+    }
+
+    @Override
+    public List<Connector> getConnectors() {
+        return Collections.unmodifiableList(connectors);
+    }
+
+    @Override
+    public Connector getConnectorByMajorId(String majorId) {
+        if (majorId == null || connectors == null) {
+            return null;
+        }
+
+        for (Connector connector : connectors) {
+            if (connector.getMajorId().equals(majorId)) {
+                return connector;
             }
         }
-    }
-
-    @Override
-    public Map<String, List<AppProperties>> getAppProperties() {
-        return appPropertiesMap;
-    }
-
-    @Override
-    public void setAppConnectorId(String connectorId) {
-        this.connectorId = connectorId;
-    }
-
-    @Override
-    public String getAppConnectorId() {
-        return connectorId;
-    }
-
-    @Override
-    public List<AppProperties> getAllAppPropertiesByMajorId(
-            String majorConnectorId) {
-        if (appPropertiesMap == null) {
-            return Collections.emptyList();
-        }
-        return appPropertiesMap.get(majorConnectorId);
+        return null;
     }
 
 }

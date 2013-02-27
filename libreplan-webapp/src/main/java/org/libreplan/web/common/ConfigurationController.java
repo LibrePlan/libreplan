@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +42,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.common.entities.AppProperties;
 import org.libreplan.business.common.entities.Configuration;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorProperty;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
@@ -130,9 +132,11 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Radiogroup strategy;
 
-    private Grid appPropertriesGrid;
-
     private Combobox connectorCombo;
+
+    private Grid connectorPropertriesGrid;
+
+    private Connector selectedConnector;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -154,7 +158,6 @@ public class ConfigurationController extends GenericForwardComposer {
         messages = new MessagesForUser(messagesContainer);
         reloadEntitySequences();
         loadRoleStrategyRows();
-        reloadAppPropertyConnectors();
     }
 
     public void changeRoleStrategy() {
@@ -227,6 +230,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 messages.showMessage(Level.INFO, _("Changes saved"));
                 reloadWindow();
                 reloadEntitySequences();
+                reloadConnectors();
             } catch (ValidationException e) {
                 messages.showInvalidValues(e);
             } catch (ConcurrentModificationException e) {
@@ -234,6 +238,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 configurationModel.init();
                 reloadWindow();
                 reloadEntitySequences();
+                reloadConnectors();
             }
         }
     }
@@ -243,6 +248,7 @@ public class ConfigurationController extends GenericForwardComposer {
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
         reloadEntitySequences();
+        reloadConnectors();
     }
 
     public void testLDAPConnection() {
@@ -316,18 +322,21 @@ public class ConfigurationController extends GenericForwardComposer {
      * Tests connection
      */
     public void testConnection() {
-        String connectorId = getSelectedConnector();
-        if (connectorId == null || connectorId.isEmpty()) {
+        if (selectedConnector == null) {
             messages.showMessage(Level.ERROR,
                     _("Please select a connector to test it"));
             return;
         }
-        Map<String, String> appProperties = getAppProperties(connectorId);
-        String url = appProperties.get("Server");
-        String username = appProperties.get("Username");
-        String password = appProperties.get("Password");
 
-        if (connectorId.equals("Tim")) {
+        Map<String, String> properties = selectedConnector.getPropertiesAsMap();
+        String url = properties.get(PredefinedConnectorProperties.SERVER_URL);
+        String username = properties
+                .get(PredefinedConnectorProperties.USERNAME);
+        String password = properties
+                .get(PredefinedConnectorProperties.PASSWORD);
+
+        if (selectedConnector.getMajorId().equals(
+                PredefinedConnectors.TIM.getMajorId())) {
             testTimConnection(url, username, password);
         } else {
             throw new RuntimeException("Unknown connector");
@@ -352,16 +361,6 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
-
-    private Map<String, String> getAppProperties(String majorConnectorId) {
-        List<AppProperties> appProperties = configurationModel
-                .getAllAppPropertiesByMajorId(majorConnectorId);
-        Map<String, String> map = new HashMap<String, String>();
-        for (AppProperties appProp : appProperties) {
-            map.put(appProp.getPropertyName(), appProp.getPropertyValue());
-        }
-        return map;
-    }
 
     private boolean checkValidEntitySequenceRows() {
         Rows rows = entitySequencesGrid.getRows();
@@ -404,6 +403,14 @@ public class ConfigurationController extends GenericForwardComposer {
         entitySequencesGrid.setModel(new SimpleListModel(
                 getAllEntitySequences().toArray()));
         entitySequencesGrid.invalidate();
+    }
+
+    private void reloadConnectors() {
+        selectedConnector = configurationModel
+                .getConnectorByMajorId(selectedConnector != null ? selectedConnector
+                        .getMajorId() : null);
+        Util.reloadBindings(connectorCombo);
+        Util.reloadBindings(connectorPropertriesGrid);
     }
 
     public String getCompanyCode() {
@@ -1044,69 +1051,58 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
     }
 
-    private void reloadAppPropertyConnectors() {
-        getAppPropertyConnectors();
+    public List<Connector> getConnectors() {
+        return configurationModel.getConnectors();
     }
 
-    public Set<String> getAppPropertyConnectors() {
-        return getAllAppProperties().keySet();
+    public Connector getSelectedConnector() {
+        return selectedConnector;
     }
 
-    private Map<String, List<AppProperties>> getAllAppProperties() {
-        return configurationModel.getAppProperties();
-
+    public void setSelectedConnector(Connector connector) {
+        selectedConnector = connector;
+        Util.reloadBindings(connectorPropertriesGrid);
     }
 
-    public String getSelectedConnector() {
-        String connectorId = configurationModel.getAppConnectorId();
-        return connectorId;
-    }
-
-    public void setSelectedConnector(String connectorId) {
-        configurationModel.setAppConnectorId(connectorId);
-        Util.reloadBindings(appPropertriesGrid);
-    }
-
-    public List<AppProperties> getAppPropertries() {
-        String appConnectorId = configurationModel.getAppConnectorId();
-        if (StringUtils.isEmpty(appConnectorId)) {
+    public List<ConnectorProperty> getConnectorPropertries() {
+        if (selectedConnector == null) {
             return Collections.emptyList();
         }
-        return configurationModel.getAllAppPropertiesByMajorId(appConnectorId);
+        return selectedConnector.getProperties();
     }
 
-    public RowRenderer getAppPropertriesRenderer() {
+    public RowRenderer getConnectorPropertriesRenderer() {
         return new RowRenderer() {
             @Override
             public void render(Row row, Object data) {
-                AppProperties appProperties = (AppProperties) data;
-                row.setValue(appProperties);
+                ConnectorProperty property = (ConnectorProperty) data;
+                row.setValue(property);
 
-                Util.appendLabel(row, appProperties.getPropertyName());
-                appendValueTextbox(row, appProperties);
+                Util.appendLabel(row, _(property.getKey()));
+                appendValueTextbox(row, property);
             }
 
             private void appendValueTextbox(Row row,
-                    final AppProperties appProperties) {
+                    final ConnectorProperty property) {
                 final Textbox textbox = new Textbox();
                 textbox.setWidth("400px");
-                textbox.setConstraint(checkPropertyValue((AppProperties) row
-                        .getValue()));
+                textbox.setConstraint(checkPropertyValue(property));
 
                 Util.bind(textbox, new Util.Getter<String>() {
 
                     @Override
                     public String get() {
-                        return appProperties.getPropertyValue();
+                        return property.getValue();
                     }
                 }, new Util.Setter<String>() {
 
                     @Override
                     public void set(String value) {
-                        appProperties.setPropertyValue(value);
+                        property.setValue(value);
                     }
                 });
-                if (appProperties.getPropertyName().equals("Password")) {
+                if (property.getKey().equals(
+                        PredefinedConnectorProperties.PASSWORD)) {
                     textbox.setType("password");
                 }
 
@@ -1114,23 +1110,26 @@ public class ConfigurationController extends GenericForwardComposer {
             }
 
             public Constraint checkPropertyValue(
-                    final AppProperties appProperties) {
-                final String name = appProperties.getPropertyName();
+                    final ConnectorProperty property) {
+                final String key = property.getKey();
                 return new Constraint() {
                     @Override
                     public void validate(Component comp, Object value) {
-                        if (name.equals("Activated")) {
-                            if (!value.equals("Y") && !value.equals("N")) {
-                                throw new WrongValueException(comp,
-                                        _("Only Y/N allowed"));
+                        if (key.equals(PredefinedConnectorProperties.ACTIVATED)) {
+                            if (!((String) value).equalsIgnoreCase("Y")
+                                    && !((String) value).equalsIgnoreCase("N")) {
+                                throw new WrongValueException(comp, _(
+                                        "Only {0} allowed", "Y/N"));
                             }
-                        } else if (name.equals("Server")
-                                || name.equals("Username")
-                                || name.equals("Password")) {
+                        } else if (key
+                                .equals(PredefinedConnectorProperties.SERVER_URL)
+                                || key.equals(PredefinedConnectorProperties.USERNAME)
+                                || key.equals(PredefinedConnectorProperties.PASSWORD)) {
                             ((InputElement) comp).setConstraint("no empty:"
                                     + _("cannot be empty"));
-                        } else if (name.equals("NrDaysTimesheetToTim")
-                                || name.equals("NrDaysRosterFromTim")) {
+                        } else if (key
+                                .equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET)
+                                || key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER)) {
                             if (!isNumeric((String) value)) {
                                 throw new WrongValueException(comp,
                                         _("Only digits allowed"));

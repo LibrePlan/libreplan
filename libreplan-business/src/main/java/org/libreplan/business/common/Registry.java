@@ -28,6 +28,7 @@ import org.libreplan.business.calendars.daos.ICalendarDataDAO;
 import org.libreplan.business.calendars.daos.ICalendarExceptionDAO;
 import org.libreplan.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
 import org.libreplan.business.costcategories.daos.IHourCostDAO;
@@ -204,6 +205,9 @@ public class Registry {
     private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     @Autowired
+    private IConnectorDAO connectorDAO;
+
+    @Autowired
     private IAdHocTransactionService transactionServiceDAO;
 
     private Registry() {
@@ -377,6 +381,10 @@ public class Registry {
 
     public static IOrderAuthorizationDAO getOrderAuthorizationDAO() {
         return getInstance().orderAuthorizationDAO;
+    }
+
+    public static IConnectorDAO getConnectorDAO() {
+        return getInstance().connectorDAO;
     }
 
 }

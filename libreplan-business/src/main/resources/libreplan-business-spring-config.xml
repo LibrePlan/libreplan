@@ -91,7 +91,7 @@
                     org/libreplan/business/expensesheets/entities/ExpenseSheets.hbm.xml
                 </value>
                 <value>
-                    org/libreplan/business/common/entities/AppProperties.hbm.xml
+                    org/libreplan/business/common/entities/Connector.hbm.xml
                 </value>
                 <value>
                     org/libreplan/business/common/entities/JobSchedulerConfiguration.hbm.xml

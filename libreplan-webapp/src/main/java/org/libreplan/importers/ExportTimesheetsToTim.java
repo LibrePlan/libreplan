@@ -30,8 +30,11 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.business.common.daos.IAppPropertiesDAO;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.daos.IConnectorDAO;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
@@ -83,29 +86,31 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     private IAdHocTransactionService adHocTransactionService;
 
     @Autowired
-    private IAppPropertiesDAO appPropertiesDAO;
+    private IConnectorDAO connectorDAO;
 
     @Autowired
     private IOrderDAO orderDAO;
 
-    private static final String CONNECTOR_MAJOR_ID = "Tim";
-
     @Override
     @Transactional(readOnly = true)
     public void exportTimesheets() {
-        Map<String, String> prop = appPropertiesDAO
-                .findByMajorId(CONNECTOR_MAJOR_ID);
+        String majorId = PredefinedConnectors.TIM.getMajorId();
+        Connector connector = connectorDAO.findUniqueByMajorId(majorId);
+        if (connector == null) {
+            return;
+        }
+
         List<Order> orders = orderDAO.getOrders();
         for (Order order : orders) {
             OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
                     .findLastSynchronizedInfoByOrderAndConnectorId(order,
-                            CONNECTOR_MAJOR_ID);
+                            majorId);
             if (orderSyncInfo == null) {
                 LOG.warn("Order '" + order.getName()
                         + "' is not yet synchronized");
             } else {
                 boolean result = exportTimesheets(orderSyncInfo.getKey(),
-                        orderSyncInfo.getOrder(), prop);
+                        orderSyncInfo.getOrder(), connector);
                 LOG.info("Export successful: " + result);
             }
         }
@@ -120,11 +125,13 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         if (order == null) {
             throw new RuntimeException("Order should not be empty");
         }
+        Connector connector = connectorDAO
+                .findUniqueByMajorId(PredefinedConnectors.TIM.getMajorId());
+        if (connector == null) {
+            throw new RuntimeException("Tim connector not found");
+        }
 
-        Map<String, String> prop = appPropertiesDAO
-                .findByMajorId(CONNECTOR_MAJOR_ID);
-        return exportTimesheets(productCode, order, prop);
-
+        return exportTimesheets(productCode, order, connector);
     }
 
     /**
@@ -134,19 +141,22 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
      *            the product code
      * @param order
      *            the order
-     * @param appProperties
-     *            the app properties
+     * @param connector
+     *            the connector
      *
      * @return true if export is succeeded, false otherwise
      */
     private boolean exportTimesheets(String productCode, Order order,
-            Map<String, String> appProperties) {
+            Connector connector) {
+        Map<String, String> properties = connector.getPropertiesAsMap();
 
-        String url = appProperties.get("Server");
-        String userName = appProperties.get("Username");
-        String password = appProperties.get("Password");
-        int nrDaysTimesheetToTim = Integer.parseInt(appProperties
-                .get("NrDaysTimesheetToTim"));
+        String url = properties.get(PredefinedConnectorProperties.SERVER_URL);
+        String userName = properties
+                .get(PredefinedConnectorProperties.USERNAME);
+        String password = properties
+                .get(PredefinedConnectorProperties.PASSWORD);
+        int nrDaysTimesheetToTim = Integer.parseInt(properties
+                .get(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET));
 
         LocalDate dateNrOfDaysBack = new LocalDate()
                 .minusDays(nrDaysTimesheetToTim);
@@ -219,7 +229,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                     @Override
                     public Void execute() {
                         OrderSyncInfo orderSyncInfo = OrderSyncInfo.create(
-                                order, CONNECTOR_MAJOR_ID);
+                                order, PredefinedConnectors.TIM.getMajorId());
                         orderSyncInfo.setKey(productCode);
                         orderSyncInfoDAO.save(orderSyncInfo);
                         return null;
@@ -276,7 +286,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     @Transactional(readOnly = true)
     public OrderSyncInfo getOrderLastSyncInfo(Order order) {
         return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorId(
-                order, CONNECTOR_MAJOR_ID);
+                order, PredefinedConnectors.TIM.getMajorId());
     }
 
 }

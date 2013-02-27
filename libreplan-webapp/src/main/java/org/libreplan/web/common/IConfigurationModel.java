@@ -22,11 +22,10 @@
 package org.libreplan.web.common;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.common.entities.AppProperties;
+import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
 import org.libreplan.business.common.entities.JiraConfiguration;
@@ -196,12 +195,8 @@ public interface IConfigurationModel {
 
     void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
 
-    Map<String, List<AppProperties>> getAppProperties();
+    List<Connector> getConnectors();
 
-    void setAppConnectorId(String connectorId);
-
-    String getAppConnectorId();
-
-    List<AppProperties> getAllAppPropertiesByMajorId(String majorConnectorId);
+    Connector getConnectorByMajorId(String majorId);
 
 }

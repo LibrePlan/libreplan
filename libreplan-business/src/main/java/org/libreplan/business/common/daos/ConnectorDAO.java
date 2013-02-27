@@ -19,58 +19,57 @@
 
 package org.libreplan.business.common.daos;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.libreplan.business.common.entities.AppProperties;
+import org.libreplan.business.common.entities.Connector;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO for {@link AppProperties}
+ * DAO for {@link Connector} entity.
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class AppPropertiesDAO extends GenericDAOHibernate<AppProperties, Long>
-        implements IAppPropertiesDAO {
+public class ConnectorDAO extends GenericDAOHibernate<Connector, Long>
+        implements IConnectorDAO {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppProperties> getAll() {
-        return list(AppProperties.class);
+    public List<Connector> getAll() {
+        return list(Connector.class);
     }
 
     @Override
     @Transactional(readOnly = true)
-    @SuppressWarnings("unchecked")
-    public Map<String, String> findByMajorId(String majorId) {
-        Criteria c = getSession().createCriteria(AppProperties.class).add(
+    public Connector findUniqueByMajorId(String majorId) {
+        Criteria c = getSession().createCriteria(Connector.class).add(
                 Restrictions.eq("majorId", majorId));
-        List<AppProperties> list = c.list();
-
-        Map<String, String> map = new HashMap<String, String>();
-        for (AppProperties appProperty : list) {
-            map.put(appProperty.getPropertyName(),
-                    appProperty.getPropertyValue());
-        }
-        return map;
-
+        return (Connector) c.uniqueResult();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public AppProperties findByMajorIdAndName(String majorId, String proprtyName) {
-        return (AppProperties) getSession().createCriteria(AppProperties.class)
-                .add(Restrictions.eq("majorId", majorId))
-                .add(Restrictions.eq("propertyName", proprtyName))
-                .uniqueResult();
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameAnotherTransaction(Connector connector) {
+        return existsOtherConnectorByMajorId(connector);
+    }
+
+    private boolean existsOtherConnectorByMajorId(Connector connector) {
+        Connector found = findUniqueByMajorId(connector.getMajorId());
+        return found != null && found != connector;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public Connector findUniqueByMajorIdAnotherTransaction(String majorId) {
+        return findUniqueByMajorId(majorId);
     }
 
 }

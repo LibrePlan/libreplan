@@ -20,21 +20,23 @@
 package org.libreplan.business.common.daos;
 
 import java.util.List;
-import java.util.Map;
 
-import org.libreplan.business.common.entities.AppProperties;
+import org.libreplan.business.common.entities.Connector;
 
 /**
- * Contract for {@link AppPropertiesDAO}
+ * Contract for {@link Conn}
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public interface IAppPropertiesDAO extends IGenericDAO<AppProperties, Long> {
+public interface IConnectorDAO extends IGenericDAO<Connector, Long> {
 
-    List<AppProperties> getAll();
+    List<Connector> getAll();
 
-    Map<String, String> findByMajorId(String majorId);
+    Connector findUniqueByMajorId(String majorId);
 
-    AppProperties findByMajorIdAndName(String majorId, String proprtyName);
+    boolean existsByNameAnotherTransaction(Connector connector);
+
+    Connector findUniqueByMajorIdAnotherTransaction(String majorId);
 
 }

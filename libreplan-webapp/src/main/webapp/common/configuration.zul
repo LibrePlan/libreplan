@@ -462,18 +462,18 @@
                             <hbox pack="center">
                                 <label value="${i18n:_('Select connector')}" />
                                 <combobox id="connectorCombo" autodrop="true"
-                                    model="@{configurationController.appPropertyConnectors}"
+                                    model="@{configurationController.connectors}"
                                     selectedItem="@{configurationController.selectedConnector}">
                                     <comboitem
-                                        self="@{each=appPropertyConnectors}"
-                                        label="@{appPropertyConnectors}"
-                                        value="@{appPropertyConnectors}" />
+                                        self="@{each=connectors}"
+                                        label="@{connectors.majorId}"
+                                        value="@{connectors}" />
                                     </combobox>
                             </hbox>
                             <separator />
-                            <grid id="appPropertriesGrid"
-                                model="@{configurationController.appPropertries}"
-                                rowRenderer="@{configurationController.appPropertriesRenderer}">
+                            <grid id="connectorPropertriesGrid"
+                                model="@{configurationController.connectorPropertries}"
+                                rowRenderer="@{configurationController.connectorPropertriesRenderer}">
                                 <columns>
                                     <column label="${i18n:_('Name')}" width="200px"/>
                                     <column label="${i18n:_('Value')}" />

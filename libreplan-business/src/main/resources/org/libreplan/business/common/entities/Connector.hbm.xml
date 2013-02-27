@@ -3,7 +3,7 @@
 <hibernate-mapping default-access="field"
     package="org.libreplan.business.common.entities">
 
-    <class name="AppProperties" table="app_properties">
+    <class name="Connector" table="connector">
         <id name="id" column="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -13,9 +13,18 @@
         <version name="version" access="property" type="long" />
 
         <property name="majorId" column="major_id" not-null="true" />
-        <property name="minorId" column="minor_id" />
-        <property name="propertyName" column="property_name" not-null="true"/>
-        <property name="propertyValue" column="property_value" not-null="true"/>
+
+        <list name="properties" table="connector_property">
+            <key column="connector_id" />
+            <list-index column="connector_property_position" />
+
+            <composite-element class="ConnectorProperty">
+                <property name="key" column="key"
+                    not-null="true" />
+                <property name="value" column="value" />
+            </composite-element>
+        </list>
+
     </class>
 
 </hibernate-mapping>

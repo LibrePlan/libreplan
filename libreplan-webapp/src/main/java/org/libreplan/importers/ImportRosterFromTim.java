@@ -38,8 +38,11 @@ import org.libreplan.business.calendars.entities.PredefinedCalendarExceptionType
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.business.common.daos.IAppPropertiesDAO;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.daos.IConnectorDAO;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.daos.IWorkerDAO;
@@ -88,7 +91,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     private IWorkerModel workerModel;
 
     @Autowired
-    private IAppPropertiesDAO appPropertiesDAO;
+    private IConnectorDAO connectorDAO;
 
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
@@ -122,19 +125,29 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     @Override
     @Transactional
     public void importRosters() {
-        Map<String, String> prop = appPropertiesDAO.findByMajorId("Tim");
-        String url = prop.get("Server");
-        String userName = prop.get("Username");
-        String password = prop.get("Password");
+        Connector connector = connectorDAO
+                .findUniqueByMajorId(
+                PredefinedConnectors.TIM.getMajorId());
+        if (connector == null) {
+            return;
+        }
 
-        int nrDaysRosterFromTim = Integer.parseInt(prop
-                .get("NrDaysRosterFromTim"));
+        Map<String, String> properties = connector.getPropertiesAsMap();
+        String url = properties.get(PredefinedConnectorProperties.SERVER_URL);
+        String userName = properties
+                .get(PredefinedConnectorProperties.USERNAME);
+        String password = properties
+                .get(PredefinedConnectorProperties.PASSWORD);
 
-        int productivityFactor = Integer.parseInt(prop
-                .get("ProductivityFactor"));
+        int nrDaysRosterFromTim = Integer.parseInt(properties
+                .get(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER));
+
+        int productivityFactor = Integer.parseInt(properties
+                .get(PredefinedConnectorProperties.TIM_PRODUCTIVITY_FACTOR));
 
 
-        String departmentIds = prop.get("DepartmentIdsToImportRoster");
+        String departmentIds = properties
+                .get(PredefinedConnectorProperties.TIM_DEPARTAMENTS_IMPORT_ROSTER);
 
         if (StringUtils.isEmpty(departmentIds)) {
             LOG.warn("No departments configured");

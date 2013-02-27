@@ -19,7 +19,7 @@
 
 package org.libreplan.importers;
 
-import org.libreplan.business.common.entities.AppProperties;
+import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderSyncInfo;
 
@@ -28,8 +28,8 @@ import org.libreplan.business.orders.entities.OrderSyncInfo;
  * {@link TimSoapClient}.
  *
  * It exports the time sheets between periods current-date minus
- * <code>NrDaysTimesheetToTim</code> specified in configuration entity
- * {@link AppProperties} and the current-date
+ * <code>NrDaysTimesheetToTim</code> specified in the Tim {@link Connector} and
+ * the current-date
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
