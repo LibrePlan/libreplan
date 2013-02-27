@@ -12,7 +12,7 @@
 
         <version name="version" access="property" type="long" />
 
-        <property name="majorId" column="major_id" not-null="true" />
+        <property name="name" column="name" not-null="true" />
 
         <list name="properties" table="connector_property">
             <key column="connector_id" />

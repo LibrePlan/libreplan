@@ -335,8 +335,8 @@ public class ConfigurationController extends GenericForwardComposer {
         String password = properties
                 .get(PredefinedConnectorProperties.PASSWORD);
 
-        if (selectedConnector.getMajorId().equals(
-                PredefinedConnectors.TIM.getMajorId())) {
+        if (selectedConnector.getName().equals(
+                PredefinedConnectors.TIM.getName())) {
             testTimConnection(url, username, password);
         } else {
             throw new RuntimeException("Unknown connector");
@@ -407,8 +407,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private void reloadConnectors() {
         selectedConnector = configurationModel
-                .getConnectorByMajorId(selectedConnector != null ? selectedConnector
-                        .getMajorId() : null);
+                .getConnectorByName(selectedConnector != null ? selectedConnector
+                        .getName() : null);
         Util.reloadBindings(connectorCombo);
         Util.reloadBindings(connectorPropertriesGrid);
     }

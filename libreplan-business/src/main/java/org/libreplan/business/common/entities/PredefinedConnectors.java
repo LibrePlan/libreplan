@@ -42,17 +42,17 @@ public enum PredefinedConnectors {
         ConnectorProperty.create(PredefinedConnectorProperties.TIM_DEPARTAMENTS_IMPORT_ROSTER, "0")
     );
 
-    private String majorId;
+    private String name;
     private List<ConnectorProperty> properties;
 
-    private PredefinedConnectors(String majorId,
+    private PredefinedConnectors(String name,
             ConnectorProperty... properties) {
-        this.majorId = majorId;
+        this.name = name;
         this.properties = Arrays.asList(properties);
     }
 
-    public String getMajorId() {
-        return majorId;
+    public String getName() {
+        return name;
     }
 
     public List<ConnectorProperty> getProperties() {

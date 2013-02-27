@@ -126,8 +126,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     @Transactional
     public void importRosters() {
         Connector connector = connectorDAO
-                .findUniqueByMajorId(
-                PredefinedConnectors.TIM.getMajorId());
+                .findUniqueByName(
+                PredefinedConnectors.TIM.getName());
         if (connector == null) {
             return;
         }

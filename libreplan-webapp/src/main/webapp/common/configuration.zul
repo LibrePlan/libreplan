@@ -466,7 +466,7 @@
                                     selectedItem="@{configurationController.selectedConnector}">
                                     <comboitem
                                         self="@{each=connectors}"
-                                        label="@{connectors.majorId}"
+                                        label="@{connectors.name}"
                                         value="@{connectors}" />
                                     </combobox>
                             </hbox>

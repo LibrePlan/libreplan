@@ -33,10 +33,10 @@ public interface IConnectorDAO extends IGenericDAO<Connector, Long> {
 
     List<Connector> getAll();
 
-    Connector findUniqueByMajorId(String majorId);
+    Connector findUniqueByName(String name);
 
     boolean existsByNameAnotherTransaction(Connector connector);
 
-    Connector findUniqueByMajorIdAnotherTransaction(String majorId);
+    Connector findUniqueByNameAnotherTransaction(String name);
 
 }

@@ -735,13 +735,13 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public Connector getConnectorByMajorId(String majorId) {
-        if (majorId == null || connectors == null) {
+    public Connector getConnectorByName(String name) {
+        if (name == null || connectors == null) {
             return null;
         }
 
         for (Connector connector : connectors) {
-            if (connector.getMajorId().equals(majorId)) {
+            if (connector.getName().equals(name)) {
                 return connector;
             }
         }

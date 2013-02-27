@@ -37,9 +37,8 @@ import org.libreplan.business.common.daos.IConnectorDAO;
  * Connector entity, represents a connector in order that LibrePlan interchange
  * some data with other application.
  *
- * A connector is identified by a string called <code>majorId</code> and it has
- * a list of pairs key-value in order to store the configuration parameters of
- * the connector.
+ * A connector is identified by a <code>name</code> and it has a list of pairs
+ * key-value in order to store the configuration parameters of the connector.
  *
  * This entity should be used to create new connectors in LibrePlan.
  *
@@ -48,11 +47,11 @@ import org.libreplan.business.common.daos.IConnectorDAO;
  */
 public class Connector extends BaseEntity {
 
-    public static Connector create(String majorId) {
-        return create(new Connector(majorId));
+    public static Connector create(String name) {
+        return create(new Connector(name));
     }
 
-    private String majorId;
+    private String name;
 
     private List<ConnectorProperty> properties = new ArrayList<ConnectorProperty>();
 
@@ -62,17 +61,17 @@ public class Connector extends BaseEntity {
     protected Connector() {
     }
 
-    private Connector(String majorId) {
-        this.majorId = majorId;
+    private Connector(String name) {
+        this.name = name;
     }
 
-    @NotEmpty(message = "major id not specified")
-    public String getMajorId() {
-        return majorId;
+    @NotEmpty(message = "name not specified")
+    public String getName() {
+        return name;
     }
 
-    public void setMajorId(String majorId) {
-        this.majorId = majorId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Valid
@@ -96,9 +95,9 @@ public class Connector extends BaseEntity {
         return map;
     }
 
-    @AssertTrue(message = "connector major id is already being used")
-    public boolean checkConstraintUniqueConnectorMajorId() {
-        if (StringUtils.isBlank(majorId)) {
+    @AssertTrue(message = "connector name is already being used")
+    public boolean checkConstraintUniqueConnectorName() {
+        if (StringUtils.isBlank(name)) {
             return true;
         }
 
@@ -107,7 +106,7 @@ public class Connector extends BaseEntity {
             return !connectorDAO.existsByNameAnotherTransaction(this);
         } else {
             Connector found = connectorDAO
-                    .findUniqueByMajorIdAnotherTransaction(majorId);
+                    .findUniqueByNameAnotherTransaction(name);
             return found == null || found.getId().equals(getId());
         }
 

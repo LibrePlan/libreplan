@@ -49,27 +49,27 @@ public class ConnectorDAO extends GenericDAOHibernate<Connector, Long>
 
     @Override
     @Transactional(readOnly = true)
-    public Connector findUniqueByMajorId(String majorId) {
+    public Connector findUniqueByName(String name) {
         Criteria c = getSession().createCriteria(Connector.class).add(
-                Restrictions.eq("majorId", majorId));
+                Restrictions.eq("name", name));
         return (Connector) c.uniqueResult();
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public boolean existsByNameAnotherTransaction(Connector connector) {
-        return existsOtherConnectorByMajorId(connector);
+        return existsOtherConnectorByName(connector);
     }
 
-    private boolean existsOtherConnectorByMajorId(Connector connector) {
-        Connector found = findUniqueByMajorId(connector.getMajorId());
+    private boolean existsOtherConnectorByName(Connector connector) {
+        Connector found = findUniqueByName(connector.getName());
         return found != null && found != connector;
     }
 
     @Override
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public Connector findUniqueByMajorIdAnotherTransaction(String majorId) {
-        return findUniqueByMajorId(majorId);
+    public Connector findUniqueByNameAnotherTransaction(String name) {
+        return findUniqueByName(name);
     }
 
 }

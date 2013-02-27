@@ -43,11 +43,11 @@ public class ConnectorBootstrap implements IConnectorBootstrap {
     public void loadRequiredData() {
         for (PredefinedConnectors predefinedConnector : PredefinedConnectors
                 .values()) {
-            String majorId = predefinedConnector.getMajorId();
+            String name = predefinedConnector.getName();
 
-            Connector connector = connectorDAO.findUniqueByMajorId(majorId);
+            Connector connector = connectorDAO.findUniqueByName(name);
             if (connector == null) {
-                connector = Connector.create(majorId);
+                connector = Connector.create(name);
                 connector.setProperties(predefinedConnector.getProperties());
                 connectorDAO.save(connector);
             }

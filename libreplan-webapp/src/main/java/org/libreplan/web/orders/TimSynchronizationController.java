@@ -104,7 +104,7 @@ public class TimSynchronizationController extends GenericForwardComposer {
 
     public boolean isTimActivated() {
         Connector connector = connectorDAO
-                .findUniqueByMajorId(PredefinedConnectors.TIM.getMajorId());
+                .findUniqueByName(PredefinedConnectors.TIM.getName());
         if (connector == null) {
             return false;
         }

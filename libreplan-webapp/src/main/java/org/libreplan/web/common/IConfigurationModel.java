@@ -197,6 +197,6 @@ public interface IConfigurationModel {
 
     List<Connector> getConnectors();
 
-    Connector getConnectorByMajorId(String majorId);
+    Connector getConnectorByName(String name);
 
 }

@@ -94,8 +94,8 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     @Override
     @Transactional(readOnly = true)
     public void exportTimesheets() {
-        String majorId = PredefinedConnectors.TIM.getMajorId();
-        Connector connector = connectorDAO.findUniqueByMajorId(majorId);
+        String name = PredefinedConnectors.TIM.getName();
+        Connector connector = connectorDAO.findUniqueByName(name);
         if (connector == null) {
             return;
         }
@@ -104,7 +104,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         for (Order order : orders) {
             OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
                     .findLastSynchronizedInfoByOrderAndConnectorId(order,
-                            majorId);
+                            name);
             if (orderSyncInfo == null) {
                 LOG.warn("Order '" + order.getName()
                         + "' is not yet synchronized");
@@ -126,7 +126,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             throw new RuntimeException("Order should not be empty");
         }
         Connector connector = connectorDAO
-                .findUniqueByMajorId(PredefinedConnectors.TIM.getMajorId());
+                .findUniqueByName(PredefinedConnectors.TIM.getName());
         if (connector == null) {
             throw new RuntimeException("Tim connector not found");
         }
@@ -229,7 +229,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                     @Override
                     public Void execute() {
                         OrderSyncInfo orderSyncInfo = OrderSyncInfo.create(
-                                order, PredefinedConnectors.TIM.getMajorId());
+                                order, PredefinedConnectors.TIM.getName());
                         orderSyncInfo.setKey(productCode);
                         orderSyncInfoDAO.save(orderSyncInfo);
                         return null;
@@ -286,7 +286,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     @Transactional(readOnly = true)
     public OrderSyncInfo getOrderLastSyncInfo(Order order) {
         return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorId(
-                order, PredefinedConnectors.TIM.getMajorId());
+                order, PredefinedConnectors.TIM.getName());
     }
 
 }
