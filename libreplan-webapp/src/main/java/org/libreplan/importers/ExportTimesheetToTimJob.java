@@ -18,36 +18,28 @@
  */
 
 package org.libreplan.importers;
+
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.stereotype.Component;
 
 /**
  * A job that exports time sheets to Tim SOAP server
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-@Component
-@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ExportTimesheetToTimJob extends QuartzJobBean {
-
-    private IExportTimesheetsToTim exportTimesheetsToTim;
-
-    public IExportTimesheetsToTim getExportTimesheetsToTim() {
-        return exportTimesheetsToTim;
-    }
-
-    public void setExportTimesheetsToTim(
-            IExportTimesheetsToTim exportTimesheetsToTim) {
-        this.exportTimesheetsToTim = exportTimesheetsToTim;
-    }
 
     @Override
     protected void executeInternal(JobExecutionContext context)
             throws JobExecutionException {
+        ApplicationContext applicationContext = (ApplicationContext) context
+                .getJobDetail().getJobDataMap().get("applicationContext");
+
+        IExportTimesheetsToTim exportTimesheetsToTim = (IExportTimesheetsToTim) applicationContext
+                .getBean("exportTimesheetsToTim");
+
         exportTimesheetsToTim.exportTimesheets();
     }
 

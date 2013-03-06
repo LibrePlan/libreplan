@@ -20,26 +20,30 @@
 package org.libreplan.importers;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.daos.IJobSchedulerConfigurationDAO;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.JobClassNameEnum;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
+import org.libreplan.web.common.IConfigurationModel;
 import org.quartz.CronExpression;
 import org.quartz.CronTrigger;
+import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.quartz.CronTriggerBean;
 import org.springframework.scheduling.quartz.JobDetailBean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of scheduler manager
@@ -56,13 +60,19 @@ public class SchedulerManager implements ISchedulerManager {
     private Scheduler scheduler;
 
     @Autowired
-    private IImportRosterFromTim importRosterFromTim;
-
-    @Autowired
-    private IExportTimesheetsToTim exportTimesheetsToTim;
-
-    @Autowired
     private IJobSchedulerConfigurationDAO jobSchedulerConfigurationDAO;
+
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Autowired
+    private IConfigurationModel configurationModel;
+
+
+    /**
+     * suffix for trigger -group and -name
+     */
+    private static final String TRIGGER_SUFFIX = "-TRIGGER";
 
     public Scheduler getScheduler() {
         return scheduler;
@@ -77,40 +87,163 @@ public class SchedulerManager implements ISchedulerManager {
         List<JobSchedulerConfiguration> jobSchedulerConfigurations = jobSchedulerConfigurationDAO
                 .getAll();
         for (JobSchedulerConfiguration conf : jobSchedulerConfigurations) {
-            CronTriggerBean cronTriggerBean = createCronTriggerBean(
-                    conf.getTriggerGroup(), conf.getTriggerName(),
-                    conf.getCronExpression());
-            if (cronTriggerBean != null) {
-                cronTriggerBean.setJobName(conf.getJobName());
-                cronTriggerBean.setJobGroup(conf.getJobGroup());
-                JobDetailBean jobDetailBean = createJobDetailBean(
-                        conf.getJobName(), conf.getJobGroup(),
-                        conf.getJobClassName());
-                if (jobDetailBean != null) {
-                    scheduleJob(jobDetailBean, cronTriggerBean);
-                }
+            try {
+                scheduleOrUnscheduleJob(conf);
+            } catch (SchedulerException e) {
+                LOG.error("Unable to schedule", e);
             }
         }
     }
 
+    @Override
+    public void scheduleOrUnscheduleJob(
+            JobSchedulerConfiguration jobSchedulerConfiguration) throws SchedulerException {
+
+        if (hasConnector(jobSchedulerConfiguration.getConnectorName())) {
+            if (isConnectorActivated(jobSchedulerConfiguration
+                    .getConnectorName())) {
+                if (jobSchedulerConfiguration.isSchedule()) {
+                    scheduleNewJob(jobSchedulerConfiguration);
+                    return;
+                }
+            }
+            deleteJob(jobSchedulerConfiguration);
+            return;
+        }
+        if (!jobSchedulerConfiguration.isSchedule()) {
+            deleteJob(jobSchedulerConfiguration);
+            return;
+        }
+        scheduleNewJob(jobSchedulerConfiguration);
+    }
+
     /**
-     * Creates and returns {@link CronTriggerBean}
+     * Check if {@link JobSchedulerConfiguration} has a connector
      *
-     * @param triggerGroup
-     *            the trigger group
-     * @param triggerName
-     *            the trigger name
-     * @param cronExpression
-     *            the cron expression string
+     * @param connectorName
+     *            the connector to check for
+     * @return true if connector is not null or empty
      */
-    private CronTriggerBean createCronTriggerBean(String triggerGroup,
-            String triggerName, String cronExpression) {
-        CronTriggerBean cronTriggerBean = new CronTriggerBean();
-        cronTriggerBean.setGroup(triggerGroup);
-        cronTriggerBean.setName(triggerName);
+    private boolean hasConnector(String connectorName) {
+        return !StringUtils.isBlank(connectorName);
+    }
+
+    /**
+     * Check if the specified <code>{@link Connector}</code> is activated
+     *
+     * @param connectorName
+     *            the connector to check for activated
+     * @return true if activated
+     */
+    private boolean isConnectorActivated(String connectorName) {
+        configurationModel.initConnectorConfiguration();
+
+        Connector connector = configurationModel
+                .getConnectorByName(connectorName);
+        if (connector == null) {
+            return false;
+        }
+        return connector.isActivated();
+    }
+
+    @Override
+    public void deleteJob(JobSchedulerConfiguration jobSchedulerConfiguration) throws SchedulerException {
+        String triggerName = jobSchedulerConfiguration.getJobName()
+                + TRIGGER_SUFFIX;
+        String triggerGroup = jobSchedulerConfiguration.getJobGroup()
+                + TRIGGER_SUFFIX;
+
+        CronTriggerBean trigger = getTriggerBean(triggerName, triggerGroup);
+        if (trigger == null) {
+            LOG.warn("Trigger not found");
+            return;
+        }
+
+        if (isJobCurrentlyExecuting(triggerName, triggerGroup)) {
+            LOG.warn("Job is currently executing...");
+            return;
+        }
+
+        // deleteJob doesn't work using unscheduleJob
+        this.scheduler.unscheduleJob(trigger.getName(), trigger.getGroup());
+    }
+
+    /**
+     * Checks if job is currently running for the specified
+     * <code>triggerName</code> and <code>triggerGroup</code>
+     *
+     * @param triggerName
+     *            the triggerName
+     * @param triggerGroup
+     *            the triggerGroup
+     * @return true if job is currently running, otherwise false
+     */
+    @SuppressWarnings("unchecked")
+    private boolean isJobCurrentlyExecuting(String triggerName,
+            String triggerGroup) {
         try {
+            List<JobExecutionContext> currentExecutingJobs = this.scheduler
+                    .getCurrentlyExecutingJobs();
+            for (JobExecutionContext jobExecutionContext : currentExecutingJobs) {
+                String name = jobExecutionContext.getTrigger().getName();
+                String group = jobExecutionContext.getTrigger().getGroup();
+                if (triggerName.equals(name) && triggerGroup.equals(group)) {
+                    return true;
+                }
+            }
+        } catch (SchedulerException e) {
+            LOG.error("Unable to get currently executing jobs", e);
+        }
+        return false;
+    }
+
+    /**
+     * Creates {@link CronTriggerBean} and {@link JobDetailBean} based on the
+     * specified <code>{@link JobSchedulerConfiguration}</code>. First delete
+     * job if exist and then schedule it
+     *
+     * @param jobSchedulerConfiguration
+     *            where to reade jobs to be scheduled
+     * @throws SchedulerException
+     *             if unable to delete and/or schedule job
+     */
+    private void scheduleNewJob(
+            JobSchedulerConfiguration jobSchedulerConfiguration) throws SchedulerException {
+        CronTriggerBean cronTriggerBean = createCronTriggerBean(jobSchedulerConfiguration);
+        if (cronTriggerBean == null) {
+            return;
+        }
+
+        JobDetailBean jobDetailBean = createJobDetailBean(jobSchedulerConfiguration);
+        if (jobDetailBean == null) {
+            return;
+        }
+        deleteJob(jobSchedulerConfiguration);
+        this.scheduler.scheduleJob(jobDetailBean, cronTriggerBean);
+    }
+
+    /**
+     * Creates {@link CronTriggerBean} from the specified
+     * <code>{@link JobSchedulerConfiguration}</code>
+     *
+     * @param jobSchedulerConfiguration
+     *            configuration to create <code>CronTriggerBean</>
+     * @return the created <code>CronTriggerBean</code> or null if unable to
+     *         create it
+     */
+    private CronTriggerBean createCronTriggerBean(
+            JobSchedulerConfiguration jobSchedulerConfiguration) {
+        CronTriggerBean cronTriggerBean = new CronTriggerBean();
+        cronTriggerBean.setName(jobSchedulerConfiguration.getJobName() + TRIGGER_SUFFIX);
+        cronTriggerBean.setGroup(jobSchedulerConfiguration.getJobGroup()
+                + TRIGGER_SUFFIX);
+
+        try {
+            cronTriggerBean.setCronExpression(new CronExpression(
+                    jobSchedulerConfiguration.getCronExpression()));
+            cronTriggerBean.setJobName(jobSchedulerConfiguration.getJobName());
             cronTriggerBean
-                    .setCronExpression(new CronExpression(cronExpression));
+                    .setJobGroup(jobSchedulerConfiguration.getJobGroup());
             return cronTriggerBean;
         } catch (ParseException e) {
             LOG.error("Unable to parse cron expression", e);
@@ -119,56 +252,33 @@ public class SchedulerManager implements ISchedulerManager {
     }
 
     /**
-     * Creates and returns {@link JobDetailBean}
+     * Creates {@link JobDetailBean} from the specified
+     * <code>{@link JobSchedulerConfiguration}</code>
      *
-     * @param jobName
-     *            the job name
-     * @param jobGroup
-     *            the job group
-     * @param jobClassName
-     *            the job classname
+     * @param jobSchedulerConfiguration
+     *            configuration to create <code>JobDetailBean</>
+     * @return the created <code>JobDetailBean</code> or null if unable to it
      */
-    private JobDetailBean createJobDetailBean(String jobName, String jobGroup,
-            String jobClassName) {
+    private JobDetailBean createJobDetailBean(
+            JobSchedulerConfiguration jobSchedulerConfiguration) {
         JobDetailBean jobDetailBean = new JobDetailBean();
 
-        Class jobClass = getJobClass(jobClassName);
+        Class<?> jobClass = getJobClass(jobSchedulerConfiguration
+                .getJobClassName());
         if (jobClass == null) {
-            LOG.error("JobClass '" + jobClassName + "' not found");
             return null;
         }
-        jobDetailBean.setGroup(jobGroup);
-        jobDetailBean.setName(jobName);
+
+        jobDetailBean.setName(jobSchedulerConfiguration.getJobName());
+        jobDetailBean.setGroup(jobSchedulerConfiguration.getJobGroup());
         jobDetailBean.setJobClass(jobClass);
 
         Map<String, Object> jobDataAsMap = new HashMap<String, Object>();
-        if (jobDetailBean.getJobClass().getSimpleName()
-                .equals("ImportRosterFromTimJob")) {
-            jobDataAsMap.put("importRosterFromTim", importRosterFromTim);
-        } else {
-            jobDataAsMap.put("exportTimesheetsToTim", exportTimesheetsToTim);
-        }
+        jobDataAsMap.put("applicationContext", applicationContext);
         jobDetailBean.setJobDataAsMap(jobDataAsMap);
         return jobDetailBean;
     }
 
-    /**
-     * Schedules the job specified by <code>{@link JobDetailBean}</code> and
-     * link it with the specified <code>{@link CronTriggerBean}</code>
-     *
-     * @param jobDetailBean
-     *            the jobDetailBean
-     * @param cronTriggerBean
-     *            the cronTriggerBean
-     */
-    private void scheduleJob(JobDetailBean jobDetailBean,
-            CronTriggerBean cronTriggerBean) {
-        try {
-            this.scheduler.scheduleJob(jobDetailBean, cronTriggerBean);
-        } catch (SchedulerException e) {
-            LOG.error("unable to schedule job", e);
-        }
-    }
 
     /**
      * returns jobClass based on <code>jobClassName</code> parameter
@@ -176,79 +286,52 @@ public class SchedulerManager implements ISchedulerManager {
      * @param jobClassName
      *            job className
      */
-    private Class getJobClass(String jobClassName) {
-        if (jobClassName.equals("ImportRosterFromTimJob")) {
-            return org.libreplan.importers.ImportRosterFromTimJob.class;
+    private Class<?> getJobClass(JobClassNameEnum jobClassName) {
+        try {
+            return Class.forName(jobClassName.getPackageName() + "."
+                    + jobClassName.getName());
+        } catch (ClassNotFoundException e) {
+            LOG.error("Unable to get class object '" + jobClassName + "'", e);
         }
-
-        if (jobClassName.equals("ExportTimesheetToTimJob")) {
-            return org.libreplan.importers.ExportTimesheetToTimJob.class;
-        }
-
         return null;
     }
 
     @Override
-    public void rescheduleJob(JobSchedulerConfiguration jobSchedulerConfiguration) {
-        CronTriggerBean cronTriggerBean = createCronTriggerBean(
-                jobSchedulerConfiguration.getTriggerGroup(),
-                jobSchedulerConfiguration.getTriggerName(),
-                jobSchedulerConfiguration.getCronExpression());
-        cronTriggerBean.setName(jobSchedulerConfiguration.getTriggerName());
-        cronTriggerBean.setGroup(jobSchedulerConfiguration.getTriggerGroup());
+    public String getNextFireTime(
+            JobSchedulerConfiguration jobSchedulerConfiguration) {
         try {
-            cronTriggerBean.setCronExpression(jobSchedulerConfiguration
-                    .getCronExpression());
-        } catch (ParseException e) {
-            throw new RuntimeException("Invalid cron expression");
-        }
-        cronTriggerBean.setJobName(jobSchedulerConfiguration.getJobName());
-        cronTriggerBean.setJobGroup(jobSchedulerConfiguration.getJobGroup());
-        try {
-            scheduler.rescheduleJob(jobSchedulerConfiguration.getTriggerName(),
-                    jobSchedulerConfiguration.getTriggerGroup(),
-                    cronTriggerBean);
-        } catch (SchedulerException e) {
-            throw new RuntimeException("Unable to reschedule the job");
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<SchedulerInfo> getSchedulerInfos() {
-        List<JobSchedulerConfiguration> jobSchedulerConfigurations = jobSchedulerConfigurationDAO
-                .getAll();
-        List<SchedulerInfo> results = new ArrayList<SchedulerInfo>();
-        for (JobSchedulerConfiguration jobSchedulerConfiguration : jobSchedulerConfigurations) {
-            SchedulerInfo schedulerInfo = new SchedulerInfo();
-            schedulerInfo
-                    .setJobSchedulerConfiguration(jobSchedulerConfiguration);
-            try {
-                CronTrigger trigger = (CronTrigger) scheduler.getTrigger(
-                        jobSchedulerConfiguration.getTriggerName(),
-                        jobSchedulerConfiguration.getTriggerGroup());
-                if (trigger != null) {
-                    schedulerInfo.setNextFireTime(trigger.getNextFireTime()
-                            .toString());
-                }
-                results.add(schedulerInfo);
-            } catch (SchedulerException e) {
-                LOG.error("unable to get the trigger");
+            CronTrigger trigger = (CronTrigger) this.scheduler.getTrigger(
+                    jobSchedulerConfiguration.getJobName() + TRIGGER_SUFFIX,
+                    jobSchedulerConfiguration.getJobGroup()
+                            + TRIGGER_SUFFIX);
+            if (trigger != null) {
+                return trigger.getNextFireTime().toString();
             }
+        } catch (SchedulerException e) {
+            LOG.error("unable to get the trigger", e);
         }
-        return results;
+        return "";
     }
 
-    @Override
-    public void doManual(String jobName) {
-        if (jobName.equals("Import roster from Tim")) {
-            importRosterFromTim.importRosters();
-            return;
+    /**
+     * gets the {@link CronTriggerBean} for the specified
+     * <code>triggerName</code> and <code>tirggerGroup</code>
+     *
+     * @param triggerName
+     *            the trigger name
+     * @param triggerGroup
+     *            the trigger group
+     * @return CronTriggerBean if found, otherwise null
+     */
+    private CronTriggerBean getTriggerBean(String triggerName,
+            String triggerGroup) {
+        try {
+            return (CronTriggerBean) this.scheduler.getTrigger(triggerName,
+                    triggerGroup);
+        } catch (SchedulerException e) {
+            LOG.error("Unable to get job trigger", e);
         }
-
-        if (jobName.equals("Export timesheet to Tim")) {
-            exportTimesheetsToTim.exportTimesheets();
-            return;
-        }
+        return null;
     }
+
 }

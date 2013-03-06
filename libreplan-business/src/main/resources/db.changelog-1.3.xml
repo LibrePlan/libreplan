@@ -378,7 +378,6 @@
             referencedTableName="connector"
             referencesUniqueColumn="false"/>
     </changeSet>
-
     <!-- scheduler configuration -->
     <changeSet author="miciele" id="create-table-job-scheduler-configuration">
         <comment>Create new table job_scheduler_configuration</comment>
@@ -395,39 +394,14 @@
             <column name="job_name" type="VARCHAR(255)" >
                 <constraints nullable="false" primaryKey="true" />
             </column>
-            <column name="trigger_group" type="VARCHAR(255)" >
-                <constraints nullable="false" />
-            </column>
-            <column name="trigger_name" type="VARCHAR(255)" >
-                <constraints nullable="false" />
-            </column>
             <column name="cron_expression" type="VARCHAR(255)" >
                 <constraints nullable="false" />
             </column>
-            <column name="job_class_name" type="VARCHAR(255)" >
+            <column name="job_class_name" type="INTEGER" >
                 <constraints nullable="false" />
             </column>
+            <column name="connector_name" type="VARCHAR(255)" />
+            <column name="schedule" type="BOOLEAN" />
        </createTable>
     </changeSet>
-    <changeSet author="miciele" id="insert-predefined-jobs">
-        <comment>Insert jobs to be scheduled with default cron-expression</comment>
-        <insert tableName="job_scheduler_configuration">
-            <column name="version" value="0"/>
-            <column name="job_group" value="Tim"/>
-            <column name="job_name" value="Import roster from Tim" />
-            <column name="trigger_group" value="TimTrigger" />
-            <column name="trigger_name" value="Import roster from Tim-trigger" />
-            <column name="cron_expression" value="0 59 22 ? * *" />
-            <column name="job_class_name" value="ImportRosterFromTimJob" />
-        </insert>
-        <insert tableName="job_scheduler_configuration">
-            <column name="version" value="0"/>
-            <column name="job_group" value="Tim"/>
-            <column name="job_name" value="Export timesheet to Tim" />
-            <column name="trigger_group" value="TimTrigger" />
-            <column name="trigger_name" value="Export timesheet to Tim-trigger" />
-            <column name="cron_expression" value="0 59 23 ? * *" />
-            <column name="job_class_name" value="ExportTimesheetToTimJob" />
-       </insert>
-  </changeSet>
 </databaseChangeLog>

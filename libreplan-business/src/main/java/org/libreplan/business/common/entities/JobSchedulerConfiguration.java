@@ -21,6 +21,7 @@ package org.libreplan.business.common.entities;
 
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.common.IHumanIdentifiable;
 
 /**
  * JobSchedulerConfiguration entity, represents parameters for the jobs to be
@@ -33,7 +34,8 @@ import org.libreplan.business.common.BaseEntity;
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-public class JobSchedulerConfiguration extends BaseEntity {
+public class JobSchedulerConfiguration extends BaseEntity implements
+        IHumanIdentifiable {
 
     public static JobSchedulerConfiguration create() {
         return create(new JobSchedulerConfiguration());
@@ -49,13 +51,13 @@ public class JobSchedulerConfiguration extends BaseEntity {
 
     private String jobName;
 
-    private String triggerGroup;
-
-    private String triggerName;
-
     private String cronExpression;
 
-    private String jobClassName;
+    private JobClassNameEnum jobClassName;
+
+    private boolean schedule;
+
+    private String connectorName;
 
     @NotNull(message = "job group not specified")
     public String getJobGroup() {
@@ -75,24 +77,6 @@ public class JobSchedulerConfiguration extends BaseEntity {
         this.jobName = jobName;
     }
 
-    @NotNull(message = "trigger group not specified")
-    public String getTriggerGroup() {
-        return triggerGroup;
-    }
-
-    public void setTriggerGroup(String triggerGroup) {
-        this.triggerGroup = triggerGroup;
-    }
-
-    @NotNull(message = "trigger name not specified")
-    public String getTriggerName() {
-        return triggerName;
-    }
-
-    public void setTriggerName(String triggerName) {
-        this.triggerName = triggerName;
-    }
-
     @NotNull(message = "cron expression not specified")
     public String getCronExpression() {
         return cronExpression;
@@ -103,11 +87,32 @@ public class JobSchedulerConfiguration extends BaseEntity {
     }
 
     @NotNull(message = "job class name not specified")
-    public String getJobClassName() {
+    public JobClassNameEnum getJobClassName() {
         return jobClassName;
     }
 
-    public void setJobClassName(String jobClassName) {
+    public void setJobClassName(JobClassNameEnum jobClassName) {
         this.jobClassName = jobClassName;
+    }
+
+    public boolean isSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(boolean schedule) {
+        this.schedule = schedule;
+    }
+
+    public String getConnectorName() {
+        return connectorName;
+    }
+
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
+    }
+
+    @Override
+    public String getHumanId() {
+        return jobGroup == null ? "" : jobGroup;
     }
 }

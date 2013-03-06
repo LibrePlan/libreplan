@@ -96,6 +96,9 @@ public class ConfigurationModel implements IConfigurationModel {
     @Autowired
     private IConnectorDAO connectorDAO;
 
+    @Autowired
+    private IJobSchedulerModel jobSchedulerModel;
+
     @Override
     @Transactional(readOnly = true)
     public List<BaseCalendar> getCalendars() {
@@ -136,7 +139,9 @@ public class ConfigurationModel implements IConfigurationModel {
         }
     }
 
-    private void initConnectorConfiguration() {
+    @Override
+    @Transactional(readOnly = true)
+    public void initConnectorConfiguration() {
         connectors = connectorDAO.getAll();
         forceLoadConnectors();
     }
@@ -746,6 +751,11 @@ public class ConfigurationModel implements IConfigurationModel {
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean scheduleOrUnscheduleJobs(Connector connector) {
+        return jobSchedulerModel.scheduleOrUnscheduleJobs(connector);
     }
 
 }

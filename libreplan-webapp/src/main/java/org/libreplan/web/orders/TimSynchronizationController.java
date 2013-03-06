@@ -24,7 +24,6 @@ import static org.libreplan.web.I18nHelper._;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
-import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.importers.IExportTimesheetsToTim;
@@ -108,8 +107,6 @@ public class TimSynchronizationController extends GenericForwardComposer {
         if (connector == null) {
             return false;
         }
-        return connector.getPropertiesAsMap()
-                .get(PredefinedConnectorProperties.ACTIVATED)
-                .equalsIgnoreCase("Y");
+        return connector.isActivated();
     }
 }

@@ -21,6 +21,7 @@ package org.libreplan.business.common.daos;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -53,6 +54,16 @@ public class JobSchedulerConfigurationDAO extends
                 .createCriteria(JobSchedulerConfiguration.class)
                 .add(Restrictions.eq("jobGroup", jobGroup))
                 .add(Restrictions.eq("jobName", jobName)).uniqueResult();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<JobSchedulerConfiguration> findByConnectorName(
+            String connectorName) {
+        Criteria c = getSession().createCriteria(
+                JobSchedulerConfiguration.class).add(
+                Restrictions.eq("connectorName", connectorName));
+        return ((List<JobSchedulerConfiguration>) c.list());
     }
 
 }

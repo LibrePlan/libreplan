@@ -17,24 +17,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.business.common.daos;
+package org.libreplan.business.common.entities;
 
-import java.util.List;
-
-import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 
 /**
- * Contract for {@link JobSchedulerConfigurationDAO}
+ * Defines the job class package and name to be used as data type in
+ * {@link JobSchedulerConfiguration}
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-public interface IJobSchedulerConfigurationDAO extends
-        IGenericDAO<JobSchedulerConfiguration, Long> {
+public enum JobClassNameEnum {
 
-    List<JobSchedulerConfiguration> getAll();
+    IMPORT_ROSTER_FROM_TIM_JOB("org.libreplan.importers",
+            "ImportRosterFromTimJob"), EXPORT_TIMESHEET_TO_TIM_JOB(
+            "org.libreplan.importers",
+            "ExportTimesheetToTimJob");
 
-    List<JobSchedulerConfiguration> findByConnectorName(String connectorName);
+    private String packageName;
+    private String name;
 
-    JobSchedulerConfiguration findByJobGroupAndJobName(String jobGroup,
-            String jobName);
+    private JobClassNameEnum(String packageName, String name) {
+        this.packageName = packageName;
+        this.name = name;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }

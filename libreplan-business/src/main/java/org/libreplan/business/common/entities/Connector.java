@@ -112,4 +112,10 @@ public class Connector extends BaseEntity {
 
     }
 
+    public boolean isActivated() {
+        return getPropertiesAsMap()
+                .get(PredefinedConnectorProperties.ACTIVATED).equalsIgnoreCase(
+                        "Y");
+    }
+
 }

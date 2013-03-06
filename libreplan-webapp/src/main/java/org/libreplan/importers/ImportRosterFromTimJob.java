@@ -22,10 +22,10 @@ package org.libreplan.importers;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * A job that import rosters from Tim SOAP server
@@ -36,21 +36,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ImportRosterFromTimJob extends QuartzJobBean {
 
-    private IImportRosterFromTim importRosterFromTim;
-
-    public IImportRosterFromTim getImportRosterFromTim() {
-        return importRosterFromTim;
-    }
-
-    public void setImportRosterFromTim(IImportRosterFromTim importRosterFromTim) {
-        this.importRosterFromTim = importRosterFromTim;
-    }
-
     @Override
-    @Transactional
     protected void executeInternal(JobExecutionContext context)
             throws JobExecutionException {
+        ApplicationContext applicationContext = (ApplicationContext) context
+                .getJobDetail().getJobDataMap().get("applicationContext");
+
+        IImportRosterFromTim importRosterFromTim = (IImportRosterFromTim) applicationContext
+                .getBean("importRosterFromTim");
+
         importRosterFromTim.importRosters();
+
     }
 
 

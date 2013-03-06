@@ -14,10 +14,14 @@
 
         <property name="jobGroup" column="job_group" not-null="true" />
         <property name="jobName" column="job_name" not-null="true" />
-        <property name="triggerGroup" column="trigger_group" not-null="true"/>
-        <property name="triggerName" column="trigger_name" not-null="true"/>
-        <property name="cronExpression" column="cron_expression" not-null="true"/>
-        <property name="jobClassName" column="job_class_name" not-null="true"/>
-    </class>
+        <property name="cronExpression" column="cron_expression" not-null="true" />
+        <property name="jobClassName" access="field" column="job_class_name" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.common.entities.JobClassNameEnum</param>
+            </type>
+       </property>
+       <property name="connectorName" column="connector_name" />
+       <property name="schedule" column="schedule" />
+   </class>
 
 </hibernate-mapping>

@@ -19,15 +19,20 @@
 
 package org.libreplan.web.common;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IJobSchedulerConfigurationDAO;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.JobClassNameEnum;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.importers.IExportTimesheetsToTim;
+import org.libreplan.importers.IImportRosterFromTim;
 import org.libreplan.importers.ISchedulerManager;
-import org.libreplan.importers.SchedulerInfo;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -38,11 +43,14 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for UI operations related to {@link JobSchedulerConfiguration}.
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/common/job_scheduling.zul")
 public class JobSchedulerModel implements IJobSchedulerModel {
+
+    private JobSchedulerConfiguration jobSchedulerConfiguration;
 
     @Autowired
     private ISchedulerManager schedulerManager;
@@ -50,48 +58,117 @@ public class JobSchedulerModel implements IJobSchedulerModel {
     @Autowired
     private IJobSchedulerConfigurationDAO jobSchedulerConfigurationDAO;
 
-    @Override
-    public List<SchedulerInfo> getSchedulerInfos() {
-        List<SchedulerInfo> schedulerInfoList = schedulerManager
-                .getSchedulerInfos();
-        Collections.sort(schedulerInfoList, new Comparator<SchedulerInfo>() {
+    @Autowired
+    private IConnectorDAO connectorDAO;
 
-            @Override
-            public int compare(SchedulerInfo o1, SchedulerInfo o2) {
-                int result = o1
-                        .getJobSchedulerConfiguration()
-                        .getJobGroup()
-                        .compareTo(
-                                o2.getJobSchedulerConfiguration().getJobGroup());
-                if (result == 0) {
-                    result = o1
-                            .getJobSchedulerConfiguration()
-                            .getJobName()
-                            .compareTo(
-                                    o2.getJobSchedulerConfiguration()
-                                            .getJobName());
-                }
-                return result;
-            }
-        });
-        return schedulerInfoList;
+    @Autowired
+    private IImportRosterFromTim importRosterFromTim;
+
+    @Autowired
+    private IExportTimesheetsToTim exportTimesheetsToTim;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<JobSchedulerConfiguration> getJobSchedulerConfigurations() {
+        return jobSchedulerConfigurationDAO.getAll();
     }
 
     @Override
-    public void doManual(SchedulerInfo schedulerInfo) {
-        schedulerManager.doManual(schedulerInfo.getJobSchedulerConfiguration()
-                .getJobName());
+    public String getNextFireTime(
+            JobSchedulerConfiguration jobSchedulerConfiguration) {
+        return schedulerManager.getNextFireTime(jobSchedulerConfiguration);
+    }
+
+    @Override
+    public void doManual(JobSchedulerConfiguration jobSchedulerConfiguration) {
+        String name = jobSchedulerConfiguration.getJobClassName().getName();
+        if (name.equals(JobClassNameEnum.IMPORT_ROSTER_FROM_TIM_JOB.getName())) {
+            importRosterFromTim.importRosters();
+            return;
+        }
+        if (name.equals(JobClassNameEnum.EXPORT_TIMESHEET_TO_TIM_JOB.getName())) {
+            exportTimesheetsToTim.exportTimesheets();
+            return;
+        }
+    }
+
+    @Override
+    public void initCreate() {
+        this.jobSchedulerConfiguration = JobSchedulerConfiguration.create();
+    }
+
+    @Override
+    public void initEdit(JobSchedulerConfiguration jobSchedulerConfiguration) {
+        this.jobSchedulerConfiguration = jobSchedulerConfiguration;
+    }
+
+    @Override
+    public JobSchedulerConfiguration getJobSchedulerConfiguration() {
+        return this.jobSchedulerConfiguration;
     }
 
     @Override
     @Transactional
-    public void saveJobConfigurationAndReschedule(String jobGroup,
-            String jobName, String cronExp) {
-        JobSchedulerConfiguration jobSchedulerConfiguration = jobSchedulerConfigurationDAO
-                .findByJobGroupAndJobName(jobGroup, jobName);
-        jobSchedulerConfiguration.setCronExpression(cronExp);
+    public void confirmSave() throws ValidationException {
         jobSchedulerConfigurationDAO.save(jobSchedulerConfiguration);
-        schedulerManager.rescheduleJob(jobSchedulerConfiguration);
+    }
+
+    @Override
+    public void cancel() {
+        jobSchedulerConfiguration = null;
+    }
+
+    @Override
+    @Transactional
+    public void remove(JobSchedulerConfiguration jobSchedulerConfiguration) {
+        try {
+            jobSchedulerConfigurationDAO.remove(jobSchedulerConfiguration
+                    .getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Connector> getConnectors() {
+        return connectorDAO.getAll();
+    }
+
+    @Override
+    public boolean scheduleOrUnscheduleJobs(Connector connector) {
+        List<JobSchedulerConfiguration> jobSchedulerConfigurations = jobSchedulerConfigurationDAO
+                .findByConnectorName(connector.getName());
+
+        for (JobSchedulerConfiguration jobSchedulerConfiguration : jobSchedulerConfigurations) {
+            try {
+                schedulerManager.scheduleOrUnscheduleJob(jobSchedulerConfiguration);
+            } catch (SchedulerException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean scheduleOrUnscheduleJob() {
+        try {
+            schedulerManager.scheduleOrUnscheduleJob(jobSchedulerConfiguration);
+        } catch (SchedulerException e) {
+            throw new RuntimeException("Failed to schedule job", e);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deleteScheduledJob(
+            JobSchedulerConfiguration jobSchedulerConfiguration) {
+        try {
+            schedulerManager.deleteJob(jobSchedulerConfiguration);
+        } catch (SchedulerException e) {
+            throw new RuntimeException("Failed to delete job", e);
+        }
+        return true;
     }
 
 }

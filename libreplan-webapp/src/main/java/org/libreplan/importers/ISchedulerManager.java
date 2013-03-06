@@ -19,9 +19,8 @@
 
 package org.libreplan.importers;
 
-import java.util.List;
-
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
+import org.quartz.SchedulerException;
 import org.springframework.scheduling.quartz.CronTriggerBean;
 import org.springframework.scheduling.quartz.JobDetailBean;
 
@@ -31,51 +30,73 @@ import org.springframework.scheduling.quartz.JobDetailBean;
  *
  * The start and destroy of the scheduler itself is managed by the Spring
  * framework. The scheduler starts automatically when the application starts and
- * destroyed when the application stops. The sole purpose of this manager is to
- * create jobs {@link JobDetailBean} and cron-triggers {@link CronTriggerBean}
- * when the scheduler is started. It links the triggers with the jobs and add
- * them to the scheduler.
+ * destroyed when the application stops.
  *
- * The SchedulerManager reads the jobs to be scheduled and the cron-triggers to
- * fire the jobs form the {@link JobSchedulerConfiguration} entity. Hence the
- * {@link JobSchedulerConfiguration} entity must exist with predefined jobs and
- * valid cron-triggers
+ * This manager (un)schedules the jobs based on the configuration
+ * {@link JobSchedulerConfiguration} entity once the scheduler starts.
  *
- * This manager also supports the rescheduling of jobs.
+ * <ul>
+ * <li>Schedule job:create job {@link JobDetailBean} and cron-trigger
+ * {@link CronTriggerBean}, associated the trigger with the job and add it to
+ * the scheduler.
+ * <li>
+ * <li>Delete job: search the job in the scheduler and if found
+ * unschedule(delete) the job</li>
+ * </ul>
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 public interface ISchedulerManager {
 
     /**
-     * Reads job configuration from the {@link JobSchedulerConfiguration} and
-     * schedules the jobs as defined in the configuration
+     * Reads the jobs to be scheduled from the {@link JobSchedulerConfiguration}
+     * and schedules the jobs based on the cron expression defined for each job
+     * in the {@link JobSchedulerConfiguration}
      */
     void scheduleJobs();
 
     /**
-     * Reschedule the job.
+     * Reads the jobs to be scheduled from the specified
+     * <code>{@link JobSchedulerConfiguration}</code> and (un)schedule it
+     * accordingly
      *
-     * Reads the job to be rescheduled from the specified parameter
-     * {@link JobSchedulerConfiguration} and reschedule the job accordingly
+     * In the specified <code>{@link JobSchedulerConfiguration}</code>
+     *
+     * <ul>
+     * <li><code>{@link JobSchedulerConfiguration#getConnectorName()}</code>
+     * check if job has a connector and the connector is activated</li>
+     * <li><code>{@link JobSchedulerConfiguration#isSchedule()}</code> if true
+     * the job would be scheduled, if not job deleted</li>
+     * </ul>
      *
      * @param jobSchedulerConfiguration
-     *            the job scheduler configuration
+     *            configuration for job to be (un)scheduled
+     * @throws SchedulerException
+     *             if unable to (un)schedule
      */
-    void rescheduleJob(JobSchedulerConfiguration jobSchedulerConfiguration);
+    void scheduleOrUnscheduleJob(JobSchedulerConfiguration jobSchedulerConfiguration) throws SchedulerException;
 
     /**
-     * returns the scheduler info list. Can be useful to display in UI
+     * Deletes the job from the scheduler for the specified job by
+     * <code>{@link JobSchedulerConfiguration}</code>, if the job is already in
+     * the scheduler
      *
-     * @return list of scheduler info
+     * @param jobSchedulerConfiguration
+     *            configuration for job to be deleted
+     * @throws SchedulerException
+     *             if unable to delete
      */
-    List<SchedulerInfo> getSchedulerInfos();
+    void deleteJob(JobSchedulerConfiguration jobSchedulerConfiguration) throws SchedulerException;
 
     /**
-     * To manually execute the job specified by <code>jobName</code>
+     * gets the next fire time for the specified job from
+     * {@link JobSchedulerConfiguration} if job is already scheduled. This is
+     * only neede for UI
      *
-     * @param jobName
-     *            the name of the job to be executed
+     * @param jobSchedulerConfiguration
+     *            configuration to check for next fire time
+     * @return next fire time or empty string
      */
-    void doManual(String jobName);
+    String getNextFireTime(JobSchedulerConfiguration jobSchedulerConfiguration);
+
 }
