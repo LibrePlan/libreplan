@@ -27,11 +27,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IJobSchedulerConfigurationDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.JobClassNameEnum;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
-import org.libreplan.web.common.IConfigurationModel;
 import org.quartz.CronExpression;
 import org.quartz.CronTrigger;
 import org.quartz.JobExecutionContext;
@@ -44,6 +44,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.quartz.CronTriggerBean;
 import org.springframework.scheduling.quartz.JobDetailBean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of scheduler manager
@@ -66,7 +67,7 @@ public class SchedulerManager implements ISchedulerManager {
     private ApplicationContext applicationContext;
 
     @Autowired
-    private IConfigurationModel configurationModel;
+    private IConnectorDAO connectorDAO;
 
 
     /**
@@ -96,6 +97,7 @@ public class SchedulerManager implements ISchedulerManager {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void scheduleOrUnscheduleJob(
             JobSchedulerConfiguration jobSchedulerConfiguration) throws SchedulerException {
 
@@ -136,10 +138,7 @@ public class SchedulerManager implements ISchedulerManager {
      * @return true if activated
      */
     private boolean isConnectorActivated(String connectorName) {
-        configurationModel.initConnectorConfiguration();
-
-        Connector connector = configurationModel
-                .getConnectorByName(connectorName);
+        Connector connector = connectorDAO.findUniqueByName(connectorName);
         if (connector == null) {
             return false;
         }

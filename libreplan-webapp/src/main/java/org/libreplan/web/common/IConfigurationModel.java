@@ -195,8 +195,6 @@ public interface IConfigurationModel {
 
     void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
 
-    void initConnectorConfiguration();
-
     List<Connector> getConnectors();
 
     Connector getConnectorByName(String name);

@@ -139,9 +139,7 @@ public class ConfigurationModel implements IConfigurationModel {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public void initConnectorConfiguration() {
+    private void initConnectorConfiguration() {
         connectors = connectorDAO.getAll();
         forceLoadConnectors();
     }
