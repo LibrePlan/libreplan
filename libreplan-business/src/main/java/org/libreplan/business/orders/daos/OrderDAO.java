@@ -240,21 +240,10 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             org.hibernate.criterion.Criterion and = Restrictions.and(
                     Restrictions.in("id", ordersIdsFiltered),
                     Restrictions.in("id", ordersIdsByDates));
-            if (ordersIdsUnscheduled.isEmpty()) {
-                c.add(and);
-            } else {
-                c.add(Restrictions.or(and,
-                        Restrictions.in("id", ordersIdsUnscheduled)));
-            }
+            c.add(and);
         } else {
             if (ordersIdsFiltered != null) {
-                if (ordersIdsUnscheduled.isEmpty()) {
-                    c.add(Restrictions.in("id", ordersIdsFiltered));
-                } else {
-                    c.add(Restrictions.or(
-                            Restrictions.in("id", ordersIdsFiltered),
-                            Restrictions.in("id", ordersIdsUnscheduled)));
-                }
+                c.add(Restrictions.in("id", ordersIdsFiltered));
             }
             if (ordersIdsByDates != null) {
                 if (ordersIdsUnscheduled.isEmpty()) {
