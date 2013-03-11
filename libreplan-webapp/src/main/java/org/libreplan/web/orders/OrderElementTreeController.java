@@ -565,7 +565,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     @Override
     protected boolean isPredicateApplied() {
-        return predicate != null;
+        return (predicate != null)
+                && !((OrderElementPredicate) predicate).isEmpty();
     }
 
     /**
