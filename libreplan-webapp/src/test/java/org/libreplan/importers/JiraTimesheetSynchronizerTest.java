@@ -45,6 +45,7 @@ import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -220,7 +221,7 @@ public class JiraTimesheetSynchronizerTest {
 
     @Test
     @Ignore("Only working if you have a JIRA server configured")
-    public void testSyncJiraTimesheet() {
+    public void testSyncJiraTimesheet() throws ConnectorException {
 
         Order order = givenOrderWithValidOrderLines();
         jiraTimesheetSynchronizer

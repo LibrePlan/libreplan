@@ -298,8 +298,9 @@
                                  <row>
                                     <label value="${i18n:_('JIRA label')}" width="50px"/>
                                     <hbox>
-                                       <textbox id="txtImportedLabel" value="@{controller.order.importedLabel}"
-                                           width="350px" disabled="true"/>
+                                       <textbox value="@{controller.orderLastSyncInfo.lastSyncDate}" width="130px" disabled="true"/>
+                                       <textbox id="txtImportedLabel" value="@{controller.orderLastSyncInfo.key}"
+                                           width="220px" disabled="true"/>
                                         <button label="${i18n:_('Sync with JIRA')}" id="syncWithJiraButton" disabled="@{controller.jiraDeactivated}"
                                            onClick="controller.syncWithJira()" />
                                     </hbox>
@@ -337,7 +338,7 @@
      <popup id="jirasyncPopup" sclass="finder-popup">
         <groupbox mold="3d" closable="false" width="420px">
             <caption id="jiraSyncCaption" label="Select a label" />
-            <combobox id="comboJiraLabel" autodrop="true" width="400px"/>
+            <combobox id="comboJiraLabel" autodrop="true" width="400px" constraint="no empty:${i18n:_('cannot be empty')}"/>
             <separator/>
             <hbox>
                 <button id="startJiraSyncButton" />

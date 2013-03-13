@@ -29,8 +29,12 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.entities.Configuration;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.HourCost;
@@ -55,6 +59,9 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IConnectorDAO connectorDAO;
 
     @Override
     public TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
@@ -194,13 +201,17 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     }
 
     private void checkIsJiraConnectorTypeOfWorkHours(TypeOfWorkHours type) {
-        Configuration configuration = configurationDAO.getConfiguration();
-        if (configuration.getJiraConfiguration()
-                .getJiraConnectorTypeOfWorkHours().getId().equals(type.getId())) {
-            throw ValidationException
-                    .invalidValue(
-                            "Cannot delete the type of work hours. It is configured as type of work hours for JIRA connector.",
-                            type);
+        Connector connector = connectorDAO
+                .findUniqueByName(PredefinedConnectors.JIRA.getName());
+        if (connector != null) {
+            String name = connector.getPropertiesAsMap().get(
+                    PredefinedConnectorProperties.JIRA_HOURS_TYPE);
+            if (name.equals(type.getName())) {
+                throw ValidationException
+                        .invalidValue(
+                                "Cannot delete the type of work hours. It is configured as type of work hours for JIRA connector.",
+                                type);
+            }
         }
     }
 

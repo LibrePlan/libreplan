@@ -21,6 +21,7 @@ package org.libreplan.importers;
 
 import java.util.List;
 
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.workreports.entities.WorkReportType;
 import org.libreplan.importers.jira.IssueDTO;
@@ -42,7 +43,6 @@ public interface IJiraTimesheetSynchronizer {
     /**
      * Synchronize jira timesheet with the specified jira <code>issues</code> .
      *
-     *
      * Loop through all jira <code>issues</code> and check if timesheet is
      * already exist for the specified issue item. If it is, update the
      * timesheet with that issue item. If not create new one
@@ -51,8 +51,10 @@ public interface IJiraTimesheetSynchronizer {
      *            the jira issues
      * @param order
      *            an existing order
+     * @throws ConnectorException
+     *             if not valid connector or connector contains invalid values
      */
-    void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order);
+    void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order) throws ConnectorException;
 
     /**
      * returns synchronization info, success or fail info

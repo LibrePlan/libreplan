@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
@@ -37,12 +38,17 @@ import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
-import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.entities.JiraConfiguration;
+import org.libreplan.business.common.daos.IConnectorDAO;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
+import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
+import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.importers.jira.IssueDTO;
 import org.libreplan.importers.jira.StatusDTO;
@@ -64,17 +70,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchronizer {
 
-    @Autowired
-    private IConfigurationDAO configurationDAO;
-
     private JiraSyncInfo jiraSyncInfo;
 
+    @Autowired
+    private IConnectorDAO connectorDAO;
+
+    @Autowired
+    IOrderSyncInfoDAO orderSyncInfoDAO;
 
     @Override
     @Transactional(readOnly = true)
     public List<String> getAllJiraLabels() {
-        String jiraLabels = configurationDAO.getConfiguration()
-                .getJiraConfiguration().getJiraLabels();
+        Connector connector = getJiraConnector();
+        if (connector == null) {
+            return null;
+        }
+
+        String jiraLabels = connector.getPropertiesAsMap().get(
+                PredefinedConnectorProperties.JIRA_LABELS);
 
         String labels;
         try {
@@ -88,13 +101,26 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     @Override
     @Transactional(readOnly = true)
-    public List<IssueDTO> getJiraIssues(String label) {
-        JiraConfiguration jiraConfiguration = configurationDAO
-                .getConfiguration().getJiraConfiguration();
+    public List<IssueDTO> getJiraIssues(String label) throws ConnectorException {
 
-        String url = jiraConfiguration.getJiraUrl();
-        String username = jiraConfiguration.getJiraUserId();
-        String password = jiraConfiguration.getJiraPassword();
+        Connector connector = getJiraConnector();
+        if (connector == null) {
+            throw new ConnectorException("Jira connector not found");
+        }
+
+        if (!connector.areConnectionValuesValid()) {
+            throw new ConnectorException(
+                    "Connection values of JIRA connector are invalid");
+        }
+
+        Map<String, String> properties = connector.getPropertiesAsMap();
+        String url = properties.get(PredefinedConnectorProperties.SERVER_URL);
+
+        String username = properties
+                .get(PredefinedConnectorProperties.USERNAME);
+
+        String password = properties
+                .get(PredefinedConnectorProperties.PASSWORD);
 
         String path = JiraRESTClient.PATH_SEARCH;
         String query = "labels=" + label;
@@ -112,7 +138,8 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         jiraSyncInfo = new JiraSyncInfo();
 
         for (IssueDTO issue : issues) {
-            String code = JiraConfiguration.CODE_PREFIX + order.getCode() + "-"
+            String code = PredefinedConnectorProperties.JIRA_CODE_PREFIX
+                    + order.getCode() + "-"
                     + issue.getKey();
             String name = issue.getFields().getSummary();
 
@@ -395,6 +422,31 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Override
     public JiraSyncInfo getJiraSyncInfo() {
         return jiraSyncInfo;
+    }
+
+    /**
+     * returns JIRA connector
+     */
+    private Connector getJiraConnector() {
+        return connectorDAO.findUniqueByName(PredefinedConnectors.JIRA
+                .getName());
+    }
+
+    @Override
+    @Transactional
+    public void saveSyncInfo(String key, Order order) {
+        OrderSyncInfo orderSyncInfo = OrderSyncInfo.create(order,
+                PredefinedConnectors.JIRA.getName());
+        orderSyncInfo.setKey(key);
+        orderSyncInfoDAO.save(orderSyncInfo);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public OrderSyncInfo getOrderLastSyncInfo(Order order) {
+        return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorId(
+                order, PredefinedConnectors.JIRA.getName());
+
     }
 
 }

@@ -148,6 +148,4 @@ public interface IOrderModel extends IIntegrationEntityModel {
     boolean isOnlyChildAndParentAlreadyInUseByHoursOrExpenses(
             OrderElement orderElement);
 
-    boolean isJiraActivated();
-
 }

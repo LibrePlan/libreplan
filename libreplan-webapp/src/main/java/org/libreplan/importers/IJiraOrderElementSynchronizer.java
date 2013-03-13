@@ -23,8 +23,10 @@ import java.util.List;
 
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.importers.jira.IssueDTO;
 
 /**
@@ -59,8 +61,10 @@ public interface IJiraOrderElementSynchronizer {
      *            search criteria for jira issues
      *
      * @return list of jira issues
+     * @throws ConnectorException
+     *             if connector not found or contains invalid connection values
      */
-    List<IssueDTO> getJiraIssues(String label);
+    List<IssueDTO> getJiraIssues(String label) throws ConnectorException;
 
     /**
      * Synchronizes the list of {@link OrderElement}s,
@@ -81,6 +85,25 @@ public interface IJiraOrderElementSynchronizer {
      *            jira issues
      */
     void syncOrderElementsWithJiraIssues(List<IssueDTO> issues, Order order);
+
+    /**
+     * Saves synchronization info
+     *
+     * @param key
+     *            the key(label)
+     * @param order
+     *            an order which already synchronized
+     */
+    void saveSyncInfo(String key, Order order);
+
+    /**
+     * Gets the most recent synchronized info
+     *
+     * @param order
+     *            the order
+     * @return recent synchronized time sheet info
+     */
+    OrderSyncInfo getOrderLastSyncInfo(Order order);
 
     /**
      * returns synchronization info, success or fail info

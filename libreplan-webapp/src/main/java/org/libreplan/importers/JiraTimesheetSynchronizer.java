@@ -22,15 +22,21 @@ package org.libreplan.importers;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.NonUniqueResultException;
 import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.entities.JiraConfiguration;
+import org.libreplan.business.common.daos.IConnectorDAO;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
@@ -90,14 +96,17 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Autowired
-    private IConfigurationDAO configurationDAO;
+    private IConnectorDAO connectorDAO;
+
+    @Autowired
+    private IOrderSyncInfoDAO orderSyncInfoDAO;
 
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
 
     @Override
     @Transactional
-    public void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order) {
+    public void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order) throws ConnectorException {
         jiraSyncInfo = new JiraSyncInfo();
 
         workReportType = getJiraTimesheetsWorkReportType();
@@ -109,7 +118,21 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
             return;
         }
 
-        String code = order.getCode() + "-" + order.getImportedLabel();
+        OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
+                .findLastSynchronizedInfoByOrderAndConnectorId(order,
+                        PredefinedConnectors.JIRA.getName());
+        if (orderSyncInfo == null) {
+            jiraSyncInfo.addSyncFailedReason("Order '" + order.getName()
+                    + "' not found. Order probalbly not synchronized");
+            return;
+        }
+        if (StringUtils.isBlank(orderSyncInfo.getKey())) {
+            jiraSyncInfo.addSyncFailedReason("Key for Order '"
+                    + order.getName() + "' is empty");
+            return;
+        }
+
+        String code = order.getCode() + "-" + orderSyncInfo.getKey();
 
         WorkReport workReport = updateOrCreateWorkReport(code);
 
@@ -126,7 +149,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
                                     + issue.getKey() + "' issue");
                 } else {
 
-                    String codeOrderElement = JiraConfiguration.CODE_PREFIX
+                    String codeOrderElement = PredefinedConnectorProperties.JIRA_CODE_PREFIX
                             + order.getCode() + "-" + issue.getKey();
 
                     OrderElement orderElement = order.getOrderElement(codeOrderElement);
@@ -291,10 +314,31 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
      * Returns {@link TypeOfWorkHours} configured for JIRA connector
      *
      * @return TypeOfWorkHours for JIRA connector
+     * @throws ConnectorException
      */
-    private TypeOfWorkHours getTypeOfWorkHours() {
-        return configurationDAO.getConfiguration().getJiraConfiguration()
-                .getJiraConnectorTypeOfWorkHours();
+    private TypeOfWorkHours getTypeOfWorkHours() throws ConnectorException {
+        Connector connector = connectorDAO
+                .findUniqueByName(PredefinedConnectors.JIRA.getName());
+        if (connector == null) {
+            throw new ConnectorException("Connector not found");
+        }
+
+        TypeOfWorkHours typeOfWorkHours;
+        String name = connector.getPropertiesAsMap().get(
+                PredefinedConnectorProperties.JIRA_HOURS_TYPE);
+
+        if (StringUtils.isBlank(name)) {
+            throw new ConnectorException(
+                    "Hours type should not be empty to synchronine timesheets");
+        }
+
+        try {
+            typeOfWorkHours = typeOfWorkHoursDAO.findUniqueByName(name);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return typeOfWorkHours;
     }
 
     /**

@@ -39,8 +39,18 @@ public enum PredefinedConnectors {
         ConnectorProperty.create(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET, "7"),
         ConnectorProperty.create(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER, "90"),
         ConnectorProperty.create(PredefinedConnectorProperties.TIM_PRODUCTIVITY_FACTOR, "100"),
-        ConnectorProperty.create(PredefinedConnectorProperties.TIM_DEPARTAMENTS_IMPORT_ROSTER, "0")
-    );
+        ConnectorProperty.create(
+                PredefinedConnectorProperties.TIM_DEPARTAMENTS_IMPORT_ROSTER,
+                "0")),
+    JIRA("Jira",
+         ConnectorProperty.create(PredefinedConnectorProperties.ACTIVATED, "N"),
+         ConnectorProperty.create(PredefinedConnectorProperties.SERVER_URL, ""),
+         ConnectorProperty.create(PredefinedConnectorProperties.USERNAME, ""),
+         ConnectorProperty.create(PredefinedConnectorProperties.PASSWORD, ""),
+         ConnectorProperty
+                 .create(PredefinedConnectorProperties.JIRA_LABELS, ""),
+         ConnectorProperty.create(
+                 PredefinedConnectorProperties.JIRA_HOURS_TYPE, "Default"));
 
     private String name;
     private List<ConnectorProperty> properties;

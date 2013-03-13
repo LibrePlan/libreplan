@@ -42,4 +42,13 @@ public class PredefinedConnectorProperties {
     public static String TIM_PRODUCTIVITY_FACTOR = _("Productivity factor");
     public static String TIM_DEPARTAMENTS_IMPORT_ROSTER = _("Department IDs to import toster");
 
+    // Specific for JIRA
+    public static String JIRA_LABELS = _("JIRA labels: comma-separated list of labels or URL");
+    public static String JIRA_HOURS_TYPE = _("Hours type");
+
+    /**
+     * Code prefix for different entities integrated with JIRA.
+     */
+    public static final String JIRA_CODE_PREFIX = "JIRA-";
+
 }

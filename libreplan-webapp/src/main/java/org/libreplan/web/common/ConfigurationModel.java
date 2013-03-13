@@ -45,7 +45,6 @@ import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
@@ -162,8 +161,6 @@ public class ConfigurationModel implements IConfigurationModel {
     private void forceLoad(Configuration configuration) {
         forceLoad(configuration.getDefaultCalendar());
         forceLoad(configuration.getPersonalTimesheetsTypeOfWorkHours());
-        forceLoad(configuration.getJiraConfiguration()
-                .getJiraConnectorTypeOfWorkHours());
     }
 
     private void forceLoad(BaseCalendar calendar) {
@@ -692,38 +689,6 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
         configuration.setSecondsPlanningWarning(secondsPlanningWarning);
-    }
-
-    @Override
-    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
-        configuration.setJiraConfiguration(jiraConfiguration);
-    }
-
-    @Override
-    public JiraConfiguration getJiraConfiguration() {
-        return configuration.getJiraConfiguration();
-    }
-
-    @Override
-    public TypeOfWorkHours getJiraConnectorTypeOfWorkHours() {
-        JiraConfiguration jiraConfiguration = configuration
-                .getJiraConfiguration();
-        if (jiraConfiguration != null) {
-            return jiraConfiguration.getJiraConnectorTypeOfWorkHours();
-        }
-        return null;
-    }
-
-    @Override
-    public void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
-        if (configuration != null) {
-            JiraConfiguration jiraConfiguration = configuration
-                    .getJiraConfiguration();
-            if (jiraConfiguration != null) {
-                jiraConfiguration
-                        .setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
-            }
-        }
     }
 
     private void saveConnectors() {

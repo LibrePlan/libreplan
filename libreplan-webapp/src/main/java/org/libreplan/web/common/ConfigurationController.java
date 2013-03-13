@@ -47,7 +47,6 @@ import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorProperty;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
@@ -289,42 +288,6 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     /**
-     * tests jira connection
-     */
-    public void testJiraConnection() {
-
-        JiraConfiguration jiraConfiguration = configurationModel
-                .getJiraConfiguration();
-
-        try {
-
-            WebClient client = WebClient.create(jiraConfiguration.getJiraUrl());
-            client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(
-                    MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
-
-            org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
-                    jiraConfiguration.getJiraUserId(),
-                    jiraConfiguration.getJiraPassword());
-
-            Response response = client.get();
-
-            if (response.getStatus() == Status.OK.getStatusCode()) {
-                messages.showMessage(Level.INFO,
-                        _("JIRA connection was successful"));
-            } else {
-                LOG.info("Status code: " + response.getStatus());
-                messages.showMessage(Level.ERROR,
-                        _("Cannot connect to JIRA server"));
-            }
-
-        } catch (Exception e) {
-            LOG.info(e);
-            messages.showMessage(Level.ERROR,
-                    _("Cannot connect to JIRA server"));
-        }
-    }
-
-    /**
      * Tests connection
      */
     public void testConnection() {
@@ -344,6 +307,9 @@ public class ConfigurationController extends GenericForwardComposer {
         if (selectedConnector.getName().equals(
                 PredefinedConnectors.TIM.getName())) {
             testTimConnection(url, username, password);
+        } else if (selectedConnector.getName().equals(
+                PredefinedConnectors.JIRA.getName())) {
+            testJiraConnection(url, username, password);
         } else {
             throw new RuntimeException("Unknown connector");
         }
@@ -367,6 +333,44 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
+    /**
+     * Test JIRA connection
+     *
+     * @param url
+     *            the url
+     * @param username
+     *            the username
+     * @param password
+     *            the password
+     */
+    private void testJiraConnection(String url, String username, String password) {
+
+        try {
+
+            WebClient client = WebClient.create(url);
+            client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(
+                    MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
+
+            org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
+                    username, password);
+
+            Response response = client.get();
+
+            if (response.getStatus() == Status.OK.getStatusCode()) {
+                messages.showMessage(Level.INFO,
+                        _("JIRA connection was successful"));
+            } else {
+                LOG.error("Status code: " + response.getStatus());
+                messages.showMessage(Level.ERROR,
+                        _("Cannot connect to JIRA server"));
+            }
+
+        } catch (Exception e) {
+            LOG.error(e);
+            messages.showMessage(Level.ERROR,
+                    _("Cannot connect to JIRA server"));
+        }
+    }
 
     private boolean checkValidEntitySequenceRows() {
         Rows rows = entitySequencesGrid.getRows();
@@ -891,14 +895,6 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setLdapConfiguration(ldapConfiguration);
     }
 
-    public JiraConfiguration getJiraConfiguration() {
-        return configurationModel.getJiraConfiguration();
-    }
-
-    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
-        configurationModel.setJiraConfiguration(jiraConfiguration);
-    }
-
     public RowRenderer getAllUserRolesRenderer() {
         return new RowRenderer() {
             @Override
@@ -1049,14 +1045,6 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setSecondsPlanningWarning(secondsPlanningWarning);
     }
 
-    public TypeOfWorkHours getJiraConnectorTypeOfWorkHours() {
-        return configurationModel.getJiraConnectorTypeOfWorkHours();
-    }
-
-    public void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
-        configurationModel.setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
-    }
-
     public List<Connector> getConnectors() {
         return configurationModel.getConnectors();
     }
@@ -1130,7 +1118,8 @@ public class ConfigurationController extends GenericForwardComposer {
                         } else if (key
                                 .equals(PredefinedConnectorProperties.SERVER_URL)
                                 || key.equals(PredefinedConnectorProperties.USERNAME)
-                                || key.equals(PredefinedConnectorProperties.PASSWORD)) {
+                                || key.equals(PredefinedConnectorProperties.PASSWORD)
+                                || key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE)) {
                             ((InputElement) comp).setConstraint("no empty:"
                                     + _("cannot be empty"));
                         } else if (key

@@ -36,9 +36,11 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.daos.IConnectorDAO;
+import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.entities.JiraConfiguration;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
@@ -121,7 +123,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     private Popup filterOptionsPopup;
 
     @Autowired
-    private IConfigurationDAO configurationDAO;
+    private IConnectorDAO                        connectorDAO;
 
     public List<org.libreplan.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();
@@ -467,9 +469,17 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             String code = orderElement.getCode();
             A hyperlink = new A(code);
 
-            String jiraUrl = configurationDAO.getConfigurationWithReadOnlyTransaction().getJiraConfiguration().getJiraUrl();
+            Connector connector = connectorDAO
+                    .findUniqueByName(PredefinedConnectors.JIRA.getName());
+            if (connector == null) {
+                return;
+            }
 
-            String codeWithoutPrefix = StringUtils.removeStart(code, JiraConfiguration.CODE_PREFIX);
+            String jiraUrl = connector.getPropertiesAsMap().get(
+                    PredefinedConnectorProperties.SERVER_URL);
+
+            String codeWithoutPrefix = StringUtils.removeStart(code,
+                    PredefinedConnectorProperties.JIRA_CODE_PREFIX);
             codeWithoutPrefix = StringUtils.removeStart(codeWithoutPrefix,
                     orderElement.getOrder().getCode()
                             + EntitySequence.CODE_SEPARATOR_CHILDREN);

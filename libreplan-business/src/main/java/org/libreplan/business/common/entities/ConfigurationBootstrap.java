@@ -81,13 +81,6 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
         }
         configuration.setLdapConfiguration(ldapConfiguration);
 
-        JiraConfiguration jiraConfiguration = configuration
-                .getJiraConfiguration();
-        if (jiraConfiguration == null) {
-            jiraConfiguration = JiraConfiguration.create();
-        }
-        configuration.setJiraConfiguration(jiraConfiguration);
-
         configurationDAO.save(configuration);
     }
 
