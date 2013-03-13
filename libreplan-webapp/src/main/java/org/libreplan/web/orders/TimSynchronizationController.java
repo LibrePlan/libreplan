@@ -21,21 +21,30 @@ package org.libreplan.web.orders;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.importers.IExportTimesheetsToTim;
+import org.libreplan.importers.TimImpExpInfo;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Window;
 
 /**
  * Controller for Tim synchronization
@@ -76,15 +85,18 @@ public class TimSynchronizationController extends GenericForwardComposer {
     public void startExportToTim() {
         LOG.info("startExportToTim(): " + orderController.getOrder().getName());
         txtProductCode.setConstraint("no empty:" + _("cannot be empty"));
-        if (exportTimesheetsToTim.exportTimesheets(txtProductCode.getValue(),
-                orderController.getOrder())) {
-            messagesForUser.showMessage(Level.INFO,
-                    "Exporting timesheets to Tim is completed successfully");
-        } else {
+        try {
+            exportTimesheetsToTim.exportTimesheets(txtProductCode.getValue(),
+                    orderController.getOrder());
+
+            updateOrderLastSyncInfoScreen();
+
+            shwoImpExpInfo();
+
+        } catch (ConnectorException e) {
             messagesForUser.showMessage(Level.ERROR,
-                    _("Exporting timesheets to Tim failed"));
+                            _("Exporting timesheets to Tim failed. Check the Tim connector"));
         }
-        updateOrderLastSyncInfoScreen();
     }
 
     private void updateOrderLastSyncInfoScreen() {
@@ -109,4 +121,26 @@ public class TimSynchronizationController extends GenericForwardComposer {
         }
         return connector.isActivated();
     }
+
+    private void shwoImpExpInfo() {
+        Map<String, Object> args = new HashMap<String, Object>();
+
+        TimImpExpInfo timImpExpInfo = exportTimesheetsToTim.getExportProcessInfo();
+        args.put("action", _(timImpExpInfo.getAction()));
+        args.put("showSuccess", timImpExpInfo.isSuccessful());
+        args.put("failedReasons",
+                new SimpleListModel(timImpExpInfo.getFailedReasons()));
+
+        Window timImpExpInfoWindow = (Window) Executions.createComponents(
+                "/orders/_timImpExpInfo.zul", null, args);
+
+        try {
+            timImpExpInfoWindow.doModal();
+        } catch (SuspendNotAllowedException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

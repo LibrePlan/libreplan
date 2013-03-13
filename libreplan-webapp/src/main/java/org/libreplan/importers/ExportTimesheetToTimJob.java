@@ -19,6 +19,9 @@
 
 package org.libreplan.importers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
@@ -30,6 +33,8 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 public class ExportTimesheetToTimJob extends QuartzJobBean {
+    private static final Log LOG = LogFactory
+                                         .getLog(ExportTimesheetToTimJob.class);
 
     @Override
     protected void executeInternal(JobExecutionContext context)
@@ -40,7 +45,14 @@ public class ExportTimesheetToTimJob extends QuartzJobBean {
         IExportTimesheetsToTim exportTimesheetsToTim = (IExportTimesheetsToTim) applicationContext
                 .getBean("exportTimesheetsToTim");
 
-        exportTimesheetsToTim.exportTimesheets();
+        try {
+            exportTimesheetsToTim.exportTimesheets();
+            LOG.info("Export scuccessful: "
+                    + exportTimesheetsToTim.getExportProcessInfo()
+                            .isSuccessful());
+        } catch (ConnectorException e) {
+            LOG.error("Export timesheet to Tim failed", e);
+        }
     }
 
 }

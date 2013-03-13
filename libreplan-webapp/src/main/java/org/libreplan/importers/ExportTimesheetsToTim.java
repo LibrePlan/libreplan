@@ -33,6 +33,7 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -91,47 +92,67 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     @Autowired
     private IOrderDAO orderDAO;
 
+    private TimImpExpInfo timImpExpInfo;
+
+    /**
+     * Action name
+     */
+    private static final String EXPORT = "Export";
+
     @Override
     @Transactional(readOnly = true)
-    public void exportTimesheets() {
-        String name = PredefinedConnectors.TIM.getName();
-        Connector connector = connectorDAO.findUniqueByName(name);
+    public void exportTimesheets() throws ConnectorException {
+        Connector connector = getTimConnector();
         if (connector == null) {
-            return;
+            throw new ConnectorException("Tim connector not found");
         }
+        if (!connector.areConnectionValuesValid()) {
+            throw new ConnectorException(
+                    "Connection values of Tim connector are invalid");
+        }
+
+        timImpExpInfo = new TimImpExpInfo(EXPORT);
 
         List<Order> orders = orderDAO.getOrders();
         for (Order order : orders) {
-            OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
-                    .findLastSynchronizedInfoByOrderAndConnectorId(order,
-                            name);
+            OrderSyncInfo orderSyncInfo = getOrderLastSyncInfo(order);
             if (orderSyncInfo == null) {
                 LOG.warn("Order '" + order.getName()
                         + "' is not yet synchronized");
+                timImpExpInfo.addFailedReason("Order '" + order.getName()
+                        + "' is not yet synchronized");
             } else {
-                boolean result = exportTimesheets(orderSyncInfo.getKey(),
+                LOG.info("Exporting '" + order.getName() + "'");
+                exportTimesheets(orderSyncInfo.getKey(),
                         orderSyncInfo.getOrder(), connector);
-                LOG.info("Export successful: " + result);
             }
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public boolean exportTimesheets(String productCode, Order order) {
+    public void exportTimesheets(String productCode, Order order)
+            throws ConnectorException {
         if (productCode == null || productCode.isEmpty()) {
             throw new RuntimeException("Product code should not be empty");
         }
         if (order == null) {
             throw new RuntimeException("Order should not be empty");
         }
-        Connector connector = connectorDAO
-                .findUniqueByName(PredefinedConnectors.TIM.getName());
+
+        Connector connector = getTimConnector();
         if (connector == null) {
-            throw new RuntimeException("Tim connector not found");
+            throw new ConnectorException("Tim connector not found");
         }
 
-        return exportTimesheets(productCode, order, connector);
+        if (!connector.areConnectionValuesValid()) {
+            throw new ConnectorException(
+                    "Connection values of Tim connector are invalid");
+        }
+
+        timImpExpInfo = new TimImpExpInfo(EXPORT);
+
+        exportTimesheets(productCode, order, connector);
     }
 
     /**
@@ -146,7 +167,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
      *
      * @return true if export is succeeded, false otherwise
      */
-    private boolean exportTimesheets(String productCode, Order order,
+    private void exportTimesheets(String productCode, Order order,
             Connector connector) {
         Map<String, String> properties = connector.getPropertiesAsMap();
 
@@ -165,8 +186,12 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                 dateNrOfDaysBack.toDateTimeAtStartOfDay().toDate(), new Date(),
                 true);
         if (workReportLines == null || workReportLines.isEmpty()) {
-            LOG.warn("No work reportlines are found");
-            return false;
+            LOG.warn("No work reportlines are found for order: '"
+                    + order.getName() + "'");
+            timImpExpInfo
+                    .addFailedReason("No work reportlines are found for order: '"
+                    + order.getName() + "'");
+            return;
         }
 
         List<TimeRegistrationDTO> timeRegistrationDTOs = new ArrayList<TimeRegistrationDTO>();
@@ -181,7 +206,9 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
         if (timeRegistrationDTOs.isEmpty()) {
             LOG.warn("Unable to crate timeregistration for request");
-            return false;
+            timImpExpInfo
+                    .addFailedReason("Unable to crate timeregistration for request");
+            return;
         }
 
         TimeRegistrationRequestDTO timeRegistrationRequestDTO = new TimeRegistrationRequestDTO();
@@ -191,12 +218,20 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                 .sendRequestReceiveResponse(url, userName, password,
                         timeRegistrationRequestDTO, TimeRegistrationResponseDTO.class);
 
+        if (timeRegistrationResponseDTO == null) {
+            LOG.error("No response or exception in response");
+            timImpExpInfo
+                    .addFailedReason("No response or exception in response");
+            return;
+        }
+
         if (isRefsListEmpty(timeRegistrationResponseDTO.getRefs())) {
             LOG.warn("Registration response with empty refs");
-            return false;
+            timImpExpInfo
+                    .addFailedReason("Registration response with empty refs");
+            return;
         }
         saveSyncInfoOnAnotherTransaction(productCode, order);
-        return true;
     }
 
     /**
@@ -254,6 +289,8 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             worker = workerDAO.findByCode(workerCode);
         } catch (InstanceNotFoundException e) {
             LOG.warn("Worker \"" + workerCode + "\" not found!");
+            timImpExpInfo.addFailedReason("Worker \"" + workerCode
+                    + "\" not found!");
             return null;
         }
 
@@ -287,6 +324,19 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     public OrderSyncInfo getOrderLastSyncInfo(Order order) {
         return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorId(
                 order, PredefinedConnectors.TIM.getName());
+    }
+
+    /**
+     * finds and returns a Tim connector
+     */
+    private Connector getTimConnector() {
+        return connectorDAO
+                .findUniqueByName(PredefinedConnectors.TIM.getName());
+    }
+
+    @Override
+    public TimImpExpInfo getExportProcessInfo() {
+        return timImpExpInfo;
     }
 
 }

@@ -41,6 +41,7 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -103,6 +104,13 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     @Qualifier("subclass")
     private IBaseCalendarModel baseCalendarModel;
 
+    private TimImpExpInfo timImpExpInfo;
+
+    /**
+     * Action name
+     */
+    private static final String IMPORT = "Import";
+
     /**
      * Search criteria for roster exception days in RESPONSE message
      * {@link RosterDTO}
@@ -124,18 +132,24 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
 
     @Override
     @Transactional
-    public void importRosters() {
+    public void importRosters() throws ConnectorException {
         Connector connector = connectorDAO
-                .findUniqueByName(
-                PredefinedConnectors.TIM.getName());
+                .findUniqueByName(PredefinedConnectors.TIM.getName());
         if (connector == null) {
-            return;
+            throw new ConnectorException("Tim Connector not found");
+        }
+
+        if (!connector.areConnectionValuesValid()) {
+            throw new ConnectorException(
+                    "Connection values of Tim connector are invalid");
         }
 
         Map<String, String> properties = connector.getPropertiesAsMap();
         String url = properties.get(PredefinedConnectorProperties.SERVER_URL);
+
         String userName = properties
                 .get(PredefinedConnectorProperties.USERNAME);
+
         String password = properties
                 .get(PredefinedConnectorProperties.PASSWORD);
 
@@ -149,13 +163,15 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         String departmentIds = properties
                 .get(PredefinedConnectorProperties.TIM_DEPARTAMENTS_IMPORT_ROSTER);
 
-        if (StringUtils.isEmpty(departmentIds)) {
+        if (StringUtils.isBlank(departmentIds)) {
             LOG.warn("No departments configured");
-            return;
+            throw new ConnectorException("No departments configured");
         }
 
         String[] departmentIdsArray = StringUtils.stripAll(StringUtils.split(
                 departmentIds, ","));
+
+        timImpExpInfo = new TimImpExpInfo(IMPORT);
 
         for (String department : departmentIdsArray) {
             LOG.info("Department: " + department);
@@ -165,11 +181,17 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                     .sendRequestReceiveResponse(url, userName, password,
                             rosterRequestDTO, RosterResponseDTO.class);
 
-            updateWorkersCalendarException(rosterResponseDTO,
-                    productivityFactor);
+            if (rosterResponseDTO != null) {
+                updateWorkersCalendarException(rosterResponseDTO,
+                        productivityFactor);
+            } else {
+                LOG.error("No valid response for department " + department);
+                timImpExpInfo
+                        .addFailedReason("No valid response for department "
+                                + department);
+            }
         }
     }
-
 
     /**
      * updates workers Exception calendar
@@ -190,6 +212,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                             updateCalendarException(rosterExceptions);
                         } else {
                             LOG.info("No roster-exceptions found in the response");
+                            timImpExpInfo
+                                    .addFailedReason("No roster-exceptions found in the response");
                         }
                         return null;
                     }
@@ -217,6 +241,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                 worker = workerDAO.findUniqueByNif(workerCode);
             } catch (InstanceNotFoundException e) {
                 LOG.warn("Worker \"" + workerCode + "\" not found!");
+                timImpExpInfo.addFailedReason("Worker \"" + workerCode
+                        + "\" not found!");
             }
             if (worker != null) {
                 List<RosterDTO> list = entry.getValue();
@@ -331,6 +357,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     private CalendarExceptionType getCalendarExceptionType(String name) {
         if (name == null || name.isEmpty()) {
             LOG.error("Exception name should not be empty");
+            timImpExpInfo.addFailedReason("Exception name should not be empty");
             return null;
         }
         try {
@@ -345,6 +372,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
             return calendarExceptionTypeDAO.findUniqueByName(nameToSearch);
         } catch (InstanceNotFoundException e) {
             LOG.error("Calendar exceptionType not found", e);
+            timImpExpInfo.addFailedReason("Calendar exceptionType not found");
         }
         return null;
     }
@@ -436,5 +464,10 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         rosterDTO.setFullDay(false);
         rosterDTO.setConcept(false);
         return rosterDTO;
+    }
+
+    @Override
+    public TimImpExpInfo getImportProcessInfo() {
+        return timImpExpInfo;
     }
 }

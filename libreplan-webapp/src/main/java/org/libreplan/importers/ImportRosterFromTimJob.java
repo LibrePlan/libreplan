@@ -19,6 +19,9 @@
 
 package org.libreplan.importers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -35,6 +38,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class ImportRosterFromTimJob extends QuartzJobBean {
+    private static final Log LOG = LogFactory
+                                         .getLog(ImportRosterFromTimJob.class);
 
     @Override
     protected void executeInternal(JobExecutionContext context)
@@ -45,7 +50,13 @@ public class ImportRosterFromTimJob extends QuartzJobBean {
         IImportRosterFromTim importRosterFromTim = (IImportRosterFromTim) applicationContext
                 .getBean("importRosterFromTim");
 
-        importRosterFromTim.importRosters();
+        try {
+            importRosterFromTim.importRosters();
+            LOG.info("Import scuccessful: "
+                    + importRosterFromTim.getImportProcessInfo().isSuccessful());
+        } catch (ConnectorException e) {
+            LOG.error("Import roster from Tim failed", e);
+        }
 
     }
 

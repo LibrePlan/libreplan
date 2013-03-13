@@ -24,6 +24,7 @@ import java.util.List;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IJobSchedulerConfigurationDAO;
 import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.JobClassNameEnum;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -31,6 +32,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.importers.IExportTimesheetsToTim;
 import org.libreplan.importers.IImportRosterFromTim;
 import org.libreplan.importers.ISchedulerManager;
+import org.libreplan.importers.TimImpExpInfo;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,8 @@ public class JobSchedulerModel implements IJobSchedulerModel {
     @Autowired
     private IExportTimesheetsToTim exportTimesheetsToTim;
 
+    private TimImpExpInfo timImpExpInfo;
+
     @Override
     @Transactional(readOnly = true)
     public List<JobSchedulerConfiguration> getJobSchedulerConfigurations() {
@@ -80,16 +84,24 @@ public class JobSchedulerModel implements IJobSchedulerModel {
     }
 
     @Override
-    public void doManual(JobSchedulerConfiguration jobSchedulerConfiguration) {
+    public void doManual(JobSchedulerConfiguration jobSchedulerConfiguration)
+            throws ConnectorException {
         String name = jobSchedulerConfiguration.getJobClassName().getName();
         if (name.equals(JobClassNameEnum.IMPORT_ROSTER_FROM_TIM_JOB.getName())) {
             importRosterFromTim.importRosters();
+            timImpExpInfo = importRosterFromTim.getImportProcessInfo();
             return;
         }
         if (name.equals(JobClassNameEnum.EXPORT_TIMESHEET_TO_TIM_JOB.getName())) {
             exportTimesheetsToTim.exportTimesheets();
+            timImpExpInfo = exportTimesheetsToTim.getExportProcessInfo();
             return;
         }
+    }
+
+    @Override
+    public TimImpExpInfo getImportExportInfo() {
+        return timImpExpInfo;
     }
 
     @Override

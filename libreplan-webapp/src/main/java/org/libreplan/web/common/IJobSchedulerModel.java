@@ -22,9 +22,11 @@ package org.libreplan.web.common;
 import java.util.List;
 
 import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.importers.TimImpExpInfo;
 
 /**
  * Contract for {@link JobSchedulerModel}.
@@ -55,9 +57,16 @@ public interface IJobSchedulerModel {
      *
      * @param jobSchedulerConfiguration
      *            the job configuration
+     * @throws ConnectorException
+     *             if connector is not valid
      */
-    void doManual(JobSchedulerConfiguration jobSchedulerConfiguration);
+    void doManual(JobSchedulerConfiguration jobSchedulerConfiguration)
+            throws ConnectorException;
 
+    /**
+     * Returns import/export info. Failure or success info
+     */
+    TimImpExpInfo getImportExportInfo();
 
     /**
      * Prepares for create a new {@link JobSchedulerConfiguration}.

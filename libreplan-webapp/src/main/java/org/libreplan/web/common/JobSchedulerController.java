@@ -23,18 +23,24 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.JobClassNameEnum;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.importers.TimImpExpInfo;
 import org.quartz.CronExpression;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -46,7 +52,9 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Textbox;
+import org.zkoss.zul.api.Window;
 
 /**
  * Controller for job scheduler manager
@@ -174,7 +182,13 @@ public class JobSchedulerController extends
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        jobSchedulerModel.doManual(jobSchedulerConfiguration);
+                        try {
+                            jobSchedulerModel.doManual(jobSchedulerConfiguration);
+                            shwoImpExpInfo();
+                        } catch (ConnectorException e) {
+                            messagesForUser.showMessage(Level.ERROR,
+                                    _(e.getMessage()));
+                        }
                     }
                 }));
                 hbox.appendChild(Util.createEditButton(new EventListener() {
@@ -193,6 +207,27 @@ public class JobSchedulerController extends
 
             }
         };
+    }
+
+    private void shwoImpExpInfo() {
+        Map<String, Object> args = new HashMap<String, Object>();
+
+        TimImpExpInfo timImpExpInfo = jobSchedulerModel.getImportExportInfo();
+        args.put("action", _(timImpExpInfo.getAction()));
+        args.put("showSuccess", timImpExpInfo.isSuccessful());
+        args.put("failedReasons",
+                new SimpleListModel(timImpExpInfo.getFailedReasons()));
+
+        Window timImpExpInfoWindow = (Window) Executions.createComponents(
+                "/orders/_timImpExpInfo.zul", null, args);
+
+        try {
+            timImpExpInfoWindow.doModal();
+        } catch (SuspendNotAllowedException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

@@ -21,6 +21,7 @@ package org.libreplan.importers;
 
 import org.libreplan.business.calendars.entities.CalendarException;
 import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
 
 /**
  * Import Rosters from Tim SOAP server using {@link TimSoapClient} and updates
@@ -38,6 +39,14 @@ public interface IImportRosterFromTim {
      *
      * If worker calendar exception already exists it will be removed and added
      * new one, in other cases a new calendar exception will be created
+     *
+     * @throws ConnectorException
+     *             if connector is not valid
      */
-    void importRosters();
+    void importRosters() throws ConnectorException;
+
+    /**
+     * Returns import process info, success of fail info
+     */
+    TimImpExpInfo getImportProcessInfo();
 }

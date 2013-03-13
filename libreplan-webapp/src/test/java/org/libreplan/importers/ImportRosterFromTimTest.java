@@ -35,8 +35,7 @@ import org.junit.runner.RunWith;
 import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.importers.IImportRosterFromTim;
-import org.libreplan.importers.ImportRosterFromTim;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.web.calendars.IBaseCalendarModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -93,7 +92,7 @@ public class ImportRosterFromTimTest {
 
     @Test
     @Ignore("Only working if you have a Tim server configured")
-    public void testImportRosters() {
+    public void testImportRosters() throws ConnectorException {
         importRosterFromTim.importRosters();
         assertTrue(baseCalendarModel.getCalendarExceptionType() != null);
     }

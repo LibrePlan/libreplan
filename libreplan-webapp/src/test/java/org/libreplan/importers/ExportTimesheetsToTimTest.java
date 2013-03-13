@@ -44,14 +44,13 @@ import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
-import org.libreplan.importers.ExportTimesheetsToTim;
-import org.libreplan.importers.IExportTimesheetsToTim;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -160,9 +159,12 @@ public class ExportTimesheetsToTimTest {
 
     @Test
     @Ignore("Only working if you have a Tim server configured")
-    public void testExportTimesheetsToTimWithValidCodeAndOrder() {
+    public void testExportTimesheetsToTimWithValidCodeAndOrder()
+            throws ConnectorException {
         Order order = givenOrder();
-        boolean result = exportTimesheetsToTim.exportTimesheets("5160", order);
+        exportTimesheetsToTim.exportTimesheets("5160", order);
+        boolean result = exportTimesheetsToTim.getExportProcessInfo()
+                .isSuccessful();
         if (!result) {
             fail("Export timesheets to tim failed");
         }
@@ -170,13 +172,15 @@ public class ExportTimesheetsToTimTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testExportTimesheetsToTimWithInvalidCode() {
+    public void testExportTimesheetsToTimWithInvalidCode()
+            throws ConnectorException {
         Order order = givenOrder();
         exportTimesheetsToTim.exportTimesheets("", order);
     }
 
     @Test(expected = RuntimeException.class)
-    public void testExportTimesheetsToTimWithOrderNull() {
+    public void testExportTimesheetsToTimWithOrderNull()
+            throws ConnectorException {
         exportTimesheetsToTim.exportTimesheets("5160", null);
     }
 }

@@ -14,7 +14,7 @@
 
         <property name="name" column="name" not-null="true" />
 
-        <list name="properties" table="connector_property">
+        <list name="properties" table="connector_property" lazy="false">
             <key column="connector_id" />
             <list-index column="connector_property_position" />
 

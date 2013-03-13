@@ -19,6 +19,8 @@
 
 package org.libreplan.business.common.entities;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -118,4 +120,29 @@ public class Connector extends BaseEntity {
                         "Y");
     }
 
+    /**
+     * Check if connector's connections values are valid
+     *
+     * @return true if connection values are valid
+     */
+    public boolean areConnectionValuesValid() {
+        String serverUrl = getPropertiesAsMap().get(
+                PredefinedConnectorProperties.SERVER_URL);
+        try {
+            new URL(serverUrl);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+
+        if (StringUtils.isBlank(getPropertiesAsMap().get(
+                PredefinedConnectorProperties.USERNAME))) {
+            return false;
+        }
+
+        if (StringUtils.isBlank(getPropertiesAsMap().get(
+                PredefinedConnectorProperties.PASSWORD))) {
+            return false;
+        }
+        return true;
+    }
 }
