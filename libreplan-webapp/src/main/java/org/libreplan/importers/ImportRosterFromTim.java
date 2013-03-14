@@ -19,6 +19,8 @@
 
 package org.libreplan.importers;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -107,11 +109,6 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     private TimImpExpInfo timImpExpInfo;
 
     /**
-     * Action name
-     */
-    private static final String IMPORT = "Import";
-
-    /**
      * Search criteria for roster exception days in RESPONSE message
      * {@link RosterDTO}
      */
@@ -136,12 +133,12 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         Connector connector = connectorDAO
                 .findUniqueByName(PredefinedConnectors.TIM.getName());
         if (connector == null) {
-            throw new ConnectorException("Tim Connector not found");
+            throw new ConnectorException(_("Tim connector not found"));
         }
 
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    "Connection values of Tim connector are invalid");
+                    _("Connection values of Tim connector are invalid"));
         }
 
         Map<String, String> properties = connector.getPropertiesAsMap();
@@ -165,13 +162,13 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
 
         if (StringUtils.isBlank(departmentIds)) {
             LOG.warn("No departments configured");
-            throw new ConnectorException("No departments configured");
+            throw new ConnectorException(_("No departments configured"));
         }
 
         String[] departmentIdsArray = StringUtils.stripAll(StringUtils.split(
                 departmentIds, ","));
 
-        timImpExpInfo = new TimImpExpInfo(IMPORT);
+        timImpExpInfo = new TimImpExpInfo(_("Import"));
 
         for (String department : departmentIdsArray) {
             LOG.info("Department: " + department);
@@ -186,9 +183,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                         productivityFactor);
             } else {
                 LOG.error("No valid response for department " + department);
-                timImpExpInfo
-                        .addFailedReason("No valid response for department "
-                                + department);
+                timImpExpInfo.addFailedReason(_(
+                        "No valid response for department '{0}'", department));
             }
         }
     }
@@ -213,7 +209,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                         } else {
                             LOG.info("No roster-exceptions found in the response");
                             timImpExpInfo
-                                    .addFailedReason("No roster-exceptions found in the response");
+                                    .addFailedReason(_("No roster-exceptions found in the response"));
                         }
                         return null;
                     }
@@ -240,9 +236,9 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
             try {
                 worker = workerDAO.findUniqueByNif(workerCode);
             } catch (InstanceNotFoundException e) {
-                LOG.warn("Worker \"" + workerCode + "\" not found!");
-                timImpExpInfo.addFailedReason("Worker \"" + workerCode
-                        + "\" not found!");
+                LOG.warn("Worker '" + workerCode + "' not found");
+                timImpExpInfo.addFailedReason(_("Worker '{0}' not found",
+                        workerCode));
             }
             if (worker != null) {
                 List<RosterDTO> list = entry.getValue();
@@ -357,7 +353,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     private CalendarExceptionType getCalendarExceptionType(String name) {
         if (name == null || name.isEmpty()) {
             LOG.error("Exception name should not be empty");
-            timImpExpInfo.addFailedReason("Exception name should not be empty");
+            timImpExpInfo
+                    .addFailedReason(_("Exception name should not be empty"));
             return null;
         }
         try {
@@ -372,7 +369,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
             return calendarExceptionTypeDAO.findUniqueByName(nameToSearch);
         } catch (InstanceNotFoundException e) {
             LOG.error("Calendar exceptionType not found", e);
-            timImpExpInfo.addFailedReason("Calendar exceptionType not found");
+            timImpExpInfo
+                    .addFailedReason(_("Calendar exception day not found"));
         }
         return null;
     }

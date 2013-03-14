@@ -19,6 +19,8 @@
 
 package org.libreplan.importers;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
@@ -105,12 +107,12 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
         Connector connector = getJiraConnector();
         if (connector == null) {
-            throw new ConnectorException("Jira connector not found");
+            throw new ConnectorException(_("JIRA connector not found"));
         }
 
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    "Connection values of JIRA connector are invalid");
+                    _("Connection values of JIRA connector are invalid"));
         }
 
         Map<String, String> properties = connector.getPropertiesAsMap();

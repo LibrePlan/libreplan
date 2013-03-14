@@ -187,7 +187,7 @@ public class JobSchedulerController extends
                             shwoImpExpInfo();
                         } catch (ConnectorException e) {
                             messagesForUser.showMessage(Level.ERROR,
-                                    _(e.getMessage()));
+                                    e.getMessage());
                         }
                     }
                 }));
@@ -213,7 +213,7 @@ public class JobSchedulerController extends
         Map<String, Object> args = new HashMap<String, Object>();
 
         TimImpExpInfo timImpExpInfo = jobSchedulerModel.getImportExportInfo();
-        args.put("action", _(timImpExpInfo.getAction()));
+        args.put("action", timImpExpInfo.getAction());
         args.put("showSuccess", timImpExpInfo.isSuccessful());
         args.put("failedReasons",
                 new SimpleListModel(timImpExpInfo.getFailedReasons()));

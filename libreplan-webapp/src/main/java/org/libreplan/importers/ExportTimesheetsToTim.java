@@ -19,6 +19,8 @@
 
 package org.libreplan.importers;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -94,24 +96,19 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
     private TimImpExpInfo timImpExpInfo;
 
-    /**
-     * Action name
-     */
-    private static final String EXPORT = "Export";
-
     @Override
     @Transactional(readOnly = true)
     public void exportTimesheets() throws ConnectorException {
         Connector connector = getTimConnector();
         if (connector == null) {
-            throw new ConnectorException("Tim connector not found");
+            throw new ConnectorException(_("Tim connector not found"));
         }
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    "Connection values of Tim connector are invalid");
+                    _("Connection values of Tim connector are invalid"));
         }
 
-        timImpExpInfo = new TimImpExpInfo(EXPORT);
+        timImpExpInfo = new TimImpExpInfo(_("Export"));
 
         List<Order> orders = orderDAO.getOrders();
         for (Order order : orders) {
@@ -119,8 +116,10 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             if (orderSyncInfo == null) {
                 LOG.warn("Order '" + order.getName()
                         + "' is not yet synchronized");
-                timImpExpInfo.addFailedReason("Order '" + order.getName()
-                        + "' is not yet synchronized");
+                timImpExpInfo
+                        .addFailedReason(_(
+                                "Order '{0}' is not yet synchronized",
+                                order.getName()));
             } else {
                 LOG.info("Exporting '" + order.getName() + "'");
                 exportTimesheets(orderSyncInfo.getKey(),
@@ -142,15 +141,15 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
         Connector connector = getTimConnector();
         if (connector == null) {
-            throw new ConnectorException("Tim connector not found");
+            throw new ConnectorException(_("Tim connector not found"));
         }
 
         if (!connector.areConnectionValuesValid()) {
             throw new ConnectorException(
-                    "Connection values of Tim connector are invalid");
+                    _("Connection values of Tim connector are invalid"));
         }
 
-        timImpExpInfo = new TimImpExpInfo(EXPORT);
+        timImpExpInfo = new TimImpExpInfo(_("Export"));
 
         exportTimesheets(productCode, order, connector);
     }
@@ -188,9 +187,9 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         if (workReportLines == null || workReportLines.isEmpty()) {
             LOG.warn("No work reportlines are found for order: '"
                     + order.getName() + "'");
-            timImpExpInfo
-                    .addFailedReason("No work reportlines are found for order: '"
-                    + order.getName() + "'");
+            timImpExpInfo.addFailedReason(_(
+                    "No work reportlines are found for order: '{0}'",
+                    order.getName()));
             return;
         }
 
@@ -207,7 +206,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         if (timeRegistrationDTOs.isEmpty()) {
             LOG.warn("Unable to crate timeregistration for request");
             timImpExpInfo
-                    .addFailedReason("Unable to crate timeregistration for request");
+                    .addFailedReason(_("Unable to crate time registration for request"));
             return;
         }
 
@@ -288,9 +287,9 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         try {
             worker = workerDAO.findByCode(workerCode);
         } catch (InstanceNotFoundException e) {
-            LOG.warn("Worker \"" + workerCode + "\" not found!");
-            timImpExpInfo.addFailedReason("Worker \"" + workerCode
-                    + "\" not found!");
+            LOG.warn("Worker '" + workerCode + "' not found");
+            timImpExpInfo.addFailedReason(_("Worker '{0}' not found",
+                    workerCode));
             return null;
         }
 

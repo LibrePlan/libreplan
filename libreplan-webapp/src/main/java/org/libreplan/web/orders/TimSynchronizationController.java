@@ -126,7 +126,7 @@ public class TimSynchronizationController extends GenericForwardComposer {
         Map<String, Object> args = new HashMap<String, Object>();
 
         TimImpExpInfo timImpExpInfo = exportTimesheetsToTim.getExportProcessInfo();
-        args.put("action", _(timImpExpInfo.getAction()));
+        args.put("action", timImpExpInfo.getAction());
         args.put("showSuccess", timImpExpInfo.isSuccessful());
         args.put("failedReasons",
                 new SimpleListModel(timImpExpInfo.getFailedReasons()));

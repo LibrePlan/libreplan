@@ -1792,7 +1792,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     _("Cannot connect to JIRA server"));
         } catch (ConnectorException e) {
             messagesForUser.showMessage(Level.ERROR,
-                    _("Failed: " + e.getMessage()));
+                    _("Failed: {0}", e.getMessage()));
         }
     }
 

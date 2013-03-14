@@ -19,6 +19,8 @@
 
 package org.libreplan.importers;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.util.List;
 import java.util.Set;
 
@@ -320,7 +322,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
         Connector connector = connectorDAO
                 .findUniqueByName(PredefinedConnectors.JIRA.getName());
         if (connector == null) {
-            throw new ConnectorException("Connector not found");
+            throw new ConnectorException(_("JIRA connector not found"));
         }
 
         TypeOfWorkHours typeOfWorkHours;
@@ -329,7 +331,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
 
         if (StringUtils.isBlank(name)) {
             throw new ConnectorException(
-                    "Hours type should not be empty to synchronine timesheets");
+                    _("Hours type should not be empty to synchronine timesheets"));
         }
 
         try {
