@@ -1710,7 +1710,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Button startJiraSyncButton, cancelJiraSyncButton, syncWithJiraButton;
     private Combobox comboJiraLabel;
 
-    private boolean isJiraActivated() {
+    public boolean isJiraActivated() {
         Connector connector = connectorDAO
                 .findUniqueByName(PredefinedConnectors.JIRA.getName());
         if (connector == null) {
