@@ -32,6 +32,7 @@
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 <?component name="listOrderElementAuthorizations" inline="true" macroURI="_listOrderElementAuthorizations.zul"?>
+<?component name="jiraOrderElementSynchronizer" inline="true" macroURI="components/_jiraOrderElementSync.zul"?>
 <?component name="timOrderTimesheetSynchronizer" inline="true" macroURI="components/_timOrderTimesheetSync.zul"?>
 
 <window id="${arg.top_id}">
@@ -282,34 +283,8 @@
                        </grid>
                      </groupbox>
                 </groupbox>
-                <groupbox style="margin-top: 5px" closable="false"
-                    visible="@{controller.jiraActivated}">
-                   <caption label="${i18n:_('JIRA import information')}" />
-                   <separator spacing="10px"/>
-                   <hbox width="100%">
-                       <separator spacing="10px" width="100%"/>
-
-                       <grid fixedLayout="true" hflex="1">
-                           <columns>
-                               <column width="200px" />
-                               <column  />
-                           </columns>
-                           <rows>
-                                 <row>
-                                    <label value="${i18n:_('JIRA label')}" width="50px"/>
-                                    <hbox>
-                                       <textbox value="@{controller.orderLastSyncInfo.lastSyncDate}" width="130px" disabled="true"/>
-                                       <textbox id="txtImportedLabel" value="@{controller.orderLastSyncInfo.key}"
-                                           width="220px" disabled="true"/>
-                                        <button label="${i18n:_('Sync with JIRA')}" id="syncWithJiraButton" disabled="@{controller.jiraDeactivated}"
-                                           onClick="controller.syncWithJira()" />
-                                    </hbox>
-                               </row>
-                           </rows>
-                       </grid>
-                   </hbox>
-                </groupbox>
-                <timOrderTimesheetSynchronizer id="timOrderTimesheetSynchronizer" />
+                <jiraOrderElementSynchronizer id="jiraOrderElementSynchronizer" fulfill="tabGeneralData.onSelect"/>
+                <timOrderTimesheetSynchronizer id="timOrderTimesheetSynchronizer" fulfill="tabGeneralData.onSelect" />
             </tabpanel>
             <tabpanel>
                 <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
@@ -335,15 +310,4 @@
             </tabpanel>
         </tabpanels>
     </tabbox>
-     <popup id="jirasyncPopup" sclass="finder-popup">
-        <groupbox mold="3d" closable="false" width="420px">
-            <caption id="jiraSyncCaption" label="Select a label" />
-            <combobox id="comboJiraLabel" autodrop="true" width="400px" constraint="no empty:${i18n:_('cannot be empty')}"/>
-            <separator/>
-            <hbox>
-                <button id="startJiraSyncButton" />
-                <button id="cancelJiraSyncButton" />
-            </hbox>
-        </groupbox>
-     </popup>
 </window>

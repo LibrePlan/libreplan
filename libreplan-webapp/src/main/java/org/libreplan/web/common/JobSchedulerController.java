@@ -36,7 +36,7 @@ import org.libreplan.business.common.entities.JobClassNameEnum;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.importers.TimImpExpInfo;
+import org.libreplan.importers.SynchronizationInfo;
 import org.quartz.CronExpression;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -212,11 +212,11 @@ public class JobSchedulerController extends
     private void shwoImpExpInfo() {
         Map<String, Object> args = new HashMap<String, Object>();
 
-        TimImpExpInfo timImpExpInfo = jobSchedulerModel.getImportExportInfo();
-        args.put("action", timImpExpInfo.getAction());
-        args.put("showSuccess", timImpExpInfo.isSuccessful());
+        SynchronizationInfo synchronizationInfo = jobSchedulerModel.getSynchronizationInfo();
+        args.put("action", synchronizationInfo.getAction());
+        args.put("showSuccess", synchronizationInfo.isSuccessful());
         args.put("failedReasons",
-                new SimpleListModel(timImpExpInfo.getFailedReasons()));
+                new SimpleListModel(synchronizationInfo.getFailedReasons()));
 
         Window timImpExpInfoWindow = (Window) Executions.createComponents(
                 "/orders/_timImpExpInfo.zul", null, args);

@@ -59,6 +59,6 @@ public interface IJiraTimesheetSynchronizer {
     /**
      * returns synchronization info, success or fail info
      */
-    JiraSyncInfo getJiraSyncInfo();
+    SynchronizationInfo getSynchronizationInfo();
 
 }

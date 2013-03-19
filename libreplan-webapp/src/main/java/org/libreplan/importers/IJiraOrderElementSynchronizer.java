@@ -50,8 +50,10 @@ public interface IJiraOrderElementSynchronizer {
      * https://jira.atlassian.com/browse/JRA-29409
      *
      * @return A list of labels
+     * @throws ConnectorException
+     *             if connector not found
      */
-    List<String> getAllJiraLabels();
+    List<String> getAllJiraLabels() throws ConnectorException;
 
     /**
      * Get all jira issues based on the specified <code>label</code> parameter
@@ -108,6 +110,6 @@ public interface IJiraOrderElementSynchronizer {
     /**
      * returns synchronization info, success or fail info
      */
-    JiraSyncInfo getJiraSyncInfo();
+    SynchronizationInfo getSynchronizationInfo();
 
 }

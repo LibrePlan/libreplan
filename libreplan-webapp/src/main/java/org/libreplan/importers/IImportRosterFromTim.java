@@ -46,7 +46,7 @@ public interface IImportRosterFromTim {
     void importRosters() throws ConnectorException;
 
     /**
-     * Returns import process info, success of fail info
+     * Returns synchronization info, success of fail info
      */
-    TimImpExpInfo getImportProcessInfo();
+    SynchronizationInfo getSynchronizationInfo();
 }

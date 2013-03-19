@@ -40,14 +40,12 @@ import org.libreplan.business.calendars.entities.PredefinedCalendarExceptionType
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.resources.daos.IResourceDAO;
 import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
@@ -62,7 +60,6 @@ import org.libreplan.importers.tim.RosterDTO;
 import org.libreplan.importers.tim.RosterRequestDTO;
 import org.libreplan.importers.tim.RosterResponseDTO;
 import org.libreplan.web.calendars.IBaseCalendarModel;
-import org.libreplan.web.resources.worker.IWorkerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -82,16 +79,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     private static final Log LOG = LogFactory.getLog(ImportRosterFromTim.class);
 
     @Autowired
-    private IConfigurationDAO configurationDAO;
-
-    @Autowired
     private IWorkerDAO workerDAO;
-
-    @Autowired
-    private IResourceDAO resourceDAO;
-
-    @Autowired
-    private IWorkerModel workerModel;
 
     @Autowired
     private IConnectorDAO connectorDAO;
@@ -106,7 +94,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     @Qualifier("subclass")
     private IBaseCalendarModel baseCalendarModel;
 
-    private TimImpExpInfo timImpExpInfo;
+    private SynchronizationInfo synchronizationInfo;
 
     /**
      * Search criteria for roster exception days in RESPONSE message
@@ -168,7 +156,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         String[] departmentIdsArray = StringUtils.stripAll(StringUtils.split(
                 departmentIds, ","));
 
-        timImpExpInfo = new TimImpExpInfo(_("Import"));
+        synchronizationInfo = new SynchronizationInfo(_("Import"));
 
         for (String department : departmentIdsArray) {
             LOG.info("Department: " + department);
@@ -183,8 +171,9 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                         productivityFactor);
             } else {
                 LOG.error("No valid response for department " + department);
-                timImpExpInfo.addFailedReason(_(
-                        "No valid response for department '{0}'", department));
+                synchronizationInfo.addFailedReason(_(
+                                "No valid response for department \"{0}\"",
+                                department));
             }
         }
     }
@@ -208,7 +197,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                             updateCalendarException(rosterExceptions);
                         } else {
                             LOG.info("No roster-exceptions found in the response");
-                            timImpExpInfo
+                            synchronizationInfo
                                     .addFailedReason(_("No roster-exceptions found in the response"));
                         }
                         return null;
@@ -237,7 +226,8 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
                 worker = workerDAO.findUniqueByNif(workerCode);
             } catch (InstanceNotFoundException e) {
                 LOG.warn("Worker '" + workerCode + "' not found");
-                timImpExpInfo.addFailedReason(_("Worker '{0}' not found",
+                synchronizationInfo.addFailedReason(_(
+                        "Worker \"{0}\" not found",
                         workerCode));
             }
             if (worker != null) {
@@ -353,7 +343,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     private CalendarExceptionType getCalendarExceptionType(String name) {
         if (name == null || name.isEmpty()) {
             LOG.error("Exception name should not be empty");
-            timImpExpInfo
+            synchronizationInfo
                     .addFailedReason(_("Exception name should not be empty"));
             return null;
         }
@@ -369,7 +359,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
             return calendarExceptionTypeDAO.findUniqueByName(nameToSearch);
         } catch (InstanceNotFoundException e) {
             LOG.error("Calendar exceptionType not found", e);
-            timImpExpInfo
+            synchronizationInfo
                     .addFailedReason(_("Calendar exception day not found"));
         }
         return null;
@@ -465,7 +455,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
     }
 
     @Override
-    public TimImpExpInfo getImportProcessInfo() {
-        return timImpExpInfo;
+    public SynchronizationInfo getSynchronizationInfo() {
+        return synchronizationInfo;
     }
 }

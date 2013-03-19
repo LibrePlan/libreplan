@@ -32,20 +32,17 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
-import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
-import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Worker;
-import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.importers.tim.DurationDTO;
 import org.libreplan.importers.tim.PersonDTO;
@@ -77,12 +74,6 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     private IWorkerDAO workerDAO;
 
     @Autowired
-    private IWorkReportLineDAO workReportLineDAO;
-
-    @Autowired
-    private IConfigurationDAO configurationDAO;
-
-    @Autowired
     IOrderSyncInfoDAO orderSyncInfoDAO;
 
     @Autowired
@@ -91,10 +82,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     @Autowired
     private IConnectorDAO connectorDAO;
 
-    @Autowired
-    private IOrderDAO orderDAO;
-
-    private TimImpExpInfo timImpExpInfo;
+    private SynchronizationInfo synchronizationInfo;
 
     @Override
     @Transactional(readOnly = true)
@@ -108,23 +96,19 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                     _("Connection values of Tim connector are invalid"));
         }
 
-        timImpExpInfo = new TimImpExpInfo(_("Export"));
+        synchronizationInfo = new SynchronizationInfo(_("Export"));
 
-        List<Order> orders = orderDAO.getOrders();
-        for (Order order : orders) {
-            OrderSyncInfo orderSyncInfo = getOrderLastSyncInfo(order);
-            if (orderSyncInfo == null) {
-                LOG.warn("Order '" + order.getName()
-                        + "' is not yet synchronized");
-                timImpExpInfo
-                        .addFailedReason(_(
-                                "Order '{0}' is not yet synchronized",
-                                order.getName()));
-            } else {
-                LOG.info("Exporting '" + order.getName() + "'");
-                exportTimesheets(orderSyncInfo.getKey(),
-                        orderSyncInfo.getOrder(), connector);
-            }
+        List<OrderSyncInfo> orderSyncInfos = orderSyncInfoDAO.findByConnectorId(PredefinedConnectors.TIM.getName());
+        if (orderSyncInfos == null || orderSyncInfos.isEmpty()) {
+            LOG.warn("No items found in 'OrderSyncInfo' to export to Tim");
+            synchronizationInfo.addFailedReason(_("No items found in 'OrderSyncInfo' to export to Tim"));
+            return;
+        }
+
+        for (OrderSyncInfo orderSyncInfo : orderSyncInfos) {
+            LOG.info("Exporting '" + orderSyncInfo.getOrder().getName() + "'");
+            exportTimesheets(orderSyncInfo.getKey(), orderSyncInfo.getOrder(),
+                    connector);
         }
     }
 
@@ -133,10 +117,10 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     public void exportTimesheets(String productCode, Order order)
             throws ConnectorException {
         if (productCode == null || productCode.isEmpty()) {
-            throw new RuntimeException("Product code should not be empty");
+            throw new ConnectorException(_("Product code should not be empty"));
         }
         if (order == null) {
-            throw new RuntimeException("Order should not be empty");
+            throw new ConnectorException(_("Order should not be empty"));
         }
 
         Connector connector = getTimConnector();
@@ -149,7 +133,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                     _("Connection values of Tim connector are invalid"));
         }
 
-        timImpExpInfo = new TimImpExpInfo(_("Export"));
+        synchronizationInfo = new SynchronizationInfo(_("Export"));
 
         exportTimesheets(productCode, order, connector);
     }
@@ -187,8 +171,8 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
         if (workReportLines == null || workReportLines.isEmpty()) {
             LOG.warn("No work reportlines are found for order: '"
                     + order.getName() + "'");
-            timImpExpInfo.addFailedReason(_(
-                    "No work reportlines are found for order: '{0}'",
+            synchronizationInfo.addFailedReason(_(
+                    "No work reportlines are found for order: \"{0}\"",
                     order.getName()));
             return;
         }
@@ -205,7 +189,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
         if (timeRegistrationDTOs.isEmpty()) {
             LOG.warn("Unable to crate timeregistration for request");
-            timImpExpInfo
+            synchronizationInfo
                     .addFailedReason(_("Unable to crate time registration for request"));
             return;
         }
@@ -219,15 +203,15 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
         if (timeRegistrationResponseDTO == null) {
             LOG.error("No response or exception in response");
-            timImpExpInfo
-                    .addFailedReason("No response or exception in response");
+            synchronizationInfo
+                    .addFailedReason(_("No response or exception in response"));
             return;
         }
 
         if (isRefsListEmpty(timeRegistrationResponseDTO.getRefs())) {
             LOG.warn("Registration response with empty refs");
-            timImpExpInfo
-                    .addFailedReason("Registration response with empty refs");
+            synchronizationInfo
+                    .addFailedReason(_("Registration response with empty refs"));
             return;
         }
         saveSyncInfoOnAnotherTransaction(productCode, order);
@@ -262,9 +246,14 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                 .runOnAnotherTransaction(new IOnTransaction<Void>() {
                     @Override
                     public Void execute() {
-                        OrderSyncInfo orderSyncInfo = OrderSyncInfo.create(
-                                order, PredefinedConnectors.TIM.getName());
-                        orderSyncInfo.setKey(productCode);
+                        OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
+                                .findByKeyAndConnectorId(productCode,
+                                        PredefinedConnectors.TIM.getName());
+                        if (orderSyncInfo == null) {
+                            orderSyncInfo = OrderSyncInfo.create(productCode,
+                                    order, PredefinedConnectors.TIM.getName());
+                        }
+                        orderSyncInfo.setLastSyncDate(new Date());
                         orderSyncInfoDAO.save(orderSyncInfo);
                         return null;
                     }
@@ -288,7 +277,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
             worker = workerDAO.findByCode(workerCode);
         } catch (InstanceNotFoundException e) {
             LOG.warn("Worker '" + workerCode + "' not found");
-            timImpExpInfo.addFailedReason(_("Worker '{0}' not found",
+            synchronizationInfo.addFailedReason(_("Worker \"{0}\" not found",
                     workerCode));
             return null;
         }
@@ -334,8 +323,8 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     }
 
     @Override
-    public TimImpExpInfo getExportProcessInfo() {
-        return timImpExpInfo;
+    public SynchronizationInfo getSynchronizationInfo() {
+        return synchronizationInfo;
     }
 
 }

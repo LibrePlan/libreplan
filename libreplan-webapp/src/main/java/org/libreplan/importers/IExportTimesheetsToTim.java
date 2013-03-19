@@ -69,8 +69,8 @@ public interface IExportTimesheetsToTim {
     OrderSyncInfo getOrderLastSyncInfo(Order order);
 
     /**
-     * Returns export process info, success of fail info
+     * Returns synchronization info, success of fail info
      */
-    TimImpExpInfo getExportProcessInfo();
+    SynchronizationInfo getSynchronizationInfo();
 
 }

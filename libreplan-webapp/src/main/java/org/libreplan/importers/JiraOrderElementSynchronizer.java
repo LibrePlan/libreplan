@@ -72,7 +72,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchronizer {
 
-    private JiraSyncInfo jiraSyncInfo;
+    private SynchronizationInfo synchronizationInfo;
 
     @Autowired
     private IConnectorDAO connectorDAO;
@@ -82,10 +82,10 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> getAllJiraLabels() {
+    public List<String> getAllJiraLabels() throws ConnectorException {
         Connector connector = getJiraConnector();
         if (connector == null) {
-            return null;
+            throw new ConnectorException(_("JIRA connector not found"));
         }
 
         String jiraLabels = connector.getPropertiesAsMap().get(
@@ -137,7 +137,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Transactional(readOnly = true)
     public void syncOrderElementsWithJiraIssues(List<IssueDTO> issues, Order order) {
 
-        jiraSyncInfo = new JiraSyncInfo();
+        synchronizationInfo = new SynchronizationInfo(_("Synchronization"));
 
         for (IssueDTO issue : issues) {
             String code = PredefinedConnectorProperties.JIRA_CODE_PREFIX
@@ -147,8 +147,9 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
             OrderLine orderLine = syncOrderLine(order, code, name);
             if (orderLine == null) {
-                jiraSyncInfo.addSyncFailedReason("Order-element for '"
-                        + issue.getKey() + "' issue not found");
+                synchronizationInfo.addFailedReason(_(
+                        "Order-element for \"{0}\" issue not found",
+                        issue.getKey()));
                 continue;
             }
 
@@ -158,8 +159,9 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
                     .getTimetracking(), loggedHours);
 
             if (estimatedHours.isZero()) {
-                jiraSyncInfo.addSyncFailedReason("Estimated time for '"
-                        + issue.getKey() + "' issue is 0");
+                synchronizationInfo.addFailedReason(_(
+                                "Estimated time for \"{0}\" issue is 0",
+                                issue.getKey()));
                 continue;
             }
 
@@ -246,15 +248,16 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         WorkLogDTO workLog = issue.getFields().getWorklog();
 
         if (workLog == null) {
-            jiraSyncInfo.addSyncFailedReason("No worklogs found for '"
-                    + issue.getKey() + "' issue");
+            synchronizationInfo.addFailedReason(_(
+                    "No worklogs found for \"{0}\" issue", issue.getKey()));
             return;
         }
 
         List<WorkLogItemDTO> workLogItems = workLog.getWorklogs();
         if (workLogItems.isEmpty()) {
-            jiraSyncInfo.addSyncFailedReason("No worklog items found for '"
-                    + issue.getKey() + "' issue");
+            synchronizationInfo.addFailedReason(_(
+                            "No worklog items found for \"{0}\" issue",
+                            issue.getKey()));
             return;
         }
 
@@ -363,9 +366,10 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
                 // This could happen if a parent or child of the current
                 // OrderElement has an advance of type PERCENTAGE
-                jiraSyncInfo
-                        .addSyncFailedReason("Duplicate value AdvanceAssignment for order element of '"
-                                + orderElement.getCode() + "'");
+                synchronizationInfo
+                        .addFailedReason(_(
+                                "Duplicate value AdvanceAssignment for order element of \"{0}\"",
+                                orderElement.getCode()));
                 return;
             }
         }
@@ -422,8 +426,8 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     }
 
     @Override
-    public JiraSyncInfo getJiraSyncInfo() {
-        return jiraSyncInfo;
+    public SynchronizationInfo getSynchronizationInfo() {
+        return synchronizationInfo;
     }
 
     /**
@@ -437,9 +441,13 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Override
     @Transactional
     public void saveSyncInfo(String key, Order order) {
-        OrderSyncInfo orderSyncInfo = OrderSyncInfo.create(order,
-                PredefinedConnectors.JIRA.getName());
-        orderSyncInfo.setKey(key);
+        OrderSyncInfo orderSyncInfo = orderSyncInfoDAO.findByKeyAndConnectorId(
+                key, PredefinedConnectors.JIRA.getName());
+        if (orderSyncInfo == null) {
+            orderSyncInfo = OrderSyncInfo.create(key, order,
+                    PredefinedConnectors.JIRA.getName());
+        }
+        orderSyncInfo.setLastSyncDate(new Date());
         orderSyncInfoDAO.save(orderSyncInfo);
     }
 

@@ -32,7 +32,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.importers.IExportTimesheetsToTim;
 import org.libreplan.importers.IImportRosterFromTim;
 import org.libreplan.importers.ISchedulerManager;
-import org.libreplan.importers.TimImpExpInfo;
+import org.libreplan.importers.SynchronizationInfo;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class JobSchedulerModel implements IJobSchedulerModel {
     @Autowired
     private IExportTimesheetsToTim exportTimesheetsToTim;
 
-    private TimImpExpInfo timImpExpInfo;
+    private SynchronizationInfo synchronizationInfo;
 
     @Override
     @Transactional(readOnly = true)
@@ -89,19 +89,19 @@ public class JobSchedulerModel implements IJobSchedulerModel {
         String name = jobSchedulerConfiguration.getJobClassName().getName();
         if (name.equals(JobClassNameEnum.IMPORT_ROSTER_FROM_TIM_JOB.getName())) {
             importRosterFromTim.importRosters();
-            timImpExpInfo = importRosterFromTim.getImportProcessInfo();
+            synchronizationInfo = importRosterFromTim.getSynchronizationInfo();
             return;
         }
         if (name.equals(JobClassNameEnum.EXPORT_TIMESHEET_TO_TIM_JOB.getName())) {
             exportTimesheetsToTim.exportTimesheets();
-            timImpExpInfo = exportTimesheetsToTim.getExportProcessInfo();
+            synchronizationInfo = exportTimesheetsToTim.getSynchronizationInfo();
             return;
         }
     }
 
     @Override
-    public TimImpExpInfo getImportExportInfo() {
-        return timImpExpInfo;
+    public SynchronizationInfo getSynchronizationInfo() {
+        return synchronizationInfo;
     }
 
     @Override

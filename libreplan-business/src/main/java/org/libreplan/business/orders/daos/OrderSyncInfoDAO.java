@@ -62,4 +62,19 @@ public class OrderSyncInfoDAO extends GenericDAOHibernate<OrderSyncInfo, Long>
         return criteria.list();
     }
 
+    @Override
+    public OrderSyncInfo findByKeyAndConnectorId(String key, String connectorId) {
+        Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
+        criteria.add(Restrictions.eq("key", key));
+        criteria.add(Restrictions.eq("connectorId", connectorId));
+        return (OrderSyncInfo) criteria.uniqueResult();
+    }
+
+    @Override
+    public List<OrderSyncInfo> findByConnectorId(String connectorId) {
+        Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
+        criteria.add(Restrictions.eq("connectorId", connectorId));
+        return criteria.list();
+    }
+
 }

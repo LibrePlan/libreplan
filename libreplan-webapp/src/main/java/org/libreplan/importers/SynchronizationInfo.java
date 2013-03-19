@@ -24,14 +24,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Keeps track the success/failure of Tim's import and/or export process
+ * Keeps track the success/failure of synchronization process
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-public class TimImpExpInfo {
+public class SynchronizationInfo {
 
     /**
-     * action, import or export process
+     * The action, a unique key for example synchronization, import or export
+     * etc action
      */
     private String action;
 
@@ -40,7 +41,7 @@ public class TimImpExpInfo {
      */
     private List<String> failedReasons = new ArrayList<String>();
 
-    public TimImpExpInfo(String action) {
+    public SynchronizationInfo(String action) {
         this.action = action;
     }
 
@@ -55,14 +56,14 @@ public class TimImpExpInfo {
      * Adds the specified <code>reason</code> to <code>failedReasons<code> list
      *
      * @param reason
-     *            reason why import/export failed
+     *            reason why synchronization is failed
      */
     public void addFailedReason(String reason) {
         failedReasons.add(reason);
     }
 
     /**
-     * Is import or export succeeded
+     * Is synchronization succeeded
      *
      * @return true if <code>failedReasons</code> is empty
      */
@@ -71,7 +72,7 @@ public class TimImpExpInfo {
     }
 
     /**
-     * returns reasons why import or export failed
+     * returns reasons why synchronization is failed
      */
     public List<String> getFailedReasons() {
         return Collections.unmodifiableList(failedReasons);

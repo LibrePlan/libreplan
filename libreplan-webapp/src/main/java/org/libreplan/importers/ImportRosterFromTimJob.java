@@ -53,7 +53,7 @@ public class ImportRosterFromTimJob extends QuartzJobBean {
         try {
             importRosterFromTim.importRosters();
             LOG.info("Import scuccessful: "
-                    + importRosterFromTim.getImportProcessInfo().isSuccessful());
+                    + importRosterFromTim.getSynchronizationInfo().isSuccessful());
         } catch (ConnectorException e) {
             LOG.error("Import roster from Tim failed", e);
         }

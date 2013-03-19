@@ -27,22 +27,16 @@ import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.annotation.Resource;
-import javax.ws.rs.WebApplicationException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.calendars.entities.BaseCalendar;
-import org.libreplan.business.common.daos.IConnectorDAO;
-import org.libreplan.business.common.entities.Connector;
-import org.libreplan.business.common.entities.ConnectorException;
-import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.externalcompanies.entities.DeliverDateComparator;
@@ -53,14 +47,9 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
-import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.templates.entities.OrderTemplate;
 import org.libreplan.business.users.entities.UserRole;
-import org.libreplan.importers.IJiraOrderElementSynchronizer;
-import org.libreplan.importers.IJiraTimesheetSynchronizer;
-import org.libreplan.importers.JiraSyncInfo;
-import org.libreplan.importers.jira.IssueDTO;
 import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
@@ -88,7 +77,6 @@ import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -106,9 +94,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
@@ -198,6 +184,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private ProjectDetailsController projectDetailsController;
 
+    private JiraSynchronizationController jiraSynchronizationController;
+
     private TimSynchronizationController timSynchronizationController;
 
     @Autowired
@@ -206,16 +194,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Grid gridAskedEndDates;
 
     private EndDatesRenderer endDatesRenderer = new EndDatesRenderer();
-
-    @Autowired
-    private IJiraOrderElementSynchronizer jiraOrderElementSynchronizer;
-
-    @Autowired
-    private IJiraTimesheetSynchronizer jiraTimesheetSynchronizer;
-
-    @Autowired
-    private IConnectorDAO connectorDAO;
-
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -693,7 +671,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         saveAndContinue(true);
     }
 
-    private void saveAndContinue(boolean showSaveMessage) {
+    protected void saveAndContinue(boolean showSaveMessage) {
 
         Order order = orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
@@ -802,11 +780,11 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    private Tab getCurrentTab() {
+    protected Tab getCurrentTab() {
         return selectedTab;
     }
 
-    private void selectTab(String str) {
+    protected void selectTab(String str) {
         Tab tab = (Tab) editWindow.getFellowIfAny(str);
         if (tab != null) {
             tab.setSelected(true);
@@ -1042,6 +1020,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         initializeCustomerComponent();
         reloadOrderDetailsTab();
         orderDatesHandler.chooseCurrentSchedulingMode();
+        setupJiraSynchronizationController();
         setupTimSynchronizationController();
     }
 
@@ -1706,196 +1685,29 @@ public class OrderCRUDController extends GenericForwardComposer {
         return Util.getCurrencySymbol();
     }
 
-    private Popup jirasyncPopup;
-    private Button startJiraSyncButton, cancelJiraSyncButton, syncWithJiraButton;
-    private Combobox comboJiraLabel;
-
-    public boolean isJiraActivated() {
-        Connector connector = connectorDAO
-                .findUniqueByName(PredefinedConnectors.JIRA.getName());
-        if (connector == null) {
-            return false;
+    /**
+     * Setup the connector, JiraSynchronization controller
+     */
+    public void setupJiraSynchronizationController() {
+        if (jiraSynchronizationController == null) {
+            jiraSynchronizationController = new JiraSynchronizationController();
         }
-        return connector.isActivated();
-    }
-
-    public boolean isJiraDeactivated() {
-        return !isJiraActivated();
-
-    }
-
-    public void syncWithJira() {
         try {
-            List<String> items = jiraOrderElementSynchronizer.getAllJiraLabels();
-
-            Textbox txtImportedLabel = (Textbox) editWindow
-                    .getFellowIfAny("txtImportedLabel");
-
-            if (!(txtImportedLabel.getText()).isEmpty()) {
-                startSyncWithJira(txtImportedLabel.getText());
-                return;
-            }
-
-            setupJiraSyncPopup(editWindow, new SimpleListModelExt(items));
-
-            syncWithJiraButton = (Button) getCurrentTab().getFellow(
-                    "syncWithJiraButton");
-
-            jirasyncPopup.open(syncWithJiraButton, "before_start");
-
-        } catch (WebApplicationException e) {
-            LOG.info(e);
-            messagesForUser.showMessage(Level.ERROR,
-                    _("Cannot connect to JIRA server"));
-        }
-    }
-
-
-    public void startSyncWithJira(String label) {
-        try {
-            Order order = getOrder();
-
-            List<IssueDTO> issues = jiraOrderElementSynchronizer
-                    .getJiraIssues(label);
-
-            if (issues == null || issues.isEmpty()) {
-                messagesForUser.showMessage(Level.ERROR,
-                        _("No JIRA issues to import"));
-                return;
-            }
-
-            order.setCodeAutogenerated(false);
-
-            jiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues(
-                    issues, order);
-
-            saveAndContinue(false);
-
-            jiraOrderElementSynchronizer.saveSyncInfo(label, order);
-
-            if (jirasyncPopup != null) {
-                jirasyncPopup.close();
-            }
-
-            jiraTimesheetSynchronizer.syncJiraTimesheetWithJiraIssues(issues,
-                    order);
-
-            showSyncInfo();
-
-            // Reload order info in all tabs
-            Tab previousTab = getCurrentTab();
-            initEdit(order);
-            selectTab(previousTab.getId());
-        } catch (WebApplicationException e) {
-            LOG.info(e);
-            messagesForUser.showMessage(Level.ERROR,
-                    _("Cannot connect to JIRA server"));
-        } catch (ConnectorException e) {
-            messagesForUser.showMessage(Level.ERROR,
-                    _("Failed: {0}", e.getMessage()));
-        }
-    }
-
-    public OrderSyncInfo getOrderLastSyncInfo() {
-        return jiraOrderElementSynchronizer.getOrderLastSyncInfo(getOrder());
-    }
-
-    private void showSyncInfo() {
-        Map<String, Object> args = new HashMap<String, Object>();
-
-        JiraSyncInfo jiraSyncInfoProgress = jiraOrderElementSynchronizer
-                .getJiraSyncInfo();
-        args.put("showSyncProgressSuccess",
-                jiraSyncInfoProgress.isSyncSuccessful());
-        args.put("jiraSyncProgressFailedReasons", new SimpleListModel(
-                jiraSyncInfoProgress.getSyncFailedReasons()));
-
-        JiraSyncInfo jiraSyncInfoTimesheet = jiraTimesheetSynchronizer
-                .getJiraSyncInfo();
-        args.put("showSyncTimesheetSuccess",
-                jiraSyncInfoTimesheet.isSyncSuccessful());
-        args.put("jiraSyncTimesheetFailedReasons", new SimpleListModel(
-                jiraSyncInfoTimesheet.getSyncFailedReasons()));
-
-        Window jiraSyncInfoWindow = (Window) Executions.createComponents(
-                "/orders/_jiraSyncInfo.zul", null, args);
-
-        try {
-            jiraSyncInfoWindow.doModal();
-        } catch (SuspendNotAllowedException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+            jiraSynchronizationController.doAfterCompose(editWindow);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void setupJiraSyncPopup(Component comp, ListModel model) {
-
-        startJiraSyncButton = (Button) comp.getFellow("startJiraSyncButton");
-        startJiraSyncButton.setLabel(_("Start sync"));
-
-        startJiraSyncButton.addEventListener(Events.ON_CLICK, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                startSyncWithJira(comboJiraLabel.getValue());
-            }
-        });
-        cancelJiraSyncButton = (Button) comp.getFellow("cancelJiraSyncButton");
-        cancelJiraSyncButton.setLabel(_("Cancel"));
-        cancelJiraSyncButton.addEventListener(Events.ON_CLICK, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) {
-                jirasyncPopup.close();
-            }
-        });
-        comboJiraLabel = (Combobox) comp.getFellowIfAny("comboJiraLabel");
-        comboJiraLabel.setModel(model);
-
-        jirasyncPopup = (Popup) comp.getFellow("jirasyncPopup");
-
     }
 
     /**
-     * This class provides case insensitive search for the {@link Combobox}.
+     * Setup the connector, TimSynchronization controller
      */
-    private class SimpleListModelExt extends SimpleListModel {
-
-        public SimpleListModelExt(List data) {
-            super(data);
-        }
-
-        public ListModel getSubModel(Object value, int nRows) {
-            final String idx = value == null ? "" : objectToString(value);
-            if (nRows < 0) {
-                nRows = 10;
-            }
-            final LinkedList data = new LinkedList();
-            for (int i = 0; i < getSize(); i++) {
-                if (idx.equals("")
-                        || entryMatchesText(getElementAt(i).toString(), idx)) {
-                    data.add(getElementAt(i));
-                    if (--nRows <= 0) {
-                        break;
-                    }
-                }
-            }
-            return new SimpleListModelExt(data);
-        }
-
-        public boolean entryMatchesText(String entry, String text) {
-            return entry.toLowerCase().contains(text.toLowerCase());
-        }
-    }
-
     public void setupTimSynchronizationController() {
         if (timSynchronizationController == null) {
             timSynchronizationController = new TimSynchronizationController();
         }
         try {
-            timSynchronizationController.doAfterCompose(self
-                    .getFellow("editOrderElement"));
+            timSynchronizationController.doAfterCompose(editWindow);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

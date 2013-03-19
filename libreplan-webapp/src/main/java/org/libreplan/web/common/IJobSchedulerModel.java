@@ -26,7 +26,7 @@ import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.importers.TimImpExpInfo;
+import org.libreplan.importers.SynchronizationInfo;
 
 /**
  * Contract for {@link JobSchedulerModel}.
@@ -64,9 +64,9 @@ public interface IJobSchedulerModel {
             throws ConnectorException;
 
     /**
-     * Returns import/export info. Failure or success info
+     * Returns synchronization info. Failure or success info
      */
-    TimImpExpInfo getImportExportInfo();
+    SynchronizationInfo getSynchronizationInfo();
 
     /**
      * Prepares for create a new {@link JobSchedulerConfiguration}.

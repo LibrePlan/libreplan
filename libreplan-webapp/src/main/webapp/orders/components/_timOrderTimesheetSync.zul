@@ -17,8 +17,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -->
 
-<groupbox id="${arg.id}"
-    apply="org.libreplan.web.orders.TimSynchronizationController"
+<groupbox id="timGroupBox"
     style="margin-top: 5px" closable="false"
     visible="@{timSynchronizationController.timActivated}">
     <caption label="${i18n:_('Tim sync information')}" />

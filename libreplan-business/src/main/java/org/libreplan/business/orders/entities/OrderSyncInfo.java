@@ -28,8 +28,8 @@ import org.libreplan.business.common.BaseEntity;
 /**
  * OrderSyncInfo entity. This entity holds order synchronization info. Each time
  * that order synchronization is successfully completed, an instance of this
- * entity is created and saved to DB to hold the synchronized info. This info is
- * then displayed in UI.
+ * entity is created or updated and saved to DB to hold the synchronized info.
+ * This info is then displayed in UI.
  *
  * This entity contains the following fields:
  * <ul>
@@ -49,10 +49,12 @@ public class OrderSyncInfo extends BaseEntity {
     private String connectorId;
     private Order order;
 
-    public static OrderSyncInfo create(Order order, String connectorId) {
+    public static OrderSyncInfo create(String key, Order order,
+            String connectorId) {
+        Validate.notEmpty(key);
         Validate.notNull(order);
         Validate.notEmpty(connectorId);
-        return create(new OrderSyncInfo(order, connectorId));
+        return create(new OrderSyncInfo(key, order, connectorId));
     }
 
     /**
@@ -61,8 +63,9 @@ public class OrderSyncInfo extends BaseEntity {
     protected OrderSyncInfo() {
     }
 
-    private OrderSyncInfo(Order order, String connectorId) {
+    private OrderSyncInfo(String key, Order order, String connectorId) {
         this.lastSyncDate = new Date();
+        this.key = key;
         this.order = order;
         this.connectorId = connectorId;
     }

@@ -48,7 +48,7 @@ public class ExportTimesheetToTimJob extends QuartzJobBean {
         try {
             exportTimesheetsToTim.exportTimesheets();
             LOG.info("Export scuccessful: "
-                    + exportTimesheetsToTim.getExportProcessInfo()
+                    + exportTimesheetsToTim.getSynchronizationInfo()
                             .isSuccessful());
         } catch (ConnectorException e) {
             LOG.error("Export timesheet to Tim failed", e);

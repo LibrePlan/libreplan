@@ -163,7 +163,7 @@ public class ExportTimesheetsToTimTest {
             throws ConnectorException {
         Order order = givenOrder();
         exportTimesheetsToTim.exportTimesheets("5160", order);
-        boolean result = exportTimesheetsToTim.getExportProcessInfo()
+        boolean result = exportTimesheetsToTim.getSynchronizationInfo()
                 .isSuccessful();
         if (!result) {
             fail("Export timesheets to tim failed");
@@ -171,14 +171,14 @@ public class ExportTimesheetsToTimTest {
         assertTrue(result);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ConnectorException.class)
     public void testExportTimesheetsToTimWithInvalidCode()
             throws ConnectorException {
         Order order = givenOrder();
         exportTimesheetsToTim.exportTimesheets("", order);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ConnectorException.class)
     public void testExportTimesheetsToTimWithOrderNull()
             throws ConnectorException {
         exportTimesheetsToTim.exportTimesheets("5160", null);

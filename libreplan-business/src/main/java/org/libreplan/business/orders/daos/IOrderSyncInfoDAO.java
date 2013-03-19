@@ -59,4 +59,24 @@ public interface IOrderSyncInfoDAO extends IGenericDAO<OrderSyncInfo, Long> {
     List<OrderSyncInfo> findLastSynchronizedInfosByOrderAndConnectorId(
             Order order, String connectorId);
 
+    /**
+     * Searches and returns <code>{@link OrderSyncInfo}</code> for the specified
+     * <code>key</code> and <code>connectorId</code>
+     *
+     * @param key
+     *            the unique key with in connector id
+     * @param connectorId
+     *            the connector id
+     */
+    OrderSyncInfo findByKeyAndConnectorId(String key, String connectorId);
+
+    /**
+     * Finds the {@link OrderSyncInfo}s for the specified
+     * <code>connectorId</code>
+     *
+     * @param connectorId
+     *            the connectorId
+     * @return a list of OrderSyncInfo if found and null if not
+     */
+    List<OrderSyncInfo> findByConnectorId(String connectorId);
 }
