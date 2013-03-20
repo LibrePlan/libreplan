@@ -215,6 +215,8 @@ public class JiraSynchronizationController extends GenericForwardComposer {
 
             jiraOrderElementSynchronizer.saveSyncInfo(label, order);
 
+            updateOrderLastSyncInfoScreen();
+
             if (jirasyncPopup != null) {
                 jirasyncPopup.close();
             }

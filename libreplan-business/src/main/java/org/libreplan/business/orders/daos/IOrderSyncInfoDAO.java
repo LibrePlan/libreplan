@@ -65,10 +65,11 @@ public interface IOrderSyncInfoDAO extends IGenericDAO<OrderSyncInfo, Long> {
      *
      * @param key
      *            the unique key with in connector id
+     * @param order the order
      * @param connectorId
      *            the connector id
      */
-    OrderSyncInfo findByKeyAndConnectorId(String key, String connectorId);
+    OrderSyncInfo findByKeyOrderAndConnectorId(String key, Order order, String connectorId);
 
     /**
      * Finds the {@link OrderSyncInfo}s for the specified

@@ -247,7 +247,8 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                     @Override
                     public Void execute() {
                         OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
-                                .findByKeyAndConnectorId(productCode,
+                                .findByKeyOrderAndConnectorId(productCode,
+                                        order,
                                         PredefinedConnectors.TIM.getName());
                         if (orderSyncInfo == null) {
                             orderSyncInfo = OrderSyncInfo.create(productCode,

@@ -63,9 +63,10 @@ public class OrderSyncInfoDAO extends GenericDAOHibernate<OrderSyncInfo, Long>
     }
 
     @Override
-    public OrderSyncInfo findByKeyAndConnectorId(String key, String connectorId) {
+    public OrderSyncInfo findByKeyOrderAndConnectorId(String key, Order order, String connectorId) {
         Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
         criteria.add(Restrictions.eq("key", key));
+        criteria.add(Restrictions.eq("order", order));
         criteria.add(Restrictions.eq("connectorId", connectorId));
         return (OrderSyncInfo) criteria.uniqueResult();
     }

@@ -441,8 +441,9 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Override
     @Transactional
     public void saveSyncInfo(String key, Order order) {
-        OrderSyncInfo orderSyncInfo = orderSyncInfoDAO.findByKeyAndConnectorId(
-                key, PredefinedConnectors.JIRA.getName());
+        OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
+                .findByKeyOrderAndConnectorId(key, order,
+                        PredefinedConnectors.JIRA.getName());
         if (orderSyncInfo == null) {
             orderSyncInfo = OrderSyncInfo.create(key, order,
                     PredefinedConnectors.JIRA.getName());
