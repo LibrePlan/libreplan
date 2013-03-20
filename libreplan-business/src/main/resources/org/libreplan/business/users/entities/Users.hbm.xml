@@ -71,11 +71,11 @@
 
         <property name="resourcesLoadFilterPeriodTo" column="resources_load_filter_period_to"/>
 
-        <many-to-one name="projectsFilterLabel" cascade="none"
+        <many-to-one name="projectsFilterLabel" cascade="none" lazy="false"
             column="projects_filter_label_id" />
 
         <many-to-one name="resourcesLoadFilterCriterion" cascade="none"
-            column="resources_load_filter_criterion_id" />
+            lazy="false" column="resources_load_filter_criterion_id" />
 
     </class>
 
