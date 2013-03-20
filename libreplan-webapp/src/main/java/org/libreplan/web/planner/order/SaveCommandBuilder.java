@@ -337,7 +337,7 @@ public class SaveCommandBuilder {
                         message += validationException.getMessage();
                     }
 
-                    LOG.warn(validationException.getMessage());
+                    LOG.warn("Error saving the project", validationException);
                     Messagebox.show(
                             _("Error saving the project\n{0}", message),
                             _("Error"), Messagebox.OK, Messagebox.ERROR);
