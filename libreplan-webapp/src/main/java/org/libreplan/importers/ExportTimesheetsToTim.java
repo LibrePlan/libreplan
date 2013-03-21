@@ -86,7 +86,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
     @Override
     @Transactional(readOnly = true)
-    public void exportTimesheets() throws ConnectorException {
+    public List<SynchronizationInfo> exportTimesheets() throws ConnectorException {
         Connector connector = getTimConnector();
         if (connector == null) {
             throw new ConnectorException(_("Tim connector not found"));
@@ -98,18 +98,25 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
         synchronizationInfo = new SynchronizationInfo(_("Export"));
 
+        List<SynchronizationInfo> syncInfos = new ArrayList<SynchronizationInfo>();
+
         List<OrderSyncInfo> orderSyncInfos = orderSyncInfoDAO.findByConnectorId(PredefinedConnectors.TIM.getName());
         if (orderSyncInfos == null || orderSyncInfos.isEmpty()) {
             LOG.warn("No items found in 'OrderSyncInfo' to export to Tim");
             synchronizationInfo.addFailedReason(_("No items found in 'OrderSyncInfo' to export to Tim"));
-            return;
+            syncInfos.add(synchronizationInfo);
+            return syncInfos;
         }
 
         for (OrderSyncInfo orderSyncInfo : orderSyncInfos) {
             LOG.info("Exporting '" + orderSyncInfo.getOrder().getName() + "'");
             exportTimesheets(orderSyncInfo.getKey(), orderSyncInfo.getOrder(),
                     connector);
+            if (!synchronizationInfo.isSuccessful()) {
+                syncInfos.add(synchronizationInfo);
+            }
         }
+        return syncInfos;
     }
 
     @Override
@@ -133,8 +140,6 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                     _("Connection values of Tim connector are invalid"));
         }
 
-        synchronizationInfo = new SynchronizationInfo(_("Export"));
-
         exportTimesheets(productCode, order, connector);
     }
 
@@ -152,6 +157,11 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
      */
     private void exportTimesheets(String productCode, Order order,
             Connector connector) {
+
+        synchronizationInfo = new SynchronizationInfo(_(
+                "Export product code {0}, project {1}", productCode,
+                order.getName()));
+
         Map<String, String> properties = connector.getPropertiesAsMap();
 
         String url = properties.get(PredefinedConnectorProperties.SERVER_URL);

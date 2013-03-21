@@ -112,4 +112,18 @@ public interface IJiraOrderElementSynchronizer {
      */
     SynchronizationInfo getSynchronizationInfo();
 
+    /**
+     * Synchronize order elements with JIRA issues if they already synchronized
+     * using
+     * {@link IJiraOrderElementSynchronizer#syncOrderElementsWithJiraIssues(List, Order)
+     *
+     * It gets then an already synchronized orders from the
+     * {@link OrderSyncInfo} and re-synchronize them
+     *
+     * @return a list of {@link SynchronizationInfo}
+     *
+     * @throws ConnectorException
+     *             if connector not found or contains invalid connection values
+     */
+    List<SynchronizationInfo> syncOrderElementsWithJiraIssues() throws ConnectorException;
 }

@@ -47,12 +47,15 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.api.Caption;
 import org.zkoss.zul.api.Textbox;
 import org.zkoss.zul.api.Window;
 
@@ -184,7 +187,7 @@ public class JobSchedulerController extends
                     public void onEvent(Event event) throws Exception {
                         try {
                             jobSchedulerModel.doManual(jobSchedulerConfiguration);
-                            shwoImpExpInfo();
+                            shwoSynchronizationInfo();
                         } catch (ConnectorException e) {
                             messagesForUser.showMessage(Level.ERROR,
                                     e.getMessage());
@@ -209,20 +212,57 @@ public class JobSchedulerController extends
         };
     }
 
-    private void shwoImpExpInfo() {
+    public RowRenderer getSynchronizationInfoRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data) {
+                final SynchronizationInfo synchronizationInfo = (SynchronizationInfo) data;
+                row.setValue(data);
+
+                Groupbox groupbox = new Groupbox();
+                groupbox.setClosable(true);
+                Caption caption = new org.zkoss.zul.Caption();
+                caption.setLabel(synchronizationInfo.getAction());
+                groupbox.appendChild(caption);
+                row.appendChild(groupbox);
+
+                if (synchronizationInfo.isSuccessful()) {
+                    groupbox.appendChild(new Label(_("Completed")));
+                } else {
+
+                    Listbox listbox = new Listbox();
+
+                    listbox.setModel(new SimpleListModel(synchronizationInfo
+                            .getFailedReasons()));
+                    groupbox.appendChild(listbox);
+                }
+            }
+        };
+    }
+
+
+    public List<SynchronizationInfo> getSynchronizationInfos() {
+        return jobSchedulerModel.getSynchronizationInfos();
+    }
+
+
+    private void shwoSynchronizationInfo() {
         Map<String, Object> args = new HashMap<String, Object>();
 
-        SynchronizationInfo synchronizationInfo = jobSchedulerModel.getSynchronizationInfo();
-        args.put("action", synchronizationInfo.getAction());
-        args.put("showSuccess", synchronizationInfo.isSuccessful());
-        args.put("failedReasons",
-                new SimpleListModel(synchronizationInfo.getFailedReasons()));
+        Window win = (Window) Executions.createComponents(
+                "/orders/_synchronizationInfo.zul", null, args);
 
-        Window timImpExpInfoWindow = (Window) Executions.createComponents(
-                "/orders/_timImpExpInfo.zul", null, args);
+        Window syncInfoWin = (Window) win.getFellowIfAny("syncInfoWin");
+
+        Grid syncInfoGrid = (Grid) syncInfoWin.getFellowIfAny("syncInfoGrid");
+
+        syncInfoGrid.setModel(new SimpleListModel(getSynchronizationInfos()));
+
+        syncInfoGrid.setRowRenderer(getSynchronizationInfoRenderer());
 
         try {
-            timImpExpInfoWindow.doModal();
+            win.doModal();
         } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

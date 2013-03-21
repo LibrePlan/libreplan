@@ -117,7 +117,7 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
 
     @Override
     @Transactional
-    public void importRosters() throws ConnectorException {
+    public List<SynchronizationInfo> importRosters() throws ConnectorException {
         Connector connector = connectorDAO
                 .findUniqueByName(PredefinedConnectors.TIM.getName());
         if (connector == null) {
@@ -156,10 +156,14 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
         String[] departmentIdsArray = StringUtils.stripAll(StringUtils.split(
                 departmentIds, ","));
 
-        synchronizationInfo = new SynchronizationInfo(_("Import"));
+        List<SynchronizationInfo> syncInfos = new ArrayList<SynchronizationInfo>();
 
         for (String department : departmentIdsArray) {
             LOG.info("Department: " + department);
+
+            synchronizationInfo = new SynchronizationInfo(_(
+                    "Import roster for department {0}", department));
+
             RosterRequestDTO rosterRequestDTO = createRosterRequest(department,
                     nrDaysRosterFromTim);
             RosterResponseDTO rosterResponseDTO = TimSoapClient
@@ -169,13 +173,18 @@ public class ImportRosterFromTim implements IImportRosterFromTim {
             if (rosterResponseDTO != null) {
                 updateWorkersCalendarException(rosterResponseDTO,
                         productivityFactor);
+                if (!synchronizationInfo.isSuccessful()) {
+                    syncInfos.add(synchronizationInfo);
+                }
             } else {
                 LOG.error("No valid response for department " + department);
                 synchronizationInfo.addFailedReason(_(
                                 "No valid response for department \"{0}\"",
                                 department));
+                syncInfos.add(synchronizationInfo);
             }
         }
+        return syncInfos;
     }
 
     /**

@@ -31,6 +31,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.importers.IExportTimesheetsToTim;
 import org.libreplan.importers.IImportRosterFromTim;
+import org.libreplan.importers.IJiraOrderElementSynchronizer;
 import org.libreplan.importers.ISchedulerManager;
 import org.libreplan.importers.SynchronizationInfo;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
@@ -69,7 +70,10 @@ public class JobSchedulerModel implements IJobSchedulerModel {
     @Autowired
     private IExportTimesheetsToTim exportTimesheetsToTim;
 
-    private SynchronizationInfo synchronizationInfo;
+    @Autowired
+    private IJiraOrderElementSynchronizer jiraOrderElementSynchronizer;
+
+    private List<SynchronizationInfo> synchronizationInfos;
 
     @Override
     @Transactional(readOnly = true)
@@ -88,20 +92,25 @@ public class JobSchedulerModel implements IJobSchedulerModel {
             throws ConnectorException {
         String name = jobSchedulerConfiguration.getJobClassName().getName();
         if (name.equals(JobClassNameEnum.IMPORT_ROSTER_FROM_TIM_JOB.getName())) {
-            importRosterFromTim.importRosters();
-            synchronizationInfo = importRosterFromTim.getSynchronizationInfo();
+            synchronizationInfos = importRosterFromTim.importRosters();
             return;
         }
         if (name.equals(JobClassNameEnum.EXPORT_TIMESHEET_TO_TIM_JOB.getName())) {
-            exportTimesheetsToTim.exportTimesheets();
-            synchronizationInfo = exportTimesheetsToTim.getSynchronizationInfo();
+            synchronizationInfos = exportTimesheetsToTim.exportTimesheets();
             return;
         }
+        if (name.equals(JobClassNameEnum.SYNC_ORDERELEMENTS_WITH_JIRA_ISSUES_JOB
+                .getName())) {
+            synchronizationInfos = jiraOrderElementSynchronizer
+                    .syncOrderElementsWithJiraIssues();
+            return;
+        }
+        throw new RuntimeException("Unknown action");
     }
 
     @Override
-    public SynchronizationInfo getSynchronizationInfo() {
-        return synchronizationInfo;
+    public List<SynchronizationInfo> getSynchronizationInfos() {
+        return synchronizationInfos;
     }
 
     @Override

@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
@@ -40,6 +42,8 @@ import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
 import org.libreplan.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.libreplan.business.common.IAdHocTransactionService;
+import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorException;
@@ -57,6 +61,7 @@ import org.libreplan.importers.jira.StatusDTO;
 import org.libreplan.importers.jira.TimeTrackingDTO;
 import org.libreplan.importers.jira.WorkLogDTO;
 import org.libreplan.importers.jira.WorkLogItemDTO;
+import org.libreplan.web.orders.IOrderModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -72,13 +77,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchronizer {
 
+    private static final Log LOG = LogFactory
+            .getLog(JiraOrderElementSynchronizer.class);
+
     private SynchronizationInfo synchronizationInfo;
 
     @Autowired
     private IConnectorDAO connectorDAO;
 
     @Autowired
-    IOrderSyncInfoDAO orderSyncInfoDAO;
+    private IOrderSyncInfoDAO orderSyncInfoDAO;
+
+    @Autowired
+    private IAdHocTransactionService adHocTransactionService;
+
+    @Autowired
+    private IOrderModel orderModel;
+
+    @Autowired
+    private IJiraTimesheetSynchronizer jiraTimesheetSynchronizer;
 
     @Override
     @Transactional(readOnly = true)
@@ -115,6 +132,19 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
                     _("Connection values of JIRA connector are invalid"));
         }
 
+        return getJiraIssues(label, connector);
+    }
+
+    /**
+     * Gets all jira issues for the specified <code>label</code>
+     *
+     * @param label
+     *            the search criteria
+     * @param connector
+     *            where to read the configuration parameters
+     * @return a list of {@link IssueDTO}
+     */
+    private List<IssueDTO> getJiraIssues(String label, Connector connector) {
         Map<String, String> properties = connector.getPropertiesAsMap();
         String url = properties.get(PredefinedConnectorProperties.SERVER_URL);
 
@@ -137,7 +167,8 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Transactional(readOnly = true)
     public void syncOrderElementsWithJiraIssues(List<IssueDTO> issues, Order order) {
 
-        synchronizationInfo = new SynchronizationInfo(_("Synchronization"));
+        synchronizationInfo = new SynchronizationInfo(_(
+                "Synchronization order {0}", order.getName()));
 
         for (IssueDTO issue : issues) {
             String code = PredefinedConnectorProperties.JIRA_CODE_PREFIX
@@ -440,17 +471,25 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     @Override
     @Transactional
-    public void saveSyncInfo(String key, Order order) {
-        OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
-                .findByKeyOrderAndConnectorId(key, order,
-                        PredefinedConnectors.JIRA.getName());
-        if (orderSyncInfo == null) {
-            orderSyncInfo = OrderSyncInfo.create(key, order,
-                    PredefinedConnectors.JIRA.getName());
-        }
-        orderSyncInfo.setLastSyncDate(new Date());
-        orderSyncInfoDAO.save(orderSyncInfo);
+    public void saveSyncInfo(final String key, final Order order) {
+        adHocTransactionService
+                .runOnAnotherTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
+                                .findByKeyOrderAndConnectorId(key, order,
+                                        PredefinedConnectors.JIRA.getName());
+                        if (orderSyncInfo == null) {
+                            orderSyncInfo = OrderSyncInfo.create(key, order,
+                                    PredefinedConnectors.JIRA.getName());
+                        }
+                        orderSyncInfo.setLastSyncDate(new Date());
+                        orderSyncInfoDAO.save(orderSyncInfo);
+                        return null;
+                    }
+                });
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -460,4 +499,67 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
 
     }
 
+    @Override
+    @Transactional
+    public List<SynchronizationInfo> syncOrderElementsWithJiraIssues() throws ConnectorException {
+        Connector connector = getJiraConnector();
+        if (connector == null) {
+            throw new ConnectorException(_("JIRA connector not found"));
+        }
+        if (!connector.areConnectionValuesValid()) {
+            throw new ConnectorException(
+                    _("Connection values of JIRA connector are invalid"));
+        }
+
+        List<OrderSyncInfo> orderSyncInfos = orderSyncInfoDAO
+                .findByConnectorId(PredefinedConnectors.JIRA.getName());
+
+        synchronizationInfo = new SynchronizationInfo(_("Synchronization"));
+
+        List<SynchronizationInfo> syncInfos = new ArrayList<SynchronizationInfo>();
+
+        if (orderSyncInfos == null || orderSyncInfos.isEmpty()) {
+            LOG.warn("No items found in 'OrderSyncInfo' to synchronize with JIRA issues");
+            synchronizationInfo
+                    .addFailedReason(_("No items found in 'OrderSyncInfo' to synchronize with JIRA issues"));
+            syncInfos.add(synchronizationInfo);
+            return syncInfos;
+        }
+
+        for (OrderSyncInfo orderSyncInfo : orderSyncInfos) {
+            Order order = orderSyncInfo.getOrder();
+            LOG.info("Synchronizing '" + order.getName() + "'");
+            synchronizationInfo = new SynchronizationInfo(_(
+                    "Synchronization order {0}", order.getName()));
+
+            List<IssueDTO> issueDTOs = getJiraIssues(orderSyncInfo.getKey(),
+                    connector);
+            if (issueDTOs == null || issueDTOs.isEmpty()) {
+                LOG.warn("No JIRA issues found for '" + orderSyncInfo.getKey()
+                        + "'");
+                synchronizationInfo.addFailedReason(_(
+                        "No JIRA issues found for key {0}",
+                        orderSyncInfo.getKey()));
+                syncInfos.add(synchronizationInfo);
+                continue;
+            }
+
+            orderModel.initEdit(order, null);
+            syncOrderElementsWithJiraIssues(issueDTOs, order);
+            if (!synchronizationInfo.isSuccessful()) {
+                syncInfos.add(synchronizationInfo);
+                continue;
+            }
+            orderModel.save(false);
+
+            saveSyncInfo(orderSyncInfo.getKey(), order);
+
+            jiraTimesheetSynchronizer.syncJiraTimesheetWithJiraIssues(
+                    issueDTOs, order);
+            if (!synchronizationInfo.isSuccessful()) {
+                syncInfos.add(synchronizationInfo);
+            }
+        }
+        return syncInfos;
+    }
 }

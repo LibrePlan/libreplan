@@ -26,22 +26,18 @@ import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.entities.ConnectorException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.stereotype.Component;
 
 /**
- * A job that import rosters from Tim SOAP server
+ * A job that synchronizes order elements and time sheets with JIRA issues
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-@Component
-@Scope(BeanDefinition.SCOPE_SINGLETON)
-public class ImportRosterFromTimJob extends QuartzJobBean {
+public class JiraOrderElementSynchronizerJob extends QuartzJobBean {
+
     private static final Log LOG = LogFactory
-                                         .getLog(ImportRosterFromTimJob.class);
+            .getLog(JiraOrderElementSynchronizerJob.class);
 
     @Override
     protected void executeInternal(JobExecutionContext context)
@@ -49,21 +45,19 @@ public class ImportRosterFromTimJob extends QuartzJobBean {
         ApplicationContext applicationContext = (ApplicationContext) context
                 .getJobDetail().getJobDataMap().get("applicationContext");
 
-        IImportRosterFromTim importRosterFromTim = (IImportRosterFromTim) applicationContext
-                .getBean("importRosterFromTim");
+        IJiraOrderElementSynchronizer jiraOrderElementSynchronizer = (IJiraOrderElementSynchronizer) applicationContext
+                .getBean("jiraOrderElementSynchronizer");
 
         try {
-            List<SynchronizationInfo> syncInfos = importRosterFromTim
-                    .importRosters();
+            List<SynchronizationInfo> syncInfos = jiraOrderElementSynchronizer
+                    .syncOrderElementsWithJiraIssues();
 
-            LOG.info("Import scuccessful: "
+            LOG.info("Synchronization scuccessful: "
                     + (syncInfos == null || syncInfos.isEmpty()));
 
         } catch (ConnectorException e) {
-            LOG.error("Import roster from Tim failed", e);
+            LOG.error("Synchronize order elements failed", e);
         }
-
     }
-
 
 }

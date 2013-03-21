@@ -19,6 +19,8 @@
 
 package org.libreplan.importers;
 
+import java.util.List;
+
 import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.ConnectorException;
 import org.libreplan.business.orders.entities.Order;
@@ -50,14 +52,19 @@ public interface IExportTimesheetsToTim {
     void exportTimesheets(String productCode, Order order) throws ConnectorException;
 
     /**
-     * Loops through all existing {@link Order}s and searches for last
-     * synchronized order. if found, start exporting the time sheets of that
-     * order to Tim SOAP server. if not found write info to the log file.
+     * Exporting the time sheets to Tim SOAP server, if they are already
+     * exported using
+     * {@link IExportTimesheetsToTim#exportTimesheets(String, Order)}.
+     *
+     * It gets then an already exported time sheets from {@link OrderSyncInfo}
+     * and re-exporting them.
+     *
+     * @return a list of {@link SynchronizationInfo}
      *
      * @throws ConnectorException
      *             if connector is not valid
      */
-    void exportTimesheets() throws ConnectorException;
+    List<SynchronizationInfo> exportTimesheets() throws ConnectorException;
 
     /**
      * Gets the most recent synchronized time sheet info

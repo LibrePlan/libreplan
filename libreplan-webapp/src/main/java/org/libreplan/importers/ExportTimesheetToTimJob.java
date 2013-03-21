@@ -19,6 +19,8 @@
 
 package org.libreplan.importers;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.entities.ConnectorException;
@@ -46,10 +48,12 @@ public class ExportTimesheetToTimJob extends QuartzJobBean {
                 .getBean("exportTimesheetsToTim");
 
         try {
-            exportTimesheetsToTim.exportTimesheets();
+            List<SynchronizationInfo> syncInfos = exportTimesheetsToTim
+                    .exportTimesheets();
+
             LOG.info("Export scuccessful: "
-                    + exportTimesheetsToTim.getSynchronizationInfo()
-                            .isSuccessful());
+                    + (syncInfos == null || syncInfos.isEmpty()));
+
         } catch (ConnectorException e) {
             LOG.error("Export timesheet to Tim failed", e);
         }

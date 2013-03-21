@@ -64,9 +64,9 @@ public interface IJobSchedulerModel {
             throws ConnectorException;
 
     /**
-     * Returns synchronization info. Failure or success info
+     * Returns synchronization infos. Failures or successes info
      */
-    SynchronizationInfo getSynchronizationInfo();
+    List<SynchronizationInfo> getSynchronizationInfos();
 
     /**
      * Prepares for create a new {@link JobSchedulerConfiguration}.

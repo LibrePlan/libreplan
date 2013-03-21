@@ -28,10 +28,9 @@ package org.libreplan.business.common.entities;
  */
 public enum JobClassNameEnum {
 
-    IMPORT_ROSTER_FROM_TIM_JOB("org.libreplan.importers",
-            "ImportRosterFromTimJob"), EXPORT_TIMESHEET_TO_TIM_JOB(
-            "org.libreplan.importers",
-            "ExportTimesheetToTimJob");
+    IMPORT_ROSTER_FROM_TIM_JOB("org.libreplan.importers", "ImportRosterFromTimJob"),
+    EXPORT_TIMESHEET_TO_TIM_JOB("org.libreplan.importers","ExportTimesheetToTimJob"),
+    SYNC_ORDERELEMENTS_WITH_JIRA_ISSUES_JOB("org.libreplan.importers","JiraOrderElementSynchronizerJob");
 
     private String packageName;
     private String name;
