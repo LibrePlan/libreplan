@@ -250,6 +250,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 getRenderer().refreshHoursValueForThisNodeAndParents(newNode);
                 getRenderer().refreshBudgetValueForThisNodeAndParents(newNode);
 
+                // Moved here in order to have items already renderer in order
+                // to select the proper element to focus
+                filterByPredicateIfAny();
+
                 if (node.isLeaf() && !node.isEmptyLeaf()) {
                     // Then a new container will be created
                     nameTextbox = getRenderer().getNameTextbox(node);
@@ -260,8 +264,11 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 }
             } else {
                 getModel().addElement(name.getValue(), hours.getValue());
+
+                // This is needed in both parts of the if, but it's repeated in
+                // order to simplify the code
+                filterByPredicateIfAny();
             }
-            filterByPredicateIfAny();
         } catch (IllegalStateException e) {
             LOG.warn("exception ocurred adding element", e);
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
