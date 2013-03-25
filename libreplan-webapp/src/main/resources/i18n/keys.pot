@@ -5203,7 +5203,7 @@ msgstr ""
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:165
 msgid ""
-"There is a margin of %d days with the project global deadline (%.2f %%)."
+"There is a margin of {0} days with the project global deadline ({1}%)."
 msgstr ""
 
 #: libreplan-webapp/src/main/webapp/planner/taskpanels/_tabPanelNonLimitingResourceAllocation.zul:91

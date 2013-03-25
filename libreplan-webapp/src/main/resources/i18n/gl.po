@@ -5156,9 +5156,8 @@ msgid ""
 msgstr "Os valores de subcontratación son de só lectura porque foron notificados pola empresa subcontratista."
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:165
-msgid ""
-"There is a margin of %d days with the project global deadline (%.2f %%)."
-msgstr "Hai unha marxe de %d días coa data límite global do proxecto (%.2f %%)."
+msgid "There is a margin of {0} days with the project global deadline ({1}%)."
+msgstr "Hai unha marxe de {0} días coa data límite global do proxecto ({1}%)."
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/chart/EarnedValueChartFiller.java:250
 msgid "CV"
