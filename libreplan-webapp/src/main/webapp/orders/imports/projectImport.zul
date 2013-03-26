@@ -35,17 +35,23 @@
 
         <vbox id="messagesContainer" />
 
-        <hbox>
+        <label value="${i18n:_('The formats supported for import are MPP and PLANNER files.')}"/>
+        <label value="${i18n:_('The imported data are Gantt projects with their tasks, constraints, dependencies and milestones and there is also the option to upload calendars.')}"/>
+
+<groupbox closable="false" style="padding:10px; margin:10px;">
+<caption label="Options" />
+        <label value="${i18n:_('Select the elements to import into LibrePlan')}:"/>
+        <vbox style="padding:10px;" align="pack">
             <radiogroup>
-                <label value="${i18n:_('Select elements to import')}:"/>
-                <radio id="importCalendars" label="${i18n:_('Calendars')}" />
-                <radio id="importTasks" label="${i18n:_('Tasks')}" />
-                <radio id="importAll" label="${i18n:_('Both')}" />
+                <radio id="importCalendars" label="${i18n:_('Calendars')}"/>
+                <radio id="importTasks" label="${i18n:_('Gantt charts')}" />
+                <radio id="importAll" label="${i18n:_('Both calendars and gantt charts')}" selected="true"/>
             </radiogroup>
-        </hbox>
+        </vbox>
+</groupbox>
 
         <hbox>
-            <button id="btnImportProject" label="${i18n:_('Upload Project')}" upload="true,maxsize=500" onUpload="projectImportController.importProject(event.getMedia())"/>
+            <button id="btnImportProject" label="${i18n:_('Upload Project')}" upload="true,maxsize=4000" onUpload="projectImportController.importProject(event.getMedia())" class="create-button global-action"/>
         </hbox>
     </window>
 </zk>
