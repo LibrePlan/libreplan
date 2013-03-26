@@ -21,10 +21,14 @@ package org.libreplan.business.orders.entities;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 
 /**
  * OrderSyncInfo entity. This entity holds order synchronization info. Each time
@@ -104,5 +108,23 @@ public class OrderSyncInfo extends BaseEntity {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    @AssertTrue(message = "project sync info is already being used")
+    public boolean checkConstraintUniqueOrderSyncInfo() {
+        if (StringUtils.isBlank(key) && order == null
+                && StringUtils.isBlank(connectorName)) {
+            return true;
+        }
+        IOrderSyncInfoDAO orderSyncInfoDAO = Registry.getOrderSyncInfoDAO();
+        if (isNewObject()) {
+            return !orderSyncInfoDAO
+                    .existsByKeyOrderAndConnectorNameAnotherTransaction(this);
+        } else {
+            OrderSyncInfo found = orderSyncInfoDAO
+                    .findUniqueByKeyOrderAndConnectorNameAnotherTransaction(
+                            key, order, connectorName);
+            return found == null || found.getId().equals(getId());
+        }
     }
 }

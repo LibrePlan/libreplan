@@ -82,4 +82,30 @@ public interface IOrderSyncInfoDAO extends IGenericDAO<OrderSyncInfo, Long> {
      * @return a list of OrderSyncInfo if found and null if not
      */
     List<OrderSyncInfo> findByConnectorName(String connectorName);
+
+    /**
+     * Returns true if there exists other {@link OrderSyncInfo} with the same
+     * <code>{@link OrderSyncInfo#getKey()}</code>,
+     * <code>{@link OrderSyncInfo#getOrder()}</code> and
+     * <code>{@link OrderSyncInfo#getConnectorName()}</code>
+     *
+     * @param orderSyncInfo
+     *            the <code>{@link OrderSyncInfo}</code>
+     */
+    boolean existsByKeyOrderAndConnectorNameAnotherTransaction(
+            OrderSyncInfo orderSyncInfo);
+
+    /**
+     * Returns unique {@link OrderSyncInfo} for the specified <code>key</code>,
+     * <code>order</code> and <code>connectorName</code>
+     *
+     * @param key
+     *            the key
+     * @param order
+     *            an order
+     * @param connectorName
+     *            the name of the connector
+     */
+    OrderSyncInfo findUniqueByKeyOrderAndConnectorNameAnotherTransaction(
+            String key, Order order, String connectorName);
 }

@@ -29,6 +29,8 @@ import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link OrderSyncInfo}
@@ -77,6 +79,35 @@ public class OrderSyncInfoDAO extends GenericDAOHibernate<OrderSyncInfo, Long>
         Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
         criteria.add(Restrictions.eq("connectorName", connectorName));
         return criteria.list();
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByKeyOrderAndConnectorNameAnotherTransaction(
+            OrderSyncInfo orderSyncInfo) {
+        return existsOtherOrderSyncInfoByKeyOrderAndConnectorName(orderSyncInfo);
+    }
+
+    /**
+     * Returns true if other {@link OrderSyncInfo} which is the same
+     * as the given <code>{@link OrderSyncInfo}</code> already exists
+     *
+     * @param orderSyncInfo
+     *            the {@link OrderSyncInfo}
+     */
+    private boolean existsOtherOrderSyncInfoByKeyOrderAndConnectorName(
+            OrderSyncInfo orderSyncInfo) {
+        OrderSyncInfo found = findByKeyOrderAndConnectorName(
+                orderSyncInfo.getKey(), orderSyncInfo.getOrder(),
+                orderSyncInfo.getConnectorName());
+        return found != null && found != orderSyncInfo;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public OrderSyncInfo findUniqueByKeyOrderAndConnectorNameAnotherTransaction(
+            String key, Order order, String connectorName) {
+        return findByKeyOrderAndConnectorName(key, order, connectorName);
     }
 
 }
