@@ -31,10 +31,50 @@ import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 public interface IJobSchedulerConfigurationDAO extends
         IGenericDAO<JobSchedulerConfiguration, Long> {
 
+    /**
+     * Returns all {@link JobSchedulerConfiguration}
+     */
     List<JobSchedulerConfiguration> getAll();
 
+    /**
+     * Searches and returns {@link JobSchedulerConfiguration} for the given
+     * <code>connectorName</code>
+     *
+     * @param connectorName
+     *            the name of the connector
+     */
     List<JobSchedulerConfiguration> findByConnectorName(String connectorName);
 
+    /**
+     * Searches and returns {@link JobSchedulerConfiguration} for the given
+     * <code>jobGroup</code> and <code>jobName</code>
+     *
+     * @param jobGroup
+     * @param jobName
+     */
     JobSchedulerConfiguration findByJobGroupAndJobName(String jobGroup,
             String jobName);
+
+    /**
+     * Returns true if there exists other @{link JobSchedulerConfiguration} with
+     * the same <code>{@link JobSchedulerConfiguration#getJobGroup()}</code> and
+     * <code>{@link JobSchedulerConfiguration#getJobName()</code>
+     *
+     * @param jobSchedulerConfiguration
+     *            the <code>{@link JobSchedulerConfiguration}</code>
+     */
+    boolean existsByJobGroupAndJobNameAnotherTransaction(
+            JobSchedulerConfiguration jobSchedulerConfiguration);
+
+    /**
+     * Returns unique {@link JobSchedulerConfiguration} for the specified
+     * <code>JobGroup</code> and <code>JobName</code>
+     *
+     * @param jobGroup
+     *            the jobGroup
+     * @param jobName
+     *            the jobName
+     */
+    JobSchedulerConfiguration findUniqueByJobGroupAndJobNameAnotherTransaction(
+            String jobGroup, String jobName);
 }

@@ -19,9 +19,13 @@
 
 package org.libreplan.business.common.entities;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.IHumanIdentifiable;
+import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.daos.IJobSchedulerConfigurationDAO;
 
 /**
  * JobSchedulerConfiguration entity, represents parameters for the jobs to be
@@ -114,5 +118,23 @@ public class JobSchedulerConfiguration extends BaseEntity implements
     @Override
     public String getHumanId() {
         return jobGroup == null ? "" : jobGroup;
+    }
+
+    @AssertTrue(message = "job group and name are already being used")
+    public boolean checkConstraintUniqueJobGroupAndName() {
+        if (StringUtils.isBlank(jobGroup) && StringUtils.isBlank(jobName)) {
+            return true;
+        }
+        IJobSchedulerConfigurationDAO jobSchedulerConfigurationDAO = Registry
+                .getJobSchedulerConfigurationDAO();
+        if (isNewObject()) {
+            return !jobSchedulerConfigurationDAO
+                    .existsByJobGroupAndJobNameAnotherTransaction(this);
+        } else {
+            JobSchedulerConfiguration found = jobSchedulerConfigurationDAO
+                    .findUniqueByJobGroupAndJobNameAnotherTransaction(jobGroup,
+                            jobName);
+            return found == null || found.getId().equals(getId());
+        }
     }
 }

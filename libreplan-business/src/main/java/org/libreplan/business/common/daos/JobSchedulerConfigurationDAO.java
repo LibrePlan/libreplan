@@ -24,9 +24,11 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
+import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -64,6 +66,35 @@ public class JobSchedulerConfigurationDAO extends
                 JobSchedulerConfiguration.class).add(
                 Restrictions.eq("connectorName", connectorName));
         return ((List<JobSchedulerConfiguration>) c.list());
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByJobGroupAndJobNameAnotherTransaction(
+            JobSchedulerConfiguration jobSchedulerConfiguration) {
+        return existsOtherJobByGroupAndName(jobSchedulerConfiguration);
+    }
+
+    /**
+     * Returns true if other {@link JobSchedulerConfiguration} which is the same
+     * as the given <code>{@link OrderSyncInfo} already exists
+     *
+     * @param jobSchedulerConfiguration
+     *            the {@link JobSchedulerConfiguration}
+     */
+    private boolean existsOtherJobByGroupAndName(
+            JobSchedulerConfiguration jobSchedulerConfiguration) {
+        JobSchedulerConfiguration found = findByJobGroupAndJobName(
+                jobSchedulerConfiguration.getJobGroup(),
+                jobSchedulerConfiguration.getJobName());
+        return found != null && found != jobSchedulerConfiguration;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public JobSchedulerConfiguration findUniqueByJobGroupAndJobNameAnotherTransaction(
+            String jobGroup, String jobName) {
+        return findByJobGroupAndJobName(jobGroup, jobName);
     }
 
 }

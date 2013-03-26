@@ -30,6 +30,7 @@ import org.libreplan.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
+import org.libreplan.business.common.daos.IJobSchedulerConfigurationDAO;
 import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
 import org.libreplan.business.costcategories.daos.IHourCostDAO;
 import org.libreplan.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
@@ -45,6 +46,7 @@ import org.libreplan.business.materials.daos.IUnitTypeDAO;
 import org.libreplan.business.orders.daos.IHoursGroupDAO;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
+import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.resources.daos.ICriterionDAO;
@@ -206,6 +208,12 @@ public class Registry {
 
     @Autowired
     private IConnectorDAO connectorDAO;
+
+    @Autowired
+    private IOrderSyncInfoDAO orderSyncInfoDAO;
+
+    @Autowired
+    private IJobSchedulerConfigurationDAO jobSchedulerConfigurationDAO;
 
     @Autowired
     private IAdHocTransactionService transactionServiceDAO;
@@ -387,4 +395,11 @@ public class Registry {
         return getInstance().connectorDAO;
     }
 
+    public static IOrderSyncInfoDAO getOrderSyncInfoDAO() {
+        return getInstance().orderSyncInfoDAO;
+    }
+
+    public static IJobSchedulerConfigurationDAO getJobSchedulerConfigurationDAO() {
+        return getInstance().jobSchedulerConfigurationDAO;
+    }
 }
