@@ -41,10 +41,10 @@ public class OrderSyncInfoDAO extends GenericDAOHibernate<OrderSyncInfo, Long>
         implements IOrderSyncInfoDAO {
 
     @Override
-    public OrderSyncInfo findLastSynchronizedInfoByOrderAndConnectorId(
-            Order order, String connectorId) {
-        List<OrderSyncInfo> orderSyncInfoList = findLastSynchronizedInfosByOrderAndConnectorId(
-                order, connectorId);
+    public OrderSyncInfo findLastSynchronizedInfoByOrderAndConnectorName(
+            Order order, String connectorName) {
+        List<OrderSyncInfo> orderSyncInfoList = findLastSynchronizedInfosByOrderAndConnectorName(
+                order, connectorName);
         if (orderSyncInfoList == null || orderSyncInfoList.isEmpty()) {
             return null;
         }
@@ -53,28 +53,29 @@ public class OrderSyncInfoDAO extends GenericDAOHibernate<OrderSyncInfo, Long>
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<OrderSyncInfo> findLastSynchronizedInfosByOrderAndConnectorId(
-            Order order, String connectorId) {
+    public List<OrderSyncInfo> findLastSynchronizedInfosByOrderAndConnectorName(
+            Order order, String connectorName) {
         Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
         criteria.add(Restrictions.eq("order", order));
-        criteria.add(Restrictions.eq("connectorId", connectorId));
+        criteria.add(Restrictions.eq("connectorName", connectorName));
         criteria.addOrder(org.hibernate.criterion.Order.desc("lastSyncDate"));
         return criteria.list();
     }
 
     @Override
-    public OrderSyncInfo findByKeyOrderAndConnectorId(String key, Order order, String connectorId) {
+    public OrderSyncInfo findByKeyOrderAndConnectorName(String key,
+            Order order, String connectorName) {
         Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
         criteria.add(Restrictions.eq("key", key));
         criteria.add(Restrictions.eq("order", order));
-        criteria.add(Restrictions.eq("connectorId", connectorId));
+        criteria.add(Restrictions.eq("connectorName", connectorName));
         return (OrderSyncInfo) criteria.uniqueResult();
     }
 
     @Override
-    public List<OrderSyncInfo> findByConnectorId(String connectorId) {
+    public List<OrderSyncInfo> findByConnectorName(String connectorName) {
         Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
-        criteria.add(Restrictions.eq("connectorId", connectorId));
+        criteria.add(Restrictions.eq("connectorName", connectorName));
         return criteria.list();
     }
 

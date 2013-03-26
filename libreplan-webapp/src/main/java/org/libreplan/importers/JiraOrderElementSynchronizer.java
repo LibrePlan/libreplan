@@ -477,7 +477,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
                     @Override
                     public Void execute() {
                         OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
-                                .findByKeyOrderAndConnectorId(key, order,
+                                .findByKeyOrderAndConnectorName(key, order,
                                         PredefinedConnectors.JIRA.getName());
                         if (orderSyncInfo == null) {
                             orderSyncInfo = OrderSyncInfo.create(key, order,
@@ -494,7 +494,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
     @Override
     @Transactional(readOnly = true)
     public OrderSyncInfo getOrderLastSyncInfo(Order order) {
-        return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorId(
+        return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorName(
                 order, PredefinedConnectors.JIRA.getName());
 
     }
@@ -512,7 +512,7 @@ public class JiraOrderElementSynchronizer implements IJiraOrderElementSynchroniz
         }
 
         List<OrderSyncInfo> orderSyncInfos = orderSyncInfoDAO
-                .findByConnectorId(PredefinedConnectors.JIRA.getName());
+                .findByConnectorName(PredefinedConnectors.JIRA.getName());
 
         synchronizationInfo = new SynchronizationInfo(_("Synchronization"));
 

@@ -100,7 +100,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
 
         List<SynchronizationInfo> syncInfos = new ArrayList<SynchronizationInfo>();
 
-        List<OrderSyncInfo> orderSyncInfos = orderSyncInfoDAO.findByConnectorId(PredefinedConnectors.TIM.getName());
+        List<OrderSyncInfo> orderSyncInfos = orderSyncInfoDAO.findByConnectorName(PredefinedConnectors.TIM.getName());
         if (orderSyncInfos == null || orderSyncInfos.isEmpty()) {
             LOG.warn("No items found in 'OrderSyncInfo' to export to Tim");
             synchronizationInfo.addFailedReason(_("No items found in 'OrderSyncInfo' to export to Tim"));
@@ -257,7 +257,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
                     @Override
                     public Void execute() {
                         OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
-                                .findByKeyOrderAndConnectorId(productCode,
+                                .findByKeyOrderAndConnectorName(productCode,
                                         order,
                                         PredefinedConnectors.TIM.getName());
                         if (orderSyncInfo == null) {
@@ -321,7 +321,7 @@ public class ExportTimesheetsToTim implements IExportTimesheetsToTim {
     @Override
     @Transactional(readOnly = true)
     public OrderSyncInfo getOrderLastSyncInfo(Order order) {
-        return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorId(
+        return orderSyncInfoDAO.findLastSynchronizedInfoByOrderAndConnectorName(
                 order, PredefinedConnectors.TIM.getName());
     }
 

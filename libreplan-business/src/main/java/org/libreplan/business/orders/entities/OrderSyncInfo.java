@@ -24,6 +24,7 @@ import java.util.Date;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.BaseEntity;
+import org.libreplan.business.common.entities.Connector;
 
 /**
  * OrderSyncInfo entity. This entity holds order synchronization info. Each time
@@ -35,7 +36,7 @@ import org.libreplan.business.common.BaseEntity;
  * <ul>
  * <li>lastSyncDate: last date where synchronization took place</li>
  * <li>key: an identifier, which connector's key is last synchronized</li>
- * <li>connectorId: an identifier to distinguish which connector has running the
+ * <li>connectorName: the name of the {@link Connector} that has running the
  * synchronization</li>
  * <li>order: order that is synchronized</li>
  * </ul>
@@ -46,15 +47,15 @@ public class OrderSyncInfo extends BaseEntity {
 
     private Date lastSyncDate;
     private String key;
-    private String connectorId;
+    private String connectorName;
     private Order order;
 
     public static OrderSyncInfo create(String key, Order order,
-            String connectorId) {
+            String connectorName) {
         Validate.notEmpty(key);
         Validate.notNull(order);
-        Validate.notEmpty(connectorId);
-        return create(new OrderSyncInfo(key, order, connectorId));
+        Validate.notEmpty(connectorName);
+        return create(new OrderSyncInfo(key, order, connectorName));
     }
 
     /**
@@ -63,11 +64,11 @@ public class OrderSyncInfo extends BaseEntity {
     protected OrderSyncInfo() {
     }
 
-    private OrderSyncInfo(String key, Order order, String connectorId) {
+    private OrderSyncInfo(String key, Order order, String connectorName) {
         this.lastSyncDate = new Date();
         this.key = key;
         this.order = order;
-        this.connectorId = connectorId;
+        this.connectorName = connectorName;
     }
 
     @NotNull(message = "last synchronized date not specified")
@@ -88,13 +89,13 @@ public class OrderSyncInfo extends BaseEntity {
         this.key = key;
     }
 
-    @NotNull(message = "connector id not specified")
-    public String getConnectorId() {
-        return connectorId;
+    @NotNull(message = "connector name not specified")
+    public String getConnectorName() {
+        return connectorName;
     }
 
-    public void setConnectorId(String connectorId) {
-        this.connectorId = connectorId;
+    public void setConnectorName(String connectorName) {
+        this.connectorName = connectorName;
     }
 
     public Order getOrder() {

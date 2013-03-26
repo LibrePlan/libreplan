@@ -117,7 +117,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
         }
 
         OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
-                .findLastSynchronizedInfoByOrderAndConnectorId(order,
+                .findLastSynchronizedInfoByOrderAndConnectorName(order,
                         PredefinedConnectors.JIRA.getName());
         if (orderSyncInfo == null) {
             synchronizationInfo.addFailedReason(_(

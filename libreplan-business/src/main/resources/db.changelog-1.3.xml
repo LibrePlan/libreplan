@@ -224,7 +224,7 @@
             <column name="key" type="VARCHAR(255)" >
                 <constraints nullable="false"/>
             </column>
-            <column name="connector_id" type="VARCHAR(255)" >
+            <column name="connector_name" type="VARCHAR(255)" >
                 <constraints nullable="false"/>
             </column>
             <column name="order_element_id" type="BIGINT" />

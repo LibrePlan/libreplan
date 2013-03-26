@@ -34,50 +34,52 @@ public interface IOrderSyncInfoDAO extends IGenericDAO<OrderSyncInfo, Long> {
 
     /**
      * Search last synchronized info for the specified
-     * <code>{@link Order}</code> and <code>connectorId</code>
+     * <code>{@link Order}</code> and <code>connectorName</code>
      *
      * @param order
      *            the order to search for
-     * @param connectorId
-     *            the connector-id
+     * @param connectorName
+     *            the connector name
      *
      * @return Last synchronized info
      */
-    OrderSyncInfo findLastSynchronizedInfoByOrderAndConnectorId(Order order,
-            String connectorId);
+    OrderSyncInfo findLastSynchronizedInfoByOrderAndConnectorName(Order order,
+            String connectorName);
 
     /**
      * Search last synchronized infos for the specified
-     * <code>{@link Order}</code> and <code>connectorId</code>
+     * <code>{@link Order}</code> and <code>connectorName</code>
      *
      * @param order
      *            the order to search for
-     * @param connectorId
-     *            the connector-id
+     * @param connectorName
+     *            the connector name
      * @return list of last synchronized infos
      */
-    List<OrderSyncInfo> findLastSynchronizedInfosByOrderAndConnectorId(
-            Order order, String connectorId);
+    List<OrderSyncInfo> findLastSynchronizedInfosByOrderAndConnectorName(
+            Order order, String connectorName);
 
     /**
      * Searches and returns <code>{@link OrderSyncInfo}</code> for the specified
-     * <code>key</code> and <code>connectorId</code>
+     * <code>key</code> and <code>connectorName</code>
      *
      * @param key
      *            the unique key with in connector id
-     * @param order the order
-     * @param connectorId
-     *            the connector id
+     * @param order
+     *            the order
+     * @param connectorName
+     *            the connector name
      */
-    OrderSyncInfo findByKeyOrderAndConnectorId(String key, Order order, String connectorId);
+    OrderSyncInfo findByKeyOrderAndConnectorName(String key, Order order,
+            String connectorName);
 
     /**
      * Finds the {@link OrderSyncInfo}s for the specified
-     * <code>connectorId</code>
+     * <code>connectorName</code>
      *
-     * @param connectorId
-     *            the connectorId
+     * @param connectorName
+     *            the connector name
      * @return a list of OrderSyncInfo if found and null if not
      */
-    List<OrderSyncInfo> findByConnectorId(String connectorId);
+    List<OrderSyncInfo> findByConnectorName(String connectorName);
 }

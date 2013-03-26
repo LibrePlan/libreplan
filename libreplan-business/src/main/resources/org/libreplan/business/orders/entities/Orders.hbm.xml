@@ -306,7 +306,7 @@
         <version name="version" access="property" type="long" />
         <property name="lastSyncDate" column="last_sync_date" access="field" not-null="true"/>
         <property name="key" access="field" not-null="true"/>
-        <property name="connectorId" column="connector_id" access="field" not-null="true"/>
+        <property name="connectorName" column="connector_name" access="field" not-null="true"/>
 
         <many-to-one name="order" class="Order">
             <column name="order_element_id" not-null="true"/>
