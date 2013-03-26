@@ -18,8 +18,7 @@
  -->
 
 <groupbox id="jiraGroupBox"
-    style="margin-top: 5px" closable="false"
-    visible="@{jiraSynchroniaztionController.jiraActivated}">
+    style="margin-top: 5px" closable="false">
     <caption label="${i18n:_('Jira sync information')}" />
     <separator spacing="10px"/>
     <hbox width="100%">

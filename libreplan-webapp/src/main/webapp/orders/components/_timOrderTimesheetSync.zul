@@ -18,8 +18,7 @@
  -->
 
 <groupbox id="timGroupBox"
-    style="margin-top: 5px" closable="false"
-    visible="@{timSynchronizationController.timActivated}">
+    style="margin-top: 5px" closable="false">
     <caption label="${i18n:_('Tim sync information')}" />
     <separator spacing="10px"/>
     <hbox width="100%">
