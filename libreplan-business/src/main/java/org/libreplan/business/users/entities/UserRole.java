@@ -46,6 +46,7 @@ public enum UserRole {
     // Page roles
     ROLE_PLANNING(_("Planning")),
     ROLE_TEMPLATES(_("Templates")),
+    ROLE_IMPORT_PROJECTS(_("Import projects")),
     ROLE_WORKERS(_("Workers")),
     ROLE_MACHINES(_("Machines")),
     ROLE_VIRTUAL_WORKERS(_("Virtual Workers")),

@@ -273,9 +273,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     globalView.goToOrdersList();
                 }
             }, "01-introducion.html#id2"));
-            // In order of see the Import project option in the menu
-            planningItems.add(subItem(_("Import project"),
-                    "/orders/imports/projectImport.zul", ""));
         }
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_PLANNING)) {
             planningItems.add(subItem(_("Resources Load"), new ICapture() {
@@ -294,6 +291,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_TEMPLATES)) {
             planningItems.add(subItem(_("Templates"),
                     "/templates/templates.zul", ""));
+        }
+        if (SecurityUtils.isSuperuserOrUserInRoles(UserRole.ROLE_IMPORT_PROJECTS)) {
+        // In order of see the Import project option in the menu
+        planningItems.add(subItem(_("Import project"),
+                "/orders/imports/projectImport.zul", ""));
         }
         if (!planningItems.isEmpty()) {
             topItem(_("Planning"), "/planner/index.zul", "", planningItems);

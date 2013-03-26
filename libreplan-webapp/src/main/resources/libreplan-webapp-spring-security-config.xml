@@ -117,6 +117,9 @@
             access="ROLE_BOUND_USER" />
         <intercept-url pattern="/myaccount/monthlyTimesheet.zul"
             access="ROLE_SUPERUSER,ROLE_TIMESHEETS,ROLE_BOUND_USER" />
+        <intercept-url pattern="/orders/imports/projectImport.zul"
+            access="ROLE_SUPERUSER,ROLE_IMPORT_PROJECTS" />
+
 
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
 
