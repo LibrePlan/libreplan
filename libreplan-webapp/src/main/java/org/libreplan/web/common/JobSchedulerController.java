@@ -187,7 +187,7 @@ public class JobSchedulerController extends
                     public void onEvent(Event event) throws Exception {
                         try {
                             jobSchedulerModel.doManual(jobSchedulerConfiguration);
-                            shwoSynchronizationInfo();
+                            showSynchronizationInfo();
                         } catch (ConnectorException e) {
                             messagesForUser.showMessage(Level.ERROR,
                                     e.getMessage());
@@ -247,7 +247,7 @@ public class JobSchedulerController extends
     }
 
 
-    private void shwoSynchronizationInfo() {
+    private void showSynchronizationInfo() {
         Map<String, Object> args = new HashMap<String, Object>();
 
         Window win = (Window) Executions.createComponents(
