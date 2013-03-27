@@ -144,8 +144,6 @@ public class Planner extends HtmlMacroComponent  {
 
     private GanttPanel ganttPanel;
 
-    private boolean fixedZoomByUser = false;
-
     private List<? extends CommandContextualized<?>> contextualizedGlobalCommands;
 
     private CommandContextualized<?> goingDownInLastArrowCommand;
@@ -174,7 +172,7 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isFlattenTree = false;
 
-    private ZoomLevel initialZoomLevel = null;
+    private ZoomLevel zoomLevel = null;
 
     private Listbox listZoomLevels = null;
 
@@ -276,8 +274,7 @@ public class Planner extends HtmlMacroComponent  {
         if (ganttPanel == null) {
             return;
         }
-        this.fixedZoomByUser = true;
-        initialZoomLevel = zoomLevel;
+        this.zoomLevel = zoomLevel;
         ganttPanel.setZoomLevel(zoomLevel, scrollLeft);
     }
 
@@ -732,22 +729,14 @@ public class Planner extends HtmlMacroComponent  {
 
     public ZoomLevel getZoomLevel() {
         if (ganttPanel == null) {
-            return initialZoomLevel != null ? initialZoomLevel
+            return zoomLevel != null ? zoomLevel
                     : ZoomLevel.DETAIL_ONE;
         }
         return ganttPanel.getTimeTracker().getDetailLevel();
     }
 
-    public boolean isFixedZoomByUser() {
-        return this.fixedZoomByUser;
-    }
-
     public void setInitialZoomLevel(final ZoomLevel zoomLevel) {
-        if (this.initialZoomLevel != null) {
-            // already initialized
-            return;
-        }
-        this.initialZoomLevel = zoomLevel;
+        this.zoomLevel = zoomLevel;
     }
 
     public boolean areContainersExpandedByDefault() {
@@ -821,12 +810,11 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void updateSelectedZoomLevel() {
-        if (!isFixedZoomByUser()) {
-            Listitem selectedItem = (Listitem) listZoomLevels.getItems().get(
-                    initialZoomLevel.ordinal());
-            listZoomLevels.setSelectedItem(selectedItem);
-            listZoomLevels.invalidate();
-        }
+        ganttPanel.getTimeTracker().setZoomLevel(zoomLevel);
+        Listitem selectedItem = (Listitem) listZoomLevels.getItems().get(
+                zoomLevel.ordinal());
+        listZoomLevels.setSelectedItem(selectedItem);
+        listZoomLevels.invalidate();
     }
 
     public IContext<?> getContext() {

@@ -19,9 +19,16 @@
 
 package org.libreplan.web.users.settings;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang.Validate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.labels.daos.ILabelDAO;
+import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.resources.daos.ICriterionDAO;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.settings.entities.Language;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.Profile;
@@ -49,7 +56,17 @@ public class SettingsModel implements ISettingsModel {
     @Autowired
     private IUserDAO userDAO;
 
+    @Autowired
+    private ILabelDAO labelsDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
+
     private User user;
+
+    private List<Label> allLabels;
+
+    private List<Criterion> allCriteria;
 
     @Override
     public Language getApplicationLanguage() {
@@ -74,6 +91,26 @@ public class SettingsModel implements ISettingsModel {
     public void initEditLoggedUser() {
         User user = findByLoginUser(SecurityUtils.getSessionUserLoginName());
         this.user = getFromDB(user);
+        loadAllLabels();
+        loadAllCriteria();
+    }
+
+    @Transactional(readOnly = true)
+    private void loadAllLabels() {
+        allLabels = labelsDAO.getAll();
+        // initialize the labels
+        for (Label label : allLabels) {
+            label.getType().getName();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    private void loadAllCriteria() {
+        allCriteria = criterionDAO.getAll();
+        // initialize the criteria
+        for (Criterion criterion : allCriteria) {
+            criterion.getType().getName();
+        }
     }
 
     @Transactional(readOnly = true)
@@ -200,6 +237,78 @@ public class SettingsModel implements ISettingsModel {
             return user.isBound();
         }
         return false;
+    }
+
+    @Override
+    public Integer getProjectsFilterPeriodSince() {
+        return user.getProjectsFilterPeriodSince();
+    }
+
+    @Override
+    public void setProjectsFilterPeriodSince(Integer period) {
+        user.setProjectsFilterPeriodSince(period);
+    }
+
+    @Override
+    public Integer getProjectsFilterPeriodTo() {
+        return user.getProjectsFilterPeriodTo();
+    }
+
+    @Override
+    public void setProjectsFilterPeriodTo(Integer period) {
+        user.setProjectsFilterPeriodTo(period);
+    }
+
+    @Override
+    public Integer getResourcesLoadFilterPeriodSince() {
+        return user.getResourcesLoadFilterPeriodSince();
+    }
+
+    @Override
+    public void setResourcesLoadFilterPeriodSince(Integer period) {
+        user.setResourcesLoadFilterPeriodSince(period);
+    }
+
+    @Override
+    public Integer getResourcesLoadFilterPeriodTo() {
+        return user.getResourcesLoadFilterPeriodTo();
+    }
+
+    @Override
+    public void setResourcesLoadFilterPeriodTo(Integer period) {
+        user.setResourcesLoadFilterPeriodTo(period);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Label> getAllLabels() {
+        return allLabels;
+    }
+
+    @Override
+    public Label getProjectsFilterLabel() {
+        return user.getProjectsFilterLabel();
+    }
+
+    @Override
+    public void setProjectsFilterLabel(Label label) {
+        user.setProjectsFilterLabel(label);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Criterion> getAllCriteria() {
+        return allCriteria;
+    }
+
+    @Override
+    public Criterion getResourcesLoadFilterCriterion() {
+        return user.getResourcesLoadFilterCriterion();
+    }
+
+    @Override
+    public void setResourcesLoadFilterCriterion(Criterion criterion) {
+        user.setResourcesLoadFilterCriterion(criterion);
     }
 
 }

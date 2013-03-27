@@ -1689,4 +1689,8 @@ public abstract class OrderElement extends IntegrationEntity implements
         return code.startsWith(PredefinedConnectorProperties.JIRA_CODE_PREFIX);
     }
 
+    public boolean isConvertedToContainer() {
+        return false;
+    }
+
 }

@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.AggregatedHoursGroup;
 import org.libreplan.business.planner.entities.CalculatedValue;
 import org.libreplan.business.planner.entities.DerivedAllocation;
@@ -82,8 +83,10 @@ import org.zkoss.zul.Window;
 
 /**
  * Controller for {@link ResourceAllocation} view.
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 @org.springframework.stereotype.Component("resourceAllocationController")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -162,6 +165,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         assignedEffortComponent.setWidth("80px");
     }
 
+    @Override
     public ResourceAllocationController getController() {
         return this;
     }
@@ -228,12 +232,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return allocationConfiguration.getTaskWorkableDays();
     }
 
-    private Label getTaskStart() {
-        return allocationConfiguration.getTaskStart();
+    public Label getTaskStart() {
+        return (allocationConfiguration != null) ? allocationConfiguration
+                .getTaskStart() : null;
     }
 
-    private Label getTaskEnd() {
-        return allocationConfiguration.getTaskEnd();
+    public Label getTaskEnd() {
+        return (allocationConfiguration != null) ? allocationConfiguration
+                .getTaskEnd() : null;
     }
 
     private Radiogroup getCalculationTypeSelector() {
@@ -317,8 +323,23 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public void goToAdvancedSearch() {
+        newAllocationSelector
+                .setStartFilteringDate(LocalDate
+                        .fromDateFields(resourceAllocationModel.getTaskStart())
+                        .minusDays(
+                                NewAllocationSelector.DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION)
+                        .toDateTimeAtStartOfDay().toDate());
+        newAllocationSelector
+                .setEndFilteringDate(LocalDate
+                        .fromDateFields(resourceAllocationModel.getTaskEnd())
+                        .plusDays(
+                                NewAllocationSelector.DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION)
+                        .toDateTimeAtStartOfDay().toDate());
         applyButton.setVisible(false);
         workerSearchTab.setSelected(true);
+        // The initial search and ratio load calculations is raised
+        // on going to advanced search
+        newAllocationSelector.clearAll();
     }
 
     /**

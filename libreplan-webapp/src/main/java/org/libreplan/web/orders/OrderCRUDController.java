@@ -23,6 +23,8 @@ package org.libreplan.web.orders;
 
 import static org.libreplan.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
@@ -48,9 +51,12 @@ import org.libreplan.business.orders.entities.Order.SchedulingMode;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.templates.entities.OrderTemplate;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.common.ConfirmCloseUtil;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
@@ -60,6 +66,8 @@ import org.libreplan.web.common.Util.ReloadStrategy;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.OrderFilterEnum;
+import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.orders.criterionrequirements.AssignedCriterionRequirementToOrderElementController;
 import org.libreplan.web.orders.labels.AssignedLabelsToOrderElementController;
 import org.libreplan.web.orders.labels.LabelsAssignmentToOrderElementComponent;
@@ -214,9 +222,91 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("bdFilters");
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
-
         checkCreationPermissions();
         setupGlobalButtons();
+        initializeFilter();
+    }
+
+    private void initializeFilter() {
+        Date startDate = (Date) FilterUtils.readProjectsStartDate();
+        Date endDate = FilterUtils.readProjectsEndDate();
+
+        boolean calculateStartDate = (startDate == null);
+        boolean calculateEndDate = (endDate == null);
+
+        // Filter predicate needs to be calculated based on the projects dates
+        if ((calculateStartDate) || (calculateEndDate)) {
+
+            User user = orderModel.getUser();
+            // Calculate filter based on user preferences
+            if (user != null) {
+                if ((startDate == null)
+                        && !FilterUtils.hasProjectsStartDateChanged()
+                        && (user.getProjectsFilterPeriodSince() != null)) {
+                    startDate = new LocalDate()
+                            .minusMonths(user.getProjectsFilterPeriodSince())
+                            .toDateTimeAtStartOfDay().toDate();
+                }
+                if ((endDate == null)
+                        && !FilterUtils.hasProjectsEndDateChanged()
+                        && (user.getProjectsFilterPeriodTo() != null)) {
+                    endDate = new LocalDate()
+                            .plusMonths(user.getProjectsFilterPeriodTo())
+                            .toDateMidnight().toDate();
+                }
+            }
+        }
+        filterStartDate.setValue(startDate);
+        filterFinishDate.setValue(endDate);
+
+        loadLabels();
+        FilterUtils.writeProjectPlanningFilterChanged(false);
+    }
+
+    private void loadLabels() {
+        List<FilterPair> sessionFilters = FilterUtils
+                .readProjectsParameters();
+        // Allow labels when list is empty
+        if (sessionFilters != null) {
+            bdFilters.addSelectedElements(toOrderFilterEnum(sessionFilters));
+            return;
+        }
+
+        User user = orderModel.getUser();
+        // Calculate filter based on user preferences
+        if ((user != null) && (user.getProjectsFilterLabel() != null)) {
+            bdFilters.addSelectedElement(new FilterPair(OrderFilterEnum.Label,
+                    user.getProjectsFilterLabel().getFinderPattern(), user
+                            .getProjectsFilterLabel()));
+        }
+    }
+
+    private List<FilterPair> toOrderFilterEnum(List<FilterPair> filterPairs) {
+        List<FilterPair> result = new ArrayList<FilterPair>();
+        for (FilterPair filterPair : filterPairs) {
+            TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair
+                    .getType();
+            switch (type) {
+            case Label:
+                result.add(new FilterPair(OrderFilterEnum.Label, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            case Criterion:
+                result.add(new FilterPair(OrderFilterEnum.Criterion, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            case ExternalCompany:
+                result.add(new FilterPair(OrderFilterEnum.ExternalCompany,
+                        filterPair.getPattern(), filterPair.getValue()));
+                break;
+            case State:
+                result.add(new FilterPair(OrderFilterEnum.State, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            default:
+            }
+        }
+        return result;
     }
 
     private void setupGlobalButtons() {
@@ -456,7 +546,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void reloadTree(TreeComponent orderElementsTree) {
         final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
-        tree.setModel(orderElementTreeController.getTreeModel());
+        tree.setModel(orderElementTreeController.getFilteredTreeModel());
         tree.addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
             public void onEvent(Event event) {
@@ -653,7 +743,51 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public List<Order> getOrders() {
-        return orderModel.getOrders();
+        if (checkIncludeOrderElements.isChecked()) {
+            return orderModel.getOrders();
+        }
+
+        return getOrdersFiltered();
+    }
+
+    private List<Order> getOrdersFiltered() {
+        List<org.libreplan.business.labels.entities.Label> labels = new ArrayList<org.libreplan.business.labels.entities.Label>();
+        List<Criterion> criteria = new ArrayList<Criterion>();
+        ExternalCompany customer = null;
+        OrderStatusEnum state = null;
+
+        for (FilterPair filterPair : (List<FilterPair>) bdFilters
+                .getSelectedElements()) {
+            OrderFilterEnum type = (OrderFilterEnum) filterPair.getType();
+            switch (type) {
+            case Label:
+                labels.add((org.libreplan.business.labels.entities.Label) filterPair
+                        .getValue());
+                break;
+            case Criterion:
+                criteria.add((Criterion) filterPair.getValue());
+                break;
+            case ExternalCompany:
+                if (customer != null) {
+                    // It's impossible to have an Order associated to more than
+                    // 1 customer
+                    return Collections.emptyList();
+                }
+                customer = (ExternalCompany) filterPair.getValue();
+                break;
+            case State:
+                if (state != null) {
+                    // It's impossible to have an Order associated with more
+                    // than 1 state
+                    return Collections.emptyList();
+                }
+                state = (OrderStatusEnum) filterPair.getValue();
+                break;
+            }
+        }
+
+        return orderModel.getOrders(filterStartDate.getValue(),
+                filterFinishDate.getValue(), labels, criteria, customer, state);
     }
 
     private OnlyOneVisible getVisibility() {
@@ -801,7 +935,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         listing = (Grid) listWindow.getFellow("listing");
         showOrderFilter();
         showCreateButtons(true);
-        clearFilterDates();
     }
 
     private void showWindow(Window window) {
@@ -1319,9 +1452,9 @@ public class OrderCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 Date finishDate = (Date) value;
                 if ((finishDate != null)
-                        && (filterStartDate.getValue() != null)
-                        && (finishDate.compareTo(filterStartDate.getValue()) < 0)) {
-                    filterFinishDate.setValue(null);
+                        && (filterStartDate.getRawValue() != null)
+                        && (finishDate.compareTo((Date) filterStartDate
+                                .getRawValue()) < 0)) {
                     throw new WrongValueException(comp,
                             _("must be after start date"));
                 }
@@ -1336,9 +1469,10 @@ public class OrderCRUDController extends GenericForwardComposer {
                     throws WrongValueException {
                 Date startDate = (Date) value;
                 if ((startDate != null)
-                        && (filterFinishDate.getValue() != null)
-                        && (startDate.compareTo(filterFinishDate.getValue()) > 0)) {
-                    filterStartDate.setValue(null);
+                        && (filterFinishDate.getRawValue() != null)
+                        && (startDate.compareTo((Date) filterFinishDate
+                                .getRawValue()) > 0)) {
+                    // filterStartDate.setValue(null);
                     throw new WrongValueException(comp,
                             _("must be lower than end date"));
                 }
@@ -1348,11 +1482,53 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void onApplyFilter() {
         OrderPredicate predicate = createPredicate();
-        if (predicate != null) {
+        storeSessionVariables();
+        FilterUtils.writeProjectFilterChanged(true);
+        if (predicate != null && checkIncludeOrderElements.isChecked()) {
+            // Force reload conversation state in oderModel
+            getOrders();
             filterByPredicate(predicate);
         } else {
             showAllOrders();
         }
+    }
+
+    private void storeSessionVariables() {
+        FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
+                filterFinishDate.getValue(),
+                getSelectedBandboxAsTaskGroupFilters());
+    }
+
+    private List<FilterPair> getSelectedBandboxAsTaskGroupFilters() {
+        List<FilterPair> result = new ArrayList<FilterPair>();
+        for (FilterPair filterPair : (List<FilterPair>) bdFilters
+                .getSelectedElements()) {
+            OrderFilterEnum type = (OrderFilterEnum) filterPair
+                    .getType();
+            switch (type) {
+            case Label:
+                result.add(new FilterPair(TaskGroupFilterEnum.Label, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            case Criterion:
+                result.add(new FilterPair(TaskGroupFilterEnum.Criterion,
+                        filterPair.getPattern(), filterPair.getValue()));
+                break;
+            case ExternalCompany:
+                result.add(new FilterPair(TaskGroupFilterEnum.ExternalCompany,
+                        filterPair.getPattern(), filterPair.getValue()));
+                break;
+            case State:
+                result.add(new FilterPair(TaskGroupFilterEnum.State, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            default:
+                result.add(new FilterPair(OrderFilterEnum.Label, filterPair
+                        .getPattern(), filterPair.getValue()));
+                break;
+            }
+        }
+        return result;
     }
 
     private OrderPredicate createPredicate() {
@@ -1375,13 +1551,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         listing.invalidate();
     }
 
-    private void clearFilterDates() {
-        filterStartDate.setValue(null);
-        filterFinishDate.setValue(null);
-    }
-
-    public void showAllOrders() {
-        listing.setModel(new SimpleListModel(orderModel.getOrders().toArray()));
+    private void showAllOrders() {
+        listing.setModel(new SimpleListModel(getOrders().toArray()));
         listing.invalidate();
     }
 
@@ -1683,6 +1854,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public String getCurrencySymbol() {
         return Util.getCurrencySymbol();
+    }
+
+    public void readSessionFilterDates() {
+        filterStartDate.setValue(FilterUtils.readProjectsStartDate());
+        filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
+        loadLabels();
     }
 
     /**

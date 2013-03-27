@@ -22,13 +22,14 @@
 package org.libreplan.web.planner.company;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.planner.entities.TaskElement;
-import org.libreplan.business.templates.entities.OrderTemplate;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
-import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 
@@ -41,16 +42,18 @@ public interface ICompanyPlanningModel {
 
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
-            ICommandOnTask<TaskElement> doubleClickCommand, IPredicate predicate);
+            ICommandOnTask<TaskElement> doubleClickCommand,
+            TaskGroupPredicate predicate);
 
     public void setTabsController(MultipleTabsPlannerController tabsController);
 
-    LocalDate getFilterStartDate();
+    Date getFilterStartDate();
 
-    LocalDate getFilterFinishDate();
+    Date getFilterFinishDate();
 
     ProgressType getProgressTypeFromConfiguration();
 
-    public IPredicate getDefaultPredicate(Boolean includeOrderElements);
+    public TaskGroupPredicate getDefaultPredicate(Boolean includeOrderElements);
 
+    User getUser();
 }

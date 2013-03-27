@@ -193,9 +193,9 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void addLabel(LabelType type, Label label) {
-        String pattern = label.getName() + " ( " + type.getName() + " )";
         getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.Label, pattern, label));
+                new FilterPair(OrderElementFilterEnum.Label, label
+                        .getFinderPattern(), label));
     }
 
 }

@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2011 ComtecSF, S.L.
+  Copyright (C) 2013 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
@@ -116,6 +117,40 @@
                                             </row>
                                         </rows>
                                     </grid>
+                                </row>
+                                <row>
+                                    <label
+                                        value="${i18n:_('Projects view filtering')}" />
+                                    <hbox>
+                                        <label value="${i18n:_('Label filter')}" />
+                                        <bandboxSearch
+                                            id="projectsFilterLabelBandboxSearch"
+                                            finder="LabelBandboxFinder"
+                                            model="@{settingsController.allLabels}"
+                                            selectedElement="@{settingsController.projectsFilterLabel}"
+                                            widthListbox="450px" widthBandbox="200px"/>
+                                        <label value="${i18n:_('Projects since')}" />
+                                        <intbox id="projectsFilterPeriodSince" value="@{settingsController.projectsFilterPeriodSince}" width="50px"/>
+                                        <label value="${i18n:_('months to')}" />
+                                        <intbox id="projectsFilterPeriodTo" value="@{settingsController.projectsFilterPeriodTo}" width="50px"/>
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label
+                                        value="${i18n:_('Resources load filtering')}" />
+                                    <hbox>
+                                        <label value="${i18n:_('Criterion filter')}" />
+                                        <bandboxSearch
+                                            id="resourcesLoadFilterCriterionBandboxSearch"
+                                            finder="CriterionBandboxFinder"
+                                            model="@{settingsController.allCriteria}"
+                                            selectedElement="@{settingsController.resourcesLoadFilterCriterion}"
+                                            widthListbox="450px" widthBandbox="200px"/>
+                                        <label value="${i18n:_('Resources load since')}" />
+                                        <intbox id="resourcesLoadFilterPeriodSince" value="@{settingsController.resourcesLoadFilterPeriodSince}" width="50px"/>
+                                        <label value="${i18n:_('months to')}" />
+                                        <intbox id="resourcesLoadFilterPeriodTo" value="@{settingsController.resourcesLoadFilterPeriodTo}" width="50px"/>
+                                    </hbox>
                                 </row>
                             </rows>
                         </grid>

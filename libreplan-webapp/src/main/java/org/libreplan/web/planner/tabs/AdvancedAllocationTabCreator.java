@@ -264,7 +264,8 @@ public class AdvancedAllocationTabCreator {
 
     private Map<String, Object> argsWithController(PlanningState planningState) {
         Map<String, Object> result = new HashMap<String, Object>();
-        advancedAllocationController = new AdvancedAllocationController(onBack,
+        advancedAllocationController = new AdvancedAllocationController(
+                planningState.getOrder(), onBack,
                 createAllocationInputsFor(planningState));
         result.put("advancedAllocationController", advancedAllocationController);
         return result;
@@ -297,7 +298,7 @@ public class AdvancedAllocationTabCreator {
     }
 
     private void resetController(PlanningState planningState) {
-        advancedAllocationController.reset(onBack,
+        advancedAllocationController.reset(planningState.getOrder(), onBack,
                 createAllocationInputsFor(planningState));
     }
 

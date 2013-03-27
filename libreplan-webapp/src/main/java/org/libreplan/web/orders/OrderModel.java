@@ -58,6 +58,7 @@ import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.IMoneyCostCalculator;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
@@ -217,6 +218,22 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         List<Order> orders = orderDAO.getOrdersByReadAuthorizationByScenario(
                 SecurityUtils.getSessionUserLoginName(),
                 scenarioManager.getCurrent());
+
+        initializeOrders(orders);
+        return orders;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Order> getOrders(Date startDate, Date endDate,
+            List<Label> labels, List<Criterion> criteria,
+            ExternalCompany customer, OrderStatusEnum state) {
+        getLabelsOnConversation().reattachLabels();
+        List<Order> orders = orderDAO
+                .getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
+                        SecurityUtils.getSessionUserLoginName(),
+                        scenarioManager.getCurrent(), startDate, endDate,
+                        labels, criteria, customer, state);
 
         initializeOrders(orders);
         return orders;
@@ -926,6 +943,23 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getUser() {
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        // Attach filter bandbox elements
+        if (user.getProjectsFilterLabel() != null) {
+            user.getProjectsFilterLabel().getFinderPattern();
+        }
+        return user;
     }
 
 }

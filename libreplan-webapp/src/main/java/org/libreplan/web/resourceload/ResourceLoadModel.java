@@ -1065,6 +1065,23 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return user.isExpandResourceLoadViewCharts();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public User getUser() {
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        // Attach filter bandbox elements
+        if (user.getResourcesLoadFilterCriterion() != null) {
+            user.getResourcesLoadFilterCriterion().getFinderPattern();
+        }
+        return user;
+    }
+
 }
 
 class PeriodBuilderFactory {

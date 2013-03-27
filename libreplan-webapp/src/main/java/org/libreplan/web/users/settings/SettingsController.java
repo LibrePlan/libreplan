@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 ComtecSF, S.L.
+ * Copyright (C) 2013 Igalia.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,14 +26,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Filter;
 
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.settings.entities.Language;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
+import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 
@@ -41,6 +54,7 @@ import org.zkoss.zul.Textbox;
  *
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class SettingsController extends GenericForwardComposer {
 
@@ -51,6 +65,10 @@ public class SettingsController extends GenericForwardComposer {
     private ISettingsModel settingsModel;
 
     private Textbox password;
+
+    private BandboxSearch projectsFilterLabelBandboxSearch;
+
+    private BandboxSearch resourcesLoadFilterCriterionBandboxSearch;
 
     public static ListitemRenderer languagesRenderer = new ListitemRenderer() {
         @Override
@@ -71,6 +89,25 @@ public class SettingsController extends GenericForwardComposer {
         comp.setVariable("settingsController", this, true);
         messages = new MessagesForUser(messagesContainer);
         settingsModel.initEditLoggedUser();
+        projectsFilterLabelBandboxSearch.setListboxEventListener(
+                Events.ON_SELECT, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
+                                .getSelectedItems().iterator().next();
+                        setProjectsFilterLabel((Label) selectedItem.getValue());
+                    }
+                });
+        resourcesLoadFilterCriterionBandboxSearch.setListboxEventListener(
+                Events.ON_SELECT, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) {
+                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
+                                .getSelectedItems().iterator().next();
+                        setResourcesLoadFilterCriterion((Criterion) selectedItem
+                                .getValue());
+                    }
+                });
     }
 
     public List<Language> getLanguages() {
@@ -92,6 +129,8 @@ public class SettingsController extends GenericForwardComposer {
 
     public boolean save() {
         try {
+            checkEmptyBandboxes();
+            clearSessionVariables();
             settingsModel.confirmSave();
             messages.showMessage(Level.INFO, _("Settings saved"));
             return true;
@@ -99,6 +138,20 @@ public class SettingsController extends GenericForwardComposer {
             messages.showInvalidValues(e);
         }
         return false;
+    }
+
+    private void clearSessionVariables() {
+        FilterUtils.clearBandboxes();
+        FilterUtils.clearSessionDates();
+    }
+
+    private void checkEmptyBandboxes() {
+        if (projectsFilterLabelBandboxSearch.getSelectedElement() == null) {
+            settingsModel.setProjectsFilterLabel(null);
+        }
+        if (resourcesLoadFilterCriterionBandboxSearch.getSelectedElement() == null) {
+            settingsModel.setResourcesLoadFilterCriterion(null);
+        }
     }
 
     public void setSelectedLanguage(Language language) {
@@ -174,6 +227,62 @@ public class SettingsController extends GenericForwardComposer {
 
     public boolean isBound() {
         return settingsModel.isBound();
+    }
+
+    public Integer getProjectsFilterPeriodSince() {
+        return settingsModel.getProjectsFilterPeriodSince();
+    }
+
+    public void setProjectsFilterPeriodSince(Integer period) {
+        settingsModel.setProjectsFilterPeriodSince(period);
+    }
+
+    public Integer getProjectsFilterPeriodTo() {
+        return settingsModel.getProjectsFilterPeriodTo();
+    }
+
+    public void setProjectsFilterPeriodTo(Integer period) {
+        settingsModel.setProjectsFilterPeriodTo(period);
+    }
+
+    public Integer getResourcesLoadFilterPeriodSince() {
+        return settingsModel.getResourcesLoadFilterPeriodSince();
+    }
+
+    public void setResourcesLoadFilterPeriodSince(Integer period) {
+        settingsModel.setResourcesLoadFilterPeriodSince(period);
+    }
+
+    public Integer getResourcesLoadFilterPeriodTo() {
+        return settingsModel.getResourcesLoadFilterPeriodTo();
+    }
+
+    public void setResourcesLoadFilterPeriodTo(Integer period) {
+        settingsModel.setResourcesLoadFilterPeriodTo(period);
+    }
+
+    public List<Label> getAllLabels() {
+        return settingsModel.getAllLabels();
+    }
+
+    public Label getProjectsFilterLabel() {
+        return settingsModel.getProjectsFilterLabel();
+    }
+
+    public void setProjectsFilterLabel(Label label) {
+        settingsModel.setProjectsFilterLabel(label);
+    }
+
+    public List<Criterion> getAllCriteria() {
+        return settingsModel.getAllCriteria();
+    }
+
+    public Criterion getResourcesLoadFilterCriterion() {
+        return settingsModel.getResourcesLoadFilterCriterion();
+    }
+
+    public void setResourcesLoadFilterCriterion(Criterion criterion) {
+        settingsModel.setResourcesLoadFilterCriterion(criterion);
     }
 
 }

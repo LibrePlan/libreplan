@@ -38,9 +38,12 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.CostCategoryDAO;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
+import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.reports.dtos.CostExpenseSheetDTO;
@@ -214,6 +217,242 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         }
     }
 
+    private List<Order> getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
+            User user, Date startDate, Date endDate, List<Label> labels,
+            List<Criterion> criteria, ExternalCompany customer,
+            OrderStatusEnum state) {
+        List<Long> ordersIdsFiltered = getOrdersIdsFiltered(user, labels,
+                criteria, customer, state);
+        if (ordersIdsFiltered != null && ordersIdsFiltered.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> ordersIdsByDates = getOrdersIdsByDates(startDate, endDate);
+        if (ordersIdsByDates != null && ordersIdsByDates.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> ordersIdsUnscheduled = getOrdersIdsUnscheduled(startDate,
+                endDate);
+
+        Criteria c = getSession().createCriteria(Order.class);
+        if (ordersIdsFiltered != null && ordersIdsByDates != null) {
+            org.hibernate.criterion.Criterion and = Restrictions.and(
+                    Restrictions.in("id", ordersIdsFiltered),
+                    Restrictions.in("id", ordersIdsByDates));
+            c.add(and);
+        } else {
+            if (ordersIdsFiltered != null) {
+                c.add(Restrictions.in("id", ordersIdsFiltered));
+            }
+            if (ordersIdsByDates != null) {
+                if (ordersIdsUnscheduled.isEmpty()) {
+                    c.add(Restrictions.in("id", ordersIdsByDates));
+                } else {
+                    c.add(Restrictions.or(
+                            Restrictions.in("id", ordersIdsByDates),
+                            Restrictions.in("id", ordersIdsUnscheduled)));
+                }
+            }
+        }
+
+        c.addOrder(org.hibernate.criterion.Order.desc("initDate"));
+        c.addOrder(org.hibernate.criterion.Order.asc("infoComponent.name"));
+        return c.list();
+    }
+
+    private List<Long> getOrdersIdsUnscheduled(Date startDate, Date endDate) {
+        String strQuery = "SELECT s.orderElement.id "
+                + "FROM SchedulingDataForVersion s "
+                + "WHERE s.schedulingStateType = :type";
+        Query query = getSession().createQuery(strQuery);
+        query.setParameter("type", SchedulingState.Type.NO_SCHEDULED);
+
+        List<Long> ordersIdsUnscheduled = query.list();
+        if (ordersIdsUnscheduled.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        String strQueryDates = "SELECT o.id "
+                + "FROM Order o "
+                + "WHERE o.id IN (:ids) ";
+
+        if (startDate != null) {
+            strQueryDates += "AND o.initDate >= :startDate ";
+        }
+        if (endDate != null) {
+            strQueryDates += "AND o.initDate <= :endDate ";
+        }
+
+        Query queryDates = getSession().createQuery(strQueryDates);
+        if (startDate != null) {
+            queryDates.setParameter("startDate", startDate);
+        }
+        if (endDate != null) {
+            queryDates.setParameter("endDate", endDate);
+        }
+        queryDates.setParameterList("ids", ordersIdsUnscheduled);
+
+        return queryDates.list();
+    }
+
+    /**
+     * If both params are <code>null</code> it returns <code>null</code>.
+     * Otherwise it filters the list of tasks to return the ones wihtout parent
+     * between the dates.
+     */
+    private List<Long> getOrdersIdsByDates(Date startDate, Date endDate) {
+        if (startDate == null && endDate == null) {
+            return null;
+        }
+
+        String strQuery = "SELECT t.taskSource.schedulingData.orderElement.id "
+                + "FROM TaskElement t "
+                + "WHERE t.parent IS NULL ";
+        if (endDate != null) {
+            strQuery += "AND t.startDate.date <= :endDate ";
+        }
+        if (startDate != null) {
+            strQuery += "AND t.endDate.date >= :startDate ";
+        }
+
+        Query query = getSession().createQuery(strQuery);
+        if (startDate != null) {
+            query.setParameter("startDate", LocalDate.fromDateFields(startDate));
+        }
+        if (endDate != null) {
+            query.setParameter("endDate", LocalDate.fromDateFields(endDate));
+        }
+
+        return query.list();
+    }
+
+    /**
+     * If user has permissions over all orders and not filters are passed it
+     * returns <code>null</code>. Otherwise, it returns the list of orders
+     * identifiers for which the user has read permissions and the filters pass.
+     */
+    private List<Long> getOrdersIdsFiltered(User user, List<Label> labels,
+            List<Criterion> criteria, ExternalCompany customer,
+            OrderStatusEnum state) {
+        List<Long> ordersIdsByReadAuthorization = getOrdersIdsByReadAuthorization(user);
+
+        String strQuery = "SELECT o.id ";
+        strQuery += "FROM Order o ";
+
+        String where = "";
+        String whereFinal = "";
+        if (labels != null && !labels.isEmpty()) {
+            for (int i = 0; i < labels.size(); i++) {
+                if (where.isEmpty()) {
+                    where += "WHERE ";
+                } else {
+                    where += "AND ";
+                }
+                where += ":label" + i + " IN elements(o.labels) ";
+            }
+        }
+
+        if (criteria != null && !criteria.isEmpty()) {
+            strQuery += "JOIN o.criterionRequirements cr ";
+            if (where.isEmpty()) {
+                where += "WHERE ";
+            } else {
+                where += "AND ";
+            }
+            where += "cr.criterion IN (:criteria) ";
+            where += "AND cr.class = DirectCriterionRequirement ";
+            whereFinal += "GROUP BY o.id ";
+            whereFinal += "HAVING count(o.id) = :criteriaSize ";
+        }
+
+        if (customer != null) {
+            if (where.isEmpty()) {
+                where += "WHERE ";
+            } else {
+                where += "AND ";
+            }
+            where += "o.customer = :customer ";
+        }
+
+        if (state != null) {
+            if (where.isEmpty()) {
+                where += "WHERE ";
+            } else {
+                where += "AND ";
+            }
+            where += "o.state = :state ";
+        }
+
+        // If not restrictions by labels, criteria, customer or state
+        if (where.isEmpty()) {
+            return ordersIdsByReadAuthorization;
+        }
+
+        if (ordersIdsByReadAuthorization != null
+                && !ordersIdsByReadAuthorization.isEmpty()) {
+            if (where.isEmpty()) {
+                where += "WHERE ";
+            } else {
+                where += "AND ";
+            }
+            where += "o.id IN (:ids) ";
+        }
+
+        strQuery += where + whereFinal;
+        Query query = getSession().createQuery(strQuery);
+        if (labels != null && !labels.isEmpty()) {
+            int i = 0;
+            for (Label label : labels) {
+                query.setParameter("label" + i, label);
+                i++;
+            }
+        }
+        if (criteria != null && !criteria.isEmpty()) {
+            query.setParameterList("criteria", criteria);
+            query.setParameter("criteriaSize", (long) criteria.size());
+        }
+
+        if (customer != null) {
+            query.setParameter("customer", customer);
+        }
+
+        if (state != null) {
+            query.setParameter("state", state);
+        }
+
+        if (ordersIdsByReadAuthorization != null
+                && !ordersIdsByReadAuthorization.isEmpty()) {
+            query.setParameterList("ids", ordersIdsByReadAuthorization);
+        }
+
+        return query.list();
+    }
+
+    /**
+     * If user has permissions over all orders it returns <code>null</code>.
+     * Otherwise, it returns the list of orders identifiers for which the user
+     * has read permissions.
+     */
+    private List<Long> getOrdersIdsByReadAuthorization(User user) {
+        if (user.isInRole(UserRole.ROLE_SUPERUSER)
+                || user.isInRole(UserRole.ROLE_READ_ALL_PROJECTS)
+                || user.isInRole(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+            return null;
+        } else {
+            String strQuery = "SELECT oa.order.id "
+                    + "FROM OrderAuthorization oa "
+                    + "WHERE oa.user = :user "
+                    + "OR oa.profile IN (:profiles) ";
+
+            Query query = getSession().createQuery(strQuery);
+            query.setParameter("user", user);
+            query.setParameterList("profiles", user.getProfiles());
+
+            return query.list();
+        }
+    }
+
     @Override
     public List<Order> getOrdersByWriteAuthorization(User user) {
         if (user.isInRole(UserRole.ROLE_SUPERUSER)
@@ -276,6 +515,23 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             throw new RuntimeException(e);
         }
         return existsInScenario(getOrdersByReadAuthorization(user), scenario);
+    }
+
+    @Override
+    public List<Order> getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
+            String username, Scenario scenario, Date startDate, Date endDate,
+            List<Label> labels, List<Criterion> criteria,
+            ExternalCompany customer, OrderStatusEnum state) {
+        User user;
+        try {
+            user = userDAO.findByLoginName(username);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return existsInScenario(
+                getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
+                        user, startDate, endDate, labels, criteria, customer,
+                        state), scenario);
     }
 
     private List<Order> existsInScenario(List<Order> orders, Scenario scenario) {

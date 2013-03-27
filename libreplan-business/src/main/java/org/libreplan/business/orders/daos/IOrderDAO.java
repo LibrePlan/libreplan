@@ -26,8 +26,11 @@ import java.util.List;
 
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
+import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.reports.dtos.CostExpenseSheetDTO;
 import org.libreplan.business.reports.dtos.OrderCostsPerResourceDTO;
@@ -78,6 +81,11 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
 
     List<Order> getOrdersByReadAuthorizationByScenario(String username,
             Scenario scenario);
+
+    List<Order> getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
+            String username, Scenario scenario, Date startDate, Date endDate,
+            List<Label> labels, List<Criterion> criteria,
+            ExternalCompany customer, OrderStatusEnum state);
 
     /**
      * Returns the order filtered by the name. If name is blank (whitespace,

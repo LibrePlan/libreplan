@@ -303,4 +303,69 @@
             <column name="schedule" type="BOOLEAN" />
        </createTable>
     </changeSet>
+
+    <changeSet id="add-projects_filter_period_since-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store project filtering interval 'range since' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_period_since" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-projects_filter_period_to-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store project filtering interval 'range to' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_period_to" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_period_since-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store resources load filtering interval 'range since' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="resources_load_filter_period_since" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_period_to-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store resources load filtering interval 'range to' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="resources_load_filter_period_to" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-projects_filter_label_id-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store label reference for default project filtering</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_label_id" type="BIGINT" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_criterion_id-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store criterion reference for default resources load filtering</comment>
+        <addColumn tableName="user_table">
+            <column name="resources_load_filter_criterion_id" type="BIGINT" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-projects_filter_label_id-fk-to-user_table" author="ltilve">
+        <comment>Add Foreign Key constraint on label reference</comment>
+        <addForeignKeyConstraint constraintName="user_label_fkey"
+            baseTableName="user_table" baseColumnNames="projects_filter_label_id"
+            referencedTableName="label" referencedColumnNames="id"
+            onDelete="SET NULL" />
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_fk_id-column-to-user_table" author="ltilve">
+        <comment>Add Foreign Key constraint on criterion reference</comment>
+        <addForeignKeyConstraint constraintName="user_criterion_fkey"
+            baseTableName="user_table" baseColumnNames="resources_load_filter_criterion_id"
+            referencedTableName="criterion" referencedColumnNames="id"
+            onDelete="SET NULL"/>
+    </changeSet>
+
 </databaseChangeLog>

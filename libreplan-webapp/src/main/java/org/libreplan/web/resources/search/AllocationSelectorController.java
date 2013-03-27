@@ -23,9 +23,11 @@ package org.libreplan.web.resources.search;
 
 import java.util.List;
 
+import org.libreplan.business.resources.daos.IResourceLoadRatiosCalculator;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.web.common.components.ResourceAllocationBehaviour;
 import org.libreplan.web.planner.allocation.INewAllocationsAdder;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -41,7 +43,13 @@ public abstract class AllocationSelectorController extends
     protected IResourcesSearcher resourcesSearcher;
 
     // injected by name
+    protected IResourceLoadRatiosCalculator resourceLoadRatiosCalculator;
+
+    // injected by name
     protected ResourceAllocationBehaviour behaviour;
+
+    // injected by name
+    protected IScenarioManager scenarioManager;
 
     public AllocationSelectorController() {
 

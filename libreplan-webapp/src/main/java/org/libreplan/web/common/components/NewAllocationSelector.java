@@ -21,6 +21,7 @@
 
 package org.libreplan.web.common.components;
 
+import java.util.Date;
 import java.util.List;
 
 import org.libreplan.business.resources.daos.IResourcesSearcher;
@@ -36,12 +37,15 @@ import org.zkoss.zul.Radiogroup;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  *
  *         ZK macro component for searching {@link Worker} entities
  *
  */
 @SuppressWarnings("serial")
 public class NewAllocationSelector extends AllocationSelector {
+
+    public static final int DAYS_LEAD_LAG_TO_TASK_LIMITS_DATES_FILTERING_INITIALIZATION = 30;
 
     private NewAllocationSelectorController selectorController;
 
@@ -148,6 +152,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
     }   // AllocationType
 
+    @Override
     public NewAllocationSelectorController getController() {
         if (selectorController == null) {
             selectorController = new NewAllocationSelectorController(behaviour);
@@ -162,6 +167,14 @@ public class NewAllocationSelector extends AllocationSelector {
 
     public void setBehaviour(String behaviour) {
         this.behaviour = ResourceAllocationBehaviour.valueOf(behaviour);
+    }
+
+    public void setEndFilteringDate(Date d) {
+        getController().setEndFilteringDate(d);
+    }
+
+    public void setStartFilteringDate(Date d) {
+        getController().setStartFilteringDate(d);
     }
 
 }

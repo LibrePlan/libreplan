@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +34,7 @@ import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.planner.company.CompanyPlanningController;
 import org.libreplan.web.planner.order.OrderPlanningController;
@@ -49,6 +50,7 @@ import org.zkoss.zul.Label;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  *
  */
 public class PlanningTabCreator {
@@ -205,8 +207,23 @@ public class PlanningTabCreator {
                 }
             }
 
+            private boolean checkFiltersChanged() {
+                return (FilterUtils.sessionExists() && FilterUtils
+                        .hasProjectFilterChanged());
+            }
+
+            private void setFiltersUnchanged() {
+                FilterUtils.writeProjectPlanningFilterChanged(false);
+            }
+
             @Override
             protected void afterShowAction() {
+                if (checkFiltersChanged()) {
+                    companyPlanningController
+                            .readSessionVariablesIntoComponents();
+                    setFiltersUnchanged();
+                }
+
                 companyPlanningController.setConfigurationForPlanner();
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));

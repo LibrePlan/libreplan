@@ -909,7 +909,9 @@ public class PlanningStateCreator {
 
         private void reattachCriterions(Set<Criterion> criterions) {
             for (Criterion each : criterions) {
-                criterionDAO.reattachUnmodifiedEntity(each);
+                if (!Hibernate.isInitialized(each)) {
+                    criterionDAO.reattachUnmodifiedEntity(each);
+                }
             }
         }
 

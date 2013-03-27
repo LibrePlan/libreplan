@@ -71,6 +71,7 @@ import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.calendars.BaseCalendarModel;
 import org.libreplan.web.common.ConfirmCloseUtil;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.ViewSwitcher;
 import org.libreplan.web.planner.adaptplanning.IAdaptPlanningCommand;
 import org.libreplan.web.planner.advances.AdvanceAssignmentPlanningController;
@@ -178,13 +179,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         for (CriterionSatisfaction each : criterionSatisfactions) {
             each.getCriterion().getName();
             each.getCriterion().getType();
-        }
-    }
-
-    public static void configureInitialZoomLevelFor(Planner planner,
-            ZoomLevel defaultZoomLevel) {
-        if (!planner.isFixedZoomByUser()) {
-            planner.setInitialZoomLevel(defaultZoomLevel);
         }
     }
 
@@ -326,9 +320,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 .isExpandOrderPlanningViewCharts());
         addAdditional(additional, configuration);
 
-        ZoomLevel defaultZoomLevel = OrderPlanningModel
-                .calculateDefaultLevel(configuration);
-        configureInitialZoomLevelFor(planner, defaultZoomLevel);
+        planner.setInitialZoomLevel(getZoomLevel(configuration, order));
 
         final boolean writingAllowed = isWritingAllowedOnOrder();
         ISaveCommand saveCommand = setupSaveCommand(configuration,
@@ -377,6 +369,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         PROFILING_LOG.debug("setConfiguration on planner took: "
                 + (System.currentTimeMillis() - setConfigurationTime) + " ms");
         long preparingChartsAndMisc = System.currentTimeMillis();
+
+        setupZoomLevelListener(planner, order);
+
         // Prepare tabpanels
         Tabpanels chartTabpanels = new Tabpanels();
 
@@ -407,6 +402,34 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         long overalProgressContentTime = System.currentTimeMillis();
         PROFILING_LOG.debug("overalProgressContent took: "
                 + (System.currentTimeMillis() - overalProgressContentTime));
+    }
+
+    private ZoomLevel getZoomLevel(
+            PlannerConfiguration<TaskElement> configuration, Order order) {
+        ZoomLevel sessionZoom = FilterUtils.readZoomLevel(order);
+        if (sessionZoom != null) {
+            return sessionZoom;
+        }
+        return OrderPlanningModel.calculateDefaultLevel(configuration);
+    }
+
+    private void setupZoomLevelListener(Planner planner, Order order) {
+        planner.getTimeTracker().addZoomListener(
+                getSessionZoomLevelListener(order));
+    }
+
+    private IZoomLevelChangedListener getSessionZoomLevelListener(
+            final Order order) {
+        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                FilterUtils.writeZoomLevel(order, detailLevel);
+            }
+        };
+
+        keepAliveZoomListeners.add(zoomListener);
+        return zoomListener;
     }
 
     private OrderEarnedValueChartFiller earnedValueChartFiller;

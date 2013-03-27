@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,6 +27,7 @@ import static org.libreplan.web.planner.tabs.MultipleTabsPlannerController.getSc
 import java.util.HashMap;
 import java.util.Map;
 
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.Util.ReloadStrategy;
 import org.libreplan.web.orders.OrderCRUDController;
@@ -41,6 +42,7 @@ import org.zkoss.zul.Label;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  *
  */
 public class OrdersTabCreator {
@@ -111,9 +113,23 @@ public class OrdersTabCreator {
                 }
             }
 
+            private boolean checkFiltersChanged() {
+                return (FilterUtils.sessionExists() && FilterUtils
+                        .hasProjectPlanningFilterChanged());
+            }
+
+            private void setFiltersUnchanged() {
+                FilterUtils.writeProjectFilterChanged(false);
+            }
+
             @Override
             protected void afterShowAction() {
+                if (checkFiltersChanged()) {
+                    orderCRUDController.readSessionFilterDates();
+                    setFiltersUnchanged();
+                }
                 orderCRUDController.goToList();
+
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }

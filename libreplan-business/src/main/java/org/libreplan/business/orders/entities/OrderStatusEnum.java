@@ -23,6 +23,8 @@ package org.libreplan.business.orders.entities;
 
 import static org.libreplan.business.i18n.I18nHelper._;
 
+import java.util.EnumSet;
+
 
 /**
  * @author Susana Montes Pedreiera <smotnes@wirelessgalicia.com>
@@ -53,4 +55,12 @@ public enum OrderStatusEnum {
     public static OrderStatusEnum getDefault() {
         return PRE_SALES;
     }
+
+    public static EnumSet<OrderStatusEnum> getVisibleStatus() {
+        return EnumSet.of(OrderStatusEnum.PRE_SALES, OrderStatusEnum.OFFERED,
+                OrderStatusEnum.OUTSOURCED, OrderStatusEnum.ACCEPTED,
+                OrderStatusEnum.STARTED, OrderStatusEnum.ON_HOLD,
+                OrderStatusEnum.FINISHED);
+    }
+
 }

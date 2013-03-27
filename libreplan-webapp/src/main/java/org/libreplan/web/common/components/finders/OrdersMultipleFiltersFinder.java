@@ -302,9 +302,9 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void addLabel(LabelType type, Label label) {
-        String pattern = label.getName() + " ( " + type.getName() + " )";
         getListMatching().add(
-                new FilterPair(OrderFilterEnum.Label, pattern, label));
+                new FilterPair(OrderFilterEnum.Label, label.getFinderPattern(),
+                        label));
     }
 
     private void addExternalCompany(ExternalCompany externalCompany) {

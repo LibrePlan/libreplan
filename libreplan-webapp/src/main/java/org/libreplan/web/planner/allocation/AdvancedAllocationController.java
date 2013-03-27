@@ -41,6 +41,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.AggregateOfResourceAllocations;
 import org.libreplan.business.planner.entities.AssignmentFunction;
 import org.libreplan.business.planner.entities.AssignmentFunction.AssignmentFunctionName;
@@ -56,6 +57,7 @@ import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.EffortDurationBox;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
@@ -377,24 +379,29 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Listbox advancedAllocationHorizontalPagination;
     private Listbox advancedAllocationVerticalPagination;
 
-    private boolean fixedZoomByUser = false;
     private ZoomLevel zoomLevel;
 
-    public AdvancedAllocationController(IBack back,
+    private Order order;
+
+    public AdvancedAllocationController(Order order, IBack back,
             List<AllocationInput> allocationInputs) {
-        setInputData(back, allocationInputs);
+        setInputData(order, back, allocationInputs);
     }
 
-    private void setInputData(IBack back, List<AllocationInput> allocationInputs) {
+    private void setInputData(Order order, IBack back,
+            List<AllocationInput> allocationInputs) {
+        Validate.notNull(order);
         Validate.notNull(back);
         Validate.noNullElements(allocationInputs);
+        this.order = order;
         this.back = back;
         this.allocationInputs = allocationInputs;
     }
 
-    public void reset(IBack back, List<AllocationInput> allocationInputs) {
+    public void reset(Order order, IBack back,
+            List<AllocationInput> allocationInputs) {
         rowsCached = null;
-        setInputData(back, allocationInputs);
+        setInputData(order, back, allocationInputs);
         loadAndInitializeComponents();
     }
 
@@ -576,7 +583,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private void createComponents() {
         timeTracker = new TimeTracker(addMarginTointerval(), self);
         paginatorFilter = new PaginatorFilter();
-        if (fixedZoomByUser && (zoomLevel != null)) {
+        zoomLevel = FilterUtils.readZoomLevel(order);
+        if (zoomLevel != null) {
             timeTracker.setZoomLevel(zoomLevel);
         }
         paginatorFilter.setZoomLevel(timeTracker.getDetailLevel());
@@ -588,7 +596,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         timeTracker.addZoomListener(new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-                fixedZoomByUser = true;
+                FilterUtils.writeZoomLevel(order, detailLevel);
                 zoomLevel = detailLevel;
 
                 paginatorFilter.setZoomLevel(detailLevel);
