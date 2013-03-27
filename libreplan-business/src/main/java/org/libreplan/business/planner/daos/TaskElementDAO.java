@@ -71,7 +71,7 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     }
 
     private void updateSumOfAllocatedHours(TaskElement taskElement) {
-        EffortDuration assignedEffort = EffortDuration.hours(0);
+        EffortDuration assignedEffort = EffortDuration.zero();
         EffortDuration oldAssignedEffort = taskElement.getSumOfAssignedEffort();
         for(ResourceAllocation<?> allocation : taskElement.getAllResourceAllocations()) {
             assignedEffort = assignedEffort.plus(allocation.getAssignedEffort());
@@ -87,7 +87,7 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     private void updateSumOfAllocatedHoursToChildren(TaskElement parent) {
         if(parent instanceof TaskGroup) {
             for(TaskElement child : parent.getChildren()) {
-                EffortDuration assignedEffort = EffortDuration.hours(0);
+                EffortDuration assignedEffort = EffortDuration.zero();
                 EffortDuration oldAssignedEffort = child.getSumOfAssignedEffort();
                 for(ResourceAllocation<?> allocation : child.getAllResourceAllocations()) {
                     assignedEffort = assignedEffort.plus(allocation.getAssignedEffort());

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  * Copyright (C) 2010-2011 WirelessGalicia S.L.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,6 +36,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.ViewSwitcher;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
@@ -75,6 +76,7 @@ import org.zkoss.zul.Vbox;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -144,6 +146,7 @@ public class OrderPlanningController implements Composer {
         if (planner != null) {
             ensureIsInPlanningOrderView();
             updateConfiguration();
+            planner.setTaskListPredicate(getFilterAndParentExpanedPredicates(createPredicate()));
         }
     }
 
@@ -211,17 +214,41 @@ public class OrderPlanningController implements Composer {
 
     private void updateConfiguration() {
         if (order != null) {
+            importOrderFiltersFromSession();
+
             long time = System.currentTimeMillis();
             model.setConfigurationToPlanner(planner, order, viewSwitcher,
                     editTaskController, advancedAllocationTaskController,
                     advanceAssignmentPlanningController,
                     advanceConsolidationController,
                     calendarAllocationController, additional);
-            PROFILING_LOG.info("setConfigurationToPlanner took: "
+            PROFILING_LOG.debug("setConfigurationToPlanner took: "
                     + (System.currentTimeMillis() - time) + " ms");
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();
 
+        }
+    }
+
+    public void importOrderFiltersFromSession() {
+        importOrderFiltersFromSession(false);
+    }
+
+    public void importOrderFiltersFromSession(boolean forceReload) {
+        filterNameOrderElement.setValue(FilterUtils.readOrderTaskName(order));
+        filterStartDateOrderElement.setValue(FilterUtils
+                .readOrderStartDate(order));
+        filterFinishDateOrderElement.setValue(FilterUtils
+                .readOrderEndDate(order));
+        List<FilterPair> sessionFilterPairs = FilterUtils
+                .readOrderParameters(order);
+        if ((sessionFilterPairs != null)
+                && (bdFiltersOrderElement.getSelectedElements().isEmpty() || forceReload)) {
+            bdFiltersOrderElement.addSelectedElements(sessionFilterPairs);
+        }
+        if (FilterUtils.readOrderInheritance(order) != null) {
+            labelsWithoutInheritance.setChecked(FilterUtils
+                    .readOrderInheritance(order));
         }
     }
 
@@ -247,9 +274,18 @@ public class OrderPlanningController implements Composer {
 
     public void onApplyFilter() {
         filterByPredicate(createPredicate());
+        List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement
+                .getSelectedElements();
+        FilterUtils.writeOrderParameters(order, listFilters);
     }
 
     private TaskElementPredicate createPredicate() {
+
+        if (FilterUtils.hasOrderWBSFiltersChanged(order)) {
+            importOrderFiltersFromSession(true);
+            FilterUtils.writeOrderWBSFiltersChanged(order, false);
+        }
+
         List<FilterPair> listFilters = (List<FilterPair>) bdFiltersOrderElement
                 .getSelectedElements();
         Date startDate = filterStartDateOrderElement.getValue();
@@ -261,7 +297,10 @@ public class OrderPlanningController implements Composer {
                 && name == null) {
             return null;
         }
-
+        FilterUtils.writeOrderTaskName(order, name);
+        FilterUtils.writeOrderStartDate(order, startDate);
+        FilterUtils.writeOrderEndDate(order, finishDate);
+        FilterUtils.writeOrderInheritance(order, ignoreLabelsInheritance);
         return new TaskElementPredicate(listFilters, startDate, finishDate,
                 name, ignoreLabelsInheritance);
     }
@@ -281,25 +320,7 @@ public class OrderPlanningController implements Composer {
             public void doAction() {
                 // FIXME remove or change
                 model.forceLoadLabelsAndCriterionRequirements();
-
-                final IContext<?> context = planner.getContext();
-                FilterAndParentExpandedPredicates newPredicate = new FilterAndParentExpandedPredicates(
-                        context) {
-                    @Override
-                    public boolean accpetsFilterPredicate(Task task) {
-                        if (predicate == null) {
-                            return true;
-                        }
-                        TaskElement taskElement = (TaskElement) context
-                                .getMapper()
-                                .findAssociatedDomainObject(task);
-                        return predicate.accepts(taskElement);
-                    }
-
-                };
-                newPredicate.setFilterContainers(planner.getPredicate()
-                        .isFilterContainers());
-                planner.setTaskListPredicate(newPredicate);
+                planner.setTaskListPredicate(getFilterAndParentExpanedPredicates(predicate));
             }
 
             @Override
@@ -308,6 +329,27 @@ public class OrderPlanningController implements Composer {
             }
 
         });
+    }
+
+    private FilterAndParentExpandedPredicates getFilterAndParentExpanedPredicates(
+            final TaskElementPredicate predicate) {
+        final IContext<?> context = planner.getContext();
+        FilterAndParentExpandedPredicates newPredicate = new FilterAndParentExpandedPredicates(
+                context) {
+            @Override
+            public boolean accpetsFilterPredicate(Task task) {
+                if (predicate == null) {
+                    return true;
+                }
+                TaskElement taskElement = (TaskElement) context.getMapper()
+                        .findAssociatedDomainObject(task);
+                return predicate.accepts(taskElement);
+            }
+
+        };
+        newPredicate.setFilterContainers(planner.getPredicate()
+                .isFilterContainers());
+        return newPredicate;
     }
 
     public Constraint checkConstraintFinishDate() {
@@ -320,7 +362,7 @@ public class OrderPlanningController implements Composer {
                         && (filterStartDateOrderElement.getValue() != null)
                         && (finishDate.compareTo(filterStartDateOrderElement
                                 .getValue()) < 0)) {
-                    filterFinishDateOrderElement.setValue(null);
+                    filterFinishDateOrderElement.setRawValue(null);
                     throw new WrongValueException(comp,
                             _("must be after start date"));
                 }
@@ -339,7 +381,7 @@ public class OrderPlanningController implements Composer {
                         && (filterFinishDateOrderElement.getValue() != null)
                         && (startDate.compareTo(filterFinishDateOrderElement
                                 .getValue()) > 0)) {
-                    filterStartDateOrderElement.setValue(null);
+                    filterStartDateOrderElement.setRawValue(null);
                     throw new WrongValueException(comp,
                             _("must be lower than end date"));
                 }

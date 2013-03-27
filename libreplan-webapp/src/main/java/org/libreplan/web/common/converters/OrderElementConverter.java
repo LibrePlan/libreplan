@@ -42,7 +42,7 @@ public class OrderElementConverter implements IConverter<OrderElement> {
     @Override
     public OrderElement asObject(String stringRepresentation) {
         try {
-            return orderElementDAO.find(Long.parseLong(stringRepresentation));
+            return orderElementDAO.findByCode(stringRepresentation);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +50,7 @@ public class OrderElementConverter implements IConverter<OrderElement> {
 
     @Override
     public String asString(OrderElement entity) {
-        return entity.getId() + "";
+        return entity.getCode();
     }
 
     @Override

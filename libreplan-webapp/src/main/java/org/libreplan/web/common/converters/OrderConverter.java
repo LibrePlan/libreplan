@@ -45,7 +45,7 @@ public class OrderConverter implements IConverter<Order> {
     @Transactional(readOnly = true)
     public Order asObject(String stringRepresentation) {
         try {
-            return orderDAO.find(Long.parseLong(stringRepresentation));
+            return orderDAO.findByCode(stringRepresentation);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -53,7 +53,7 @@ public class OrderConverter implements IConverter<Order> {
 
     @Override
     public String asString(Order entity) {
-        return entity.getId() + "";
+        return entity.getCode();
     }
 
     @Override

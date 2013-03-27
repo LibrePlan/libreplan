@@ -25,21 +25,28 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.common.Configuration;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.zkoss.ganttz.util.ComponentsFinder;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -51,6 +58,7 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
@@ -62,7 +70,6 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
-import org.zkoss.zul.api.Checkbox;
 import org.zkoss.zul.api.Column;
 
 /**
@@ -81,16 +88,101 @@ public class Util {
     private static final String[] DECIMAL_FORMAT_SPECIAL_CHARS = { "0", ",",
             ".", "\u2030", "%", "#", ";", "-" };
 
+    private static final String RELOADED_COMPONENTS_ATTR = Util.class.getName()
+            + ":" + "reloaded";
+
     private Util() {
     }
 
+    /**
+     * Forces to reload the bindings of the provided components if there is an
+     * associated {@link DataBinder}.
+     *
+     * @param toReload
+     *            the components to reload
+     */
     public static void reloadBindings(Component... toReload) {
+        reloadBindings(ReloadStrategy.FORCE, toReload);
+    }
+
+    public enum ReloadStrategy {
+        /**
+         * If the {@link DataBinder} exists the bindings are reloaded no matter
+         * what.
+         */
+        FORCE,
+        /**
+         * Once the bindings for a component have been manually loaded in one
+         * request, subsequent calls for reload the bindings of the same
+         * component or descendants using this strategy are ignored.
+         */
+        ONE_PER_REQUEST;
+
+        public static boolean isForced(ReloadStrategy reloadStrategy) {
+            return reloadStrategy == ReloadStrategy.FORCE;
+        }
+    }
+
+    /**
+     * Reload the bindings of the provided components if there is an associated
+     * {@link DataBinder} and the {@link ReloadStrategy} allows it.
+     *
+     * @param toReload
+     *            the components to reload
+     */
+    public static void reloadBindings(ReloadStrategy reloadStrategy,
+            Component... toReload) {
+        reloadBindings(ReloadStrategy.isForced(reloadStrategy), toReload);
+    }
+
+    private static void reloadBindings(boolean forceReload,
+            Component... toReload) {
         for (Component reload : toReload) {
             DataBinder binder = Util.getBinder(reload);
-            if (binder != null) {
+            if (binder != null
+                    && (forceReload || notReloadedInThisRequest(reload))) {
                 binder.loadComponent(reload);
+                markAsReloadedForThisRequest(reload);
             }
         }
+    }
+
+    private static boolean notReloadedInThisRequest(Component reload) {
+        return !getReloadedComponents(reload).contains(reload);
+    }
+
+    private static Set<Component> getReloadedComponents(Component component) {
+        Execution execution = component.getDesktop().getExecution();
+        @SuppressWarnings("unchecked")
+        Set<Component> result = (Set<Component>) execution
+                .getAttribute(RELOADED_COMPONENTS_ATTR);
+        if (result == null) {
+            result = new HashSet<Component>();
+            execution.setAttribute(RELOADED_COMPONENTS_ATTR, result);
+        }
+        return result;
+    }
+
+    private static void markAsReloadedForThisRequest(Component component) {
+        Set<Component> reloadedComponents = getReloadedComponents(component);
+        reloadedComponents.add(component);
+        reloadedComponents.addAll(getAllDescendants(component));
+    }
+
+    private static void markAsNotReloadedForThisRequest(Component component) {
+        Set<Component> reloadedComponents = getReloadedComponents(component);
+        reloadedComponents.remove(component);
+        reloadedComponents.removeAll(getAllDescendants(component));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Component> getAllDescendants(Component component) {
+        List<Component> result = new ArrayList<Component>();
+        for (Component each : (List<Component>) component.getChildren()) {
+            result.add(each);
+            result.addAll(getAllDescendants(each));
+        }
+        return result;
     }
 
     public static void saveBindings(Component... toReload) {
@@ -106,20 +198,28 @@ public class Util {
         return (DataBinder) component.getVariable("binder", false);
     }
 
-    @SuppressWarnings("unchecked")
-    public static void createBindingsFor(org.zkoss.zk.ui.Component result) {
-        List<org.zkoss.zk.ui.Component> children = new ArrayList<org.zkoss.zk.ui.Component>(
-                result.getChildren());
-        for (org.zkoss.zk.ui.Component child : children) {
-            createBindingsFor(child);
+    private static final ThreadLocal<Boolean> ignoreCreateBindings = new ThreadLocal<Boolean>() {
+        protected Boolean initialValue() {
+            return false;
+        };
+    };
+
+    public static void executeIgnoringCreationOfBindings(Runnable action) {
+        try {
+            ignoreCreateBindings.set(true);
+            action.run();
+        } finally {
+            ignoreCreateBindings.set(false);
         }
-        setBinderFor(result);
     }
 
-    private static void setBinderFor(org.zkoss.zk.ui.Component result) {
+    public static void createBindingsFor(org.zkoss.zk.ui.Component result) {
+        if (ignoreCreateBindings.get()) {
+            return;
+        }
         AnnotateDataBinder binder = new AnnotateDataBinder(result, true);
         result.setVariable("binder", binder, true);
-        binder.loadAll();
+        markAsNotReloadedForThisRequest(result);
     }
 
     /**
@@ -441,7 +541,7 @@ public class Util {
      *            The {@link Setter} interface that will implement a set method.
      * @return The {@link Checkbox} bound
      */
-    public static <C extends Checkbox> C bind(final C checkBox,
+    public static Checkbox bind(final Checkbox checkBox,
             final Getter<Boolean> getter, final Setter<Boolean> setter) {
         checkBox.setChecked(getter.get());
         checkBox.addEventListener(Events.ON_CHECK, new EventListener() {
@@ -771,6 +871,75 @@ public class Util {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Format specific <code>date</code> using the {@link DateFormat#DEFAULT}
+     * format and showing only date without time.
+     */
+    public static String formatDate(Date date) {
+        if (date == null) {
+            return "";
+        }
+        return DateFormat.getDateInstance(DateFormat.DEFAULT,
+                Locales.getCurrent()).format(date);
+    }
+
+    /**
+     * Format specific <code>date</code> using the {@link DateFormat#DEFAULT}
+     * format and showing both date and time.
+     */
+    public static String formatDateTime(Date dateTime) {
+        if (dateTime == null) {
+            return "";
+        }
+        return DateFormat.getDateTimeInstance(DateFormat.DEFAULT,
+                DateFormat.DEFAULT, Locales.getCurrent()).format(dateTime);
+    }
+
+    /**
+     * Format specific <code>date</code> using the {@link DateFormat#DEFAULT}
+     * format and showing only date without time.
+     */
+    public static String formatDate(DateTime dateTime) {
+        if (dateTime == null) {
+            return "";
+        }
+        return formatDate(dateTime.toDate());
+    }
+
+    /**
+     * Format specific <code>date</code> using the {@link DateFormat#DEFAULT}
+     * format and showing only date without time.
+     */
+    public static String formatDate(LocalDate date) {
+        if (date == null) {
+            return "";
+        }
+        return formatDate(date.toDateTimeAtStartOfDay());
+    }
+
+    /**
+     * Format specific <code>time</code> using the {@link DateFormat#SHORT}
+     * format and showing only the time.
+     */
+    public static String formatTime(Date time) {
+        if (time == null) {
+            return "";
+        }
+        return DateFormat.getTimeInstance(DateFormat.SHORT,
+                Locales.getCurrent()).format(time);
+    }
+
+    /**
+     * Format specific <code>time</code> using the {@link DateFormat#SHORT}
+     * format and showing only the time.
+     */
+    public static String formatTime(LocalTime time) {
+        if (time == null) {
+            return "";
+        }
+        return formatTime(time.toDateTimeToday().toDate());
     }
 
 }

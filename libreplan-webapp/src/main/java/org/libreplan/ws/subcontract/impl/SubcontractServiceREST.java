@@ -323,7 +323,7 @@ public class SubcontractServiceREST implements ISubcontractService {
         order.setCode(code);
         generateCodes(order);
 
-        order.setState(OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER);
+        order.setState(OrderStatusEnum.OUTSOURCED);
 
         if (subcontractedTaskDataDTO.workDescription != null) {
             order.setName(subcontractedTaskDataDTO.workDescription);

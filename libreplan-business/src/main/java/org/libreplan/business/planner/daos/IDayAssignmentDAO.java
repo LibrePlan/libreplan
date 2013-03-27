@@ -34,8 +34,9 @@ import org.libreplan.business.scenarios.entities.Scenario;
 /**
  * DAO interface for {@link DayAssignment}
  *
- * @author @author Diego Pino García <dpino@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Javier Moran Rua <jmoran@igalia.com>
  */
 public interface IDayAssignmentDAO extends IGenericDAO<DayAssignment, Long> {
 
@@ -46,6 +47,10 @@ public interface IDayAssignmentDAO extends IGenericDAO<DayAssignment, Long> {
 
     public List<DayAssignment> getAllFor(Scenario scenario,
             LocalDate initInclusive, LocalDate endInclusive);
+
+    public List<DayAssignment> getAllFor(Scenario scenario,
+            LocalDate startDateInclusive, LocalDate endDateInclusive,
+            Resource resource);
 
     List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end);
 

@@ -73,6 +73,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.South;
+import org.zkoss.zul.api.Combobox;
 
 public class Planner extends HtmlMacroComponent  {
 
@@ -143,8 +144,6 @@ public class Planner extends HtmlMacroComponent  {
 
     private GanttPanel ganttPanel;
 
-    private boolean fixedZoomByUser = false;
-
     private List<? extends CommandContextualized<?>> contextualizedGlobalCommands;
 
     private CommandContextualized<?> goingDownInLastArrowCommand;
@@ -173,7 +172,7 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isFlattenTree = false;
 
-    private ZoomLevel initialZoomLevel = null;
+    private ZoomLevel zoomLevel = null;
 
     private Listbox listZoomLevels = null;
 
@@ -275,8 +274,7 @@ public class Planner extends HtmlMacroComponent  {
         if (ganttPanel == null) {
             return;
         }
-        this.fixedZoomByUser = true;
-        initialZoomLevel = zoomLevel;
+        this.zoomLevel = zoomLevel;
         ganttPanel.setZoomLevel(zoomLevel, scrollLeft);
     }
 
@@ -346,7 +344,7 @@ public class Planner extends HtmlMacroComponent  {
         resettingPreviousComponentsToNull();
         long timeAddingData = System.currentTimeMillis();
         newContext.add(configuration.getData());
-        PROFILING_LOG.info("It took to add data: "
+        PROFILING_LOG.debug("It took to add data: "
                 + (System.currentTimeMillis() - timeAddingData) + " ms");
         long timeSetupingAndAddingComponents = System.currentTimeMillis();
         setupComponents();
@@ -394,7 +392,7 @@ public class Planner extends HtmlMacroComponent  {
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
 
         PROFILING_LOG
-                .info("it took doing the setup of components and adding them: "
+                .debug("it took doing the setup of components and adding them: "
                         + (System.currentTimeMillis() - timeSetupingAndAddingComponents)
                         + " ms");
 
@@ -509,9 +507,11 @@ public class Planner extends HtmlMacroComponent  {
         }
         for (CommandContextualized<?> c : contextualizedGlobalCommands) {
             // Comparison through icon as name is internationalized
-            if (c.getCommand().getImage()
-                    .equals("/common/img/ico_reassign.png")) {
-                if (plannerToolbar.getChildren().isEmpty()) {
+            if (c.getCommand().isPlannerCommand()) {
+                // FIXME Avoid hard-coding the number of planner commands
+                // At this moment we have 2 planner commands: reassign and adapt
+                // planning
+                if (plannerToolbar.getChildren().size() < 2) {
                     plannerToolbar.appendChild(c.toButton());
                 }
             } else {
@@ -634,11 +634,15 @@ public class Planner extends HtmlMacroComponent  {
     public void showAdvances() {
         Button showAdvancesButton = (Button) getFellow("showAdvances");
         if (disabilityConfiguration.isAdvancesEnabled()) {
+            Combobox progressTypesCombo = (Combobox) getFellow("cbProgressTypes");
             if (isShowingAdvances) {
                 context.hideAdvances();
                 diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
                 showAdvancesButton.setSclass("planner-command");
                 showAdvancesButton.setTooltiptext(_("Show progress"));
+                if (progressTypesCombo.getItemCount() > 0) {
+                    progressTypesCombo.setSelectedIndex(0);
+                }
             } else {
                 context.showAdvances();
                 diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
@@ -725,22 +729,14 @@ public class Planner extends HtmlMacroComponent  {
 
     public ZoomLevel getZoomLevel() {
         if (ganttPanel == null) {
-            return initialZoomLevel != null ? initialZoomLevel
+            return zoomLevel != null ? zoomLevel
                     : ZoomLevel.DETAIL_ONE;
         }
         return ganttPanel.getTimeTracker().getDetailLevel();
     }
 
-    public boolean isFixedZoomByUser() {
-        return this.fixedZoomByUser;
-    }
-
     public void setInitialZoomLevel(final ZoomLevel zoomLevel) {
-        if (this.initialZoomLevel != null) {
-            // already initialized
-            return;
-        }
-        this.initialZoomLevel = zoomLevel;
+        this.zoomLevel = zoomLevel;
     }
 
     public boolean areContainersExpandedByDefault() {
@@ -814,12 +810,11 @@ public class Planner extends HtmlMacroComponent  {
     }
 
     public void updateSelectedZoomLevel() {
-        if (!isFixedZoomByUser()) {
-            Listitem selectedItem = (Listitem) listZoomLevels.getItems().get(
-                    initialZoomLevel.ordinal());
-            listZoomLevels.setSelectedItem(selectedItem);
-            listZoomLevels.invalidate();
-        }
+        ganttPanel.getTimeTracker().setZoomLevel(zoomLevel);
+        Listitem selectedItem = (Listitem) listZoomLevels.getItems().get(
+                zoomLevel.ordinal());
+        listZoomLevels.setSelectedItem(selectedItem);
+        listZoomLevels.invalidate();
     }
 
     public IContext<?> getContext() {
@@ -940,6 +935,20 @@ public class Planner extends HtmlMacroComponent  {
                 each.invalidate();
             }
         }
+    }
+
+    public TaskComponent getTaskComponentRelatedTo(
+            org.zkoss.ganttz.data.Task task) {
+        TaskList taskList = getTaskList();
+        if (taskList != null) {
+            for (TaskComponent each : taskList.getTaskComponents()) {
+                if (each.getTask().equals(task)) {
+                    return each;
+                }
+            }
+        }
+
+        return null;
     }
 
 }

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<personal-timesheet-entry-list xmlns="http://rest.ws.libreplan.org">
+    <personal-timesheet-entry effort="8" date="2012-11-08" task="ORDER0001-0001"/>
+</personal-timesheet-entry-list>

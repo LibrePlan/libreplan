@@ -99,6 +99,8 @@ public interface IManageOrderElementAdvancesModel {
 
     public boolean isQualityForm(AdvanceAssignment advance);
 
+    public boolean isReadOnly(AdvanceAssignment advance);
+
     public boolean lessThanPreviousMeasurements();
 
     public boolean hasConsolidatedAdvances(AdvanceAssignment advance);
@@ -133,5 +135,6 @@ public interface IManageOrderElementAdvancesModel {
     boolean hasReportedProgress(AdvanceAssignment advance);
 
     Boolean isAlreadyReportedProgressWith(LocalDate date);
+
 
 }

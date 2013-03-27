@@ -31,6 +31,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.zul.AbstractTreeModel;
 import org.zkoss.zul.event.TreeDataEvent;
 
@@ -38,6 +40,8 @@ import org.zkoss.zul.event.TreeDataEvent;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class MutableTreeModel<T> extends AbstractTreeModel {
+
+    private static final Log LOG = LogFactory.getLog(MutableTreeModel.class);
 
     public interface IChildrenExtractor<T> {
 
@@ -354,10 +358,14 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
 
     public List<T> getParents(T node) {
         ArrayList<T> result = new ArrayList<T>();
-        T current = node;
-        while (!isRoot(current)) {
-            current = getParent(current);
-            result.add(current);
+        try {
+            T current = node;
+            while (!isRoot(current)) {
+                current = getParent(current);
+                result.add(current);
+            }
+        } catch (Exception e) {
+            LOG.error("Trying to get the parent of a removed node", e);
         }
         return result;
     }

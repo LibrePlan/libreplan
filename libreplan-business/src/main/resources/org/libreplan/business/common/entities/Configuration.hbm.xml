@@ -79,8 +79,20 @@
         <property name="currencyCode" not-null="true" column="currency_code" />
         <property name="currencySymbol" not-null="true" column="currency_symbol" />
 
-        <many-to-one name="monthlyTimesheetsTypeOfWorkHours" cascade="none"
-            column="monthly_timesheets_type_of_work_hours" />
+        <many-to-one name="personalTimesheetsTypeOfWorkHours" cascade="none"
+            column="personal_timesheets_type_of_work_hours" />
+
+        <property name="personalTimesheetsPeriodicity" column="personal_timesheets_periodicity">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum</param>
+            </type>
+        </property>
+
+        <property name="maxUsers" column="max_users" />
+        <property name="maxResources" column="max_resources" />
+
+        <property name="secondsPlanningWarning" not-null="true"
+            column="seconds_planning_warning" />
 
         <component name="ldapConfiguration" class="org.libreplan.business.common.entities.LDAPConfiguration">
             <property name="ldapHost" column="ldap_host"/>
@@ -107,6 +119,17 @@
                 </composite-element>
             </set>
 
+        </component>
+
+        <!--  Jira configuration-->
+        <component name="jiraConfiguration" class="org.libreplan.business.common.entities.JiraConfiguration">
+            <property name="jiraActivated" column="jira_activated" not-null="true"/>
+            <property name="jiraUrl" column="jira_url"/>
+            <property name="jiraLabels" column="jira_labels" type="text"/>
+            <property name="jiraUserId" column="jira_user_id"/>
+            <property name="jiraPassword" column="jira_password"/>
+            <many-to-one name="jiraConnectorTypeOfWorkHours" cascade="none"
+                column="jira_connector_type_of_work_hours" />
         </component>
 
     </class>

@@ -28,11 +28,9 @@ import javax.annotation.Resource;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
-import org.libreplan.business.advance.entities.DirectAdvanceAssignment;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.orders.entities.OrderElement;
-import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.planner.entities.Task;
-import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -54,7 +52,7 @@ public class MyTasksAreaController extends GenericForwardComposer {
     private IMyTasksAreaModel myTasksAreaModel;
 
     @Resource
-    private IMonthlyTimesheetController monthlyTimesheetController;
+    private IPersonalTimesheetController personalTimesheetController;
 
     private RowRenderer tasksRenderer = new RowRenderer() {
 
@@ -74,21 +72,15 @@ public class MyTasksAreaController extends GenericForwardComposer {
 
             Util.appendLabel(row, getProgress(orderElement));
 
-            Util.appendLabel(row, getEffort(orderElement));
+            Util.appendLabel(row, _("{0} h", orderElement.getEffortAsString()));
 
             appendTimeTrackingButton(row, task);
         }
 
-        private String getEffort(OrderElement orderElement) {
-            SumChargedEffort sumChargedEffort = orderElement.getSumChargedEffort();
-            EffortDuration effort = sumChargedEffort != null ? sumChargedEffort
-                    .getTotalChargedEffort() : EffortDuration.zero();
-            return _("{0} h", effort.toFormattedString());
-        }
-
         private String getProgress(OrderElement orderElement) {
 
-            AdvanceMeasurement lastAdvanceMeasurement = getLastAdvanceMeasurement(orderElement);
+            AdvanceMeasurement lastAdvanceMeasurement = orderElement
+                    .getLastAdvanceMeasurement();
             if (lastAdvanceMeasurement != null) {
                 return MessageFormat.format("[{0} %] ({1})",
                         lastAdvanceMeasurement.getValue(),
@@ -97,32 +89,23 @@ public class MyTasksAreaController extends GenericForwardComposer {
             return "";
         }
 
-        private AdvanceMeasurement getLastAdvanceMeasurement(
-                OrderElement orderElement) {
-            DirectAdvanceAssignment advanceAssignment = orderElement
-                            .getReportGlobalAdvanceAssignment();
-            if (advanceAssignment == null) {
-                return null;
-            }
-            return advanceAssignment
-                    .getLastAdvanceMeasurement();
-        }
-
         private void appendTimeTrackingButton(Row row, final Task task) {
             EventListener trackTimeButtonListener = new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    monthlyTimesheetController
-                            .goToCreateOrEditForm(getMonthlyTimesheetDateForTask(task));
+                    personalTimesheetController
+                            .goToCreateOrEditForm(getPersonalTimesheetDateForTask(task));
                 }
 
-                private LocalDate getMonthlyTimesheetDateForTask(Task task) {
+                private LocalDate getPersonalTimesheetDateForTask(Task task) {
                     LocalDate start = task.getStartAsLocalDate();
                     LocalDate end = task.getEndAsLocalDate();
 
                     LocalDate currentDate = new LocalDate();
-                    LocalDate min = currentDate.dayOfMonth().withMinimumValue();
-                    LocalDate max = currentDate.dayOfMonth().withMaximumValue();
+                    PersonalTimesheetsPeriodicityEnum periodicity = myTasksAreaModel
+                            .getPersonalTimesheetsPeriodicity();
+                    LocalDate min = periodicity.getStart(currentDate);
+                    LocalDate max = periodicity.getEnd(currentDate);
 
                     if (dateBetween(start, min, max)) {
                         return start;

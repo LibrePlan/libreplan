@@ -110,7 +110,7 @@ public abstract class BaseEntity implements INewObject {
     }
 
     protected static <T extends BaseEntity> T create(T baseEntity) {
-        baseEntity.newObject = true;
+        baseEntity.setNewObject(true);
         return baseEntity;
     }
 

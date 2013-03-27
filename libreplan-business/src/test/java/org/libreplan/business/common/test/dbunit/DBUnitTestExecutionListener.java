@@ -71,7 +71,7 @@ public class DBUnitTestExecutionListener extends
             IDataSet dataSets[] = getDataSets(testContext);
             for (IDataSet dataSet : dataSets) {
                 DatabaseOperation.CLEAN_INSERT.execute(dbUnitConn, dataSet);
-                logger.info("Performed CLEAN_INSERT of IDataSet.");
+                logger.debug("Performed CLEAN_INSERT of IDataSet.");
             }
         } finally {
             DataSourceUtils.releaseConnection(conn, dataSource);

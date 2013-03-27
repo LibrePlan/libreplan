@@ -73,6 +73,7 @@ public class CostStatusController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         self.setAttribute("controller", this);
         Util.createBindingsFor(self);
+        Util.reloadBindings(self);
     }
 
     public void setOrder(Order order) {

@@ -63,6 +63,20 @@
         <one-to-one name="worker" property-ref="user"
             class="org.libreplan.business.resources.entities.Worker" />
 
+        <property name="projectsFilterPeriodSince" column="projects_filter_period_since"/>
+
+        <property name="projectsFilterPeriodTo" column="projects_filter_period_to"/>
+
+        <property name="resourcesLoadFilterPeriodSince" column="resources_load_filter_period_since"/>
+
+        <property name="resourcesLoadFilterPeriodTo" column="resources_load_filter_period_to"/>
+
+        <many-to-one name="projectsFilterLabel" cascade="none" lazy="false"
+            column="projects_filter_label_id" />
+
+        <many-to-one name="resourcesLoadFilterCriterion" cascade="none"
+            lazy="false" column="resources_load_filter_criterion_id" />
+
     </class>
 
     <class name="Profile" table="profile_table">

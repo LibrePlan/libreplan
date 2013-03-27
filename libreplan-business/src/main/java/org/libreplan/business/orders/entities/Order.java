@@ -120,6 +120,8 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
 
+    private String importedLabel;
+
     @Valid
     private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
             new DeliverDateComparator());
@@ -668,6 +670,35 @@ public class Order extends OrderLineGroup implements Comparable {
 
     public boolean isNeededToRecalculateSumExpenses() {
         return neededToRecalculateSumExpenses;
+    }
+
+    @Override
+    public boolean isOrder() {
+        return true;
+    }
+
+    @AssertTrue(message = "task code is repeated inside the project")
+    public boolean checkConstraintUniqueCodeInsideOrder() {
+        List<String> codes = new ArrayList<String>();
+        codes.add(getCode());
+
+        for (OrderElement child : getAllChildren()) {
+            String childCode = child.getCode();
+            if (codes.contains(childCode)) {
+                return false;
+            }
+            codes.add(childCode);
+        }
+
+        return true;
+    }
+
+    public String getImportedLabel() {
+        return importedLabel;
+    }
+
+    public void setImportedLabel(String importedLabel) {
+        this.importedLabel = importedLabel;
     }
 
     public void calculateAndSetTotalHours() {

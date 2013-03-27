@@ -24,7 +24,7 @@ import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.Util.Getter;
 import org.libreplan.web.common.Util.Setter;
-import org.zkoss.zul.api.Checkbox;
+import org.zkoss.zul.Checkbox;
 
 /**
  * It configures some ZK components to work together and edit a Capacity object

@@ -38,7 +38,8 @@
                             <label value="${i18n:_('Unit name')}" />
                             <textbox id="unitName" value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"
                                 disabled="@{controller.immutable}"
-                                onBlur="controller.updateWindowTitle()" />
+                                onBlur="controller.updateWindowTitle()"
+                                sclass="focus-element" />
                         </row>
                         <row>
                             <label value="${i18n:_('Active')}" />
@@ -72,7 +73,7 @@
         </tabpanels>
     </tabbox>
 
-    <button onClick="controller.saveAndExit();"
+    <button onClick="controller.saveAndExit();" autodisable="self"
         label="${arg.save_button_label}"
         sclass="save-button global-action"
         disabled="@{controller.immutable}" />

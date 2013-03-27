@@ -41,8 +41,11 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
@@ -421,6 +424,15 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         } else {
             nameLabel.setValue(task.getName());
             nameLabel.setTooltiptext(task.getName());
+            nameLabel.setSclass("clickable-rows");
+            nameLabel.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event arg0) throws Exception {
+                    Executions.getCurrent().sendRedirect(
+                                    "/planner/index.zul;order="
+                                            + task.getProjectCode());
+                }
+            });
             startDateLabel.setValue(asString(task.getBeginDate()
                     .toDayRoundedDate()));
             endDateLabel.setValue(asString(task.getEndDate()

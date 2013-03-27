@@ -32,18 +32,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.importers.JiraRESTClient;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
@@ -256,6 +264,43 @@ public class ConfigurationController extends GenericForwardComposer {
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to LDAP server"));
         }
+    }
+
+    /**
+     * tests jira connection
+     */
+    public void testJiraConnection() {
+
+        JiraConfiguration jiraConfiguration = configurationModel
+                .getJiraConfiguration();
+
+        try {
+
+            WebClient client = WebClient.create(jiraConfiguration.getJiraUrl());
+            client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(
+                    MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
+
+            org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
+                    jiraConfiguration.getJiraUserId(),
+                    jiraConfiguration.getJiraPassword());
+
+            Response response = client.get();
+
+            if (response.getStatus() == Status.OK.getStatusCode()) {
+                messages.showMessage(Level.INFO,
+                        _("JIRA connection was successful"));
+            } else {
+                LOG.info("Status code: " + response.getStatus());
+                messages.showMessage(Level.ERROR,
+                        _("Cannot connect to JIRA server"));
+            }
+
+        } catch (Exception e) {
+            LOG.info(e);
+            messages.showMessage(Level.ERROR,
+                    _("Cannot connect to JIRA server"));
+        }
+
     }
 
     private boolean checkValidEntitySequenceRows() {
@@ -484,7 +529,8 @@ public class ConfigurationController extends GenericForwardComposer {
             final EntityNameEnum entityName = entitySequence.getEntityName();
 
             row.setValue(entityName);
-            row.appendChild(new Label(_(entityName.getSequenceLiteral())));
+            row.appendChild(new Label(_("{0} sequences",
+                    entityName.getDescription())));
 
             row.setValue(entitySequence);
             appendActiveRadiobox(row, entitySequence);
@@ -772,6 +818,14 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setLdapConfiguration(ldapConfiguration);
     }
 
+    public JiraConfiguration getJiraConfiguration() {
+        return configurationModel.getJiraConfiguration();
+    }
+
+    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
+        configurationModel.setJiraConfiguration(jiraConfiguration);
+    }
+
     public RowRenderer getAllUserRolesRenderer() {
         return new RowRenderer() {
             @Override
@@ -869,13 +923,65 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setCurrency(currencyCode);
     }
 
-    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
-        return configurationModel.getMonthlyTimesheetsTypeOfWorkHours();
+    public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
+        return configurationModel.getPersonalTimesheetsTypeOfWorkHours();
     }
 
-    public void setMonthlyTimesheetsTypeOfWorkHours(
+    public void setPersonalTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
-        configurationModel.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+        configurationModel.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
+    }
+
+    public List<PersonalTimesheetsPeriodicityEnum> getPersonalTimesheetsPeriodicities() {
+        return Arrays.asList(PersonalTimesheetsPeriodicityEnum.values());
+    }
+
+    public ListitemRenderer getPersonalTimesheetsPeriodicityRenderer() {
+        return new ListitemRenderer() {
+            @Override
+            public void render(Listitem item, Object data) throws Exception {
+                PersonalTimesheetsPeriodicityEnum periodicity = (PersonalTimesheetsPeriodicityEnum) data;
+                item.setLabel(_(periodicity.getName()));
+                item.setValue(periodicity);
+            }
+        };
+    }
+
+    public PersonalTimesheetsPeriodicityEnum getSelectedPersonalTimesheetsPeriodicity() {
+        return configurationModel.getPersonalTimesheetsPeriodicity();
+    }
+
+    public void setSelectedPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+        configurationModel
+                .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
+    }
+
+    public boolean isPersonalTimesheetsPeriodicityDisabled() {
+        return configurationModel.isAnyPersonalTimesheetAlreadySaved();
+    }
+
+    public String getPersonalTimesheetsPeriodicityTooltip() {
+        if (isPersonalTimesheetsPeriodicityDisabled()) {
+            return _("Periocity cannot be changed because there is already any personal timesheet stored");
+        }
+        return "";
+    }
+
+    public Integer getSecondsPlanningWarning() {
+        return configurationModel.getSecondsPlanningWarning();
+    }
+
+    public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
+        configurationModel.setSecondsPlanningWarning(secondsPlanningWarning);
+    }
+
+    public TypeOfWorkHours getJiraConnectorTypeOfWorkHours() {
+        return configurationModel.getJiraConnectorTypeOfWorkHours();
+    }
+
+    public void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
+        configurationModel.setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
     }
 
 }

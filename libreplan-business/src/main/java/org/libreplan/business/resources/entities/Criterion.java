@@ -466,6 +466,10 @@ public class Criterion extends IntegrationEntity implements ICriterion,
         return String.format("%s :: %s", type, name);
     }
 
+    public String getFinderPattern() {
+        return String.format("%s ( %s )", name, type.getName());
+    }
+
     @Override
     public int compareTo(Criterion o) {
         return toString().compareToIgnoreCase(o.toString());

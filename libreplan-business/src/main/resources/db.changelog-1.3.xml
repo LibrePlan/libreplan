@@ -23,4 +23,368 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="change-column-notes-in-task_element-to-text-in-mysql"
+        author="jaragunde" dbms="mysql">
+        <comment>Change column notes in task_element to TEXT in MySQL.</comment>
+        <sql>ALTER TABLE task_element MODIFY notes TEXT</sql>
+    </changeSet>
+
+    <changeSet id="update-work_report_type-name-to-personal-timehseets"
+        author="mrego">
+        <comment>
+            Update work_report_type name from "Monthly timesheets" to "Personal
+            timehsheets"
+        </comment>
+        <update tableName="work_report_type">
+            <column name="name" value="Personal timesheets"/>
+            <where>name='Monthly timesheets'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="add-personal_timesheets_periodicity-column-to-configuration"
+        author="mrego">
+        <comment>Add personal_timesheets_periodicity column to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="personal_timesheets_periodicity" type="INTEGER" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="personal_timesheets_periodicity" value="0" />
+        </update>
+    </changeSet>
+
+    <changeSet id="rename-column-from-monthly-to-personal-in-configuration"
+        author="mrego">
+        <comment>
+            Rename column monthly_timesheets_type_of_work_hours to
+            personal_timesheets_type_of_work_hours in configuration table
+        </comment>
+        <dropForeignKeyConstraint baseTableName="configuration"
+            constraintName="configuration_type_of_work_hours_fkey"/>
+        <renameColumn tableName="configuration"
+            oldColumnName="monthly_timesheets_type_of_work_hours"
+            newColumnName="personal_timesheets_type_of_work_hours"
+            columnDataType="BIGINT" />
+        <addForeignKeyConstraint constraintName="configuration_type_of_work_hours_fkey"
+            baseTableName="configuration" baseColumnNames="personal_timesheets_type_of_work_hours"
+            referencedTableName="type_of_work_hours" referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="add-max_users-and-max_resources-columns-to-configuration"
+        author="mrego">
+        <comment>Add max_users and max_resources columns to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="max_users" type="INTEGER" />
+        </addColumn>
+        <addColumn tableName="configuration">
+            <column name="max_resources" type="INTEGER" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="max_users" value="0" />
+        </update>
+        <update tableName="configuration">
+            <column name="max_resources" value="0" />
+        </update>
+    </changeSet>
+
+    <changeSet id="add-columns-first-and-last-timesheet_date-to-sum_charged_effort"
+        author="mrego">
+        <comment>
+            Add columns first_timesheet_date and last_timesheet_date to
+            sum_charged_effort table
+        </comment>
+        <addColumn tableName="sum_charged_effort">
+            <column name="first_timesheet_date" type="DATETIME" />
+        </addColumn>
+        <addColumn tableName="sum_charged_effort">
+            <column name="last_timesheet_date" type="DATETIME" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-read_only-to-advance_type" author="mrego">
+        <comment>
+            Add new column read_only with default value FALSE to advance_type
+            table.
+        </comment>
+        <addColumn tableName="advance_type">
+            <column name="read_only" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="advance_type" columnName="read_only"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="advance_type"
+            columnName="read_only"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-finished-to-work_report_line" author="mrego">
+        <comment>
+            Add new column finished with default value FALSE to
+            work_report_line table.
+        </comment>
+        <addColumn tableName="work_report_line">
+            <column name="finished" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="work_report_line" columnName="finished"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="work_report_line"
+            columnName="finished"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-finished_timesheets-to-sum_charged_effort"
+        author="mrego">
+        <comment>
+            Add new column finished_timesheets with default value FALSE to
+            sum_charged_effort table.
+        </comment>
+        <addColumn tableName="sum_charged_effort">
+            <column name="finished_timesheets" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="sum_charged_effort"
+            columnName="finished_timesheets"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="sum_charged_effort"
+            columnName="finished_timesheets"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-updated_from_timesheets-to-task_element"
+        author="mrego">
+        <comment>
+            Add new column updated_from_timesheets with default value FALSE to
+            task_element table.
+        </comment>
+        <addColumn tableName="task_element">
+            <column name="updated_from_timesheets" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="task_element"
+            columnName="updated_from_timesheets"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="task_element"
+            columnName="updated_from_timesheets"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="update-status-values-in-order_table" author="mrego">
+        <comment>Updating status values in order_table</comment>
+        <update tableName="order_table">
+            <column name="state" value="8" />
+            <where>state='6'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="7" />
+            <where>state='4'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="6" />
+            <where>state='3'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="4" />
+            <where>state='2'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="3" />
+            <where>state='1'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="2" />
+            <where>state='5'</where>
+        </update>
+        <update tableName="order_table">
+            <column name="state" value="1" />
+            <where>state='0'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="drop-unique-constraint-code-in-order_element" author="mrego">
+        <comment>Drop unique constraint for code in order_element table</comment>
+        <dropUniqueConstraint tableName="order_element"
+            constraintName="order_element_code_key" />
+    </changeSet>
+
+    <changeSet id="add-seconds_planning_warning-column-to-configuration"
+        author="mrego">
+        <comment>Add seconds_planning_warning column to configuration</comment>
+        <addColumn tableName="configuration">
+            <column name="seconds_planning_warning" type="INTEGER" />
+        </addColumn>
+        <update tableName="configuration">
+            <column name="seconds_planning_warning" value="30" />
+        </update>
+        <addNotNullConstraint tableName="configuration"
+            columnName="seconds_planning_warning"
+            defaultNullValue="30"
+            columnDataType="INTEGER" />
+    </changeSet>
+
+    <!-- Jira configuration-->
+    <changeSet id="add-new-column-jira_activated" author="miciele">
+        <comment>
+            Add new column jira_activated with default value FALSE to configuration table
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_activated" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="jira_activated"
+           defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="jira_activated"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-jira_url" author="miciele">
+        <comment>
+            Add new column jira_url in table configuration
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_url" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-jira_label_url" author="miciele">
+        <comment>
+            Add new column jira_label_url in table configuration
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_label_url" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-jira_user_id" author="miciele">
+        <comment>
+            Add new column jira_user_id in table configuration
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_user_id" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-jira_password" author="miciele">
+        <comment>
+            Add new column jira_user_id in table configuration
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_password" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-imported-label" author="miciele">
+        <comment>
+            Add new column imported_label in table order_table
+        </comment>
+        <addColumn tableName="order_table">
+            <column name="imported_label" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-jira_connector_type_of_work_hours-to-configuration"
+        author="mrego">
+        <comment>
+            Add new column jira_connector_type_of_work_hours to configuration
+            table.
+        </comment>
+        <addColumn tableName="configuration">
+            <column name="jira_connector_type_of_work_hours" type="BIGINT" />
+        </addColumn>
+        <addForeignKeyConstraint
+            constraintName="configuration_jira_connector_type_of_work_hours_fkey"
+            baseTableName="configuration"
+            baseColumnNames="jira_connector_type_of_work_hours"
+            referencedTableName="type_of_work_hours"
+            referencedColumnNames="id" />
+    </changeSet>
+
+    <changeSet id="rename-column-jira_label_url-in-configuration"
+        author="mrego">
+        <comment>
+            Rename column jira_label_url to jira_labels in configuration table
+        </comment>
+        <renameColumn tableName="configuration"
+            oldColumnName="jira_label_url"
+            newColumnName="jira_labels"
+            columnDataType="VARCHAR(255)" />
+    </changeSet>
+
+    <changeSet id="change-column-jira_labels-in-configuration-to-text"
+        author="mrego" dbms="postgresql">
+        <comment>Change column jira_labels in configuration to TEXT</comment>
+        <modifyDataType tableName="configuration" columnName="jira_labels"
+            newDataType="TEXT" />
+    </changeSet>
+
+    <changeSet id="change-column-jira_labels-in-configuration-to-text-in-mysql"
+        author="mrego" dbms="mysql">
+        <comment>Change column jira_labels in configuration to TEXT in MySQL</comment>
+        <sql>ALTER TABLE configuration MODIFY jira_labels TEXT</sql>
+    </changeSet>
+
+    <changeSet id="add-projects_filter_period_since-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store project filtering interval 'range since' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_period_since" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-projects_filter_period_to-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store project filtering interval 'range to' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_period_to" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_period_since-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store resources load filtering interval 'range since' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="resources_load_filter_period_since" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_period_to-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store resources load filtering interval 'range to' parameter</comment>
+        <addColumn tableName="user_table">
+            <column name="resources_load_filter_period_to" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-projects_filter_label_id-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store label reference for default project filtering</comment>
+        <addColumn tableName="user_table">
+            <column name="projects_filter_label_id" type="BIGINT" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_criterion_id-column-to-user_table"
+        author="ltilve">
+        <comment>Add column to store criterion reference for default resources load filtering</comment>
+        <addColumn tableName="user_table">
+            <column name="resources_load_filter_criterion_id" type="BIGINT" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-projects_filter_label_id-fk-to-user_table" author="ltilve">
+        <comment>Add Foreign Key constraint on label reference</comment>
+        <addForeignKeyConstraint constraintName="user_label_fkey"
+            baseTableName="user_table" baseColumnNames="projects_filter_label_id"
+            referencedTableName="label" referencedColumnNames="id"
+            onDelete="SET NULL" />
+    </changeSet>
+
+    <changeSet id="add-resources_load_filter_fk_id-column-to-user_table" author="ltilve">
+        <comment>Add Foreign Key constraint on criterion reference</comment>
+        <addForeignKeyConstraint constraintName="user_criterion_fkey"
+            baseTableName="user_table" baseColumnNames="resources_load_filter_criterion_id"
+            referencedTableName="criterion" referencedColumnNames="id"
+            onDelete="SET NULL"/>
+    </changeSet>
+
 </databaseChangeLog>

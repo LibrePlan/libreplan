@@ -23,7 +23,6 @@ package org.libreplan.web.limitingresources;
 
 import static org.libreplan.web.I18nHelper._;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -47,6 +46,7 @@ import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueEle
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.LimitingResourceQueue;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.libreplan.web.planner.order.BankHolidaysMarker;
 import org.libreplan.web.planner.taskedition.EditTaskController;
@@ -266,8 +266,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
     public static class LimitingResourceQueueElementDTO implements
             Comparable<LimitingResourceQueueElementDTO> {
 
-        private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
-
         private LimitingResourceQueueElement original;
 
         private String orderName;
@@ -286,7 +284,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             this.original = element;
             this.orderName = orderName;
             this.taskName = taskName;
-            this.date = DATE_FORMAT.format(date);
+            this.date = Util.formatDate(date);
             this.hoursToAllocate = element.getIntentedTotalHours();
             this.resourceOrCriteria = LimitingResourcesController
                     .getResourceOrCriteria(element.getResourceAllocation());

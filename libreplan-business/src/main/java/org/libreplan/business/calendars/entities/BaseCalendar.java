@@ -878,6 +878,18 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         return false;
     }
 
+    public boolean isActiveBetween(LocalDate startDate, LocalDate endDate) {
+        if (getCalendarAvailabilities().isEmpty()) {
+            return true;
+        }
+        for (CalendarAvailability calendarAvailability : getCalendarAvailabilities()) {
+            if (calendarAvailability.isActiveBetween(startDate, endDate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean canWorkOn(LocalDate date) {
         Capacity capacity = findCapacityAt(date);
         return capacity.allowsWorking();

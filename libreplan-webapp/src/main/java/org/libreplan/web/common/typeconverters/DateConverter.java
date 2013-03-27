@@ -21,9 +21,9 @@
 
 package org.libreplan.web.common.typeconverters;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zkplus.databind.TypeConverter;
 
@@ -42,7 +42,6 @@ public class DateConverter implements TypeConverter {
 
     @Override
     public Object coerceToUi(Object object, Component component) {
-        return object != null ? (new SimpleDateFormat("dd/MM/yyyy"))
-                .format((Date) object) : new String("");
+        return Util.formatDate((Date) object);
     }
 }

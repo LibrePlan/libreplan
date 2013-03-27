@@ -36,6 +36,13 @@ conexión antes de continuar con la configuración.
    Si su LDAP está configurado para trabajar con autenticación anónima puede
    dejar vacíos los atributos *UserDN* y *Contraseña*.
 
+.. TIP::
+
+   Sobre la configuración de *Active Directory (AD)*, el campo *Base* debe ser
+   la localización exacta donde reside el usuario vinculado en el AD.
+
+   Ejemplo: ``ou=organizational_unit,dc=example,dc=org``
+
 Autenticación
 =============
 

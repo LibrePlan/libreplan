@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
+import org.libreplan.business.common.entities.IConfigurationBootstrap;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.users.bootstrap.IProfileBootstrap;
 import org.libreplan.business.users.bootstrap.PredefinedProfiles;
@@ -78,10 +79,13 @@ public class LDAPUserDetailsServiceTest {
     private IProfileBootstrap profileBootstrap;
 
     @Autowired
+    private IConfigurationBootstrap configurationBootstrap;
+
+    @Autowired
     private IAdHocTransactionService transactionService;
 
     @Before
-    public void loadScenariosBootsrap() {
+    public void loadRequiredData() {
         /*
          * the required data is loaded in another transaction because if it's
          * loaded on the same transaction the added scenario could not be
@@ -92,6 +96,7 @@ public class LDAPUserDetailsServiceTest {
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
+                configurationBootstrap.loadRequiredData();
                 scenariosBootstrap.loadRequiredData();
                 profileBootstrap.loadRequiredData();
                 return null;

@@ -30,9 +30,9 @@ import org.libreplan.business.workingday.IntraDayDate;
  */
 public interface IAllocatable extends IAllocateResourcesPerDay {
 
-    public IAllocateResourcesPerDay resourcesPerDayUntil(LocalDate endExclusive);
+    public IAllocateResourcesPerDay resourcesPerDayUntil(IntraDayDate endExclusive);
 
-    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start);
+    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(IntraDayDate start);
 
     /**
      * @see IAllocatable#onIntervalWithinTask(IntraDayDate, IntraDayDate)
@@ -83,16 +83,6 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      * first day not consolidated to the specified end. All previous assignments
      * are removed, but the consolidated ones.
      *
-     * @param endExclusive
-     * @return
-     */
-    public IAllocateEffortOnInterval fromStartUntil(LocalDate endExclusive);
-
-    /**
-     * It allocates the effort specified on the interval from the start, i.e.
-     * first day not consolidated to the specified end. All previous assignments
-     * are removed, but the consolidated ones.
-     *
      * @param end
      * @return
      */
@@ -107,6 +97,6 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      * @param endExclusive
      * @return
      */
-    public IAllocateEffortOnInterval fromEndUntil(LocalDate start);
+    public IAllocateEffortOnInterval fromEndUntil(IntraDayDate start);
 
 }

@@ -105,14 +105,14 @@ public class HibernateDatabaseModificationsListener implements
 
         @Override
         public void afterCompletion(int status) {
-            LOG.info("transaction completed with status: " + status);
+            LOG.debug("transaction completed with status: " + status);
             pending.remove(transaction);
             if (isProbablySucessful(status)) {
                 List<Class<?>> list = new ArrayList<Class<?>>();
                 classes.drainTo(list);
-                LOG.info(list.size() + " modification events recorded");
+                LOG.debug(list.size() + " modification events recorded");
                 Set<NotBlockingAutoUpdatedSnapshot<?>> toDispatch = snapshotsInterestedOn(list);
-                LOG.info("dispatching "
+                LOG.debug("dispatching "
                         + toDispatch
                         + " snapshots to reload due to transaction successful completion");
                 dispatch(toDispatch);

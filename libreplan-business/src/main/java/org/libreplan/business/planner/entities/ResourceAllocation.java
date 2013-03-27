@@ -436,13 +436,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             allocator.allocateOnTaskLength();
         }
 
-        public void allocateUntil(LocalDate endExclusive) {
+        public void allocateUntil(IntraDayDate endExclusive) {
             AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
                     allocations);
             allocator.allocateUntil(endExclusive);
         }
 
-        public void allocateFromEndUntil(LocalDate start) {
+        public void allocateFromEndUntil(IntraDayDate start) {
             AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
                     allocations);
             allocator.allocateFromEndUntil(start);
@@ -486,20 +486,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public void allocate() {
-            allocateUntil(new LocalDate(task.getEndDate()));
+            allocateUntil(task.getIntraDayEndDate());
         }
 
-        public void allocateUntil(LocalDate end) {
+        public void allocateUntil(IntraDayDate end) {
             Validate.notNull(end);
-            checkStartLessOrEqualToEnd(task.getStartAsLocalDate(), end);
+            checkStartLessOrEqualToEnd(task.getIntraDayStartDate(), end);
             for (EffortModification each : hoursModifications) {
                 each.allocateUntil(end);
             }
         }
 
-        public void allocateFromEndUntil(LocalDate start) {
+        public void allocateFromEndUntil(IntraDayDate start) {
             Validate.notNull(start);
-            checkStartLessOrEqualToEnd(start, task.getEndAsLocalDate());
+            checkStartLessOrEqualToEnd(start, task.getIntraDayEndDate());
             for (EffortModification each : hoursModifications) {
                 each.allocateFromEndUntil(start);
             }
@@ -774,17 +774,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateResourcesPerDay resourcesPerDayUntil(final LocalDate endExclusive) {
+        public IAllocateResourcesPerDay resourcesPerDayUntil(IntraDayDate end) {
             IntraDayDate startInclusive = getStartSpecifiedByTask();
-            IntraDayDate end = IntraDayDate.startOfDay(endExclusive);
             return new AllocateResourcesPerDayOnInterval(startInclusive, end);
         }
 
         @Override
         public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
-                LocalDate start) {
-            IntraDayDate startInclusive = IntraDayDate.max(
-                    IntraDayDate.startOfDay(start), getStartSpecifiedByTask());
+                IntraDayDate start) {
+            IntraDayDate startInclusive = IntraDayDate.max(start,
+                    getStartSpecifiedByTask());
             IntraDayDate endDate = task.getIntraDayEndDate();
             return new AllocateResourcesPerDayOnInterval(startInclusive,
                     endDate);
@@ -897,13 +896,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateEffortOnInterval fromStartUntil(final LocalDate end) {
-            final AllocationInterval interval = new AllocationInterval(
-                    getStartSpecifiedByTask(), IntraDayDate.startOfDay(end));
-            return getIAllocateEffortOnInterval(interval);
-        }
-
-        @Override
         public IAllocateEffortOnInterval fromStartUntil(final IntraDayDate end) {
             final AllocationInterval interval = new AllocationInterval(
                     getStartSpecifiedByTask(), end);
@@ -938,9 +930,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateEffortOnInterval fromEndUntil(final LocalDate start) {
-            final AllocationInterval interval = new AllocationInterval(
-                    IntraDayDate.startOfDay(start), task.getIntraDayEndDate());
+        public IAllocateEffortOnInterval fromEndUntil(IntraDayDate start) {
+            final AllocationInterval interval = new AllocationInterval(start,
+                    task.getIntraDayEndDate());
             return new IAllocateEffortOnInterval() {
 
                 @Override
@@ -1037,7 +1029,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             if (availability.isValid(day.getDate())) {
                 return getCapacityAt(day);
             } else {
-                return Capacity.create(hours(0))
+                return Capacity.create(zero())
                         .notOverAssignableWithoutLimit();
             }
         }
@@ -2245,6 +2237,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public void resetIntendedIntendedResourcesPerDayWithNonConsolidated() {
         intendedResourcesPerDay = getNonConsolidatedResourcePerDay();
+    }
+
+    public void removeDayAssignmentsBeyondDate(LocalDate date) {
+        List<T> toRemove = new ArrayList<T>();
+
+        for (T t : getAssignments()) {
+            if (t.getDay().compareTo(date) >= 0) {
+                toRemove.add(t);
+            }
+        }
+
+        setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+        getDayAssignmentsState().removingAssignments(toRemove);
     }
 
 }

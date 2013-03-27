@@ -107,7 +107,8 @@ public class AllocationConfiguration extends HtmlMacroComponent {
                             .getCalculatedValue())) {
                         radio.setChecked(true);
                     }
-                    radio.setDisabled(formBinder.isAnyManual());
+                    radio.setDisabled(formBinder.isAnyManual()
+                            || formBinder.isTaskUpdatedFromTimesheets());
                 }
             }
         };

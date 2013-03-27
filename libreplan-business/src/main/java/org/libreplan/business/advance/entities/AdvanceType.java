@@ -86,6 +86,8 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
 
     private IAdvanceTypeDAO avanceTypeDAO = Registry.getAdvanceTypeDao();
 
+    private boolean readOnly = false;
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -269,6 +271,14 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
             return false;
         }
         return true;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
     }
 
 }

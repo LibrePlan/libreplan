@@ -27,7 +27,9 @@ import java.util.Set;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 
@@ -168,8 +170,28 @@ public interface IConfigurationModel {
 
     void setCurrency(String currencyCode);
 
-    TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours();
+    TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours();
 
-    void setMonthlyTimesheetsTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
+    void setPersonalTimesheetsTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
+
+    PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity();
+
+    void setPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity);
+
+    boolean isAnyPersonalTimesheetAlreadySaved();
+
+    Integer getSecondsPlanningWarning();
+
+    void setSecondsPlanningWarning(
+            Integer planningWarningExitWithoutSavingSeconds);
+
+    void setJiraConfiguration(JiraConfiguration jiraConfiguration);
+
+    JiraConfiguration getJiraConfiguration();
+
+    TypeOfWorkHours getJiraConnectorTypeOfWorkHours();
+
+    void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
 
 }

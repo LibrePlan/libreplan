@@ -148,7 +148,8 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     public void checkIsReferencedByOtherEntities(TypeOfWorkHours type) throws ValidationException {
         checkHasHourCost(type);
         checkHasWorkReportLine(type);
-        checkIsMonthlyTimesheetsTypeOfWorkHours(type);
+        checkIsPersonalTimesheetsTypeOfWorkHours(type);
+        checkIsJiraConnectorTypeOfWorkHours(type);
     }
 
     private void checkHasWorkReportLine(TypeOfWorkHours type) {
@@ -174,13 +175,13 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         }
     }
 
-    private void checkIsMonthlyTimesheetsTypeOfWorkHours(TypeOfWorkHours type) {
+    private void checkIsPersonalTimesheetsTypeOfWorkHours(TypeOfWorkHours type) {
         Configuration configuration = configurationDAO.getConfiguration();
-        if (configuration.getMonthlyTimesheetsTypeOfWorkHours().getId()
+        if (configuration.getPersonalTimesheetsTypeOfWorkHours().getId()
                 .equals(type.getId())) {
             throw ValidationException
                     .invalidValue(
-                            "Cannot delete the type of work hours. It is configured as type of work hours for monthly timesheets.",
+                            "Cannot delete the type of work hours. It is configured as type of work hours for personal timesheets.",
                             type);
         }
     }
@@ -190,6 +191,17 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         Criteria c = getSession().createCriteria(TypeOfWorkHours.class).add(
                 Restrictions.eq("name", typeOfWorkHours.getName()));
         return c.uniqueResult() != null;
+    }
+
+    private void checkIsJiraConnectorTypeOfWorkHours(TypeOfWorkHours type) {
+        Configuration configuration = configurationDAO.getConfiguration();
+        if (configuration.getJiraConfiguration()
+                .getJiraConnectorTypeOfWorkHours().getId().equals(type.getId())) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete the type of work hours. It is configured as type of work hours for JIRA connector.",
+                            type);
+        }
     }
 
 }

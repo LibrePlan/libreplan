@@ -119,6 +119,10 @@ public class BaseCalendarServiceTest {
 
     @Test
     @Rollback(false)
+    // FIXME: This exception type is kept in DB and it may cause problems in
+    // other tests, for example in
+    // CalendarExceptionTypeTest.exportExceptionTypes(), depending on the
+    // execution order. We must ensure that
     public void givenCalendarExceptionTypeStored() {
         CalendarExceptionType calendarExceptionType = CalendarExceptionType
                 .create("name", CalendarExceptionTypeColor.DEFAULT, false);
@@ -163,6 +167,10 @@ public class BaseCalendarServiceTest {
     }
 
     @Test
+    // FIXME: when this test finishes, the two new calendar exceptions are not
+    // being removed. This is a problem to delete the calendar exception type
+    // and causes conflicts in other tests, for example in
+    // CalendarExceptionTypeTest.exportExceptionTypes()
     public void testAddValidBaseCalendar() throws InstanceNotFoundException {
 
         /* Build valid base calendar "bc1" (5 constraint violations). */

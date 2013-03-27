@@ -32,7 +32,10 @@ import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -54,6 +57,10 @@ import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.labels.daos.ILabelDAO;
+import org.libreplan.business.labels.daos.ILabelTypeDAO;
+import org.libreplan.business.labels.entities.Label;
+import org.libreplan.business.labels.entities.LabelType;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
@@ -63,6 +70,11 @@ import org.libreplan.business.orders.entities.SumChargedEffort;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.qualityforms.entities.TaskQualityForm;
+import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
+import org.libreplan.business.resources.daos.ICriterionDAO;
+import org.libreplan.business.resources.daos.ICriterionTypeDAO;
+import org.libreplan.business.resources.entities.Criterion;
+import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.scenarios.entities.OrderVersion;
@@ -106,6 +118,18 @@ public class OrderElementDAOTest {
 
     @Autowired
     private IScenarioManager scenarioManager;
+
+    @Autowired
+    private ILabelDAO labelDAO;
+
+    @Autowired
+    private ILabelTypeDAO labelTypeDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
+
+    @Autowired
+    private ICriterionTypeDAO criterionTypeDAO;
 
     @Before
     public void loadRequiredData() {
@@ -438,4 +462,275 @@ public class OrderElementDAOTest {
         assertEquals(orderLineCopy.getSumChargedEffort()
                 .getTotalChargedEffort(), EffortDuration.hours(18));
     }
+
+    private Label givenStoredLabel() {
+        LabelType labelType = LabelType.create(UUID.randomUUID().toString());
+        labelTypeDAO.save(labelType);
+
+        Label label = Label.create(UUID.randomUUID().toString());
+        label.setType(labelType);
+        labelDAO.save(label);
+
+        return label;
+    }
+
+    @Test
+    public void testFindByLabels1() throws InstanceNotFoundException {
+        Label label = givenStoredLabel();
+
+        OrderLine orderLine1 = createValidOrderLine();
+        orderLine1.addLabel(label);
+        orderElementDAO.save(orderLine1);
+        OrderLine orderLine2 = createValidOrderLine();
+        orderElementDAO.save(orderLine2);
+        OrderLine orderLine3 = createValidOrderLine();
+        orderElementDAO.save(orderLine3);
+
+        List<OrderElement> orderELements = orderElementDAO
+                .findByLabelsAndCriteria(Collections.singleton(label), null);
+
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+    }
+
+    @Test
+    public void testFindByLabels2() throws InstanceNotFoundException {
+        Label label1 = givenStoredLabel();
+        Label label2 = givenStoredLabel();
+
+        OrderLine orderLine1 = createValidOrderLine();
+        orderLine1.addLabel(label1);
+        orderLine1.addLabel(label2);
+        orderElementDAO.save(orderLine1);
+        OrderLine orderLine2 = createValidOrderLine();
+        orderElementDAO.save(orderLine2);
+        OrderLine orderLine3 = createValidOrderLine();
+        orderLine3.addLabel(label2);
+        orderElementDAO.save(orderLine3);
+
+        List<OrderElement> orderELements = orderElementDAO
+                .findByLabelsAndCriteria(Collections.singleton(label1), null);
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+
+        orderELements = orderElementDAO.findByLabelsAndCriteria(
+                Collections.singleton(label2), null);
+        assertEquals(2, orderELements.size());
+        for (OrderElement each : orderELements) {
+            assertTrue(each.getId().equals(orderLine1.getId())
+                    || each.getId().equals(orderLine3.getId()));
+        }
+
+        orderELements = orderElementDAO.findByLabelsAndCriteria(
+                new HashSet<Label>(Arrays.asList(label1, label2)), null);
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+    }
+
+    @Test
+    public void testFindByLabelsOnTree() throws InstanceNotFoundException {
+        Label label1 = givenStoredLabel();
+        Label label2 = givenStoredLabel();
+
+        OrderLineGroup orderLineGroup = createValidOrderLineGroup();
+        orderLineGroup.addLabel(label1);
+        OrderElement child = orderLineGroup.getChildren().get(0);
+        child.addLabel(label2);
+        orderElementDAO.save(orderLineGroup);
+
+        List<OrderElement> orderELements = orderElementDAO
+                .findByLabelsAndCriteria(Collections.singleton(label1), null);
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLineGroup.getId(), orderELements.get(0).getId());
+
+        orderELements = orderElementDAO.findByLabelsAndCriteria(
+                Collections.singleton(label2), null);
+        assertEquals(1, orderELements.size());
+        assertEquals(child.getId(), orderELements.get(0).getId());
+
+        orderELements = orderElementDAO.findByLabelsAndCriteria(
+                new HashSet<Label>(Arrays.asList(label1, label2)), null);
+        assertEquals(0, orderELements.size());
+    }
+
+    private Criterion givenStoredCriterion() {
+        String criterionTypeCode = UUID.randomUUID().toString();
+        CriterionType criterionType = CriterionType.create(criterionTypeCode);
+        criterionType.setName(criterionTypeCode);
+        criterionTypeDAO.save(criterionType);
+
+        String criterionCode = UUID.randomUUID().toString();
+        Criterion criterion = Criterion.create(criterionCode, criterionType);
+        criterion.setCode(criterionCode);
+        criterionDAO.save(criterion);
+
+        return criterion;
+    }
+
+    @Test
+    public void testFindByCriteria1() throws InstanceNotFoundException {
+        Criterion criterion = givenStoredCriterion();
+
+        OrderLine orderLine1 = createValidOrderLine();
+        orderLine1.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion));
+        orderElementDAO.save(orderLine1);
+        OrderLine orderLine2 = createValidOrderLine();
+        orderElementDAO.save(orderLine2);
+        OrderLine orderLine3 = createValidOrderLine();
+        orderElementDAO.save(orderLine3);
+
+        List<OrderElement> orderELements = orderElementDAO
+                .findByLabelsAndCriteria(null, Collections.singleton(criterion));
+
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+    }
+
+    @Test
+    public void testFindByCriteria2() throws InstanceNotFoundException {
+        Criterion criterion1 = givenStoredCriterion();
+        Criterion criterion2 = givenStoredCriterion();
+
+        OrderLine orderLine1 = createValidOrderLine();
+        orderLine1.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion1));
+        orderLine1.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion2));
+        orderElementDAO.save(orderLine1);
+        OrderLine orderLine2 = createValidOrderLine();
+        orderElementDAO.save(orderLine2);
+        OrderLine orderLine3 = createValidOrderLine();
+        orderLine3.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion2));
+        orderElementDAO.save(orderLine3);
+
+        List<OrderElement> orderELements = orderElementDAO
+                .findByLabelsAndCriteria(null, Collections.singleton(criterion1));
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+
+        orderELements = orderElementDAO.findByLabelsAndCriteria(null,
+                Collections.singleton(criterion2));
+        assertEquals(2, orderELements.size());
+        for (OrderElement each : orderELements) {
+            assertTrue(each.getId().equals(orderLine1.getId())
+                    || each.getId().equals(orderLine3.getId()));
+        }
+
+        orderELements = orderElementDAO.findByLabelsAndCriteria(null,
+                new HashSet<Criterion>(Arrays.asList(criterion1, criterion2)));
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLine1.getId(), orderELements.get(0).getId());
+
+    }
+
+    @Test
+    public void testFindByCriteriaOnTree() throws InstanceNotFoundException {
+        Criterion criterion1 = givenStoredCriterion();
+        Criterion criterion2 = givenStoredCriterion();
+
+        OrderLineGroup orderLineGroup = createValidOrderLineGroup();
+        orderLineGroup.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion1));
+        OrderElement child = orderLineGroup.getChildren().get(0);
+        child.addCriterionRequirement(new DirectCriterionRequirement(criterion2));
+        orderElementDAO.save(orderLineGroup);
+
+        List<OrderElement> orderELements = orderElementDAO
+                .findByLabelsAndCriteria(null,
+                        Collections.singleton(criterion1));
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLineGroup.getId(), orderELements.get(0).getId());
+
+        orderELements = orderElementDAO.findByLabelsAndCriteria(null,
+                Collections.singleton(criterion2));
+        assertEquals(1, orderELements.size());
+        assertEquals(child.getId(), orderELements.get(0).getId());
+
+        orderELements = orderElementDAO.findByLabelsAndCriteria(null,
+                new HashSet<Criterion>(Arrays.asList(criterion1, criterion2)));
+        assertEquals(0, orderELements.size());
+    }
+
+    @Test
+    public void testFindByLabelsAndCriteria1() throws InstanceNotFoundException {
+        Label label = givenStoredLabel();
+        Criterion criterion = givenStoredCriterion();
+
+        OrderLine orderLine1 = createValidOrderLine();
+        orderLine1.addLabel(label);
+        orderElementDAO.save(orderLine1);
+        OrderLine orderLine2 = createValidOrderLine();
+        orderLine2.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion));
+        orderElementDAO.save(orderLine2);
+        OrderLine orderLine3 = createValidOrderLine();
+        orderLine3.addLabel(label);
+        orderLine3.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion));
+
+        orderElementDAO.save(orderLine3);
+
+        List<OrderElement> orderELements = orderElementDAO
+                .findByLabelsAndCriteria(Collections.singleton(label),
+                        Collections.singleton(criterion));
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLine3.getId(), orderELements.get(0).getId());
+    }
+
+    @Test
+    public void testFindByLabelsAndCriteria2() throws InstanceNotFoundException {
+        Label label1 = givenStoredLabel();
+        Label label2 = givenStoredLabel();
+        Criterion criterion1 = givenStoredCriterion();
+        Criterion criterion2 = givenStoredCriterion();
+
+        OrderLine orderLine1 = createValidOrderLine();
+        orderLine1.addLabel(label1);
+        orderLine1.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion2));
+        orderElementDAO.save(orderLine1);
+        OrderLine orderLine2 = createValidOrderLine();
+        orderLine2.addLabel(label2);
+        orderLine2.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion1));
+        orderElementDAO.save(orderLine2);
+        OrderLine orderLine3 = createValidOrderLine();
+        orderLine3.addLabel(label1);
+        orderLine3.addLabel(label2);
+        orderLine3.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion1));
+        orderLine3.addCriterionRequirement(new DirectCriterionRequirement(
+                criterion2));
+
+        orderElementDAO.save(orderLine3);
+
+        List<OrderElement> orderELements = orderElementDAO
+                .findByLabelsAndCriteria(Collections.singleton(label2),
+                        Collections.singleton(criterion1));
+        assertEquals(2, orderELements.size());
+        for (OrderElement each : orderELements) {
+            assertTrue(each.getId().equals(orderLine2.getId())
+                    || each.getId().equals(orderLine3.getId()));
+        }
+
+        orderELements = orderElementDAO
+                .findByLabelsAndCriteria(Collections.singleton(label1),
+                        Collections.singleton(criterion2));
+        assertEquals(2, orderELements.size());
+        for (OrderElement each : orderELements) {
+            assertTrue(each.getId().equals(orderLine1.getId())
+                    || each.getId().equals(orderLine3.getId()));
+        }
+
+        orderELements = orderElementDAO
+                .findByLabelsAndCriteria(
+                        new HashSet<Label>(Arrays.asList(label1, label2)),
+                        new HashSet<Criterion>(Arrays.asList(criterion1,
+                                criterion2)));
+        assertEquals(1, orderELements.size());
+        assertEquals(orderLine3.getId(), orderELements.get(0).getId());
+    }
+
 }

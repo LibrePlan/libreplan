@@ -5,7 +5,7 @@ How To Create A New Report In LibrePlan
 
 :Author: Manuel Rego Casasnovas
 :Contact: mrego@igalia.com
-:Date: 01/03/2011
+:Date: 11/09/2012
 :Copyright:
   Some rights reserved. This document is distributed under the Creative
   Commons Attribution-ShareAlike 3.0 licence, available in
@@ -108,10 +108,6 @@ Steps:
  <?component name="combobox_output_format" macroURI="combobox_output_format.zul"
      class="org.libreplan.web.reports.ComboboxOutputFormat" ?>
 
- <?component name="extendedjasperreport"
-     class="org.libreplan.web.common.components.ExtendedJasperreport"
-     extends="jasperreport" ?>
-
  <zk>
 
      <window self="@{define(content)}"
@@ -138,18 +134,21 @@ Steps:
              </panelchildren>
          </panel>
 
+         <separator spacing="10px" orient="horizontal" />
+
          <hbox style="display: none" id="URItext">
-             <label value="${i18n:_('Click on ')}" />
-             <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
-                     label="${i18n:_('direct link')}" />
-             <label value="${i18n:_(' to go to output directly')}" />
+             <label value="${i18n:_('Click on this')}" />
+             <a id="URIlink" class="z-label" zclass="z-label"
+                 label="${i18n:_('direct link')}" />
+             <label
+                 value="${i18n:_('if the report is not opened automatically')}" />
          </hbox>
 
          <separator spacing="10px" orient="horizontal" />
 
          <button label="Show" onClick="controller.showReport(report)" />
 
-         <extendedjasperreport style="display: none" id="report" />
+         <jasperreportcomponent id="report" />
 
      </window>
 
@@ -217,7 +216,7 @@ Steps:
      @Override
      public void doAfterCompose(Component comp) throws Exception {
          super.doAfterCompose(comp);
-         comp.setVariable("controller", this, true);
+         comp.setAttribute("controller", this);
      }
 
      @Override
@@ -318,16 +317,16 @@ report layouts, which provides a visual interface to define ``.jrxml`` file.
 
 Steps:
 
-* Download iReport **3.7.0** (``tar.gz``) from SourceForge.net:
+* Download iReport **4.7.0** (``tar.gz``) from SourceForge.net:
   https://sourceforge.net/projects/ireport/files/iReport/
 
 * Uncompress file::
 
-    tar -xvzf iReport-3.7.0.tar.gz
+    tar -xvzf iReport-4.7.0.tar.gz
 
 * Launch iReport::
 
-    cd iReport-3.7.0/
+    cd iReport-4.7.0/
     ./bin/ireport
 
 * Open some existent LibrePlan report (e.g.
@@ -393,14 +392,11 @@ something similar to the following content:
 ::
 
  <?xml version="1.0" encoding="UTF-8"?>
- <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
-   http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resourcesList"
-   pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20"
-   rightMargin="20" topMargin="20" bottomMargin="20"
-   resourceBundle="resourcesList">
-     <reportFont name="FreeSans" isDefault="true" fontName="FreeSans" size="9"/>
+ <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resourcesList" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" resourceBundle="resourcesList" uuid="f83422af-00de-4fa5-b137-580b559f1453">
+     <property name="ireport.zoom" value="1.0"/>
+     <property name="ireport.x" value="0"/>
+     <property name="ireport.y" value="0"/>
+     <style name="dejavu-sans" isDefault="true" fontName="DejaVu Sans" fontSize="8"/>
      <parameter name="logo" class="java.lang.String"/>
      <field name="code" class="java.lang.String"/>
      <field name="name" class="java.lang.String"/>
@@ -410,22 +406,22 @@ something similar to the following content:
      <title>
          <band height="80" splitType="Stretch">
              <textField>
-                 <reportElement x="0" y="13" width="263" height="33"/>
+                 <reportElement uuid="6d64d335-2ffd-45e8-8915-3191baa4e278" x="0" y="13" width="263" height="33"/>
                  <textElement verticalAlignment="Middle" markup="none">
                      <font size="23" isBold="true"/>
                  </textElement>
-                 <textFieldExpression class="java.lang.String"><![CDATA[$R{title}]]></textFieldExpression>
+                 <textFieldExpression><![CDATA[$R{title}]]></textFieldExpression>
              </textField>
              <textField>
-                 <reportElement x="23" y="46" width="295" height="22"/>
+                 <reportElement uuid="2174417c-89a2-4012-8915-8f8e3fa8119e" x="23" y="46" width="295" height="22"/>
                  <textElement markup="none">
                      <font size="15" isItalic="true"/>
                  </textElement>
-                 <textFieldExpression class="java.lang.String"><![CDATA[$R{subtitle}]]></textFieldExpression>
+                 <textFieldExpression><![CDATA[$R{subtitle}]]></textFieldExpression>
              </textField>
              <image scaleImage="RetainShape">
-                 <reportElement x="318" y="0" width="180" height="53"/>
-                 <imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
+                 <reportElement uuid="e033fa20-c68f-4716-9b43-e1435be185a8" x="318" y="0" width="180" height="53"/>
+                 <imageExpression><![CDATA[$P{logo}]]></imageExpression>
              </image>
          </band>
      </title>
@@ -438,14 +434,14 @@ something similar to the following content:
      <detail>
          <band height="15" splitType="Stretch">
              <textField isBlankWhenNull="true">
-                 <reportElement x="145" y="0" width="414" height="15"/>
+                 <reportElement uuid="5a829e90-0860-48dd-aeb0-262599571b4a" x="145" y="0" width="414" height="15"/>
                  <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                 <textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+                 <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
              </textField>
              <textField isBlankWhenNull="true">
-                 <reportElement x="13" y="0" width="132" height="15"/>
+                 <reportElement uuid="78755bf1-f99a-4aa3-a87a-13ed4e54ce60" x="13" y="0" width="132" height="15"/>
                  <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                 <textFieldExpression class="java.lang.String"><![CDATA[$F{code}]]></textFieldExpression>
+                 <textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
              </textField>
          </band>
      </detail>
@@ -454,36 +450,30 @@ something similar to the following content:
      </columnFooter>
      <pageFooter>
          <band height="27" splitType="Stretch">
-             <textField pattern="EEEEE dd MMMMM yyyy">
-                 <reportElement x="0" y="0" width="197" height="20"/>
-                 <textElement>
-                     <font size="10" isBold="false"/>
-                 </textElement>
-                 <textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+             <textField pattern="EEEEE, dd MMMMM yyyy">
+                 <reportElement uuid="74fb7d79-5caa-42db-b9c8-8b0e5a6b38da" x="0" y="0" width="197" height="20"/>
+                 <textElement/>
+                 <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
              </textField>
              <textField>
-                 <reportElement x="435" y="2" width="43" height="20"/>
+                 <reportElement uuid="1bb28642-13dd-469d-937b-0eb361cea34e" x="435" y="2" width="43" height="20"/>
                  <textElement/>
-                 <textFieldExpression class="java.lang.String"><![CDATA[$R{page}]]></textFieldExpression>
+                 <textFieldExpression><![CDATA[$R{page}]]></textFieldExpression>
              </textField>
              <textField>
-                 <reportElement x="498" y="2" width="15" height="20"/>
+                 <reportElement uuid="a0067519-9437-4549-b9ca-70bb8abd86ef" x="498" y="2" width="15" height="20"/>
                  <textElement/>
-                 <textFieldExpression class="java.lang.String"><![CDATA[$R{of}]]></textFieldExpression>
+                 <textFieldExpression><![CDATA[$R{of}]]></textFieldExpression>
              </textField>
              <textField evaluationTime="Report">
-                 <reportElement x="515" y="2" width="38" height="20"/>
-                 <textElement>
-                     <font size="10" isBold="false"/>
-                 </textElement>
-                 <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+                 <reportElement uuid="49abaabf-9c24-4078-8551-632c03e5aebb" x="515" y="2" width="38" height="20"/>
+                 <textElement/>
+                 <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
              </textField>
              <textField>
-                 <reportElement x="478" y="2" width="15" height="20"/>
-                 <textElement textAlignment="Right">
-                     <font size="10" isBold="false"/>
-                 </textElement>
-                 <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+                 <reportElement uuid="3b2e8d7e-d96f-4f30-aa3b-80300629dda7" x="478" y="2" width="15" height="20"/>
+                 <textElement textAlignment="Right"/>
+                 <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
              </textField>
          </band>
      </pageFooter>

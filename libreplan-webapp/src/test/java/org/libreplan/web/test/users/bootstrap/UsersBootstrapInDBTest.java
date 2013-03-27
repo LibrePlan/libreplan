@@ -30,6 +30,7 @@ import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CO
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.common.entities.IConfigurationBootstrap;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.users.bootstrap.IProfileBootstrap;
 import org.libreplan.business.users.daos.IUserDAO;
@@ -61,10 +62,14 @@ public class UsersBootstrapInDBTest {
     private IProfileBootstrap profileBootstrap;
 
     @Autowired
+    private IConfigurationBootstrap configurationBootstrap;
+
+    @Autowired
     private IUserDAO userDAO;
 
     @Test
     public void testMandatoryUsersCreated() throws InstanceNotFoundException {
+        configurationBootstrap.loadRequiredData();
         profileBootstrap.loadRequiredData();
         usersBootstrap.loadRequiredData();
 

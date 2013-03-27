@@ -22,7 +22,6 @@
 package org.libreplan.business.reports.dtos;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.libreplan.business.materials.entities.MaterialAssignment;
@@ -34,7 +33,7 @@ import org.libreplan.business.planner.entities.TaskElement;
  */
 public class TimeLineRequiredMaterialDTO{
 
-    private String date;
+    private Date date;
 
     private Date initDate;
 
@@ -98,20 +97,12 @@ public class TimeLineRequiredMaterialDTO{
         this.initDate = initDate;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
-    }
-
-    private void setDate(Date newDate) {
-        if (newDate != null) {
-            this.date = (new SimpleDateFormat("dd/MM/yyyy")).format(newDate);
-        } else {
-            this.date = null;
-        }
     }
 
     public String getStatus() {

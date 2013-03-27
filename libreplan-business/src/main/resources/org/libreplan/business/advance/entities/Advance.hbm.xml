@@ -23,6 +23,7 @@
     <property name="percentage" access="field"/>
     <property name="qualityForm" access="field"
         column="quality_form" />
+    <property name="readOnly" column="read_only" />
 
 </class>
 

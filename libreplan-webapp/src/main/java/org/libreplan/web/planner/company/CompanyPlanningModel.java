@@ -47,6 +47,7 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
@@ -57,10 +58,14 @@ import org.libreplan.business.planner.entities.ICompanyEarnedValueCalculator;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.planner.entities.TaskMilestone;
+import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IUserDAO;
 import org.libreplan.business.users.entities.User;
+import org.libreplan.web.common.FilterUtils;
+import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.chart.Chart;
@@ -81,7 +86,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
-import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -157,10 +161,10 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private LocalDate filterStartDate;
     private LocalDate filterFinishDate;
-    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = EnumSet
-            .of(OrderStatusEnum.ACCEPTED, OrderStatusEnum.OFFERED,
-                    OrderStatusEnum.STARTED,
-                    OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER);
+
+    // All the status but CANCELLED and STORED
+    private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = OrderStatusEnum
+            .getVisibleStatus();
 
     public void setPlanningControllerEntryPoints(
             MultipleTabsPlannerController entryPoints) {
@@ -199,7 +203,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     public void setConfigurationToPlanner(final Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand,
-            IPredicate predicate) {
+            TaskGroupPredicate predicate) {
         currentScenario = scenarioManager.getCurrent();
         final PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
 
@@ -229,13 +233,12 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         addPrintSupport(configuration);
         disableSomeFeatures(configuration);
 
-        ZoomLevel defaultZoomLevel = OrderPlanningModel
-                .calculateDefaultLevel(configuration);
-        OrderPlanningModel.configureInitialZoomLevelFor(planner,
-                defaultZoomLevel);
+        planner.setInitialZoomLevel(getZoomLevel(configuration));
 
         configuration.setSecondLevelModificators(BankHolidaysMarker.create(getDefaultCalendar()));
         planner.setConfiguration(configuration);
+
+        setupZoomLevelListener(planner);
 
         if(expandPlanningViewChart) {
             //if the chart is expanded, we load the data now
@@ -261,6 +264,32 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                     }
                 });
         }
+    }
+
+    private ZoomLevel getZoomLevel(
+            PlannerConfiguration<TaskElement> configuration) {
+        ZoomLevel sessionZoom = FilterUtils.readZoomLevelCompanyView();
+        if (sessionZoom != null) {
+            return sessionZoom;
+        }
+        return OrderPlanningModel.calculateDefaultLevel(configuration);
+    }
+
+    private void setupZoomLevelListener(Planner planner) {
+        planner.getTimeTracker().addZoomListener(getSessionZoomLevelListener());
+    }
+
+    private IZoomLevelChangedListener getSessionZoomLevelListener() {
+        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+
+            @Override
+            public void zoomLevelChanged(ZoomLevel detailLevel) {
+                FilterUtils.writeZoomLevelCompanyView(detailLevel);
+            }
+        };
+
+        keepAliveZoomListeners.add(zoomListener);
+        return zoomListener;
     }
 
     private BaseCalendar getDefaultCalendar() {
@@ -345,13 +374,19 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 LocalDate date = new LocalDate(datebox.getValue());
                 org.zkoss.zk.ui.Component child = vbox
                         .getFellow("indicatorsTable");
-                vbox.removeChild(child);
-                vbox.appendChild(getEarnedValueChartConfigurableLegend(
-                        earnedValueChartFiller, date));
+                updateEarnedValueChartLegend(vbox, earnedValueChartFiller, date);
                 dateInfutureMessage(datebox);
             }
 
         });
+    }
+
+    private void updateEarnedValueChartLegend(Vbox vbox,
+            CompanyEarnedValueChartFiller earnedValueChartFiller, LocalDate date) {
+        for (EarnedValueType type : EarnedValueType.values()) {
+            Label valueLabel = (Label) vbox.getFellow(type.toString());
+            valueLabel.setValue(getLabelTextEarnedValueType(earnedValueChartFiller, type, date));
+        }
     }
 
     private void dateInfutureMessage(Datebox datebox) {
@@ -460,22 +495,16 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         int columnNumber = 0;
 
+        earnedValueChartConfigurationCheckboxes.clear();
         for (EarnedValueType type : EarnedValueType.values()) {
             Checkbox checkbox = new Checkbox(type.getAcronym());
             checkbox.setTooltiptext(type.getName());
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
-            BigDecimal value = earnedValueChartFiller.getIndicator(type, date) != null ? earnedValueChartFiller
-                    .getIndicator(type, date)
-                    : BigDecimal.ZERO;
-            String units = _("h");
-            if (type.equals(EarnedValueType.CPI)
-                    || type.equals(EarnedValueType.SPI)) {
-                value = value.multiply(new BigDecimal(100));
-                units = "%";
-            }
-            Label valueLabel = new Label(value.intValue() + " " + units);
+            Label valueLabel = new Label(getLabelTextEarnedValueType(
+                    earnedValueChartFiller, type, date));
+            valueLabel.setId(type.toString());
 
             Hbox hbox = new Hbox();
             hbox.appendChild(checkbox);
@@ -504,6 +533,20 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         markAsSelectedDefaultIndicators();
 
         return mainhbox;
+    }
+
+    private String getLabelTextEarnedValueType(
+            CompanyEarnedValueChartFiller earnedValueChartFiller,
+            EarnedValueType type, LocalDate date) {
+        BigDecimal value = earnedValueChartFiller.getIndicator(type, date) != null ? earnedValueChartFiller
+                .getIndicator(type, date) : BigDecimal.ZERO;
+        String units = _("h");
+        if (type.equals(EarnedValueType.CPI)
+                || type.equals(EarnedValueType.SPI)) {
+            value = value.multiply(new BigDecimal(100));
+            units = "%";
+        }
+        return value.intValue() + " " + units;
     }
 
     private void markAsSelectedDefaultIndicators() {
@@ -665,24 +708,36 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(
-            IPredicate predicate) {
+            TaskGroupPredicate predicate) {
         return new PlannerConfiguration<TaskElement>(
                 taskElementAdapterCreator.createForCompany(currentScenario),
                 new TaskElementNavigator(), retainOnlyTopLevel(predicate));
     }
 
-    private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
+    private List<TaskElement> retainOnlyTopLevel(TaskGroupPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
 
-        List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
-                SecurityUtils.getSessionUserLoginName(), currentScenario);
+        List<Order> list = getOrders(predicate);
         for (Order order : list) {
             order.useSchedulingDataFor(currentScenario, false);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
 
-            if (associatedTaskElement != null
-                    && (predicate == null || predicate
-                            .accepts(associatedTaskElement))) {
+            if (associatedTaskElement != null) {
+                if (predicate != null) {
+                    // If predicate includeChildren then we check if it accepts
+                    // the element
+                    if (predicate.isIncludeChildren()
+                            && !predicate.accepts(associatedTaskElement)) {
+                        // If it doesn't accept the element we move on to the
+                        // next order
+                        continue;
+                    }
+                }
+                // If predicate doesn't includeChildren then the orders where
+                // already filtered in the DB query.
+                // Otherwise they've been filtered with the predicate above, and
+                // if they didn't pass the filter the execution doesn't reach
+                // this point.
                 associatedTaskElement.setSimplifiedAssignedStatusCalculationEnabled(true);
                 result.add(associatedTaskElement);
             }
@@ -696,26 +751,90 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         return result;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public IPredicate getDefaultPredicate(Boolean includeOrderElements) {
-        if (currentScenario == null) {
-            currentScenario = scenarioManager.getCurrent();
+    private List<Order> getOrders(TaskGroupPredicate predicate) {
+        String username = SecurityUtils.getSessionUserLoginName();
+        if (predicate.isIncludeChildren()) {
+            return orderDAO.getOrdersByReadAuthorizationByScenario(username,
+                    currentScenario);
         }
 
-        List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
-                SecurityUtils.getSessionUserLoginName(), currentScenario);
-        Date startDate = null;
-        Date endDate = null;
-        for (Order each : list) {
-            each.useSchedulingDataFor(currentScenario, false);
-            TaskGroup associatedTaskElement = each.getAssociatedTaskElement();
-            if (associatedTaskElement != null
-                    && STATUS_VISUALIZED.contains(each.getState())) {
-                startDate = Collections.min(notNull(startDate, each.getInitDate(),
-                        associatedTaskElement.getStartDate()));
-                endDate = Collections.max(notNull(endDate, each.getDeadline(),
-                        associatedTaskElement.getEndDate()));
+        Date startDate = predicate.getStartDate();
+        Date endDate = predicate.getFinishDate();
+        List<org.libreplan.business.labels.entities.Label> labels = new ArrayList<org.libreplan.business.labels.entities.Label>();
+        List<Criterion> criteria = new ArrayList<Criterion>();
+        ExternalCompany customer = null;
+        OrderStatusEnum state = null;
+
+        for (FilterPair filterPair : (List<FilterPair>) predicate.getFilters()) {
+            TaskGroupFilterEnum type = (TaskGroupFilterEnum) filterPair
+                    .getType();
+            switch (type) {
+            case Label:
+                labels.add((org.libreplan.business.labels.entities.Label) filterPair
+                        .getValue());
+                break;
+            case Criterion:
+                criteria.add((Criterion) filterPair.getValue());
+                break;
+            case ExternalCompany:
+                if (customer != null) {
+                    // It's impossible to have an Order associated to more than
+                    // 1 customer
+                    return Collections.emptyList();
+                }
+                customer = (ExternalCompany) filterPair.getValue();
+                break;
+            case State:
+                if (state != null) {
+                    // It's impossible to have an Order associated with more
+                    // than 1 state
+                    return Collections.emptyList();
+                }
+                state = (OrderStatusEnum) filterPair.getValue();
+                break;
+            }
+        }
+
+        return orderDAO
+                .getOrdersByReadAuthorizationBetweenDatesByLabelsCriteriaCustomerAndState(
+                        username, currentScenario, startDate, endDate, labels,
+                        criteria, customer, state);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public TaskGroupPredicate getDefaultPredicate(Boolean includeOrderElements) {
+
+        Date startDate = FilterUtils.readProjectsStartDate();
+        Date endDate = FilterUtils.readProjectsEndDate();
+
+        boolean calculateStartDate = (startDate == null);
+        boolean calculateEndDate = (endDate == null);
+
+        // Filter predicate needs to be calculated based on the projects dates
+        if ((calculateStartDate) || (calculateEndDate)) {
+            if (currentScenario == null) {
+                currentScenario = scenarioManager.getCurrent();
+            }
+            List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
+                    SecurityUtils.getSessionUserLoginName(), currentScenario);
+            for (Order each : list) {
+                each.useSchedulingDataFor(currentScenario, false);
+                TaskGroup associatedTaskElement = each
+                        .getAssociatedTaskElement();
+                if (associatedTaskElement != null
+                        && STATUS_VISUALIZED.contains(each.getState())) {
+                    if (calculateStartDate) {
+                        startDate = Collections.min(notNull(startDate,
+                                each.getInitDate(),
+                                associatedTaskElement.getStartDate()));
+                    }
+                    if (calculateEndDate) {
+                        endDate = Collections.max(notNull(endDate,
+                                each.getDeadline(),
+                                associatedTaskElement.getEndDate()));
+                    }
+                }
             }
         }
         filterStartDate = startDate != null ? LocalDate
@@ -737,18 +856,19 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     @Override
-    public LocalDate getFilterStartDate() {
-        return filterStartDate;
+    public Date getFilterStartDate() {
+        return ((filterStartDate == null) ? null : filterStartDate
+                .toDateTimeAtStartOfDay().toDate());
     }
-
     @Override
-    public LocalDate getFilterFinishDate() {
-        return filterFinishDate;
+    public Date getFilterFinishDate() {
+        return ((filterStartDate == null) ? null : filterFinishDate
+                .toDateMidnight().toDate());
     }
 
     private AvailabilityTimeLine.Interval getFilterInterval() {
-        return AvailabilityTimeLine.Interval.create(getFilterStartDate(),
-                getFilterFinishDate());
+        return AvailabilityTimeLine.Interval.create(filterStartDate,
+                filterFinishDate);
     }
 
     private class CompanyLoadChartFiller extends StandardLoadChartFiller {
@@ -815,6 +935,23 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     @Transactional(readOnly=true)
     public ProgressType getProgressTypeFromConfiguration() {
         return configurationDAO.getConfiguration().getProgressType();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getUser() {
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        // Attach filter bandbox elements
+        if (user.getProjectsFilterLabel() != null) {
+            user.getProjectsFilterLabel().getFinderPattern();
+        }
+        return user;
     }
 
 }

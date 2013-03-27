@@ -187,6 +187,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             this.label = label;
         }
 
+        /**
+         * Helper function to mark text to be translated
+         */
+        private static String _(String text) {
+            return text;
+        }
+
     };
 
     public WorkerCRUDController() {
@@ -384,6 +391,10 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         editAsignedCriterions();
         updateUserBindingComponents();
         showEditWindow(_("Edit Worker: {0}", worker.getHumanId()));
+
+        Textbox workerFirstname = (Textbox) editWindow
+                .getFellow("workerFirstname");
+        workerFirstname.focus();
     }
 
     private void updateUserBindingComponents() {
@@ -436,6 +447,9 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         updateUserBindingComponents();
         showEditWindow(_("Create Worker"));
         resourceCalendarModel.cancel();
+        Textbox workerFirstname = (Textbox) editWindow
+                .getFellow("workerFirstname");
+        workerFirstname.focus();
     }
 
     private void showEditWindow(String title) {
@@ -487,7 +501,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private void initUserBindingOptions() {
         UserBindingOption[] values = UserBindingOption.values();
         for (UserBindingOption option : values) {
-            Radio radio = new Radio(option.label);
+            Radio radio = new Radio(_(option.label));
             if (option.equals(UserBindingOption.CREATE_NEW_USER)
                     && !SecurityUtils
                             .isSuperuserOrUserInRoles(UserRole.ROLE_USER_ACCOUNTS)) {

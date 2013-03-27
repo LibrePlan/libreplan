@@ -19,6 +19,8 @@
  */
 package org.libreplan.business.workreports.entities;
 
+import org.libreplan.business.workreports.valueobjects.DescriptionField;
+
 /**
  * Defines the default {@link WorkReportType WorkReportTypes}.
  *
@@ -27,7 +29,9 @@ package org.libreplan.business.workreports.entities;
  */
 public enum PredefinedWorkReportTypes {
     DEFAULT("Default", false, false, false),
-    MONTHLY_TIMESHEETS("Monthly timesheets", false, true, false);
+    PERSONAL_TIMESHEETS("Personal timesheets", false, true, false),
+    JIRA_TIMESHEETS("JIRA timesheets", false, false, false,
+            DescriptionField.create("Comment", 255));
 
     private WorkReportType workReportType;
 
@@ -39,6 +43,15 @@ public enum PredefinedWorkReportTypes {
         workReportType.setResourceIsSharedInLines(resourceIsSharedInLines);
         workReportType
                 .setOrderElementIsSharedInLines(orderElementIsSharedInLines);
+    }
+
+    private PredefinedWorkReportTypes(String name, boolean dateIsSharedByLines,
+            boolean resourceIsSharedInLines,
+            boolean orderElementIsSharedInLines,
+            DescriptionField lineDescriptionField) {
+        this(name, dateIsSharedByLines, resourceIsSharedInLines,
+                orderElementIsSharedInLines);
+        workReportType.addDescriptionFieldToEndLine(lineDescriptionField);
     }
 
     public WorkReportType getWorkReportType() {

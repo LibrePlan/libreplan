@@ -25,8 +25,6 @@ package org.libreplan.web.subcontract;
 import static org.libreplan.web.I18nHelper._;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -57,7 +55,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Row;
@@ -113,12 +110,10 @@ public class SubcontractedTasksController extends GenericForwardComposer {
 
             Order order = getOrder(subcontractedTaskData);
 
-            appendLabel(row,
-                    toString(subcontractedTaskData.getSubcontratationDate(), "dd/MM/yyyy HH:mm"));
-            appendLabel(
-                    row,
-                    toString(subcontractedTaskData.getSubcontractCommunicationDate(),
-                            "dd/MM/yyyy HH:mm"));
+            appendLabel(row, Util.formatDateTime(subcontractedTaskData
+                    .getSubcontratationDate()));
+            appendLabel(row, Util.formatDateTime(subcontractedTaskData
+                    .getSubcontractCommunicationDate()));
             appendLabel(row, getExternalCompany(subcontractedTaskData));
             appendLabel(row, getOrderCode(order));
             appendLabel(row, getOrderName(order));
@@ -126,8 +121,8 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             appendLabel(row, getTaskName(subcontractedTaskData));
             row.setTooltiptext(subcontractedTaskData.getWorkDescription());
             appendLabel(row, Util.addCurrencySymbol(subcontractedTaskData.getSubcontractPrice()));
-            appendLabel(row,
-                    toString(subcontractedTaskData.getLastRequiredDeliverDate(), "dd/MM/yyyy"));
+            appendLabel(row, Util.formatDate(subcontractedTaskData
+                    .getLastRequiredDeliverDate()));
             appendLabel(row, _(toString(subcontractedTaskData.getState())));
             appendOperations(row, subcontractedTaskData);
         }
@@ -150,13 +145,6 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             }
 
             return object.toString();
-        }
-
-        private String toString(Date date, String precision) {
-            if (date == null) {
-                return "";
-            }
-            return new SimpleDateFormat(precision).format(date);
         }
 
         private void appendLabel(Row row, String label) {

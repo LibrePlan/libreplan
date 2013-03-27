@@ -131,6 +131,8 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
                 final String inputText = ((InputEvent) event).getValue();
                 if ((inputText == null) || (inputText.isEmpty())) {
                     clear();
+                    listbox.setSelectedIndex(0);
+                    Events.postEvent(Events.ON_CHANGE, listbox, null);
                 } else {
                     searchMultipleFilters(inputText);
                 }
@@ -231,6 +233,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
     }
 
     public List getSelectedElements() {
+        updateBandboxValue();
         if (this.multipleFiltersFinder != null) {
             if (!multipleFiltersFinder.isValidFormatText(selectedFilters,
                     bandbox.getValue())) {
@@ -385,6 +388,15 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
 
     public String getHeightBbox() {
         return heightBbox;
+    }
+
+    public void addSelectedElements(List<FilterPair> sessionFilterPairs) {
+        selectedFilters.clear();
+        for (FilterPair filterPair : sessionFilterPairs) {
+            addFilter(filterPair);
+        }
+        updateselectedFiltersText();
+        updateBandboxValue();
     }
 
 }

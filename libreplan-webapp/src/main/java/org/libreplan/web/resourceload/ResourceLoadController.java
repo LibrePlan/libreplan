@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,8 +46,11 @@ import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.users.entities.User;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.ResourceAllocationFilterEnum;
 import org.libreplan.web.planner.chart.Chart;
 import org.libreplan.web.planner.chart.StandardLoadChartFiller;
 import org.libreplan.web.planner.company.CompanyPlanningModel;
@@ -98,6 +101,7 @@ import org.zkoss.zul.api.Combobox;
  *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Manuel Rego Casasnovas <rego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -141,6 +145,7 @@ public class ResourceLoadController implements Composer {
         this.parent = comp;
     }
 
+
     public void reload() {
         reloader.resetToInitialState();
         reloadWithoutReset();
@@ -163,6 +168,8 @@ public class ResourceLoadController implements Composer {
         private ListenerTracker listeners = new ListenerTracker();
 
         private TimeTracker timeTracker;
+
+        private IZoomLevelChangedListener zoomLevelListener;
 
         public Reloader() {
         }
@@ -247,12 +254,51 @@ public class ResourceLoadController implements Composer {
         }
 
         private TimeTracker buildTimeTracker(ResourceLoadDisplayData dataToShow) {
-            ZoomLevel zoomLevel = dataToShow.getInitialZoomLevel();
+            ZoomLevel zoomLevel = getZoomLevel(dataToShow);
             TimeTracker result = new TimeTracker(dataToShow.getViewInterval(),
                     zoomLevel, SeveralModificators.create(),
                     SeveralModificators.create(createBankHolidaysMarker()),
                     parent);
+            setupZoomLevelListener(result);
             return result;
+        }
+
+        private ZoomLevel getZoomLevel(ResourceLoadDisplayData dataToShow) {
+            if (filterBy != null) {
+                Order order = filterBy.getOrder();
+                ZoomLevel sessionZoom = FilterUtils.readZoomLevel(order);
+                if (sessionZoom != null) {
+                    return sessionZoom;
+                }
+            }
+
+            ZoomLevel sessionZoom = FilterUtils.readZoomLevelResourcesLoad();
+            if (sessionZoom != null) {
+                return sessionZoom;
+            }
+            return dataToShow.getInitialZoomLevel();
+        }
+
+        private void setupZoomLevelListener(TimeTracker timeTracker) {
+            zoomLevelListener = getSessionZoomLevelListener();
+            timeTracker.addZoomListener(zoomLevelListener);
+        }
+
+        private IZoomLevelChangedListener getSessionZoomLevelListener() {
+            IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+
+                @Override
+                public void zoomLevelChanged(ZoomLevel detailLevel) {
+                    if (filterBy != null) {
+                        Order order = filterBy.getOrder();
+                        FilterUtils.writeZoomLevel(order, detailLevel);
+                    } else {
+                        FilterUtils.writeZoomLevelResourcesLoad(detailLevel);
+                    }
+                }
+            };
+
+            return zoomListener;
         }
 
         private ResourcesLoadPanel buildPanel(ResourceLoadDisplayData dataToShow) {
@@ -268,12 +314,55 @@ public class ResourceLoadController implements Composer {
         FilterTypeChanger filterTypeChanger = new FilterTypeChanger(onChange,
                 filterBy);
         result.add(filterTypeChanger);
-        result.add(new ByDatesFilter(onChange, filterBy));
+
+        // Only by dates and bandbox filter on global resources load
+        if (filterBy == null) {
+        LocalDate startDate = FilterUtils.readResourceLoadsStartDate();
+        LocalDate endDate = FilterUtils.readResourceLoadsEndDate();
+
+        User user = resourceLoadModel.getUser();
+
+        // Calculate filter based on user preferences
+        if (user != null) {
+                if (startDate == null
+                        && !FilterUtils.hasResourceLoadsStartDateChanged()) {
+                if (user.getResourcesLoadFilterPeriodSince() != null) {
+                    startDate = new LocalDate().minusMonths(user
+                            .getResourcesLoadFilterPeriodSince());
+                } else {
+                    // Default filter start
+                    startDate = new LocalDate().minusDays(1);
+                }
+            }
+                if ((endDate == null)
+                        && !FilterUtils.hasResourceLoadsEndDateChanged()
+                    && (user.getResourcesLoadFilterPeriodTo() != null)) {
+                endDate = new LocalDate().plusMonths(user
+                        .getResourcesLoadFilterPeriodTo());
+            }
+        }
+
+        result.add(new ByDatesFilter(onChange, filterBy, startDate, endDate));
+
+        List<FilterPair> filterPairs = (List<FilterPair>) FilterUtils
+                .readResourceLoadsBandbox();
+        if ((filterPairs == null || filterPairs.isEmpty())
+                && user.getResourcesLoadFilterCriterion() != null) {
+            filterPairs = new ArrayList<FilterPair>();
+            filterPairs.add(new FilterPair(
+                    ResourceAllocationFilterEnum.Criterion, user
+                            .getResourcesLoadFilterCriterion()
+                            .getFinderPattern(), user
+                            .getResourcesLoadFilterCriterion()));
+        }
+
         WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
-                onChange, filterBy, filterTypeChanger, resourcesSearcher);
+                onChange, filterBy, filterTypeChanger, resourcesSearcher, filterPairs);
+
         result.add(bandbox);
         result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
                 bandbox));
+        }
         result.add(new LoadChart(onChange, filterBy));
         return result;
     }
@@ -412,10 +501,14 @@ public class ResourceLoadController implements Composer {
 
         private final Datebox endBox = new Datebox();
 
-        private ByDatesFilter(Runnable onChange, PlanningState filterBy) {
+        private ByDatesFilter(Runnable onChange, PlanningState filterBy,
+                LocalDate startDate, LocalDate endDate) {
             super(onChange, filterBy);
-            startDateValue = isAppliedToOrder() ? null : new LocalDate()
-                    .minusDays(1);
+            startDateValue = (isAppliedToOrder() || (startDate == null)) ? null
+                    : startDate
+                    .toDateTimeAtStartOfDay().toLocalDate();
+            endDateValue = (endDate == null) ? null : endDate
+                    .toDateMidnight().toLocalDate();
         }
 
         @Override
@@ -435,10 +528,12 @@ public class ResourceLoadController implements Composer {
                     LocalDate newStart = toLocal(startBox.getValue());
                     if (!ObjectUtils.equals(startDateValue, newStart)) {
                         startDateValue = newStart;
+                        FilterUtils.writeResourceLoadsStartDate(startDateValue);
                         notifyChange();
                     }
                 }
             });
+
             endBox.setValue(asDate(endDateValue));
             endBox.setWidth("100px");
             endBox.addEventListener(Events.ON_CHANGE, new EventListener() {
@@ -447,10 +542,12 @@ public class ResourceLoadController implements Composer {
                     LocalDate newEnd = toLocal(endBox.getValue());
                     if (!ObjectUtils.equals(endBox, newEnd)) {
                         endDateValue = newEnd;
+                        FilterUtils.writeResourceLoadsEndDate(endDateValue);
                         notifyChange();
                     }
                 }
             });
+
             Hbox hbox = new Hbox();
             hbox.appendChild(new Label(_("From") + ":"));
             hbox.appendChild(startBox);
@@ -510,9 +607,19 @@ public class ResourceLoadController implements Composer {
 
         private WorkersOrCriteriaBandbox(Runnable onChange,
                 PlanningState filterBy, FilterTypeChanger filterType,
-                IResourcesSearcher resourcesSearcher) {
+                IResourcesSearcher resourcesSearcher,
+                List<FilterPair> selectedFilters) {
             super(onChange, filterBy, filterType);
             this.resourcesSearcher = resourcesSearcher;
+
+            initBandbox();
+
+            if ((selectedFilters != null) && !selectedFilters.isEmpty()) {
+                for (FilterPair filterPair : selectedFilters) {
+                    bandBox.addSelectedElement(filterPair);
+                }
+                entitiesSelected = getSelected();
+            }
         }
 
         @Override
@@ -523,7 +630,7 @@ public class ResourceLoadController implements Composer {
             panel.setSecondOptionalFilter(buildBandboxFilterer());
         }
 
-        private Hbox buildBandboxFilterer() {
+        private void initBandbox() {
             bandBox.setId("workerBandboxMultipleSearch");
             bandBox.setWidthBandbox("185px");
             bandBox.setWidthListbox("450px");
@@ -534,10 +641,14 @@ public class ResourceLoadController implements Composer {
                 @Override
                 public void onEvent(Event event) throws Exception {
                     entitiesSelected = getSelected();
+                    FilterUtils.writeResourceLoadsParameters(bandBox
+                            .getSelectedElements());
                     notifyChange();
                 }
             });
+        }
 
+        private Hbox buildBandboxFilterer() {
             Hbox hbox = new Hbox();
             hbox.appendChild(getLabel());
             hbox.appendChild(bandBox);

@@ -86,6 +86,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
             return false;
         }
 
+        @Override
+        public boolean isPlannerCommand() {
+            return false;
+        }
+
     }
 
     private static class NullCommandOnTask<T> implements ICommandOnTask<T> {

@@ -22,13 +22,18 @@
 package org.libreplan.web.security;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jfree.util.Log;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.users.entities.OrderAuthorization;
+import org.libreplan.business.users.entities.OrderAuthorizationType;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.web.users.services.CustomUser;
 import org.springframework.security.Authentication;
@@ -124,7 +129,11 @@ public final class SecurityUtils {
                     @Override
                     public Boolean execute() {
                         try {
-                            String username = getLoggedUser().getUsername();
+                            CustomUser customUser = getLoggedUser();
+                            if (customUser == null) {
+                                return false;
+                            }
+                            String username = customUser.getUsername();
                             return Registry
                                     .getOrderAuthorizationDAO()
                                     .userOrItsProfilesHaveAnyAuthorization(
@@ -136,6 +145,40 @@ public final class SecurityUtils {
                         }
                     }
                 });
+    }
+
+    public final static boolean loggedUserCanWrite(Order order) {
+        if (isSuperuserOrUserInRoles(UserRole.ROLE_EDIT_ALL_PROJECTS)) {
+            return true;
+        }
+        if (order.isNewObject()
+                && isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
+            return true;
+        }
+
+        User user;
+        try {
+            CustomUser loggedUser = getLoggedUser();
+            if (loggedUser == null) {
+                return false;
+            }
+            user = Registry.getUserDAO().findByLoginName(
+                    loggedUser.getUsername());
+        } catch (InstanceNotFoundException e) {
+            Log.warn("Logged user not found in database", e);
+            return false;
+        }
+
+        List<OrderAuthorization> orderAuthorizations = Registry
+                .getOrderAuthorizationDAO().listByOrderUserAndItsProfiles(
+                        order, user);
+        for (OrderAuthorization authorization : orderAuthorizations) {
+            if (authorization.getAuthorizationType().equals(
+                    OrderAuthorizationType.WRITE_AUTHORIZATION)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

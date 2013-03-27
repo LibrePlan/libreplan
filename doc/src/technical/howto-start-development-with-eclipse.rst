@@ -25,7 +25,7 @@ options:
 
 a) Clone Git repository (recommended)::
 
-    $ git clone git://libreplan.git.sourceforge.net/gitroot/libreplan/libreplan libreplan
+    $ git clone git://github.com/Igalia/libreplan.git
 
 b) Download last version source code::
 

@@ -26,6 +26,7 @@ resources/work_report_test.sah
 resources/companies_test.sah
 resources/subcontracting_test.sah
 resources/search_resources_test.sah
+resources/bound_resources.sah
 
 # My Account
 account/password_test.sah

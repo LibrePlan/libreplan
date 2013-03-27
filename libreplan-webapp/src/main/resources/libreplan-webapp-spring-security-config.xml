@@ -13,6 +13,12 @@
         entry-point-ref="customAuthenticationEntryPoint">
 
         <!-- Web services -->
+        <intercept-url pattern="/ws/rest/bounduser/**"
+            access="ROLE_BOUND_USER"
+            method="GET" />
+        <intercept-url pattern="/ws/rest/bounduser/**"
+            access="ROLE_BOUND_USER"
+            method="POST" />
         <intercept-url pattern="/ws/rest/subcontracting/**"
             access="ROLE_WS_SUBCONTRACTING"
             method="GET" />
@@ -25,6 +31,9 @@
         <intercept-url pattern="/ws/rest/**"
             access="ROLE_WS_WRITER"
             method="POST" />
+        <intercept-url pattern="/ws/rest/**"
+            access="ROLE_WS_WRITER"
+            method="DELETE" />
 
         <!-- Web application -->
         <intercept-url pattern="/common/img/**"

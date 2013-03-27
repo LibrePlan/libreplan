@@ -44,9 +44,8 @@ public class ResourceConverter implements IConverter<Resource> {
     @Override
     @Transactional(readOnly = true)
     public Resource asObject(String stringRepresentation) {
-        long id = Long.parseLong(stringRepresentation);
         try {
-            return resourceDAO.find(id);
+            return resourceDAO.findByCode(stringRepresentation);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -54,7 +53,7 @@ public class ResourceConverter implements IConverter<Resource> {
 
     @Override
     public String asString(Resource entity) {
-        return entity.getId() + "";
+        return entity.getCode();
     }
 
     @Override

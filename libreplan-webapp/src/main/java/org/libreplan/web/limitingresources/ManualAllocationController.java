@@ -489,7 +489,8 @@ public class ManualAllocationController extends GenericForwardComposer {
         }
 
         private String formatTime(DateAndHour time) {
-            return time == null ? _("END") : time.getDate().toString("dd/MM/yyyy") + " - " + time.getHour();
+            return time == null ? _("END") : Util.formatDate(time.getDate())
+                    + " - " + time.getHour();
         }
 
     }

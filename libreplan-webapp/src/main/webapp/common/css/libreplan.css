@@ -214,3 +214,12 @@ a.sub_menu:hover {
 	max-width: 300px;
 	max-height: 65px;
 }
+
+.mainmenu :focus {
+    color:#FFF !important;
+    text-decoration: underline !important;
+}
+
+a:focus {
+    text-decoration: underline !important;
+}

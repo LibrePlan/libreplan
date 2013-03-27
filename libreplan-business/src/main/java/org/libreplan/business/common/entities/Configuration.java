@@ -23,6 +23,7 @@ package org.libreplan.business.common.entities;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.Min;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.libreplan.business.calendars.entities.BaseCalendar;
@@ -103,14 +104,31 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForExpenseSheets = true;
 
+    private JiraConfiguration jiraConfiguration;
+
     /**
      * Currency code according to ISO-4217 (3 letters)
      */
     private String currencyCode = "EUR";
     private String currencySymbol = "€";
 
-    private TypeOfWorkHours monthlyTimesheetsTypeOfWorkHours;
+    private TypeOfWorkHours personalTimesheetsTypeOfWorkHours;
 
+    private PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity = PersonalTimesheetsPeriodicityEnum.MONTHLY;
+
+    private Integer secondsPlanningWarning = 30;
+
+    /**
+     * Maximum users configurable directly in database for SaaS products. If
+     * zero it means that there isn't any limitation.
+     */
+    private Integer maxUsers = 0;
+
+    /**
+     * Maximum resources configurable directly in database for SaaS products. If
+     * zero it means that there isn't any limitation.
+     */
+    private Integer maxResources = 0;
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
@@ -451,13 +469,48 @@ public class Configuration extends BaseEntity {
         this.currencySymbol = currencySymbol;
     }
 
-    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
-        return monthlyTimesheetsTypeOfWorkHours;
+    public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
+        return personalTimesheetsTypeOfWorkHours;
     }
 
-    public void setMonthlyTimesheetsTypeOfWorkHours(
+    public void setPersonalTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
-        monthlyTimesheetsTypeOfWorkHours = typeOfWorkHours;
+        personalTimesheetsTypeOfWorkHours = typeOfWorkHours;
+    }
+
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return personalTimesheetsPeriodicity;
+    }
+
+    public void setPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+        this.personalTimesheetsPeriodicity = personalTimesheetsPeriodicity;
+    }
+
+    public Integer getMaxUsers() {
+        return maxUsers;
+    }
+
+    public Integer getMaxResources() {
+        return maxResources;
+    }
+
+    @Min(value = 0, message = "seconds planning warning cannot be negative")
+    @NotNull(message = "seconds planning warning not specified")
+    public Integer getSecondsPlanningWarning() {
+        return secondsPlanningWarning;
+    }
+
+    public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
+        this.secondsPlanningWarning = secondsPlanningWarning;
+    }
+
+    public JiraConfiguration getJiraConfiguration() {
+        return jiraConfiguration;
+    }
+
+    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
+        this.jiraConfiguration = jiraConfiguration;
     }
 
 }

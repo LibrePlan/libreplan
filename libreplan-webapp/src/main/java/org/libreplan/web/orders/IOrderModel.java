@@ -33,12 +33,14 @@ import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.qualityforms.entities.QualityForm;
 import org.libreplan.business.resources.entities.Criterion;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.templates.entities.OrderTemplate;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.web.common.IIntegrationEntityModel;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.ganttz.IPredicate;
@@ -73,7 +75,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     List<QualityForm> getQualityForms();
 
-    OrderLineGroup getOrder();
+    Order getOrder();
 
     IOrderElementModel getOrderElementModel(OrderElement orderElement);
 
@@ -86,6 +88,10 @@ public interface IOrderModel extends IIntegrationEntityModel {
     OrderElementTreeModel getOrderElementTreeModel();
 
     List<Order> getOrders();
+
+    List<Order> getOrders(Date startDate, Date endDate, List<Label> labels,
+            List<Criterion> criteria, ExternalCompany customer,
+            OrderStatusEnum state);
 
     void initEdit(Order order, Desktop desktop);
 
@@ -123,7 +129,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     boolean userCanRead(Order order, String loginName);
 
-    boolean userCanWrite(Order order, String loginName);
+    boolean userCanWrite(Order order);
 
     boolean isAlreadyInUse(OrderElement orderElement);
 
@@ -133,7 +139,7 @@ public interface IOrderModel extends IIntegrationEntityModel {
 
     PlanningState getPlanningState();
 
-    boolean hasImputedExpenseSheets(OrderElement order);
+    boolean hasImputedExpenseSheetsThisOrAnyOfItsChildren(OrderElement order);
 
     void removeAskedEndDate(EndDateCommunication endDate);
 
@@ -144,5 +150,12 @@ public interface IOrderModel extends IIntegrationEntityModel {
     boolean alreadyExistsRepeatedEndDate(Date value);
 
     boolean isAnyTaskWithConstraint(PositionConstraintType type);
+
+    boolean isOnlyChildAndParentAlreadyInUseByHoursOrExpenses(
+            OrderElement orderElement);
+
+    User getUser();
+
+    boolean isJiraActivated();
 
 }

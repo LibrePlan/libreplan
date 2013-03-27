@@ -28,6 +28,7 @@ import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.util.Pair;
 import org.libreplan.business.workreports.entities.WorkReport;
 import org.libreplan.business.workreports.entities.WorkReportLine;
 
@@ -64,5 +65,16 @@ public interface IWorkReportLineDAO extends
      */
     List<WorkReportLine> findByResourceFilteredByDateNotInWorkReport(
             Resource resource, Date start, Date end, WorkReport workReport);
+
+    Pair<Date, Date> findMinAndMaxDatesByOrderElement(
+            OrderElement orderElement);
+
+    List<WorkReportLine> findFinishedByOrderElementNotInWorkReportAnotherTransaction(
+            OrderElement orderElement, WorkReport workReport);
+
+    Boolean isFinished(OrderElement orderElement);
+
+    List<WorkReportLine> findByOrderElementAndWorkReports(
+            OrderElement orderElement, List<WorkReport> workReports);
 
 }

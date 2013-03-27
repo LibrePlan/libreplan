@@ -26,7 +26,6 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -88,11 +87,13 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.business.users.daos.IOrderAuthorizationDAO;
 import org.libreplan.business.users.entities.OrderAuthorization;
 import org.libreplan.business.workingday.IntraDayDate;
+import org.libreplan.web.common.ConfirmCloseUtil;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
+import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -124,7 +125,6 @@ import org.zkoss.zul.Messagebox;
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class SaveCommandBuilder {
-
 
     private static final Log LOG = LogFactory.getLog(SaveCommandBuilder.class);
 
@@ -337,7 +337,7 @@ public class SaveCommandBuilder {
                         message += validationException.getMessage();
                     }
 
-                    LOG.warn(validationException.getMessage());
+                    LOG.warn("Error saving the project", validationException);
                     Messagebox.show(
                             _("Error saving the project\n{0}", message),
                             _("Error"), Messagebox.OK, Messagebox.ERROR);
@@ -365,6 +365,17 @@ public class SaveCommandBuilder {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            if (Executions.getCurrent() != null) {
+                // Reset timer of warning on leaving page
+                ConfirmCloseUtil.resetConfirmClose();
+                if (SecurityUtils.loggedUserCanWrite(state.getOrder())) {
+                    ConfirmCloseUtil
+                            .setConfirmClose(
+                                    Executions.getCurrent().getDesktop(),
+                                    _("You are about to leave the planning edition, unsaved changes will be lost."));
+                }
+            }
+
         }
 
         private void doTheSaving() {
@@ -385,6 +396,7 @@ public class SaveCommandBuilder {
                 // the deletes on cascade a new root task is fetched causing a
                 // NonUniqueObjectException later
                 taskElementDAO.reattach(rootTask);
+                rootTask.updateCriticalPathProgress(state.getCriticalPath());
             }
             orderDAO.save(order);
 
@@ -623,11 +635,13 @@ public class SaveCommandBuilder {
         }
 
         private void updateRootTaskPosition(TaskGroup rootTask) {
-            final IntraDayDate min = minDate(rootTask.getChildren());
+            final IntraDayDate min = TaskElement
+                    .minDate(rootTask.getChildren());
             if (min != null) {
                 rootTask.setIntraDayStartDate(min);
             }
-            final IntraDayDate max = maxDate(rootTask.getChildren());
+            final IntraDayDate max = TaskElement
+                    .maxDate(rootTask.getChildren());
             if (max != null) {
                 rootTask.setIntraDayEndDate(max);
             }
@@ -859,44 +873,6 @@ public class SaveCommandBuilder {
             taskElement.getDependenciesWithThisDestination().size();
         }
 
-        private IntraDayDate maxDate(Collection<? extends TaskElement> tasksToSave) {
-            List<IntraDayDate> endDates = toEndDates(tasksToSave);
-            return endDates.isEmpty() ? null : Collections.max(endDates);
-        }
-
-        private List<IntraDayDate> toEndDates(
-                Collection<? extends TaskElement> tasksToSave) {
-            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
-            for (TaskElement taskElement : tasksToSave) {
-                IntraDayDate endDate = taskElement.getIntraDayEndDate();
-                if (endDate != null) {
-                    result.add(endDate);
-                } else {
-                    LOG.warn("the task" + taskElement + " has null end date");
-                }
-            }
-            return result;
-        }
-
-        private IntraDayDate minDate(Collection<? extends TaskElement> tasksToSave) {
-            List<IntraDayDate> startDates = toStartDates(tasksToSave);
-            return startDates.isEmpty() ? null : Collections.min(startDates);
-        }
-
-        private List<IntraDayDate> toStartDates(
-                Collection<? extends TaskElement> tasksToSave) {
-            List<IntraDayDate> result = new ArrayList<IntraDayDate>();
-            for (TaskElement taskElement : tasksToSave) {
-                IntraDayDate startDate = taskElement.getIntraDayStartDate();
-                if (startDate != null) {
-                    result.add(startDate);
-                } else {
-                    LOG.warn("the task" + taskElement + " has null start date");
-                }
-            }
-            return result;
-        }
-
         @Override
         public String getName() {
             return _("Save");
@@ -1065,6 +1041,11 @@ public class SaveCommandBuilder {
         @Override
         public boolean isDisabled() {
             return disabled;
+        }
+
+        @Override
+        public boolean isPlannerCommand() {
+            return false;
         }
 
     }

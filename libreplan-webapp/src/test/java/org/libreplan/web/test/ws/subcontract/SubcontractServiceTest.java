@@ -205,7 +205,7 @@ public class SubcontractServiceTest {
         assertNotNull(order.getExternalCode());
         assertThat(order.getExternalCode(), equalTo(orderLineCode));
         assertThat(order.getState(),
-                equalTo(OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER));
+                equalTo(OrderStatusEnum.OUTSOURCED));
         assertThat(order.getWorkHours(), equalTo(0));
         assertThat(order.getCustomer().getId(),
                 equalTo(externalCompany.getId()));

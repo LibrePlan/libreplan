@@ -143,11 +143,11 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
         }
     }
 
-    @AssertTrue(message = "type of work hours for monthly timesheets cannot be disabled")
-    public boolean checkMonthlyTimesheetsTypeOfWorkHoursNotDisabled() {
+    @AssertTrue(message = "type of work hours for personal timesheets cannot be disabled")
+    public boolean checkPersonalTimesheetsTypeOfWorkHoursNotDisabled() {
         if (!isNewObject() && !getEnabled()) {
             TypeOfWorkHours typeOfWorkHours = Registry.getConfigurationDAO()
-                    .getConfiguration().getMonthlyTimesheetsTypeOfWorkHours();
+                    .getConfiguration().getPersonalTimesheetsTypeOfWorkHours();
             if (typeOfWorkHours.getId().equals(getId())) {
                 return false;
             }
@@ -163,6 +163,20 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
     @Override
     public String getHumanId() {
         return name;
+    }
+
+    @AssertTrue(message = "type of work hours for JIRA connector cannot be disabled")
+    public boolean checkJiraConnectorTypeOfWorkHoursNotDisabled() {
+        if (!isNewObject() && !getEnabled()) {
+            TypeOfWorkHours typeOfWorkHours = Registry.getConfigurationDAO()
+                    .getConfiguration().getJiraConfiguration()
+                    .getJiraConnectorTypeOfWorkHours();
+            if (typeOfWorkHours.getId().equals(getId())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

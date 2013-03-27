@@ -244,6 +244,10 @@ public class ExpenseSheet extends IntegrationEntity implements IHumanIdentifiabl
             return true;
         }
 
+        if (expenseSheetLines.isEmpty()) {
+            return true;
+        }
+
         Resource resource = expenseSheetLines.iterator().next().getResource();
 
         for (ExpenseSheetLine line : expenseSheetLines) {

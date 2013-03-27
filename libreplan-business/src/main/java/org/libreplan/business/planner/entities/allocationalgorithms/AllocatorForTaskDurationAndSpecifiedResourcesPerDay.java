@@ -23,7 +23,7 @@ package org.libreplan.business.planner.entities.allocationalgorithms;
 
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import org.libreplan.business.workingday.IntraDayDate;
 
 public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
 
@@ -40,13 +40,13 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
         }
     }
 
-    public void allocateUntil(LocalDate endExclusive) {
+    public void allocateUntil(IntraDayDate endExclusive) {
         for (ResourcesPerDayModification allocation : allocations) {
             allocation.applyAllocationUntil(endExclusive);
         }
     }
 
-    public void allocateFromEndUntil(LocalDate start) {
+    public void allocateFromEndUntil(IntraDayDate start) {
         for (ResourcesPerDayModification allocation : allocations) {
             allocation.applyAllocationFromEndUntil(start);
         }

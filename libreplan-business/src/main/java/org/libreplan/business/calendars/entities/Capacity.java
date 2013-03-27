@@ -90,7 +90,7 @@ public class Capacity {
     }
 
     private static Capacity noCapacity() {
-        return Capacity.create(EffortDuration.hours(0))
+        return Capacity.create(EffortDuration.zero())
                 .notOverAssignableWithoutLimit();
     }
 

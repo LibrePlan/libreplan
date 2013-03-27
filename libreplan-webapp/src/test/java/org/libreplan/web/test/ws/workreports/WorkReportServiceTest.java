@@ -37,11 +37,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.annotation.Resource;
+
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -152,6 +155,15 @@ public class WorkReportServiceTest {
     private final String labelA2 = "labelA2";
 
     private final String labelB1 = "labelB1";
+
+    @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Test
+    @Rollback(false)
+    public void loadRequiredaData() {
+        configurationBootstrap.loadRequiredData();
+    }
 
     @Test
     @Rollback(false)

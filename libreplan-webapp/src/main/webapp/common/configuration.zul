@@ -42,6 +42,7 @@
                 <tab label="${i18n:_('Main preferences')}" />
                 <tab label="${i18n:_('Entity sequences')}" />
                 <tab label="${i18n:_('LDAP configuration')}" />
+                <tab label="${i18n:_('JIRA connector')}" />
             </tabs>
             <tabpanels>
                 <tabpanel id="panelConfiguration">
@@ -69,10 +70,19 @@
                                     selectedElement="@{configurationController.defaultCalendar}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Hours type for monthly timesheets')}" />
+                                <label value="${i18n:_('Hours type for personal timesheets')}" />
                                 <bandboxSearch
                                     finder="TypeOfWorkHoursBandboxFinder"
-                                    selectedElement="@{configurationController.monthlyTimesheetsTypeOfWorkHours, access='both'}" />
+                                    selectedElement="@{configurationController.personalTimesheetsTypeOfWorkHours, access='both'}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Personal timesheets peridocity')}" />
+                                <listbox model="@{configurationController.personalTimesheetsPeriodicities}"
+                                    itemRenderer="@{configurationController.personalTimesheetsPeriodicityRenderer}"
+                                    selectedItem="@{configurationController.selectedPersonalTimesheetsPeriodicity}"
+                                    disabled="@{configurationController.personalTimesheetsPeriodicityDisabled}"
+                                    tooltiptext="@{configurationController.personalTimesheetsPeriodicityTooltip}"
+                                    mold="select" />
                             </row>
                             <row>
                                 <label
@@ -199,6 +209,17 @@
                                 <checkbox
                                     label="${i18n:_('MonteCarlo method')}"
                                     checked="@{configurationController.monteCarloMethodTabVisible}" />
+                            </row>
+                            <row>
+                                <label
+                                    value="${i18n:_('Seconds planning warning')}" />
+                                <hbox>
+                                    <intbox width="50px"
+                                        value="@{configurationController.secondsPlanningWarning}"
+                                        constraint="no empty,no negative:${i18n:_('cannot be negative or empty')}" />
+                                    <label
+                                        value="${i18n:_('Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning.')}" />
+                                </hbox>
                             </row>
                         </rows>
                     </grid>
@@ -392,6 +413,48 @@
                             </grid>
                         </vbox>
                     </groupbox>
+                </tabpanel>
+
+                <tabpanel id="panelJiraConfiguration">
+                     <grid>
+                        <columns>
+                           <column width="200px" />
+                           <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Activated')}" />
+                                <checkbox id="jiraActivated" checked="@{configurationController.jiraConfiguration.jiraActivated}" width="300px" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('JIRA URL')}" />
+                                <textbox id="jiraURL" value="@{configurationController.jiraConfiguration.jiraUrl}"  width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('JIRA sync account')}" />
+                                <textbox id="jiraSyncAccount" value="@{configurationController.jiraConfiguration.jiraUserId}"  width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('JIRA sync password')}" />
+                                <textbox id="jiraSyncPassword" value="@{configurationController.jiraConfiguration.jiraPassword}"  type="password" width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('JIRA labels: comma-separated list of labels or URL')}" />
+                                <textbox id="jiraLabels" value="@{configurationController.jiraConfiguration.jiraLabels}"  width="600px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Hours type for JIRA connector')}" />
+                                <bandboxSearch
+                                    finder="TypeOfWorkHoursBandboxFinder"
+                                    selectedElement="@{configurationController.jiraConnectorTypeOfWorkHours, access='both'}" />
+                            </row>
+                        </rows>
+                    </grid>
+                    <separator />
+                        <button label="${i18n:_('Test connection')}"
+                            onClick="configurationController.testJiraConnection()" />
+                    <separator />
+
                 </tabpanel>
             </tabpanels>
         </tabbox>

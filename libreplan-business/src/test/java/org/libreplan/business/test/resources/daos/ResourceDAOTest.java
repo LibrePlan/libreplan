@@ -40,8 +40,10 @@ import java.util.UUID;
 
 import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
@@ -96,6 +98,14 @@ public class ResourceDAOTest {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @javax.annotation.Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Before
+    public void loadRequiredaData() {
+        configurationBootstrap.loadRequiredData();
+    }
 
     @Test
     public void saveResourceWithCalendar() throws InstanceNotFoundException {

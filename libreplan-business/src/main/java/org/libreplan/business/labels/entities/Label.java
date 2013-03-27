@@ -132,4 +132,8 @@ public class Label extends IntegrationEntity implements Comparable<Label> {
         return getTypeAndName().compareToIgnoreCase(o.getTypeAndName());
     }
 
+    public String getFinderPattern() {
+        return String.format("%s ( %s )", name, type.getName());
+    }
+
 }

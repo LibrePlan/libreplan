@@ -25,7 +25,6 @@ import static org.libreplan.web.I18nHelper._;
 import static org.libreplan.web.common.Util.findOrCreate;
 
 import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -311,7 +310,7 @@ public abstract class BaseCalendarEditionController extends
         Date date = baseCalendarModel.getCurrentExpiringDate();
         String label = "";
         if (date != null) {
-            label = " " + _("to {0}", new SimpleDateFormat("dd/MM/yyyy").format(date));
+            label = " " + _("to {0}", Util.formatDate(date));
         }
         return label;
     }
@@ -320,7 +319,7 @@ public abstract class BaseCalendarEditionController extends
         Date date = baseCalendarModel.getCurrentStartDate();
         String label = "";
         if (date != null) {
-            label = " " + _("from {0}", new SimpleDateFormat("dd/MM/yyyy").format(date));
+            label = " " + _("from {0}", Util.formatDate(date));
         }
         return label;
     }

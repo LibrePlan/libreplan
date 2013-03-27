@@ -39,4 +39,6 @@ public interface IOrderElementService {
 
     Response getOrderElement(String code);
 
+    Response removeOrderElement(String code);
+
 }

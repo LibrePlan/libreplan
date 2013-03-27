@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2010-2013 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,22 +30,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.planner.entities.TaskElement;
+import org.libreplan.business.users.entities.User;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.tabs.MultipleTabsPlannerController;
 import org.libreplan.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.web.servlet.dsp.action.Page;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -68,6 +70,7 @@ import org.zkoss.zul.Vbox;
  * planner.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -136,11 +139,46 @@ public class CompanyPlanningController implements Composer {
         bdFilters = (BandboxMultipleSearch) filterComponent
                 .getFellow("bdFilters");
         bdFilters.setFinder("taskGroupsMultipleFiltersFinder");
+        loadPredefinedBandboxFilter();
+
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
-
         checkCreationPermissions();
+
+    }
+
+    private void loadPredefinedBandboxFilter() {
+        User user = model.getUser();
+        List<FilterPair> sessionFilterPairs = FilterUtils
+                .readProjectsParameters();
+        if (sessionFilterPairs != null) {
+            bdFilters.addSelectedElements(sessionFilterPairs);
+        } else if ((user != null) && (user.getProjectsFilterLabel() != null)) {
+            bdFilters.clear();
+            bdFilters.addSelectedElement(new FilterPair(
+                    TaskGroupFilterEnum.Label, user.getProjectsFilterLabel()
+                            .getFinderPattern(), user
+                            .getProjectsFilterLabel()));
+        }
+
+        // Calculate filter based on user preferences
+        if (user != null) {
+            if ((filterStartDate.getValue() == null)
+                    && !FilterUtils.hasProjectsStartDateChanged()
+                    && (user.getProjectsFilterPeriodSince() != null)) {
+                filterStartDate.setValue(new LocalDate()
+                        .minusMonths(user.getProjectsFilterPeriodSince())
+                        .toDateTimeAtStartOfDay().toDate());
+            }
+            if (filterFinishDate.getValue() == null
+                    && !FilterUtils.hasProjectsEndDateChanged()
+                    && (user.getProjectsFilterPeriodTo() != null)) {
+                filterFinishDate.setValue(new LocalDate()
+                        .plusMonths(user.getProjectsFilterPeriodTo())
+                        .toDateMidnight().toDate());
+            }
+        }
 
     }
 
@@ -149,7 +187,8 @@ public class CompanyPlanningController implements Composer {
      * the create buttons accordingly.
      */
     private void checkCreationPermissions() {
-        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_PROJECTS)) {
+        if (!SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_CREATE_PROJECTS)) {
             Button createOrderButton = (Button) planner.getPage().getFellow(
                     "createOrderButton");
             if (createOrderButton != null) {
@@ -197,7 +236,7 @@ public class CompanyPlanningController implements Composer {
 
         @Override
         public void render(Comboitem item, Object data) {
-            ProgressType progressType = (ProgressType) data;
+            final ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));
 
@@ -278,40 +317,60 @@ public class CompanyPlanningController implements Composer {
         };
     }
 
+    public void readSessionVariablesIntoComponents() {
+        filterStartDate.setValue(FilterUtils.readProjectsStartDate());
+        filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
+        loadPredefinedBandboxFilter();
+    }
+
     public void onApplyFilter() {
+        FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
+                filterFinishDate.getValue(), bdFilters.getSelectedElements());
+        FilterUtils.writeProjectPlanningFilterChanged(true);
         filterByPredicate(createPredicate());
     }
 
-    private IPredicate createPredicate() {
+    public void loadSessionFiltersIntoBandbox() {
+        bdFilters.addSelectedElements(FilterUtils.readProjectsParameters());
+    }
+
+    private TaskGroupPredicate createPredicate() {
         List<FilterPair> listFilters = (List<FilterPair>) bdFilters
                 .getSelectedElements();
         Date startDate = filterStartDate.getValue();
         Date finishDate = filterFinishDate.getValue();
         Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
 
-        if (listFilters.isEmpty() && startDate == null && finishDate == null) {
-            IPredicate predicate = model.getDefaultPredicate(includeOrderElements);
+        if (startDate == null && finishDate == null) {
+            TaskGroupPredicate predicate = model
+                    .getDefaultPredicate(includeOrderElements);
             //show filter dates calculated by default on screen
-            if(model.getFilterStartDate() != null) {
-                filterStartDate.setValue(model.getFilterStartDate().
-                        toDateMidnight().toDate());
+            if (model.getFilterStartDate() != null
+                    && !FilterUtils.hasProjectsStartDateChanged()) {
+                filterStartDate.setValue(model.getFilterStartDate());
             }
-            if(model.getFilterFinishDate() != null) {
-                filterFinishDate.setValue(model.getFilterFinishDate().
-                        toDateMidnight().toDate());
+            if (model.getFilterFinishDate() != null
+                    && !FilterUtils.hasProjectsEndDateChanged()) {
+                filterFinishDate.setValue(model.getFilterFinishDate());
             }
+            predicate.setFilters(listFilters);
             return predicate;
         }
         return new TaskGroupPredicate(listFilters, startDate, finishDate,
                 includeOrderElements);
     }
 
-    private void filterByPredicate(IPredicate predicate) {
+    private void filterByPredicate(TaskGroupPredicate predicate) {
         // Recalculate predicate
         model.setConfigurationToPlanner(planner, additional,
                 doubleClickCommand, predicate);
         planner.updateSelectedZoomLevel();
         planner.invalidate();
+    }
+
+    public void setPredicate() {
+        model.setConfigurationToPlanner(planner, additional,
+                doubleClickCommand, createPredicate());
     }
 
     public void setTabsController(MultipleTabsPlannerController tabsController) {

@@ -23,6 +23,7 @@ package org.libreplan.business.planner.daos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -238,20 +239,19 @@ public class ResourceAllocationDAO extends
     }
 
     @Override
-    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
-            final Scenario onScenario,
-            final List<Criterion> criterions,
+    @SuppressWarnings("unchecked")
+    public List<GenericResourceAllocation> findGenericAllocationsRelatedToCriterion(
+            final Scenario onScenario, final Criterion criterion,
             final Date intervalFilterStartDate, final Date intervalFilterEndDate) {
-
-        if (criterions.isEmpty()) {
-            return new HashMap<Criterion, List<GenericResourceAllocation>>();
+        if (criterion == null) {
+            return Collections.emptyList();
         }
 
         QueryBuilder queryBuilder = new QueryBuilder() {
 
             @Override
             protected String getBaseQuery() {
-                return "select generic, criterion "
+                return "select generic "
                         + "from GenericResourceAllocation as generic "
                         + "join generic.task as task "
                         + "join generic.criterions as criterion ";
@@ -259,12 +259,12 @@ public class ResourceAllocationDAO extends
 
             @Override
             protected String getBaseConditions() {
-                return "where criterion in(:criterions) ";
+                return "where criterion = :criterion ";
             }
 
             @Override
             protected void setBaseParameters(Query query) {
-                query.setParameterList("criterions", criterions);
+                query.setParameter("criterion", criterion);
             }
 
             @Override
@@ -276,7 +276,7 @@ public class ResourceAllocationDAO extends
             }
         };
         Query q = queryBuilder.build(getSession());
-        return toCriterionMapFrom(q);
+        return q.list();
     }
 
     @SuppressWarnings("unchecked")

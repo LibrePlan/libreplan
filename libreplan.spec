@@ -1,5 +1,5 @@
 Name:           libreplan
-Version:        1.3.0
+Version:        1.3.3
 Release:        1
 Summary:        Web application for project planning, monitoring and control
 License:        AGPLv3
@@ -23,18 +23,17 @@ BuildArch:      noarch
 %if 0%{?fedora} || 0%{?centos}
 Requires:       postgresql-jdbc
 %endif
+%if 0%{?fedora} >= 17
+Requires:	java-1.7.0-openjdk
+%else
 Requires:       java-1.6.0-openjdk
+%endif
 Requires:       postgresql
 Requires:       postgresql-server
 Requires:       tomcat6
 %if 0%{?centos}
 %else
 Requires:       cutycapt
-%endif
-%if 0%{?suse_version}
-Requires:       freefont
-%else
-Requires:       gnu-free-fonts-compat
 %endif
 
 %if 0%{?suse_version}
@@ -96,7 +95,7 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root,-)
-%doc AUTHORS COPYING NEWS README README.%{distro} TODO INSTALL HACKING
+%doc AUTHORS.rst COPYING NEWS.rst README.rst README.%{distro}.rst TODO.rst INSTALL.rst HACKING.rst
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/webapps
 %dir %{_datadir}/%{name}/pgsql
@@ -106,6 +105,13 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{name}/conf/*
 
 %changelog
+* Fri Dec 21 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.3.3-1
+- Released LibrePlan 1.3.3
+* Fri Nov 30 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.3.2-1
+- Released LibrePlan 1.3.2
+* Mon Oct 15 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.3.1-1
+- Released LibrePlan 1.3.1
+- Removed dependency with freefont
 * Thu Jul 26 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.3.0-1
 - Released LibrePlan 1.3.0
 * Wed May 23 2012 Manuel Rego Casasnovas <rego@igalia.com> - 1.2.4-1

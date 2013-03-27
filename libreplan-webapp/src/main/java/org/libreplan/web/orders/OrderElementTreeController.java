@@ -32,10 +32,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Filter;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
@@ -44,17 +48,21 @@ import org.libreplan.business.orders.entities.SchedulingState;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.templates.entities.OrderElementTemplate;
 import org.libreplan.business.users.entities.UserRole;
+import org.libreplan.web.common.FilterUtils;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.components.finders.FilterPair;
+import org.libreplan.web.common.components.finders.OrderElementFilterEnum;
+import org.libreplan.web.common.components.finders.TaskElementFilterEnum;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup;
 import org.libreplan.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.libreplan.web.security.SecurityUtils;
 import org.libreplan.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.libreplan.web.tree.TreeController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -62,6 +70,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.A;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
@@ -69,6 +78,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
@@ -78,6 +88,7 @@ import org.zkoss.zul.impl.api.InputElement;
 
 /**
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
+ *
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -113,6 +124,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     private final IMessagesForUser messagesForUser;
 
     private Popup filterOptionsPopup;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     public List<org.libreplan.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();
@@ -274,7 +288,45 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         operationsForOrderElement.tree(tree)
                 .orderTemplates(this.orderTemplates);
 
+        importOrderFiltersFromSession();
         disableCreateTemplateButtonIfNeeded(comp);
+    }
+
+    private void importOrderFiltersFromSession() {
+        Order order = orderModel.getOrder();
+        filterNameOrderElement.setValue(FilterUtils
+.readOrderTaskName(order));
+        filterStartDateOrderElement.setValue(FilterUtils
+                .readOrderStartDate(order));
+        filterFinishDateOrderElement.setValue(FilterUtils
+                .readOrderEndDate(order));
+        if (FilterUtils.readOrderParameters(order) != null) {
+            for (FilterPair each : (List<FilterPair>) FilterUtils
+                    .readOrderParameters(order)) {
+                if (toOrderFilterEnum(each) != null) {
+                    bdFiltersOrderElement
+                            .addSelectedElement(toOrderFilterEnum(each));
+                }
+            }
+        }
+        if (FilterUtils.readOrderInheritance(order) != null) {
+            labelsWithoutInheritance.setChecked(FilterUtils
+                    .readOrderInheritance(order));
+        }
+    }
+
+    private FilterPair toOrderFilterEnum(FilterPair each) {
+        switch ((TaskElementFilterEnum) each.getType()) {
+        case Label:
+            return new FilterPair(OrderElementFilterEnum.Label,
+                    each.getPattern(), each.getValue());
+        case Criterion:
+            return new FilterPair(OrderElementFilterEnum.Criterion,
+                    each.getPattern(), each.getValue());
+        case Resource:
+            // Resources are discarded on WBS filter
+        }
+        return null;
     }
 
     private void disableCreateTemplateButtonIfNeeded(Component comp) {
@@ -413,6 +465,14 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         @Override
         protected void addCodeCell(final OrderElement orderElement) {
+            if (orderElement.isJiraIssue()) {
+                addHyperlink(orderElement);
+            } else {
+                addTextbox(orderElement);
+            }
+        }
+
+        private void addTextbox(final OrderElement orderElement) {
             Textbox textBoxCode = new Textbox();
             Util.bind(textBoxCode, new Util.Getter<String>() {
                 @Override
@@ -444,6 +504,26 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             addCell(textBoxCode);
             putCodeTextbox(orderElement, textBoxCode);
+        }
+
+        private void addHyperlink(final OrderElement orderElement) {
+            String code = orderElement.getCode();
+            A hyperlink = new A(code);
+
+            String jiraUrl = configurationDAO.getConfigurationWithReadOnlyTransaction().getJiraConfiguration().getJiraUrl();
+
+            String codeWithoutPrefix = StringUtils.removeStart(code, JiraConfiguration.CODE_PREFIX);
+            codeWithoutPrefix = StringUtils.removeStart(codeWithoutPrefix,
+                    orderElement.getOrder().getCode()
+                            + EntitySequence.CODE_SEPARATOR_CHILDREN);
+
+            hyperlink.setHref(jiraUrl + "/browse/" + codeWithoutPrefix);
+
+            if (orderModel.isCodeAutogenerated() || readOnly) {
+                hyperlink.setDisabled(true);
+            }
+
+            addCell(hyperlink);
         }
 
         void addInitDateCell(final OrderElement currentOrderElement) {
@@ -522,13 +602,15 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     @Override
     protected boolean isPredicateApplied() {
-        return predicate != null;
+        return (predicate != null)
+                && !((OrderElementPredicate) predicate).isEmpty();
     }
 
     /**
      * Apply filter to order elements in current order
      */
     public void onApplyFilter() {
+        writeFilterParameters();
         OrderElementPredicate predicate = createPredicate();
         this.predicate = predicate;
 
@@ -537,6 +619,38 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         } else {
             showAllOrderElements();
         }
+    }
+
+    private void writeFilterParameters() {
+        Order order = orderModel.getOrder();
+        FilterUtils.writeOrderStartDate(order,
+                filterStartDateOrderElement.getValue());
+        FilterUtils.writeOrderEndDate(order,
+                filterFinishDateOrderElement.getValue());
+        FilterUtils
+                .writeOrderTaskName(order,
+                filterNameOrderElement.getValue());
+        FilterUtils.writeOrderInheritance(order,
+                labelsWithoutInheritance.isChecked());
+        List<FilterPair> result = new ArrayList<FilterPair>();
+        for (FilterPair filterPair : (List<FilterPair>) bdFiltersOrderElement
+                .getSelectedElements()) {
+            result.add(toTasKElementFilterEnum(filterPair));
+        }
+        FilterUtils.writeOrderParameters(order, result);
+        FilterUtils.writeOrderWBSFiltersChanged(order, true);
+    }
+
+    private FilterPair toTasKElementFilterEnum(FilterPair each) {
+        switch ((OrderElementFilterEnum) each.getType()) {
+        case Label:
+            return new FilterPair(TaskElementFilterEnum.Label,
+                    each.getPattern(), each.getValue());
+        case Criterion:
+            return new FilterPair(TaskElementFilterEnum.Criterion,
+                    each.getPattern(), each.getValue());
+        }
+        return null;
     }
 
     private OrderElementPredicate createPredicate() {
@@ -556,6 +670,29 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 name, ignoreLabelsInheritance);
     }
 
+    public TreeModel getFilteredTreeModel() {
+        OrderElementTreeModel filteredModel = getFilteredModel();
+        if (filteredModel == null) {
+            return null;
+        }
+        return filteredModel.asTree();
+    }
+
+    public OrderElementTreeModel getFilteredModel() {
+        if (orderModel == null) {
+            return null;
+        }
+
+        OrderElementPredicate predicate = createPredicate();
+        this.predicate = predicate;
+
+        if (predicate != null) {
+            return orderModel.getOrderElementsFilteredByPredicate(predicate);
+        } else {
+            return orderModel.getOrderElementTreeModel();
+        }
+    }
+
     private void filterByPredicate(OrderElementPredicate predicate) {
         OrderElementTreeModel orderElementTreeModel = orderModel
                 .getOrderElementsFilteredByPredicate(predicate);
@@ -571,10 +708,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     @Override
     protected boolean isNewButtonDisabled() {
-        if(readOnly) {
-            return true;
-        }
-        return isPredicateApplied();
+        return readOnly;
     }
 
     /**
@@ -702,7 +836,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     @Override
     public void remove(OrderElement element) {
-        boolean hasImputedExpenseSheets = orderModel.hasImputedExpenseSheets(element);
+        boolean hasImputedExpenseSheets = orderModel
+                .hasImputedExpenseSheetsThisOrAnyOfItsChildren(element);
         if (hasImputedExpenseSheets) {
             messagesForUser
                     .showMessage(
@@ -719,10 +854,22 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                             Level.ERROR,
                             _("You cannot remove the task \"{0}\" because it has work reported on it or any of its children",
                                     element.getName()));
-        } else {
-            super.remove(element);
-            getRenderer().removeCodeTextbox(element);
+            return;
         }
+
+        boolean onlyChildAndParentAlreadyInUseByHoursOrExpenses = orderModel
+                .isOnlyChildAndParentAlreadyInUseByHoursOrExpenses(element);
+        if (onlyChildAndParentAlreadyInUseByHoursOrExpenses) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("You cannot remove the task \"{0}\" because it is the only child of its parent and its parent has tracked time or imputed expenses",
+                                    element.getName()));
+            return;
+        }
+
+        super.remove(element);
+        getRenderer().removeCodeTextbox(element);
     }
 
     @Override

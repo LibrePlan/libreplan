@@ -1,0 +1,51 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="winJiraSyncInfo" title="${i18n:_('LibrePlan: Jira synchronization info')}"
+    width="500px" border="normal" mode="modal">
+    <div>
+
+        <vbox>
+            <label value="${i18n:_('Synchronization of order elements with JIRA issues was successful and project has been updated accordingly')}" sclass="remarked" />
+        </vbox>
+
+        <separator spacing="20px"/>
+
+        <vbox>
+            <label value="${i18n:_('Synchronization of progress assignment was successful')}" sclass="remarked" if="${arg.showSyncProgressSuccess}"/>
+            <vbox if="${not arg.showSyncProgressSuccess}">
+                <label value="${i18n:_('Synchronization of progress assignment is not completed for the following reasons:')}" />
+                <listbox model="${arg.jiraSyncProgressFailedReasons}"/>
+            </vbox>
+        </vbox>
+
+        <separator spacing="20px"/>
+
+        <vbox>
+            <label value="${i18n:_('Synchronization of timesheets was successful')}" sclass="remarked" if="${arg.showSyncTimesheetSuccess}"/>
+            <vbox if="${not arg.showSyncTimesheetSuccess}">
+                <label value="${i18n:_('Synchronization of timesheets is not completed for the following reasons:')}" />
+                <listbox model="${arg.jiraSyncTimesheetFailedReasons}"/>
+            </vbox>
+        </vbox>
+
+    </div>
+    <button id="closeBtn" label="${i18n:_('Close')}" onClick="winJiraSyncInfo.detach()"
+        sclass="cancel-button global-action"/>
+</window>

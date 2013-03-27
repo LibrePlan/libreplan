@@ -114,7 +114,7 @@ public class CutyPrint {
 
     private static Map<String, String> entryPointForShowingOrder(Order order) {
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("order", order.getId() + "");
+        result.put("order", order.getCode() + "");
         return result;
     }
 

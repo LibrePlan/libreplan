@@ -32,7 +32,7 @@
                 <vbox sclass="allocation-criterion-selector">
 
                     <tree id="criterionsTree" width="420px"
-                            height="340px" vflex="true" multiple="true"
+                            height="412px" vflex="true" multiple="true"
                             model="@{selectorController.criterions}"
                             zclass="z-dottree" style="margin-top:5px;margin-bottom:5px;">
                         <treecols>
@@ -44,14 +44,44 @@
 
                 <!--Matchings -->
                 <vbox>
-
-                    <listbox id="listBoxResources" width="420px" height="340px"
+                    <label value="${i18n:_('Load ratios calculated between')}:"/>
+                    <separator/>
+                    <grid fixedLayout="true">
+                       <columns>
+                          <column/>
+                          <column/>
+                       </columns>
+                       <rows>
+                         <row>
+                           <label value="${i18n:_('Start date')}:"/>
+                           <datebox id="startDateLoadRatiosDatebox"
+                                    onChange="selectorController.updateLoadRatios()"/>
+                         </row>
+                         <row>
+                           <label value="${i18n:_('End date')}:"/>
+                           <datebox id="endDateLoadRatiosDatebox"
+                                    onChange="selectorController.updateLoadRatios()"/>
+                         </row>
+                       </rows>
+                     </grid>
+                     <style>
+                        .z-listcell-cnt {
+                            height: 20px;
+                        }
+                        div.z-listcell-cnt {
+                            padding: 5px 0 1px 0;
+                        }
+                     </style>
+                     <listbox id="listBoxResources" width="420px" height="340px"
                             vflex="true" multiple="@{selectorController.allowSelectMultipleResources}" style="margin:5px;"
                             itemRenderer="@{selectorController.listitemRenderer}" >
                         <listhead>
                             <listheader label="${i18n:_('Found resources')}"
-                                    tooltiptext="${i18n:_('Resources matching selected criteria')}" sort="auto" />
-                        </listhead>
+                                    tooltiptext="${i18n:_('Resources matching selected criteria')}"
+                                    sort="auto" sortDirection="ascending"/>
+                            <listheader label="${i18n:_('Availability')}" hflex="min"/>
+                            <listheader label="${i18n:_('Overtime')}" hflex="min"/>
+                       </listhead>
                     </listbox>
 
                 </vbox>

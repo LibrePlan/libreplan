@@ -1,1 +1,1 @@
-../scripts/rest-clients/README
+../scripts/rest-clients/README.rst

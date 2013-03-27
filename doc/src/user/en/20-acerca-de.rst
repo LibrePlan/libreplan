@@ -66,6 +66,7 @@ Previous Team Members
 Translators
 -----------
 
+* [ca] Daniel Díaz Sañudo <gurnan@gmail.com>
 * [cs] Zbyněk Schwarz <zbynek.schwarz@gmail.com>
 * [de] Joern Knechtel <j.knechtel@gmx.de>,
   Michael Taxis <mxtaxis@gmx.de>
@@ -81,9 +82,11 @@ Translators
 * [it] Giuseppe Zizza <gzizza@gmail.com>
 * [nl] Jeroen Baten <jeroen@jeroenbaten.nl>
 * [pl] Krzysztof Kamecki <dwerens90@gmail.com>
-* [pt] Helena Grosso <lenagrosso@gmail.com>,
+* [pt] Thiago Cangussu <cangussu.br@gmail.com>,
+  Helena Grosso <lenagrosso@gmail.com>,
   Joaquim Rocha <jrocha@igalia.com>
 * [ru] Pavel Rudensky <prudensky@gmail.com>
+* [zh] Swanson Chan <lacidophilin@yahoo.com>
 
 Contributors
 ------------

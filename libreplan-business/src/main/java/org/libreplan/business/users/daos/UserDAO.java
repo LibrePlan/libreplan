@@ -173,4 +173,9 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
         super.remove(user.getId());
     }
 
+    @Override
+    public List<User> findAll() {
+        return list(User.class);
+    }
+
 }

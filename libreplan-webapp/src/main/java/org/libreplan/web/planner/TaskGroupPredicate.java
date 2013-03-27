@@ -18,6 +18,7 @@
  */
 package org.libreplan.web.planner;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -280,6 +281,29 @@ public class TaskGroupPredicate implements IPredicate {
             }
         }
         return false;
+    }
+
+    public boolean isIncludeChildren() {
+        return includeChildren;
+    }
+
+    public List<FilterPair> getFilters() {
+        if (filters == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(filters);
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFilters(List<FilterPair> listFilters) {
+        filters = listFilters;
     }
 
 }

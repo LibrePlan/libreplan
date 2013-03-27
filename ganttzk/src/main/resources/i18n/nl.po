@@ -8,9 +8,9 @@
 # Jeroen Baten <jeroen@jeroenbaten.nl>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: libreplan-1.3.0\n"
+"Project-Id-Version: libreplan-1.3.1\n"
 "Report-Msgid-Bugs-To: http://bugs.libreplan.org/\n"
-"POT-Creation-Date: 2012-07-05 08:07+0200\n"
+"POT-Creation-Date: 2012-10-02 12:44+0200\n"
 "PO-Revision-Date: 2012-07-06 09:59+0000\n"
 "Last-Translator: Jeroen Baten <jeroen@jeroenbaten.nl>\n"
 "Language-Team: Nederlands\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: nl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:216
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:235

@@ -45,13 +45,13 @@ public class ExpenseSheetConverter implements IConverter<ExpenseSheet> {
 
     @Override
     public String asString(ExpenseSheet entity) {
-        return entity.getId().toString();
+        return entity.getCode();
     }
 
     @Override
     public ExpenseSheet asObject(String stringRepresentation) {
         try {
-            return expenseSheetDAO.find(Long.parseLong(stringRepresentation));
+            return expenseSheetDAO.findByCode(stringRepresentation);
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }

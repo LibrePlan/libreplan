@@ -40,9 +40,9 @@ public class WorkReportTypeConverter implements IConverter<WorkReportType> {
     @Override
     @Transactional(readOnly = true)
     public WorkReportType asObject(String stringRepresentation) {
-        long id = Long.parseLong(stringRepresentation);
         try {
-            WorkReportType workReportType = workReportTypeDAO.find(id);
+            WorkReportType workReportType = workReportTypeDAO
+                    .findByCode(stringRepresentation);
             return workReportType;
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
@@ -51,7 +51,7 @@ public class WorkReportTypeConverter implements IConverter<WorkReportType> {
 
     @Override
     public String asString(WorkReportType entity) {
-        return entity.getId().toString();
+        return entity.getCode();
     }
 
     @Override

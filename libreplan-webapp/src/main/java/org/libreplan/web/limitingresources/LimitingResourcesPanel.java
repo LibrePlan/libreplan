@@ -31,10 +31,9 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.libreplan.business.resources.entities.LimitingResourceQueue;
+import org.libreplan.web.common.Util;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
@@ -618,7 +617,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         public void populateHorizontalListbox() {
             horizontalPagination.getItems().clear();
-            DateTimeFormatter df = DateTimeFormat.forPattern("dd/MMM/yyyy");
             DateTime intervalStart = timeTracker.getRealInterval().getStart()
                     .toDateTimeAtStartOfDay();
             if (intervalStart != null) {
@@ -630,8 +628,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                                     .plus(intervalIncrease()))) {
                         itemEnd = intervalEnd;
                     }
-                    Listitem item = new Listitem(df.print(itemStart) + " - "
-                            + df.print(itemEnd.minusDays(1)));
+                    Listitem item = new Listitem(Util.formatDate(itemStart)
+                            + " - " + Util.formatDate(itemEnd.minusDays(1)));
                     horizontalPagination.appendChild(item);
                     itemStart = itemEnd;
                     itemEnd = itemEnd.plus(intervalIncrease());

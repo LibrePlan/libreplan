@@ -301,7 +301,8 @@ public class MonteCarloController extends GenericForwardComposer {
             feedCriticalPathsList();
             reloadGridCritialPathTasks();
         }
-        btnRunMonteCarlo.setDisabled(criticalPath.isEmpty());
+        btnRunMonteCarlo.setDisabled(monteCarloModel.getCriticalPathNames()
+                .isEmpty());
     }
 
     private static class CriticalPathTasksRender implements RowRenderer {

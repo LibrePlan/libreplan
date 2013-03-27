@@ -207,7 +207,9 @@ public class AssignedCriterionRequirementToOrderElementController extends
     }
 
     public boolean isEditableHoursGroup() {
-        return getElement() != null && getElement() instanceof OrderLine;
+        OrderElement element = getElement();
+        return element != null && element instanceof OrderLine
+                && !element.isJiraIssue();
     }
 
 }

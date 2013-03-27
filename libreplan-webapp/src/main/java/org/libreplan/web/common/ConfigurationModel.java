@@ -42,11 +42,14 @@ import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.Configuration;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
+import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
+import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
 import org.libreplan.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -82,6 +85,9 @@ public class ConfigurationModel implements IConfigurationModel {
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
 
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
     @Override
     @Transactional(readOnly = true)
     public List<BaseCalendar> getCalendars() {
@@ -101,7 +107,6 @@ public class ConfigurationModel implements IConfigurationModel {
     public void init() {
         this.configuration = getCurrentConfiguration();
         initEntitySequences();
-        initLdapConfiguration();
     }
 
     private void initEntitySequences() {
@@ -112,12 +117,6 @@ public class ConfigurationModel implements IConfigurationModel {
         for (EntitySequence entitySequence : entitySequenceDAO.getAll()) {
             entitySequences.get(entitySequence.getEntityName()).add(
                     entitySequence);
-        }
-    }
-
-    private void initLdapConfiguration() {
-        if (null == configuration.getLdapConfiguration()) {
-            configuration.setLdapConfiguration(LDAPConfiguration.create());
         }
     }
 
@@ -132,7 +131,9 @@ public class ConfigurationModel implements IConfigurationModel {
 
     private void forceLoad(Configuration configuration) {
         forceLoad(configuration.getDefaultCalendar());
-        forceLoad(configuration.getMonthlyTimesheetsTypeOfWorkHours());
+        forceLoad(configuration.getPersonalTimesheetsTypeOfWorkHours());
+        forceLoad(configuration.getJiraConfiguration()
+                .getJiraConnectorTypeOfWorkHours());
     }
 
     private void forceLoad(BaseCalendar calendar) {
@@ -622,15 +623,75 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public TypeOfWorkHours getMonthlyTimesheetsTypeOfWorkHours() {
-        return configuration.getMonthlyTimesheetsTypeOfWorkHours();
+    public TypeOfWorkHours getPersonalTimesheetsTypeOfWorkHours() {
+        return configuration.getPersonalTimesheetsTypeOfWorkHours();
     }
 
     @Override
-    public void setMonthlyTimesheetsTypeOfWorkHours(
+    public void setPersonalTimesheetsTypeOfWorkHours(
             TypeOfWorkHours typeOfWorkHours) {
         if (configuration != null) {
-            configuration.setMonthlyTimesheetsTypeOfWorkHours(typeOfWorkHours);
+            configuration.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
+        }
+    }
+
+    @Override
+    public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
+        return configuration.getPersonalTimesheetsPeriodicity();
+    }
+
+    @Override
+    public void setPersonalTimesheetsPeriodicity(
+            PersonalTimesheetsPeriodicityEnum personalTimesheetsPeriodicity) {
+        configuration
+                .setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAnyPersonalTimesheetAlreadySaved() {
+        return !workReportDAO.isAnyPersonalTimesheetAlreadySaved();
+    }
+
+    @Override
+    public Integer getSecondsPlanningWarning() {
+        return configuration.getSecondsPlanningWarning();
+    }
+
+    @Override
+    public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
+        configuration.setSecondsPlanningWarning(secondsPlanningWarning);
+    }
+
+    @Override
+    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
+        configuration.setJiraConfiguration(jiraConfiguration);
+    }
+
+    @Override
+    public JiraConfiguration getJiraConfiguration() {
+        return configuration.getJiraConfiguration();
+    }
+
+    @Override
+    public TypeOfWorkHours getJiraConnectorTypeOfWorkHours() {
+        JiraConfiguration jiraConfiguration = configuration
+                .getJiraConfiguration();
+        if (jiraConfiguration != null) {
+            return jiraConfiguration.getJiraConnectorTypeOfWorkHours();
+        }
+        return null;
+    }
+
+    @Override
+    public void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
+        if (configuration != null) {
+            JiraConfiguration jiraConfiguration = configuration
+                    .getJiraConfiguration();
+            if (jiraConfiguration != null) {
+                jiraConfiguration
+                        .setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
+            }
         }
     }
 

@@ -33,6 +33,7 @@ import org.libreplan.business.planner.entities.SpecificResourceAllocation;
 import org.libreplan.business.resources.daos.IResourcesSearcher;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workingday.IntraDayDate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -51,14 +52,14 @@ public abstract class EffortModification extends AllocationModification {
         }
 
         @Override
-        public void allocateUntil(LocalDate end) {
+        public void allocateUntil(IntraDayDate end) {
             genericAllocation.forResources(getResources())
                              .fromStartUntil(end)
                              .allocate(getEffort());
         }
 
         @Override
-        public void allocateFromEndUntil(LocalDate start) {
+        public void allocateFromEndUntil(IntraDayDate start) {
             genericAllocation.forResources(getResources())
                              .fromEndUntil(start)
                              .allocate(getEffort());
@@ -81,12 +82,12 @@ public abstract class EffortModification extends AllocationModification {
         }
 
         @Override
-        public void allocateUntil(LocalDate end) {
+        public void allocateUntil(IntraDayDate end) {
             specific.fromStartUntil(end).allocate(getEffort());
         }
 
         @Override
-        public void allocateFromEndUntil(LocalDate start) {
+        public void allocateFromEndUntil(IntraDayDate start) {
             specific.fromEndUntil(start).allocate(getEffort());
         }
 
@@ -142,9 +143,9 @@ public abstract class EffortModification extends AllocationModification {
         return new LocalDate(getBeingModified().getTask().getStartDate());
     }
 
-    public abstract void allocateUntil(LocalDate end);
+    public abstract void allocateUntil(IntraDayDate end);
 
-    public abstract void allocateFromEndUntil(LocalDate start);
+    public abstract void allocateFromEndUntil(IntraDayDate start);
 
     @Override
     public boolean satisfiesModificationRequested() {

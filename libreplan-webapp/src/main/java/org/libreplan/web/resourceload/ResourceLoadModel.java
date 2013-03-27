@@ -309,7 +309,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
                             if (parameters.thereIsCurrentOrder()) {
                                 return resourcesForActiveTasks();
                             } else {
-                                return allResources();
+                                return allResourcesActiveBetween(
+                                        parameters.getInitDateFilter(),
+                                        parameters.getEndDateFilter());
                             }
                         }
 
@@ -317,6 +319,23 @@ public class ResourceLoadModel implements IResourceLoadModel {
                             return Resource.sortByName(parameters
                                     .getPlanningState()
                                     .getResourcesRelatedWithAllocations());
+                        }
+
+                        private List<Resource> allResourcesActiveBetween(
+                                LocalDate startDate, LocalDate endDate) {
+                            List<Resource> allResources = allResources();
+                            if (startDate == null && endDate == null) {
+                                return allResources;
+                            }
+
+                            List<Resource> resources = new ArrayList<Resource>();
+                            for (Resource resource : allResources) {
+                                if (resource
+                                        .isActiveBetween(startDate, endDate)) {
+                                    resources.add(resource);
+                                }
+                            }
+                            return resources;
                         }
 
                         private List<Resource> allResources() {
@@ -455,20 +474,32 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     scenarioManager.getCurrent(), criterions));
         }
 
-        private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria(
+        private Map<Criterion, List<ResourceAllocation<?>>> findAllocationsGroupedByCriteria(
                 Scenario onScenario, List<Criterion> relatedWith) {
-            Map<Criterion, List<GenericResourceAllocation>> result = resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(onScenario,
-                            relatedWith,
-                            asDate(parameters.getInitDateFilter()),
-                            asDate(parameters.getEndDateFilter()));
-            return doReplacementsIfNeeded(result);
+            Map<Criterion, List<ResourceAllocation<?>>> result = new LinkedHashMap<Criterion, List<ResourceAllocation<?>>>();
+            for (Criterion criterion : relatedWith) {
+                IAllocationCriteria criteria = and(onInterval(),
+                        new RelatedWith(criterion));
+                result.put(
+                        criterion,
+                        ResourceAllocation.sortedByStartDate(doReplacementsIfNeeded(
+                                resourceAllocationDAO
+                                        .findGenericAllocationsRelatedToCriterion(
+                                                getCurrentScenario(),
+                                                criterion, asDate(parameters
+                                                        .getInitDateFilter()),
+                                                asDate(parameters
+                                                        .getEndDateFilter())),
+                                criteria)));
+
+            }
+            return result;
         }
 
         private Map<Criterion, List<ResourceAllocation<?>>> withAssociatedSpecific(
-                Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
+                Map<Criterion, List<ResourceAllocation<?>>> genericAllocationsByCriterion) {
             Map<Criterion, List<ResourceAllocation<?>>> result = new HashMap<Criterion, List<ResourceAllocation<?>>>();
-            for (Entry<Criterion, List<GenericResourceAllocation>> each : genericAllocationsByCriterion
+            for (Entry<Criterion, List<ResourceAllocation<?>>> each : genericAllocationsByCriterion
                     .entrySet()) {
                 List<ResourceAllocation<?>> both = new ArrayList<ResourceAllocation<?>>();
                 both.addAll(each.getValue());
@@ -1032,6 +1063,23 @@ public class ResourceLoadModel implements IResourceLoadModel {
             throw new RuntimeException(e);
         }
         return user.isExpandResourceLoadViewCharts();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getUser() {
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        // Attach filter bandbox elements
+        if (user.getResourcesLoadFilterCriterion() != null) {
+            user.getResourcesLoadFilterCriterion().getFinderPattern();
+        }
+        return user;
     }
 
 }

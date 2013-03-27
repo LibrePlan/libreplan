@@ -98,7 +98,7 @@ public abstract class AllocationModification {
                 .unmodifiableList(new ArrayList<Resource>(resources));
     }
 
-    private boolean hasNoResources() {
+    protected boolean hasNoResources() {
         return resourcesOnWhichApplyAllocation.isEmpty();
     }
 

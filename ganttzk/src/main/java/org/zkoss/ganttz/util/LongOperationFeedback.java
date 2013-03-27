@@ -266,6 +266,9 @@ public class LongOperationFeedback {
                 if (current.isEnd()) {
                     return;
                 }
+                if (!desktop.isAlive() || !desktop.isServerPushEnabled()) {
+                    return;
+                }
                 try {
                     Executions.activate(desktop);
                 } catch (Exception e) {

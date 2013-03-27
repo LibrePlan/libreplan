@@ -158,6 +158,16 @@ public class OrderLineGroup extends OrderElement implements
             return false;
         }
 
+        @Override
+        public boolean isUpdatedFromTimesheets() {
+            return getThis().isUpdatedFromTimesheets();
+        }
+
+        @Override
+        public boolean isJiraIssue() {
+            return getThis().isJiraIssue();
+        }
+
     }
 
     public static OrderLineGroup create() {
@@ -336,7 +346,8 @@ public class OrderLineGroup extends OrderElement implements
         OrderLine result = OrderLine.create();
 
         result.infoComponent = getInfoComponent().copy();
-        result.setCode(null);
+        result.setCode(getCode());
+        setCode("");
         result.setInitDate(getInitDate());
         result.setDeadline(getDeadline());
 

@@ -1,3 +1,22 @@
+libreplan (1.3.3-1) squeeze; urgency=low
+
+  * Released LibrePlan 1.3.3
+
+ -- Manuel Rego Casasnovas <rego@igalia.com>  Fri, 21 Dec 2012 14:26:56 +0100
+
+libreplan (1.3.2-1) squeeze; urgency=low
+
+  * Released LibrePlan 1.3.2
+
+ -- Manuel Rego Casasnovas <rego@igalia.com>  Fri, 30 Nov 2012 07:26:59 +0100
+
+libreplan (1.3.1-1) squeeze; urgency=low
+
+  * Released LibrePlan 1.3.1
+  * Removed dependency with ttf-freefont
+
+ -- Manuel Rego Casasnovas <rego@igalia.com>  Mon, 15 Oct 2012 13:55:06 +0200
+
 libreplan (1.3.0-1) squeeze; urgency=low
 
   * Released LibrePlan 1.3.0

@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -136,7 +137,7 @@ public abstract class TaskElement extends BaseEntity {
 
     protected static <T extends TaskElement> T create(T taskElement,
             TaskSource taskSource) {
-        taskElement.taskSource = taskSource;
+        taskElement.setTaskSource(taskSource);
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
         taskElement.updateAdvancePercentageFromOrderElement();
@@ -182,6 +183,8 @@ public abstract class TaskElement extends BaseEntity {
 
     private Boolean simplifiedAssignedStatusCalculationEnabled = false;
 
+    private Boolean updatedFromTimesheets = false;
+
     public void initializeDatesIfNeeded() {
         if (getIntraDayEndDate() == null || getIntraDayStartDate() == null) {
             initializeDates();
@@ -218,6 +221,10 @@ public abstract class TaskElement extends BaseEntity {
         return taskSource;
     }
 
+    protected void setTaskSource(TaskSource taskSource) {
+        this.taskSource = taskSource;
+    }
+
     protected void copyDependenciesTo(TaskElement result) {
         for (Dependency dependency : getDependenciesWithThisOrigin()) {
             Dependency.create(result, dependency.getDestination(),
@@ -241,6 +248,14 @@ public abstract class TaskElement extends BaseEntity {
 
     public String getName() {
         return name;
+    }
+
+    public String getCode() {
+        return getOrderElement().getCode();
+    }
+
+    public String getProjectCode() {
+        return getOrderElement().getOrder().getCode();
     }
 
     public void setName(String name) {
@@ -700,7 +715,7 @@ public abstract class TaskElement extends BaseEntity {
         this.resetStatus();
     }
 
-    private EffortDuration sumOfAssignedEffort = EffortDuration.hours(0);
+    private EffortDuration sumOfAssignedEffort = EffortDuration.zero();
 
     public void setSumOfAssignedEffort(EffortDuration sumOfAssignedEffort) {
         this.sumOfAssignedEffort = sumOfAssignedEffort;
@@ -717,7 +732,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     private EffortDuration getSumOfAssignedEffortCalculated() {
-        EffortDuration result = EffortDuration.hours(0);
+        EffortDuration result = EffortDuration.zero();
         for(ResourceAllocation<?> allocation : getAllResourceAllocations()) {
             result = result.plus(allocation.getAssignedEffort());
         }
@@ -791,6 +806,54 @@ public abstract class TaskElement extends BaseEntity {
         } else {
             return TaskDeadlineViolationStatusEnum.ON_SCHEDULE;
         }
+    }
+
+    public static IntraDayDate maxDate(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<IntraDayDate> endDates = toEndDates(tasksToSave);
+        return endDates.isEmpty() ? null : Collections.max(endDates);
+    }
+
+    private static List<IntraDayDate> toEndDates(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+        for (TaskElement taskElement : tasksToSave) {
+            IntraDayDate endDate = taskElement.getIntraDayEndDate();
+            if (endDate != null) {
+                result.add(endDate);
+            } else {
+                LOG.warn("the task" + taskElement + " has null end date");
+            }
+        }
+        return result;
+    }
+
+    public static IntraDayDate minDate(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<IntraDayDate> startDates = toStartDates(tasksToSave);
+        return startDates.isEmpty() ? null : Collections.min(startDates);
+    }
+
+    private static List<IntraDayDate> toStartDates(
+            Collection<? extends TaskElement> tasksToSave) {
+        List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+        for (TaskElement taskElement : tasksToSave) {
+            IntraDayDate startDate = taskElement.getIntraDayStartDate();
+            if (startDate != null) {
+                result.add(startDate);
+            } else {
+                LOG.warn("the task" + taskElement + " has null start date");
+            }
+        }
+        return result;
+    }
+
+    public Boolean isUpdatedFromTimesheets() {
+        return updatedFromTimesheets;
+    }
+
+    public void setUpdatedFromTimesheets(Boolean updatedFromTimesheets) {
+        this.updatedFromTimesheets = BooleanUtils.isTrue(updatedFromTimesheets);
     }
 
 }

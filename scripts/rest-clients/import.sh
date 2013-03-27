@@ -7,18 +7,20 @@ read loginName
 printf "Password: "
 read password
 
-if [ "$3" = "--prod" ]; then
+file=$2
+
+if [ "$2" = "--prod" ]; then
     baseServiceURL=$PRODUCTION_BASE_SERVICE_URL
     certificate=$PRODUCTION_CERTIFICATE
-elif [ "$3" = "--dev" ]; then
-   baseServiceURL=$DEVELOPMENT_BASE_SERVICE_URL
-   certificate=$DEVELOPMENT_CERTIFICATE
+    file=$3
+elif [ "$2" = "--dev" ]; then
+    baseServiceURL=$DEVELOPMENT_BASE_SERVICE_URL
+    certificate=$DEVELOPMENT_CERTIFICATE
+    file=$3
 else
-   baseServiceURL=$DEMO_BASE_SERVICE_URL
-   certificate=$DEMO_CERTIFICATE
+    baseServiceURL=$DEMO_BASE_SERVICE_URL
+    certificate=$DEMO_CERTIFICATE
 fi
-
-file=$2
 
 if [ "$file" = "" ]; then
     printf "Missing file\n" 1>&2

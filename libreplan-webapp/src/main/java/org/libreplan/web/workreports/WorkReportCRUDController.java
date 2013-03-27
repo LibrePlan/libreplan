@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
@@ -54,13 +55,15 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.OnlyOneVisible;
 import org.libreplan.web.common.Util;
+import org.libreplan.web.common.Util.Getter;
+import org.libreplan.web.common.Util.Setter;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.components.NewDataSortableColumn;
 import org.libreplan.web.common.components.NewDataSortableGrid;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.common.entrypoints.EntryPointsHandler;
 import org.libreplan.web.common.entrypoints.IURLHandlerRegistry;
-import org.libreplan.web.users.dashboard.IMonthlyTimesheetController;
+import org.libreplan.web.users.dashboard.IPersonalTimesheetController;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -73,6 +76,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Comboitem;
@@ -157,13 +161,13 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private Datebox filterFinishDate;
 
     @javax.annotation.Resource
-    private IMonthlyTimesheetController monthlyTimesheetController;
+    private IPersonalTimesheetController personalTimesheetController;
 
-    private Popup monthlyTimesheetsPopup;
+    private Popup personalTimesheetsPopup;
 
-    private Datebox monthlyTimesheetsDatebox;
+    private Datebox personalTimesheetsDatebox;
 
-    private BandboxSearch monthlyTimesheetsBandboxSearch;
+    private BandboxSearch personalTimesheetsBandboxSearch;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -171,7 +175,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listWorkReportLines = (NewDataSortableGrid) createWindow
                 .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
-        showMessageIfMonthlyTimesheetWasSaved();
+        showMessageIfPersonalTimesheetWasSaved();
 
         comp.setAttribute("controller", this);
         goToList();
@@ -185,12 +189,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         handler.register(this, page);
     }
 
-    private void showMessageIfMonthlyTimesheetWasSaved() {
+    private void showMessageIfPersonalTimesheetWasSaved() {
         String timesheetSave = Executions.getCurrent().getParameter(
                 "timesheet_saved");
         if (!StringUtils.isBlank(timesheetSave)) {
             messagesForUser.showMessage(Level.INFO,
-                    _("Monthly timesheet saved"));
+                    _("Personal timesheet saved"));
         }
     }
 
@@ -273,7 +277,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         for (InvalidValue invalidValue : e.getInvalidValues()) {
             Object value = invalidValue.getBean();
             if (value instanceof WorkReport) {
-                validateWorkReport();
+                if (validateWorkReport()) {
+                    messagesForUser.showInvalidValues(e);
+                }
             }
             if (value instanceof WorkReportLine) {
                 WorkReportLine workReportLine = (WorkReportLine) invalidValue.getBean();
@@ -328,6 +334,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                     _("cannot be empty"));
             return false;
         }
+
         return true;
     }
 
@@ -452,6 +459,16 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             }
             return false;
         }
+
+        if (!workReportLine.checkConstraintOrderElementFinishedInAnotherWorkReport()) {
+            Checkbox checkboxFinished = getFinished(row);
+            if (checkboxFinished != null) {
+                String message = _("task is already marked as finished in another timesheet");
+                showInvalidMessage(checkboxFinished, message);
+            }
+            return false;
+        }
+
         return true;
     }
 
@@ -466,7 +483,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private Timebox getTimeboxFinish(Row row) {
         try {
-            int position = row.getChildren().size() - 5;
+            int position = row.getChildren().size() - 6;
             return (Timebox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
@@ -480,7 +497,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private Timebox getTimeboxStart(Row row) {
         try {
-            int position = row.getChildren().size() - 6;
+            int position = row.getChildren().size() - 7;
             return (Timebox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
@@ -494,8 +511,23 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private Listbox getTypeOfHours(Row row) {
         try {
-            int position = row.getChildren().size() - 3;
+            int position = row.getChildren().size() - 4;
             return (Listbox) row.getChildren().get(position);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    /**
+     * Locates {@link Checkbox} finished in {@link Row}
+     * @param row
+     * @return
+     */
+    private Checkbox getFinished(Row row) {
+        try {
+            int position = row.getChildren().size() - 3;
+            return (Checkbox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
         }
@@ -523,7 +555,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      */
     private Textbox getEffort(Row row) {
         try {
-            int position = row.getChildren().size() - 4;
+            int position = row.getChildren().size() - 5;
             return (Textbox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
@@ -598,8 +630,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToCreateForm(WorkReportType workReportType) {
-        if (workReportType.isMonthlyTimesheetsType()) {
-            monthlyTimesheetsPopup.open(listTypeToAssign);
+        if (workReportType.isPersonalTimesheetsType()) {
+            personalTimesheetsPopup.open(listTypeToAssign);
         } else {
             cameBackList = false;
             workReportModel.initCreate(workReportType);
@@ -617,8 +649,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToEditForm(WorkReport workReport) {
-        if (workReportModel.isMonthlyTimesheet(workReport)) {
-            goToEditMonthlyTimeSheet(workReport);
+        if (workReportModel.isPersonalTimesheet(workReport)) {
+            goToEditPersonalTimeSheet(workReport);
         } else {
             workReportModel.initEdit(workReport);
             createWindow.setTitle(_("Edit Timesheet"));
@@ -629,11 +661,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    private void goToEditMonthlyTimeSheet(WorkReport workReport) {
+    private void goToEditPersonalTimeSheet(WorkReport workReport) {
         workReportModel.initEdit(workReport);
         Date date = workReportModel.getFirstWorkReportLine().getDate();
         Resource resource = workReport.getResource();
-        monthlyTimesheetController.goToCreateOrEditFormForResource(
+        personalTimesheetController.goToCreateOrEditFormForResource(
                 LocalDate.fromDateFields(date), resource);
     }
 
@@ -682,12 +714,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         listTypeToAssign = (Listbox) window.getFellow("listTypeToAssign");
         filterStartDate = (Datebox) window.getFellow("filterStartDate");
         filterFinishDate = (Datebox) window.getFellow("filterFinishDate");
-        monthlyTimesheetsPopup = (Popup) window
-                .getFellow("monthlyTimesheetsPopup");
-        monthlyTimesheetsDatebox = (Datebox) window
-                .getFellow("monthlyTimesheetsDatebox");
-        monthlyTimesheetsBandboxSearch = (BandboxSearch) window
-                .getFellow("monthlyTimesheetsBandboxSearch");
+        personalTimesheetsPopup = (Popup) window
+                .getFellow("personalTimesheetsPopup");
+        personalTimesheetsDatebox = (Datebox) window
+                .getFellow("personalTimesheetsDatebox");
+        personalTimesheetsBandboxSearch = (BandboxSearch) window
+                .getFellow("personalTimesheetsBandboxSearch");
         clearFilterDates();
     }
 
@@ -815,7 +847,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         columnHoursType.setLabel(_("Hours type"));
         columnHoursType.setSclass("hours-type-column");
         columns.appendChild(columnHoursType);
+        NewDataSortableColumn columnFinsihed = new NewDataSortableColumn();
+        columnFinsihed.setLabel(_("Done"));
+        columnFinsihed.setSclass("finished-column");
+        columnFinsihed.setTooltiptext(_("Task finished"));
         NewDataSortableColumn columnCode = new NewDataSortableColumn();
+        columns.appendChild(columnFinsihed);
         columnCode.setLabel(_("Code"));
         columnCode.setSclass("code-column");
         columns.appendChild(columnCode);
@@ -1197,6 +1234,29 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         row.appendChild(code);
     }
 
+    private void appendFinished(final Row row) {
+        final WorkReportLine line = (WorkReportLine) row.getValue();
+
+        Checkbox finished = Util.bind(new Checkbox(), new Getter<Boolean>() {
+            @Override
+            public Boolean get() {
+                return line.isFinished();
+            }
+        }, new Setter<Boolean>() {
+            @Override
+            public void set(Boolean value) {
+                line.setFinished(BooleanUtils.isTrue(value));
+            }
+        });
+
+        if (!line.isFinished()
+                && workReportModel.isFinished(line.getOrderElement())) {
+            finished.setDisabled(true);
+        }
+
+        row.appendChild(finished);
+    }
+
     /**
      * Append a delete {@link Button} to {@link Row}
      *
@@ -1306,6 +1366,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
             appendEffortDuration(row);
             appendHoursType(row);
+            appendFinished(row);
             appendCode(row);
             appendDeleteButton(row);
         }
@@ -1616,20 +1677,20 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         return workReportModel.getBoundWorkers();
     }
 
-    public void createOrEditMonthlyTimesheet() {
-        Date date = monthlyTimesheetsDatebox.getValue();
+    public void createOrEditPersonalTimesheet() {
+        Date date = personalTimesheetsDatebox.getValue();
         if (date == null) {
-            throw new WrongValueException(monthlyTimesheetsDatebox,
+            throw new WrongValueException(personalTimesheetsDatebox,
                     _("Please set a date"));
         }
-        Resource resource = (Resource) monthlyTimesheetsBandboxSearch
+        Resource resource = (Resource) personalTimesheetsBandboxSearch
                 .getSelectedElement();
         if (resource == null) {
-            throw new WrongValueException(monthlyTimesheetsBandboxSearch,
+            throw new WrongValueException(personalTimesheetsBandboxSearch,
                     _("Please select a worker"));
         }
 
-        monthlyTimesheetController.goToCreateOrEditFormForResource(
+        personalTimesheetController.goToCreateOrEditFormForResource(
                 LocalDate.fromDateFields(date), resource);
     }
 

@@ -67,9 +67,17 @@ public class OrderElementPredicate implements IPredicate {
         return accepts(orderElement) || accepts(orderElement.getAllChildren());
     }
 
+    public boolean isEmpty() {
+        return (filters.isEmpty() && startDate == null && finishDate == null && name
+                .isEmpty());
+    }
+
     private boolean accepts(OrderElement orderElement) {
         if (orderElement == null) {
             return false;
+        }
+        if (orderElement.isNewObject() || orderElement.isConvertedToContainer()) {
+            return true;
         }
         if (acceptFilters(orderElement) && acceptFiltersDates(orderElement)
                 && acceptFilterName(orderElement)) {

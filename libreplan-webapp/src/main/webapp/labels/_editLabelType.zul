@@ -43,7 +43,7 @@
                                 <textbox id="label_type_name"
                                     width="500px" value="@{controller.labelType.name}"
                                     constraint="no empty:${i18n:_('cannot be empty')}"
-                                    onBlur="controller.updateWindowTitle()" />
+                                    onBlur="controller.updateWindowTitle()" sclass="focus-element" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Code')}" />
@@ -109,7 +109,7 @@
 
     <!-- Control buttons -->
     <hbox>
-        <button label="${i18n:_('Save')}" onClick="controller.saveAndExit()"
+        <button label="${i18n:_('Save')}" onClick="controller.saveAndExit()" autodisable="self"
             sclass="save-button global-action" />
         <button label="${i18n:_('Save &amp; Continue')}" onClick="controller.saveAndContinue()"
             sclass="saveandcontinue-button global-action" />

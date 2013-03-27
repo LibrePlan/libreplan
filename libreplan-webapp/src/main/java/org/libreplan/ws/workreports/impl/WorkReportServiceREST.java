@@ -21,25 +21,32 @@
 
 package org.libreplan.ws.workreports.impl;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
-import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.daos.ISumChargedEffortDAO;
+import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.entities.WorkReport;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.libreplan.ws.common.impl.GenericRESTService;
-import org.libreplan.ws.common.impl.RecoverableErrorException;
 import org.libreplan.ws.workreports.api.IWorkReportService;
 import org.libreplan.ws.workreports.api.WorkReportDTO;
 import org.libreplan.ws.workreports.api.WorkReportListDTO;
@@ -59,11 +66,13 @@ public class WorkReportServiceREST extends
         GenericRESTService<WorkReport, WorkReportDTO> implements
         IWorkReportService {
 
+    private Set<OrderElement> orderElements;
+
     @Autowired
     private IWorkReportDAO workReportDAO;
 
     @Autowired
-    private IOrderElementDAO orderElementDAO;
+    private IWorkReportLineDAO workReportLineDAO;
 
     @Autowired
     private ISumChargedEffortDAO sumChargedEffortDAO;
@@ -110,56 +119,19 @@ public class WorkReportServiceREST extends
 
     }
 
-    /**
-     * It saves (inserts or updates) an entity DTO by using a new transaction.
-     *
-     * @throws ValidationException if validations are not passed
-     * @throws RecoverableErrorException if a recoverable error occurs
-     * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
-     *
-     */
-    protected void insertOrUpdate(final WorkReportDTO entityDTO)
-        throws ValidationException, RecoverableErrorException {
-        /*
-         * NOTE: ValidationException and RecoverableErrorException are runtime
-         * exceptions. In consequence, if any of them occurs, transaction is
-         * automatically rolled back.
-         */
+    @Override
+    protected void beforeSaving(WorkReport entity) {
+        orderElements = sumChargedEffortDAO
+                .getOrderElementsToRecalculateTimsheetDates(
+                        entity.getWorkReportLines(), null);
+        sumChargedEffortDAO
+                .updateRelatedSumChargedEffortWithWorkReportLineSet(entity
+                        .getWorkReportLines());
+    }
 
-        IOnTransaction<Void> save = new IOnTransaction<Void>() {
-
-            @Override
-            public Void execute() {
-
-                WorkReport entity = null;
-                IIntegrationEntityDAO<WorkReport> entityDAO =
-                    getIntegrationEntityDAO();
-
-                /* Insert or update? */
-                try {
-                    entity = entityDAO.findByCode(entityDTO.code);
-                    updateEntity(entity, entityDTO);
-                } catch (InstanceNotFoundException e) {
-                    entity = toEntity(entityDTO);
-                }
-
-                /*
-                 * Validate and save (insert or update) the entity.
-                 */
-                entity.validate();
-                sumChargedEffortDAO
-                        .updateRelatedSumChargedEffortWithWorkReportLineSet(entity
-                                .getWorkReportLines());
-                entityDAO.saveWithoutValidating(entity);
-
-                return null;
-
-            }
-
-        };
-
-        transactionService.runOnAnotherTransaction(save);
-
+    @Override
+    protected void afterSaving(WorkReport entity) {
+        sumChargedEffortDAO.recalculateTimesheetData(orderElements);
     }
 
     @Override
@@ -169,4 +141,47 @@ public class WorkReportServiceREST extends
     public Response getWorkReport(@PathParam("code") String code) {
         return getDTOByCode(code);
     }
+
+    @Override
+    @DELETE
+    @Path("/{code}/")
+    @Transactional
+    public Response removeWorkReport(@PathParam("code") String code) {
+        try {
+            WorkReport workReport = workReportDAO.findByCode(code);
+            Set<OrderElement> orderElements = sumChargedEffortDAO
+                    .getOrderElementsToRecalculateTimsheetDates(null,
+                            workReport.getWorkReportLines());
+            sumChargedEffortDAO
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(workReport
+                            .getWorkReportLines());
+            workReportDAO.remove(workReport.getId());
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
+            return Response.ok().build();
+        } catch (InstanceNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
+
+    @Override
+    @DELETE
+    @Path("/line/{code}/")
+    @Transactional
+    public Response removeWorkReportLine(@PathParam("code") String code) {
+        try {
+            WorkReportLine workReportLine = workReportLineDAO.findByCode(code);
+            Set<OrderElement> orderElements = sumChargedEffortDAO
+                    .getOrderElementsToRecalculateTimsheetDates(null,
+                            Collections.singleton(workReportLine));
+            sumChargedEffortDAO
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(new HashSet<WorkReportLine>(
+                            Arrays.asList(workReportLine)));
+            workReportLineDAO.remove(workReportLine.getId());
+            sumChargedEffortDAO.recalculateTimesheetData(orderElements);
+            return Response.ok().build();
+        } catch (InstanceNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
+
 }

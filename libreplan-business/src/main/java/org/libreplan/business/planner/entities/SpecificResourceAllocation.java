@@ -165,20 +165,17 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public IAllocateResourcesPerDay resourcesPerDayUntil(LocalDate endExclusive) {
+    public IAllocateResourcesPerDay resourcesPerDayUntil(
+            IntraDayDate endExclusive) {
         return new SpecificAssignmentsAllocator()
                 .resourcesPerDayUntil(endExclusive);
     }
 
     @Override
-    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start) {
+    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
+            IntraDayDate start) {
         SpecificAssignmentsAllocator allocator = new SpecificAssignmentsAllocator();
         return allocator.resourcesPerDayFromEndUntil(start);
-    }
-
-    @Override
-    public IAllocateEffortOnInterval fromStartUntil(LocalDate endExclusive) {
-        return new SpecificAssignmentsAllocator().fromStartUntil(endExclusive);
     }
 
     @Override
@@ -187,7 +184,7 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public IAllocateEffortOnInterval fromEndUntil(LocalDate start) {
+    public IAllocateEffortOnInterval fromEndUntil(IntraDayDate start) {
         return new SpecificAssignmentsAllocator().fromEndUntil(start);
     }
 
@@ -211,6 +208,7 @@ public class SpecificResourceAllocation extends
             return day.limitCapacity(getAllocationCalendar()
                     .getCapacityWithOvertime(day.getDate()));
         }
+
     }
 
     public IEffortDistributor<SpecificDayAssignment> createEffortDistributor() {
