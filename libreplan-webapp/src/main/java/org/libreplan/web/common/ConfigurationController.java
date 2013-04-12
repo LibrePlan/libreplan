@@ -227,7 +227,8 @@ public class ConfigurationController extends GenericForwardComposer {
                 configurationModel.confirm();
                 configurationModel.init();
                 messages.showMessage(Level.INFO, _("Changes saved"));
-                if (!configurationModel
+                if (getSelectedConnector() != null
+                        && !configurationModel
                         .scheduleOrUnscheduleJobs(getSelectedConnector())) {
                     messages.showMessage(
                             Level.ERROR,
