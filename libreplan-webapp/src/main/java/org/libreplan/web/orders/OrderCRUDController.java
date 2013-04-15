@@ -1066,6 +1066,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void initEdit(Order order) {
+        checkUserCanRead(order);
+        orderModel.initEdit(order, getDesktop());
+        prepareEditWindow(_("Edit project"));
+    }
+
+    public void checkUserCanRead(Order order) {
         if (!orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
             try {
                 Messagebox.show(_("Sorry, you do not have permissions to access this project"),
@@ -1074,9 +1080,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 throw new RuntimeException(e);
             }
         }
-
-        orderModel.initEdit(order, getDesktop());
-        prepareEditWindow(_("Edit project"));
     }
 
     public IOrderModel getOrderModel() {

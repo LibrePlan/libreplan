@@ -273,6 +273,8 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Label(_("Project Scheduling")));
                 if (mode.isOf(ModeType.ORDER)) {
 
+                    orderPlanningController.getOrderCRUDController()
+                            .checkUserCanRead(order);
                     Label nameLabel = new Label(order.getName());
                     nameLabel.setTooltiptext(order.getName() + "."
                             + order.getDescription());
