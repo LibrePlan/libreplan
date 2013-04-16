@@ -126,6 +126,16 @@ public abstract class TreeElementOperationsController<T> {
 
     protected abstract void remove(T element);
 
+    public void moveSelectedElementToAnotherOrder() {
+        if (tree.getSelectedCount() == 1) {
+            showMoveElement(tree.getSelectedItem());
+        } else {
+            showSelectAnElementError();
+        }
+    }
+
+    protected abstract void showMoveElement(Treeitem treeitem);
+
 }
 
 /**
@@ -144,6 +154,8 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
     private OrderElementController orderElementController;
 
     private IOrderTemplatesControllerEntryPoints orderTemplates;
+
+    private MoveOrderElementToAnotherOrderController moveOrderElementController;
 
     public static OrderElementOperations build() {
         return new OrderElementOperations();
@@ -176,6 +188,12 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
     public OrderElementOperations orderTemplates(
             IOrderTemplatesControllerEntryPoints orderTemplates) {
         this.orderTemplates = orderTemplates;
+        return this;
+    }
+
+    public OrderElementOperations moveOrderElementController(
+            MoveOrderElementToAnotherOrderController moveOrderElementController) {
+        this.moveOrderElementController = moveOrderElementController;
         return this;
     }
 
@@ -256,6 +274,26 @@ class OrderElementOperations extends TreeElementOperationsController<OrderElemen
                             + "Please save your project before proceeding."),
                     _("Operation cannot be done"), Messagebox.OK,
                     Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void showMoveElement(Treeitem item) {
+        OrderElement currentOrderElement = (OrderElement) item.getValue();
+        if (currentOrderElement.isJiraIssue()) {
+            showJiraIssueCannotBeMoved();
+            return;
+        }
+        IOrderElementModel model = orderModel
+                .getOrderElementModel(currentOrderElement);
+        moveOrderElementController.openMoveOrderElementWindow(model);
+    }
+
+    protected void showJiraIssueCannotBeMoved() {
+        try {
+            Messagebox.show(_("Jira issue can not be moved"));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
