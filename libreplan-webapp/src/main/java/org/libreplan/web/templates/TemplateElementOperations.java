@@ -99,4 +99,9 @@ class TemplateElementOperations extends TreeElementOperationsController<OrderEle
         treeController.remove(element);
     }
 
+    @Override
+    protected void showMoveElement(Treeitem item) {
+        // TODO Auto-generated method stub
+    }
+
 }
