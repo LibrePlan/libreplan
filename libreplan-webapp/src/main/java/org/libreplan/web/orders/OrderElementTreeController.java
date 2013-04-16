@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Filter;
 
 import javax.annotation.Resource;
 
@@ -146,6 +145,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(OrderElementTreeController.class);
 
+    private MoveOrderElementToAnotherOrderController moveOrderElementController;
+
     public List<org.libreplan.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();
     }
@@ -170,10 +171,12 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
      * orderTemplates will be set later in doAfterCompose()
      */
     private void initializeOperationsForOrderElement() {
+        setupMoveOrderElementController();
         operationsForOrderElement = OrderElementOperations.build()
             .treeController(this)
             .orderModel(this.orderModel)
-            .orderElementController(this.orderElementController);
+                .orderElementController(this.orderElementController)
+                .moveOrderElementController(this.moveOrderElementController);
     }
 
     public OrderElementController getOrderElementController() {
@@ -311,6 +314,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         importOrderFiltersFromSession();
         disableCreateTemplateButtonIfNeeded(comp);
+
+        moveOrderElementController.doAfterCompose(comp);
     }
 
     private void importOrderFiltersFromSession() {
@@ -980,6 +985,14 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
 
         };
+    }
+
+    private void setupMoveOrderElementController() {
+        this.moveOrderElementController = new MoveOrderElementToAnotherOrderController();
+    }
+
+    public void moveSelectedElementToAnotherOrder() {
+        operationsForOrderElement.moveSelectedElementToAnotherOrder();
     }
 
 }
