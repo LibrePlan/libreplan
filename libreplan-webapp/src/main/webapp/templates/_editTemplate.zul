@@ -96,7 +96,7 @@
                 </grid>
             </tabpanel>
             <tabpanel sclass="template-tree-tabpanel">
-                <orderElementTree id="orderElementTree" showCreateTemplateButton="false" />
+                <orderElementTree id="orderElementTree" showCreateTemplateButton="false" showMovetaskButton="false"/>
             </tabpanel>
             <tabpanel>
                 <advancesAssignment id="advancesAssignment" />
