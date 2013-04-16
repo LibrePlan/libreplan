@@ -1,0 +1,56 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<window 
+    title="@{i18n:_('Move task')}"
+    width="650px"
+    left="50px"
+    visible="false"
+    closable="true"
+    >
+   <hbox>
+   <groupbox closable="false" hflex="1"  height="150px">
+   <separator spacing="10px"/>
+   <grid>
+      <columns>
+         <column width="150px" />
+         <column  />
+      </columns>
+      <rows>
+         <row>
+            <label value="${i18n:_('Task')}" width="10px"/>
+            <textbox id="selectedOrderElementId" value="" width="450px" readonly="true"/>
+         </row>
+         <row>
+            <label value="${i18n:_('To order')}" width="10px" />
+               <bandboxSearch id="bdOrders" finder="OrderBandboxFinder" model="@{moveOrderElementController.allOrders}" 
+                  widthListbox="480px" widthBandbox="450px"/>
+         </row>
+     </rows>
+   </grid>
+   </groupbox>
+   </hbox>
+   <separator/> 
+   <hbox align="center">
+     <button label="${i18n:_('Move')}"
+         onClick="moveOrderElementController.moveOrderElement()" style="margin-top: -4px" />
+	 <button label="${i18n:_('Cancel')}"
+	     onClick="moveOrderElementController.cancelMoveOrderElement()" style="margin-top: -4px" />
+	</hbox>     
+</window>
