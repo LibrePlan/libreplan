@@ -386,6 +386,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     private Button rightButton;
 
+    private Button moveOrderElementButton;
+
     protected TreeViewStateSnapshot getSnapshotOfOpenedNodes() {
         return viewStateSnapshot;
     }
@@ -399,6 +401,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         upButton.setDisabled(disabled);
         leftButton.setDisabled(disabled);
         rightButton.setDisabled(disabled);
+        moveOrderElementButton.setDisabled(readOnly);
     }
 
     protected abstract boolean isNewButtonDisabled();
@@ -1281,6 +1284,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
         rightButton.setDisabled(disabled || isFirstItem(element)
                 || previousSiblingIsUpdatedFromTimesheets);
+
+        moveOrderElementButton.setDisabled(disabled || element.isJiraIssue());
     }
 
     protected abstract boolean isPredicateApplied();
