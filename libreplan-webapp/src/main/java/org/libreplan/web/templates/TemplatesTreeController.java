@@ -346,4 +346,7 @@ public class TemplatesTreeController extends
         operationsForOrderTemplate.deleteSelectedElement();
     }
 
+    public void moveSelectedElementToAnotherOrder() {
+        operationsForOrderTemplate.moveSelectedElementToAnotherOrder();
+    }
 }
