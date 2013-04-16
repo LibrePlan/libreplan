@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
@@ -42,16 +43,20 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.entities.Configuration;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorProperty;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.entities.ProgressType;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
 import org.libreplan.business.users.entities.UserRole;
 import org.libreplan.importers.JiraRESTClient;
+import org.libreplan.importers.TimSoapClient;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
@@ -83,6 +88,7 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * Controller for {@link Configuration} entity.
@@ -124,6 +130,12 @@ public class ConfigurationController extends GenericForwardComposer {
     private Textbox ldapGroupPath;
 
     private Radiogroup strategy;
+
+    private Combobox connectorCombo;
+
+    private Grid connectorPropertriesGrid;
+
+    private Connector selectedConnector;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -215,8 +227,16 @@ public class ConfigurationController extends GenericForwardComposer {
                 configurationModel.confirm();
                 configurationModel.init();
                 messages.showMessage(Level.INFO, _("Changes saved"));
+                if (getSelectedConnector() != null
+                        && !configurationModel
+                        .scheduleOrUnscheduleJobs(getSelectedConnector())) {
+                    messages.showMessage(
+                            Level.ERROR,
+                            _("Scheduling or unscheduling of jobs for this connector is not completed"));
+                }
                 reloadWindow();
                 reloadEntitySequences();
+                reloadConnectors();
             } catch (ValidationException e) {
                 messages.showInvalidValues(e);
             } catch (ConcurrentModificationException e) {
@@ -224,6 +244,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 configurationModel.init();
                 reloadWindow();
                 reloadEntitySequences();
+                reloadConnectors();
             }
         }
     }
@@ -233,6 +254,7 @@ public class ConfigurationController extends GenericForwardComposer {
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
         reloadEntitySequences();
+        reloadConnectors();
     }
 
     public void testLDAPConnection() {
@@ -267,22 +289,71 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     /**
-     * tests jira connection
+     * Tests connection
      */
-    public void testJiraConnection() {
+    public void testConnection() {
+        if (selectedConnector == null) {
+            messages.showMessage(Level.ERROR,
+                    _("Please select a connector to test it"));
+            return;
+        }
 
-        JiraConfiguration jiraConfiguration = configurationModel
-                .getJiraConfiguration();
+        Map<String, String> properties = selectedConnector.getPropertiesAsMap();
+        String url = properties.get(PredefinedConnectorProperties.SERVER_URL);
+        String username = properties
+                .get(PredefinedConnectorProperties.USERNAME);
+        String password = properties
+                .get(PredefinedConnectorProperties.PASSWORD);
+
+        if (selectedConnector.getName().equals(
+                PredefinedConnectors.TIM.getName())) {
+            testTimConnection(url, username, password);
+        } else if (selectedConnector.getName().equals(
+                PredefinedConnectors.JIRA.getName())) {
+            testJiraConnection(url, username, password);
+        } else {
+            throw new RuntimeException("Unknown connector");
+        }
+    }
+
+    /**
+     * Test tim connection
+     *
+     * @param url
+     *            the url of the server
+     * @param username
+     *            the username
+     * @param password
+     *            the password
+     */
+    private void testTimConnection(String url, String username, String password) {
+        if (TimSoapClient.checkAuthorization(url, username, password)) {
+            messages.showMessage(Level.INFO, _("Tim connection was successful"));
+        } else {
+            messages.showMessage(Level.ERROR, _("Cannot connet to Tim server"));
+        }
+    }
+
+    /**
+     * Test JIRA connection
+     *
+     * @param url
+     *            the url
+     * @param username
+     *            the username
+     * @param password
+     *            the password
+     */
+    private void testJiraConnection(String url, String username, String password) {
 
         try {
 
-            WebClient client = WebClient.create(jiraConfiguration.getJiraUrl());
+            WebClient client = WebClient.create(url);
             client.path(JiraRESTClient.PATH_AUTH_SESSION).accept(
                     MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML);
 
             org.libreplan.ws.common.impl.Util.addAuthorizationHeader(client,
-                    jiraConfiguration.getJiraUserId(),
-                    jiraConfiguration.getJiraPassword());
+                    username, password);
 
             Response response = client.get();
 
@@ -290,17 +361,16 @@ public class ConfigurationController extends GenericForwardComposer {
                 messages.showMessage(Level.INFO,
                         _("JIRA connection was successful"));
             } else {
-                LOG.info("Status code: " + response.getStatus());
+                LOG.error("Status code: " + response.getStatus());
                 messages.showMessage(Level.ERROR,
                         _("Cannot connect to JIRA server"));
             }
 
         } catch (Exception e) {
-            LOG.info(e);
+            LOG.error(e);
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to JIRA server"));
         }
-
     }
 
     private boolean checkValidEntitySequenceRows() {
@@ -344,6 +414,14 @@ public class ConfigurationController extends GenericForwardComposer {
         entitySequencesGrid.setModel(new SimpleListModel(
                 getAllEntitySequences().toArray()));
         entitySequencesGrid.invalidate();
+    }
+
+    private void reloadConnectors() {
+        selectedConnector = configurationModel
+                .getConnectorByName(selectedConnector != null ? selectedConnector
+                        .getName() : null);
+        Util.reloadBindings(connectorCombo);
+        Util.reloadBindings(connectorPropertriesGrid);
     }
 
     public String getCompanyCode() {
@@ -818,14 +896,6 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setLdapConfiguration(ldapConfiguration);
     }
 
-    public JiraConfiguration getJiraConfiguration() {
-        return configurationModel.getJiraConfiguration();
-    }
-
-    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
-        configurationModel.setJiraConfiguration(jiraConfiguration);
-    }
-
     public RowRenderer getAllUserRolesRenderer() {
         return new RowRenderer() {
             @Override
@@ -976,12 +1046,105 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setSecondsPlanningWarning(secondsPlanningWarning);
     }
 
-    public TypeOfWorkHours getJiraConnectorTypeOfWorkHours() {
-        return configurationModel.getJiraConnectorTypeOfWorkHours();
+    public List<Connector> getConnectors() {
+        return configurationModel.getConnectors();
     }
 
-    public void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
-        configurationModel.setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
+    public Connector getSelectedConnector() {
+        return selectedConnector;
+    }
+
+    public void setSelectedConnector(Connector connector) {
+        selectedConnector = connector;
+        Util.reloadBindings(connectorPropertriesGrid);
+    }
+
+    public List<ConnectorProperty> getConnectorPropertries() {
+        if (selectedConnector == null) {
+            return Collections.emptyList();
+        }
+        return selectedConnector.getProperties();
+    }
+
+    public RowRenderer getConnectorPropertriesRenderer() {
+        return new RowRenderer() {
+            @Override
+            public void render(Row row, Object data) {
+                ConnectorProperty property = (ConnectorProperty) data;
+                row.setValue(property);
+
+                Util.appendLabel(row, _(property.getKey()));
+                appendValueTextbox(row, property);
+            }
+
+            private void appendValueTextbox(Row row,
+                    final ConnectorProperty property) {
+                final Textbox textbox = new Textbox();
+                textbox.setWidth("400px");
+                textbox.setConstraint(checkPropertyValue(property));
+
+                Util.bind(textbox, new Util.Getter<String>() {
+
+                    @Override
+                    public String get() {
+                        return property.getValue();
+                    }
+                }, new Util.Setter<String>() {
+
+                    @Override
+                    public void set(String value) {
+                        property.setValue(value);
+                    }
+                });
+                if (property.getKey().equals(
+                        PredefinedConnectorProperties.PASSWORD)) {
+                    textbox.setType("password");
+                }
+
+                row.appendChild(textbox);
+            }
+
+            public Constraint checkPropertyValue(
+                    final ConnectorProperty property) {
+                final String key = property.getKey();
+                return new Constraint() {
+                    @Override
+                    public void validate(Component comp, Object value) {
+                        if (key.equals(PredefinedConnectorProperties.ACTIVATED)) {
+                            if (!((String) value).equalsIgnoreCase("Y")
+                                    && !((String) value).equalsIgnoreCase("N")) {
+                                throw new WrongValueException(comp, _(
+                                        "Only {0} allowed", "Y/N"));
+                            }
+                        } else if (key
+                                .equals(PredefinedConnectorProperties.SERVER_URL)
+                                || key.equals(PredefinedConnectorProperties.USERNAME)
+                                || key.equals(PredefinedConnectorProperties.PASSWORD)
+                                || key.equals(PredefinedConnectorProperties.JIRA_HOURS_TYPE)) {
+                            ((InputElement) comp).setConstraint("no empty:"
+                                    + _("cannot be empty"));
+                        } else if (key
+                                .equals(PredefinedConnectorProperties.TIM_NR_DAYS_TIMESHEET)
+                                || key.equals(PredefinedConnectorProperties.TIM_NR_DAYS_ROSTER)) {
+                            if (!isNumeric((String) value)) {
+                                throw new WrongValueException(comp,
+                                        _("Only digits allowed"));
+                            }
+                        }
+                    }
+                };
+            }
+
+            private boolean isNumeric(String input) {
+                try {
+                    Integer.parseInt(input);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+
+        };
     }
 
 }

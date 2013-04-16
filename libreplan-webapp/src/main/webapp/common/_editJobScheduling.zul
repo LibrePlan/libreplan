@@ -1,0 +1,167 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<window id="${arg.id}">
+    <caption id="caption" sclass="caption-title" />
+    <grid id="jobSchedulerGrid" fixedLayout="true">
+        <columns>
+           <column width="200px" />
+           <column/>
+        </columns>
+        <rows>
+            <row>
+               <label value="${i18n:_('Job group')}" />
+               <textbox id="jobGroupTextBox" width="400px"
+                  constraint="no empty:${i18n:_('cannot be empty')}"
+                  value="@{controller.jobSchedulerConfiguration.jobGroup}"/>
+           </row>
+           <row>
+               <label value="${i18n:_('Job name')}" />
+               <textbox id="jobNameTextBox" width="400px"
+                  constraint="no empty:${i18n:_('cannot be empty')}"
+                  value="@{controller.jobSchedulerConfiguration.jobName}"/>
+           </row>
+           <row>
+               <label value="${i18n:_('Cron expression')}" />
+               <hbox>
+                 <textbox id="cronExpressionTextBox"
+                    value="@{controller.jobSchedulerConfiguration.cronExpression}"
+                    constraint="no empty:${i18n:_('cannot be empty')}"
+                    width="400px" disabled="true"/>
+                 <button sclass="icono" image="/common/img/ico_editar1.png"
+                   hoverImage="/common/img/ico_editar.png"
+                   tooltiptext="${i18n:_('Edit')}"
+                   onClick="controller.openPopup()"/>
+               </hbox>
+           </row>
+           <row>
+               <label value="${i18n:_('Job class name')}" />
+               <combobox id="jobCombo" autodrop="true" width="400px"
+                   constraint="no empty:${i18n:_('cannot be empty')}"
+                   model="@{controller.jobNames}"
+                   selectedItem="@{controller.jobSchedulerConfiguration.jobClassName}">
+                   <comboitem
+                       self="@{each=jobNames}"
+                       label="@{jobNames.name}"
+                       value="@{jobNames}" />
+               </combobox>
+           </row>
+           <row>
+               <label value="${i18n:_('Connector')}" />
+               <combobox id="connectorCombo" autodrop="true" width="400px"
+                   model="@{controller.connectorNames}"
+                   selectedItem="@{controller.jobSchedulerConfiguration.connectorName}">
+                   <comboitem
+                        self="@{each=connectorNames}"
+                        label="@{connectorNames.name}"
+                        value="@{connectorNames}" />
+              </combobox>
+           </row>
+           <row>
+               <label value="${i18n:_('Schedule')}" />
+               <checkbox checked="@{controller.jobSchedulerConfiguration.schedule}" />
+           </row>
+        </rows>
+    </grid>
+        <!-- Control buttons -->
+    <button onClick="controller.saveAndExit()"
+        label="${i18n:_('Save')}"
+        sclass="save-button global-action" />
+    <button onClick="controller.saveAndContinue()"
+        label="${i18n:_('Save and Continue')}"
+        sclass="save-button global-action" />
+    <button onClick="controller.cancelForm()"
+        label="${i18n:_('Cancel')}"
+        sclass="cancel-button global-action" />
+
+    <div>
+        <groupbox closable="false" >
+            <caption label="${i18n:_('Cron expression format')}" />
+            <grid width="500px">
+                <columns>
+                   <column label="${i18n:_('Field')}" width="150px"/>
+                   <column label="${i18n:_('Allowed values')}" />
+                </columns>
+                <rows>
+                    <row>
+                        <label value="${i18n:_('Seconds')}"/>
+                        <label value="0-59"/>
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Minutes')}"/>
+                        <label value="0-59"/>
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Hours')}"/>
+                        <label value="0-23"/>
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Day of month')}"/>
+                        <label value="1-31"/>
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Month')}"/>
+                        <span>1-12 (<label value="${i18n:_('or names')}"/> [JAN-DEC])</span>
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Day of week')}"/>
+                        <span>0-7 (<label value="${i18n:_('0 or 7 is Sunday, or use names')}"/> [SUN-SAT])</span>
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Year (optional)')}"/>
+                        <label value="1970-2099"/>
+                    </row>
+                </rows>
+            </grid>
+            <div>
+                ${i18n:_("For more details on cron expression click")}
+                <a href="http://www.manpagez.com/man/5/crontab/">${i18n:_('here')}.</a>
+            </div>
+        </groupbox>
+    </div>
+
+    <popup id="cronExpressionInputPopup" width="525px">
+        <label id="jobGroup" value="@{jobSchedulerController.jobGroup}"/>
+        <label id="jobName" value="@{jobSchedulerController.jobName}"/>
+        <grid id="cronExpressionGrid">
+            <columns>
+                <column label="${i18n:_('Seconds')}"/>
+                <column label="${i18n:_('Minutes')}" />
+                <column label="${i18n:_('Hours')}"/>
+                <column label="${i18n:_('Day of month')}"/>
+                <column label="${i18n:_('Month')}"/>
+                <column label="${i18n:_('Day of week')}"/>
+                <column label="${i18n:_('Year')}"/>
+            </columns>
+            <rows>
+                <row>
+                    <textbox id="cronExpressionSeconds" width="60px" />
+                    <textbox id="cronExpressionMinutes" width="60px" />
+                    <textbox id="cronExpressionHours" width="60px" />
+                    <textbox id="cronExpressionDayOfMonth" width="60px" />
+                    <textbox id="cronExpressionMonth" width="60px" />
+                    <textbox id="cronExpressionDayOfWeek" width="60px" />
+                    <textbox id="cronExpressionYear" width="60px" />
+                </row>
+            </rows>
+         </grid>
+         <button onClick="controller.updateCronExpression();" label="${i18n:_('OK')}" />
+         <button onClick="controller.cancelPopup();" label="${i18n:_('Cancel')}" />
+    </popup>
+</window>

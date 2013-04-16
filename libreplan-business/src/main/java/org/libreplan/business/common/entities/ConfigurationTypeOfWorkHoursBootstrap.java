@@ -75,8 +75,6 @@ public class ConfigurationTypeOfWorkHoursBootstrap implements
         }
 
         configuration.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
-        configuration.getJiraConfiguration().setJiraConnectorTypeOfWorkHours(
-                typeOfWorkHours);
         configurationDAO.save(configuration);
     }
 

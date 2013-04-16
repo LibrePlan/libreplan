@@ -442,12 +442,16 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         } else {
             String strQuery = "SELECT oa.order.id "
                     + "FROM OrderAuthorization oa "
-                    + "WHERE oa.user = :user "
-                    + "OR oa.profile IN (:profiles) ";
+                    + "WHERE oa.user = :user ";
+            if (!user.getProfiles().isEmpty()) {
+                strQuery += "OR oa.profile IN (:profiles) ";
+            }
 
             Query query = getSession().createQuery(strQuery);
             query.setParameter("user", user);
-            query.setParameterList("profiles", user.getProfiles());
+            if (!user.getProfiles().isEmpty()) {
+                query.setParameterList("profiles", user.getProfiles());
+            }
 
             return query.list();
         }

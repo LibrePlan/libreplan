@@ -414,6 +414,13 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     "/profiles/profiles.zul",
                     "13-usuarios.html#administraci-n-de-perfiles"));
         }
+        if (SecurityUtils
+                .isSuperuserOrUserInRoles(UserRole.ROLE_JOB_SCHEDULING)) {
+            configurationItems.add(subItem(_("Job Scheduling"),
+                    "/common/job_scheduling.zul",
+                    "16-ldap-authentication.html"));
+        }
+
         if (!configurationItems.isEmpty()) {
             topItem(_("Configuration"), "/common/configuration.zul", "",
                     configurationItems);

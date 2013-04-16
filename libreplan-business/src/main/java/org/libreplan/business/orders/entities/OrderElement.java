@@ -52,7 +52,7 @@ import org.libreplan.business.advance.exceptions.DuplicateValueTrueReportGlobalA
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
-import org.libreplan.business.common.entities.JiraConfiguration;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.materials.entities.MaterialAssignment;
@@ -1569,6 +1569,24 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     /**
+     * Gets workReportLines of this order-element between the specified
+     * <code>startDate</code> and <code>endDate</code>
+     *
+     * @param startDate
+     *            the startDate
+     * @param endDate
+     *            the endDate
+     * @param sortedByDate
+     * @return list of workReportLines
+     */
+    public List<WorkReportLine> getWorkReportLines(Date startDate,
+            Date endDate, boolean sortedByDate) {
+        IWorkReportLineDAO workReportLineDAO = Registry.getWorkReportLineDAO();
+        return workReportLineDAO.findByOrderElementAndChildrenFilteredByDate(
+                this, startDate, endDate, sortedByDate);
+    }
+
+    /**
      * Checks if it has nay consolidated advance, if not checks if any parent
      * has it
      */
@@ -1668,7 +1686,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         if (code == null) {
             return false;
         }
-        return code.startsWith(JiraConfiguration.CODE_PREFIX);
+        return code.startsWith(PredefinedConnectorProperties.JIRA_CODE_PREFIX);
     }
 
     public boolean isConvertedToContainer() {

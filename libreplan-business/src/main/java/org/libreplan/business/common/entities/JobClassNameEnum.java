@@ -17,45 +17,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.libreplan.importers;
+package org.libreplan.business.common.entities;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
- * Keeps track the synchronization info.
+ * Defines the job class package and name to be used as data type in
+ * {@link JobSchedulerConfiguration}
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-public class JiraSyncInfo {
+public enum JobClassNameEnum {
 
-    private List<String> syncFailedReasons = new ArrayList<String>();
+    IMPORT_ROSTER_FROM_TIM_JOB("org.libreplan.importers", "ImportRosterFromTimJob"),
+    EXPORT_TIMESHEET_TO_TIM_JOB("org.libreplan.importers","ExportTimesheetToTimJob"),
+    SYNC_ORDERELEMENTS_WITH_JIRA_ISSUES_JOB("org.libreplan.importers","JiraOrderElementSynchronizerJob");
 
-    /**
-     * Add the specified <code>reason</code> to syncFailedReasons list
-     *
-     * @param reason
-     *            reason why synchronizition failed
-     */
-    public void addSyncFailedReason(String reason) {
-        syncFailedReasons.add(reason);
+    private String packageName;
+    private String name;
+
+    private JobClassNameEnum(String packageName, String name) {
+        this.packageName = packageName;
+        this.name = name;
     }
 
-    /**
-     * Is synchronization successful
-     *
-     * @return
-     */
-    public boolean isSyncSuccessful() {
-        return syncFailedReasons.isEmpty();
+    public String getPackageName() {
+        return packageName;
     }
 
-    /**
-     * returns reasons why synchronization is failed
-     */
-    public List<String> getSyncFailedReasons() {
-        return Collections.unmodifiableList(syncFailedReasons);
+    public String getName() {
+        return name;
     }
 
 }

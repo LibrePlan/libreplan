@@ -221,106 +221,100 @@
             columnDataType="INTEGER" />
     </changeSet>
 
-    <!-- Jira configuration-->
-    <changeSet id="add-new-column-jira_activated" author="miciele">
-        <comment>
-            Add new column jira_activated with default value FALSE to configuration table
-        </comment>
-        <addColumn tableName="configuration">
-            <column name="jira_activated" type="BOOLEAN" />
-        </addColumn>
-        <addDefaultValue tableName="configuration" columnName="jira_activated"
-           defaultValueBoolean="FALSE" />
-        <addNotNullConstraint tableName="configuration"
-           columnName="jira_activated"
-            defaultNullValue="FALSE"
-            columnDataType="BOOLEAN" />
+    <!-- order sync info -->
+    <changeSet author="miciele" id="create-table-order-sync-info">
+        <comment>Create new table order_sync_info</comment>
+        <createTable tableName="order_sync_info">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_sync_date" type="DATETIME" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="key" type="VARCHAR(255)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="connector_name" type="VARCHAR(255)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_element_id" type="BIGINT" />
+        </createTable>
+        <addForeignKeyConstraint constraintName="order_sync_info_order_table_fkey"
+            baseTableName="order_sync_info" baseColumnNames="order_element_id"
+            referencedTableName="order_table" referencedColumnNames="order_element_id" />
     </changeSet>
 
-    <changeSet id="add-new-column-jira_url" author="miciele">
-        <comment>
-            Add new column jira_url in table configuration
-        </comment>
-        <addColumn tableName="configuration">
-            <column name="jira_url" type="VARCHAR(255)" />
-        </addColumn>
-    </changeSet>
+    <!-- connector -->
+    <changeSet author="rego" id="create-tables-related-to-connector-entity">
+        <comment>Create tables related to Connector entity</comment>
+        <createTable tableName="connector">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="connector_pkey" />
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="name" type="VARCHAR(255)" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
 
-    <changeSet id="add-new-column-jira_label_url" author="miciele">
-        <comment>
-            Add new column jira_label_url in table configuration
-        </comment>
-        <addColumn tableName="configuration">
-            <column name="jira_label_url" type="VARCHAR(255)" />
-        </addColumn>
-    </changeSet>
+        <createTable tableName="connector_property">
+            <column name="connector_id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="connector_property_position" type="INTEGER">
+                <constraints nullable="false" />
+            </column>
+            <column name="key" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="value" type="VARCHAR(255)" />
+        </createTable>
 
-    <changeSet id="add-new-column-jira_user_id" author="miciele">
-        <comment>
-            Add new column jira_user_id in table configuration
-        </comment>
-        <addColumn tableName="configuration">
-            <column name="jira_user_id" type="VARCHAR(255)" />
-        </addColumn>
-    </changeSet>
+        <addPrimaryKey
+            columnNames="connector_id,connector_property_position"
+            constraintName="connector_property_pkey"
+            tableName="connector_property"/>
 
-    <changeSet id="add-new-column-jira_password" author="miciele">
-        <comment>
-            Add new column jira_user_id in table configuration
-        </comment>
-        <addColumn tableName="configuration">
-            <column name="jira_password" type="VARCHAR(255)" />
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="add-new-column-imported-label" author="miciele">
-        <comment>
-            Add new column imported_label in table order_table
-        </comment>
-        <addColumn tableName="order_table">
-            <column name="imported_label" type="VARCHAR(255)" />
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="add-jira_connector_type_of_work_hours-to-configuration"
-        author="mrego">
-        <comment>
-            Add new column jira_connector_type_of_work_hours to configuration
-            table.
-        </comment>
-        <addColumn tableName="configuration">
-            <column name="jira_connector_type_of_work_hours" type="BIGINT" />
-        </addColumn>
         <addForeignKeyConstraint
-            constraintName="configuration_jira_connector_type_of_work_hours_fkey"
-            baseTableName="configuration"
-            baseColumnNames="jira_connector_type_of_work_hours"
-            referencedTableName="type_of_work_hours"
-            referencedColumnNames="id" />
+            baseColumnNames="connector_id"
+            baseTableName="connector_property"
+            constraintName="connector_property_connector_id_fkey"
+            deferrable="false" initiallyDeferred="false"
+            onDelete="NO ACTION" onUpdate="NO ACTION"
+            referencedColumnNames="id"
+            referencedTableName="connector"
+            referencesUniqueColumn="false"/>
     </changeSet>
-
-    <changeSet id="rename-column-jira_label_url-in-configuration"
-        author="mrego">
-        <comment>
-            Rename column jira_label_url to jira_labels in configuration table
-        </comment>
-        <renameColumn tableName="configuration"
-            oldColumnName="jira_label_url"
-            newColumnName="jira_labels"
-            columnDataType="VARCHAR(255)" />
-    </changeSet>
-
-    <changeSet id="change-column-jira_labels-in-configuration-to-text"
-        author="mrego" dbms="postgresql">
-        <comment>Change column jira_labels in configuration to TEXT</comment>
-        <modifyDataType tableName="configuration" columnName="jira_labels"
-            newDataType="TEXT" />
-    </changeSet>
-
-    <changeSet id="change-column-jira_labels-in-configuration-to-text-in-mysql"
-        author="mrego" dbms="mysql">
-        <comment>Change column jira_labels in configuration to TEXT in MySQL</comment>
-        <sql>ALTER TABLE configuration MODIFY jira_labels TEXT</sql>
+    <!-- scheduler configuration -->
+    <changeSet author="miciele" id="create-table-job-scheduler-configuration">
+        <comment>Create new table job_scheduler_configuration</comment>
+        <createTable tableName="job_scheduler_configuration">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="version" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="job_group" type="VARCHAR(255)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="job_name" type="VARCHAR(255)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="cron_expression" type="VARCHAR(255)" >
+                <constraints nullable="false" />
+            </column>
+            <column name="job_class_name" type="INTEGER" >
+                <constraints nullable="false" />
+            </column>
+            <column name="connector_name" type="VARCHAR(255)" />
+            <column name="schedule" type="BOOLEAN" />
+       </createTable>
     </changeSet>
 
     <changeSet id="add-projects_filter_period_since-column-to-user_table"

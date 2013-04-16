@@ -573,7 +573,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     public String getCurrentQueue() {
         if (getBeingEditedElement() == null
                 || getBeingEditedElement().getLimitingResourceQueue() == null) {
-            return _("Unnasigned");
+            return _("Unassigned");
         }
         return getBeingEditedElement().getLimitingResourceQueue().getResource()
                 .getName();
@@ -582,7 +582,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     public String getCurrentStart() {
         if (getBeingEditedElement() == null
                 || getBeingEditedElement().getStartDate() == null) {
-            return _("Unnasigned");
+            return _("Unassigned");
         }
         return getBeingEditedElement().getStartDate().toString();
     }
@@ -590,7 +590,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     public String getCurrentEnd() {
         if (getBeingEditedElement() == null
                 || getBeingEditedElement().getEndDate() == null) {
-            return _("Unnasigned");
+            return _("Unassigned");
         }
         return getBeingEditedElement().getEndDate().toString();
     }

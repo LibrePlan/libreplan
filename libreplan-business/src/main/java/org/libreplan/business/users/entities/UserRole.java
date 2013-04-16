@@ -66,6 +66,7 @@ public enum UserRole {
     ROLE_MAIN_SETTINGS(_("Main Settings")),
     ROLE_USER_ACCOUNTS(_("User Accounts")),
     ROLE_PROFILES(_("Profiles")),
+    ROLE_JOB_SCHEDULING(_("Job Scheduling")),
     ROLE_COMPANIES(_("Companies")),
     ROLE_SEND_TO_SUBCONTRACTORS(_("Send To Subcontractors")),
     ROLE_RECEIVED_FROM_SUBCONTRACTORS(_("Received From Subcontractors")),

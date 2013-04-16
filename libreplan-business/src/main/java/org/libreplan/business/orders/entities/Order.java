@@ -120,8 +120,6 @@ public class Order extends OrderLineGroup implements Comparable {
 
     private Set<CustomerCommunication> customerCommunications = new HashSet<CustomerCommunication>();
 
-    private String importedLabel;
-
     @Valid
     private SortedSet<DeadlineCommunication> deliveringDates = new TreeSet<DeadlineCommunication>(
             new DeliverDateComparator());
@@ -691,14 +689,6 @@ public class Order extends OrderLineGroup implements Comparable {
         }
 
         return true;
-    }
-
-    public String getImportedLabel() {
-        return importedLabel;
-    }
-
-    public void setImportedLabel(String importedLabel) {
-        this.importedLabel = importedLabel;
     }
 
     public void calculateAndSetTotalHours() {

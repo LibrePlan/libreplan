@@ -30,6 +30,9 @@ import org.hibernate.validator.NotNull;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 
@@ -168,11 +171,13 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
     @AssertTrue(message = "type of work hours for JIRA connector cannot be disabled")
     public boolean checkJiraConnectorTypeOfWorkHoursNotDisabled() {
         if (!isNewObject() && !getEnabled()) {
-            TypeOfWorkHours typeOfWorkHours = Registry.getConfigurationDAO()
-                    .getConfiguration().getJiraConfiguration()
-                    .getJiraConnectorTypeOfWorkHours();
-            if (typeOfWorkHours.getId().equals(getId())) {
-                return false;
+            Connector connector = Registry.getConnectorDAO().findUniqueByName(
+                    PredefinedConnectors.JIRA.getName());
+            if (connector != null) {
+                if (this.name.equals(connector.getPropertiesAsMap().get(
+                        PredefinedConnectorProperties.JIRA_HOURS_TYPE))) {
+                    return false;
+                }
             }
         }
 

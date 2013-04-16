@@ -19,24 +19,31 @@
 
 package org.libreplan.importers;
 
+import static org.libreplan.web.I18nHelper._;
+
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.NonUniqueResultException;
 import org.libreplan.business.common.IAdHocTransactionService;
-import org.libreplan.business.common.daos.IConfigurationDAO;
-import org.libreplan.business.common.entities.JiraConfiguration;
+import org.libreplan.business.common.daos.IConnectorDAO;
+import org.libreplan.business.common.entities.Connector;
+import org.libreplan.business.common.entities.ConnectorException;
+import org.libreplan.business.common.entities.PredefinedConnectorProperties;
+import org.libreplan.business.common.entities.PredefinedConnectors;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workreports.daos.IWorkReportDAO;
-import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
 import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.libreplan.business.workreports.entities.PredefinedWorkReportTypes;
 import org.libreplan.business.workreports.entities.WorkReport;
@@ -63,7 +70,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
 
-    private JiraSyncInfo jiraSyncInfo;
+    private SynchronizationInfo synchronizationInfo;
 
     private List<Worker> workers;
 
@@ -81,59 +88,75 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
     private IWorkReportDAO workReportDAO;
 
     @Autowired
-    private IWorkReportLineDAO workReportLineDAO;
-
-    @Autowired
     private IWorkReportModel workReportModel;
 
     @Autowired
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Autowired
-    private IConfigurationDAO configurationDAO;
+    private IConnectorDAO connectorDAO;
+
+    @Autowired
+    private IOrderSyncInfoDAO orderSyncInfoDAO;
 
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
 
     @Override
     @Transactional
-    public void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order) {
-        jiraSyncInfo = new JiraSyncInfo();
+    public void syncJiraTimesheetWithJiraIssues(List<IssueDTO> issues, Order order) throws ConnectorException {
+        synchronizationInfo = new SynchronizationInfo(_("Synchronization"));
 
         workReportType = getJiraTimesheetsWorkReportType();
         typeOfWorkHours = getTypeOfWorkHours();
 
         workers = getWorkers();
         if (workers == null && workers.isEmpty()) {
-            jiraSyncInfo.addSyncFailedReason("No workers found");
+            synchronizationInfo.addFailedReason(_("No workers found"));
             return;
         }
 
-        String code = order.getCode() + "-" + order.getImportedLabel();
+        OrderSyncInfo orderSyncInfo = orderSyncInfoDAO
+                .findLastSynchronizedInfoByOrderAndConnectorName(order,
+                        PredefinedConnectors.JIRA.getName());
+        if (orderSyncInfo == null) {
+            synchronizationInfo.addFailedReason(_(
+                            "Order \"{0}\" not found. Order probalbly not synchronized",
+                    order.getName()));
+            return;
+        }
+        if (StringUtils.isBlank(orderSyncInfo.getKey())) {
+            synchronizationInfo.addFailedReason(_(
+                    "Key for Order \"{0}\" is empty",
+                    order.getName()));
+            return;
+        }
+
+        String code = order.getCode() + "-" + orderSyncInfo.getKey();
 
         WorkReport workReport = updateOrCreateWorkReport(code);
 
         for (IssueDTO issue : issues) {
             WorkLogDTO worklog = issue.getFields().getWorklog();
             if (worklog == null) {
-                jiraSyncInfo.addSyncFailedReason("No worklogs found for '"
-                        + issue.getKey() + "'");
+                synchronizationInfo.addFailedReason(_(
+                        "No worklogs found for \"{0}\" key", issue.getKey()));
             } else {
                 List<WorkLogItemDTO> workLogItems = worklog.getWorklogs();
                 if (workLogItems == null || workLogItems.isEmpty()) {
-                    jiraSyncInfo
-                            .addSyncFailedReason("No worklog items found for '"
-                                    + issue.getKey() + "' issue");
+                    synchronizationInfo.addFailedReason(_(
+                            "No worklog items found for \"{0}\" issue",
+                            issue.getKey()));
                 } else {
 
-                    String codeOrderElement = JiraConfiguration.CODE_PREFIX
+                    String codeOrderElement = PredefinedConnectorProperties.JIRA_CODE_PREFIX
                             + order.getCode() + "-" + issue.getKey();
 
                     OrderElement orderElement = order.getOrderElement(codeOrderElement);
 
                     if (orderElement == null) {
-                        jiraSyncInfo.addSyncFailedReason("Order element("
-                                + code + ") not found");
+                        synchronizationInfo.addFailedReason(_(
+                                "Order element \"{0}\" not found", code));
                     } else {
                         updateOrCreateWorkReportLineAndAddToWorkReport(workReport, orderElement,
                                 workLogItems);
@@ -291,10 +314,31 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
      * Returns {@link TypeOfWorkHours} configured for JIRA connector
      *
      * @return TypeOfWorkHours for JIRA connector
+     * @throws ConnectorException
      */
-    private TypeOfWorkHours getTypeOfWorkHours() {
-        return configurationDAO.getConfiguration().getJiraConfiguration()
-                .getJiraConnectorTypeOfWorkHours();
+    private TypeOfWorkHours getTypeOfWorkHours() throws ConnectorException {
+        Connector connector = connectorDAO
+                .findUniqueByName(PredefinedConnectors.JIRA.getName());
+        if (connector == null) {
+            throw new ConnectorException(_("JIRA connector not found"));
+        }
+
+        TypeOfWorkHours typeOfWorkHours;
+        String name = connector.getPropertiesAsMap().get(
+                PredefinedConnectorProperties.JIRA_HOURS_TYPE);
+
+        if (StringUtils.isBlank(name)) {
+            throw new ConnectorException(
+                    _("Hours type should not be empty to synchronine timesheets"));
+        }
+
+        try {
+            typeOfWorkHours = typeOfWorkHoursDAO.findUniqueByName(name);
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return typeOfWorkHours;
     }
 
     /**
@@ -336,13 +380,13 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
                 return worker;
             }
         }
-        jiraSyncInfo.addSyncFailedReason("Worker('" + nif + "') not found");
+        synchronizationInfo.addFailedReason(_("Worker \"{0}\" not found", nif));
         return null;
     }
 
 
     @Override
-    public JiraSyncInfo getJiraSyncInfo() {
-        return jiraSyncInfo;
+    public SynchronizationInfo getSynchronizationInfo() {
+        return synchronizationInfo;
     }
 }

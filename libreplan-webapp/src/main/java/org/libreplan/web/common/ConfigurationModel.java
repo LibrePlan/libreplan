@@ -25,6 +25,7 @@ import static org.libreplan.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,11 +39,12 @@ import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IEntitySequenceDAO;
 import org.libreplan.business.common.entities.Configuration;
+import org.libreplan.business.common.entities.Connector;
 import org.libreplan.business.common.entities.EntityNameEnum;
 import org.libreplan.business.common.entities.EntitySequence;
-import org.libreplan.business.common.entities.JiraConfiguration;
 import org.libreplan.business.common.entities.LDAPConfiguration;
 import org.libreplan.business.common.entities.PersonalTimesheetsPeriodicityEnum;
 import org.libreplan.business.common.entities.ProgressType;
@@ -76,6 +78,8 @@ public class ConfigurationModel implements IConfigurationModel {
 
     private static Map<String, String> currencies = getAllCurrencies();
 
+    private List<Connector> connectors;
+
     @Autowired
     private IConfigurationDAO configurationDAO;
 
@@ -87,6 +91,12 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IConnectorDAO connectorDAO;
+
+    @Autowired
+    private IJobSchedulerModel jobSchedulerModel;
 
     @Override
     @Transactional(readOnly = true)
@@ -107,6 +117,8 @@ public class ConfigurationModel implements IConfigurationModel {
     public void init() {
         this.configuration = getCurrentConfiguration();
         initEntitySequences();
+        initLdapConfiguration();
+        initConnectorConfiguration();
     }
 
     private void initEntitySequences() {
@@ -117,6 +129,23 @@ public class ConfigurationModel implements IConfigurationModel {
         for (EntitySequence entitySequence : entitySequenceDAO.getAll()) {
             entitySequences.get(entitySequence.getEntityName()).add(
                     entitySequence);
+        }
+    }
+
+    private void initLdapConfiguration() {
+        if (null == configuration.getLdapConfiguration()) {
+            configuration.setLdapConfiguration(LDAPConfiguration.create());
+        }
+    }
+
+    private void initConnectorConfiguration() {
+        connectors = connectorDAO.getAll();
+        forceLoadConnectors();
+    }
+
+    private void forceLoadConnectors() {
+        for (Connector connector : connectors) {
+            connector.getProperties().size();
         }
     }
 
@@ -132,8 +161,6 @@ public class ConfigurationModel implements IConfigurationModel {
     private void forceLoad(Configuration configuration) {
         forceLoad(configuration.getDefaultCalendar());
         forceLoad(configuration.getPersonalTimesheetsTypeOfWorkHours());
-        forceLoad(configuration.getJiraConfiguration()
-                .getJiraConnectorTypeOfWorkHours());
     }
 
     private void forceLoad(BaseCalendar calendar) {
@@ -160,6 +187,7 @@ public class ConfigurationModel implements IConfigurationModel {
     public void confirm() {
         checkEntitySequences();
         configurationDAO.save(configuration);
+        saveConnectors();
         try {
             storeAndRemoveEntitySequences();
         } catch (IllegalStateException e) {
@@ -663,36 +691,34 @@ public class ConfigurationModel implements IConfigurationModel {
         configuration.setSecondsPlanningWarning(secondsPlanningWarning);
     }
 
-    @Override
-    public void setJiraConfiguration(JiraConfiguration jiraConfiguration) {
-        configuration.setJiraConfiguration(jiraConfiguration);
+    private void saveConnectors() {
+        for (Connector connector : connectors) {
+            connectorDAO.save(connector);
+        }
     }
 
     @Override
-    public JiraConfiguration getJiraConfiguration() {
-        return configuration.getJiraConfiguration();
+    public List<Connector> getConnectors() {
+        return Collections.unmodifiableList(connectors);
     }
 
     @Override
-    public TypeOfWorkHours getJiraConnectorTypeOfWorkHours() {
-        JiraConfiguration jiraConfiguration = configuration
-                .getJiraConfiguration();
-        if (jiraConfiguration != null) {
-            return jiraConfiguration.getJiraConnectorTypeOfWorkHours();
+    public Connector getConnectorByName(String name) {
+        if (name == null || connectors == null) {
+            return null;
+        }
+
+        for (Connector connector : connectors) {
+            if (connector.getName().equals(name)) {
+                return connector;
+            }
         }
         return null;
     }
 
     @Override
-    public void setJiraConnectorTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
-        if (configuration != null) {
-            JiraConfiguration jiraConfiguration = configuration
-                    .getJiraConfiguration();
-            if (jiraConfiguration != null) {
-                jiraConfiguration
-                        .setJiraConnectorTypeOfWorkHours(typeOfWorkHours);
-            }
-        }
+    public boolean scheduleOrUnscheduleJobs(Connector connector) {
+        return jobSchedulerModel.scheduleOrUnscheduleJobs(connector);
     }
 
 }

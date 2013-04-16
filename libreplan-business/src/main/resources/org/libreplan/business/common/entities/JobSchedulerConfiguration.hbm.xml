@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping default-access="field"
+    package="org.libreplan.business.common.entities">
+
+    <class name="JobSchedulerConfiguration" table="job_scheduler_configuration">
+        <id name="id" column="id" type="long" access="property">
+            <generator class="hilo">
+                <param name="max_lo">100</param>
+            </generator>
+        </id>
+
+        <version name="version" access="property" type="long" />
+
+        <property name="jobGroup" column="job_group" not-null="true" />
+        <property name="jobName" column="job_name" not-null="true" />
+        <property name="cronExpression" column="cron_expression" not-null="true" />
+        <property name="jobClassName" access="field" column="job_class_name" not-null="true">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.libreplan.business.common.entities.JobClassNameEnum</param>
+            </type>
+       </property>
+       <property name="connectorName" column="connector_name" />
+       <property name="schedule" column="schedule" />
+   </class>
+
+</hibernate-mapping>

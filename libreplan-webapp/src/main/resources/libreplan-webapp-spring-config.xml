@@ -49,6 +49,16 @@
         class="org.libreplan.web.scenarios.CurrentUserScenarioAwareManager"
         scope="singleton"/>
 
+    <!-- Scheduler -->
+    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false" />
+
+    <bean id="schedulerManager"
+        class="org.libreplan.importers.SchedulerManager"
+        scope="singleton"
+        init-method="scheduleJobs">
+        <property name="scheduler" ref="schedulerFactoryBean"/>
+    </bean>
+
     <context:component-scan base-package="org.libreplan"/>
 
     <!-- CXF -->

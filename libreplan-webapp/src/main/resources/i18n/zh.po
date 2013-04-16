@@ -1,4 +1,4 @@
-# LibrePlan - Webapp module.
+# LibrePlae - Webapp module.
 # Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 #                         Desenvolvemento Tecnolóxico de Galicia
 # Copyright (C) 2010-2012 Igalia, S.L.
@@ -72,7 +72,7 @@ msgid "Create Virtual Worker"
 msgstr "创建虚拟工作人员"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/workreports/WorkReportCRUDController.java:862
-#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeComponent.java:105
+#: libreplan-webapp/src/main/java/org/libreplan/web/tree/TreeComponent.java:104
 #: libreplan-webapp/src/main/webapp/labels/_editLabelType.zul:81
 #: libreplan-webapp/src/main/webapp/labels/_listLabelTypes.zul:28
 #: libreplan-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:30
@@ -5156,8 +5156,8 @@ msgstr "阅读不仅是因为他们的报告由分包商公司的分包商值。
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/dashboard/DashboardController.java:165
 msgid ""
-"There is a margin of %d days with the project global deadline (%.2f %%)."
-msgstr "总项目的截止日期(%.2f %%)前有%d天的余量。"
+"There is a margin of {0} days with the project global deadline ({1}%)."
+msgstr "总项目的截止日期({1}%)前有{0}天的余量。"
 
 #: libreplan-webapp/src/main/java/org/libreplan/web/planner/chart/EarnedValueChartFiller.java:250
 msgid "CV"

@@ -90,7 +90,13 @@
                 <value>
                     org/libreplan/business/expensesheets/entities/ExpenseSheets.hbm.xml
                 </value>
-                </list>
+                <value>
+                    org/libreplan/business/common/entities/Connector.hbm.xml
+                </value>
+                <value>
+                    org/libreplan/business/common/entities/JobSchedulerConfiguration.hbm.xml
+                </value>
+            </list>
         </property>
             <property name="eventListeners">
                 <map>

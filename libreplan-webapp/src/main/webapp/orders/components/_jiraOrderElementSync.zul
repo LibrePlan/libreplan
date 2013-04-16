@@ -1,0 +1,57 @@
+<!--
+  This file is part of LibrePlan
+
+  Copyright (C) 2013 St. Antoniusziekenhuis
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<groupbox id="jiraGroupBox"
+    style="margin-top: 5px" closable="false">
+    <caption label="${i18n:_('Jira sync information')}" />
+    <separator spacing="10px"/>
+    <hbox width="100%">
+        <separator spacing="10px" width="100%"/>
+
+        <grid fixedLayout="true" hflex="1">
+            <columns>
+                <column width="200px" />
+                <column  />
+            </columns>
+            <rows>
+                  <row>
+                     <label value="${i18n:_('JIRA label')}" width="50px"/>
+                     <hbox>
+                        <textbox id="txtLastSyncDate" value="" width="130px" disabled="true"/>
+                        <textbox id="txtImportedLabel" value=""
+                            width="220px" disabled="true"/>
+                         <button label="${i18n:_('Sync with JIRA')}" id="syncWithJiraButton"
+                             onClick="jiraSynchroniaztionController.syncWithJira()" />
+                     </hbox>
+                </row>
+            </rows>
+        </grid>
+    </hbox>
+    <popup id="jirasyncPopup" sclass="finder-popup">
+        <groupbox mold="3d" closable="false" width="420px">
+            <caption id="jiraSyncCaption" label="Select a label" />
+            <combobox id="comboJiraLabel" autodrop="true" width="400px" constraint="no empty:${i18n:_('cannot be empty')}"/>
+            <separator/>
+            <hbox>
+                <button id="startJiraSyncButton" />
+                <button id="cancelJiraSyncButton" />
+            </hbox>
+       </groupbox>
+   </popup>
+</groupbox>

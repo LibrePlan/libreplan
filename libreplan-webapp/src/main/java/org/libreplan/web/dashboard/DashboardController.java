@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -161,10 +162,10 @@ public class DashboardController extends GenericForwardComposer {
 
         if ((lblAbsolute != null) && (absoluteMargin != null)) {
             lblAbsolute
-                    .setValue(String
-                            .format(_("There is a margin of %d days with the project global deadline (%.2f %%)."),
-                                    absoluteMargin + 0,
-                                    relativeMargin.doubleValue() * 100));
+                    .setValue(_(
+                            "There is a margin of {0} days with the project global deadline ({1}%).",
+                            absoluteMargin, (new DecimalFormat("#.##"))
+                                    .format(relativeMargin.doubleValue() * 100)));
         } else {
             lblAbsolute.setValue(_("No project deadline defined"));
         }
