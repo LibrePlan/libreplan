@@ -75,6 +75,9 @@
                 hoverImage="/common/img/ico_borrar.png"
                 tooltiptext="${i18n:_('Delete selected task')}"
                 onClick="treeController.deleteSelectedElement();" />
+            <button id="moveOrderElementButton" label="M"
+                tooltiptext="${i18n:_('Move selected task')}"
+                onClick="treeController.moveSelectedElementToAnotherOrder();" if="${arg.showMovetaskButton}"/>
         </hbox>
     </hbox>
 
