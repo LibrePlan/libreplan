@@ -269,10 +269,10 @@
             <column name="connector_property_position" type="INTEGER">
                 <constraints nullable="false" />
             </column>
-            <column name="key" type="VARCHAR(255)">
+            <column name="property_key" type="VARCHAR(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="value" type="VARCHAR(255)" />
+            <column name="property_value" type="VARCHAR(255)" />
         </createTable>
 
         <addPrimaryKey

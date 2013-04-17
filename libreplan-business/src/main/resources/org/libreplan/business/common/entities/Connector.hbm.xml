@@ -19,9 +19,9 @@
             <list-index column="connector_property_position" />
 
             <composite-element class="ConnectorProperty">
-                <property name="key" column="key"
+                <property name="key" column="property_key"
                     not-null="true" />
-                <property name="value" column="value" />
+                <property name="value" column="property_value" />
             </composite-element>
         </list>
 
