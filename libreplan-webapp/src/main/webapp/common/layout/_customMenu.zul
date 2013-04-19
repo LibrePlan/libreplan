@@ -58,7 +58,7 @@
           <hbox>
           <hbox forEach="${menuContainer.breadcrumbsPath}">
             <n:div align="center"><n:img src="${contextPath}/common/img/migas_separacion.gif" /></n:div>
-            <n:a href="${each.encodedUrl}" class="ruta">${i18n:_(each.name)}</n:a>
+            <n:span class="ruta">${i18n:_(each.name)}</n:span>
           </hbox>
           </hbox>
 
