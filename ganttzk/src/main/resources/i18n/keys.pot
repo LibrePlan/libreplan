@@ -1,15 +1,15 @@
 # LibrePlan - GanttZK module.
 # Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 #                         Desenvolvemento Tecnolóxico de Galicia
-# Copyright (C) 2010-2012 Igalia, S.L.
+# Copyright (C) 2010-2013 Igalia, S.L.
 # This file is distributed under the same license as the LibrePlan package.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: libreplan-1.3.3\n"
+"Project-Id-Version: libreplan-1.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-07 13:59+0100\n"
+"POT-Creation-Date: 2013-04-22 12:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 msgid "Worker"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:689
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:686
 msgid "Show money cost bar"
 msgstr ""
 
@@ -39,7 +39,7 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:668
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:665
 msgid "Show reported hours"
 msgstr ""
 
@@ -47,8 +47,8 @@ msgstr ""
 msgid "Show/Hide reported hours"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:49
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
 msgid "Zoom"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgstr ""
 msgid "Criterion"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:695
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:692
 msgid "Hide money cost bar"
 msgstr ""
 
@@ -108,12 +108,12 @@ msgstr ""
 msgid "changing zoom"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:91
-msgid "Show/Hide money cost bar"
-msgstr ""
-
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:47
 msgid "Group by"
+msgstr ""
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:91
+msgid "Show/Hide money cost bar"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:90
@@ -140,12 +140,12 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:67
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:67
 msgid "Name"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:645
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:642
 msgid "Show progress"
 msgstr ""
 
@@ -177,20 +177,20 @@ msgstr ""
 msgid "Set End-Start"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:309
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:306
 msgid "decreasing zoom"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:625
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:622
 msgid "Hide critical path"
+msgstr ""
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:672
+msgid "Hide reported hours"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:84
 msgid "Day"
-msgstr ""
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:675
-msgid "Hide reported hours"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:193
@@ -209,8 +209,8 @@ msgstr ""
 msgid "Hour"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:120
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
 msgid "Graphics"
 msgstr ""
 
@@ -222,7 +222,7 @@ msgstr ""
 msgid "See resource allocation"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:292
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:289
 msgid "increasing zoom"
 msgstr ""
 
@@ -238,10 +238,10 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:620
-msgid "Show critical path"
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:650
+msgid "Hide progress"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:653
-msgid "Hide progress"
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:617
+msgid "Show critical path"
 msgstr ""
