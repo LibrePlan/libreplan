@@ -63,6 +63,7 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -86,6 +87,8 @@ public class CompanyPlanningController implements Composer {
     private Vbox orderFilter;
     private Datebox filterStartDate;
     private Datebox filterFinishDate;
+    private Textbox filterProjectName;
+
     private BandboxMultipleSearch bdFilters;
     private Checkbox checkIncludeOrderElements;
 
@@ -136,6 +139,8 @@ public class CompanyPlanningController implements Composer {
                 .getFellow("filterStartDate");
         filterFinishDate = (Datebox) filterComponent
                 .getFellow("filterFinishDate");
+        filterProjectName = (Textbox) filterComponent.getFellow("filterProjectName");
+
         bdFilters = (BandboxMultipleSearch) filterComponent
                 .getFellow("bdFilters");
         bdFilters.setFinder("taskGroupsMultipleFiltersFinder");
@@ -178,6 +183,7 @@ public class CompanyPlanningController implements Composer {
                         .plusMonths(user.getProjectsFilterPeriodTo())
                         .toDateMidnight().toDate());
             }
+            filterProjectName.setValue(FilterUtils.readProjectsName());
         }
 
     }
@@ -320,12 +326,14 @@ public class CompanyPlanningController implements Composer {
     public void readSessionVariablesIntoComponents() {
         filterStartDate.setValue(FilterUtils.readProjectsStartDate());
         filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
+        filterProjectName.setValue(FilterUtils.readProjectsName());
         loadPredefinedBandboxFilter();
     }
 
     public void onApplyFilter() {
         FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
-                filterFinishDate.getValue(), bdFilters.getSelectedElements());
+                filterFinishDate.getValue(), bdFilters.getSelectedElements(),
+                filterProjectName.getValue());
         FilterUtils.writeProjectPlanningFilterChanged(true);
         filterByPredicate(createPredicate());
     }
@@ -341,6 +349,10 @@ public class CompanyPlanningController implements Composer {
         Date finishDate = filterFinishDate.getValue();
         Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
 
+        String name = filterProjectName.getValue();
+
+        filterProjectName.setValue(name);
+
         if (startDate == null && finishDate == null) {
             TaskGroupPredicate predicate = model
                     .getDefaultPredicate(includeOrderElements);
@@ -353,11 +365,13 @@ public class CompanyPlanningController implements Composer {
                     && !FilterUtils.hasProjectsEndDateChanged()) {
                 filterFinishDate.setValue(model.getFilterFinishDate());
             }
+
             predicate.setFilters(listFilters);
             return predicate;
         }
+
         return new TaskGroupPredicate(listFilters, startDate, finishDate,
-                includeOrderElements);
+                includeOrderElements, name);
     }
 
     private void filterByPredicate(TaskGroupPredicate predicate) {
