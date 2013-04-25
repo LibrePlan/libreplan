@@ -726,8 +726,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 if (predicate != null) {
                     // If predicate includeChildren then we check if it accepts
                     // the element
-                    if (predicate.isIncludeChildren()
-                            && !predicate.accepts(associatedTaskElement)) {
+                    if (!predicate.accepts(associatedTaskElement)) {
                         // If it doesn't accept the element we move on to the
                         // next order
                         continue;
@@ -807,6 +806,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         Date startDate = FilterUtils.readProjectsStartDate();
         Date endDate = FilterUtils.readProjectsEndDate();
+        String name = FilterUtils.readProjectsName();
 
         boolean calculateStartDate = (startDate == null);
         boolean calculateEndDate = (endDate == null);
@@ -842,7 +842,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate)
                 : null;
         return new TaskGroupPredicate(null, startDate, endDate,
-                includeOrderElements);
+                includeOrderElements, name);
     }
 
     private static <T> List<T> notNull(T... values) {
