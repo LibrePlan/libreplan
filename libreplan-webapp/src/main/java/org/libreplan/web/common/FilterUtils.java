@@ -21,7 +21,6 @@ package org.libreplan.web.common;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.libreplan.business.orders.entities.Order;
@@ -46,6 +45,11 @@ public class FilterUtils {
     public static Date readProjectsEndDate() {
         return (Date) Sessions.getCurrent()
                 .getAttribute("companyFilterEndDate");
+    }
+
+    public static String readProjectsName() {
+        return (String) Sessions.getCurrent().getAttribute(
+                "companyFilterOrderName");
     }
 
     public static List<FilterPair> readProjectsParameters() {
@@ -74,16 +78,20 @@ public class FilterUtils {
                 .hasAttribute("companyFilterEndDateChanged");
     }
 
+    public static void writeProjectsName(String name) {
+        Sessions.getCurrent().setAttribute("companyFilterOrderName", name);
+    }
 
     public static void writeProjectsParameters(List<FilterPair> parameters) {
         Sessions.getCurrent().setAttribute("companyFilterLabel", parameters);
     }
 
     public static void writeProjectsFilter(Date startDate, Date endDate,
-            List<FilterPair> parameters) {
+            List<FilterPair> parameters, String projectName) {
         writeProjectsStartDate(startDate);
         writeProjectsEndDate(endDate);
         writeProjectsParameters(parameters);
+        writeProjectsName(projectName);
     }
 
     public static void writeProjectFilterChanged(boolean changed) {
@@ -220,6 +228,7 @@ public class FilterUtils {
                 .setAttribute("resourceLoadStartDateChanged", null);
         writeResourceLoadsEndDate(null);
         Sessions.getCurrent().setAttribute("resourceLoadEndDateChanged", null);
+        writeProjectsName(null);
     }
 
     public static ZoomLevel readZoomLevelCompanyView() {
