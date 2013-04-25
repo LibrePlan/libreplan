@@ -24,6 +24,7 @@ package org.libreplan.web.orders;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.entities.Order;
@@ -51,13 +52,16 @@ public class OrderPredicate implements IPredicate {
 
     private Date finishDate;
 
+    private String name;
+
     private Boolean includeOrderElements;
 
     public OrderPredicate(List<FilterPair> filters, Date startDate,
-            Date finishDate, Boolean includeOrderElements) {
+            Date finishDate, Boolean includeOrderElements, String name) {
         this.filters = filters;
         this.startDate = startDate;
         this.finishDate = finishDate;
+        this.name = name;
         this.includeOrderElements = includeOrderElements;
     }
 
@@ -71,7 +75,8 @@ public class OrderPredicate implements IPredicate {
         if (order == null) {
             return false;
         }
-        if (acceptFilters(order) && acceptFiltersDates(order)) {
+        if (acceptFilters(order) && acceptFiltersDates(order)
+                && acceptFilterName(order)) {
             return true;
         }
         return false;
@@ -233,4 +238,16 @@ public class OrderPredicate implements IPredicate {
         }
         return false;
     }
+
+    private boolean acceptFilterName(Order order) {
+        if (name == null) {
+            return true;
+        }
+        if ((order.getName() != null)
+                && (StringUtils.containsIgnoreCase(order.getName(), name))) {
+            return true;
+        }
+        return false;
+    }
+
 }
