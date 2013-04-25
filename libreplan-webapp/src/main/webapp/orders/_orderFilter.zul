@@ -20,8 +20,11 @@
 -->
 
 <hbox align="center" sclass="filtering-area">
-    <label value=" ${i18n:_('Filter')}"
+    <label value="${i18n:_('Project')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
+    <textbox id="filterProjectName" width="100px"
+        onChange="orderFilterController.onApplyFilter()" />
+    <label value=" ${i18n:_('with')}" />
     <bandboxMultipleSearch id="bdFilters" widthBandbox="260px" widthListbox="550px"
         finder="ordersMultipleFiltersFinder" onChange="orderFilterController.onApplyFilter()" />
     <label value="${i18n:_('from')}"/>
