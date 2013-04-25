@@ -206,6 +206,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private EndDatesRenderer endDatesRenderer = new EndDatesRenderer();
 
+    private Textbox filterProjectName;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -225,6 +227,10 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("bdFilters");
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
+
+        filterProjectName = (Textbox) filterComponent
+                .getFellow("filterProjectName");
+
         checkCreationPermissions();
         setupGlobalButtons();
         initializeFilter();
@@ -261,6 +267,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         filterStartDate.setValue(startDate);
         filterFinishDate.setValue(endDate);
+
+        filterProjectName.setValue(FilterUtils.readProjectsName());
 
         loadLabels();
         FilterUtils.writeProjectPlanningFilterChanged(false);
@@ -1491,19 +1499,21 @@ public class OrderCRUDController extends GenericForwardComposer {
         OrderPredicate predicate = createPredicate();
         storeSessionVariables();
         FilterUtils.writeProjectFilterChanged(true);
-        if (predicate != null && checkIncludeOrderElements.isChecked()) {
+        if (predicate != null) {
             // Force reload conversation state in oderModel
             getOrders();
             filterByPredicate(predicate);
         } else {
             showAllOrders();
         }
+
     }
 
     private void storeSessionVariables() {
         FilterUtils.writeProjectsFilter(filterStartDate.getValue(),
                 filterFinishDate.getValue(),
-                getSelectedBandboxAsTaskGroupFilters());
+                getSelectedBandboxAsTaskGroupFilters(),
+                filterProjectName.getValue());
     }
 
     private List<FilterPair> getSelectedBandboxAsTaskGroupFilters() {
@@ -1544,12 +1554,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         Date startDate = filterStartDate.getValue();
         Date finishDate = filterFinishDate.getValue();
         Boolean includeOrderElements = checkIncludeOrderElements.isChecked();
+        String name = filterProjectName.getValue();
 
-        if (listFilters.isEmpty() && startDate == null && finishDate == null) {
+        if (listFilters.isEmpty() && startDate == null && finishDate == null
+                && name == null) {
             return null;
         }
         return new OrderPredicate(listFilters, startDate, finishDate,
-                includeOrderElements);
+                includeOrderElements, name);
     }
 
     private void filterByPredicate(OrderPredicate predicate) {
@@ -1866,6 +1878,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void readSessionFilterDates() {
         filterStartDate.setValue(FilterUtils.readProjectsStartDate());
         filterFinishDate.setValue(FilterUtils.readProjectsEndDate());
+        filterProjectName.setValue(FilterUtils.readProjectsName());
+
         loadLabels();
     }
 
