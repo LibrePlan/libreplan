@@ -1,6 +1,567 @@
 NEWS
 ====
 
+Version 1.4.0 (29 Apr 2013)
+---------------------------
+
+Summary
+~~~~~~~
+
+We are proud to announce a new LibrePlan major version, with several
+improvements and new features, as all the fixes developed since the last 1.3.3
+version. These are the most representative changes:
+
+* Integrated connector to import JIRA issues into LibrePlan projects, by
+  selecting the JIRA issue labels that the user wants to be managed with
+  LibrePlan.
+* Timesheets loader from TimEnterprise tracking tool, to enable showing the
+  progresses tracked with Tim into their corresponding LibrePlan projects.
+* Importer of Microsoft Project and Planner files, which will create on
+* LibrePlan the corresponding gantts with their tasks, dependencies, milestones
+  and calendars.
+* User-configurable filtering options for company view and resources load,
+  specifying the time filtering options and label/criteria restrictions.
+* Extended information on the resources load availability and overtime available
+  on the advanced search of the assignment popup.
+* Chinese language is now available. With this new translation, LibrePlan has
+  been translated into 13 languages.
+
+Notes
+~~~~~
+
+If you are upgrading from 1.3.2 or 1.3.3 versions without using the Debian
+package, you will need to manually execute on your database the SQL sentences
+from file: ``scripts/database/upgrade_1.4.0.sql``.
+
+If you are upgrading from 1.3.1 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from file:
+``scripts/database/upgrade_1.3.2.sql`` and
+``scripts/database/upgrade_1.4.0.sql``.
+
+If you are upgrading from 1.3.0 version without using the Debian package,
+you will need to manually execute on your database the SQL sentences from files:
+``scripts/database/upgrade_1.3.1.sql``,
+``scripts/database/upgrade_1.3.2.sql`` and
+``scripts/database/upgrade_1.4.0.sql``.
+
+Contributors
+~~~~~~~~~~~~
+
+Thanks to all the contributors to this new version:
+
+* Jacobo Aragunde Pérez
+* Alba Carro
+* Óscar González Fernández
+* Miciele Ghiorghis
+* Victor Lopez Rivero
+* Javier Morán Rúa
+* Manuel Rego Casasnovas
+* Juan A. Suárez Romero
+* Lorenzo Tilve Álvaro
+
+Translators
+~~~~~~~~~~~
+
+Thanks to all the translators in this new version:
+
+* [ca] Daniel Díaz Sañudo
+* [es] Lorenzo Tilve Álvaro
+* [fr] Philippe Poumaroux
+* [gl] Lorenzo Tilve Álvaro
+* [it] Giuseppe Zizza
+* [nl] Jeroen Baten
+* [pt] Thiago Cangussu
+* [zn] Swanson Chan
+
+Changes
+~~~~~~~
+
+* Update RPM package for LibrePlan 1.4.0
+* Update Debian package for LibrePlan 1.4.0
+* Update database scripts for LibrePlan 1.4.0
+* Fix excessive height on input boxes, which caused overflowing on some grid rows
+* doc: Linked context specific help to scheduler configuration window
+* doc: Added to 'parts' file the references to connector and scheduler manuals
+* doc: Include Loren as Spanish and Galician translator
+* Bug #1606: Revert fix for bug #1546 wich causes regressions on dependencies after saving project
+* i18n: Update Italian translation
+* i18n: Update Galician translation
+* i18n: Update Spanish translation
+* i18n: Update French translation
+* i18n: Update Dutch translation
+* user-manual: Scheduler user manual
+* user-manual: connectors user manual
+* Bug #1563: Remove links from breadcrumbs component
+* i18n: Update keys.pot files
+* Fix MySQL problem when loading connector properties bootstraps
+* Merge branch 'master' into mpxj-import
+* Fix i18n formatting problem on dashboards
+* Bug #1610: Restrict access through manual entry points to projects without permissions
+* Bug #1610: Fix problem accessing company view with limited permissions
+* Fix NPE when saving changes on configuration window without any connector
+* Fix typo "Unnasigned" vs "Unassigned"
+* Merge branch 'master' into mpxj-import
+* Fix problems with calendar exception types bootstrap
+* Revamps import window and adds extra information on importable entities
+* Configures a new userRole to restrict access to import project functionality
+* Merge branch 'master' into tim-connector
+* jira and tim-connector: Constraints for OrderSyncInfo
+* jira and tim-connector: Constraints for JobSchedulerConfiguration
+* Fix NonUniqueObjectException on the project gantt when loading the same criteria of the user filter setting
+* Sort the list of resources and triggers the sort after refreshing it.
+* Adds graphic representation of the avaliability as a color progress bar and a icon for warning non-zero overload.
+* Adds margins additional to task limits(start, end) for default load ratios calculation in resource allocation advance search.
+* Recalculates the load ratios on changing the filtering dates and incorporates interface validations in the filtering dates dateboxes
+* Add the suitable casting on getting items of the list of resources with their load ratios.
+* Initialize the start filtering date with the task start date and the end filtering date with the task end date.
+* Web interface to add the resource load ratios at the advanced search in the allocation pop-up.
+* Adds calculator to obtain the ratios of a resource as a spring bean
+* Adds method to collect the day assignments of a resource in a scenario between two dates.
+* tim-connector: Remove unneeded lines in _jiraOrderElementSync.zul and _timOrderTimesheetSync.zul
+* tim-connector: Rename connectorId to connectorName in OrderSyncInfo
+* tim-connector: Fix typo in JobSchedulerController.showSynchronizationInfo() method
+* jira and tim-connector: new job for Jira order element synchronizer and some improvement
+* jira-and-tim-connector: correction on OrderSyncInfo
+* jira and tim -connector: Refactoring OrderCRUDController and other improvements
+* Bug #1612: Fix NPE adding children to newly created elements
+* Mark as non-lazy the relationship between a user and its related entities (Label and Criterion)
+* Log the full stacktrace when a ValidationException happens while saving a project
+* jira-connector: Make OrderCRUDController.isJiraActivated() public as it's used from _edition.zul
+* Fix translation markers for ConnectorException and TimImpExpInfo classes
+* Jira-connector: JIRA moved to connectors
+* tim-connector: check if connector values are invalid and more
+* Fix wrong behaviour of projects list filtering
+* Fix disabled move and indent buttons for the WBS tree manipulation
+* doc: Update AUTHORS file info about new Chinese translator
+* i18n: Add Chinese language to enum and modify pom.xml to use English userguide
+* i18n: Add Chinese translation
+* tim-connector: Modify SchedulerManager to use ConfigurationDAO instead of ConfigurationModel
+* tim-connector: main changes in scheduler
+* tim-connector: Refactor majorId attribute of Connector entity to name
+* tim-connector: Moved tests to proper package
+* tim-connector: Created new entity Connector based on AppProperties
+* Clean global session variables after saving preferences
+* Avoid cast exception when using workers on company view filter
+* Handled manually emptied dateboxes to avoid inconsistences with default values
+* Added onChange event listener to Project Gantt and WBS bandbox
+* Force synchronization of filter changes when switching between loaded perspectives
+* Fix bug in BandboxSearch that was causing its text to be wrongly updated
+* Fix orders filtered query
+* Fix problem in bandbox search filters deleting session values
+* Bug #1609: Fix problem using a different transaction in validation methods
+* tim-connector: added attribute key and connectorId and removed code and label attributes
+* tim-connector: more imporovements spcecially calculating exception hours
+* Forced reference to zoom listener to write resourcesLoad session parameter
+* tim-connector: Fix alignment of cron expression and button
+* Fix hibernate exception when entering into order resourcesload due to company filter parameters
+* tim-connector: comments improved and NotNull annotations added
+* tim-connector: Remove unneeded checkings in testConnection method
+* tim-connector: Pass component to WrongValueException in connectors configuration
+* tim-connector: Increase width of textboxes in connector properties
+* tim-connector: Rename page to "Job Scheduling" and associated files
+* tim-connector: Hide Tim sync UI in order edition if Tim is not activated
+* tim-connector: Improve configuration UI for connectors
+* Merge branch 'master' into filtering-improvements
+* Remove sorting of bandbox contents in user settings
+* tim-connector: Changes in JobSchedulerController and zul
+* tim-connector: Avoid to load all workers to import/export timesheets from/to Tim
+* tim-connector: Remove commented line
+* tim-connector: Use LocalDate API
+* tim-connector: Add protected default constructor for Hibernate to new entities
+* Avoid NPE when sorting Labels and Criteria for user setting bandboxes
+* Keep tasks converted into containers also in the filtered WBS
+* Write order filter bandbox from WBS screen
+* Fixed fuzzy translation strings
+* Improved graphical appearance of filter parameters configuration widgets
+* Apply filter when entering project details view
+* Revert "Apply filter when entering project details view"
+* Added translations for filtering improvements strings
+* jira-integration: By default ignore tests that only passes if you have a Tim server
+* Tim-connector: Classes renamed according Libreplan naming convention
+* Tim-connector: Import rosters from Tim SOAP Server and convert them to worker's calendar exception
+* Tim-connector: Test for ExportTimesheetsToTim
+* Tim-connector: Test for ImportRosterFromTim
+* Tim-connector: test xml file
+* Tim-connecotr: Property file for Tim SOAP connection
+* Tim-connector: Data object models for request and response
+* Tim-connector: new dependency Quartz scheduler added
+* Tim-connector: Job scheduler menu item added
+* Tim-connector: Quarz dependencies added
+* Tim-connector: new method setupTimSynchronizationController to setup a controller for TimSynchronization
+* Tim-connector: SchedulerManager bean is added
+* Tim-connector: Two mapping resource added
+* Tim-connector: Three new tables added
+* Tim-connector: An implementation of method findByOrderElementAndChildrenFilteredByDate
+* Tim-connector: new search method added
+* Tim-connector: Method getWorkReportLines added
+* Tim-connector: Hibernate mapping for OrderSyncInfo is added
+* Tim-connector: extended with connectors-configuration functionality
+* Tim-connector: extended with connectors functionaliteit.
+* Tim-connector: A new panel for Connectors-configuration added
+* Tim-connector: new component _timOrderTimesheetSync.zul added
+* Tim-connector: new Connectors-configuration functioality added
+* Tim-connector: A new ROLE for job scheduler added
+* Tim-connector: Test for TimSoapClient
+* Tim-connector: Test for ImportRosterFromTim
+* Tim-connector: Test for ExportTimesheetsToTim
+* Tim-connector: UI for timesheet synchronization
+* Tim-connector: UI for job scheduling
+* Tim-connector: A controller for job scheduling
+* Tim-connector: A controller for Tim synchronizing of timesheets
+* Tim-connector: SOAP client to interact with Tim SOAP server
+* Tim-connector: Helper class to convert Tim rosters to RosterExceptions
+* Tim-connector: The scheduler info (non persistent bean)
+* Tim-connector: A manager that dynamically creates jobs and cron-triggers using spring quartz libraray
+* Tim-connector: A manager that dynamically creates jobs and cron-triggers using spring quartz library
+* Tim-connector: A job that import rosters from Tim SOAP server
+* Tim-connector: Import rosters from Tim SOAP Server and convert them to worker's calendar exception
+* Tim-connector: Imports Rosters from Tim SOAP server
+* Tim-connector: A job that exports timesheets to Tim SOAP server
+* Tim-connector: exports timesheet to Tim SOAP server
+* Tim-connector: Export timesheets to Tim SOAP server
+* Tim-connector: Hibernate mapping file for JobSchedulerConfiguration
+* Tim-connector: Hibernate mapping file for AppProperties
+* Tim-connector: OrderSyncInfo entity
+* Tim-connector: DAO for OrderSyncInfo
+* Tim-connector: Contract for OrderSyncInfo
+* Tim-connector: JobSchedulerConfiguration entity
+* Tim-connector: AppProperties entity
+* Tim-connector: DAO for JobSchedulerConfiguration
+* Tim-connector: Contract for JobSchedulerConfigurationDAO
+* Tim-connector: Contract for AppPropertiesDAO
+* Tim-connector: DAO for AppProperties
+* Avoided cast exception when entering WBS with Gantt resource filters
+* Fixed regression that was showing no tasks on the WBS
+* jira-integration: Change own implementation to strip whitespaces by StringUtils method
+* Jira-integration: some improvement on get issues.
+* Allow to add tasks in a filtered WBS
+* Moved session manipulation calls to the refactored class
+* Reverted unnecesary changes on Label and Criterion save operations to clear removed entities
+* Added foreign key with onDelete clause on user to label and criterion relationships
+* Avoid double-rendering on Gantt view on enter with filters in session
+* Fix problem with session zoom level in project Gantt view
+* Get zoom from session in advanced allocation view
+* Get zoom from session in resources load view
+* Move zoomLevel session management to FilterUtils
+* Forced deletion of Label and Criterion parameters and session bandboxes after entities deletion
+* Moved session parameters handling on Resources Load to refactored methods
+* Read user criterion parameter inside resourcesLoad perspective
+* Enabled WBS to write filter changes on the session
+* Refactored to external class methods to handle filters session parameters
+* Get zoom from session in project Gantt view
+* Get zoom from session in company Gantt view
+* Remove Planner.fixedZoomByUser attribute
+* Revert "Added global zoom level session variable"
+* Apply filter when entering project details view
+* Fix issue in resources load bandbox with value from session
+* Importing session filter parameters into WBS screen
+* Force attaching of labels on company view to fix issue after list perspective filter change
+* Adding session values to project gantt bandbox
+* Clearing previous elements added to company bandbox filter after list perspective change
+* Transform OrderFilterEnum parameters to TaskGroupFilterEnum for company view filter
+* Removed unncecesary temporaty code
+* Modified getOrdersIdsByDates query to get the intersecting projects between start and end dates
+* Apply filtering when changing between perspectives if the parameters have changed
+* Jira-integration: modified to test the classes instead code copied and jira label is moved to jira-conn-properties
+* Apply filter when entering project Gantt view
+* Use new database query when filtering projects list
+* Included bandbox filter parameters into projects view
+* Importing session bandbox parameters into resourcesload filter
+* Fixed issue regarding using labels and dates at the same time
+* Delete stored filter session variables when saving changes on preferences values
+* Forcing multiplebandbox search notification when clearing the bandbox
+* Added global zoom level session variable
+* Fix syntax error in orders query
+* Include unscheduled projects in orders query
+* Fix syntax error in orders query
+* Use new database query when filtering projects list
+* New query in OrderDAO to get projects filtered
+* Merge branch 'master' into filtering-improvements
+* Attached onChange listeners to project tree filter parameters
+* Enabled filters memory mechanism on project edition
+* Imported configured or previously used criterion into resourcesLoad filtering
+* Added session support to label parameters to company view
+* Imported date filtering preferences to Projects List perspective
+* Attached onChange listener to orderfilter multipleBandboxSearch
+* Moved method to generate label name and type pattern for finders to Label class
+* Inserted into company view filter the specified label user setting
+* Clear filter label or criterion settings if they have been removed
+* Included persistence information for resources load criterion filter property
+* Created Criterion configuration bandbox on user settings to filter Resources Load results
+* Refactored to OrderStatusEnum static method to get default visible project status
+* Fixed Hibernate relationship to store project label filtering preferences
+* Added user settings bandbox to configure project filtering by label
+* jira-integration: Allow to search labels by any chars and not only the first ones
+* jira-integration: Increase size of field jiraLabels
+* jira-integration: Fix issue in _jiraSyncInfo that was using args instead of arg
+* jira-integration: Fix minor visual stuff in JIRA part inside project edition
+* jira-integration: Hide JIRA part in project edition if not activated
+* jira-integration: Reload order after JIRA synchronization
+* Jira-integration: classes renamed and basic comments added
+* jira-integration: Rename jiraLabelUrl to jiraLabels
+* jira-integration: Allow to store a comma-separated list of labels instead of URL
+* jira-integration: Disable code edition in task pop-up for JIRA issues
+* jira-integration: Avoid issue with code comming back from task edition pop-up
+* jira-integration: Fix bug if comment length is lower than max length
+* jira-integration: Avoid create the work report line if worker is not found
+* jira-integration: Set scale for progress measurement when synchronizing order elements
+* jira-integration: Only catch WebApplicationException in try for WebClient.create
+* jira-integration: Surround WebClient.create calls with try/catch
+* Revert "jira-integration: Avoid saving in startSyncWithJir"
+* jira-integration: Simplify code in updateOrCreateDescriptionValuesAndAddToWorkReportLine
+* jira-integration: Move code part from updateWorkReportLine to updateOrCreateWorkReportLineAndAddToWorkReport
+* jira-integration: Use new predefined work report type in JiraTimesheetSynchronizer
+* jira-integration: Add predefined WorkReportType for JIRA connector
+* jira-integration: Avoid saving in startSyncWithJir
+* jira-integration: Remove event from syncWithJira as it's not used
+* jira-integration: Disable hours edition in JIRA issues
+* jira-integration: Refactorization related to paint a link in the WBS if the task is a JIRA issue
+* jira-integration: Replace Jira by JIRA in all the strings
+* jira-integration: Check status code against OK
+* jira-integration: Replace printStackTrace by throw RuntimeException
+* jira-integration: By default ignore tests that only passes if you have a JIRA server
+* jira-integration: Improve _jiraSyncInfo.zul using vbox
+* jira-integration: Use Collections.unmodifiableList in JiraSyncInfo
+* jira-integration: Set visibility of attributes in Field class
+* jira-integration: Several refactorizations in JiraRESTClient
+* jira-integration: Several refactorizations in JiraTimesheetSynchronizer
+* jira-integration: Avoid whitespace in code use "-" instead
+* jira-integration: Use the configured TypeOfWorkHours in JiraTimesheetSynchronizer
+* jira-integration: Add checkings to prevent remove or disable type of work hours for JIRA connector
+* jira-integration: Modify bootstraps in order to set JiraConfiguration properly
+* jira-integration: Add new field jiraConnectorTypeOfWorkHours in JiraConfiguration
+* jira-integration: Add messages to the user if default data is not found
+* jira-integration: Inline startSync method
+* jira-integration: General refactorization JiraOrderElementSynchronizer.updateOrCreateProgressAssignmentAndMeasurement
+* jira-integration: Change way to calculate estimated hours
+* jira-integration: Use EffortDuration to calculate estimated and logged hours
+* jira-integration: Prevent error if found OrderElement is not a line
+* jira-integration: Fix typo in syncProgressMeasurement method name
+* jira-integration: Move path for search operation in JIRA REST API to constant
+* jira-integration: Avoid 3 queries to get JIRA configuration from database
+* jira-integration: Avoid getConfigurationWithReadOnlyTransaction as transaction was already opened
+* jira-integration: Move code prefix for JIRA entities to a constant
+* jira-integration: Changed params order in IJiraOrderElementSynchronizer.syncOrderElementsWithJiraIssues
+* jira-integration: Add information about JIRA issue
+* jira-integration: Add missing protected constructor to JiraConfiguration
+* Jira-integration: Copy right changed from Igalia, S.L. to St. Antoniusziekenhuis
+* Jira-integration: importedLabel variable with set and get methods added
+* Jira-integration: to get all labels from jira database
+* Jira-integration: jira configuration properties for testing jiraRESTClient
+* Jira-integration: new dependency groupId=org.codehaus.jackson added
+* Jira-integration: extended with UI for synchronization with jira issues
+* Jira-integration: start point of synchronization with jira
+* Jira-integration: tabpanel for jira configuration added
+* Jira-integration: make the hours column in WBS screen read only if an order-element is a jira issue
+* Jira-integration: addHyperlink method is added and addCodeCell method is modified
+* Jira-integration: A bind method which return a hyperlink to jira is added
+* Jira-integration: get and set JiraConfiguration added
+* Jira-integration: set and get JiraConfiguration added
+* Jira-integration: testJiraConnection method added
+* Jira-integration: new dependency groupId=org.codehaus.jackson added
+* Jira-integration: extended with ImporedLabel property
+* Jira-integration: extended with jira-configuration properties
+* Jira-integration: new columns jira-configurations and importedLabel added
+* Jira-integration: create and set JiraConfiguration added to loadRequiredData method
+* Jira-integration: JiraConfiguration entity added
+* Jira-integration: Test for JiraRESTClient
+* Jira-integration: Test for JiraTimesheetSynchronizer
+* Jira-integration: Test for JiraOrderElementSynchronizer
+* Jira-integration: modal dialog to show the synchronization's success or failer info
+* Jira-integration: Keeps track the synchronization info.
+* Jira-integration: non persistent beans to map jira's REST response
+* Jira-integration: a jira client to interact with jira RESTful web service
+* Jira-integration: synchronize the timesheets with jira issues
+* Jira-integration: synchronize order-elements with jira issues
+* Jira-integration: synchronize the timesheets of order-tasks with jira issues
+* Jira-integration: synchronize order-elements with jira issues
+* Jira-integration: Jira configuration entity
+* Bug #1607: Fix issue filtering the resources load window
+* Added session based memory for Resource Load filtering date parameters
+* Used stored user settings parameters for ResourceLoad date filtering
+* Setting company filtering dates with session values if they have been set
+* Storing on the session the values for the company filtering dates
+* Added onchange listeners to company view date filter widgets
+* Adapted dates filter to user preferences
+* Added accesors to settings controller for manipulation of filtering preferences
+* Added initial interface to user preferences for company and resourcesload filtering configuration
+* Added database changelog for filtering preferences
+* Defined hibernate configuration for filtering parameters persistance
+* Added new parameters to user preferences for company view and resource load filtering
+* Add new bound resources test in functional tests suites
+* New functional test for bound resources
+* Mark to translate project status label in tooltip in company view
+* Bump version number to 1.3.3
+* Update NEWS file for LibrePlan 1.3.3
+* Update RPM package for LibrePlan 1.3.3
+* Update Debian package for LibrePlan 1.3.3
+* debian: Use echo to show information as db_info is causing problems
+* Fix typo in Labels tab in project details view
+* i18n: Update Portuguese translation
+* i18n: Mark some missing strings to be translated
+* i18n: Mark some missing strings to be translated
+* Bug #1600: Fix issue creating bindings on open resource allocation pop-up
+* Use for company view filtering all projects with status different to STORED or CANCELLED
+* Bug #1598: Fix empty labels bandbox creating bindings for tab on open
+* Bug #1579: Add autodisable to save-and-exit button on all standard CRUD forms
+* Make more readable date constraint component on taskdetails
+* Fix vertical alignment problems on component to add new resource allocations
+* Make more compact advanced search criteria filter tree
+* Fix left padding issue on company view project names
+* Fix extra vertical padding issue on WBS tree rows
+* Bug #1418: Focused worker firstname on creation
+* Add first input focus-element behaviour to BaseCRUDController subclasses
+* Add support to BaseCRUDController for automatically focusing first .focus-element component
+* Replaced comma separator on Task resourcesText as it was already used on each resource
+* Improved task name style inside gantt view popup
+* Bug #1584: Fix corner case issue filling the advanced assignment pagination intervals
+* i18n: Mark some missing strings to be translated
+* Bug #1596: Disable confirm close message if user uses back button
+* i18n: Update Catalan translation
+* i18n: Update Dutch translation
+* i18n: Update Spanish and Galician translations
+* Modify .gitignore to ignore documentation auto-generated files
+* Set version for JavaScript modules in lang-addon.xml files
+* Bug #1592: Fix problem not showing the tab if it is already being shown
+* Bug #1592: Save Order before showing it
+* Merge pull request #2 from ogf/master
+* Bug #1590: Avoid repeated calls to goToOrdersList
+* Avoid some redundant loads of bindings in the same request
+* Revert "Bug #1590: Fix problem calling several times the same method in OrderModel"
+* Revert "Bug #1592: Fix problem not showing the tab if it is already being shown"
+* Bug #1594: Fix issue opening transaction at DAO if needed
+* Bug #1593: Fix issue translating the options while rendering
+* debian: Add information about common issues in LibrePlan installation
+* Bug #1592: Fix problem not showing the tab if it is already being shown
+* i18n: Update keys.pot files
+* Bug #1590: Simplify Util.createBindingsFor
+* Bug #1590: Avoid go to projects list when creating a project
+* Bug #1590: Fix problem calling several times the same method in OrderModel
+* Bug #1589: Fix issue using orderVersion for all the elements to be updated or added
+* Bug #1586: Fix issue reseting list of checkboxes before adding them
+* Bug #1583: If assignment function is not configurable keep button disabled
+* Bug #1587: Fix issue only resetting index of progress combo if it has items
+* Bug 1581: Avoid exception in LongOperationFeedback if desktop is not ready
+* Update RPM spec file
+* Bump version number to 1.3.2
+* Update NEWS file for LibrePlan 1.3.2
+* Update RPM package for LibrePlan 1.3.2
+* Update Debian package for LibrePlan 1.3.2
+* Update database scripts for LibrePlan 1.3.2
+* Only use ConfirmCloseUtil when saving if you are in the UI (not from web services)
+* Avoid confirm close warning when you get a concurrent modification exception
+* Fix issue deleting a project from the webservice
+* Update installation instructions for RPM based distros.
+* Fedora17 requires JDK 1.7
+* Fixed effect which caused previously clicked menu elements to be shown underlined
+* Fix printing due to change in entry points that now use code instead of id
+* Fixed NPE when deleting nodes too fast on project or template WBS trees
+* Bug #1562: Fix issue filtering properly resources according to their activation periods
+* doc: Add .rst extension to web services README
+* doc: Add documentation about the new bound users web services
+* Increased opacity of markers for first and last day with reported hours
+* Shifted right the last reported day marker
+* Changed cursor over gantt bars with fixed properties
+* Revamped appearance of markers for first and last reported progress dates
+* Replaced browser-prefixed border-radius elements from CSS files
+* Bug 1581: Avoid exception when desktop is not alive in LongOperationFeedback
+* doc: Added Thiago Cangussu as new Portuguese translator
+* i18n: Update Portuguese translation
+* i18n: Update French translation
+* i18n: Update Dutch translation
+* i18n: Update Catalan translation
+* i18n: Update Galician translation
+* i18n: Update Spanish translation
+* Fix Bug 1580: Force position recalculation after accepting task properties pop-up
+* Made explicit focused elements on main menu
+* Fixed side-effect of clickable-rows:hover effect on grids
+* Bug #1571: Fixed style on timetracker sencond level width causing a disaligment of 1px per element
+* Bug #1436: Fix issue setting recommended allocation resources per day to 1
+* Add new field to configure seconds for planning warning
+* Fixed permissions in order to set confirm close dialogue properly
+* Moved repeated code to ConfirmCloseUtil class
+* When executing saveCommand the timer on confirmClose is resetted
+* Internationalized warn message when leaving the planning
+* Removed confirmClose warning when leaving project planning after Save Command
+* Attached listener to call confirmClose notification
+* Added confirmClose method to give the user a warning when leaving the order edition mode
+* Added onClick listener to project names on company view to enter into the planning
+* Exposed project and tasks codes from fundamental properties to generate entry point URLs
+* Revert "doc: Add LibrePlan logo to README"
+* doc: Add LibrePlan logo to README
+* doc: Add .rst extension to documentation files to take advantage of GitHub rendering for RST files
+* Change links to repository from sourceforge to github
+* Bug #1546: Force recalculation of critical path progresses on saving project
+* Bug #1541: Fix issue reseting selected element when progress is hidden
+* Bug #1570: Fix issue updating the EV chart legend instead of creating it from scratch
+* i18n: Update keys.pot files
+* Add event to close popup with ENTER over effort or finished inputs
+* Add checkbox to mark task as finished in personal timesheets popup
+* Fix bug in adapt planning command if Gantt has milestones
+* Add popup to fill personal timesheets in each day
+* Bug #1566: Do not launch exception in MonteCarlo view is critical path is only a milestone
+* Bug #1568: Allow to move a task before start date if it does not have consolidations
+* Bug #1553: Fixed test due to change in behavior
+* Bug #1553, #1554: Remove unique constraint in DB for OrderElement codes
+* Bug #1553: Fix issue modifying methods toLeaf and toContainer
+* Calculate progress and hours bars always proportionally to task size
+* Fix problems in service to import personal timesheets
+* Remove TIMESHEETS progress in tasks that are not updated from timesheets
+* Fix typo in "according"
+* Bug #1556: Allow to choose between database or LDAP in user creation
+* Bug #1556: Fix problems with i18n of the new enum
+* Bug #1556: Allow changing the value of UserAuthenticationType field in user edition screen.
+* Bug #1556: Use a combo box to show the value of UserAuthenticationType field.
+* Bug #1556: Use an enum to express the value of UserAuthenticationType field.
+* doc: Update INSTALL file with instructions to configure log directory
+* Prevent NPE in TemplateController if logged user is null
+* Remove other allocation methods with LocalDate parameters
+* Remove some allocation methods with LocalDate parameters
+* Bug #1413: Fix bug
+* Change style of tasks that cannot be moved in the Gantt
+* Update dates on left part of Gantt view after adapt the planning
+* Merge branch 'adapt-planning-according-timesheets'
+* Sort timesheet entries descending by date in bound users service
+* Include project code in tasks list service for bound users
+* Bug #1561: Upgrade AspectJ dependency to the latest version.
+* Bug #1560: Fire property change for task dates after closing allocation pop-up
+* Bug #1517: Select the parent row in the WBS when it's transformed into a container.
+* Bug #1413: Fix bug
+* Bug #1413: Use IntraDayDate when doing allocation
+* Imports orders and calendars together
+* Adds the OrderDTOs with its calendar names
+* Modificates the DTOs to link calendar to tasks
+* Adds warning for repeated calendar names
+* Adds contract & implementation to import calendars
+* Creates new PredefinedCalendarExceptionTypes
+* Creates calendarDTOs from external project
+* Adds the DTOs needed for represent calendars
+* Adds functionality to import dependencies.
+* Adds DTO representation for dependencies
+* Adds functionality to import constraints
+* Adds new example files
+* Fixes the import of the tasks total hours
+* Fixes the import of the deadline for planner files
+* Adds functionality to imports milestones
+* Adds functionality to import the deadline
+* Adds functionality to import task's total hours
+* Moves calculateAndSetTotalHours() to Order
+* Import tasks and its dates
+* Creates new create methods for Task and TaskGroup
+* Writes the dates fields for Import entities
+* Adds Order and Dates fields
+* Generate properly codes for order elements after importing a project
+* Refactor package for stuff related to importers
+* Renames OrderImporter to IOrderImporter
+* Renames ImportTask to OrderElementDTO
+* Renames ImportData to OrderDTO
+* Import project web ui
+* Test for OrderImporterMPXJ and needed files
+* First step to import orders using MPXJ
+* Interface to import orders
+* Classes for representing import data
+
+
 Version 1.3.3 (21 Dec 2012)
 ---------------------------
 
