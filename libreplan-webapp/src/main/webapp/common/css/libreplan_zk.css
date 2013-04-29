@@ -563,8 +563,7 @@ div.z-grid {
 
 .z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
 .z-listbox .z-longbox,.z-listbox .z-doublebox {
-    height: 22px;
-    vertical-align:center;
+    height: auto;
     border-collapse: collapse;
 }
 
