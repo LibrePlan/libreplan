@@ -37,13 +37,15 @@ Translators
   Michael Taxis <mxtaxis@gmx.de>
 * [es] Jacobo Aragunde Pérez <jaragunde@igalia.com>,
   Manuel Rego Casasnovas <rego@igalia.com>,
-  Diego Pino García <dpino@igalia.com>
+  Diego Pino García <dpino@igalia.com>,
+  Lorenzo Tilve Álvaro <ltilve@igalia.com>
 * [fr] Stephane Ayache <ayache.stephane@gmail.com>,
   Guillaume Postaire <gpostaire@gmail.com>,
   Philippe Poumaroux <philippe.poumaroux@free.fr>
 * [gl] Jacobo Aragunde Pérez <jaragunde@igalia.com>,
   Manuel Rego Casasnovas <rego@igalia.com>,
-  Diego Pino García <dpino@igalia.com>
+  Diego Pino García <dpino@igalia.com>,
+  Lorenzo Tilve Álvaro <ltilve@igalia.com>
 * [it] Giuseppe Zizza <gzizza@gmail.com>
 * [nl] Jeroen Baten <jeroen@jeroenbaten.nl>
 * [pl] Krzysztof Kamecki <dwerens90@gmail.com>
