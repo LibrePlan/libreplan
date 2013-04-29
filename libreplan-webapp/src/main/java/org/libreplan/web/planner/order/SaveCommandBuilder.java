@@ -396,7 +396,6 @@ public class SaveCommandBuilder {
                 // the deletes on cascade a new root task is fetched causing a
                 // NonUniqueObjectException later
                 taskElementDAO.reattach(rootTask);
-                rootTask.updateCriticalPathProgress(state.getCriticalPath());
             }
             orderDAO.save(order);
 
