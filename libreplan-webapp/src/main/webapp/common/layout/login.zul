@@ -111,6 +111,7 @@
                     <n:option title="admin_pl">Polski</n:option>
                     <n:option title="admin_pt">Português</n:option>
                     <n:option title="admin_ru">русский</n:option>
+                    <n:option title="admin_zn">中文</n:option>
                 </n:select>
             </n:div></n:td>
         </n:tr>

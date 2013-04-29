@@ -239,6 +239,20 @@ public enum PredefinedUsers {
             return Language.CATALAN_LANGUAGE;
         }
     },
+    ADMIN_ZN(Arrays.asList(UserRole.ROLE_SUPERUSER,
+            UserRole.ROLE_READ_ALL_PROJECTS, UserRole.ROLE_EDIT_ALL_PROJECTS,
+            UserRole.ROLE_CREATE_PROJECTS), false) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+
+        @Override
+        public Language getApplicationLanguage() {
+            return Language.CHINESE_LANGUAGE;
+        }
+    },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER), Configuration
             .isExampleUsersDisabled()) {
         @Override
