@@ -45,4 +45,14 @@
             referencedTableName="type_of_work_hours" referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="add-recurrence_appliance-column-to-resource_allocation"
+        author="ltilve">
+        <comment>Add recurrence_appliance column to resource_allocation</comment>
+        <addColumn tableName="resource_allocation">
+            <column name="recurrence_appliance" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="resource_allocation"
+            columnName="recurrence_appliance" defaultValueNumeric="0" />
+    </changeSet>
+
 </databaseChangeLog>
