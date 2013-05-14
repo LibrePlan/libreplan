@@ -520,6 +520,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private Integer intendedTotalHours;
 
+    private Integer recurrenceAppliance;
+
     private Set<DerivedAllocation> derivedAllocations = new HashSet<DerivedAllocation>();
 
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
@@ -2187,6 +2189,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public void setIntendedTotalHours(Integer intendedTotalHours) {
         this.intendedTotalHours = intendedTotalHours;
+    }
+
+    public Integer getRecurrenceAppliance() {
+        return recurrenceAppliance;
+    }
+
+    public void setRecurrenceAppliance(Integer recurrenceAppliance) {
+        this.recurrenceAppliance = recurrenceAppliance;
     }
 
     /**
