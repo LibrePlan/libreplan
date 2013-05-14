@@ -23,11 +23,11 @@
     <groupbox style="margin-top: 5px" sclass="recurrence-pattern" closable="false">
         <caption label="${i18n:_('Recurrence pattern')}" />
         <hbox>
-            <radiogroup>
-                <radio label="${i18n:_('Not recurrent')}" />
-                <radio label="${i18n:_('Dayly')}" />
-                <radio label="${i18n:_('Montly')}" />
-                <radio label="${i18n:_('Weekly')}" />
+            <radiogroup id="recurrencePattern">
+                <radio label="${i18n:_('Not recurrent')}" value="not-recurrent" />
+                <radio label="${i18n:_('Daily')}" value="daily" />
+                <radio label="${i18n:_('Monthly')}" value="monthly" />
+                <radio label="${i18n:_('Weekly')}" value="weekly" />
             </radiogroup>
         </hbox>
     </groupbox>
