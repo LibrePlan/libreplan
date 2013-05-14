@@ -20,6 +20,8 @@
 
         <property name="intendedTotalHours" column="intended_total_hours" />
 
+        <property name="recurrenceAppliance" column="recurrence_appliance" />
+
         <property name="intendedTotalAssignment" access="field"
             column="intended_total_assignment"
             type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
