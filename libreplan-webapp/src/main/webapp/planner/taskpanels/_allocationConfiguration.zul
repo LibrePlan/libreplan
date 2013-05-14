@@ -24,7 +24,7 @@
 
     <groupbox sclass="assignedresources" closable="false" width="340px" height="170px" >
 
-        <caption label="${i18n:_('Allocation configuration')}" />
+        <caption label="${i18n:_('Allocation configuration (of each repetition)')}" />
 
         <hbox>
             <!-- Planned Task Start -->
@@ -32,7 +32,7 @@
             <label id="lbTaskStart" />
 
             <!-- Planned Task End -->
-            <label style="font-weight: bold" value="${i18n:_('Planned end')}:" />
+            <label style="font-weight: bold" value="${i18n:_('Planned end')}: " />
             <label id="lbTaskEnd" />
         </hbox>
 
