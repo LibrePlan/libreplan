@@ -37,6 +37,8 @@
 
         <default.passwordsControl>true</default.passwordsControl>
         <default.exampleUsersDisabled>true</default.exampleUsersDisabled>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <!--
