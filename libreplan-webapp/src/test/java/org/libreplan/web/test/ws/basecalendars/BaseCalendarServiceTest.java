@@ -25,7 +25,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
+import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
 import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
+import static org.libreplan.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 import static org.libreplan.web.test.ws.common.Util.getUniqueName;
 
 import java.util.ArrayList;
@@ -36,14 +38,18 @@ import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
+import org.libreplan.business.calendars.daos.ICalendarExceptionDAO;
 import org.libreplan.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.CalendarData;
+import org.libreplan.business.calendars.entities.CalendarException;
 import org.libreplan.business.calendars.entities.CalendarExceptionType;
 import org.libreplan.business.calendars.entities.CalendarExceptionTypeColor;
 import org.libreplan.business.calendars.entities.Capacity;
@@ -53,6 +59,7 @@ import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.entities.IConfigurationBootstrap;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.web.test.ws.calendarexceptiontypes.api.CalendarExceptionTypeServiceTest;
 import org.libreplan.ws.calendars.api.BaseCalendarDTO;
 import org.libreplan.ws.calendars.api.BaseCalendarListDTO;
 import org.libreplan.ws.calendars.api.CalendarDataDTO;
@@ -62,9 +69,10 @@ import org.libreplan.ws.calendars.api.ICalendarService;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsDTO;
 import org.libreplan.ws.common.impl.DateConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.AfterTransaction;
+import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -73,9 +81,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
-        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE })
+        WEBAPP_SPRING_CONFIG_FILE, WEBAPP_SPRING_CONFIG_TEST_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_FILE,
+        WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE })
 @Transactional
-
 public class BaseCalendarServiceTest {
 
     @Autowired
@@ -88,6 +97,9 @@ public class BaseCalendarServiceTest {
     private ICalendarExceptionTypeDAO calendarExceptionTypeDAO;
 
     @Autowired
+    private ICalendarExceptionDAO calendarExceptionDAO;
+
+    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Autowired
@@ -98,8 +110,6 @@ public class BaseCalendarServiceTest {
 
     @Autowired
     private IConfigurationBootstrap configurationBootstrap;
-
-    private final String typeCode = "TypeCode_A";
 
     @Before
     public void loadConfiguration() {
@@ -117,22 +127,66 @@ public class BaseCalendarServiceTest {
 
     }
 
-    @Test
-    @Rollback(false)
-    // FIXME: This exception type is kept in DB and it may cause problems in
-    // other tests, for example in
-    // CalendarExceptionTypeTest.exportExceptionTypes(), depending on the
-    // execution order. We must ensure that
-    public void givenCalendarExceptionTypeStored() {
-        CalendarExceptionType calendarExceptionType = CalendarExceptionType
-                .create("name", CalendarExceptionTypeColor.DEFAULT, false);
-        calendarExceptionType.setCode(typeCode);
+    private CalendarExceptionType addedExceptionType;
 
-        calendarExceptionTypeDAO.save(calendarExceptionType);
-        calendarExceptionTypeDAO.flush();
-        sessionFactory.getCurrentSession().evict(calendarExceptionType);
-        calendarExceptionType.dontPoseAsTransientObjectAnymore();
+    @BeforeTransaction
+    public void ensureOneExceptionType() {
+        addedExceptionType = transactionService
+                .runOnTransaction(new IOnTransaction<CalendarExceptionType>() {
 
+                    @Override
+                    public CalendarExceptionType execute() {
+                        CalendarExceptionType result;
+                        result = CalendarExceptionType.create("name",
+                                CalendarExceptionTypeColor.DEFAULT, false);
+                        result.setCode("TypeCode_A");
+                        calendarExceptionTypeDAO.save(result);
+                        return result;
+                    }
+                });
+        addedExceptionType.dontPoseAsTransientObjectAnymore();
+    }
+
+
+    /**
+     * It removes added {@link CalendarExceptionType} to avoid problems in other
+     * tests. The associated calendar exceptions are also removed, so the
+     * {@link CalendarExceptionType} can be removed without error.
+     *
+     * More concretely, it was causing problem in
+     * {@link CalendarExceptionTypeServiceTest} if it was executed after this
+     * test.
+     */
+    @AfterTransaction
+    public void removeAddedExceptionType() {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                try {
+                    removeAssociatedCalendarData();
+                    removeAddedType();
+                    return null;
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @SuppressWarnings("unchecked")
+            private void removeAssociatedCalendarData() {
+                Session s = sessionFactory.getCurrentSession();
+                Query query = s.createQuery(
+                        "from CalendarException e where e.type = :type")
+                        .setParameter("type", addedExceptionType);
+                List<CalendarException> found = query.list();
+                for (CalendarException each : found) {
+                    s.delete(each);
+                }
+            }
+
+            private void removeAddedType() throws InstanceNotFoundException {
+                calendarExceptionTypeDAO.remove(addedExceptionType.getId());
+            }
+        });
     }
 
     private Date getValidDate(int day) {
@@ -167,21 +221,17 @@ public class BaseCalendarServiceTest {
     }
 
     @Test
-    // FIXME: when this test finishes, the two new calendar exceptions are not
-    // being removed. This is a problem to delete the calendar exception type
-    // and causes conflicts in other tests, for example in
-    // CalendarExceptionTypeTest.exportExceptionTypes()
     public void testAddValidBaseCalendar() throws InstanceNotFoundException {
 
         /* Build valid base calendar "bc1" (5 constraint violations). */
         /* Build a calendar exception */
         CalendarExceptionDTO exceptionDTO_1 = new CalendarExceptionDTO(
                 getUniqueName(), toXml(getValidDate(0)), new Integer(7),
-                typeCode);
+                addedExceptionType.getCode());
 
         CalendarExceptionDTO exceptionDTO_2 = new CalendarExceptionDTO(
                 getUniqueName(), toXml(getValidDate(1)), new Integer(7),
-                typeCode);
+                addedExceptionType.getCode());
 
         List<CalendarExceptionDTO> calendarExceptions = new ArrayList<CalendarExceptionDTO>();
         calendarExceptions.add(exceptionDTO_1);
@@ -245,16 +295,16 @@ public class BaseCalendarServiceTest {
         /* Build two calendar exception with the same date */
         CalendarExceptionDTO exceptionDTO_1 = new CalendarExceptionDTO(
                 getUniqueName(), toXml(getValidDate(0)), new Integer(7),
-                typeCode);
+                addedExceptionType.getCode());
 
         CalendarExceptionDTO exceptionDTO_2 = new CalendarExceptionDTO(
                 getUniqueName(), toXml(getValidDate(0)), new Integer(7),
-                typeCode);
+                addedExceptionType.getCode());
 
         /* Build two calendar exception with the past date */
         CalendarExceptionDTO exceptionDTO_3 = new CalendarExceptionDTO(
                 getUniqueName(), toXml(getInvalidDate()), new Integer(7),
-                typeCode);
+                addedExceptionType.getCode());
 
         /* Build two calendar exception with the invalid type */
         CalendarExceptionDTO exceptionDTO_4 = new CalendarExceptionDTO(
