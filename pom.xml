@@ -982,11 +982,33 @@
                 </configuration>
 
                 <dependencies>
-                    <dependency>
-                        <groupId>${jdbcDriver.groupId}</groupId>
-                        <artifactId>${jdbcDriver.artifactId}</artifactId>
-                        <version>${jdbcDriver.version}</version>
-                    </dependency>
+                  <dependency>
+                    <groupId>${jdbcDriver.groupId}</groupId>
+                    <artifactId>${jdbcDriver.artifactId}</artifactId>
+                    <version>${jdbcDriver.version}</version>
+                  </dependency>
+                  <!-- connection pooling -->
+                  <dependency>
+                    <groupId>com.jolbox</groupId>
+                    <artifactId>bonecp</artifactId>
+                    <version>0.7.1.RELEASE</version>
+                  </dependency>
+                  <!-- connection pooling dependencies -->
+                  <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>1.5.5</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                    <version>1.5.5</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                    <version>14.0.1</version>
+                  </dependency>
                 </dependencies>
             </plugin>
 

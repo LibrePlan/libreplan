@@ -6,11 +6,17 @@
     <New id="libreplan-ds" class="org.mortbay.jetty.plus.naming.Resource">
         <Arg>${dataSource.jndiName}</Arg>
         <Arg>
-            <New class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-                <Set name="driverClassName">${jdbcDriver.className}</Set>
-                <Set name="url">${dataSource.url}</Set>
+            <New class="com.jolbox.bonecp.BoneCPDataSource">
+                <Set name="driverClass">${jdbcDriver.className}</Set>
+                <Set name="jdbcUrl">${dataSource.url}</Set>
                 <Set name="username">${dataSource.user}</Set>
                 <Set name="password">${dataSource.password}</Set>
+
+                <Set name="partitionCount">3</Set>
+                <Set name="minConnectionsPerPartition">5</Set>
+                <Set name="maxConnectionsPerPartition">100</Set>
+                <Set name="acquireIncrement">5</Set>
+                <Set name="idleConnectionTestPeriod">30</Set>
             </New>
         </Arg>
    </New>
