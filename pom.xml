@@ -263,6 +263,13 @@
                 <version>4.4</version>
                 <scope>test</scope>
             </dependency>
+            <!-- datasource for testing -->
+            <dependency>
+              <groupId>com.jolbox</groupId>
+              <artifactId>bonecp</artifactId>
+              <version>0.7.1.RELEASE</version>
+              <scope>test</scope>
+            </dependency>
 
             <!-- Easy mock -->
             <dependency>
