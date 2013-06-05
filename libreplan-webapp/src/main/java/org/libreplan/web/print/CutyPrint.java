@@ -57,7 +57,7 @@ public class CutyPrint {
 
     private static final Log LOG = LogFactory.getLog(CutyPrint.class);
 
-    private static final String CUTYCAPT_COMMAND = "cutycapt ";
+    private static final String CUTYCAPT_COMMAND = "cutycapt";
     // Estimated maximum execution time (ms)
 
     private static final int CUTYCAPT_TIMEOUT = 100000;
@@ -145,9 +145,7 @@ public class CutyPrint {
                 + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
                 + extension;
 
-        // Generate capture string
-        String captureString = CUTYCAPT_COMMAND;
-        String url = CallbackServlet.registerAndCreateURLFor(request,
+        String capturePath = CallbackServlet.registerAndCreateURLFor(request,
                 executeOnOriginalContext(new IServletRequestHandler() {
 
                     @Override
@@ -164,34 +162,26 @@ public class CutyPrint {
                     }
                 }));
 
-        // Add capture destination callback URL
-        String hostName = resolveLocalHost(request);
-        captureString += " --url="+ request.getScheme() + "://" + hostName + ":"
-                + request.getLocalPort() + url;
-        if (parameters != null) {
-            captureString += "?";
-            for (String key : parameters.keySet()) {
-                captureString += key + "=" + parameters.get(key) + "&";
-            }
-            captureString = captureString.substring(0,
-                    (captureString.length() - 1));
-        }
+        ProcessBuilder capture = new ProcessBuilder(CUTYCAPT_COMMAND);
+
+        capture.command().add(
+                " --url=" + createCaptureURL(request, parameters, capturePath));
         boolean expanded = Planner
                 .guessContainersExpandedByDefaultGivenPrintParameters(parameters);
         int minWidthForTaskNameColumn = planner
                 .calculateMinimumWidthForTaskNameColumn(expanded);
         int plannerWidth = calculatePlannerWidthForPrintingScreen(planner,
                 minWidthForTaskNameColumn);
-        captureString += " --min-width=" + plannerWidth;
+        capture.command().add(" --min-width=" + plannerWidth);
 
         int plannerHeight = (expanded ? planner.getAllTasksNumber() : planner
                 .getTaskNumber()) * TASK_HEIGHT + PRINT_VERTICAL_SPACING;
 
-        captureString += " --min-height=" + plannerHeight;
+        capture.command().add(" --min-height=" + plannerHeight);
 
         // Static width and time delay parameters (FIX)
 
-        captureString += " --delay=" + CAPTURE_DELAY;
+        capture.command().add(" --delay=" + CAPTURE_DELAY);
 
         String generatedCSSFile = createCSSFile(
                 absolutePath + "/planner/css/print.css",
@@ -203,18 +193,18 @@ public class CutyPrint {
                 minWidthForTaskNameColumn);
 
         // Relative user styles
-        captureString += " --user-style-path=" + generatedCSSFile;
+        capture.command().add(" --user-style-path=" + generatedCSSFile);
 
         // Destination complete absolute path
-        captureString += " --out=" + absolutePath + filename;
+        capture.command().add(" --out=" + absolutePath + filename);
 
         // User language
-        captureString += " --header=Accept-Language:"
-                + Locales.getCurrent().getLanguage();
-
+        capture.command().add(
+                " --header=Accept-Language:"
+                        + Locales.getCurrent().getLanguage());
         try {
             // CutyCapt command execution
-            LOG.warn(captureString);
+            LOG.info("calling " + capture.command());
 
             Process printProcess;
             Process serverProcess = null;
@@ -222,21 +212,15 @@ public class CutyPrint {
             // If there is a not real X server environment then use Xvfb
             if ((System.getenv("DISPLAY") == null)
                     || (System.getenv("DISPLAY").equals(""))) {
-                String[] serverEnvironment = { "PATH=$PATH" };
-                serverProcess = Runtime.getRuntime().exec("env - Xvfb :99",
-                        serverEnvironment);
-                String[] environment = { "DISPLAY=:99.0" };
-                printProcess = Runtime.getRuntime().exec(captureString,
-                        environment);
-            } else {
-                printProcess = Runtime.getRuntime().exec(captureString);
+                serverProcess = new ProcessBuilder("Xvfb", ":99").start();
+                capture.environment().put("DISPLAY", ":99.0");
             }
+            printProcess = capture.start();
             try {
                 printProcess.waitFor();
                 printProcess.destroy();
 
-                if ((System.getenv("DISPLAY") == null)
-                        || (System.getenv("DISPLAY").equals(""))) {
+                if (serverProcess != null) {
                     serverProcess.destroy();
                 }
                 Executions.getCurrent().sendRedirect(filename, "_blank");
@@ -247,6 +231,23 @@ public class CutyPrint {
         } catch (IOException e) {
             LOG.error("Could not execute print command", e);
         }
+    }
+
+    private static String createCaptureURL(HttpServletRequest request,
+            Map<String, String> parameters, String capturePath) {
+        // Add capture destination callback URL
+        String hostName = resolveLocalHost(request);
+        String result =  request.getScheme() + "://" + hostName
+                + ":" + request.getLocalPort() + capturePath;
+        if (parameters != null) {
+            result += "?";
+            for (String key : parameters.keySet()) {
+                result += key + "=" + parameters.get(key) + "&";
+            }
+            result = result.substring(0,
+                    (result.length() - 1));
+        }
+        return result;
     }
 
     private static String resolveLocalHost(HttpServletRequest request) {
