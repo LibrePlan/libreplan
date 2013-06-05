@@ -115,9 +115,9 @@
             </activation>
             <properties>
                 <!-- JDBC driver properties -->
-                <jdbcDriver.groupId>postgresql</jdbcDriver.groupId>
+                <jdbcDriver.groupId>org.postgresql</jdbcDriver.groupId>
                 <jdbcDriver.artifactId>postgresql</jdbcDriver.artifactId>
-                <jdbcDriver.version>8.3-603.jdbc4</jdbcDriver.version>
+                <jdbcDriver.version>9.2-1003-jdbc4</jdbcDriver.version>
                 <jdbcDriver.className>org.postgresql.Driver</jdbcDriver.className>
                 <!-- Data source properties -->
                 <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
@@ -262,6 +262,13 @@
                 <artifactId>junit</artifactId>
                 <version>4.4</version>
                 <scope>test</scope>
+            </dependency>
+            <!-- datasource for testing -->
+            <dependency>
+              <groupId>com.jolbox</groupId>
+              <artifactId>bonecp</artifactId>
+              <version>0.7.1.RELEASE</version>
+              <scope>test</scope>
             </dependency>
 
             <!-- Easy mock -->
@@ -982,11 +989,33 @@
                 </configuration>
 
                 <dependencies>
-                    <dependency>
-                        <groupId>${jdbcDriver.groupId}</groupId>
-                        <artifactId>${jdbcDriver.artifactId}</artifactId>
-                        <version>${jdbcDriver.version}</version>
-                    </dependency>
+                  <dependency>
+                    <groupId>${jdbcDriver.groupId}</groupId>
+                    <artifactId>${jdbcDriver.artifactId}</artifactId>
+                    <version>${jdbcDriver.version}</version>
+                  </dependency>
+                  <!-- connection pooling -->
+                  <dependency>
+                    <groupId>com.jolbox</groupId>
+                    <artifactId>bonecp</artifactId>
+                    <version>0.7.1.RELEASE</version>
+                  </dependency>
+                  <!-- connection pooling dependencies -->
+                  <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                    <version>1.5.5</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                    <version>1.5.5</version>
+                  </dependency>
+                  <dependency>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                    <version>14.0.1</version>
+                  </dependency>
                 </dependencies>
             </plugin>
 
