@@ -36,7 +36,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -128,109 +130,191 @@ public class CutyPrint {
             final Map<String, String> entryPointsMap,
             Map<String, String> parameters, Planner planner) {
 
-        HttpServletRequest request = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
+        CutyCaptParameters params = new CutyCaptParameters(forwardURL,
+                entryPointsMap, parameters, planner);
+        String generatedSnapshotServerPath = takeSnapshot(params);
 
-        String extension = ".pdf";
-        if (((parameters.get("extension") != null) && !(parameters
-                .get("extension").equals("")))) {
-            extension = parameters.get("extension");
+        openInAnotherTab(generatedSnapshotServerPath);
+    }
+
+    private static void openInAnotherTab(String producedPrintFilePath) {
+        Executions.getCurrent().sendRedirect(producedPrintFilePath, "_blank");
+    }
+
+    private static class CutyCaptParameters {
+
+        private final HttpServletRequest request = (HttpServletRequest) Executions
+                .getCurrent().getNativeRequest();
+        private final ServletContext context = request.getSession()
+                .getServletContext();
+
+        private final String forwardURL;
+        private final Map<String, String> entryPointsMap;
+        private final Map<String, String> printParameters;
+        private final Planner planner;
+
+        private final boolean containersExpandedByDefault;
+        private final int minWidthForTaskNameColumn;
+
+        private final String generatedSnapshotServerPath;
+
+        public CutyCaptParameters(final String forwardURL,
+                final Map<String, String> entryPointsMap,
+                Map<String, String> printParameters, Planner planner) {
+            this.forwardURL = forwardURL;
+            this.entryPointsMap = entryPointsMap != null ? entryPointsMap
+                    : Collections.<String, String> emptyMap();
+            this.printParameters = printParameters != null ? printParameters
+                    : Collections.<String, String> emptyMap();
+            this.planner = planner;
+
+            containersExpandedByDefault = Planner
+                    .guessContainersExpandedByDefaultGivenPrintParameters(printParameters);
+            minWidthForTaskNameColumn = planner
+                    .calculateMinimumWidthForTaskNameColumn(containersExpandedByDefault);
+            generatedSnapshotServerPath = buildCaptureDestination(printParameters
+                    .get("extension"));
         }
 
-        // Calculate application path and destination file relative route
-        String absolutePath = request.getSession().getServletContext()
-                .getRealPath("/");
+        String getGeneratedSnapshotServerPath() {
+            return generatedSnapshotServerPath;
+        }
 
-        String filename = "/print/"
-                + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
-                + extension;
+        void fillParameters(ProcessBuilder c) {
+            Map<String, String> parameters = buildParameters();
+            for (Entry<String, String> each : parameters.entrySet()) {
+                c.command()
+                        .add(String.format("--%s=%s", each.getKey(),
+                                each.getValue()));
+            }
+        }
 
-        String capturePath = CallbackServlet.registerAndCreateURLFor(request,
-                executeOnOriginalContext(new IServletRequestHandler() {
+        private Map<String, String> buildParameters() {
+            Map<String, String> result = new HashMap<String, String>();
 
-                    @Override
-                    public void handle(HttpServletRequest request,
-                            HttpServletResponse response)
-                            throws ServletException, IOException {
+            result.put("url", buildSnapshotURLParam());
 
-                        EntryPointsHandler.setupEntryPointsForThisRequest(request,
-                                entryPointsMap);
-                        // Pending to forward and process additional parameters
-                        // as show labels, resources, zoom or expand all
-                        request.getRequestDispatcher(forwardURL).forward(
-                                request, response);
-                    }
-                }));
+            int width = buildMinWidthParam();
+            result.put("min-width", width + "");
+
+            result.put("min-height", buildMinHeightParam() + "");
+            result.put("delay", CAPTURE_DELAY + "");
+            result.put("user-style-path", buildCustomCSSParam(width));
+            result.put("out", buildPathToOutputFileParam());
+            result.put("header", String.format("Accept-Language:%s", Locales
+                    .getCurrent().getLanguage()));
+            return result;
+        }
+
+        private String buildSnapshotURLParam() {
+            IServletRequestHandler snapshotRequestHandler = executeOnOriginalContext(new IServletRequestHandler() {
+
+                @Override
+                public void handle(HttpServletRequest request,
+                        HttpServletResponse response) throws ServletException,
+                        IOException {
+
+                    EntryPointsHandler.setupEntryPointsForThisRequest(request,
+                            entryPointsMap);
+                    // Pending to forward and process additional parameters
+                    // as show labels, resources, zoom or expand all
+                    request.getRequestDispatcher(forwardURL).forward(request,
+                            response);
+                }
+            });
+            String pageToSnapshot = CallbackServlet.registerAndCreateURLFor(
+                    request, snapshotRequestHandler);
+            return createCaptureURL(request, printParameters, pageToSnapshot);
+        }
+
+        private int buildMinWidthParam() {
+            return calculatePlannerWidthForPrintingScreen(planner,
+                    minWidthForTaskNameColumn);
+        }
+
+        private int buildMinHeightParam() {
+            return (containersExpandedByDefault ? planner.getAllTasksNumber()
+                    : planner.getTaskNumber())
+                    * TASK_HEIGHT
+                    + PRINT_VERTICAL_SPACING;
+        }
+
+        private String buildCustomCSSParam(int plannerWidth) {
+            // Calculate application path and destination file relative route
+            String absolutePath = context.getRealPath("/");
+
+            return createCSSFile(absolutePath
+                    + "/planner/css/print.css", plannerWidth, planner,
+                    printParameters.get("labels"),
+                    printParameters.get("resources"),
+                    containersExpandedByDefault, minWidthForTaskNameColumn);
+        }
+
+        private String buildPathToOutputFileParam() {
+            return context.getRealPath(generatedSnapshotServerPath);
+        }
+
+    }
+
+    /**
+     * It blocks until the snapshot is ready. It invokes cutycapt program in
+     * order to take a snapshot from a specified url
+     *
+     * @return the path in the web application to access via a HTTP GET to the
+     *         generated snapshot.
+     */
+    private static String takeSnapshot(CutyCaptParameters params) {
 
         ProcessBuilder capture = new ProcessBuilder(CUTYCAPT_COMMAND);
+        params.fillParameters(capture);
+        String generatedSnapshotServerPath = params
+                .getGeneratedSnapshotServerPath();
 
-        capture.command().add(
-                " --url=" + createCaptureURL(request, parameters, capturePath));
-        boolean expanded = Planner
-                .guessContainersExpandedByDefaultGivenPrintParameters(parameters);
-        int minWidthForTaskNameColumn = planner
-                .calculateMinimumWidthForTaskNameColumn(expanded);
-        int plannerWidth = calculatePlannerWidthForPrintingScreen(planner,
-                minWidthForTaskNameColumn);
-        capture.command().add(" --min-width=" + plannerWidth);
-
-        int plannerHeight = (expanded ? planner.getAllTasksNumber() : planner
-                .getTaskNumber()) * TASK_HEIGHT + PRINT_VERTICAL_SPACING;
-
-        capture.command().add(" --min-height=" + plannerHeight);
-
-        // Static width and time delay parameters (FIX)
-
-        capture.command().add(" --delay=" + CAPTURE_DELAY);
-
-        String generatedCSSFile = createCSSFile(
-                absolutePath + "/planner/css/print.css",
-                plannerWidth,
-                planner,
-                parameters.get("labels"),
-                parameters.get("resources"),
-                expanded,
-                minWidthForTaskNameColumn);
-
-        // Relative user styles
-        capture.command().add(" --user-style-path=" + generatedCSSFile);
-
-        // Destination complete absolute path
-        capture.command().add(" --out=" + absolutePath + filename);
-
-        // User language
-        capture.command().add(
-                " --header=Accept-Language:"
-                        + Locales.getCurrent().getLanguage());
+        Process printProcess = null;
+        Process serverProcess = null;
         try {
-            // CutyCapt command execution
-            LOG.info("calling " + capture.command());
-
-            Process printProcess;
-            Process serverProcess = null;
+            LOG.info("calling printing: " + capture.command());
 
             // If there is a not real X server environment then use Xvfb
-            if ((System.getenv("DISPLAY") == null)
-                    || (System.getenv("DISPLAY").equals(""))) {
+            if (System.getenv("DISPLAY") == null
+                    || System.getenv("DISPLAY").equals("")) {
                 serverProcess = new ProcessBuilder("Xvfb", ":99").start();
                 capture.environment().put("DISPLAY", ":99.0");
             }
             printProcess = capture.start();
-            try {
-                printProcess.waitFor();
-                printProcess.destroy();
-
-                if (serverProcess != null) {
-                    serverProcess.destroy();
-                }
-                Executions.getCurrent().sendRedirect(filename, "_blank");
-            } catch (Exception e) {
-                LOG.error("Could open generated PDF", e);
-            }
-
+            printProcess.waitFor();
+            // once the printProcess finishes, the print snapshot is available
+            return generatedSnapshotServerPath;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         } catch (IOException e) {
-            LOG.error("Could not execute print command", e);
+            LOG.error("error invoking command", e);
+            throw new RuntimeException(e);
+        } finally {
+            if (printProcess != null) {
+                destroy(printProcess);
+            }
+            if (serverProcess != null) {
+                destroy(serverProcess);
+            }
         }
+    }
+
+    private static void destroy(Process process) {
+        try {
+            process.destroy();
+        } catch (Exception e) {
+            LOG.error("error stoping process " + process, e);
+        }
+    }
+
+    private static String buildCaptureDestination(String extension) {
+        if (extension == null || extension.equals("")) {
+            extension = ".pdf";
+        }
+        return "/print/"
+                + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+                + extension;
     }
 
     private static String createCaptureURL(HttpServletRequest request,
