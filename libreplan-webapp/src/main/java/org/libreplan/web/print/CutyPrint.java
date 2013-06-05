@@ -22,12 +22,8 @@
 package org.libreplan.web.print;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -44,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.orders.entities.Order;
@@ -265,12 +262,82 @@ public class CutyPrint {
         private String buildCustomCSSParam(int plannerWidth) {
             // Calculate application path and destination file relative route
             String absolutePath = context.getRealPath("/");
+            cssLinesToAppend(plannerWidth);
+            return createCSSFile(absolutePath + "/planner/css/print.css",
+                    cssLinesToAppend(plannerWidth));
+        }
 
-            return createCSSFile(absolutePath
-                    + "/planner/css/print.css", plannerWidth, planner,
-                    printParameters.get("labels"),
-                    printParameters.get("resources"),
-                    containersExpandedByDefault, minWidthForTaskNameColumn);
+        private static String createCSSFile(String sourceFile,
+                String cssLinesToAppend) {
+            File destination;
+            try {
+                destination = File.createTempFile("print", ".css");
+                FileUtils.copyFile(new File(sourceFile), destination);
+            } catch (IOException e) {
+                LOG.error(
+                        "Can't create a temporal file for storing the CSS files",
+                        e);
+                return sourceFile;
+            }
+            FileWriter appendToFile = null;
+            try {
+                appendToFile = new FileWriter(destination, true);
+
+                appendToFile.write(cssLinesToAppend);
+                appendToFile.flush();
+            } catch (IOException e) {
+                LOG.error("Can't append to the created file " + destination, e);
+            } finally {
+                try {
+                    if (appendToFile != null) {
+                        appendToFile.close();
+                    }
+                } catch (IOException e) {
+                    LOG.warn("error closing fileWriter", e);
+                }
+            }
+            return destination.getAbsolutePath();
+        }
+
+        private String cssLinesToAppend(int width) {
+            String includeCSSLines = " body { width: " + width + "px; } \n";
+            if ("all".equals(printParameters.get("labels"))) {
+                includeCSSLines += " .task-labels { display: inline !important;} \n ";
+            }
+            if ("all".equals(printParameters.get("resources"))) {
+                includeCSSLines += " .task-resources { display: inline !important;} \n";
+            }
+
+            includeCSSLines += heightCSS();
+            includeCSSLines += widthForTaskNamesColumnCSS();
+            return includeCSSLines;
+        }
+
+        private String heightCSS() {
+            int tasksNumber = containersExpandedByDefault ? planner
+                    .getAllTasksNumber() : planner
+                    .getTaskNumber();
+            int height = (tasksNumber * TASK_HEIGHT) + PRINT_VERTICAL_PADDING;
+            String heightCSS = "";
+            heightCSS += " body div#scroll_container { height: " + height
+                    + "px !important;} \n"; /* 1110 */
+            heightCSS += " body div#timetracker { height: " + (height + 20)
+                    + "px !important; } \n";
+            heightCSS += " body div.plannerlayout { height: " + (height + 80)
+                    + "px !important; } \n";
+            heightCSS += " body div.main-layout { height: " + (height + 90)
+                    + "px !important; } \n";
+            return heightCSS;
+        }
+
+        private String widthForTaskNamesColumnCSS() {
+            String css = "/* ------ Make the area for task names wider ------ */\n";
+            css += "th.z-tree-col {width: 76px !important;}\n";
+            css += "th.tree-text {width: " + (34 + minWidthForTaskNameColumn)
+                    + "px !important;}\n";
+            css += ".taskdetailsContainer, .z-west-body, .z-tree-header, .z-tree-body {";
+            css += "width: " + (176 + minWidthForTaskNameColumn) + "px !important;}\n";
+            return css;
         }
 
         private String buildPathToOutputFileParam() {
@@ -371,75 +438,4 @@ public class CutyPrint {
         };
     }
 
-    private static String heightCSS(int tasksNumber) {
-        int height = (tasksNumber * TASK_HEIGHT) + PRINT_VERTICAL_PADDING;
-        String heightCSS = "";
-        heightCSS += " body div#scroll_container { height: " + height
-                + "px !important;} \n"; /* 1110 */
-        heightCSS += " body div#timetracker { height: " + (height + 20)
-                + "px !important; } \n";
-        heightCSS += " body div.plannerlayout { height: " + (height + 80)
-                + "px !important; } \n";
-        heightCSS += " body div.main-layout { height: " + (height + 90)
-                + "px !important; } \n";
-        return heightCSS;
     }
-
-    private static String createCSSFile(String srFile, int width,
-            Planner planner, String labels, String resources, boolean expanded,
-            int minimumWidthForTaskNameColumn) {
-        File generatedCSS = null;
-        try {
-            generatedCSS = File.createTempFile("print", ".css");
-
-            File f1 = new File(srFile);
-            InputStream in = new FileInputStream(f1);
-
-            // For Overwrite the file.
-            OutputStream out = new FileOutputStream(generatedCSS);
-
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            String includeCSSLines = " body { width: " + width + "px; } \n";
-            if ((labels != null) && (labels.equals("all"))) {
-                includeCSSLines += " .task-labels { display: inline !important;} \n ";
-            }
-
-            if ((resources != null) && (resources.equals("all"))) {
-                includeCSSLines += " .task-resources { display: inline !important;} \n";
-            }
-            includeCSSLines += heightCSS(expanded ? planner.getAllTasksNumber()
-                    : planner.getTaskNumber());
-            includeCSSLines += widthForTaskNamesColumnCSS(minimumWidthForTaskNameColumn);
-
-            out.write(includeCSSLines.getBytes());
-            in.close();
-            out.close();
-
-        } catch (FileNotFoundException ex) {
-            LOG.error(ex.getMessage() + " in the specified directory.", ex);
-            System.exit(0);
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-        }
-        if (generatedCSS != null) {
-            return generatedCSS.getAbsolutePath();
-        } else {
-            return srFile;
-        }
-    }
-
-    private static String widthForTaskNamesColumnCSS(
-            int minWidthPixels) {
-        String css = "/* ------ Make the area for task names wider ------ */\n";
-        css += "th.z-tree-col {width: 76px !important;}\n";
-        css += "th.tree-text {width: " + (34 + minWidthPixels)
-                + "px !important;}\n";
-        css += ".taskdetailsContainer, .z-west-body, .z-tree-header, .z-tree-body {";
-        css += "width: " + (176 + minWidthPixels) + "px !important;}\n";
-        return css;
-    }
-}
