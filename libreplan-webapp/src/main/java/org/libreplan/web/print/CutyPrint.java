@@ -42,6 +42,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -224,7 +225,29 @@ public class CutyPrint {
             });
             String pageToSnapshot = CallbackServlet.registerAndCreateURLFor(
                     request, snapshotRequestHandler);
-            return createCaptureURL(request, printParameters, pageToSnapshot);
+            return createCaptureURL(pageToSnapshot);
+        }
+
+        private String createCaptureURL(String capturePath) {
+            String hostName = resolveLocalHost();
+            String uri = String.format("%s://%s:%s", request.getScheme(),
+                    hostName, request.getLocalPort());
+            UriBuilder result = UriBuilder.fromUri(uri).path(capturePath);
+
+            for (Entry<String, String> entry : printParameters.entrySet()) {
+                result = result.queryParam(entry.getKey(), entry.getValue());
+            }
+            return result.build().toASCIIString();
+        }
+
+        private String resolveLocalHost() {
+            try {
+                InetAddress host = InetAddress
+                        .getByName(request.getLocalName());
+                return host.getHostName();
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         private int buildMinWidthParam() {
@@ -315,32 +338,6 @@ public class CutyPrint {
         return "/print/"
                 + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
                 + extension;
-    }
-
-    private static String createCaptureURL(HttpServletRequest request,
-            Map<String, String> parameters, String capturePath) {
-        // Add capture destination callback URL
-        String hostName = resolveLocalHost(request);
-        String result =  request.getScheme() + "://" + hostName
-                + ":" + request.getLocalPort() + capturePath;
-        if (parameters != null) {
-            result += "?";
-            for (String key : parameters.keySet()) {
-                result += key + "=" + parameters.get(key) + "&";
-            }
-            result = result.substring(0,
-                    (result.length() - 1));
-        }
-        return result;
-    }
-
-    private static String resolveLocalHost(HttpServletRequest request) {
-        try {
-            InetAddress host = InetAddress.getByName(request.getLocalName());
-            return host.getHostName();
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private static int calculatePlannerWidthForPrintingScreen(Planner planner,
