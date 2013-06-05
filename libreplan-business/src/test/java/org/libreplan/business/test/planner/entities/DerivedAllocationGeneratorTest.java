@@ -27,6 +27,8 @@ import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
+import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 import static org.libreplan.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.libreplan.business.workingday.EffortDuration.hours;
 
@@ -41,7 +43,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.libreplan.business.planner.entities.DayAssignment;
 import org.libreplan.business.planner.entities.DerivedAllocation;
 import org.libreplan.business.planner.entities.DerivedAllocationGenerator;
@@ -54,13 +58,28 @@ import org.libreplan.business.resources.entities.MachineWorkerAssignment;
 import org.libreplan.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.libreplan.business.resources.entities.Resource;
 import org.libreplan.business.resources.entities.Worker;
+import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+        BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class DerivedAllocationGeneratorTest {
 
-    private Machine machine = null;
+    @Autowired
+    private IScenariosBootstrap scenariosBootstrap;
+
+    @Before
+    public void loadRequiredData() {
+        scenariosBootstrap.loadRequiredData();
+    }
+
+    private final Machine machine = null;
 
     private ResourceAllocation<?> derivedFrom;
     private IWorkerFinder finder;

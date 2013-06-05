@@ -43,7 +43,6 @@ import javax.annotation.Resource;
 
 import org.easymock.EasyMock;
 import org.hibernate.SessionFactory;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,6 +82,7 @@ import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zk.ui.Desktop;
 
@@ -116,7 +116,7 @@ public class OrderModelTest {
     @Resource
     private IDataBootstrap scenariosBootstrap;
 
-    @Before
+    @BeforeTransaction
     public void loadRequiredaData() {
         defaultAdvanceTypesBootstrapListener.loadRequiredData();
         configurationBootstrap.loadRequiredData();
@@ -238,7 +238,7 @@ public class OrderModelTest {
                         return null;
                     }
                 });
-        Order order = (Order) orderModel.getOrder();
+        Order order = orderModel.getOrder();
         order.setName("name");
         order.setCode("code");
         order.setInitDate(new Date());
