@@ -476,6 +476,14 @@ public class Configuration extends BaseEntity {
         personalTimesheetsTypeOfWorkHours = typeOfWorkHours;
     }
 
+    public TypeOfWorkHours getBudgetDefaultTypeOfWorkHours() {
+        return personalTimesheetsTypeOfWorkHours;
+    }
+
+    public void setBudgetDefaultTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
+        personalTimesheetsTypeOfWorkHours = typeOfWorkHours;
+    }
+
     public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
         return personalTimesheetsPeriodicity;
     }

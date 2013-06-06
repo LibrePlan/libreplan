@@ -1002,6 +1002,14 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setPersonalTimesheetsTypeOfWorkHours(typeOfWorkHours);
     }
 
+    public TypeOfWorkHours getBudgetDefaultTypeOfWorkHours() {
+        return configurationModel.getBudgetDefaultTypeOfWorkHours();
+    }
+
+    public void setBudgetDefaultTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
+        configurationModel.setBudgetDefaultTypeOfWorkHours(typeOfWorkHours);
+    }
+
     public List<PersonalTimesheetsPeriodicityEnum> getPersonalTimesheetsPeriodicities() {
         return Arrays.asList(PersonalTimesheetsPeriodicityEnum.values());
     }

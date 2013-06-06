@@ -192,4 +192,8 @@ public interface IConfigurationModel {
 
     boolean scheduleOrUnscheduleJobs(Connector connector);
 
+    TypeOfWorkHours getBudgetDefaultTypeOfWorkHours();
+
+    void setBudgetDefaultTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
+
 }

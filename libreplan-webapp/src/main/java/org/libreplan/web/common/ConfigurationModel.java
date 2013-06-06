@@ -161,6 +161,7 @@ public class ConfigurationModel implements IConfigurationModel {
     private void forceLoad(Configuration configuration) {
         forceLoad(configuration.getDefaultCalendar());
         forceLoad(configuration.getPersonalTimesheetsTypeOfWorkHours());
+        forceLoad(configuration.getBudgetDefaultTypeOfWorkHours());
     }
 
     private void forceLoad(BaseCalendar calendar) {
@@ -721,4 +722,15 @@ public class ConfigurationModel implements IConfigurationModel {
         return jobSchedulerModel.scheduleOrUnscheduleJobs(connector);
     }
 
+    @Override
+    public TypeOfWorkHours getBudgetDefaultTypeOfWorkHours() {
+        return configuration.getBudgetDefaultTypeOfWorkHours();
+    }
+
+    @Override
+    public void setBudgetDefaultTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
+        if (configuration != null) {
+            configuration.setBudgetDefaultTypeOfWorkHours(typeOfWorkHours);
+        }
+    }
 }
