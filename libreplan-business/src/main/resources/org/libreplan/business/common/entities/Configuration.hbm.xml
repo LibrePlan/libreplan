@@ -88,6 +88,12 @@
             </type>
         </property>
 
+        <many-to-one name="budgetDefaultTypeOfWorkHours" cascade="none"
+            column="automatic_budget_type_of_work_hours" />
+
+        <property name="enabledAutomaticBudget" not-null="true"
+            column="automatic_budget_enabled" />
+
         <property name="maxUsers" column="max_users" />
         <property name="maxResources" column="max_resources" />
 

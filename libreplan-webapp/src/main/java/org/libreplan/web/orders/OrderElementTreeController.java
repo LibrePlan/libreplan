@@ -608,6 +608,17 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             super.removeCodeTextbox(key);
         }
 
+        public void addAutoBudgetCell(OrderElement currentElement) {
+            String autobudget = " autobudget";
+            for (CriterionRequirement criterionRequirement : currentElement
+                    .getCriterionRequirements()) {
+                autobudget += criterionRequirement.getCriterion()
+                        .getCostCategory();
+                autobudget += currentElement.getHoursGroups().toString();
+            }
+            addCell(new Textbox(autobudget));
+        }
+
     }
 
     @Override
