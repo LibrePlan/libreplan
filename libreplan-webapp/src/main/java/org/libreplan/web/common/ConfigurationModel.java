@@ -733,4 +733,20 @@ public class ConfigurationModel implements IConfigurationModel {
             configuration.setBudgetDefaultTypeOfWorkHours(typeOfWorkHours);
         }
     }
+
+    @Override
+    public Boolean getEnabledAutomaticBudget() {
+        if (configuration == null) {
+            return null;
+        }
+        return (configuration.isEnabledAutomaticBudget());
+    }
+
+    @Override
+    public void setEnabledAutomaticBudget(Boolean enabledAutomaticBudget) {
+        if (configuration != null) {
+            configuration.setEnabledAutomaticBudget(enabledAutomaticBudget);
+        }
+    }
+
 }

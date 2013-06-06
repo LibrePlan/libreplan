@@ -196,4 +196,8 @@ public interface IConfigurationModel {
 
     void setBudgetDefaultTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours);
 
+    Boolean getEnabledAutomaticBudget();
+
+    void setEnabledAutomaticBudget(Boolean enabledAutomaticBudget);
+
 }

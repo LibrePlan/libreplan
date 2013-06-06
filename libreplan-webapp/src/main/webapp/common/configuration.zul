@@ -214,16 +214,16 @@
                             <row>
                                 <label
                                     value="${i18n:_('Automatic budget')}" />
-                                    <hbox>
-                                <label
-                                    value="${i18n:_('Hours type')}" />
+                                <hbox align="pack">
+                                    <label
+                                        value="${i18n:_('Hours type')}" />
                                     <bandboxSearch
-                                    finder="TypeOfWorkHoursBandboxFinder"
-                                    selectedElement="@{configurationController.budgetDefaultTypeOfWorkHours, access='both'}" />
-                                        <checkbox
-                                            label="${i18n:_('calculate based on task criteria and cost categories')}"
-                                            checked="@{configurationController.enabledAutomaticBudget}" />
-                                    </hbox>
+                                        finder="TypeOfWorkHoursBandboxFinder"
+                                        selectedElement="@{configurationController.budgetDefaultTypeOfWorkHours, access='both'}" />
+                                    <checkbox
+                                        label="${i18n:_('calculate based on task criteria and cost categories')}"
+                                        checked="@{configurationController.enabledAutomaticBudget}" />
+                                </hbox>
                             </row>
                             <row>
                                 <label

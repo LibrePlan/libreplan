@@ -116,6 +116,10 @@ public class Configuration extends BaseEntity {
 
     private Integer secondsPlanningWarning = 30;
 
+    private TypeOfWorkHours budgetDefaultTypeOfWorkHours;
+
+    private Boolean enabledAutomaticBudget = false;
+
     /**
      * Maximum users configurable directly in database for SaaS products. If
      * zero it means that there isn't any limitation.
@@ -127,6 +131,7 @@ public class Configuration extends BaseEntity {
      * zero it means that there isn't any limitation.
      */
     private Integer maxResources = 0;
+
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
@@ -477,11 +482,11 @@ public class Configuration extends BaseEntity {
     }
 
     public TypeOfWorkHours getBudgetDefaultTypeOfWorkHours() {
-        return personalTimesheetsTypeOfWorkHours;
+        return budgetDefaultTypeOfWorkHours;
     }
 
     public void setBudgetDefaultTypeOfWorkHours(TypeOfWorkHours typeOfWorkHours) {
-        personalTimesheetsTypeOfWorkHours = typeOfWorkHours;
+        budgetDefaultTypeOfWorkHours = typeOfWorkHours;
     }
 
     public PersonalTimesheetsPeriodicityEnum getPersonalTimesheetsPeriodicity() {
@@ -509,6 +514,14 @@ public class Configuration extends BaseEntity {
 
     public void setSecondsPlanningWarning(Integer secondsPlanningWarning) {
         this.secondsPlanningWarning = secondsPlanningWarning;
+    }
+
+    public Boolean isEnabledAutomaticBudget() {
+        return enabledAutomaticBudget;
+    }
+
+    public void setEnabledAutomaticBudget(Boolean enabledAutomaticBudget) {
+        this.enabledAutomaticBudget = enabledAutomaticBudget;
     }
 
 }
