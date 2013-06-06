@@ -141,6 +141,15 @@ public class CutyPrint {
 
     private static class CutyCaptParameters {
 
+        private static String buildCaptureDestination(String extension) {
+            if (extension == null || extension.equals("")) {
+                extension = ".pdf";
+            }
+            return "/print/"
+                    + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+                    + extension;
+        }
+
         private final HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
         private final ServletContext context = request.getSession()
@@ -248,8 +257,17 @@ public class CutyPrint {
         }
 
         private int buildMinWidthParam() {
-            return calculatePlannerWidthForPrintingScreen(planner,
-                    minWidthForTaskNameColumn);
+            if (planner != null && planner.getTimeTracker() != null) {
+                return planner.getTimeTracker().getHorizontalSize()
+                        + calculateTaskDetailsWidth();
+            }
+            return 0;
+        }
+
+        private int calculateTaskDetailsWidth() {
+            return TASKDETAILS_BASE_WIDTH
+                    + Math.max(0, minWidthForTaskNameColumn
+                            - BASE_TASK_NAME_PIXELS);
         }
 
         private int buildMinHeightParam() {
@@ -396,29 +414,6 @@ public class CutyPrint {
         } catch (Exception e) {
             LOG.error("error stoping process " + process, e);
         }
-    }
-
-    private static String buildCaptureDestination(String extension) {
-        if (extension == null || extension.equals("")) {
-            extension = ".pdf";
-        }
-        return "/print/"
-                + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
-                + extension;
-    }
-
-    private static int calculatePlannerWidthForPrintingScreen(Planner planner,
-            int minWidthForTaskNameColumn) {
-        if (planner != null && planner.getTimeTracker() != null) {
-            return planner.getTimeTracker().getHorizontalSize()
-                    + calculateTaskDetailsWidth(minWidthForTaskNameColumn);
-        }
-        return 0;
-    }
-
-    private static int calculateTaskDetailsWidth(int minWidthForTaskNameColumn) {
-        return TASKDETAILS_BASE_WIDTH
-                + Math.max(0, minWidthForTaskNameColumn - BASE_TASK_NAME_PIXELS);
     }
 
     private static IServletRequestHandler executeOnOriginalContext(
