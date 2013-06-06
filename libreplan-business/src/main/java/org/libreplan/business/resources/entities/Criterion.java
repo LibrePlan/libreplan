@@ -42,6 +42,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.Registry;
+import org.libreplan.business.costcategories.entities.CostCategory;
 import org.libreplan.business.planner.entities.GenericResourceAllocation;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.resources.daos.ICriterionDAO;
@@ -252,6 +253,8 @@ public class Criterion extends IntegrationEntity implements ICriterion,
      */
     private Long typeId;
 
+    private CostCategory costCategory;
+
     public static Criterion ofType(CriterionType type) {
         return create(type);
     }
@@ -317,6 +320,14 @@ public class Criterion extends IntegrationEntity implements ICriterion,
 
     public void setType(CriterionType type) {
         this.type = type;
+    }
+
+    public CostCategory getCostCategory() {
+        return costCategory;
+    }
+
+    public void setCostCategory(CostCategory costCategory) {
+        this.costCategory = costCategory;
     }
 
     public String getCompleteName() {
