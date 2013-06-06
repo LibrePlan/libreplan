@@ -226,6 +226,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                 .getRoot();
                         orderModel.createFrom(parent, template);
                         getModel().addNewlyAddedChildrenOf(parent);
+			// Force reload bindings after adding the new nodes
+                        Util.reloadBindings(tree);
+
                     }
                 });
     }
